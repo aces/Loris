@@ -27,7 +27,7 @@ class SettingsTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnitFrameworkMockObjectMockObject
      */
     private $_configMock;
 

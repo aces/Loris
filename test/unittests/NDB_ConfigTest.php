@@ -54,14 +54,14 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnitFrameworkMockObjectMockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var Database | PHPUnit_Framework_MockObject_MockObject
+     * @var Database | PHPUnitFrameworkMockObjectMockObject
      */
     private $_dbMock;
 
@@ -76,7 +76,7 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for User object
      *
-     * @var User | PHPUnit_Framework_MockObject_MockObject
+     * @var User | PHPUnitFrameworkMockObjectMockObject
      */
     private $_user;
 
