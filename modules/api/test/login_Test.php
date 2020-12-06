@@ -79,7 +79,7 @@ class LoginTest extends TestCase
             ->willReturn(true);
 
         $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
-            ->setMethods(['getLoginAuthenticator', 'getEncodedToken'])
+            ->addMethods(['getLoginAuthenticator', 'getEncodedToken'])
             ->getMock();
 
         $handler->expects($this->once())

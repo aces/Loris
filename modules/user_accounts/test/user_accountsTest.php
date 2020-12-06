@@ -107,7 +107,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Edit User", $bodyText);
+        $this->assertStringContainsString("Edit User", $bodyText);
         $this->assertEquals(
             "password",
             $this->safeFindElement(
@@ -165,7 +165,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
@@ -182,7 +182,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 WebDriverBy::cssSelector($row)
             )->getText();
                     // 4 means there are 4 records under this site.
-                    $this->assertContains($records, $bodyText);
+                    $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = $this->_clearFilter;
@@ -385,7 +385,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             self::UNITTESTER_EMAIL_NEW
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains('cannot be your email', $this->getBody());
+        $this->assertStringContainsString('cannot be your email', $this->getBody());
     }
 
     /**
@@ -404,7 +404,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             \Utility::randomString()
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains('do not match', $this->getBody());
+        $this->assertStringContainsString('do not match', $this->getBody());
     }
 
     /**
@@ -428,7 +428,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $newPassword
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains(
+        $this->assertStringContainsString(
             'New and old passwords are identical',
             $this->getBody()
         );

@@ -31,7 +31,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
@@ -51,7 +51,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete("help", ['helpID' => '999999']);

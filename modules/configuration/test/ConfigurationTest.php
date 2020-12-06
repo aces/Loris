@@ -64,7 +64,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertRegexp(
+        $this->assertMatchesRegularExpression(
             "/Please enter the various configuration variables/",
             $bodyText
         );
