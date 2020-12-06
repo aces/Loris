@@ -749,7 +749,13 @@ class CandidateTest extends TestCase
             ->willReturn($this->_candidateInfo);
         $this->_dbMock
             ->method('pselect')
-            ->will($this->onConsecutiveCalls($this->_listOfTimePoints, [["ID" => 97],["ID"=>98]], $this->_listOfTimePoints));
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->_listOfTimePoints,
+                    [["ID" => 97],["ID"=>98]],
+                    $this->_listOfTimePoints
+                )
+            );
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(97, $this->_candidate->getSessionID(1));
@@ -1207,7 +1213,12 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock
             ->method('pselect')
-            ->will($this->onConsecutiveCalls( [["ID" => 97],["ID"=>98]], $this->_listOfTimePoints));
+            ->will(
+                $this->onConsecutiveCalls(
+                    [["ID" => 97],["ID"=>98]],
+                    $this->_listOfTimePoints
+                )
+            );
 
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
