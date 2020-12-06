@@ -124,13 +124,13 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnitFrameworkMockObjectMockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnitFrameworkMockObjectMockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -139,7 +139,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \NDB_Config | PHPUnitFrameworkMockObjectMockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockConfig;
     /**
@@ -147,7 +147,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \Database | PHPUnitFrameworkMockObjectMockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
     /**
