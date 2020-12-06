@@ -32,7 +32,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Behavioural Quality Control", $bodyText);
+        $this->assertStringContainsString("Behavioural Quality Control", $bodyText);
     }
     /**
      * Tests that behavioural_qc does not load with the permission

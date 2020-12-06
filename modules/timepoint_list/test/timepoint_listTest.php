@@ -59,7 +59,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Candidate Profile", $bodyText);
+        $this->assertStringContainsString("Candidate Profile", $bodyText);
     }
     /**
      * Checks the contents of the session table and compares it against an expected

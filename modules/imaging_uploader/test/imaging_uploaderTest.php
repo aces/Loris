@@ -134,7 +134,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Imaging Upload", $bodyText);
+        $this->assertStringContainsString("Imaging Upload", $bodyText);
     }
     /**
      * Tests that, when loading the Imaging_uploader module without permission,
@@ -149,7 +149,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString("You do not have access to this page.", $bodyText);
     }
     /**
      * Tests that, when loading the Imaging_uploader module with permission,
@@ -164,7 +164,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -236,7 +236,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $text     = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
             );
-            $this->assertContains($ui['label'], $text);
+            $this->assertStringContainsString($ui['label'], $text);
         }
     }
 }
