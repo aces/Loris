@@ -55,7 +55,7 @@ class SinglePointLoginTest extends TestCase
         $AllMethods   = get_class_methods('SinglePointLogin');
         $exceptMethod = array_diff($AllMethods, $method);
         $this->_login = $this->getMockBuilder('SinglePointLogin')
-            ->setMethods($exceptMethod)->getMock();
+            ->addMethods($exceptMethod)->getMock();
 
     }
 
