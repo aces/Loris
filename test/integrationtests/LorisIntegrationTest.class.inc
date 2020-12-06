@@ -661,7 +661,7 @@ abstract class LorisIntegrationTest extends TestCase
         string $jsError= "An error occured while loading the page."
     ): void {
         $this->assertStringContainsString($needle, $haystack);
-        $this->assertNotContains($jsError, $haystack);
+        $this->assertStringNotContainsString($jsError, $haystack);
         $this->resetPermissions();
     }
 
