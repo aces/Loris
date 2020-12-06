@@ -58,7 +58,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");

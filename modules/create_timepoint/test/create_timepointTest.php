@@ -32,7 +32,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
     }

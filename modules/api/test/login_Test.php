@@ -33,7 +33,7 @@ class LoginTest extends TestCase
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         spl_autoload_register(
             function ($class) {
@@ -59,7 +59,7 @@ class LoginTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_request       = new ServerRequest();
         $this->_authenticator = $this->createMock('\SinglePointLogin');
