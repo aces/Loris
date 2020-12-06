@@ -29,7 +29,7 @@ class PasswordTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnitFrameworkMockObjectMockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
