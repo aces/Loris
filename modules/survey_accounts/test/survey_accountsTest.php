@@ -42,7 +42,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -131,7 +131,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "participant_accounts",

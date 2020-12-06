@@ -39,7 +39,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -224,7 +224,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "MRICandidateErrors",

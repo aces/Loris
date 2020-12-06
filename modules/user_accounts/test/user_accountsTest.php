@@ -56,7 +56,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $password = new \Password($this->validPassword);
@@ -493,7 +493,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("users", ["UserID" => 'userid']);
         $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
