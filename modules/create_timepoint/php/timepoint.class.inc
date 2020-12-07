@@ -120,7 +120,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // List languages
         $languages = \Utility::getLanguageList();
         if (count($languages) > 1) {
-            array_unshift($languages, null);
+            $languages = [null] + $languages;
         }
         $values['languages'] = $languages;
 
