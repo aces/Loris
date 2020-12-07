@@ -33,7 +33,6 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         'Testdate',
         'Window_Difference',
         'Candidate_Age',
-        'Data_entry_completion_status',
     );
 
     /**

@@ -71,7 +71,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                                                     'Testdate',
                                                     'Window_Difference',
                                                     'Candidate_Age',
-                                                    'Data_entry_completion_status',
                                                     'free_play_period_1_notes_status',
                                                     'free_play_period_1_notes',
                                                     'free_play_period_2_notes_status',

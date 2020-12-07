@@ -844,18 +844,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $oldData = [];
         }
-
         $newData = array_merge($oldData ?? [], $values);
-
-        $flagDataToUpdate['Data'] = empty($newData) ? null : json_encode($newData);
 
         // Save the JSON to the flag.Data column.
         //
         // json_encode ensures that this is safe. If we use the safe wrapper,
         // HTML encoding the quotation marks will make it invalid JSON.
-        $db->unsafeUpdate(
+        $db->update(
             "flag",
-            $flagDataToUpdate,
+            ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
         $this->instanceData = $newData;
@@ -1587,11 +1584,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus(): string
     {
-        $db      = Database::singleton();
-        return $db->pselectOne(
+        $db     = Database::singleton();
+        $status = $db->pselectOne(
             "SELECT Data_entry_completion_status FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
-        ) ?? '';
+        );
+        if ($status === 'Incomplete' || $status === 'Complete') {
+            return $status;
+        } else {
+            throw new LorisException(
+                "Invalid Data entry completion status encountered"
+            );
+        }
     }
 
 
@@ -1613,7 +1617,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $this->_save(["Data_entry_completion_status" => $status]);
+        $this->update(
+            "flag",
+            ["Data_entry_completion_status" => $status],
+            $this->getCommentID()
+        );
     }
 
     /**
