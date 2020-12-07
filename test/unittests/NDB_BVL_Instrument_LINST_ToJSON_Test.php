@@ -32,7 +32,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->addMethods(
+        $this->Session = $this->getMockBuilder(\stdClass::class)->onlyMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
             ->disableOriginalConstructor()
-            ->addMethods(['getFullName', 'getSessionID'])
+            ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSessionID')

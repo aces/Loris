@@ -23,7 +23,7 @@ class NDB_Menu_Filter_Test extends TestCase
     function setUp(): void
     {
         global $_SESSION;
-        $this->Session = $this->getMockBuilder(stdClass::class)->addMethods(
+        $this->Session = $this->getMockBuilder(stdClass::class)->onlyMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -64,7 +64,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_resetFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->addMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -92,7 +92,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setSearchKeyword'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->addMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -120,7 +120,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->addMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -178,7 +178,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setFilterSortOrder'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->addMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -1618,7 +1618,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument            = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->addMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
