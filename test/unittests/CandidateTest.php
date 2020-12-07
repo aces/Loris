@@ -181,7 +181,7 @@ class CandidateTest extends TestCase
     public function testSelectRetrievesCandidateInfo()
     {
         //$this->_setUpTestDoublesForSelectCandidate();
-        $this->_dbMock
+        $this->_dbMock->expects($this->once())
             ->method('pselect')
             ->willReturn([["ID" => 97],["ID"=>98]]);
         $this->_dbMock->expects($this->once())
@@ -615,7 +615,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock->expects($this->once())
             ->method('pselect')
             ->with(
                 $this->stringContains(
@@ -650,7 +650,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock->expects($this->once())
             ->method('pselect')
             ->with(
                 $this->stringContains(
