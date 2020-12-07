@@ -72,6 +72,7 @@ var Instrument = {
             return;
         }
 
+        // TODO: remove "table" from this file and add to .meta file instead
         content += "table{@}" + name + "\n";
         if (title) {
             content += "title{@}" + title + "\n";

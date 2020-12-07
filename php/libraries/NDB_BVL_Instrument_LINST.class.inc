@@ -461,14 +461,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $firstFieldOfPage = true;
                     break;
-                case 'test':
-                    $this->testName = trim($pieces[1]);
-                    break;
                 case 'table':
-                    // The line below offers backwards compatibility to LINST
-                    // files that don't define a test name
+                    // The 'test' and 'table' variables of the .meta file
+                    // take precedence over this variable in the .linst file.
+                    // The lines below offer backwards compatibility until
+                    // the feature is completely deprecated.
                     $this->testName = $this->testName ?? trim($pieces[1]);
-                    $this->table    = trim($pieces[1]);
+                    $this->table    = $this->table ?? trim($pieces[1]);
                     break;
                 case 'title':
                     if ($addElements) {
@@ -737,6 +736,44 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
+    }
+
+    /**
+     * Parses the metadata of a LINST instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded, or a base64 encoded
+     *                         string.
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
+        $fp = fopen($filename, "r");
+        while (($line = fgets($fp, 4096)) !== false) {
+            $pieces = preg_split("/{@}/", $line);
+            $this->LinstLines[] = $pieces;
+
+            $type = $pieces[0];
+
+            switch ($type) {
+            case 'test':
+                $this->testName = trim($pieces[1]);
+                break;
+            case 'table':
+                $this->table = trim($pieces[1]);
+                break;
+            case 'jsondata':
+                $this->jsonData = trim($pieces[1]) === 'true';
+                break;
+            default:
+                break;
+            }
+        }
+        fclose($fp);
     }
 
     /**
