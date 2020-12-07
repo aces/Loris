@@ -49,7 +49,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
@@ -60,7 +60,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");
@@ -243,6 +243,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector($row)
         )->getText();
          // 4 means there are 4 records under this site.
-        $this->assertContains("of 575", $bodyText);
+        $this->assertStringContainsString("of 575", $bodyText);
     }
 }

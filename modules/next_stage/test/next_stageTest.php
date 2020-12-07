@@ -43,7 +43,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
     }
     /**
      * Tests that, page loads with data_entry permission
@@ -60,7 +60,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
         $this->resetPermissions();
     }
 
@@ -79,7 +79,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -107,7 +107,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -122,7 +122,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -168,7 +168,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Both Date fields must match.", $bodyText);
+        $this->assertStringContainsString("Both Date fields must match.", $bodyText);
     }
 
     /**
@@ -206,7 +206,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next stage started.", $bodyText);
+        $this->assertStringContainsString("Next stage started.", $bodyText);
     }
 }
 

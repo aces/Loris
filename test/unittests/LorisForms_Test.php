@@ -33,7 +33,7 @@ class LorisForms_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         $this->form = new LorisForm();
     }
@@ -405,7 +405,7 @@ class LorisForms_Test extends TestCase
     function testAddElementSelect()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addSelect', 'addDate'])
+            ->addMethods(['addSelect', 'addDate'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addSelect');
@@ -422,7 +422,7 @@ class LorisForms_Test extends TestCase
     function testAddElementDate()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addDate'])
+            ->addMethods(['addDate'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addDate');
@@ -439,7 +439,7 @@ class LorisForms_Test extends TestCase
     function testAddElementText()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addText'])
+            ->addMethods(['addText'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addText');
@@ -456,7 +456,7 @@ class LorisForms_Test extends TestCase
     function testAddElementFile()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addFile'])
+            ->addMethods(['addFile'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addFile');
@@ -473,7 +473,7 @@ class LorisForms_Test extends TestCase
     function testAddElementPassword()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addPassword'])
+            ->addMethods(['addPassword'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addPassword');
@@ -490,7 +490,7 @@ class LorisForms_Test extends TestCase
     function testAddElementStatic()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addStatic'])
+            ->addMethods(['addStatic'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addStatic');
@@ -507,7 +507,7 @@ class LorisForms_Test extends TestCase
     function testAddElementTextArea()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addTextArea'])
+            ->addMethods(['addTextArea'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addTextArea');
@@ -524,7 +524,7 @@ class LorisForms_Test extends TestCase
     function testAddElementHeader()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addHeader'])
+            ->addMethods(['addHeader'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addHeader');
@@ -541,7 +541,7 @@ class LorisForms_Test extends TestCase
     function testAddElementRadio()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addRadio'])
+            ->addMethods(['addRadio'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addRadio');
@@ -558,7 +558,7 @@ class LorisForms_Test extends TestCase
     function testAddElementHidden()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addHidden'])
+            ->addMethods(['addHidden'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addHidden');
@@ -575,7 +575,7 @@ class LorisForms_Test extends TestCase
     function testAddElementLink()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['addLink'])
+            ->addMethods(['addLink'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('addLink');
@@ -637,7 +637,7 @@ class LorisForms_Test extends TestCase
     function testCreateElementText()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['createText'])
+            ->addMethods(['createText'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('createText');
@@ -654,7 +654,7 @@ class LorisForms_Test extends TestCase
     function testCreateElementSelect()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['createSelect'])
+            ->addMethods(['createSelect'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('createSelect');
@@ -671,7 +671,7 @@ class LorisForms_Test extends TestCase
     function testCreateElementSubmit()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['createSubmit'])
+            ->addMethods(['createSubmit'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('createSubmit');
@@ -1002,7 +1002,7 @@ class LorisForms_Test extends TestCase
             'format'  => 'y'
         ];
         $this->form     = $this->getMockBuilder('LorisForm')
-            ->setMethods(['yearHTML'])
+            ->addMethods(['yearHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('yearHTML')
@@ -1318,7 +1318,7 @@ class LorisForms_Test extends TestCase
         ];
 
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['advCheckboxHTML'])
+            ->addMethods(['advCheckboxHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('advCheckboxHTML');
@@ -1980,7 +1980,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementDate()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['dateHTML'])
+            ->addMethods(['dateHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('dateHTML');
@@ -1998,7 +1998,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementSelect()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['selectHTML'])
+            ->addMethods(['selectHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('selectHTML');
@@ -2016,7 +2016,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementStatic()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['staticHTML'])
+            ->addMethods(['staticHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('staticHTML');
@@ -2034,7 +2034,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementTextArea()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['textareaHTML'])
+            ->addMethods(['textareaHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('textareaHTML');
@@ -2052,7 +2052,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementFile()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['fileHTML'])
+            ->addMethods(['fileHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('fileHTML');
@@ -2070,7 +2070,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementPassword()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['textHTML'])
+            ->addMethods(['textHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('textHTML');
@@ -2088,7 +2088,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementText()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['textHTML'])
+            ->addMethods(['textHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('textHTML');
@@ -2106,7 +2106,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementCheckbox()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['checkboxHTML'])
+            ->addMethods(['checkboxHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('checkboxHTML');
@@ -2124,7 +2124,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementRadio()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['radioHTML'])
+            ->addMethods(['radioHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('radioHTML');
@@ -2142,7 +2142,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementGroup()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['groupHTML'])
+            ->addMethods(['groupHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('groupHTML');
@@ -2161,7 +2161,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementHeader()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['headerHTML'])
+            ->addMethods(['headerHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('headerHTML');
@@ -2179,7 +2179,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementSubmit()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['submitHTML'])
+            ->addMethods(['submitHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('submitHTML');
@@ -2197,7 +2197,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementHidden()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['hiddenHTML'])
+            ->addMethods(['hiddenHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('hiddenHTML');
@@ -2215,7 +2215,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementTime()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['timeHTML'])
+            ->addMethods(['timeHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('timeHTML');
@@ -2239,7 +2239,7 @@ class LorisForms_Test extends TestCase
     function testRenderElementLink()
     {
         $this->form = $this->getMockBuilder('LorisForm')
-            ->setMethods(['linkHTML'])
+            ->addMethods(['linkHTML'])
             ->getMock();
         $this->form->expects($this->once())
             ->method('linkHTML');

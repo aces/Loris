@@ -124,13 +124,13 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -139,7 +139,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockConfig;
     /**
@@ -147,7 +147,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
     /**
@@ -182,7 +182,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -243,7 +243,7 @@ class UtilityTest extends TestCase
      */
     public function testGetConsentList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectWithIndexKey')
             ->willReturn($this->_consentInfo);
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
@@ -257,7 +257,7 @@ class UtilityTest extends TestCase
      */
     public function testGetProjectList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
@@ -825,7 +825,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
@@ -882,7 +882,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithNameSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectRow')
             ->willReturn(
                 [
@@ -910,7 +910,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
