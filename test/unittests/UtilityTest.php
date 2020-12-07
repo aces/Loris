@@ -500,25 +500,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getSubprojectIDUsingCandID() returns
-     * the correct SubprojectID given the CandID
-     *
-     * @covers Utility::getSubprojectIDUsingCandID
-     * @return void
-     */
-    public function testGetSubprojectIDUsingCandID()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn($this->_sessionInfo);
-
-        $this->assertEquals(
-            '2',
-            Utility::getSubprojectIDUsingCandID('1')
-        );
-    }
-
-    /**
      * Test that getVisitList returns a list of visit labels
      * This is the simplest case of this function
      * TODO Potential edge cases: Set 'Active' to 'N'

@@ -598,6 +598,74 @@ class CandidateTest extends TestCase
     }
 
     /**
+     * Test getSubprojectForMostRecentVisit returns most recent visit's label
+     *
+     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @return void
+     */
+    public function testGetSubprojectForMostRecentVisitReturnsMostRecentVisitLabel()
+    {
+        $subproject = [
+            [
+                'SubprojectID' => 1,
+                'title'        => 'testSubproject'
+            ]
+        ];
+
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "SELECT SubprojectID, title"
+                )
+            )
+            ->willReturn(
+                $subproject
+            );
+
+        $expectedSubproject = [
+            'SubprojectID' => 1,
+            'title'        => 'testSubproject'
+        ];
+
+        $this->assertEquals(
+            $expectedSubproject,
+            $this->_candidate->getSubprojectForMostRecentVisit()
+        );
+    }
+
+    /**
+     * Test getSubprojectForMostRecentVisit returns null if there is
+     * no visit with a Date_visit
+     *
+     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @return void
+     */
+    public function testGetSubprojectForMostRecentVisitReturnsNull()
+    {
+        $subproject = [];
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->_dbMock->expects($this->any())
+            ->method('pselect')
+            ->with(
+                $this->stringContains(
+                    "SELECT SubprojectID, title"
+                )
+            )
+            ->willReturn($subproject);
+
+        $this->assertEquals(
+            null,
+            $this->_candidate->getSubprojectForMostRecentVisit()
+        );
+    }
+
+    /**
      * Test getFirstVisit returns first visit's label
      *
      * @covers Candidate::getFirstVisit
