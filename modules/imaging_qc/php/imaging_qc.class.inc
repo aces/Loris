@@ -125,7 +125,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
             " CASE
-              WHEN f2.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
+              WHEN f.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
@@ -151,7 +151,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         JOIN session s ON (f.SessionID=s.ID)
         JOIN candidate c ON (s.CandID=c.CandID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-        LEFT JOIN flag f2 ON (f2.CommentID=m.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.AcquisitionProtocolID=".$acqID.")
@@ -303,8 +302,6 @@ class Imaging_QC extends \NDB_Menu_Filter
                     $scans_done[$scan_type],
                     $acq_IDs[$scan_type]
                 );
-
-            print_r($scan_types[$scan_type]);
         }
 
         $query = implode(
