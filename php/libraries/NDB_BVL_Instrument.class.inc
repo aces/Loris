@@ -1616,8 +1616,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Complete' or 'Incomplete'<br>\n"
             );
         }
-
-        $this->update(
+        $DB  = Database::singleton();
+        $DB->update(
             "flag",
             ["Data_entry_completion_status" => $status],
             $this->getCommentID()
