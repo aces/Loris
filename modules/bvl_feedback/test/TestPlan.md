@@ -2,15 +2,15 @@
 
 1. Behavioural feedback button should show up on the following pages:
  * Candidate Profile  
- To find the Candiadate profile, first navigate to 'Access Profile', then select the specific Candidate profile from the list.  
+ To find the Candidate profile, first navigate to 'Access Profile', then select the specific Candidate profile from the list.  
  ![image](images/candidate_list.PNG)  
  * Instrument List  
- To find an instrument, first navigate to a specific Candidate Profile, then click on a specific Visit Label.  
+ Feedback on a whole Visit is accessed via the Instrument List page - click the pencil icon in the blue menu bar.  
  ![image](images/visit_label.PNG)  
- A list of Intruments shall be found in this page as shown below.  
+ A list of Instruments is found in this page as shown below.    
  ![image](images/instrument_list.PNG)  
  * Any instrument [Automation Test]   
- *Note: The feedback button has the notepad icon in the toolbar as shown below.*  
+ *Note: The feedback button is represented by the notepad icon in the menu as shown below.*  
  ![image](images/feedback_icon.PNG)  
 2. Remove 'bvl_feedback' permission by unchecking 'Behavioural QC' in the User Accounts module. Behavioural feedback button should no longer appear.
 3. Click on the behavioural feedback button. A slide-out panel should appear on the right-hand side with the following:
