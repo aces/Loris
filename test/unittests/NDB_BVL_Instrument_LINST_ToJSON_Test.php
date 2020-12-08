@@ -32,7 +32,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->onlyMethods(
+        $this->Session = $this->getMockBuilder(\stdClass::class)->addMethods(
             [
                 'getProperty',
                 'setProperty',
