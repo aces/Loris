@@ -611,8 +611,10 @@ class CandidateTest extends TestCase
                 'title'        => 'testSubproject'
             ]
         ];
+        $this->_dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn($this->_candidateInfo);
 
-        $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->_dbMock->expects($this->any())
@@ -647,7 +649,10 @@ class CandidateTest extends TestCase
     public function testGetSubprojectForMostRecentVisitReturnsNull()
     {
         $subproject = [];
-        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_dbMock->expects($this->once())
+            ->method('pselectRow')
+            ->willReturn($this->_candidateInfo);
+
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         $this->_dbMock->expects($this->any())
