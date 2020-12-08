@@ -174,7 +174,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['update']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['update']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
@@ -199,7 +199,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['unsafeupdate']))
+            ->onlyMethods($this->_getAllMethodsExcept(['unsafeupdate']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -225,7 +225,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['insert']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
@@ -250,7 +250,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['unsafeinsert']))
+            ->onlyMethods($this->_getAllMethodsExcept(['unsafeinsert']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -781,7 +781,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods(
+            ->onlyMethods(
                 $this->_getAllMethodsExcept(['insertOnDuplicateUpdate'])
             )
             ->getMock();
@@ -812,7 +812,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods(
+            ->onlyMethods(
                 $this->_getAllMethodsExcept(['unsafeInsertOnDuplicateUpdate'])
             )
             ->getMock();
@@ -876,7 +876,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['run']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
@@ -896,7 +896,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
@@ -1013,7 +1013,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
 
         $stmt   = $stub->prepare("SHOW TABLES");
         $params = ['test' => 'test'];
@@ -1068,7 +1068,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['pselectRow']))
+            ->onlyMethods($this->_getAllMethodsExcept(['pselectRow']))
             ->getMock();
 
         $query  = "SELECT ID, Name, Description, Visible FROM ConfigSettings";
@@ -1314,7 +1314,7 @@ class Database_Test extends TestCase
         );
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['insertIgnore']))
+            ->onlyMethods($this->_getAllMethodsExcept(['insertIgnore']))
             ->getMock();
 
         $table = "ConfigSettings";
@@ -1580,7 +1580,7 @@ class Database_Test extends TestCase
 
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['quote']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['quote']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1612,7 +1612,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['inTransaction']))
+            ->onlyMethods($this->_getAllMethodsExcept(['inTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1633,7 +1633,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['beginTransaction']))
+            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1654,7 +1654,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['beginTransaction']))
+            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
@@ -1674,7 +1674,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1693,7 +1693,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1712,7 +1712,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['commit']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1731,7 +1731,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['commit']))->getMock();
+            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
 
@@ -1750,7 +1750,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['isConnected']))
+            ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
 
         $val = $stub->isConnected();
@@ -1767,7 +1767,7 @@ class Database_Test extends TestCase
     {
         $this->_factory = NDB_Factory::singleton();
         $stub           = $this->getMockBuilder('FakeDatabase')
-            ->addMethods($this->_getAllMethodsExcept(['isConnected']))
+            ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();

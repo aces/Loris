@@ -53,9 +53,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         }
         date_default_timezone_set("UTC");
         $this->session = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(
-                ['getProperty', 'setProperty', 'getUsername', 'isLoggedIn']
-            )
+            ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
             ->getMock();
         $this->mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
@@ -80,7 +78,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->addMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
         $this->_instrument->method('getSubtestList')->willReturn([]);
         $this->_instrument->form     = $this->quickForm;
@@ -842,9 +840,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->addMethods(
-                ["getFullName", "getSubtestList", '_setupForm']
-            )->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList"]
+            )->addMethods(['_setupForm'])->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
         $this->_instrument->method('getSubtestList')->willReturn(
             [
@@ -1618,7 +1616,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument            = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->addMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
