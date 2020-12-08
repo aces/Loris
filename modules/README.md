@@ -1,4 +1,4 @@
-### This directory contains all modules for Loris. only for test ignore me.
+### This directory contains all modules for Loris.
 
 Modules should be entirely self-contained into a subdirectory with the following structure:
 
