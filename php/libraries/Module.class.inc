@@ -527,4 +527,19 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $renderer->assign($tpl_data);
         return $renderer->fetch($template);
     }
+
+    /**
+     * Return a data dictionary of data types managed by this module.
+     * DictionaryItems are grouped into categories and a module may
+     * provide 0 or more categories of dictionaryitems.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
+     *                                    dictionary should be retrieved.
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        return [];
+    }
 }
