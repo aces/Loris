@@ -741,7 +741,7 @@ class NDB_Page implements RequestHandlerInterface
         \User $user, ServerRequestInterface $request
     ) : void {
     }
-    :
+
     /**
      * Displays the form
      *
