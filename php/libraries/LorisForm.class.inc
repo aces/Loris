@@ -1601,9 +1601,15 @@ class LorisForm
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+        /// XXX: There seems to be a problem when using &nbsp; to separate the
+        //  checkbox from the label. Both Firefox and Chrome will still put a
+        //  linebreak between the space and the checkbox. Instead, we wrap it
+        //  in a <nobr> tag which avoids the label from being separated from the
+        //  label. We don't wrap the whole label in it because if it's a long label
+        //  it's still allowed to have linebreaks.
+        return "<nobr><input name=\"$el[name]\" type=\"checkbox\" $checked $value "
             . "$disabled/>"
-            . " $el[label]";
+            . " </nobr>$el[label]";
     }
 
     /**
