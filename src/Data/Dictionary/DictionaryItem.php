@@ -17,7 +17,7 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     protected $name;
     protected $description;
     protected $scope;
-    protected $typ;
+    protected $type;
 
     /**
      * Construct a DictionaryItem with the given parameters
@@ -39,7 +39,7 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
         $this->name        = $name;
         $this->description = $desc;
         $this->scope       = $scope;
-        $this->typ         = $t;
+        $this->type         = $t;
         $this->cardinality = $c;
     }
 
@@ -82,7 +82,7 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
      */
     public function getDataType() : \LORIS\Data\Type
     {
-        return $this->typ;
+        return $this->type;
     }
 
     /**
