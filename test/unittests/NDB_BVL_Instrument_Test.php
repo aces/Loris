@@ -109,8 +109,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+
         $instrument->method('getFullName')->willReturn("Test Instrument");
         $instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $instrument';
         $instrument->form     = $this->quickForm;
