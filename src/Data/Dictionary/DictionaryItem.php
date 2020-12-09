@@ -39,7 +39,7 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
         $this->name        = $name;
         $this->description = $desc;
         $this->scope       = $scope;
-        $this->type         = $t;
+        $this->type        = $t;
         $this->cardinality = $c;
     }
 
