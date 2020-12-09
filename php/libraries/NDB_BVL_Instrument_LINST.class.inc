@@ -582,12 +582,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new StringType(255),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
+                        $pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new StringType(255),
+                        new Cardinality(Cardinality::SINGLE),
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -607,12 +607,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new StringType(),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
+                        $pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new StringType(),
+                        new Cardinality(Cardinality::SINGLE),
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
