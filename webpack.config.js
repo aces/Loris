@@ -229,6 +229,7 @@ const config = [
     'onLoad',
     'candidateListIndex',
   ]),
+  lorisModule('datadict', ['dataDictIndex']),
   lorisModule('data_release', [
     'dataReleaseIndex',
   ]),
@@ -240,6 +241,7 @@ const config = [
     'react.sidebar',
     'react.tabs',
   ]),
+  lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [
     'components/expansionpanels',
     'components/searchabledropdown',
@@ -288,8 +290,6 @@ const config = [
   lorisModule('server_processes_manager', ['server_processes_managerIndex']),
   lorisModule('instruments', ['CandidateInstrumentList']),
   lorisModule('candidate_profile', ['CandidateInfo']),
-  lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('dictionary', ['dataDictIndex']),
 ];
 
 // Support project overrides
