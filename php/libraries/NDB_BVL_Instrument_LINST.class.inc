@@ -471,8 +471,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             if (!isset($this->form)) {
                 $this->form = new \LorisForm();
             }
-            $this->dateTimeFields = ["Date_taken"];
-            $this->formType       = 'XIN';
+            $this->formType = 'XIN';
 
             $this->form->addFormRule([&$this, 'XINValidate']);
             $fp = fopen($filename, "r");
@@ -577,26 +576,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $Group['Elements'] = [];
                     }
                     break;
-
                 case 'begintable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
-                    break;
                 case 'endtable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
+                    error_log(
+                        "DEPRECATION MESSAGE: The use of `begintable` and ".
+                        "`endtable` elements of LINST instruments has is no longer ".
+                        "necessary. The $this->testName LINST instrument should ".
+                        "be modified to remove these elements as they will be ".
+                        "completely deprecated in a future version of LORIS"
+                    );
                     break;
                 case 'text':
                     if ($addElements) {
