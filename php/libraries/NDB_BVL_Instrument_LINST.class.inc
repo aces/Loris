@@ -11,6 +11,14 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
+use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\Data\Scope;
+use \LORIS\Data\Cardinality;
+
+use \LORIS\Data\Types\StringType;
+use \LORIS\Data\Types\IntegerType;
+use \LORIS\Data\Types\Enumeration;
+use \LORIS\Data\Types\DateType;
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -30,8 +38,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     public $LinstLines = [];
 
     protected $subtests = [];
-
     protected $fullName;
+    protected $dictionary = [];
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -388,6 +396,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     function loadInstrumentFile(string $filename, bool $base64 = false): void
     {
+        $scope = new Scope(Scope::SESSION);
+
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
 
@@ -459,8 +469,49 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $subtestCount++;
                     break;
                 case 'table':
-                    $this->testName = trim($pieces[1]);
-                    $this->table    = trim($pieces[1]);
+                    $this->testName     = trim($pieces[1]);
+                    $this->table        = trim($pieces[1]);
+                    $this->dictcategory = new \LORIS\Data\Dictionary\Category(
+                        $this->testName,
+                        $this->getFullName()
+                    );
+
+                    // Now that we have the category, add things that are added by
+                    // addMetaDatafields() but aren't in the .linst file
+                    $this->dictionary = array_merge(
+                        $this->dictionary,
+                        [
+                            new DictionaryItem(
+                                'Date_taken',
+                                'Date of Administration',
+                                $scope,
+                                new \LORIS\Data\Types\DateType(),
+                                new Cardinality(Cardinality::SINGLE),
+                            ),
+                            new DictionaryItem(
+                                'Candidate_age',
+                                'Candidate Age (Months)',
+                                $scope,
+                                new \LORIS\Data\Types\Interval(),
+                                new Cardinality(Cardinality::SINGLE),
+                            ),
+                            new DictionaryItem(
+                                'Window_Difference',
+                                'Window difference from test battery (days)',
+                                $scope,
+                                new \LORIS\Data\Types\Interval(),
+                                new Cardinality(Cardinality::SINGLE),
+                            ),
+                            new DictionaryItem(
+                                'Examiner',
+                                'Examiner',
+                                $scope,
+                                // Should this be an enum of examiners?
+                                new StringType(255),
+                                new Cardinality(Cardinality::SINGLE),
+                            ),
+                        ]
+                    );
                     break;
                 case 'title':
                     $this->fullName = $pieces[1];
@@ -530,6 +581,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $scope,
+                            new StringType(255),
+                            new Cardinality(Cardinality::SINGLE),
+                        );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -548,6 +606,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $scope,
+                            new StringType(),
+                            new Cardinality(Cardinality::SINGLE),
+                        );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
@@ -569,6 +634,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             ];
                         }
 
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $scope,
+                            new DateType(),
+                            new Cardinality(Cardinality::SINGLE),
+                        );
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
@@ -622,6 +694,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'numeric':
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $scope,
+                            new IntegerType(),
+                            new Cardinality(Cardinality::SINGLE),
+                        );
                     }
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
@@ -643,8 +722,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->selectMultipleElements[] = $pieces[1];
                     // fall through and also execute select code below
                 case 'select':
-                    $options = preg_split("/{-}/", trim($pieces[3]));
-                    $opt     = [];
+                    $options  = preg_split("/{-}/", trim($pieces[3]));
+                    $opt      = [];
+                    $dictopts = [];
 
                     foreach ($options as $o) {
                         $arr = explode("=>", $o);
@@ -657,6 +737,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                         if ($val[0] == "'" && $val[strlen($val)-1] == "'") {
                             $val = substr($val, 1, -1);
+                        }
+
+                        if ($key !== '') {
+                            $dictopts[] = $key;
                         }
                         $opt[$key] = $val;
                     }
@@ -705,6 +789,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
+
+                    $t  = new Enumeration(...$dictopts);
+                    $it = new DictionaryItem(
+                        $pieces[1],
+                        $pieces[2],
+                        $scope,
+                        $t,
+                        new Cardinality(Cardinality::SINGLE)
+                    );
+                    $this->dictionary[] = $it;
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'select'];
                     break;
                 case 'header':
@@ -732,7 +826,18 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         }
                     }
-                    $this->LinstQuestions[$pieces[1]] = ['type' => 'score'];
+                    if (!empty($pieces[1])) {
+                        $this->LinstQuestions[$pieces[1]]
+                            = ['type' => 'score'];
+
+                        $this->dictionary[] = new DictionaryItem(
+                            $pieces[1],
+                            $pieces[2],
+                            $scope,
+                            new StringType(255),
+                            new Cardinality(Cardinality::SINGLE)
+                        );
+                    }
                     break;
                 default:
                     break;
@@ -958,6 +1063,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     public function getFullName(): ?string
     {
         return $this->fullName;
+    }
+
+    /*
+     * Returns the dictionary for this instrument.
+     *
+     * @return \LORIS\Data\Dictionary\DictionaryItem[]
+     */
+    public function getDataDictionary() : iterable
+    {
+         return $this->dictionary;
     }
 
     /**
