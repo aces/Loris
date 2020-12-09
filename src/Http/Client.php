@@ -15,7 +15,7 @@
 */
 namespace LORIS\Http;
 
-use \Http\Adapter\Guzzle6\Client as GuzzleClient;
+use \GuzzleHttp\Client as GuzzleClient;
 use \Psr\Http\Client\ClientInterface;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
