@@ -284,7 +284,9 @@ class Module extends \Module
                     "Subproject",
                     "The LORIS subproject used for battery selection",
                     $sesscope,
-                    new \LORIS\Data\Types\StringType(255),
+                    new \LORIS\Data\Types\Enumeration(
+                        ...array_values(\Utility::getSubprojectList())
+                    ),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
