@@ -78,7 +78,7 @@ trait LorisFormDictionaryImpl
                     $keys[] = "$key";
                 }
                 if (array_key_exists('multiple', $element)) {
-                    $card = new Cardinality(Cardinality::MULTIPLE);
+                    $card = new Cardinality(Cardinality::MANY);
                 }
 
                 $t = new \LORIS\Data\Types\Enumeration(...$keys);

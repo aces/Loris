@@ -791,7 +791,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
 
                     if ($type == 'multiple') {
-                        $cardinality = new Cardinality(Cardinality::MULTIPLE);
+                        $cardinality = new Cardinality(Cardinality::MANY);
                     } else {
                         $cardinality = new Cardinality(Cardinality::SINGLE);
                     }
