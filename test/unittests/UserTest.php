@@ -1117,7 +1117,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertTrue($this->_user->hasCenterPermission("test", 1));
+        $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
     }
 
     /**

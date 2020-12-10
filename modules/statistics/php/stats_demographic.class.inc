@@ -68,7 +68,7 @@ class Stats_Demographic extends \NDB_Form
      * @param array   $subcats          the value of subcats
      * @param ?array  $visits           the value of visits
      * @param string  $dropdownName     the value of dropdownName
-     * @param string  $dropdownOpt      the value of dropdownOpt
+     * @param array   $dropdownOpt      the value of dropdownOpt
      * @param string  $dropdownSelected the value of dropdownSelected
      * @param array   $centers          the value of centers
      * @param array   $data             the value of data

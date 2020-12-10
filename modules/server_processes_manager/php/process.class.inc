@@ -34,7 +34,7 @@ class Process
     /**
      * Unix PID
      *
-     * @var int
+     * @var ?int
      */
     private $_pid;
 
@@ -197,7 +197,7 @@ class Process
     /**
      * Accessor for field $_pid
      *
-     * @return int value of field $_pid
+     * @return ?int value of field $_pid
      */
     function getPid()
     {

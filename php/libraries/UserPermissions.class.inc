@@ -25,7 +25,7 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    int
+     * @var    string
      * @access private
      */
     var $userID;

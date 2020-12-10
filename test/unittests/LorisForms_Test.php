@@ -65,9 +65,8 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that the label of an element
      * is correct
      *
-     * @param string $el    The element name
-     * @param string $label The expected type of this element
-     *                      (ie select, checkbox, etc)
+     * @param string  $el    The element name
+     * @param ?string $label The expected label for this element
      *
      * @return void but makes assertions
      */
@@ -88,10 +87,10 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that some attribute of an element
      * is correct
      *
-     * @param string $el          The element name
-     * @param string $attribute   The attribute name to assert
-     *                            (ie class, id, value, etc)
-     * @param string $attribValue The expected content of the attribute
+     * @param string       $el          The element name
+     * @param string       $attribute   The attribute name to assert
+     *                                  (ie class, id, value, etc)
+     * @param string|array $attribValue The expected content of the attribute
      *
      * @return void but makes assertions
      */
