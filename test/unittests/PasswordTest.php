@@ -84,8 +84,6 @@ class PasswordTest extends TestCase
             ['johnnyloris'],
             // Should fail for obvious reasons
             ['password'],
-            // Should fail for using a recent year
-            ['Spring2016!'],
             // Should fail for using just a few simple English words
             ['i am cool'],
             // Should fail for common L33T substitutions
