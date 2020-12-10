@@ -33,8 +33,8 @@ trait LorisFormDictionaryImpl
     ) : array {
         $items = [];
         $scope = new Scope(Scope::SESSION);
-        $card  = new Cardinality(Cardinality::SINGLE);
         foreach ($elements AS $element) {
+            $card  = new Cardinality(Cardinality::SINGLE);
             if (!empty($element['label'])) {
                 $label = str_replace("&nbsp;", "", $element['label']);
                 $label = trim(preg_replace('/\s+/', ' ', $label));
@@ -77,6 +77,10 @@ trait LorisFormDictionaryImpl
                     // Coerce it to a string
                     $keys[] = "$key";
                 }
+                if (array_key_exists('multiple', $element)) {
+                    $card  = new Cardinality(Cardinality::MULTIPLE);
+                }
+
                 $t = new \LORIS\Data\Types\Enumeration(...$keys);
                 break;
             case 'text':
