@@ -1402,8 +1402,8 @@ class LorisForms_Test extends TestCase
         $this->form->addElement(
             'advcheckbox',
             "abc",
-            "text",
             "Hello",
+            "text",
             $testAttributes,
             $testCheckStates
         );
