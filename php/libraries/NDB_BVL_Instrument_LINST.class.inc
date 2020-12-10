@@ -790,13 +790,19 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $firstFieldOfPage          = false;
                     }
 
+                    if ($type == 'multiple') {
+                        $cardinality = new Cardinality(Cardinality::MULTIPLE);
+                    } else {
+                        $cardinality = new Cardinality(Cardinality::SINGLE);
+                    }
+
                     $t  = new Enumeration(...$dictopts);
                     $it = new DictionaryItem(
                         $pieces[1],
                         $pieces[2],
                         $scope,
                         $t,
-                        new Cardinality(Cardinality::SINGLE)
+                        $cardinality,
                     );
                     $this->dictionary[] = $it;
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'select'];
