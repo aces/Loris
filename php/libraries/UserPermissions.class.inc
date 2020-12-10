@@ -25,7 +25,7 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    int
+     * @var    string
      * @access private
      */
     var $userID;
@@ -54,7 +54,7 @@ class UserPermissions
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = ['UName' => $username];
 
-        $this->userID = \Database::singleton()->pselectOneInt($query, $params);
+        $this->userID = \Database::singleton()->pselectOne($query, $params);
         if (empty($this->userID)) {
             return false;
         }

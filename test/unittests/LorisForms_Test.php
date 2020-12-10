@@ -1403,6 +1403,7 @@ class LorisForms_Test extends TestCase
             'advcheckbox',
             "abc",
             "text",
+            "Hello",
             $testAttributes,
             $testCheckStates
         );
