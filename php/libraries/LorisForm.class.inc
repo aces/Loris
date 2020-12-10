@@ -1000,6 +1000,9 @@ class LorisForm
     {
         $attributes = '';
         foreach ($el as $key=>$value) {
+            if ($key=='label' && $value == '') {
+                continue;
+            }
             if ($key=='type') {
                 $value = $type;
             }
