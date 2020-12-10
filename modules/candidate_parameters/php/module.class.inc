@@ -223,7 +223,10 @@ class Module extends \Module
                     "Project Candidate Identifier",
                     $candscope,
                     new \LORIS\Data\Types\StringType(255),
-                    new Cardinality(Cardinality::UNIQUE),
+                    // PSCIDs aren't unique because scanners candidates
+                    // share the same PSCID, but each candidate has
+                    // a single PSCID..
+                    new Cardinality(Cardinality::SINGLE),
                 ),
             ]
         );
@@ -272,7 +275,9 @@ class Module extends \Module
                     "Project",
                     "The LORIS project to categorize this session",
                     $sesscope,
-                    new \LORIS\Data\Types\StringType(255),
+                    new \LORIS\Data\Types\Enumeration(
+                        ...array_values(\Utility::getProjectList())
+                    ),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
