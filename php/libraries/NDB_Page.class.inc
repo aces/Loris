@@ -352,7 +352,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string  $name    The name of the hidden element to add
      * @param ?string $value   The value of the hidden element to add
-     * @param array  $attribs  Additional html attributes for element
+     * @param array   $attribs Additional html attributes for element
      *
      * @return void
      */
@@ -415,9 +415,9 @@ class NDB_Page implements RequestHandlerInterface
      * Adds a QuickForm rule to an element on the page.
      *
      * @param string|array $element The name of the element to have the rule
-     * @param string $message The message to show on failure
-     * @param string $type    The type of rule to add
-     * @param string $format  See QuickForm documentation.
+     * @param string       $message The message to show on failure
+     * @param string       $type    The type of rule to add
+     * @param string       $format  See QuickForm documentation.
      *
      * @return void
      *

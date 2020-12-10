@@ -370,8 +370,8 @@ class NDB_BVL_Feedback
      * candidate/timepoint/instrument
      *
      * @param boolean $select_inactive_threads If true returns inactive
-     *                                        threads, otherwise only returns
-     *                                        active threads
+     *                                         threads, otherwise only returns
+     *                                         active threads
      *
      * @return ?string the higest-order status of an active thread
      */

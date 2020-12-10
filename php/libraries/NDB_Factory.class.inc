@@ -399,9 +399,9 @@ class NDB_Factory
      */
     public function settings(string $configfile = "../project/config.xml"): \Settings
     {
-        // self::$_settings needs to be put into a simple var because of phan/phan#4169,
-        // otherwise we get a false positive warning about how it may be null inside of
-        // the if.
+        // self::$_settings needs to be put into a simple var because of
+        // phan/phan#4169, otherwise we get a false positive warning about
+        // how it may return null inside of the if.
         $settings = self::$_settings;
         if ($settings !== null) {
             return $settings;

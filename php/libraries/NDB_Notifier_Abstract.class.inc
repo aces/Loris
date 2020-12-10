@@ -207,9 +207,9 @@ abstract class NDB_Notifier_Abstract
             return [];
         }
         $info_array          = [];
-        $info_array['ID']       = $result['ID'];
-        $info_array['name']     = $result['Real_name'];
-        $info_array['email']    = $result['Email'];
+        $info_array['ID']    = $result['ID'];
+        $info_array['name']  = $result['Real_name'];
+        $info_array['email'] = $result['Email'];
         $info_array['username'] = $result['UserID'];
         return $info_array;
     }

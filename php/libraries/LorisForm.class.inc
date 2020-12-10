@@ -1824,12 +1824,13 @@ class LorisForm
      *
      * Adds a rule to a group.
      *
-     * @param string        $group Form group name
-     * @param array|string  $arg1  Array for multiple elements
-     *                      or error message string for
-     *                      one element
-     * @param string $type  (optional) Rule type use
-     *                      getRegisteredRules() to get types
+     * @param string       $group Form group name
+     * @param array|string $arg1  Array for multiple elements
+     *                            or error message string for
+     *                            one element
+     * @param string       $type  (optional) Rule type use
+     *                            getRegisteredRules() to
+     *                            get types
      *
      * @return void
      */
@@ -1942,9 +1943,9 @@ class LorisForm
      * @param string       $elname  The name of the element to be added
      * @param string       $label   The label to attach to the element
      * @param array|string $options Element specific options to pass
-     *                        to create* wrappers
+     *                              to create* wrappers
      * @param array        $attribs An array of extra HTML attributes to
-     *                        add to the element.
+     *                              add to the element.
      * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return array of the form supported by $this->form

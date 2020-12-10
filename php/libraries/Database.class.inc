@@ -614,9 +614,9 @@ class Database
      */
     function delete(string $table, array $where): void
     {
-        $query  = "DELETE FROM $table WHERE ";
-        $wherestr  = $this->_implodeWithKeys(' AND ', $where, 'where_');
-        $query .= $wherestr;
+        $query    = "DELETE FROM $table WHERE ";
+        $wherestr = $this->_implodeWithKeys(' AND ', $where, 'where_');
+        $query   .= $wherestr;
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
