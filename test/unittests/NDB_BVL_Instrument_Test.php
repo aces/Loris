@@ -762,12 +762,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         // that the serialization won't die on a 0 element "section"
         $this->_instrument->form->addElement(
             "header",
-            null,
+            '',
             "I am your test header"
         );
         $this->_instrument->form->addElement(
             "header",
-            null,
+            '',
             "I am another test header"
         );
         $this->_instrument->addScoreColumn(

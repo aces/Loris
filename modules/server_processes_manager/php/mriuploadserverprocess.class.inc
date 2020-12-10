@@ -74,21 +74,21 @@ class MriUploadServerProcess extends AbstractServerProcess
     /**
      * Builds a new MriUploadServerProcess
      *
-     * @param int    $mriUploadId    MRI upload ID
-     * @param string $sourceLocation location of the MRI scan.
-     * @param int    $id             ID of the process in the database.
-     * @param int    $pid            PID for this process
-     * @param string $stdoutFile     full path of file used to store the process's
+     * @param ?int     $mriUploadId    MRI upload ID
+     * @param string  $sourceLocation location of the MRI scan.
+     * @param ?int    $id             ID of the process in the database.
+     * @param ?int    $pid            PID for this process
+     * @param ?string $stdoutFile     full path of file used to store the process's
      *                               stdout
-     * @param string $stderrFile     full path of file used to store the process's
+     * @param ?string $stderrFile     full path of file used to store the process's
      *                               stderr
-     * @param string $exitCodeFile   full path of file used to store the process's
+     * @param ?string $exitCodeFile   full path of file used to store the process's
      *                               exit code
-     * @param int    $exitCode       process's exit code
-     * @param string $userid         ID of the user who launched the process
-     * @param string $startTime      time at which the process was started
-     * @param string $endTime        time at which the process ended
-     * @param string $exitText       result of the process in text form
+     * @param ?int    $exitCode       process's exit code
+     * @param ?string $userid         ID of the user who launched the process
+     * @param ?string $startTime      time at which the process was started
+     * @param ?string $endTime        time at which the process ended
+     * @param ?string $exitText       result of the process in text form
      */
     public function __construct($mriUploadId, $sourceLocation,
         $id = null, $pid = null, $stdoutFile = null, $stderrFile = null,

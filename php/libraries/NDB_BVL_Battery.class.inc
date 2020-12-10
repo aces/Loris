@@ -408,7 +408,7 @@ class NDB_BVL_Battery
      *                              battery for. If this is specified the lookup
      *                              will use it as an ADDITIONAL condition to
      *                              $age/$visit_label.
-     * @param boolean $firstVisit   (optional) Whether or not we want the battery
+     * @param ?boolean $firstVisit  (optional) Whether or not we want the battery
      *                              for the first visit of the candidate. If this
      *                              is true, it will get instruments for the first
      *                              visit. If false, it will only get instruments

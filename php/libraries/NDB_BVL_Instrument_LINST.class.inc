@@ -491,10 +491,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $groupLabel = $pieces[2];
                         $this->addGroup(
                             $Group['Elements'],
-                            $Group['Name'],
+                            $Group['Name'] ?? '',
                             $groupLabel,
                             $Group['Delimiter'],
-                            false
                         );
 
                         $Group['Name']     = null;
@@ -506,7 +505,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->form->addElement(
                             'static',
-                            null,
+                            '',
                             "</td></tr></table><table><tr><td>&nbsp;",
                             ""
                         );
@@ -516,7 +515,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->form->addElement(
                             'static',
-                            null,
+                            '',
                             "</td></tr></table><table><tr><td>&nbsp;",
                             ""
                         );
@@ -663,7 +662,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                         $pieces[1],
                                         $pieces[2],
                                         $opt,
-                                        "multiple"
+                                        [ "multiple" => "multiple" ]
                                     );
                             } else {
                                 $Group['Elements'][]
@@ -702,7 +701,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'header':
                     if ($addElements) {
-                        $this->form->addElement('header', null, "$pieces[2]");
+                        $this->form->addElement('header', '', "$pieces[2]");
                     }
                     break;
                 case 'static':
@@ -714,7 +713,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 = $this->form->createElement(
                                     'static',
                                     $pieces[1],
-                                    null,
+                                    '',
                                     $pieces[2]
                                 );
                         } else {

@@ -369,7 +369,7 @@ class NDB_BVL_Feedback
      * This function returns the greatest type of active feedback for the
      * candidate/timepoint/instrument
      *
-     * @param string $select_inactive_threads If non-empty returns inactive
+     * @param boolean $select_inactive_threads If true returns inactive
      *                                        threads, otherwise only returns
      *                                        active threads
      *

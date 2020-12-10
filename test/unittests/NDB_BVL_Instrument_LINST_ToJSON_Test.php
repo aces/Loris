@@ -88,7 +88,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      */
     function _getAllMethodsExcept($methods)
     {
-        $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
+        $AllMethods = get_class_methods(
+            '\Loris\Behavioural\NDB_BVL_Instrument_LINST'
+        );
 
         return array_diff($AllMethods, $methods);
     }

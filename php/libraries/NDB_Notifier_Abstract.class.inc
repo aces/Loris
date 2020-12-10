@@ -66,7 +66,7 @@ abstract class NDB_Notifier_Abstract
     /**
      * Admin user issuing the notification (if applicable).
      *
-     * @var string
+     * @var array
      */
     private $_adminNotifier;
 
@@ -163,7 +163,9 @@ abstract class NDB_Notifier_Abstract
             $this->_asAdmin = ($nmInfo['as_admin'] === 'N') ? false : true;
         }
         if ($this->_asAdmin) {
-            $this->notifier =$this->_adminNotifier;
+            $this->notifier = \User::singleton(
+                $this->_adminNotifier['username']
+            );
         }
 
         //TEMPLATE File
@@ -198,16 +200,17 @@ abstract class NDB_Notifier_Abstract
     private function _getAdminUser(): array
     {
         $result = \Database::singleton()->pselectRow(
-            "SELECT ID, Real_name, Email FROM users WHERE UserID='admin'",
+            "SELECT ID, Real_name, Email, UserID FROM users WHERE UserID='admin'",
             []
         );
         if (is_null($result)) {
             return [];
         }
         $info_array          = [];
-        $info_array['ID']    = $result['ID'];
-        $info_array['name']  = $result['Real_name'];
-        $info_array['email'] = $result['Email'];
+        $info_array['ID']       = $result['ID'];
+        $info_array['name']     = $result['Real_name'];
+        $info_array['email']    = $result['Email'];
+        $info_array['username'] = $result['UserID'];
         return $info_array;
     }
 
