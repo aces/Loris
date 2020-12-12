@@ -24,36 +24,29 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $username = \User::singleton()->getUsername();
 
+if (isset($_POST['candID']) && !empty($_POST['candID'])) {
+    $candID    = new CandID($_POST['candID']);
+    $sessionID = null;
+    $commentID = null;
 
-if (isset($_POST['candID'])
-    && (!isset($_POST['sessionID']) || empty($_POST['sessionID']))
-) {
-    $candID         = new CandID($_POST['candID']);
-    $feedbackThread =& \NDB_BVL_Feedback::Singleton($username, $candID);
-} elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
-    && !(isset($_POST['commentID']))
-) {
-    $candID         = new CandID($_POST['candID']);
-    $feedbackThread =&
-        \NDB_BVL_Feedback::Singleton(
-            $username,
-            $candID,
-            new \SessionID($_POST['sessionID'])
-        );
-} elseif (isset($_POST['candID']) && isset($_POST['sessionID'])
-    && isset($_POST['commentID'])
-) {
-    $candID         = new CandID($_POST['candID']);
-    $feedbackThread =&
-        \NDB_BVL_Feedback::Singleton(
-            $username,
-            $candID,
-            new \SessionID($_POST['sessionID']),
-            $_POST['commentID']
-        );
+    if (isset($_POST['sessionID']) && !empty($_POST['sessionID'])) {
+        $sessionID = new \SessionID($_POST['sessionID']);
+    }
+
+    if (isset($_POST['commentID']) && !empty($_POST['commentID'])) {
+        $commentID = $_POST['commentID'];
+    }
+
+    $feedbackThread =& \NDB_BVL_Feedback::Singleton(
+        $username,
+        $candID,
+        $sessionID,
+        $commentID
+    );
 }
 
 $feedbackThreadList = $feedbackThread->getThreadList();
 echo json_encode($feedbackThreadList);
 
 exit();
+

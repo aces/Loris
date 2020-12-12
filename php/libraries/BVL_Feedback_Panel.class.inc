@@ -86,7 +86,7 @@ class BVL_Feedback_Panel
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
         $this->tpl_data['sessionID'] = isset($feedbackProfile["SessionID"]) ?
-            $feedbackProfile["SessionID"]->__toString() :
+            strval($feedbackProfile["SessionID"]) :
             null;
 
         $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
