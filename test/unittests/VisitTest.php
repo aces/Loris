@@ -50,7 +50,6 @@ class VisitTest extends TestCase
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
         $this->DB     = Database::singleton(

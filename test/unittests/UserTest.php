@@ -262,7 +262,6 @@ class UserTest extends TestCase
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
-        $this->_factory->setTesting(false);
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
         $database          = $this->_configMock->getSetting('database');
         $this->_dbMock     = \Database::singleton(
