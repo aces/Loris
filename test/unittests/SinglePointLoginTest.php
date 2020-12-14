@@ -25,6 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SinglePointLoginTest extends TestCase
 {
+    /** @var \SinglePointLogin */
     private $_login;
 
     /**
