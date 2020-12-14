@@ -36,7 +36,8 @@ class NDB_Factory_Test extends TestCase
     {
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
-        $this->_config  = \NDB_Config::singleton();
+        $this->_config  = \NDB_Config::singleton('../project/config.xml');
+
         $database       = $this->_config->getSetting('database');
         $this->_DB      = Database::singleton(
             $database['database'],
@@ -44,7 +45,6 @@ class NDB_Factory_Test extends TestCase
             $database['password'],
             $database['host'],
             true
-
         );
 
         $this->_factory->setDatabase($this->_DB);
