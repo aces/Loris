@@ -95,6 +95,9 @@ class Database_Test extends TestCase
             $database['host'],
             1
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
     }
 
     /**
