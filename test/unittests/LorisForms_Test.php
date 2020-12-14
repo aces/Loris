@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LorisForms_Test extends TestCase
 {
+    /** @var \LorisForm */
     protected $form;
 
     /**
@@ -2200,6 +2201,8 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $this->form->expects($this->once())
             ->method('hiddenHTML');
+
+        '@phan-var \LorisForm $this->form';
         $this->form->addElement("hidden", "abc", "Hello");
         $this->form->renderElement($this->form->form['abc']);
     }
@@ -2242,6 +2245,8 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $this->form->expects($this->once())
             ->method('linkHTML');
+
+        '@phan-var \LorisForm $this->form';
         $this->form->addElement("link", "abc", "Hello");
         $this->form->renderElement($this->form->form['abc']);
     }
