@@ -65,14 +65,13 @@ class NDB_Client
                 $DBSettings['host'],
                 true
             );
+            // Now make sure the factory reference is the same as the
+            // singleton reference
+            $factory->setDatabase($DB);
         }
 
-        // Now make sure the factory reference is the same as the
-        // singleton reference
         $DB = $factory->database();
 
-        $factory->setConfig($config);
-        $factory->setDatabase($DB);
 
         // add extra include paths. This must be done
         // after the database is connected, since the setting
