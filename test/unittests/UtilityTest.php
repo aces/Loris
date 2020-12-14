@@ -1225,5 +1225,8 @@ class UtilityTest extends TestCase
             $database['host'],
             true
         );
+
+        $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_mockFactory->setConfig($this->_mockConfig);
     }
 }
