@@ -28,13 +28,13 @@ ignored_files="
     tools/single_use/data_dictionary_cleaner.php,\
     tools/single_use/Normalize_Consent_Data.php,\
     tools/single_use/remove_logged_passwords.php,\
+    tools/single_use/cleanup_mri_tables_for_19-0_release.php,\
     tools/deprecated/create_candidates.php,\
     tools/deprecated/excelDump.php,\
     tools/data_integrity/score_instrument.php,\
     tools/generate_tables_sql_and_testNames.php,\
     tools/fix_timepoint_date_problems.php,\
-    tools/CouchDB_MRI_Importer.php,\
-    tools/cleanup_mri_tables_for_19-0_release.php
+    tools/CouchDB_MRI_Importer.php
 "
 
 vendor/bin/phpcs \
