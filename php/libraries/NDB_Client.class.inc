@@ -72,7 +72,6 @@ class NDB_Client
 
         $DB = $factory->database();
 
-
         // add extra include paths. This must be done
         // after the database is connected, since the setting
         // can come from the database.
