@@ -49,12 +49,11 @@ class NDB_Factory_Test extends TestCase
 
     /**
      * Test that the singleton function returns a new NDB_Factory object and
-     * that the reset and setTesting functions properly set the properties of
+     * that the reset function properly set the properties of
      * the object
      *
      * @covers NDB_Factory::singleton
      * @covers NDB_Factory::reset
-     * @covers NDB_Factory::setTesting
      * @return void
      */
     function testSetUp()
@@ -64,8 +63,6 @@ class NDB_Factory_Test extends TestCase
         $this->assertNull(\NDB_Factory::$testdb);
         $this->assertNull(\NDB_Factory::$db);
         $this->assertNull(\NDB_Factory::$config);
-        $this->_factory->setTesting(true);
-        $this->assertTrue($this->_factory->Testing);
     }
 
     /**
@@ -76,7 +73,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testConfig()
     {
-        $this->_factory->setTesting(false);
         $this->_factory->config();
         $this->assertEquals(
             NDB_Config::singleton('../project/config.xml'),
@@ -106,7 +102,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testUser()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals(
             \User::singleton(),
             $this->_factory->user()
@@ -136,7 +131,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testDatabase()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals($this->_DB, $this->_factory->database());
     }
 
@@ -176,7 +170,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testCouchDB()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals(
             CouchDB::getInstance("db", "host", 1, "user", "pass"),
             $this->_factory->couchDB("db", "host", 1, "user", "pass")

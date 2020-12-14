@@ -65,14 +65,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
 
         $this->_factory = \NDB_Factory::singleton();
-        $this->_factory->setTesting(true);
 
         $this->_mockDB     = $this->getMockBuilder("\Database")->getMock();
         $this->_mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        \NDB_Factory::$db     = $this->_mockDB;
-        \NDB_Factory::$testdb = $this->_mockDB;
-        \NDB_Factory::$config = $this->_mockConfig;
+        $this->_factory->setDatabase($this->_mockDB);
+        $this->_factory->setConfig($this->_mockConfig);
 
         $this->quickForm = new \LorisForm();
 
@@ -1986,7 +1984,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_factoryForDB = \NDB_Factory::singleton();
         $this->_factoryForDB->reset();
-        $this->_factoryForDB->setTesting(false);
+
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
         $database      = $this->_config->getSetting('database');
         $this->_DB     = \Database::singleton(
