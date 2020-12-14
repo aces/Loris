@@ -24,11 +24,6 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
- *
- * Phan currently has bad support for PHPUnit's Mock objects which is
- * creating false positive with the below rule.
- *
- * @phan-file-suppress PhanUndeclaredClassMethod
  */
 class NDB_Factory
 {
