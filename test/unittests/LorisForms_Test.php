@@ -2165,8 +2165,11 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $this->form->expects($this->once())
             ->method('headerHTML');
-        $this->form->addElement("header", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        $form = $this->form;
+        '@phan-var \LorisForm $form';
+        $form->addElement("header", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2183,8 +2186,11 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $this->form->expects($this->once())
             ->method('submitHTML');
-        $testSubmit = $this->form->createSubmit("abc", "Hello", []);
-        $this->form->renderElement($testSubmit);
+
+        $form = $this->form;
+        '@phan-var \LorisForm $form';
+        $testSubmit = $form->createSubmit("abc", "Hello", []);
+        $form->renderElement($testSubmit);
     }
 
     /**
@@ -2202,9 +2208,10 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('hiddenHTML');
 
-        '@phan-var \LorisForm $this->form';
-        $this->form->addElement("hidden", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+        $form = $this->form;
+        '@phan-var \LorisForm $form';
+        $form->addElement("hidden", "abc", "Hello");
+        $form->renderElement($this->form->form['abc']);
     }
 
     /**
@@ -2221,14 +2228,18 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $this->form->expects($this->once())
             ->method('timeHTML');
-        $testTime = $this->form->createElement(
+
+        $f = $this->form;
+        '@phan-var \LorisForm $f';
+        $testTime = $f->createElement(
             "time",
             "abc",
             "Hello",
             [],
             []
         );
-        $this->form->renderElement($testTime);
+
+        $f->renderElement($testTime);
     }
 
     /**
@@ -2246,9 +2257,11 @@ class LorisForms_Test extends TestCase
         $this->form->expects($this->once())
             ->method('linkHTML');
 
-        '@phan-var \LorisForm $this->form';
-        $this->form->addElement("link", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+        $f = $this->form;
+        '@phan-var \LorisForm $f';
+
+        $f->addElement("link", "abc", "Hello");
+        $f->renderElement($this->form->form['abc']);
     }
 
     /**
