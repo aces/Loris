@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 /**
  * Class NDB_BVL_FeedbackTest
  *
@@ -61,7 +60,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     public function testCreateFeedbackTypeWithInvalidName()
     {
-        $this->setExpectedException('LorisException');
+        $this->expectException('LorisException');
         $this->_feedbackObj->createFeedbackType("");
     }
 
