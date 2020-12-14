@@ -1321,5 +1321,8 @@ class CandidateTest extends TestCase
             $database['host'],
             1
         );
+
+        $this->_factoryForDB->setDatabase($this->_DB);
+        $this->_factoryForDB->setConfig($this->_config);
     }
 }
