@@ -137,7 +137,7 @@ class NDB_Factory
         if ($user !== null) {
             return $user;
         }
-        $user = \User::singleton();
+        $user        = \User::singleton();
         self::$_user = $user;
         return $user;
     }
@@ -186,6 +186,7 @@ class NDB_Factory
             $dbc['host'],
             true
         );
+
         self::$db = $db_ref;
         return $db_ref;
     }
