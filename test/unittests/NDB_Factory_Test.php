@@ -35,11 +35,12 @@ class NDB_Factory_Test extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_factory = \NDB_Factory::singleton();
-        $this->_config  = \NDB_Config::singleton('../project/config.xml');
+        $this->_factory = NDB_Factory::singleton();
+        $this->_factory->reset();
 
-        $database       = $this->_config->getSetting('database');
-        $this->_DB      = Database::singleton(
+        $this->_config = $this->factory->Config(CONFIG_XML);
+        $database      = $this->config->getSetting('database');
+        $this->_DB     = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
