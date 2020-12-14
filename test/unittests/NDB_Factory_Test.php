@@ -46,8 +46,8 @@ class NDB_Factory_Test extends TestCase
             true
         );
 
-        $this->factory->setDatabase($this->_DB);
-        $this->factory->setConfig($this->_config);
+        $this->_factory->setDatabase($this->_DB);
+        $this->_factory->setConfig($this->_config);
     }
 
     /**
