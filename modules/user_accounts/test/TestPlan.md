@@ -23,7 +23,9 @@ When creating or editing a user: (subtest: edit_user)
       - Password (and confirm password),
       - First name,
       - Last name,
-      - Email.
+      - Email,
+      - Sites,
+      - Projects.
 9. If password and confirmed password do not match, an error should be displayed. [Automated]
 10. Email fields containing submitted with invalid formats should generate an error. 
      
@@ -43,8 +45,7 @@ When creating or editing a user: (subtest: edit_user)
 15. Verify that if the editor does not have permission 'Across all sites add and edit users' then the site drop-down list is populated with
     the editor's associated sites, otherwise all sites are displayed.
 16. Check that if the 'Additional user information' entry is set to false in the Configuration module, fields Degree,
-    Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
-    FAX are not shown.
+    Academic Position, Institution, Department, Street Address, City, State/Province, Country and FAX are not shown.
 17. Check that the 'Examiner At:' and 'Examiner Status' sections are available only if you have the 'Across all sites add and certify examiners'.
 18. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list (and in examiners table).
 19. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
