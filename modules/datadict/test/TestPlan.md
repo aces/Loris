@@ -21,12 +21,12 @@ these permissions:
 the Description field. Edit a description, access the Candidate Profile page and 
 access the Data Dictionary page again. Make sure the edit was saved.
   [Automation Testing]
-9. Check that you can navigate through the search result pages (both by clicking on 
+8. Check that you can navigate through the search result pages (both by clicking on
 the numbers and arrows in the bottom right corner of the table).
   [Automation Testing]
-10. Check that the maximum rows displayed dropdown works, also check that the 
+9. Check that the maximum rows displayed dropdown works, also check that the
 download table as CSV works as well.
   [Automation Testing]
-11. Check that the `tools/exporters/data_dictionary_builder.php` works. Try changing 
+10. Check that the `tools/exporters/data_dictionary_builder.php` works. Try changing
 field names in an instrument before running the script and make sure that the 
 corresponding entries in Data Dictionary are updated correctly.
