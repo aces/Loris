@@ -74,8 +74,7 @@ class DICOMArchiveAnonymizer implements Mapper
             '\/',
             $config['patientIDRegex']
         );
-
-
+        
         if ($newrow['IsPhantom'] === 'Y') {
             $isValid = preg_match("/$legoPhanRegex/", $newrow['patientName'])
                 || preg_match("/$livingPhanRegex/", $newrow['patientName']);
