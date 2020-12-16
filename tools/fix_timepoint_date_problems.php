@@ -375,7 +375,7 @@ function addInstrument($sessionID, $testName)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
-    if (empty($user->getUsername())) {
+    if (is_a($user, 'LORIS\AnonymousUser')) {
         throw new LorisException(
             "Error: Database user named " . getenv('USER')
             . " does not exist. Please create and then retry script\n"
@@ -480,7 +480,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID = null)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
-    if (empty($user->getUsername())) {
+    if (is_a($user, 'LORIS\AnonymousUser')) {
         throw new LorisException(
             "Error: A loris user named " . getenv('USER')
             . " does not exist. Please create it and then retry the script.\n"
