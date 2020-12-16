@@ -103,8 +103,11 @@ class InstrumentManagerIndex extends Component {
 
     const tabs = [
       {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
     ];
+
+    if (this.props.hasPermission('instrument_manager_write')) {
+      tabs.push({id: 'upload', label: 'Upload'});
+    }
 
     const feedback = () => {
       if (!this.state.data.caninstall) {
@@ -121,7 +124,13 @@ class InstrumentManagerIndex extends Component {
 
     const uploadTab = () => {
       let content = null;
-      if (this.state.data.writable) {
+      if (!this.props.hasPermission('instrument_manager_write')) {
+        content = (
+          <div className='alert alert-warning'>
+            You do not have access to this page.
+          </div>
+        );
+      } else if (this.state.data.writable) {
         let url = loris.BaseURL.concat('/instrument_manager/?format=json');
         content = (
           <InstrumentUploadForm action={url}/>
