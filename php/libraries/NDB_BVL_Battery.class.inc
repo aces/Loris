@@ -194,11 +194,19 @@ class NDB_BVL_Battery
         // generate a commentID
         $commentID = $this->_createCommentID($testName);
 
+        // generate the double data entry commentid
+        $ddeCommentID = 'DDE_'.$commentID;
+
         // instantiate instrument object to get table name attribute
         $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
-        // insert into the test table
-        $DB->insert($obj->table, ['CommentID' => $commentID]);
+        if ($obj->usesJSONdata() !== true) {
+            // insert into the test table
+            $DB->insert($obj->table, ['CommentID' => $commentID]);
+
+            // insert the dde into the test table
+            $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+        }
 
         // insert into the flag table
         $DB->insert(
@@ -210,12 +218,6 @@ class NDB_BVL_Battery
                 'UserID'    => $sessionData['UserID'],
             ]
         );
-
-        // generate the double data entry commentid
-        $ddeCommentID = 'DDE_'.$commentID;
-
-        // insert the dde into the test table
-        $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
 
         // insert the dde into the flag table
         $DB->insert(
@@ -547,6 +549,7 @@ class NDB_BVL_Battery
     {
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
+
         // assert that the instrument is valid
         $this->_assertValidInstrument($testName);
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
