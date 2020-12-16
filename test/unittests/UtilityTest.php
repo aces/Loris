@@ -1136,6 +1136,13 @@ class UtilityTest extends TestCase
     public function testToDateDisplayFormat()
     {
         $this->_setMockDB();
+
+        $config = $this->getMockBuilder("\NDB_Config")->getMock();
+        $config->expects($this->any())
+            ->method('getSetting')
+            ->willReturn('Y-m-d H:i:s');
+        $this->_mockFactory->setConfig($config);
+
         $date = "2000-01-01";
         $this->assertEquals(
             "2000-01-01 00:00:00",

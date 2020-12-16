@@ -851,8 +851,10 @@ class Utility
                 "Input must be a valid date/time string: $e"
             );
         }
+
+        $factory = \NDB_Factory::singleton();
         return $dt->format(
-            \NDB_Config::singleton()->getSetting('dateDisplayFormat')
+            $factory->config()->getSetting('dateDisplayFormat')
             ?? DateTime::ATOM
         );
     }
