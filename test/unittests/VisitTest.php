@@ -32,6 +32,11 @@ class VisitTest extends TestCase
 {
     protected $factory;
     protected $DB;
+    protected $config;
+
+    protected $_visitController;
+    protected $_listOfVisit;
+    protected $_listOfVisitProject;
 
     /**
      * Visit object use in tests
