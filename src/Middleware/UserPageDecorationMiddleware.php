@@ -137,7 +137,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass") ?? '';
-        if (method_exists($page, 'getFeedbackPanel')
+        if (isset($page)
+            && method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
