@@ -200,7 +200,9 @@ class InstrumentConflictsRow extends Component {
           </td>
         <td>
           <a href={baseURL + '/conflict_resolver/?pSCID=' + row.PSCID +
-           '&instrument=' + row.TableName}>{row.test_name_display}</a>
+           '&instrument=' + row.TableName + '&question=' + row.FieldName}>
+             {row.test_name_display}
+          </a>
         </td>
         <td>{row.FieldName}</td>
       </tr>
