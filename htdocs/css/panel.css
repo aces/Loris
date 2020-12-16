@@ -95,7 +95,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     border-color: #064785;
     border-left: 2px solid;
     overflow-y: scroll;
-    z-index: 999;
+    z-index: 998;
     transition: all 0.4s ease 0s;
     padding-bottom: 50px;
 }
