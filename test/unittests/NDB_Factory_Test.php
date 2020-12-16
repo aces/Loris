@@ -234,6 +234,12 @@ class NDB_Factory_Test extends TestCase
      */
     function testCandidate()
     {
+        $mockdb = $this->getMockBuilder("\Database")->getMock();
+        $this->_factory->setDatabase($mockdb);
+        $mockdb->expects($this->any())
+            ->method('pselectRow')
+            ->willReturn(['DCCID'=>'300001']);
+
         $candID = new CandID("300001");
         $this->assertEquals(
             Candidate::singleton($candID),
@@ -250,6 +256,14 @@ class NDB_Factory_Test extends TestCase
      */
     function testTimepoint()
     {
+        $mockdb     = $this->getMockBuilder("\Database")->getMock();
+        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
+        $mockdb->expects($this->any())
+            ->method('pselectRow')
+            ->willReturn(['1']);
+
         $sessionID = new \SessionID("1");
         $this->assertEquals(
             \TimePoint::singleton($sessionID),
