@@ -20,6 +20,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+
     - name: Validate composer.json and composer.lock
       run: composer validate
 
