@@ -118,12 +118,10 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function parseCategory($value): array
     {
         $id    = $value['id'];
-        $depth = 0;
         $DB    = \Database::singleton();
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth    += 1;
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";
