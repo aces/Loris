@@ -24,7 +24,7 @@
    Check that you are taken to that page (with the Selection Filter correctly set) when you
    click on the task.
    [Automate Test]
-6. Verify that the number of new issues in the My Tasks panel is accessible if and only if a user has the 'issue_tracker_reporter'
+6. Verify that the number of assigned issues in the My Tasks panel is accessible if and only if a user has the 'issue_tracker_reporter'
    or the 'issue_tracker_developer' permission.
    [Automate Test on Travis_CI]
 7. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
