@@ -9,25 +9,18 @@ these permissions:
   [Automation Testing]
 3. Perform various searches and validate the results. 
  - Use any combination of the available search criteria. 
- - Make sure that when performing a keyword search the algorithm takes column Name, 
- SourceField and Description into account. 
  - Make sure that when you choose "Empty" in the Description combo box, all the rows 
  returned have an empty description.
   [Automation Testing]
 4. Check that selecting multiple instruments returns all relevant results.
 5. Check that the table can be sorted according to any column (ascending and descending).
   [Automation Testing]
-6. Check that pushing the Clear button sets the Description search field to 'All', 
-the Instruments search field to 'All instruments', clears the search keyword text 
-field and performs a search with these criteria. Validate the results.
+6. Check that pushing the "Clear Filter" button sets resets all filters to empty
   [Automation Testing]
 7. Check that if (and only if) you have the 'data_dict_edit' permission you can edit 
 the Description field. Edit a description, access the Candidate Profile page and 
 access the Data Dictionary page again. Make sure the edit was saved.
   [Automation Testing]
-8. Make sure that search keywords are not case-sensitive and that when you specify 
-more than one keyword, the search returns entries that match the whole string.
-  [Automation Testing] 
 9. Check that you can navigate through the search result pages (both by clicking on 
 the numbers and arrows in the bottom right corner of the table).
   [Automation Testing]
