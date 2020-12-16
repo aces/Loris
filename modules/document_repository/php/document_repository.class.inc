@@ -117,8 +117,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function parseCategory($value): array
     {
-        $id    = $value['id'];
-        $DB    = \Database::singleton();
+        $id = $value['id'];
+        $DB = \Database::singleton();
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
