@@ -38,6 +38,11 @@ return [
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
+        "PhanTypeMismatchDimFetch",
+        "PhanPossiblyUndeclaredVariable",
+        "PhanTypeMismatchReturnNullable",
+        "PhanTypeMismatchDimAssignment",
+        "PhanTypeMismatchDeclaredParam"
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
