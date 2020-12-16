@@ -110,7 +110,7 @@ class InstrumentManagerIndex extends Component {
     }
 
     const feedback = () => {
-      if (!this.state.data.caninstall) {
+      if (!this.state.data.caninstall && this.props.hasPermission('instrument_manager_write')) {
         return (
           <div className='alert alert-warning'>
             Instrument installation is not possible given the current server
