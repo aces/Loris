@@ -2504,16 +2504,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         } else if ($element['type'] === "date") {
-            $config = \NDB_Factory::singleton()->config();
-
-            $minyear = $this->dateOptions['minYear']
-                ?? $config->getSetting('startYear');
-            $maxyear = $this->dateOptions['endYear']
-                ?? $config->getSetting('endYear');
-
             $element['options'] = [
-                'mindate'         => $minyear . '-01-01',
-                'maxdate'         => $maxyear . '-12-31',
+                'mindate'         => $this->dateOptions['minYear'] . '-01-01',
+                'maxdate'         => $this->dateOptions['maxYear'] . '-12-31',
                 'RequireResponse' => false,
             ];
 
