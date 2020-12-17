@@ -23,7 +23,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * The form object for this instrument.
      *
-     * @var    LorisForm
+     * @var LorisForm
      */
     public $form;
 
