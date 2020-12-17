@@ -1749,37 +1749,6 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     /**
      * Test that _toJSONParseSmarty returns an array with the
-     * correct information for a date type element when the form
-     * is not a LorisForm.
-     *
-     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
-     * @return void
-     */
-    function testToJsonParseSmartyDateTypeNotLorisForm()
-    {
-        $date = ['options' => ['minYear' => '1990',
-            'maxYear' => '2000'
-        ],
-            'type'    => 'select'
-
-        ];
-        $dateHTML = $this->_instrument->form->renderElement($date);
-        $el       = ['type' => 'date',
-            'html' => $dateHTML
-        ];
-        $result   = ['type' => 'date',
-            'html'       => $dateHTML,
-            'options'    => ['mindate' => "1990-01-01",
-                'maxdate' => "2000-12-31"
-            ],
-            'NoResponse' => true
-        ];
-        $this->_instrument->form = new \Candidate();
-        $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
-    }
-
-    /**
-     * Test that _toJSONParseSmarty returns an array with the
      * correct information
      *
      * @covers NDB_BVL_Instrument::_toJSONParseSmarty
