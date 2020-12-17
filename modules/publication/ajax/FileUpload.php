@@ -451,32 +451,32 @@ function notify($pubID, $type) : void
             $type
         );
             $msg_data = [
-                'URL' => $baseURL . $emailData['URL'],
-                'Title'        => $emailData['Title'],
-                'User'  =>   $emailData['User'],
+                'URL'         => $baseURL . $emailData['URL'],
+                'Title'       => $emailData['Title'],
+                'User'        =>   $emailData['User'],
                 'ProjectName' => $emailData['ProjectName'],
-                'Date' =>   $emailData['Date']
+                'Date'        =>   $emailData['Date']
             ];
             $Notifier->notify($msg_data);
-    $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
-        ? array($data['LeadInvestigatorEmail']) : [];
-    // get collaborators to notify
-    $collaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : [];
+            $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
+            ? array($data['LeadInvestigatorEmail']) : [];
+            // get collaborators to notify
+            $collaborators = isset($_POST['collaborators'])
+            ? json_decode($_POST['collaborators'], true) : [];
 
-    foreach ($collaborators as $c) {
-        if ($c['notify']) {
-            $sendTo[] = $c['email'];
-        }
-    }
-    if (!empty($sendTo)) {
-        $sendTo = implode(', ', $sendTo);
-        Email::send(
-            $sendTo,
-            "notifier_publication_$type.tpl",
-            $emailData
-        );
-    }
+            foreach ($collaborators as $c) {
+                if ($c['notify']) {
+                    $sendTo[] = $c['email'];
+                }
+            }
+            if (!empty($sendTo)) {
+                $sendTo = implode(', ', $sendTo);
+                Email::send(
+                    $sendTo,
+                    "notifier_publication_$type.tpl",
+                    $emailData
+                );
+            }
 }
 
 /**
