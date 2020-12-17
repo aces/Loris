@@ -1620,7 +1620,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $DB->update(
             "flag",
             ["Required_elements_completed" => $status],
-            $this->getCommentID()
+            ['CommentID' => $this->getCommentID()]
         );
     }
 
