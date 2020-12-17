@@ -26,7 +26,13 @@ use PHPUnit\Framework\TestCase;
  */
 class LorisForms_Test extends TestCase
 {
-    /** @var \LorisForm */
+    /**
+     * A LorisForm to test. This is a non-mocked form
+     * set up by the setup function. Tests using a mock
+     * use their own local variables.
+     *
+     * @var \LorisForm
+     */
     protected $form;
 
     /**
@@ -1033,7 +1039,8 @@ class LorisForms_Test extends TestCase
             'maxYear' => '2019',
             'format'  => 'y'
         ];
-        $form     = $this->getMockBuilder('LorisForm')
+
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['yearHTML'])
             ->getMock();
         $form->expects($this->once())

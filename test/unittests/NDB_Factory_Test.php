@@ -44,7 +44,6 @@ class NDB_Factory_Test extends TestCase
             $database['password'],
             $database['host'],
             true
-
         );
 
         $this->_factory->setDatabase($this->_DB);

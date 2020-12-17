@@ -31,7 +31,11 @@ require_once 'SessionID.php';
  */
 class NDB_BVL_Instrument_Test extends TestCase
 {
-    /** @var \NDB_BVL_Instrument */
+    /**
+     * The instrument (or instrument mock) being tested.
+     *
+     * @var \NDB_BVL_Instrument
+     */
     private $_instrument;
 
     private $_factory;
