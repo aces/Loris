@@ -37,6 +37,7 @@ return [
         "PhanUnusedPublicMethodParameter",
         "PhanUnusedPublicNoOverrideMethodParameter",
         "PhanTypePossiblyInvalidDimOffset",
+        "PhanUndeclaredMethod",
         "PhanTypeMismatchArgument",
         "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
