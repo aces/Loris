@@ -2,7 +2,8 @@
 /**
  * This script is written for a one time use only to migrate the
  * 'Data_entry_completion_status' field from the instrument table /
- * Data column of the flag table to it's own column in the flag table.
+ * Data column of the flag table to it's own column in the flag table
+ * called "Required_elements_completed".
  *
  * PHP Version 7
  *
@@ -39,16 +40,22 @@ foreach ($flagData as $cmid => $data) {
     if ($instrument->usesJSONData() === true) {
         // If json instrument, take value from flag data
         if (isset($dataArray['Data_entry_completion_status'])) {
-            $dataToUpdate['Data_entry_completion_status']
-                = $dataArray['Data_entry_completion_status'];
+            $decs = $dataArray['Data_entry_completion_status'];
         }
     } else {
         // Otherwise, take value from instrument table
         $instrData = $instrument->getInstanceData();
-
         if (isset($instrData['Data_entry_completion_status'])) {
-            $dataToUpdate['Data_entry_completion_status']
-                = $instrData['Data_entry_completion_status'];
+            $decs = $instrData['Data_entry_completion_status'];
+        }
+    }
+
+    if (isset($decs)) {
+        // change value from complete / incomplete to Y / N
+        if ($decs === 'Complete') {
+            $dataToUpdate['Required_elements_completed'] = 'Y';
+        } elseif ($decs === 'Incomplete') {
+            $dataToUpdate['Required_elements_completed'] = 'N';
         }
     }
 

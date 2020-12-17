@@ -24,7 +24,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
-- Data_entry_completion_status given its own column in flag (PR #6876)
+- Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 #### Bug Fixes
 - *Add item here*
 ### Modules
@@ -44,7 +44,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
-- After script `Set_Data_entry_completion_status_flag.php` is run, projects will need to go through existing instruments 
+- After script `Set_Required_elements_completed_flag.php` is run, projects will need to go through existing instruments 
 and delete the `Data_entry_completion_status` column.
 ### Notes For Developers
 - *Add item here*

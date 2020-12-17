@@ -1401,7 +1401,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements array is empty
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
      * @return void
      */
     function testDetermineDataEntryCompletionProgressNoRequiredEl()
@@ -1412,8 +1412,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Complete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'Y',
+            $this->_instrument->_determineRequiredElementsCompleted()
         );
     }
 
@@ -1422,7 +1422,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Incomplete' if the _requiredElements field and status field are not set
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithUnanswered()
@@ -1445,8 +1445,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Incomplete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'N',
+            $this->_instrument->_determineRequiredElementsCompleted()
         );
     }
 
@@ -1455,7 +1455,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements field and status field have set values
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithAnswered()
@@ -1478,63 +1478,63 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Complete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'Y',
+            $this->_instrument->_determineRequiredElementsCompleted()
         );
     }
 
     /**
-     * Test that getDataEntryCompletionStatus returns the correct data
+     * Test that getRequiredElementsCompletedFlag returns the correct data
      * from the database
      *
-     * @covers NDB_BVL_Instrument::getDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::getRequiredElementsCompleted
      * @return void
      */
-    function testGetDataEntryCompletionStatus()
+    function testGetRequiredElementsCompletedFlag()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
-            'Incomplete',
-            $this->_instrument->getDataEntryCompletionStatus()
+            'N',
+            $this->_instrument->getRequiredElementsCompletedFlag()
         );
     }
 
     /**
-     * Test that _setDataEntryCompletionStatus correctly sets the
-     * 'Data_entry_completion_status value
+     * Test that _setRequiredElementsCompleted correctly sets the
+     * 'Requires_elements_completed' value
      *
-     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_setRequiredElementsCompleted
      * @return void
      */
-    function testSetDataEntryCompletionStatus()
+    function testSetRequiredElementsCompletedFlag()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $status = $this->_instrument->getDataEntryCompletionStatus();
-        $this->assertEquals('Complete', $status);
+        $this->_instrument->_setRequiredElementsCompletedFlag('Y');
+        $status = $this->_instrument->getRequiredElementsCompletedFlag();
+        $this->assertEquals('Y', $status);
     }
 
     /**
-     * Test that _setDataEntryCompletionStatus throws an exception if
+     * Test that _setRequiredElementsCompletedFlag throws an exception if
      * the given status is not 'Complete' or 'Incomplete'
      *
-     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_setRequiredElementsCompletedFlag
      * @return void
      */
-    function testSetDataEntryCompletionStatusThrowsException()
+    function testSetRequiredElementsCompletedFlagThrowsException()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->expectException('Exception');
-        $this->_instrument->_setDataEntryCompletionStatus('BadString');
+        $this->_instrument->_setRequiredElementsCompletedFlag('BadString');
     }
 
     /**
@@ -1638,7 +1638,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
-        $status = $this->_instrument->getDataEntryCompletionStatus();
+        $status = $this->_instrument->getRequiredElementsCompletedFlag();
         $this->assertEquals('Incomplete', $status);
         $this->assertEquals(
             $conflicts_data,
@@ -1819,7 +1819,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'Data_entry'                   => 'Incomplete',
                     'Administration'               => 'admin1',
                     'Validity'                     => 'valid1',
-                    'Data_entry_completion_status' => 'Incomplete'
+                    'Required_elements_completed' => 'N'
                 ],
                 [
                     'ID'                           => '2000',
@@ -1830,7 +1830,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'Data_entry'                   => 'Complete',
                     'Administration'               => 'admin2',
                     'Validity'                     => 'valid2',
-                    'Data_entry_completion_status' => 'Incomplete'
+                    'Required_elements_completed' => 'Y'
                 ],
             ]
         );
