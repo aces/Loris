@@ -1616,7 +1616,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Y' or 'N'<br>\n"
             );
         }
-        $DB  = Database::singleton();
+        $DB = Database::singleton();
         $DB->update(
             "flag",
             ["Required_elements_completed" => $status],
