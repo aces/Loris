@@ -2505,8 +2505,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         } else if ($element['type'] === "date") {
             $element['options'] = [
-                'mindate'         => "1990-01-01",
-                'maxdate'         => "2000-12-31",
+                'mindate'         => $this->dateOptions['minYear'] . '-01-01',
+                'maxdate'         => $this->dateOptions['maxYear'] . '-12-31',
                 'RequireResponse' => false,
             ];
 
