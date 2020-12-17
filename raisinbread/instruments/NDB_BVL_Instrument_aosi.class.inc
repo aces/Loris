@@ -533,7 +533,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
     function score(): void
     {
-        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+        if($this->_determineRequiredElementsCompleted() == "N") {
             return;
         }
 
