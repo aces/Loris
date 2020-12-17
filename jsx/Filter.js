@@ -17,15 +17,18 @@ class Filter extends Component {
     this.renderFilterFields = this.renderFilterFields.bind(this);
   }
 
+  /**
+   * Takes qeury params from url and triggers an update of the fields that are
+   * associated with those params, if they exist.
+   */
   componentDidMount() {
      const searchParams = new URLSearchParams(location.search);
-     const filter = JSON.parse(JSON.stringify(this.props.filter));
      searchParams.forEach((value, name) => {
+       // This checks to make sure the filter actually exists
        if (this.props.fields.find((field) => (field.filter||{}).name == name)) {
-         filter[name] = {value: searchParams.getAll(name)};
+         this.onFieldUpdate(name, searchParams.getAll(name));
        }
      });
-     this.props.updateFilter(filter);
    }
 
   /**
@@ -33,14 +36,14 @@ class Filter extends Component {
    *
    * @param {string} name - form element type (i.e component name)
    * @param {string} value - the name of the form element
-   * @param {string} id - id of the form element
-   * @param {string} type - type of the form element
    */
-  onFieldUpdate(name, value, id, type) {
+  onFieldUpdate(name, value) {
+    const {filter, fields} = JSON.parse(JSON.stringify(this.props));
     const searchParams = new URLSearchParams(location.search);
-    const filter = JSON.parse(JSON.stringify(this.props.filter));
-    const exactMatch = (!(type === 'textbox' || type === 'date'));
-    if (value === null || value === '' || (value.constructor === Array && value.length === 0)) {
+    const type = fields.find((field) => (field.filter||{}).name == name).type;
+    const exactMatch = (!(type === 'text' || type === 'date'));
+    if (value === null || value === '' ||
+        (value.constructor === Array && value.length === 0)) {
       delete filter[name];
       searchParams.delete(name);
     } else {
@@ -63,31 +66,36 @@ class Filter extends Component {
         let element;
         switch (filter.type) {
         case 'text':
-          element = <TextboxElement key={filter.name}/>;
+          element = <TextboxElement/>;
           break;
         case 'select':
           element = (
             <SelectElement
-              key={filter.name}
               options={filter.options}
               sortByValue={filter.sortByValue}
             />
           );
           break;
         case 'multiselect':
-          element = <SelectElement key={filter.name} options={filter.options} multiple={true} emptyOption={false}/>;
+          element = (
+            <SelectElement
+              options={filter.options}
+              multiple={true}
+              emptyOption={false}
+            />
+          );
           break;
         case 'numeric':
-          element = <NumericElement key={filter.name} options={filter.options}/>;
+          element = <NumericElement options={filter.options}/>;
           break;
         case 'date':
-          element = <DateElement key={filter.name}/>;
+          element = <DateElement/>;
           break;
         case 'checkbox':
-          element = <CheckboxElement key={filter.name}/>;
+          element = <CheckboxElement/>;
           break;
         default:
-          element = <TextboxElement key={filter.name}/>;
+          element = <TextboxElement/>;
         }
 
         // The value prop has to default to false if the first two options
@@ -96,6 +104,7 @@ class Filter extends Component {
         result.push(React.cloneElement(
           element,
           {
+            key: filter.name,
             name: filter.name,
             label: field.label,
             value: (this.props.filter[filter.name] || {}).value || false,
