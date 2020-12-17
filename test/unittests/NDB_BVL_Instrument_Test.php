@@ -726,7 +726,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_instrument->addScoreColumn(
             "FieldName2",
-            "Field 2",
+            "",
         );
         $json          = $this->_instrument->toJSON();
         $outArray      = json_decode($json, true);
