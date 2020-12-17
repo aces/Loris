@@ -116,7 +116,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
         // Ensure the user is allowed to upload.
-        if (! \User::singleton()->hasPermission('superuser')) {
+        if (! \User::singleton()->hasPermission('instrument_manager_write')) {
             return (new \LORIS\Http\Response())
                 ->withStatus(403, 'Forbidden')
                 ->withBody(
