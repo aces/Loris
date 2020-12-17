@@ -1639,7 +1639,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
         $status = $this->_instrument->getRequiredElementsCompletedFlag();
-        $this->assertEquals('Incomplete', $status);
+        $this->assertEquals('N', $status);
         $this->assertEquals(
             $conflicts_data,
             $conflictsBefore
