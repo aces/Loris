@@ -2509,12 +2509,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'maxdate'         => "2000-12-31",
                 'RequireResponse' => false,
             ];
-        }
 
-        if (isset($this->WrapperDateWithStatusElements[$element['name']])) {
-            $element['NoResponse'] = false;
-        } else {
-            $element['NoResponse'] = true;
+            if (isset($this->WrapperDateWithStatusElements[$element['name']])) {
+                $element['NoResponse'] = false;
+            } else {
+                $element['NoResponse'] = true;
+            }
         }
 
         return $element;
