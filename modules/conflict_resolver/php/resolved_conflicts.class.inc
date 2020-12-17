@@ -252,7 +252,16 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $unanonymized = parent::toArray();
         $data         = array();
 
+        $correctAnswerIndex = array_search(
+            'Correct Answer',
+            $unanonymized['Headers']
+        );
         foreach ($unanonymized['Data'] as &$row) {
+            $row[$correctAnswerIndex] = str_replace(
+                '{@}',
+                ', ',
+                $row[$correctAnswerIndex]
+            );
             $data[] = $row;
         }
         return array(
