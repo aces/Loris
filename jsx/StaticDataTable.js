@@ -432,7 +432,6 @@ class StaticDataTable extends Component {
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
-          filteredData.push(this.props.Data[index[i].RowIdx]);
         }
 
         if (useKeyword === true) {
@@ -464,7 +463,8 @@ class StaticDataTable extends Component {
         }
       }
 
-      // Only display a row if all filter values have been matched
+      // Only display a row in the table or csv
+      // if all filter values have been matched
       if ((filterLength === filterMatchCount) &&
         ((useKeyword === true && keywordMatch > 0) ||
           (useKeyword === false && keywordMatch === 0))) {
@@ -478,6 +478,8 @@ class StaticDataTable extends Component {
             </tr>
           );
         }
+
+        filteredData.push(this.props.Data[index[i].RowIdx]);
       }
     }
 
