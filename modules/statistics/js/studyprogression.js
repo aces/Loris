@@ -98,10 +98,6 @@ $(document).ready(function() {
                     columns: recruitmentLineData,
                     type: 'area-spline'
                 },
-                size: {
-                    // height: 240,
-                    width: '100%'
-                },
                 legend: {
                     show: false,
                 },
