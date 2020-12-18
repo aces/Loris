@@ -317,11 +317,7 @@ class DateOptions extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-
-  componentDidMount() {
-    this.props.element.Options.dateFormat = 'Date';
-  }
-    // Keep track of the inputed years
+  // Keep track of the inputed years
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'yearmin') {
@@ -337,6 +333,7 @@ class DateOptions extends Component {
   render() {
     let minYear = this.props.element.Options.MinYear;
     let maxYear = this.props.element.Options.MaxYear;
+    let dateFormat = this.props.element.Options.dateFormat;
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
@@ -390,7 +387,8 @@ class DateOptions extends Component {
             <select
               id="dateFormat"
               className="form-control"
-              onChange={this.onChange}>
+              onChange={this.onChange}
+              defaultValue={dateFormat}>
               {Object.keys(dateFormatOptions).map(function(option, key) {
                 return (
                   <option key={key} value={option}>
