@@ -1914,6 +1914,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "A Date, or Not Answered is required.",
             $name . "_date_group"
         );
+
+        $this->addRule(
+            $name . "_date_group",
+            $label . 'is required.',
+            'required'
+        );
     }
 
     /**
