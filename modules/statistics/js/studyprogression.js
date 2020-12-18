@@ -85,6 +85,10 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/siterecruitment_line',
         type: 'get',
         success: function(data) {
+            let lengendNames = [];
+            for (let j=0; j<data.datasets.length; j++) {
+                lengendNames.push(data.datasets[j].name);
+            }
             var recruitmentLineData = formatLineData(data);
             recruitmentLineChart = c3.generate({
                 bindto: '#recruitmentChart',
@@ -93,6 +97,13 @@ $(document).ready(function() {
                     xFormat: '%m-%Y',
                     columns: recruitmentLineData,
                     type: 'area-spline'
+                },
+                size: {
+                    // height: 240,
+                    width: '100%'
+                },
+                legend: {
+                    show: false,
                 },
                 axis: {
                     x: {
@@ -112,11 +123,37 @@ $(document).ready(function() {
                     pattern: siteColours
                 }
             });
+            console.log(d3);
+            d3.select('.legend-container')
+              .insert('div', '.recruitmentChart')
+              .attr('class', 'legend')
+              .selectAll('div').data(lengendNames).enter()
+              .append('div')
+              .attr('data-id', function(id) {
+                return id;
+              })
+              .html(function(id) {
+                return '<span></span>' + id;
+              })
+              .each(function(id) {
+                d3.select(this).select('span').style('background-color', recruitmentLineChart.color(id));
+              })
+              .on('mouseover', function(id) {
+                recruitmentLineChart.focus(id);
+              })
+              .on('mouseout', function(id) {
+                recruitmentLineChart.revert();
+              })
+              .on('click', function(id) {
+                $(this).toggleClass("c3-legend-item-hidden")
+                recruitmentLineChart.toggle(id);
+              });
         },
         error: function(xhr, desc, err) {
             console.log(xhr);
             console.log("Details: " + desc + "\nError:" + err);
         }
     });
+
 });
 

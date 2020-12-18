@@ -9,7 +9,10 @@
 <div id="recruitment-line-chart-panel" class="hidden">
     <h5 class="chart-title">Recruitment per site</h5>
     {if $recruitment['overall']['total_recruitment'] neq 0}
-        <div id="recruitmentChart"></div>
+        <div class="row">
+            <div id="recruitmentChart" class="col-xs-10"></div>
+            <div class='legend-container col-xs-2'></div>
+        </div>
     {else}
         <p>There have been no candidates registered yet.</p>
     {/if}
