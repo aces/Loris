@@ -451,7 +451,7 @@ function notify($pubID, $type) : void
             $type
         );
             $msg_data = [
-                'URL'         => $baseURL . $emailData['URL'],
+                'URL'         => $emailData['URL'],
                 'Title'       => $emailData['Title'],
                 'User'        =>   $emailData['User'],
                 'ProjectName' => $emailData['ProjectName'],
