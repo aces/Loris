@@ -143,7 +143,7 @@ class DocCategoryForm extends React.Component {
             'error'
           );
         });
-      } 
+      }
     });
   }
   /**
