@@ -51,15 +51,15 @@ class UploadCategory extends \NDB_Page
     {
         if ($request->getMethod() == "POST") {
             if ($this->uploadDocCategory($request)) {
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("uploaded successfully")
-                    )
-                );
-             } 
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withStatus(200)
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode("uploaded successfully")
+                        )
+                    );
+            }
             return new \LORIS\Http\Response\JSON\Conflict(
                 "duplicate category name under same parent folder"
             );
@@ -86,8 +86,8 @@ class UploadCategory extends \NDB_Page
         $comments      = isset($req['comments']) ? $req['comments'] : null;
         //check duplicate name category
         if ($this->existCategoryName($category_name, $parent_id)) {
-        return false;
-        } 
+            return false;
+        }
         $DB->insert(
             "document_repository_categories",
             array(
@@ -103,12 +103,13 @@ class UploadCategory extends \NDB_Page
      * if exists return true
      *
      * @param string $categoryName file name
+     * @param int    $parent_id    parent folder id
      *
      * @return bool
      */
     function existCategoryName(string $categoryName, int $parent_id): bool
     {
-        $DB        = \Database::singleton();
+        $DB            = \Database::singleton();
         $categoryCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository_categories
              WHERE category_name=:name and parent_id=:id ",
