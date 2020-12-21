@@ -2037,7 +2037,7 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
