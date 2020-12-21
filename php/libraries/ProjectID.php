@@ -4,7 +4,7 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class ProjectID extends ValidatableIdentifier
+class ProjectID extends ValidatableIdentifier implements \JsonSerializable
 {
     /**
      * Returns this identifier type
@@ -32,13 +32,27 @@ class ProjectID extends ValidatableIdentifier
     }
 
     /**
-     * Generates a string representation of this SessionID.
+     * Generates a string representation of this ProjectID.
      *
-     * @return string The SessionID value.
+     * @return string The ProjectID value.
      */
     public function __toString(): string
     {
         return $this->value;
     }
+
+    /**
+     * Specify data which should be serialized to JSON.
+     * Returns data which can be serialized by json_encode(), which is a value of
+     * any type other than a resource.
+     *
+     * @see https://www.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return (int) $this->value;
+    }
+
 }
 
