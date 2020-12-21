@@ -199,12 +199,10 @@ class InstrumentConflictsRow extends Component {
               <a href={baseURL + '/' + row.CandID + '/'}>{row.PSCID}</a>
           </td>
         <td>
-          <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                 'conflict_resolver/',
-                  {CandID: row.CandID,
-                  Instrument: row.TableName,
-                  Question: row.FieldName}
-          )}>{row.test_name_display}</a>
+          <a href={baseURL + '/conflict_resolver/?pSCID=' + row.PSCID +
+           '&instrument=' + row.TableName + '&question=' + row.FieldName}>
+             {row.test_name_display}
+          </a>
         </td>
         <td>{row.FieldName}</td>
       </tr>
