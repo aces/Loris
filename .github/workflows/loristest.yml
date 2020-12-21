@@ -1,0 +1,54 @@
+name: LORIS Test Suite
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            testsuite:
+            - static
+            - unit
+            - integration
+            php:
+            - 7.3
+            - 7.4
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Change PHP Version in Dockerfile
+      run: sed -i "s/7.3/${{ matrix.php }}/g" Dockerfile.test.php7
+
+    - name: Install OS package dependencies
+      run: sudo apt-get install php-ast
+
+    - name: Install composer dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Build LORIS
+      run: make dev
+
+    - name: Run Test Suite
+      run: npm run tests:${{ matrix.testsuite }}
