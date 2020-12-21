@@ -8,16 +8,16 @@
         <div class="panel-body">
           {if $study_logo}
             <section class="study-logo">
-              <img src="{$baseurl}/{$study_logo}" alt="{$study_title}"/>
+              <img src="{$baseurl|default}/{$study_logo}" alt="{$study_title}"/>
             </section>
           {/if}
-          <form method="POST" action="{$action}">
+          <form method="POST">
             <div class="form-group">
-              <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
+              <input type="text" name="username" class="form-control" placeholder="Username"}"/>
             </div>
             <div class="form-group">
               <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
-              {if $error_message}
+              {if $error_message|default}
                 <span id="helpBlock" class="help-block">
                     <b class="text-danger">{$error_message}</b>
                 </span>
@@ -28,8 +28,8 @@
             </div>
           </form>
           <div class="help-links">
-            <a href="{$baseurl}/login/password-reset/">Forgot your password?</a><br/>
-            <a href="{$baseurl}/login/request-account/">Request Account</a>
+            <a href="{$baseurl|default}/login/password-reset/">Forgot your password?</a><br/>
+            <a href="{$baseurl|default}/login/request-account/">Request Account</a>
           </div>
           <div class="help-text">
             A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)

@@ -352,10 +352,6 @@ class File_Upload
         if (is_object($class)) {
             $test =&$class;
         } else if (class_exists($class)) {
-            // Phan seems to think this is always a string and fails as a result.
-            // FIXME This should be investigated further but for now it's not
-            // breaking anything.
-            // @phan-suppress-next-line PhanTypeExpectedObjectOrClassName
             $test =new $class;
         } else {
             $this->setError($field, "$class does not exist.");

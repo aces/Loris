@@ -10,6 +10,7 @@ changes in the following format: PR #1234***
 
 ##LORIS 24.0 (Release Date: ??)
 ### Core
+- New classes to describe a data dictionary (PR #6938)
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
@@ -31,13 +32,13 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
-- Deletion of support for the oldest version of the API (v0.0.2) (PR #6844)
+- Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
-- *Add item here*
+- New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 ### Notes For Developers
 - *Add item here*
 

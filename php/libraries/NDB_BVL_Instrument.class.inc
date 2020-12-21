@@ -468,7 +468,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, '', '', "&nbsp;");
         }
 
         $defaults = $this->getInstanceData();
@@ -1672,7 +1672,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1700,7 +1700,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "textarea",
             $field,
-            null,
+            '',
             [],
             [
                 'cols' => 25,
@@ -1718,7 +1718,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1763,7 +1763,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule(
@@ -1802,9 +1802,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "time",
             $field,
-            null,
-            null,
-            null
+            '',
         );
 
         $group[] = $this->createSelect(
@@ -1817,7 +1815,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'not_answered' => 'Not Answered',
             ]
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
             $field,
             array_merge($rules, [$field . '_status{@}=={@}']),
@@ -1865,7 +1863,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
@@ -1878,7 +1876,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
 
         unset($group);
@@ -1930,12 +1927,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $dateArray
     ): void {
         $group   = [];
-        $group[] = $this->createDate($name . "_date", null, $dateArray);
+        $group[] = $this->createDate($name . "_date", '', $dateArray);
         //add to array of dates and times.
         $this->dateTimeFields[] = $name . "_date";
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null             => "",
                 '88_refused'     => "88 Refused",
@@ -1948,7 +1945,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
         unset($group);
         $this->XINRegisterRule(
@@ -1987,14 +1983,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2023,7 +2019,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null             => "",
                 "88_refused"     => "88 Refused",
@@ -2032,7 +2028,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",

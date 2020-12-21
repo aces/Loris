@@ -643,8 +643,35 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $subprojList;
     }
+
     /**
-     * Returns first visit for a candidate based on Date_visit
+     * Returns the SubprojectID and subproject title of the candidate's last visit
+     * based on Date_visit
+     *
+     * @return array|null Array with values SubprojectID and title
+     *                    for the candidate's last visit or NULL if none exist
+     */
+    public function getSubprojectForMostRecentVisit(): ?array
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+        $query  = "SELECT SubprojectID, title FROM session
+          LEFT JOIN subproject USING (SubprojectID)
+          WHERE CandID=:cid AND Date_visit IS NOT NULL
+          ORDER BY Date_visit DESC LIMIT 1";
+        $where  = ['cid' => $candID];
+        $result = $db->pselect($query, $where);
+
+        if (empty($result)) {
+            return null;
+        }
+        return $result[0];
+    }
+
+    /**
+     * Returns first visit for a candidate based on VisitNo
      *
      * @return string The visit label for the candidate's first visit
      */

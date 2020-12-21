@@ -34,7 +34,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $password = new \Password($this->validPassword);
@@ -226,7 +226,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         // Try changing the password to the same value.
         $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains('cannot be your email', $this->getBody());
+        $this->assertStringContainsString('cannot be your email', $this->getBody());
     }
 
     /**
@@ -249,7 +249,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             \Utility::randomString()
         );
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains('do not match', $this->getBody());
+        $this->assertStringContainsString('do not match', $this->getBody());
     }
 
     /**
@@ -278,7 +278,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             $newPassword
         );
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains(
+        $this->assertStringContainsString(
             'New and old passwords are identical',
             $this->getBody()
         );
@@ -335,7 +335,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("users", ["UserID" => 'userid']);
         $this->DB->delete("user_psc_rel", ["UserID" => 999995]);

@@ -99,5 +99,5 @@
     </div>
 
 
-{$form.hidden}
+{$form.hidden|default}
 </form>

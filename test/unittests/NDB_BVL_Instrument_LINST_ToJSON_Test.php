@@ -25,14 +25,14 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(
+        $this->Session = $this->getMockBuilder(\stdClass::class)->addMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
             ->disableOriginalConstructor()
-            ->setMethods(['getFullName', 'getSessionID'])
+            ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSessionID')
@@ -88,7 +88,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      */
     function _getAllMethodsExcept($methods)
     {
-        $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
+        $AllMethods = get_class_methods(
+            '\Loris\Behavioural\NDB_BVL_Instrument_LINST'
+        );
 
         return array_diff($AllMethods, $methods);
     }
