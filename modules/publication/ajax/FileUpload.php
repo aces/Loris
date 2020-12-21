@@ -446,37 +446,37 @@ function notify($pubID, $type) : void
     $emailData['User']        = $user->getFullname();
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
-        $Notifier     = new \NDB_Notifier(
+        $Notifier = new \NDB_Notifier(
             "publication",
             $type
         );
-            $msg_data = [
-                'URL'         => $emailData['URL'],
-                'Title'       => $emailData['Title'],
-                'User'        =>   $emailData['User'],
-                'ProjectName' => $emailData['ProjectName'],
-                'Date'        =>   $emailData['Date']
-            ];
-            $Notifier->notify($msg_data);
-            $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
-            ? array($data['LeadInvestigatorEmail']) : [];
-            // get collaborators to notify
-            $collaborators = isset($_POST['collaborators'])
-            ? json_decode($_POST['collaborators'], true) : [];
+        $msg_data = [
+            'URL'         => $emailData['URL'],
+            'Title'       => $emailData['Title'],
+            'User'        =>   $emailData['User'],
+            'ProjectName' => $emailData['ProjectName'],
+            'Date'        =>   $emailData['Date']
+        ];
+        $Notifier->notify($msg_data);
+        $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
+        ? array($data['LeadInvestigatorEmail']) : [];
+        // get collaborators to notify
+        $collaborators = isset($_POST['collaborators'])
+        ? json_decode($_POST['collaborators'], true) : [];
 
-            foreach ($collaborators as $c) {
-                if ($c['notify']) {
-                    $sendTo[] = $c['email'];
-                }
+        foreach ($collaborators as $c) {
+            if ($c['notify']) {
+                $sendTo[] = $c['email'];
             }
-            if (!empty($sendTo)) {
-                $sendTo = implode(', ', $sendTo);
-                Email::send(
-                    $sendTo,
-                    "notifier_publication_$type.tpl",
-                    $emailData
-                );
-            }
+        }
+        if (!empty($sendTo)) {
+            $sendTo = implode(', ', $sendTo);
+            Email::send(
+                $sendTo,
+                "notifier_publication_$type.tpl",
+                $emailData
+            );
+        }
 }
 
 /**
