@@ -53,7 +53,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
             explode(',', $row['projectIds']),
         );
 
-        $row['centerIds'] = $cids;
+        $row['centerIds']  = $cids;
         $row['projectIds'] = $pids;
         return new UserAccountRow($row, $cids, $pids);
     }
