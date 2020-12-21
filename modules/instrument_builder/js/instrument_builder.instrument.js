@@ -256,7 +256,13 @@ var Instrument = {
                                 MaxYear : pieces[4],
                                 dateFormat: pieces[5] || 'Date'
                             };
-
+                            // To mimic the NDB_BVL_Instrument_LINST class behaviour we strip the _date
+                            // from the standard dates name before loading it to the front end
+                            // the _date will be re-appended on saving
+                            if (tempElement.Options.dateFormat === 'Date'
+                                && tempElement.Name.substring(tempElement.Name.length-5) === '_date') {
+                              tempElement.Name = tempElement.Name.substring(0,tempElement.Name.length-5);
+                            }
                             tempElement.selected = {
                                 id: "date",
                                 value: "Date"

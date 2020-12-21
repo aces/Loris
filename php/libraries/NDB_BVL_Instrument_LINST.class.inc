@@ -609,18 +609,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             }
                         } else {
                             // it will only enter here if the date format is not
-                            // explicitly set. This functionality is confusing and
-                            // should be deprecated
-                            error_log(
-                                "DEPRECATION MESSAGE: $filename defines the field ".
-                                "$pieces[1] as a date without specifying the ".
-                                "format explicitly. Defaulting to standard dates ".
-                                "when the format is undefined will no longer be ".
-                                "supported in future versions of loris. Make sure ".
-                                "to specify the format as `Date` in all your ".
-                                ".linst files as the 6th parameter of you date ".
-                                "entries where applicable."
-                            );
+                            // explicitly set. This offers backwards compatibility
+                            // for date elements created before the date formats were
+                            // explicitly specified. An empty date format will be
+                            // handled as a `Date` element
                             $this->addDateElement(
                                 $pieces[1],
                                 $pieces[2],

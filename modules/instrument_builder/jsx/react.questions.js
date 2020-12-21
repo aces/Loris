@@ -317,6 +317,14 @@ class DateOptions extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
+  componentDidMount() {
+    // Check if the date format is already set (editing elements)
+    // if not, set it to default value (new elements)
+    if (!this.props.element.Options.dateFormat) {
+      this.props.element.Options.dateFormat = 'Date';
+    }
+  }
+
   // Keep track of the inputed years
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
