@@ -25,14 +25,14 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(
+        $this->Session = $this->getMockBuilder(\stdClass::class)->addMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
             ->disableOriginalConstructor()
-            ->setMethods(['getFullName', 'getSessionID'])
+            ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSessionID')
@@ -88,7 +88,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      */
     function _getAllMethodsExcept($methods)
     {
-        $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
+        $AllMethods = get_class_methods(
+            '\Loris\Behavioural\NDB_BVL_Instrument_LINST'
+        );
 
         return array_diff($AllMethods, $methods);
     }
@@ -149,7 +151,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                        . "'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}"
                        . "'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}"
                        . "'not_answered'=>'Not Answered'\n";
-        $instrument .= "date{@}FieldName{@}Field Description{@}2003{@}2014\n";
+        $instrument .= "date{@}FieldName_date{@}Field Description{@}2003{@}2014\n";
         $instrument .= "select{@}date_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
         $instrument .= "numeric{@}FieldName{@}Field Description{@}0{@}20\n";
@@ -250,7 +252,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                 ],
                 [
                     'Type'        => "date",
-                    "Name"        => "FieldName",
+                    "Name"        => "FieldName_date",
                     "Description" => "Field Description",
                     "Options"     => [
                         "MinDate"         => "2003-01-01",

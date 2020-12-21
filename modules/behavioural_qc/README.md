@@ -15,7 +15,7 @@ the data entry (or double data entry) has not yet been completed.
 
 ## Permissions
 
-Accessing the module requires the `behavioural_quality_control_view` permission.
+Accessing the module requires the `behavioural_qc` permission.
 
 ## Configurations
 

@@ -21,7 +21,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -74,7 +74,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
@@ -95,7 +95,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->_landing();
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains($content, $bodyText);
+        $this->assertStringContainsString($content, $bodyText);
     }
     /**
      * Testing instrument element appears in the body.
@@ -153,7 +153,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('Test Text successful', $data);
+        $this->assertStringContainsString('Test Text successful', $data);
     }
 
     /**
@@ -174,7 +174,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"testCheckbox":"1"', $data);
+        $this->assertStringContainsString('"testCheckbox":"1"', $data);
     }
 
     /**
@@ -198,7 +198,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"consent":"yes"', $data);
+        $this->assertStringContainsString('"consent":"yes"', $data);
 
         // select 'No' option and check it.
         $this->_landing();
@@ -214,7 +214,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"consent":"no"', $data);
+        $this->assertStringContainsString('"consent":"no"', $data);
 
     }
 

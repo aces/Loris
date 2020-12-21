@@ -191,6 +191,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             if (!empty($this->XINRules[$elname])) {
                 $registered_rules = $this->XINRules[$elname];
+                '@phan-var array $registered_rules';
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -490,10 +491,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $groupLabel = $pieces[2];
                         $this->addGroup(
                             $Group['Elements'],
-                            $Group['Name'],
+                            $Group['Name'] ?? '',
                             $groupLabel,
                             $Group['Delimiter'],
-                            false
                         );
 
                         $Group['Name']     = null;
@@ -505,7 +505,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->form->addElement(
                             'static',
-                            null,
+                            '',
                             "</td></tr></table><table><tr><td>&nbsp;",
                             ""
                         );
@@ -515,7 +515,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->form->addElement(
                             'static',
-                            null,
+                            '',
                             "</td></tr></table><table><tr><td>&nbsp;",
                             ""
                         );
@@ -558,13 +558,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'textarea'];
                     break;
                 case 'date':
-                    if (strpos($pieces[1], "_date") !== false) {
-                        $pieces[1] = substr(
-                            $pieces[1],
-                            0,
-                            strpos($pieces[1], "_date")
-                        );
-                    }
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
@@ -582,7 +575,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
-                        if (isset($dateFormat) && $dateFormat != "") {
+                        if (isset($dateFormat) && $dateFormat != ""
+                            && $dateFormat !== "Date"
+                        ) {
                             if ($dateFormat === 'MonthYear') {
                                 // Shows date without day of month
                                 $this->addMonthYear(
@@ -599,6 +594,20 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 );
                             }
                         } else {
+                            // addDateElement appends '_date' to the field name so
+                            // remove it first here
+                            if (substr($pieces[1], -5) == "_date") {
+                                $pieces[1] = substr(
+                                    $pieces[1],
+                                    0,
+                                    strpos($pieces[1], "_date")
+                                );
+                            } else {
+                                throw new \LorisException(
+                                    "Standard Date format field $pieces[1] must end"
+                                      . " with '_date'."
+                                );
+                            }
                             // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
@@ -662,7 +671,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                         $pieces[1],
                                         $pieces[2],
                                         $opt,
-                                        "multiple"
+                                        [ "multiple" => "multiple" ]
                                     );
                             } else {
                                 $Group['Elements'][]
@@ -701,7 +710,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'header':
                     if ($addElements) {
-                        $this->form->addElement('header', null, "$pieces[2]");
+                        $this->form->addElement('header', '', "$pieces[2]");
                     }
                     break;
                 case 'static':
@@ -713,7 +722,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 = $this->form->createElement(
                                     'static',
                                     $pieces[1],
-                                    null,
+                                    '',
                                     $pieces[2]
                                 );
                         } else {

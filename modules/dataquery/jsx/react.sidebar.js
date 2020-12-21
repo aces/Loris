@@ -1,7 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+
+/**
+ * Sidebar component
+ *
+ * React wrapper for a sidebar
+ */
 class Sidebar extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -12,18 +22,32 @@ class Sidebar extends Component {
     this.show = this.show.bind(this);
   }
 
+  /**
+   * Toggle hidden for sidebar
+   */
   toggleHidden() {
     this.setState({hidden: !this.state.hidden});
   }
 
+  /**
+   * Hide sidebar
+   */
   hide() {
     this.setState({hidden: true});
   }
 
+  /**
+   * Show sidebar
+   */
   show() {
     this.setState({hidden: false});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (this.state.hidden) {
       return <div/>;
@@ -37,12 +61,27 @@ class Sidebar extends Component {
   }
 }
 
+
+/**
+ * FieldsSidebar component
+ *
+ * React wrapper for a FieldsSidebar
+ */
 class FieldsSidebar extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if ((!this.props.Fields || this.props.Fields.length === 0)
       &&
@@ -50,14 +89,15 @@ class FieldsSidebar extends Component {
       return <div/>;
     }
 
-    let fieldDiv = '';
     let fieldList = [];
     if (this.props.Fields) {
       for (let i = this.props.Fields.length - 1; i >= 0; i--) {
         let fieldInfo = this.props.Fields[i].split(',');
         fieldList.push(
           <div className='list-group-item row' key={this.props.Fields[i]}>
-            <h4 className='list-group-item-heading col-xs-12'>{fieldInfo[0]}</h4>
+            <h4 className='list-group-item-heading col-xs-12'>
+              {fieldInfo[0]}
+            </h4>
             <span className='col-xs-12'>{fieldInfo[1]}</span>
           </div>
         );
@@ -66,7 +106,9 @@ class FieldsSidebar extends Component {
     return (
       <Sidebar Name='Fields'>
         <div className='form-group'>
-          <button className='btn btn-primary' onClick={this.props.resetQuery}>Clear Query</button>
+          <button className='btn btn-primary' onClick={this.props.resetQuery}>
+            Clear Query
+          </button>
         </div>
         {fieldList}
       </Sidebar>);

@@ -98,8 +98,7 @@ class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
             $group,
             "consent_group",
             "Test selecting 'Yes' from the dropdown menu.",
-            null,
-            false
+            '',
         );
         unset($group);
     }
