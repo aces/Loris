@@ -24,8 +24,8 @@
    Check that you are taken to that page (with the Selection Filter correctly set) when you
    click on the task.
    [Automate Test]
-6. Verify that the number of assigned issues in the My Tasks panel is accessible if and only if a user has the 'issue_tracker_reporter'
-   or the 'issue_tracker_developer' permission.
+6. Verify that the number of assigned issues in the My Tasks panel is displayed if and only if a user has the 'issue_tracker_reporter'
+   or the 'issue_tracker_developer' permission. Check that you are taken to the issue tracker page when you click on the task.
    [Automate Test on Travis_CI]
 7. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
    account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
