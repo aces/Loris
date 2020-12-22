@@ -107,7 +107,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             case 'EntityType':
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
-            case 'ProjectID':
+            case 'RegistrationProjectID':
                 $this->candidateInfo[$key] = new \ProjectID($value);
                 break;
             default:
