@@ -134,7 +134,7 @@ class DocCategoryForm extends React.Component {
         swal.fire('Add Successful!', '', 'success');
       } else {
         resp.json().then((data) => {
-          swal.fire('Could not add category', data.error, 'error');
+          swal.fire('Could not add category!', data.error, 'error');
         }).catch((error) => {
           console.error(error);
           swal.fire(
