@@ -23,18 +23,15 @@ namespace Loris\Behavioural;
  */
 class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 {
-    /**
-     * FIXME: LINST instruments should parse the full name
-     * and the subtest names from the linst file, not select
-     * them from the database.
-     */
-    use \LegacyInstrumentTrait;
-
     public $InstrumentType = 'LINST';
 
     public $LinstQuestions = [];
 
     public $LinstLines = [];
+
+    protected $subtests = [];
+
+    protected $fullName;
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -160,7 +157,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // dealing with _status==not_answered easier, because the rules for
             // enforcing range are independent of the rules for enforcing
             // required.
-            if ($this->LinstQuestions[$elname]['type'] === 'numeric') {
+            if (isset($this->LinstQuestions[$elname])
+                && $this->LinstQuestions[$elname]['type'] === 'numeric'
+            ) {
                 // Cast everything to a double so that < and > work as
                 // expected
                 $value = doubleval($elements[$elname]);
@@ -391,7 +390,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     {
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
-            $db = \Database::singleton();
 
             if (!isset($this->form)) {
                 $this->form = new \LorisForm();
@@ -413,8 +411,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $currentPage = 'top';
                 $addElements = true;
             }
+            $subtestCount = 1;
 
-            $parsingPage      = 'top';
             $firstFieldOfPage = true;
 
             $Group = [
@@ -445,28 +443,27 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 }
                 switch($type) {
                 case 'page':
-                    $parsingPage = trim($pieces[2]);
-                    $pageName    = $db->pselectOne(
-                        "SELECT Subtest_name
-                        FROM instrument_subtests
-                        WHERE Test_name=:testinst AND Description=:parsing",
-                        [
-                            'testinst' => $this->testName,
-                            'parsing'  => $parsingPage,
-                        ]
-                    );
+                    $pageDescription  = trim($pieces[2]);
+                    $pageName         = "page_$subtestCount";
+                    $this->subtests[] = [
+                        'Name'        => $pageName,
+                        'Description' => $pageDescription
+                    ];
+
                     if ($currentPage == $pageName) {
                         $addElements = true;
                     } else {
                         $addElements = false;
                     }
                     $firstFieldOfPage = true;
+                    $subtestCount++;
                     break;
                 case 'table':
                     $this->testName = trim($pieces[1]);
                     $this->table    = trim($pieces[1]);
                     break;
                 case 'title':
+                    $this->fullName = $pieces[1];
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
@@ -630,8 +627,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
-                    // FIXME: This variable is never populated.
-                    $options = [];
+                    $options = [
+                        'min' =>$pieces[3] ?? null,
+                        'max' =>$pieces[4] ?? null
+                    ];
                     $this->LinstQuestions[$pieces[1]]
                         = [
                             'type'    => 'numeric',
@@ -950,7 +949,27 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         return json_encode($jsonObject);
     }
 
+    /**
+     * Return the full, human readable name for the
+     * current instrument.
+     *
+     * @return ?string the full name of the instrument
+     */
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
 
+    /**
+     * Returns a list of subtests of the current instrument.
+     * The returned array should be a list of rows where each
+     * row has a key for "Name" (the subpage name) and "Description"
+     * (the human readable name)
+     *
+     * @return array
+     */
+    function getSubtestList(): array
+    {
+        return $this->subtests;
+    }
 }
-
-
