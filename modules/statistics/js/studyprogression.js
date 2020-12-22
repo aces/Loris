@@ -47,8 +47,15 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/scans_bymonth',
         type: 'get',
         success: function(data) {
-            var scanLineData = formatLineData(data);
+            let lengendNames = [];
+            for (let j=0; j<data.datasets.length; j++) {
+                lengendNames.push(data.datasets[j].name);
+            }
+            let scanLineData = formatLineData(data);
             scanLineChart = c3.generate({
+                size: {
+                    height: '100%',
+                },
                 bindto: '#scanChart',
                 data: {
                     x: 'x',
@@ -74,6 +81,30 @@ $(document).ready(function() {
                     pattern: siteColours
                 }
             });
+            d3.select('.scanChartLegend')
+              .insert('div', '.scanChart')
+              .attr('class', 'legend')
+              .selectAll('div').data(lengendNames).enter()
+              .append('div')
+              .attr('data-id', function(id) {
+                return id;
+              })
+              .html(function(id) {
+                return '<span></span>' + id;
+              })
+              .each(function(id) {
+                d3.select(this).select('span').style('background-color', scanLineChart.color(id));
+              })
+              .on('mouseover', function(id) {
+                scanLineChart.focus(id);
+              })
+              .on('mouseout', function(id) {
+                scanLineChart.revert();
+              })
+              .on('click', function(id) {
+                $(this).toggleClass("c3-legend-item-hidden")
+                scanLineChart.toggle(id);
+              });
         },
         error: function(xhr, desc, err) {
             console.log(xhr);
@@ -89,8 +120,11 @@ $(document).ready(function() {
             for (let j=0; j<data.datasets.length; j++) {
                 lengendNames.push(data.datasets[j].name);
             }
-            var recruitmentLineData = formatLineData(data);
+            let recruitmentLineData = formatLineData(data);
             recruitmentLineChart = c3.generate({
+                size: {
+                    height: '100%',
+                },
                 bindto: '#recruitmentChart',
                 data: {
                     x: 'x',
@@ -119,8 +153,7 @@ $(document).ready(function() {
                     pattern: siteColours
                 }
             });
-            console.log(d3);
-            d3.select('.legend-container')
+            d3.select('.recruitmentChartLegend')
               .insert('div', '.recruitmentChart')
               .attr('class', 'legend')
               .selectAll('div').data(lengendNames).enter()
@@ -152,4 +185,3 @@ $(document).ready(function() {
     });
 
 });
-
