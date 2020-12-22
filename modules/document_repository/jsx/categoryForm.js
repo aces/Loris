@@ -122,7 +122,7 @@ class DocCategoryForm extends React.Component {
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp)=>{
+    .then((resp) => {
       if (resp.ok) {
         this.props.refreshPage();
         this.fetchData();
