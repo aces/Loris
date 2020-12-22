@@ -138,7 +138,7 @@ class DocCategoryForm extends React.Component {
         }).catch((error) => {
           console.error(error);
           swal.fire(
-            'Unknown Error',
+            'Unknown Error!',
             'Please report the issue or contact your administrator',
             'error'
           );
