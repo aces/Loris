@@ -161,16 +161,18 @@ class NDB_BVL_Battery
      * Computes the difference between the existing battery and the
      * theoretical battery and returns only the missing tests as an array
      *
-     * @param array $currentBattery
-     * @param array $lookupBattery
+     * @param array $currentBattery Existing battery at the specified timepoint
+     * @param array $lookupBattery  Theoretical battery from the test_battery table
      *
      * @return array
      */
-    function getBatteryDifference(array $currentBattery=[], array $lookupBattery=[]) : array
-    {
+    function getBatteryDifference(
+        array $currentBattery=[],
+        array $lookupBattery=[]
+    ) : array {
         return array_unique(array_diff($lookupBattery, $currentBattery));
     }
-    
+
     /**
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
