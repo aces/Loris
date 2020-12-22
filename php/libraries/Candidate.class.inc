@@ -444,7 +444,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for the current candidate
      *
-     * @return integer CandID of candidate
+     * @return \ProjectID RegistrationProjectID of candidate
      */
     function getProjectID(): \ProjectID
     {
@@ -460,7 +460,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()] ?? '';
+        return $ProjectList[$this->getProjectID()->__toString()] ?? '';
     }
 
     /**
