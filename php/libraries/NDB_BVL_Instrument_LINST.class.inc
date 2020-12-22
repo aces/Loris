@@ -590,7 +590,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $pieces[2],
                                     $dateOptions
                                 );
-                            } else {
+                            }
+                            if ($dateFormat === 'BasicDate') {
                                 // Shows date without not answered dropdown
                                 $this->addBasicDate(
                                     $pieces[1],
@@ -598,8 +599,20 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $dateOptions
                                 );
                             }
+                            if ($dateFormat === 'Date') {
+                                // Shows standard date
+                                $this->addDateElement(
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $dateOptions
+                                );
+                            }
                         } else {
-                            // Shows standard date
+                            // it will only enter here if the date format is not
+                            // explicitly set. This offers backwards compatibility
+                            // for date elements created before the date formats were
+                            // explicitly specified. An empty date format will be
+                            // handled as a `Date` element
                             $this->addDateElement(
                                 $pieces[1],
                                 $pieces[2],
