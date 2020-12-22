@@ -61,7 +61,7 @@ class UploadCategory extends \NDB_Page
                     );
             }
             return new \LORIS\Http\Response\JSON\Conflict(
-                "duplicate category name under same parent folder"
+                "Duplicate category name under same parent folder."
             );
         } else {
             return (new \LORIS\Http\Response())
