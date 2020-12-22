@@ -63,6 +63,9 @@ $(document).ready(function() {
                     columns: scanLineData,
                     type: 'area-spline'
                 },
+                legend: {
+                    show: false,
+                },
                 axis: {
                     x: {
                         type: 'timeseries',
