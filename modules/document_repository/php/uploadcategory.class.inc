@@ -109,7 +109,7 @@ class UploadCategory extends \NDB_Page
      */
     function existCategoryName(string $categoryName, int $parent_id): bool
     {
-        $DB            = \Database::singleton();
+        $DB            = \NDB_Factory::singleton()->database();
         $categoryCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository_categories
              WHERE category_name=:name and parent_id=:id ",
