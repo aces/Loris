@@ -150,7 +150,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
             $this->_timePointInfo['SubprojectTitle'] = $title;
 
             if ($this->_timePointInfo['ProjectID'] !== null) {
-                $this->_timePointInfo['ProjectID'] = new \ProjectID($row['ProjectID']);
+                $this->_timePointInfo['ProjectID'] = new \ProjectID(
+                    $row['ProjectID']
+                );
             }
         } else {
             // return error when 0 rows to prevent creation of an empty object
