@@ -107,6 +107,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             case 'EntityType':
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
+            case 'ProjectID':
+                $this->candidateInfo[$key] = new \ProjectID($value);
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -443,9 +446,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *
      * @return integer CandID of candidate
      */
-    function getProjectID(): int
+    function getProjectID(): \ProjectID
     {
-        return intval($this->candidateInfo["RegistrationProjectID"] ?? null);
+        return $this->candidateInfo["RegistrationProjectID"];
     }
 
     /**

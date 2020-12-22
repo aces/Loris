@@ -148,6 +148,8 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;
+
+            $this->_timePointInfo['ProjectID'] = new \ProjectID($row['ProjectID']);
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -1193,11 +1195,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for this TimePoint
      *
-     * @return integer
+     * @return \ProjectID
      */
-    public function getProjectID() : int
+    public function getProjectID() : \ProjectID
     {
-        return intval($this->getData('ProjectID'));
+        return $this->getData('ProjectID');
     }
 
     /**
@@ -1212,7 +1214,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     {
         $centers = $user->getCenterIDs();
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers, true);
         return $projMatch && $centerMatch;
     }
