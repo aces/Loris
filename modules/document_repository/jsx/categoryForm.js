@@ -131,7 +131,7 @@ class DocCategoryForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal.fire('Add Successful!', '', 'success');
+        swal.fire('Category Successfully Added!', '', 'success');
       } else {
         resp.json().then((data) => {
           swal.fire('Could not add category!', data.error, 'error');
