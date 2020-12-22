@@ -406,8 +406,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $unanonymized = parent::toArray();
         $data         = array();
 
+        $value1Index = array_search('Value1', $unanonymized['Headers']);
+        $value2Index = array_search('Value2', $unanonymized['Headers']);
         foreach ($unanonymized['Data'] as &$row) {
-            $data[] = $row;
+            $row[$value1Index] = str_replace('{@}', ', ', $row[$value1Index]);
+            $row[$value2Index] = str_replace('{@}', ', ', $row[$value2Index]);
+            $data[]            = $row;
         }
         return array(
             'Headers' => $unanonymized['Headers'],
