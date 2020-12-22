@@ -16,7 +16,7 @@
         <tr>
             <th colspan="2" id="demog">Demographics</th>
             {if {$CurrentProject.ID|default > 0}}
-                <th>Undefined</th>
+                <th>No defined subproject</th>
             {/if}
             {foreach from=$Subprojects|default item=name key=proj}
                 <th>{$name}</th>
