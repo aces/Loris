@@ -604,7 +604,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     0,
                                     -5
                                 );
-                            }
+                            } else {
+                                throw new \LorisException(
+                                    "Standard Date format field $pieces[1] must end"
+                                        . " with '_date'."
+                                );
+                            }                            
                             // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
@@ -954,5 +959,4 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
 
 }
-
 
