@@ -62,8 +62,8 @@ class AddSurvey extends \NDB_Form
         $db = \Database::singleton();
 
         $numCandidates = $db->pselectOne(
-            "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+            "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
             array(
                 'v_PSCID'  => $values['PSCID'],
@@ -78,9 +78,9 @@ class AddSurvey extends \NDB_Form
         }
 
         $numSessions = $db->pselectOne(
-            "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            "SELECT COUNT(*) FROM session
+            WHERE CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
             array(
                 'v_CandID' => $values['CandID'],
@@ -114,8 +114,8 @@ class AddSurvey extends \NDB_Form
         $instrument_list = $db->pselect(
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             WHERE s.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
             array(
                 'v_CandID' => $values['CandID'],
@@ -179,7 +179,9 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db        = \Database::singleton();
+        $db    = \Database::singleton();
+        $email = $values['Email'];
+        unset($values['Email']);
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
@@ -207,11 +209,11 @@ class AddSurvey extends \NDB_Form
 
         $key = $this->_generateSurveyKey();
 
-        $email = false;
+        $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
-            $email = true;
+            $sendEmail = true;
         }
-        if ($email) {
+        if ($sendEmail) {
             $status = 'Sent';
         } else {
             $status = 'Created';
@@ -223,7 +225,6 @@ class AddSurvey extends \NDB_Form
                 array(
                     'SessionID'       => $SessionID,
                     'Test_name'       => $values['Test_name'],
-                    'Email'           => $values['Email'],
                     'Status'          => $status,
                     'OneTimePassword' => $key,
                     'CommentID'       => $commentID,
@@ -238,14 +239,13 @@ class AddSurvey extends \NDB_Form
         if ($email) {
             $config  = \NDB_Config::singleton();
             $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
                 'url'       => $baseURL . '/survey.php?key=' .
                                          urlencode($key),
                 'EmailForm' => $values['email_dialog'],
             );
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($email, 'new_survey.tpl', $msg_data);
         }
     }
 
