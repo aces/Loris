@@ -606,7 +606,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 );
                             } else {
                                 throw new \LorisException(
-                                    "Standard Date format field $pieces[1] must end"
+                                    "Standard Date format field `$pieces[1]` in LINST file `$filename` must end"
                                         . " with '_date'."
                                 );
                             }
@@ -959,4 +959,3 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
 
 }
-
