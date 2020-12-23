@@ -188,7 +188,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             // if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
         } else if (count($user_list_of_projects) > 1) {
-            $project_id = intval($values['psc']);
+            $project_id = intval($values['project']);
             $project    = \Project::getProjectFromID($project_id);
         }
 
