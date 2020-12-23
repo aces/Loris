@@ -609,7 +609,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     "Standard Date format field $pieces[1] must end"
                                         . " with '_date'."
                                 );
-                            }                            
+                            }
                             // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
