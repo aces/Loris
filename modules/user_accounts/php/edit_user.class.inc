@@ -781,7 +781,7 @@ class Edit_User extends \NDB_Form
         );
 
         // START PROJECT SECTION
-        $editorProjects = $editor->getData('ProjectIDs');
+        $editorProjects = $editor->getProjectIDs();
         $projects       = \Utility::getProjectList();
         $projectOptions = [];
         foreach ($editorProjects as $key => $projectID) {
