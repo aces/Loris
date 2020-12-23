@@ -47,7 +47,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // the base query
-        $query = " FROM participant_accounts p 
+        $query = " FROM participant_accounts p
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE c.Active = 'Y'
@@ -57,11 +57,11 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->columns      = array(
             'c.PSCID AS PSCID',
             's.Visit_label AS Visit',
-            'p.Email as Email',
             'p.Test_name as SurveyName',
             'p.OneTimePassword as URL',
             'p.Status',
         );
+
         $this->query        = $query;
         $this->order_by     = 'PSCID';
         $this->fieldOptions = [
