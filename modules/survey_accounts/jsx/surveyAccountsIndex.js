@@ -92,10 +92,6 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.visits,
       }},
-      {label: 'Email', show: true, filter: {
-        name: 'email',
-        type: 'text',
-      }},
       {label: 'Instrument', show: true, filter: {
         name: 'instrument',
         type: 'select',
