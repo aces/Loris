@@ -114,15 +114,14 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES)) {
+    if (empty($_FILES)) {
         showMediaError(
-            "The uploaded file is missing. Pelase contact the administrator",
+            "The uploaded file is missing. Please contact the administrator",
             400
         );
-        return;
     }
 
-    if (!isset($pscid, $visit)) {
+    if (empty($pscid) || empty($visit)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
