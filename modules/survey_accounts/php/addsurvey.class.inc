@@ -237,8 +237,8 @@ class AddSurvey extends \NDB_Form
         $this->tpl_data['success'] = true;
 
         if ($email) {
-            $config  = \NDB_Config::singleton();
-            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $config   = \NDB_Config::singleton();
+            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
                 'url'       => $baseURL . '/survey.php?key=' .
