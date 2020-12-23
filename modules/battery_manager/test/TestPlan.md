@@ -41,9 +41,10 @@ Test Battery.
      `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
 
-### Add tab
+### New Test
 
 **Testing add functionality**
+Click the "New Test" button on the upper right corner of the data table.
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter a site that exists.
   3. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
@@ -59,7 +60,7 @@ Test Battery.
      - Ensure that when you press "Yes", a success message appears and the page goes back to the Browse tab.
      - Ensure the entry you just activated is activated in the data table.
 
-### Browse tab
+### Browsing
 
 **Testing data table**
   1. After a couple of entries are added, ensure they are properly displayed in the data table.
@@ -78,7 +79,7 @@ Test Battery.
      - Ensure that you are taken to an Edit page with a form that is populated with the entry's values.
 
 **Test filters**
-  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields:
+  1. A selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
      - Instrument, Stage, Subproject, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
   2. Type text in the Minimum age and verify that the table gets filtered as you type.
@@ -97,8 +98,8 @@ Test Battery.
   6. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
   7. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
      - Ensure that a warning message appears giving the option to activate the other entry and deactivate the original entry.
-     - Ensure that when you press "Yes", a success message appears and the page goes back to the Browse tab.
+     - Ensure that when you press "Yes", a success message appears.
      - Ensure the original entry was deactivated and the other duplicate entry has been activated in the data table.
   8. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
-     - Ensure that a success message appears and the page goes back to the `Browse` tab.
+     - Ensure that a success message appears.
      - Ensure the original entry was deactivated and the new entry has been added to the data table.

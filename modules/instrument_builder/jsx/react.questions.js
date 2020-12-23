@@ -63,8 +63,8 @@ class LorisElement extends Component {
       case 'date':
         elementHtml = <DateElement
           label={element.Description}
-          minYear={element.Options.MinDate}
-          maxYear={element.Options.MaxDate}
+          minYear={element.Options.MinYear}
+          maxYear={element.Options.MaxYear}
         />;
         break;
       case 'numeric':
@@ -317,17 +317,21 @@ class DateOptions extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-
   componentDidMount() {
-    this.props.element.Options.dateFormat = '';
+    // Check if the date format is already set (editing elements)
+    // if not, set it to default value (new elements)
+    if (!this.props.element.Options.dateFormat) {
+      this.props.element.Options.dateFormat = 'Date';
+    }
   }
-    // Keep track of the inputed years
+
+  // Keep track of the inputed years
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
-    if (e.target.id === 'datemin') {
-      options.MinDate = e.target.value;
-    } else if (e.target.id === 'datemax') {
-      options.MaxDate = e.target.value;
+    if (e.target.id === 'yearmin') {
+      options.MinYear = e.target.value;
+    } else if (e.target.id === 'yearmax') {
+      options.MaxYear = e.target.value;
     } else if (e.target.id === 'dateFormat') {
       options.dateFormat = e.target.value;
     }
@@ -335,8 +339,9 @@ class DateOptions extends Component {
   }
   // Render the HTML
   render() {
-    let minYear = this.props.element.Options.MinDate;
-    let maxYear = this.props.element.Options.MaxDate;
+    let minYear = this.props.element.Options.MinYear;
+    let maxYear = this.props.element.Options.MaxYear;
+    let dateFormat = this.props.element.Options.dateFormat;
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
@@ -363,7 +368,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemin"
+              id="yearmin"
               min="1900"
               max="2100"
               value={minYear}
@@ -376,7 +381,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemax"
+              id="yearmax"
               min="1900"
               max="2100"
               onChange={this.onChange}
@@ -390,7 +395,8 @@ class DateOptions extends Component {
             <select
               id="dateFormat"
               className="form-control"
-              onChange={this.onChange}>
+              onChange={this.onChange}
+              defaultValue={dateFormat}>
               {Object.keys(dateFormatOptions).map(function(option, key) {
                 return (
                   <option key={key} value={option}>
@@ -520,8 +526,8 @@ class ListElements extends Component {
         break;
       case 'date':
         newState.Options = {
-          MinDate: '',
-          MaxDate: '',
+          MinYear: '',
+          MaxYear: '',
         };
         break;
       case 'numeric':
@@ -654,8 +660,8 @@ class AddElement extends Component {
     }
 
     if (selected === 'date') {
-      let min = this.state.Options.MinDate;
-      let max = this.state.Options.MaxDate;
+      let min = this.state.Options.MinYear;
+      let max = this.state.Options.MaxYear;
       let minYear = parseInt(min, 10);
       let maxYear = parseInt(max, 10);
       let minDate = Date.parse(min);

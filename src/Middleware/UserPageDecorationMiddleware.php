@@ -137,7 +137,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
-        if (method_exists($page, 'getFeedbackPanel')
+        if ($page !== null
+            && method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
@@ -244,7 +245,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for updated data
         // on the controlPanel to be properly displayed.
-        if (method_exists($page, 'getControlPanel')) {
+        if ($page !== null
+            && method_exists($page, 'getControlPanel')
+        ) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
 

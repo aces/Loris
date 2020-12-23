@@ -205,7 +205,7 @@ class Create_Timepoint extends \NDB_Form
 
                 $languages = \Utility::getLanguageList();
                 if (count($languages) > 1) {
-                    array_unshift($languages, null);
+                    $languages = [null] + $languages;
                     $this->addSelect(
                         'languageID',
                         'Language',

@@ -74,19 +74,21 @@ class DICOMArchiveAnonymizer implements Mapper
             '\/',
             $config['patientIDRegex']
         );
-        if (!preg_match(
-            "/$pNameRegex/",
-            $newrow['patientName']
-        )
-            && !preg_match(
-                "/$legoPhanRegex/",
-                $newrow['patientName']
-            )
-            && !preg_match(
-                "/$livingPhanRegex/",
-                $newrow['patientName']
-            )
-        ) {
+
+        if ($newrow['IsPhantom'] === 'Y') {
+            $isValid = preg_match("/$legoPhanRegex/", $newrow['patientName'])
+                || preg_match("/$livingPhanRegex/", $newrow['patientName']);
+        } elseif ($newrow['IsPhantom'] === 'N') {
+            $isValid = preg_match("/$pNameRegex/", $newrow['patientName']);
+        } else {
+            // if scan was uploaded via non-imaging uploader method
+            // run patient name through all regex validations
+            $isValid = preg_match("/$legoPhanRegex/", $newrow['patientName'])
+                || preg_match("/$livingPhanRegex/", $newrow['patientName'])
+                || preg_match("/$pNameRegex/", $newrow['patientName']);
+        }
+
+        if (!$isValid) {
             $newrow['patientName'] = 'INVALID - HIDDEN';
         }
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {

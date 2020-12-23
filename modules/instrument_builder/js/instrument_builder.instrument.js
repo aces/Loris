@@ -120,7 +120,7 @@ var Instrument = {
 
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
-                        if (element.Options.dateFormat === "") {
+                        if (element.Options.dateFormat === "Date") {
                             elName = elName + "_date";
                             dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
@@ -128,8 +128,8 @@ var Instrument = {
 
                         content += 'date{@}';
                         content += elName + "{@}" + element.Description;
-                        content += "{@}" + element.Options.MinDate.split('-')[0];
-                        content += "{@}" + element.Options.MaxDate.split('-')[0];
+                        content += "{@}" + element.Options.MinYear;
+                        content += "{@}" + element.Options.MaxYear;
                         content += "{@}" + element.Options.dateFormat + "\n";
                         content += dropdown;
                         break;
@@ -245,14 +245,24 @@ var Instrument = {
                                 value: (specialCase) ? "Textarea" : "Textbox"
                             };
                             break;
-                        case "date":
+                      case "date":
                             tempElement.Type = 'date';
                             tempElement.Name = pieces[1];
                             tempElement.Description = pieces[2];
+                            // If dateformat is null or empty default to "Date" to support instruments developed
+                            // before addition of new date formats
                             tempElement.Options = {
-                                MinDate : pieces[3] + "-01-01",
-                                MaxDate : pieces[4] + "-12-31"
+                                MinYear : pieces[3],
+                                MaxYear : pieces[4],
+                                dateFormat: pieces[5] || 'Date'
                             };
+                            // To mimic the NDB_BVL_Instrument_LINST class behaviour we strip the _date
+                            // from the standard dates name before loading it to the front end
+                            // the _date will be re-appended on saving
+                            if (tempElement.Options.dateFormat === 'Date'
+                                && tempElement.Name.substring(tempElement.Name.length-5) === '_date') {
+                              tempElement.Name = tempElement.Name.substring(0,tempElement.Name.length-5);
+                            }
                             tempElement.selected = {
                                 id: "date",
                                 value: "Date"

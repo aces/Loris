@@ -86,7 +86,7 @@ class DocIndex extends React.Component {
         });
         this.setState({
           global: false,
-          tableData: id == 0 ? filterData : fillData,
+          tableData: fillData,
           childrenNode: myJson['subcategories'],
           parentNode: myJson['parentcategory'],
         });

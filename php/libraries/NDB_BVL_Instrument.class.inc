@@ -2086,7 +2086,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->loadInstanceData($this);
+        $record    = $this->loadInstanceData($this);
+        $scoreCols = array_combine($scoreCols, $scoreCols);
+        // order is important here because it keeps values of first array
+        // unsetting all columns which are not scores
+        $data = array_intersect_key($record, $scoreCols);
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
