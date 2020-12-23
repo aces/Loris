@@ -48,7 +48,7 @@ class ProjectID extends ValidatableIdentifier implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return (int) $this->value;
+        return $this->value;
     }
 
 }
