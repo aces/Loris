@@ -78,7 +78,7 @@ class New_Profile extends \NDB_Form
             $edc,
             new Sex($values['sex']),
             $values['pscid'] ?? null,
-            intval($values['project'])
+            new \ProjectID($values['project'])
         );
 
         /* Update front-end data. Use passed PSCID when present, otherwise
@@ -257,7 +257,9 @@ class New_Profile extends \NDB_Form
                 $site = \Site::singleton((int) $values['site']);
             }
 
-            $project = \Project::getProjectFromID(intval($values['project']));
+            $project = \Project::getProjectFromID(
+                new \ProjectID($values['project'])
+            );
 
             if (empty($values['pscid'])) {
                 $errors['pscid'] = 'PSCID must be specified';
