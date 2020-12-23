@@ -606,8 +606,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 );
                             } else {
                                 throw new \LorisException(
-                                    "Standard Date format field `$pieces[1]` in LINST file `$filename` must end"
-                                        . " with '_date'."
+                                    "Standard Date format field `$pieces[1]` ".
+                                    "in LINST file `$filename` must end with '_date'."
                                 );
                             }
                             // Shows standard date
@@ -618,8 +618,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             );
                         } else {
                             throw new \LorisException(
-                                "Unsupported dateformat `$dateFormat` in LINST".
-                                " file `$filename` for date element `$pieces[1]`."
+                                "Unsupported dateformat `$dateFormat` in LINST ".
+                                "file `$filename` for date element `$pieces[1]`."
                             );
                         }
                     }
