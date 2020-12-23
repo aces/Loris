@@ -27,6 +27,7 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
+      - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
       - ./raisinbread/instruments:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
