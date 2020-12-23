@@ -265,12 +265,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         //testing search by PSCID
         $this->safeGet($this->url . "/survey_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter(
-            self::$email,
-            self::$table,
-            "1 rows",
-            "TestTestTest@example.com"
-        );
         $this-> _testFilter(self::$pscid, self::$table, "1 rows", "8888");
         $this-> _testFilter(self::$pscid, self::$table, "0 rows", "test");
     }
