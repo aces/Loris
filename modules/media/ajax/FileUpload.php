@@ -121,7 +121,7 @@ function uploadFile()
         );
     }
 
-    if (empty($pscid) || empty($visit)) {
+    if (!isset($pscid, $visit)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
