@@ -147,7 +147,7 @@ class NDB_BVL_Battery
 
         // assert that the current battery is empty
         if (count($currentTests) > 0) {
-            $neededTests = $this->getBatteryDifference($neededTests);
+            $neededTests = $this->getBatteryDifference($currentTests, $neededTests);
         }
 
         // loop over the list of instruments
