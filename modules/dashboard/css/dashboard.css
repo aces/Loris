@@ -70,6 +70,6 @@
   width: 100%;
 }
 .legend-container {
-  height: 300px;
+  max-height: 300px;
   overflow: scroll;
 }
