@@ -558,13 +558,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                     break;
                 case 'date':
-                    if (strpos($pieces[1], "_date") !== false) {
-                        $pieces[1] = substr(
-                            $pieces[1],
-                            0,
-                            strpos($pieces[1], "_date")
-                        );
-                    }
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
@@ -582,41 +575,52 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
-                        if (isset($dateFormat) && $dateFormat != "") {
-                            if ($dateFormat === 'MonthYear') {
-                                // Shows date without day of month
-                                $this->addMonthYear(
+                        if ($dateFormat === 'MonthYear') {
+                            // Shows date without day of month
+                            $this->addMonthYear(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } elseif ($dateFormat === 'BasicDate') {
+                            // Shows date without not answered dropdown
+                            $this->addBasicDate(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } elseif ($dateFormat === 'Date' || $dateFormat === "") {
+                            // The dateformat for a standard date should be
+                            // explicitly set to `Date` but for backwards
+                            // compatibility we support a null/empty dateformat and
+                            // default to standard date
+
+                            // Check that the field name ENDS with `_date` as it
+                            // should for standard dates. Then strip the `_date` so
+                            // it is not duplicated by the addDateElement function
+                            if (substr($pieces[1], -5) === "_date") {
+                                $pieces[1] = substr(
                                     $pieces[1],
-                                    $pieces[2],
-                                    $dateOptions
+                                    0,
+                                    -5
+                                );
+                            } else {
+                                throw new \LorisException(
+                                    "Standard Date format field `$pieces[1]` ".
+                                    "in LINST file `$filename` must end with ".
+                                    "'_date'."
                                 );
                             }
-                            if ($dateFormat === 'BasicDate') {
-                                // Shows date without not answered dropdown
-                                $this->addBasicDate(
-                                    $pieces[1],
-                                    $pieces[2],
-                                    $dateOptions
-                                );
-                            }
-                            if ($dateFormat === 'Date') {
-                                // Shows standard date
-                                $this->addDateElement(
-                                    $pieces[1],
-                                    $pieces[2],
-                                    $dateOptions
-                                );
-                            }
-                        } else {
-                            // it will only enter here if the date format is not
-                            // explicitly set. This offers backwards compatibility
-                            // for date elements created before the date formats were
-                            // explicitly specified. An empty date format will be
-                            // handled as a `Date` element
+                            // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
                                 $pieces[2],
                                 $dateOptions
+                            );
+                        } else {
+                            throw new \LorisException(
+                                "Unsupported dateformat `$dateFormat` in LINST ".
+                                "file `$filename` for date element `$pieces[1]`."
                             );
                         }
                     }
@@ -956,5 +960,3 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
 
 }
-
-

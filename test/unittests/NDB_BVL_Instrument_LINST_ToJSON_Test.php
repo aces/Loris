@@ -88,7 +88,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
         $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'not_answered'=>'Not Answered'\n";
         $instrument .= "selectmultiple{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}'not_answered'=>'Not Answered'\n";
-        $instrument .= "date{@}FieldName{@}Field Description{@}2003{@}2014\n";
+        $instrument .= "date{@}FieldName_date{@}Field Description{@}2003{@}2014\n";
         $instrument .= "select{@}date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
         $instrument .= "numeric{@}FieldName{@}Field Description{@}0{@}20\n";
         $instrument .= "select{@}numeric_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'";
@@ -182,7 +182,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                 ],
                 [
                     'Type'        => "date",
-                    "Name"        => "FieldName",
+                    "Name"        => "FieldName_date",
                     "Description" => "Field Description",
                     "Options"     => [
                         "MinDate" => "2003-01-01",
