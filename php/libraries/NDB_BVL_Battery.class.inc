@@ -135,13 +135,6 @@ class NDB_BVL_Battery
             );
         }
 
-        // assert that the current battery is empty
-        if (count($currentTests) > 0) {
-            throw new Exception(
-                "Battery is not empty - will not clobber an existing battery."
-            );
-        }
-
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
             $this->age,
@@ -152,12 +145,33 @@ class NDB_BVL_Battery
             $firstVisit
         );
 
+        // assert that the current battery is empty
+        if (count($currentTests) > 0) {
+            $neededTests = $this->getBatteryDifference($currentTests, $neededTests);
+        }
+
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
             $this->addInstrument($testName);
         } // end looping over the list of instruments
     } // end createBattery()
+
+    /**
+     * Computes the difference between the existing battery and the
+     * theoretical battery and returns only the missing tests as an array
+     *
+     * @param array $currentBattery Existing battery at the specified timepoint
+     * @param array $lookupBattery  Theoretical battery from the test_battery table
+     *
+     * @return array
+     */
+    function getBatteryDifference(
+        array $currentBattery=[],
+        array $lookupBattery=[]
+    ) : array {
+        return array_unique(array_diff($lookupBattery, $currentBattery));
+    }
 
     /**
      * Adds the specified instrument to the current battery, so long
