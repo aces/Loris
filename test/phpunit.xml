@@ -9,11 +9,11 @@
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
-            <directory>./integrationtests/</directory>
+            <!--directory>./integrationtests/</directory-->
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../raisinbread/test/api/</directory>
+            <!--directory>../raisinbread/test/api/</directory>
             <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -52,9 +52,9 @@
             <directory>../modules/survey_accounts/test/</directory>
             <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
-            <directory>../modules/training/test/</directory>
+            <directory>../modules/training/test/</directory-->
             <directory>../modules/user_accounts/test/</directory>
-            <directory>../test/test_instrument/</directory>
+            <!--directory>../test/test_instrument/</directory-->
         </testsuite>
 
     </testsuites>
