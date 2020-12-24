@@ -79,17 +79,11 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
-        // centerID
-        $list_of_sites = $user->hasPermission('access_all_profiles')
-            ? \Utility::getSiteList()
-            : $user->getStudySites();
-        return (new \LORIS\behavioural_qc\Views\Behavioral(
-            $visit_array,
+        return (new \LORIS\behavioural_qc\Views\Behavioural(
+            \Utility::getVisitList(),
             \Utility::getAllInstruments(),
-            \Utility::getProjectList(),
-            $list_of_sites
+            $this->getProjectOptions(),
+            $this->getSiteOptions()
         ))->toArray();
     }
 

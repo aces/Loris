@@ -81,18 +81,11 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
-        $projects    = \Utility::getProjectList();
-        // centerID
-        $list_of_sites = $user->hasPermission('access_all_profiles')
-            ? \Utility::getSiteList()
-            : $user->getStudySites();
         return (new \LORIS\behavioural_qc\Views\Incomplete(
-            $visit_array,
+            \Utility::getVisitList(),
             \Utility::getAllInstruments(),
-            $projects,
-            $list_of_sites
+            $this->getProjectOptions(),
+            $this->getSiteOptions()
         ))->toArray();
     }
 
