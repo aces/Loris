@@ -133,10 +133,20 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $request->getAttribute('user')
         );
 
-        $view = (new \LORIS\api\Views\Visit\Images(
-            $this->_visit,
-            ...$images
-        ))->toArray();
+        $version = $request->getAttribute('LORIS-API-Version');
+        switch($version) {
+        case 'v0.0.3':
+            $view = (new \LORIS\api\Views\Visit\Images(
+                $this->_visit,
+                ...$images
+            ))->toArray();
+
+        default:
+            $view = (new \LORIS\api\Views\Visit\Images_0_0_4_Dev(
+                $this->_visit,
+                ...$images
+            ))->toArray();
+        }
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
 

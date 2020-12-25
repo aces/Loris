@@ -360,12 +360,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array|null Non-associative array of SessionIDs 1st Time Point
+     * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
-    function getListOfTimePoints(): ?array
+    function getListOfTimePoints(): array
     {
-        return $this->listOfTimePoints;
+        return $this->listOfTimePoints ?? [];
     }
 
     /**
@@ -643,8 +643,35 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $subprojList;
     }
+
     /**
-     * Returns first visit for a candidate based on Date_visit
+     * Returns the SubprojectID and subproject title of the candidate's last visit
+     * based on Date_visit
+     *
+     * @return array|null Array with values SubprojectID and title
+     *                    for the candidate's last visit or NULL if none exist
+     */
+    public function getSubprojectForMostRecentVisit(): ?array
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+        $query  = "SELECT SubprojectID, title FROM session
+          LEFT JOIN subproject USING (SubprojectID)
+          WHERE CandID=:cid AND Date_visit IS NOT NULL
+          ORDER BY Date_visit DESC LIMIT 1";
+        $where  = ['cid' => $candID];
+        $result = $db->pselect($query, $where);
+
+        if (empty($result)) {
+            return null;
+        }
+        return $result[0];
+    }
+
+    /**
+     * Returns first visit for a candidate based on VisitNo
      *
      * @return string The visit label for the candidate's first visit
      */
@@ -850,7 +877,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
     /**
      * Implements the AccessibleResource interface. A candidate can
-     * be accessed by a user if it has a project and a site in common.
+     * be accessed by a user if it shares the same registration project
+     * and site or it has access to any of the timepoints.
      *
      * @param \User $user The user whose access should be validated.
      *
@@ -863,22 +891,27 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
         $centerMatch = in_array($this->getCenterID(), $centers, true);
 
-        if ($centerMatch === false) {
-            // getCenterID is just the RegistrationCenterID, if a visit
-            // has a center in common, we should still allow access to
-            // the candidate.
-            $timepoints = $this->getListOfTimePoints();
-            foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton(
-                    new \SessionID(strval($sessionID))
-                );
-                if (in_array($timepoint->getCenterID(), $centers, true)) {
-                    $centerMatch = true;
-                    break;
-                }
+        // The candidate is accessible based on its registration
+        // project/center
+        if ($projMatch && $centerMatch) {
+            return true;
+        }
+
+        // If we can't access due the registration, check if we
+        // have access to any sites. If we have access to a site,
+        // we need to be able to access the candidate to get to it.
+        $timepoints = $this->getListOfTimePoints();
+        foreach ($timepoints as $sessionID) {
+            $timepoint = \TimePoint::singleton(
+                new \SessionID(strval($sessionID))
+            );
+            if ($timepoint->isAccessibleBy($user)) {
+                // There's at least one, we don't need to check
+                // any more.
+                return true;
             }
         }
-        return $projMatch && $centerMatch;
+        return false;
     }
 
     /**

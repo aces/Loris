@@ -150,7 +150,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @param string $setting One of: 'generation', 'length', 'alphabet',
      *                        'min', 'max'.
      *
-     * @return array<int,int|float>|string|null
+     * @return array<int,int|string>|string|null
      */
     private function _getIDSetting(
         string $setting

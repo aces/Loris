@@ -68,7 +68,7 @@ class Stats_Demographic extends \NDB_Form
      * @param array   $subcats          the value of subcats
      * @param ?array  $visits           the value of visits
      * @param string  $dropdownName     the value of dropdownName
-     * @param string  $dropdownOpt      the value of dropdownOpt
+     * @param array   $dropdownOpt      the value of dropdownOpt
      * @param string  $dropdownSelected the value of dropdownSelected
      * @param array   $centers          the value of centers
      * @param array   $data             the value of data
@@ -250,6 +250,7 @@ class Stats_Demographic extends \NDB_Form
 
         //SUBPROJECTS
         $subprojectQuery = '';
+        $subprojects     = \Utility::getSubprojectList();
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($demographicProject);
@@ -257,7 +258,6 @@ class Stats_Demographic extends \NDB_Form
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
             }
-            $this->tpl_data['Subprojects'] = $subprojects;
         }
 
         //SITES
@@ -308,9 +308,10 @@ class Stats_Demographic extends \NDB_Form
             }
         }
 
-        $this->tpl_data['Sites']    = $sites;
-        $this->tpl_data['Projects'] = $projects;
-        $this->tpl_data['Visits']   = $visits;
+        $this->tpl_data['Sites']       = $sites;
+        $this->tpl_data['Projects']    = $projects;
+        $this->tpl_data['Visits']      = $visits;
+        $this->tpl_data['Subprojects'] = $subprojects;
 
         /**
          * REGISTERED CANDIDATES ROW
@@ -349,7 +350,9 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso 
+                                    ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -357,8 +360,8 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1
-                               OR ps.participant_status IS NULL)
+                          AND (pso.Description='Active'
+                               OR pso.Description IS NULL)
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",
@@ -380,7 +383,9 @@ class Stats_Demographic extends \NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN participant_status_options pso 
+                                      ON (pso.ID=ps.participant_status)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.RegistrationCenterID <> '1'
                           AND s.CenterID <> '1'
@@ -388,7 +393,7 @@ class Stats_Demographic extends \NDB_Form
 			  AND c.RegistrationProjectID IN (" . $projectsString . ")
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND ps.participant_status=5
+                          AND pso.Description='Inactive'
                           $paramProject
                           $paramSite
                       GROUP BY s.subprojectid",

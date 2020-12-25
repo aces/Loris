@@ -3,7 +3,16 @@
 The API should be tested by following the API specs and making sure every command works.
 This document is a preliminary test plan that should be superseded by a proper automated test suite.
 
+## Using the integration tests
+The API's integration test suite can be used to test all endpoints automatically. These tests are passed at every Travis checks.
+
+### Using dockerized tests
+To run the dockerized tests:
+1- Make sure the Docker containers have been created. Otherwise, follow the instructions in `test/QuickSetup.md`.
+2- Run `docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisModuleIntegrationTests`
+
 ## Using curl:
+`curl` can be used to test any endpoint manually.
 ### Login
 This is done sending a POST request to /login
 ```bash

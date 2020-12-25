@@ -23,8 +23,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * The form object for this instrument.
      *
-     * @var    LorisForm
-     * @access public
+     * @var LorisForm
      */
     public $form;
 
@@ -48,6 +47,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @access public
      */
     public $commentID;
+
+    /**
+     * The data associated with the commentID for this instrument
+     *
+     * @var ?array
+     */
+    protected $instanceData = null;
 
     /**
      * Database table containing data referenced by $this->commentID
@@ -461,10 +467,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, '', '', "&nbsp;");
         }
 
-        $defaults = $this->loadInstanceData($this);
+        $defaults = $this->getInstanceData();
 
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
@@ -822,7 +828,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
-
+        $this->instanceData = $newData;
     }
 
 
@@ -1437,7 +1443,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
-        $allValues = self::loadInstanceData($this);
+        $allValues = $this->getInstanceData();
 
         if (!array_key_exists($field, $allValues)) {
             throw new \OutOfBoundsException("Invalid field for instrument");
@@ -1507,7 +1513,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->_requiredElements)) {
             return 100;
         }
-        $allData       = $this->loadInstanceData($this);
+        $allData       = $this->getInstanceData();
         $unanswered    = 0;
         $totalElements = count($this->_requiredElements);
         foreach ($this->_requiredElements as $field) {
@@ -1543,7 +1549,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return 'Complete';
         }
 
-        $allData = $this->loadInstanceData($this);
+        $allData = $this->getInstanceData();
         foreach ($this->_requiredElements as $field) {
             // consider status field if not_answered chosen as an answer
             $statusField = $field . '_status';
@@ -1567,7 +1573,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus(): string
     {
-        $data = NDB_BVL_Instrument::loadInstanceData($this);
+        $data = $this->getInstanceData();
         return $data["Data_entry_completion_status"];
     }
 
@@ -1665,7 +1671,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1693,7 +1699,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "textarea",
             $field,
-            null,
+            '',
             [],
             [
                 'cols' => 25,
@@ -1711,7 +1717,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1756,7 +1762,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule(
@@ -1795,9 +1801,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "time",
             $field,
-            null,
-            null,
-            null
+            '',
         );
 
         $group[] = $this->createSelect(
@@ -1810,7 +1814,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'not_answered' => 'Not Answered',
             ]
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
             $field,
             array_merge($rules, [$field . '_status{@}=={@}']),
@@ -1858,7 +1862,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
@@ -1871,7 +1875,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
 
         unset($group);
@@ -1923,12 +1926,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $dateArray
     ): void {
         $group   = [];
-        $group[] = $this->createDate($name . "_date", null, $dateArray);
+        $group[] = $this->createDate($name . "_date", '', $dateArray);
         //add to array of dates and times.
         $this->dateTimeFields[] = $name . "_date";
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null             => "",
                 '88_refused'     => "88 Refused",
@@ -1941,7 +1944,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
         unset($group);
         $this->XINRegisterRule(
@@ -1980,14 +1982,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2016,7 +2018,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null             => "",
                 "88_refused"     => "88 Refused",
@@ -2025,7 +2027,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2053,7 +2055,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->loadInstanceData($this);
+        $data = $this->getInstanceData();
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2086,10 +2088,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function diff(NDB_BVL_Instrument $otherInstrument): array
     {
         // Load this instance data
-        $thisData = NDB_BVL_Instrument::loadInstanceData($this);
+        $thisData = $this->getInstanceData();
 
         // Load other instance data
-        $otherData = NDB_BVL_Instrument::loadInstanceData($otherInstrument);
+        $otherData = $otherInstrument->getInstanceData();
 
         // Create the return object data structure
         $diff = [];
@@ -2121,13 +2123,51 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Gets the data from an instrument out of the database and returns it
      * as an array.
      *
+     * @return array containing the data for each field in this instrument
+     */
+    public function getInstanceData(): array
+    {
+        if ($this->instanceData !== null) {
+            return $this->instanceData;
+        }
+
+        $db = \Database::singleton();
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselectOne(
+                "SELECT Data FROM flag WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+
+            $this->instanceData = json_decode($jsondata, true) ?? [];
+        } else {
+            $defaults = $db->pselectRow(
+                "SELECT * FROM $this->table WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+
+            $this->instanceData = $defaults ?? [];
+        }
+        return $this->instanceData;
+    }
+
+    /**
+     * Gets the data from an instrument out of the database and returns it
+     * as an array.
+     *
      * @param NDB_BVL_Instrument $instrumentInstance The object whose data is
      *                                               to be retrieved.
      *
      * @return array containing the data for each field in this instrument
+     *
+     * @deprecated use $instrumentInstance->getInstanceData() instead
      */
     static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
+        error_log(
+            'Warning: loadInstanceData($inst) is deprecated and will be removed'
+            . ' in a future version of LORIS. Use $inst->getInstanceData() instead.'
+        );
         $db = \Database::singleton();
 
         if ($instrumentInstance->jsonData) {
@@ -2464,53 +2504,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         } else if ($element['type'] === "date") {
-            if (get_class($this->form) === 'LorisForm') {
-                $element['options'] = [
-                    'mindate'         => "1990-01-01",
-                    'maxdate'         => "2000-12-31",
-                    'RequireResponse' => false,
-                ];
-                //$element['RequireResponse'] = false;
-            } else {
-                $html = new DOMDocument();
-                $html->loadHTML($element['html']);
-                // Parse the HTML to get the min and max date
-                $selects = $html->getElementsByTagName("select");
-                if ($selects->length > 0) {
-                    // Old school QuickForm style. This should be removed
-                    // after QuickForm is retired.
-                    $year = $selects->item(0);
+            $element['options'] = [
+                'mindate'         => "1990-01-01",
+                'maxdate'         => "2000-12-31",
+                'RequireResponse' => false,
+            ];
 
-                    // If Item 0 is blank, item 1 is the minimum,
-                    $minYear = $year->childNodes->item(0)->textContent;
-
-                    // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
-                    // which seems to be how loadHTML parses spaces. Trim whitespace
-                    // and then specifically trim that character before checking if
-                    // the year is empty, and if it's empty use the next option in
-                    // the dropdown (which should be non-empty)
-                    $minYear = trim($minYear);
-                    $minYear = trim($minYear, chr(0xC2).chr(0xA0));
-                    if (empty($minYear)) {
-                        $minYear = $year->childNodes->item(1)->textContent;
-                    }
-                    // the last item is the maximum year
-                    $maxYear = $year->lastChild->textContent;
-
-                    $element['options'] = [
-                        'mindate' => $minYear . "-01-01",
-                        'maxdate' => $maxYear . "-12-31",
-                    ];
-
-                }
-            }
             if (isset($this->WrapperDateWithStatusElements[$element['name']])) {
                 $element['NoResponse'] = false;
             } else {
                 $element['NoResponse'] = true;
             }
-
         }
+
         return $element;
     }
 
@@ -2635,17 +2641,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function toJSON(): string
     {
         $smarty = new Smarty_NeuroDB;
-        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
         foreach ($subtests as $subtest) {
-            if (get_class($this->form) === 'LorisForm') {
-                $this->form->addPageBreak(
-                    $subtest['Name'],
-                    $subtest['Description'],
-                    []
-                );
-            }
+            $this->form->addPageBreak(
+                $subtest['Name'],
+                $subtest['Description'],
+                []
+            );
             $this->page = $subtest['Name'];
         }
         $formArray = $this->_toJSONParsePage();

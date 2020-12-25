@@ -20,17 +20,13 @@ class NDB_Menu_Filter_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
-        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(
-            [
-                'getProperty',
-                'setProperty',
-                'getUsername',
-                'isLoggedIn'
-            ]
-        )->getMock();
+        $this->Session = $this->getMockBuilder(stdClass::class)
+            ->addMethods(
+                ["setProperty","getProperty","getUsername","isLoggedIn"]
+            )->getMock();
         $_SESSION      = [
             'State' => $this->Session
         ];
@@ -64,7 +60,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_resetFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -92,7 +88,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setSearchKeyword'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -120,7 +116,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setFilters'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -178,7 +174,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method          = ['_setFilterSortOrder'];
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 

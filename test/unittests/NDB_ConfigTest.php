@@ -54,14 +54,14 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var Database | PHPUnit_Framework_MockObject_MockObject
+     * @var Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -76,7 +76,7 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for User object
      *
-     * @var User | PHPUnit_Framework_MockObject_MockObject
+     * @var User | PHPUnit\Framework\MockObject\MockObject
      */
     private $_user;
 
@@ -85,7 +85,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_config     = FakeConfig::singleton();
@@ -104,7 +104,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -120,7 +120,7 @@ class NDB_ConfigTest extends TestCase
     public function testConfigFilePath()
     {
         $text = $this->_config->configFilePath("config.xml");
-        $this->assertContains("config.xml", $text);
+        $this->assertStringContainsString("config.xml", $text);
 
     }
 
@@ -171,7 +171,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
-            ->willReturn('true');
+            ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);

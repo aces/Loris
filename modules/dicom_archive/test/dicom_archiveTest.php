@@ -46,7 +46,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
     }
@@ -55,7 +55,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
     }
@@ -70,7 +70,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/dicom_archive/viewDetails/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("View Details", $bodyText);
+        $this->assertStringContainsString("View Details", $bodyText);
     }
     /**
      * Tests that help editor loads with the permission
@@ -84,11 +84,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
         );
@@ -122,10 +122,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
+     * @param string  $element The input element loaction
+     * @param string  $table   The first row location in the table
+     * @param ?string $records The records number in the table
+     * @param string  $value   The test value
      *
      * @return void
      */
@@ -145,7 +145,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
@@ -159,7 +159,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = self::$clearFilter;
@@ -193,7 +193,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$location').click()"
         );
         $text = $this->webDriver->getPageSource();
-        $this->assertContains('View Details', $text);
+        $this->assertStringContainsString('View Details', $text);
     }
     /**
      * Tests that the (view-Images) link works

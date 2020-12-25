@@ -45,7 +45,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
@@ -53,9 +53,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         }
         date_default_timezone_set("UTC");
         $this->session = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(
-                ['getProperty', 'setProperty', 'getUsername', 'isLoggedIn']
-            )
+            ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
             ->getMock();
         $this->mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
@@ -80,7 +78,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
         $this->_instrument->method('getSubtestList')->willReturn([]);
         $this->_instrument->form     = $this->quickForm;
@@ -764,12 +762,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         // that the serialization won't die on a 0 element "section"
         $this->_instrument->form->addElement(
             "header",
-            null,
+            '',
             "I am your test header"
         );
         $this->_instrument->form->addElement(
             "header",
-            null,
+            '',
             "I am another test header"
         );
         $this->_instrument->addScoreColumn(
@@ -842,9 +840,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(
-                ["getFullName", "getSubtestList", '_setupForm']
-            )->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList"]
+            )->addMethods(['_setupForm'])->getMock();
         $this->_instrument->method('getFullName')->willReturn("Test Instrument");
         $this->_instrument->method('getSubtestList')->willReturn(
             [
@@ -1126,18 +1124,18 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that loadInstanceData returns data from the correct database
+     * Test that getInstanceData returns data from the correct database
      *
-     * @covers NDB_BVL_Instrument::loadInstanceData
+     * @covers NDB_BVL_Instrument::getInstanceData
      * @return void
      */
-    function testLoadInstanceData()
+    function testGetInstanceData()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'flag';
-        $defaults = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $defaults = $this->_instrument->getInstanceData();
         $defaults['Testdate'] = '2020-01-01 00:00:00';
         $this->assertEquals(
             $defaults,
@@ -1563,7 +1561,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals('Complete', $data['Data_entry_completion_status']);
     }
 
@@ -1598,7 +1596,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals(null, $data['Examiner']);
     }
 
@@ -1618,7 +1616,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument            = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1675,7 +1673,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             []
         );
         $this->_instrument->clearInstrument();
-        $data           = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data           = $this->_instrument->getInstanceData();
         $conflictsAfter = $this->_DB->pselect(
             "SELECT * FROM conflicts_unresolved",
             []
@@ -1751,37 +1749,6 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     /**
      * Test that _toJSONParseSmarty returns an array with the
-     * correct information for a date type element when the form
-     * is not a LorisForm.
-     *
-     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
-     * @return void
-     */
-    function testToJsonParseSmartyDateTypeNotLorisForm()
-    {
-        $date = ['options' => ['minYear' => '1990',
-            'maxYear' => '2000'
-        ],
-            'type'    => 'select'
-
-        ];
-        $dateHTML = $this->_instrument->form->renderElement($date);
-        $el       = ['type' => 'date',
-            'html' => $dateHTML
-        ];
-        $result   = ['type' => 'date',
-            'html'       => $dateHTML,
-            'options'    => ['mindate' => "1990-01-01",
-                'maxdate' => "2000-12-31"
-            ],
-            'NoResponse' => true
-        ];
-        $this->_instrument->form = new \Candidate();
-        $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
-    }
-
-    /**
-     * Test that _toJSONParseSmarty returns an array with the
      * correct information
      *
      * @covers NDB_BVL_Instrument::_toJSONParseSmarty
@@ -1822,7 +1789,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->setup("commentID1", "page");
         $this->_instrument->table = 'medical_history';
-        $this->assertContains(
+        $this->assertStringContainsString(
             "<input  name=\"candID\" value=\"\" type=\"hidden\">\n",
             $this->_instrument->display()
         );
