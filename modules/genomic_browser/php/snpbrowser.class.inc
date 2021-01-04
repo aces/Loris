@@ -3,6 +3,7 @@
 namespace LORIS\genomic_browser;
 
 use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\Data\Filters\UserProjectMatch;
 use LORIS\genomic_browser\Provisioners\SnpProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -52,19 +53,21 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $filter      = new HasAnyPermissionOrUserSiteMatch(
+        $sitesFilter = new HasAnyPermissionOrUserSiteMatch(
             ['genomic_browser_view_allsites']
         );
-        $provisioner = (new SnpProvisioner())->filter($filter);
-        $user        = $request->getAttribute('user');
+        $provisioner = (new SnpProvisioner())
+            ->filter($sitesFilter)
+            ->filter(new UserProjectMatch());
+
+        $user = $request->getAttribute('user');
 
         $data = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
             ->toArray($user);
         $body = [
             'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions($request),
-            'subprojects'  => \Utility::getSubprojectList(),
+            'fieldOptions' => $this->_getFieldOptions(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
     }
@@ -76,18 +79,10 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
      *
      * @return array Dynamic field options
      */
-    private function _getFieldOptions(
-        ServerRequestInterface $request
-    ) : array {
+    private function _getFieldOptions(ServerRequestInterface $request) : array
+    {
         $user = $request->getAttribute('user');
-
-        // centerID
-        $list_of_sites = $user->hasPermission('genomic_browser_view_allsites')
-            ? \Utility::getSiteList()
-            : $user->getStudySites();
-        $list_of_sites = array_combine($list_of_sites, $list_of_sites);
-
-        $DB = \Database::singleton();
+        $DB   = \Database::singleton();
         $platform_results
             = $DB->pselect(
                 "SELECT distinct Name FROM genotyping_platform ",
@@ -99,9 +94,9 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
             $platform_options[$name] = $name;
         }
         return (new \LORIS\genomic_browser\Views\SNP(
-            $list_of_sites,
-            \Utility::getSubprojectList(),
-            $platform_options
+            $this->getSiteOptions($user, false),
+            $this->getSubprojectOptions($user, false),
+            $platform_options,
         ))->toArray();
     }
 
@@ -134,6 +129,17 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
                 'genomic_browser_view_site'
             ]
         );
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return ['genomic_browser_view_allsites'];
     }
 
     /**

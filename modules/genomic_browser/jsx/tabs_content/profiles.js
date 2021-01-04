@@ -55,7 +55,6 @@ class Profiles extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
           };
           this.setState({
             data,
@@ -183,7 +182,7 @@ class Profiles extends Component {
         filter: {
           name: 'Subproject',
           type: 'select',
-          options: options.Subproject,
+          options: options.Subprojects,
         },
       },
       {
