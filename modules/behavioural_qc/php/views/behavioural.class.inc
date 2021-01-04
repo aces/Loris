@@ -12,7 +12,7 @@ namespace LORIS\behavioural_qc\Views;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Behavioral
+class Behavioural
 {
     /**
      * The formElement
