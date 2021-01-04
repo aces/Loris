@@ -38,7 +38,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * The requested Visit
      *
-     * @var \Timepoint
+     * @var ?\Timepoint
      */
     private $_visit;
 

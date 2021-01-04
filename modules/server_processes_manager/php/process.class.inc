@@ -62,7 +62,7 @@ class Process
     /**
      * Will provide access to the database
      *
-     * @var IDatabaseProvider
+     * @var IProcessMonitor
      */
     private $_processMonitor;
 
@@ -110,7 +110,7 @@ class Process
     /**
      * Accessor for field $_processMonitor
      *
-     * @return IDatabaseProvider value of field $_processMonitor
+     * @return IProcessMonitor
      */
     public function getProcessMonitor()
     {
@@ -150,12 +150,12 @@ class Process
         // Since both command are run in succession, when the main command is
         // finished, the $getExitCodeCmd will be run, storing the $mainCmd
         // exit code in $_exitCodeFile
-        $this->_pid = exec(
+        $this->_pid = intval(exec(
             "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
             . " echo $!",
             $execOutput,
             $returnStatus
-        );
+        ));
 
         if ($returnStatus != 0) {
             throw new \RuntimeException(

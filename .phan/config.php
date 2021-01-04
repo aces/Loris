@@ -39,7 +39,6 @@ return [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
         "PhanTypeMismatchArgument",
-        "PhanTypeMismatchProperty",
         "PhanTypeArraySuspiciousNullable",
     ],
     "analyzed_file_extensions" => ["php", "inc"],

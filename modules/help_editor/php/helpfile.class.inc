@@ -30,10 +30,9 @@ class HelpFile
     /**
      * Identifies the help file
      *
-     * @var    array
-     * @access private
+     * @var    int
      */
-    var $helpID;
+    private $helpID;
 
     /**
      * The help file's data
@@ -67,7 +66,7 @@ class HelpFile
             ['HID' => $helpID]
         );
         // set the help file
-        $obj->data = $result;
+        $obj->data = $result ?? [];
 
         return $obj;
     }
