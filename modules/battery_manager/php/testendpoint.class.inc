@@ -33,6 +33,20 @@ class TestEndpoint implements RequestHandlerInterface
 {
 
     /**
+     * The database connection
+     *
+     * @var \Database
+     */
+    protected $db;
+
+    /**
+     * The user accessing the endpoint
+     *
+     * @var \User
+     */
+    protected $user;
+
+    /**
      * Returns true if user has access to this endpoint.
      *
      * @param \User $user The user whose access is being checked
