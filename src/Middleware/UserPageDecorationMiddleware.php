@@ -74,7 +74,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
      *  after adding decorations.
      */
     public function process(
-        ServerRequestInterface $request, RequestHandlerInterface $handler
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
     ) : ResponseInterface {
         ob_start();
         // Set the page template variables
