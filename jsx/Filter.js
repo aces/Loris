@@ -40,7 +40,8 @@ class Filter extends Component {
   onFieldUpdate(name, value) {
     const {filter, fields} = JSON.parse(JSON.stringify(this.props));
     const searchParams = new URLSearchParams(location.search);
-    const type = fields.find((field) => (field.filter||{}).name == name).type;
+    const type = fields
+      .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'));
     if (value === null || value === '' ||
         (value.constructor === Array && value.length === 0)) {
