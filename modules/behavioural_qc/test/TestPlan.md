@@ -1,6 +1,6 @@
 # Behavioural Quality Control Test Plan
 
-## [Automated testing](/modules/behavioural_qc/test/behavioural_qcTest.php) covers:
+## [Automated testing](https://github.com/aces/Loris/blob/17.1-dev/modules/behavioural_qc/test/behavioural_qcTest.php) covers:
 * Permissions (both present and absent)
 * That body text exists
 
@@ -13,9 +13,8 @@ now populated only with sites that are study sites and to which the user has acc
 4. Make sure that the user accessible site data is only populated with the step 3 condition.
 5. Ensure that Conflict/Incomplete Candidate/Link to BVL Feedback links point to the correct place.
 6. Ensure that feedback status is correct.
-7. Ensure that the behavioural_qc graphics is working according to the applied filters.
-8. Repeat steps 2-9 with applying all the filters.
-9. Perform a query that returns a row with a link to BVL feedback. Click on the click to edit the feedback QC
+7. Repeat steps 2-8 with applying all the filters.
+8. Perform a query that returns a row with a link to BVL feedback. Click on the click to edit the feedback QC
    status and change its value. Save the data and close the popup. Make sure that the behavioural_qc result table has been 
    updated for that row (i.e. reflect the new Feedback status). Click on the feedback link again and check that 
    the QC status has also been updated in the popup window.  

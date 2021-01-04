@@ -1,8 +1,8 @@
-<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl|default}/js/filterControl.js" type="text/javascript"></script>
 <div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="{$baseurl}/mri_violations/resolved_violations/">
+        <form method="post" action="{$baseurl|default}/mri_violations/resolved_violations/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -52,7 +52,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/resolved_violations/?reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl|default}/mri_violations/resolved_violations/?reset=true'">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/resolved_violations/?reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl|default}/mri_violations/resolved_violations/?reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
@@ -73,8 +73,8 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/">Not Resolved</a></li>
-        <li class="statsTab active"><a class="statsTabLink" href="{$baseurl}/mri_violations/resolved_violations/">Resolved</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl|default}/mri_violations/">Not Resolved</a></li>
+        <li class="statsTab active"><a class="statsTabLink" href="{$baseurl|default}/mri_violations/resolved_violations/">Resolved</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -87,7 +87,7 @@
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/mri_violations/resolved_violations/?format=json",
+     "DataURL" : "{$baseurl|default}/mri_violations/resolved_violations/?format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PatientName"
   });

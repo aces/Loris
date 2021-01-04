@@ -66,9 +66,9 @@ class BatteryManagerIndex extends Component {
     return new Promise((resolve, reject) => {
       return fetch(url, {credentials: 'same-origin', method: method})
       .then((resp) => resp.json())
-      .then((data) => this.setState({[state]: data}, resolve()))
+      .then((data) => this.setState({[state]: data}, resolve))
       .catch((error) => {
-        this.setState({error: true}, reject());
+        this.setState({error: true}, reject);
         console.error(error);
       });
     });
@@ -211,7 +211,7 @@ class BatteryManagerIndex extends Component {
    * Close the Form
    */
   closeForm() {
-    this.setState({add: false, edit: false, test: {}});
+    this.setState({add: false, edit: false, test: {}, errors: {}});
   }
 
   /**
@@ -254,10 +254,10 @@ class BatteryManagerIndex extends Component {
       this.checkDuplicate(test)
       .then((test) => this.validateTest(test))
       .then((test) => this.postData(
-          this.props.testEndpoint+test.id,
+          this.props.testEndpoint+(test.id || ''),
           test,
-          request)
-      )
+          request
+      ))
       .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
       .then(() => resolve())
       .catch((e) => reject(e));
@@ -470,18 +470,26 @@ class BatteryManagerIndex extends Component {
       }
       if (test.ageMinDays == null) {
         errors.ageMinDays = 'This field is required';
+      } else if (test.ageMinDays < 0) {
+        errors.ageMinDays = 'This field must be 0 or greater';
       }
       if (test.ageMaxDays == null) {
         errors.ageMaxDays = 'This field is required';
+      } else if (test.ageMaxDays < 0) {
+        errors.ageMaxDays = 'This field must be 0 or greater';
+      }
+      if (test.ageMinDays > test.ageMaxDays) {
+        errors.ageMinDays = 'Minimum age must be lesser than maximum age.';
+        errors.ageMaxDays = 'Maximum age must be greater than minimum age.';
       }
       if (test.stage == null) {
         errors.stage = 'This field is required';
       }
 
       if (Object.entries(errors).length === 0) {
-        this.setState({errors}, resolve(test));
+        this.setState({errors}, () => resolve(test));
       } else {
-        this.setState({errors}, reject());
+        this.setState({errors}, reject);
       }
     });
   }

@@ -41,12 +41,14 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->createLorisDBConnection();
         $this->_feedbackObj = NDB_BVL_Feedback::singleton(
-            "karo_test", null, $this->_sessionID
+            "karo_test",
+            null,
+            $this->_sessionID
         );
     }
 

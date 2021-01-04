@@ -59,7 +59,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
@@ -196,7 +196,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();
@@ -660,8 +660,8 @@ abstract class LorisIntegrationTest extends TestCase
         string $haystack,
         string $jsError= "An error occured while loading the page."
     ): void {
-        $this->assertContains($needle, $haystack);
-        $this->assertNotContains($jsError, $haystack);
+        $this->assertStringContainsString($needle, $haystack);
+        $this->assertStringNotContainsString($jsError, $haystack);
         $this->resetPermissions();
     }
 
@@ -713,7 +713,7 @@ abstract class LorisIntegrationTest extends TestCase
                 WebDriverBy::cssSelector("$row")
             )->getText();
             // 4 means there are 4 records under this site.
-            $this->assertContains($expect_records, $bodyText);
+            $this->assertStringContainsString($expect_records, $bodyText);
             //test clear filter
             $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
     }
@@ -733,7 +733,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->safeGet($this->url . '/dashboard/');
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
         $this->webDriver->wait(3, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -741,6 +741,6 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         $pageSource = $this->webDriver->getPageSource();
-        $this->assertContains($label, $pageSource);
+        $this->assertStringContainsString($label, $pageSource);
     }
 }

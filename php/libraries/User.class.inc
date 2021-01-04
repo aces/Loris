@@ -464,7 +464,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $count = $DB->pselectOne(
+        $count = $DB->pselectOneInt(
             "SELECT
                COUNT(1)
              FROM user_login_history

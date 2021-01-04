@@ -22,7 +22,7 @@ the Instruments search field to 'All instruments', clears the search keyword tex
 field and performs a search with these criteria. Validate the results.
   [Automation Testing]
 7. Check that if (and only if) you have the 'data_dict_edit' permission you can edit 
-the Description field. Edit a description, access the Candidate Profile page and 
+the Description field (by clicking on the text of the description). Edit a description, access the Candidate Profile page and 
 access the Data Dictionary page again. Make sure the edit was saved.
   [Automation Testing]
 8. Make sure that search keywords are not case-sensitive and that when you specify 

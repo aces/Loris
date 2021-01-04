@@ -12,7 +12,7 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
-        "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Behavioural_QC automated integration tests
  *
@@ -32,13 +32,13 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Behavioural Quality Control", $bodyText);
+        $this->assertStringContainsString("Behavioural Quality Control", $bodyText);
     }
-     /**
-      * Tests that behavioural_qc does not load with the permission
-      *
-      * @return void
-      */
+    /**
+     * Tests that behavioural_qc does not load with the permission
+     *
+     * @return void
+     */
     function testBehaviouralQCWithoutPermission()
     {
         $this->setupPermissions([]);

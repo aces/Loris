@@ -37,7 +37,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Brainbrowser", $bodyText);
+        $this->assertStringContainsString("Brainbrowser", $bodyText);
     }
 }
 

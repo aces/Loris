@@ -37,18 +37,13 @@ class HelpRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct()
     {
         parent::__construct(
-            "SELECT helpChild.helpID as helpID,
-                    helpChild.topic as Topic,
-                    helpChild.parentID as Parent_ID,
-                    helpParent.parentID as ParentTopic_ID,
-                    helpParent.topic as Parent_Topic,
-                    helpChild.content as Content
-             FROM help helpChild
-             LEFT JOIN help helpParent
-               ON (helpChild.parentID = helpParent.helpID)
-             WHERE helpChild.hash IS NOT NULL
-             AND helpChild.topic IS NOT NULL
-             ORDER BY helpChild.helpID",
+            "SELECT help.helpID as helpID,
+                    help.topic as Topic,
+                    help.content as Content
+             FROM help
+             WHERE help.hash IS NOT NULL
+             AND help.topic IS NOT NULL
+             ORDER BY help.helpID",
             []
         );
     }

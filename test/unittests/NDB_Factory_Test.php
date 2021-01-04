@@ -36,9 +36,9 @@ class NDB_Factory_Test extends TestCase
     {
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
-        $this->_config = \NDB_Config::singleton();
-        $database     = $this->_config->getSetting('database');
-        $this->_DB = Database::singleton(
+        $this->_config  = \NDB_Config::singleton();
+        $database       = $this->_config->getSetting('database');
+        $this->_DB      = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -93,7 +93,8 @@ class NDB_Factory_Test extends TestCase
     function testSetConfig()
     {
         $this->assertEquals(
-            $this->_factory->setConfig($this->_config), $this->_config
+            $this->_factory->setConfig($this->_config),
+            $this->_config
         );
     }
 
@@ -122,7 +123,8 @@ class NDB_Factory_Test extends TestCase
     {
         $user = \User::singleton();
         $this->assertEquals(
-            $this->_factory->setUser($user), $user
+            $this->_factory->setUser($user),
+            $user
         );
     }
 
