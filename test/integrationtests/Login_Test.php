@@ -19,7 +19,7 @@ class LorisLoginTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . '/?logout=true');
 
         $invalidPassword = 'Just Make This Up';
-        $this->login("UnitTester",$invalidPassword);
+        $this->login("UnitTester", $invalidPassword);
 
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
