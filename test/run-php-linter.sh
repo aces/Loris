@@ -57,8 +57,6 @@ vendor/bin/phpcs --standard=test/StrictTypesCS.xml --extensions=php,inc "${stric
 # Run PHPCS on src/ directory using a different ruleset conforming to PSR2.
 vendor/bin/phpcs --standard=test/SrcCS.xml --extensions=php/php src/ || exit $?;
 
-vendor/bin/phpmd php/,modules/,src/ text 'test/LorisPHPMD.xml' || exit $?;
-
 # Run PHPStan on php/ and modules/
 vendor/bin/phpstan analyse \
     --level max \
