@@ -136,6 +136,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
+        if (!is_null($page)) {
         if (method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
@@ -154,7 +155,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $this->PageName
             );
         }
-
+        }
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
         $tpl_data['issue_tracker_url'] = $this->Config->getSetting('issue_tracker_url');
@@ -248,10 +249,11 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for updated data
         // on the controlPanel to be properly displayed.
+        if (!is_null($paeg)) {
         if (method_exists($page, 'getControlPanel')) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
-
+        }
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['FormAction'] = $page->FormAction ?? '';
