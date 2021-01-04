@@ -25,21 +25,92 @@ namespace LORIS\parent_portal;
  */
 class Parent_Portal extends \NDB_Form
 {
-    public $skipTemplate = true;
     /**
-     * Include additional JS files
+     * Determine whether the user has permission to view this page
      *
-     * @return array of javascript to be inserted
+     * @return bool whether the user has access
      */
-    function getJSDependencies(): array
+
+
+    /**
+     * CommonPageSetup sets up the common form elements which
+     * are on the page, regardless of HTTP request method.
+     *
+     * @return none
+     */
+    function setup()
+    {
+        $this->tpl_data['page_title'] = 'Parent Portal';
+        $this->addBasicText(
+            "parentID",
+            "ParentID",
+            array("placeholder" => "")
+        );
+
+
+        $this->addBasicText(
+            "email",
+            "Email",
+            array("placeholder" => "")
+        );
+        $this->form->addFormRule(array(&$this, '_validate'));
+        $localDefaults = $this->_getDefaults();
+        if(!is_array($localDefaults)) { $localDefaults = array(); }
+        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
+
+
+    }
+
+    function _validate($values)
+    {
+        $errors = array();
+
+         if (empty($values['parentID'])) {
+            $errors['parentID'] = " ParentID is required!";
+        }
+        else if (empty($values['email'])  ) {
+            $errors['email'] = " Email is required!";
+        }
+        else {
+            $db = \Database::singleton();
+
+            $numSurveys = $db->pselectOne(
+                "SELECT COUNT(*) FROM participant_accounts p
+                 JOIN session s ON (p.SessionID=s.ID)
+                 JOIN candidate c ON (c.CandID=s.CandID)
+                 WHERE p.Email=:surv_email AND c.ParentID=:pid",
+                array(
+                    'surv_email' => $values['email'],
+                    'pid'        => $values['parentID'],
+                )
+            );
+            if ($numSurveys == 0) {
+                //As suggested by Pierre to deter malicious automated attempts to hack the portal.
+                sleep(3);
+                $errors['email'] = "Sorry, No Surveys Found With The Above Information.";
+            }
+        }
+
+            return $errors;
+
+    }
+    function _getDefaults()
+    {
+
+        $sanitize = array_map('htmlentities', $_GET);
+        $id = $sanitize['id'] ?? null;
+
+        $defaults['parentID']=$id;
+        return $defaults;
+    }
+    function _process($values)
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . '/parent_portal/js/ParentPortalIndex.js']
-        );
+        $_SESSION['pid'] = $_REQUEST['parentID'];
+        $_SESSION['email'] = $_REQUEST['email'];
+        header ("Location: $baseURL/parent_portal/view_surveys");
+        exit;
     }
 }
 
