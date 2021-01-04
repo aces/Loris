@@ -150,12 +150,14 @@ class Process
         // Since both command are run in succession, when the main command is
         // finished, the $getExitCodeCmd will be run, storing the $mainCmd
         // exit code in $_exitCodeFile
-        $this->_pid = intval(exec(
-            "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
-            . " echo $!",
-            $execOutput,
-            $returnStatus
-        ));
+        $this->_pid = intval(
+            exec(
+                "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
+                . " echo $!",
+                $execOutput,
+                $returnStatus
+            )
+        );
 
         if ($returnStatus != 0) {
             throw new \RuntimeException(

@@ -27,7 +27,7 @@ class UserPermissions
      *
      * @var ?string
      */
-    private $userID;
+    var $userID;
 
     /**
      * Stores the permissions

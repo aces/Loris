@@ -30,9 +30,10 @@ class HelpFile
     /**
      * Identifies the help file
      *
-     * @var    int
+     * @var    ?int
+     * @access private
      */
-    private $helpID;
+    var $helpID;
 
     /**
      * The help file's data
