@@ -67,8 +67,6 @@ services:
 
   selenium-debug:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
-    volumes:
-      - /dev/shm:/dev/shm
     links:
       - web-debug:web
     ports:
