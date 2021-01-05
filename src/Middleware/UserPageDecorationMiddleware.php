@@ -39,10 +39,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     /**
      * Create a constructor for UserPageDecorationMiddleware
      *
-     * @param User   $user     The user
+     * @param \User   $user     The user
      * @param string $baseurl  The base url
      * @param string $pagename The page name
-     * @param string $config   The loris config
+     * @param \NDB_Config $config   The loris config
      * @param array  $JS       The JS files
      * @param array  $CSS      The CSS files
      */
@@ -83,8 +83,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $user     = $request->getAttribute("user");
         $loris    = $request->getAttribute("loris");
         $tpl_data = [
-            'test_name' => $this->PageName,
-        ];
+                     'test_name' => $this->PageName,
+                    ];
         $menu     = [];
 
         $modules = $loris->getActiveModules();
@@ -131,12 +131,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         // Basic page outline variables
         $tpl_data += [
-            'study_title' => $this->Config->getSetting('title'),
-            'baseurl'     => $this->BaseURL,
-            'menus'       => $menu,
-            'currentyear' => date('Y'),
-            'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
-        ];
+                      'study_title' => $this->Config->getSetting('title'),
+                      'baseurl'     => $this->BaseURL,
+                      'menus'       => $menu,
+                      'currentyear' => date('Y'),
+                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
+                     ];
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
@@ -199,25 +199,27 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Variables that get passed along to the LorisHelper javascript object.
         $tpl_data['studyParams'] = [
-            'useEDC'      => $this->Config->getSetting('useEDC'),
-            'useProband'  => $this->Config->getSetting(
-                'useProband'
-            ),
-            'useFamilyID' => $this->Config->getSetting(
-                'useFamilyID'
-            ),
-            'useConsent'  => $this->Config->getSetting(
-                'useConsent'
-            ),
-        ];
+                                    'useEDC'      => $this->Config->getSetting(
+                                        'useEDC'
+                                    ),
+                                    'useProband'  => $this->Config->getSetting(
+                                        'useProband'
+                                    ),
+                                    'useFamilyID' => $this->Config->getSetting(
+                                        'useFamilyID'
+                                    ),
+                                    'useConsent'  => $this->Config->getSetting(
+                                        'useConsent'
+                                    ),
+                                   ];
         $tpl_data['jsonParams']  = json_encode(
             [
-                'BaseURL'   => $this->BaseURL,
-                'TestName'  => $tpl_data['test_name'] ?? '',
-                'Subtest'   => $tpl_data['subtest'] ?? '',
-                'CandID'    => $tpl_data['candID'] ?? '',
-                'SessionID' => $tpl_data['sessionID'] ?? '',
-                'CommentID' => $tpl_data['commentID'] ?? '',
+             'BaseURL'   => $this->BaseURL,
+             'TestName'  => $tpl_data['test_name'] ?? '',
+             'Subtest'   => $tpl_data['subtest'] ?? '',
+             'CandID'    => $tpl_data['candID'] ?? '',
+             'SessionID' => $tpl_data['sessionID'] ?? '',
+             'CommentID' => $tpl_data['commentID'] ?? '',
             ]
         );
 
@@ -262,10 +264,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $WindowName = md5($url);
 
             $tpl_data['links'][] = [
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $WindowName,
-            ];
+                                    'url'        => $url,
+                                    'label'      => $label,
+                                    'windowName' => $WindowName,
+                                   ];
         }
 
         // Handle needs to be called before formaction, because handle potentially
@@ -287,7 +289,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // that need it, but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for
         // updated data on the controlPanel to be properly displayed.
-        if (!is_null($paeg)) {
+        if (!is_null($page)) {
             if (method_exists($page, 'getControlPanel')) {
                 $tpl_data['control_panel'] = $page->getControlPanel();
             }
@@ -306,10 +308,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Finally, the actual content and render it..
         $tpl_data += [
-            'jsfiles'   => $this->JSFiles,
-            'cssfiles'  => $this->CSSFiles,
-            'workspace' => $undecorated->getBody(),
-        ];
+                      'jsfiles'   => $this->JSFiles,
+                      'cssfiles'  => $this->CSSFiles,
+                      'workspace' => $undecorated->getBody(),
+                     ];
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
