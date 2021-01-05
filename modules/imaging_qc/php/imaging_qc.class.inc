@@ -268,7 +268,11 @@ class Imaging_QC extends \NDB_Menu_Filter
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
             // Only include scan types that appear in the MRI Parameter Form
-            $scanTypeInMRIPF = $db->columnExists('mri_parameter_form', $scan_type . "_Scan_done");
+            $scanTypeInMRIPF = $db->columnExists(
+                'mri_parameter_form',
+                $scan_type .
+                "_Scan_done"
+            );
 
             if (!$scanTypeInMRIPF) {
                 unset($scan_types[$scan_type]);
