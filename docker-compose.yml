@@ -13,7 +13,7 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/node-firefox:3.5
+    image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
     ports:
@@ -66,7 +66,7 @@ services:
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox:4.0.0-beta-1-prerelease-20201208
+    image: selenium/standalone-firefox-debug:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
     links:
