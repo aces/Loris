@@ -69,7 +69,9 @@ class Datadict extends \DataFrameworkMenu
                 ''
             );
             $key  = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
-            $dictInstruments[$key] = $name;
+            // Append other testnames if multiple tests use the same table
+            $otherNames = isset($dictInstruments[$key]) ? "/".$dictInstruments[$key] : '';
+            $dictInstruments[$key] = $name . $otherNames;
         }
         return array(
             'sourceFrom' => $dictInstruments,
