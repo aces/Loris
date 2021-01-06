@@ -72,7 +72,7 @@ class Datadict extends \DataFrameworkMenu
             // Append other testnames if multiple tests use the same table
             $otherNames = '';
             if (isset($dictInstruments[$key])) {
-                $otherNames = "/".$dictInstruments[$key];
+                $otherNames = " / ".$dictInstruments[$key];
             }
             $dictInstruments[$key] = $name . $otherNames;
         }
