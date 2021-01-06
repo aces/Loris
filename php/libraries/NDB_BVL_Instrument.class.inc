@@ -767,6 +767,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $this->_saveCandidateAge($values);
         }
 
+        // Save UserID, the data entry personnel, into flag Data and
+        // instrument table
+        $user = \NDB_Factory::singleton()->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            // Add UserID to $values
+            $values['UserID'] = $user->getUsername();
+        }
+
         //Convert select multiple elements into database storable values
         if (!empty($this->selectMultipleElements)) {
             foreach ($this->selectMultipleElements AS $elname) {
