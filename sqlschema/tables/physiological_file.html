@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>physiological_file - LORIS Database</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>LORIS</b> Database</a>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>physiological_file</h1><p><span id="recordNumber">10</span> rows</p><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PhysiologicalFileID">PhysiologicalFileID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="physiological_archive.PhysiologicalFileID references physiological_file.PhysiologicalFileID via FK_phys_file_FileID_5"><a href='physiological_archive.html'>physiological_archive</a><span class='relatedKey'>.PhysiologicalFileID</span></td>
+                                                <td class="constraint detail">FK_phys_file_FileID_5<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="physiological_channel.PhysiologicalFileID references physiological_file.PhysiologicalFileID via FK_phys_file_FileID_2"><a href='physiological_channel.html'>physiological_channel</a><span class='relatedKey'>.PhysiologicalFileID</span></td>
+                                                <td class="constraint detail">FK_phys_file_FileID_2<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="physiological_electrode.PhysiologicalFileID references physiological_file.PhysiologicalFileID via FK_phys_file_FileID_3"><a href='physiological_electrode.html'>physiological_electrode</a><span class='relatedKey'>.PhysiologicalFileID</span></td>
+                                                <td class="constraint detail">FK_phys_file_FileID_3<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="physiological_parameter_file.PhysiologicalFileID references physiological_file.PhysiologicalFileID via FK_phys_file_FileID"><a href='physiological_parameter_file.html'>physiological_parameter_file</a><span class='relatedKey'>.PhysiologicalFileID</span></td>
+                                                <td class="constraint detail">FK_phys_file_FileID<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="physiological_task_event.PhysiologicalFileID references physiological_file.PhysiologicalFileID via FK_phys_file_FileID_4"><a href='physiological_task_event.html'>physiological_task_event</a><span class='relatedKey'>.PhysiologicalFileID</span></td>
+                                                <td class="constraint detail">FK_phys_file_FileID_4<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PhysiologicalModalityID">PhysiologicalModalityID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="physiological_file.PhysiologicalModalityID references physiological_modality.PhysiologicalModalityID via FK_phys_modality_ModID"><a href='physiological_modality.html'>physiological_modality</a><span class='relatedKey'>.PhysiologicalModalityID</span></td>
+                                                <td class="constraint detail">FK_phys_modality_ModID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="PhysiologicalOutputTypeID">PhysiologicalOutputTypeID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="physiological_file.PhysiologicalOutputTypeID references physiological_output_type.PhysiologicalOutputTypeID via FK_phys_output_type_TypeID"><a href='physiological_output_type.html'>physiological_output_type</a><span class='relatedKey'>.PhysiologicalOutputTypeID</span></td>
+                                                <td class="constraint detail">FK_phys_output_type_TypeID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SessionID">SessionID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="physiological_file.SessionID references session.ID via FK_session_ID"><a href='session.html'>session</a><span class='relatedKey'>.ID</span></td>
+                                                <td class="constraint detail">FK_session_ID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="InsertTime">InsertTime</span></td>
+                                    <td>TIMESTAMP</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>CURRENT_TIMESTAMP</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="FileType">FileType</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>12</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="physiological_file.FileType references ImagingFileTypes.type via FK_ImagingFileTypes_type"><a href='ImagingFileTypes.html'>ImagingFileTypes</a><span class='relatedKey'>.type</span></td>
+                                                <td class="constraint detail">FK_ImagingFileTypes_type<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="AcquisitionTime">AcquisitionTime</span></td>
+                                    <td>DATETIME</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>1970-01-01 00:00:01</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="InsertedByUser">InsertedByUser</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>50</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="FilePath">FilePath</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PRIMARY</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>PhysiologicalFileID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_ImagingFileTypes_type</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>FileType</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_phys_modality_ModID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>PhysiologicalModalityID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_phys_output_type_TypeID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>PhysiologicalOutputTypeID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_session_ID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>SessionID</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="864,5,1131,152">
+<area shape="rect" id="node2" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="352,419,780,752">
+<area shape="rect" id="node5" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="41,916,273,1033">
+<area shape="rect" id="node6" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="18,272,295,395">
+<area shape="rect" id="node7" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="5,412,308,559">
+<area shape="rect" id="node8" href="session.html" target="_top" title="session" alt="" coords="26,576,287,899">
+<area shape="rect" id="node3" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="846,169,1149,375">
+<area shape="rect" id="node4" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="824,392,1171,597">
+<area shape="rect" id="node9" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="835,615,1159,791">
+<area shape="rect" id="node10" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="850,808,1145,955">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/physiological_file.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="199,299,375,387">
+<area shape="rect" id="node2" href="psc.html" target="_top" title="psc" alt="" coords="14,299,146,387">
+<area shape="rect" id="node3" href="Project.html" target="_top" title="Project" alt="" coords="5,404,155,492">
+<area shape="rect" id="node4" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1629,361,1920,449">
+<area shape="rect" id="node5" href="files.html" target="_top" title="files" alt="" coords="1329,544,1495,632">
+<area shape="rect" id="node6" href="session.html" target="_top" title="session" alt="" coords="441,320,702,643">
+<area shape="rect" id="node7" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="455,920,687,1037">
+<area shape="rect" id="node8" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="886,571,1075,659">
+<area shape="rect" id="node9" href="mri_processing_protocol.html" target="_top" title="mri_processing_protocol" alt="" coords="837,923,1125,1011">
+<area shape="rect" id="node10" href="tarchive.html" target="_top" title="tarchive" alt="" coords="901,288,1060,376">
+<area shape="rect" id="node14" href="language.html" target="_top" title="language" alt="" coords="205,655,370,743">
+<area shape="rect" id="node30" href="subproject.html" target="_top" title="subproject" alt="" coords="199,477,376,565">
+<area shape="rect" id="node11" href="flag.html" target="_top" title="flag" alt="" coords="899,676,1063,764">
+<area shape="rect" id="node12" href="issues.html" target="_top" title="issues" alt="" coords="902,5,1059,93">
+<area shape="rect" id="node13" href="media.html" target="_top" title="media" alt="" coords="910,781,1051,869">
+<area shape="rect" id="node15" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1323,265,1501,353">
+<area shape="rect" id="node16" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1289,385,1535,473">
+<area shape="rect" id="node17" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="871,465,1091,553">
+<area shape="rect" id="node18" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="1279,955,1545,1101">
+<area shape="rect" id="node19" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="767,1028,1195,1361">
+<area shape="rect" id="node26" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="433,1057,710,1180">
+<area shape="rect" id="node27" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="420,1197,723,1344">
+<area shape="rect" id="node20" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="1261,1312,1563,1517">
+<area shape="rect" id="node21" href="physiological_channel_type.html" target="_top" title="physiological_channel_type" alt="" coords="824,1379,1137,1467">
+<area shape="rect" id="node22" href="physiological_status_type.html" target="_top" title="physiological_status_type" alt="" coords="830,1484,1131,1572">
+<area shape="rect" id="node23" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="1239,1535,1585,1740">
+<area shape="rect" id="node24" href="physiological_electrode_material.html" target="_top" title="physiological_electrode_material" alt="" coords="801,1697,1160,1785">
+<area shape="rect" id="node25" href="physiological_electrode_type.html" target="_top" title="physiological_electrode_type" alt="" coords="817,1592,1144,1680">
+<area shape="rect" id="node28" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="1250,701,1574,877">
+<area shape="rect" id="node29" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="1265,1119,1559,1265">
+<area shape="rect" id="node31" href="session_status.html" target="_top" title="session_status" alt="" coords="875,111,1086,199">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/physiological_file.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="864,5,1131,152">
+<area shape="rect" id="node2" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="352,419,780,752">
+<area shape="rect" id="node5" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="41,916,273,1033">
+<area shape="rect" id="node6" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="18,272,295,395">
+<area shape="rect" id="node7" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="5,412,308,559">
+<area shape="rect" id="node8" href="session.html" target="_top" title="session" alt="" coords="26,576,287,899">
+<area shape="rect" id="node3" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="846,169,1149,375">
+<area shape="rect" id="node4" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="824,392,1171,597">
+<area shape="rect" id="node9" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="835,615,1159,791">
+<area shape="rect" id="node10" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="850,808,1145,955">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/physiological_file.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="199,272,375,360">
+<area shape="rect" id="node2" href="psc.html" target="_top" title="psc" alt="" coords="14,272,146,360">
+<area shape="rect" id="node3" href="Project.html" target="_top" title="Project" alt="" coords="5,399,155,487">
+<area shape="rect" id="node4" href="feedback_bvl_thread.html" target="_top" title="feedback_bvl_thread" alt="" coords="851,111,1110,199">
+<area shape="rect" id="node5" href="session.html" target="_top" title="session" alt="" coords="441,423,702,745">
+<area shape="rect" id="node15" href="language.html" target="_top" title="language" alt="" coords="205,768,370,856">
+<area shape="rect" id="node32" href="subproject.html" target="_top" title="subproject" alt="" coords="199,572,376,660">
+<area shape="rect" id="node6" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1629,620,1920,708">
+<area shape="rect" id="node7" href="files.html" target="_top" title="files" alt="" coords="1329,851,1495,939">
+<area shape="rect" id="node8" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="455,1136,687,1253">
+<area shape="rect" id="node9" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="886,887,1075,975">
+<area shape="rect" id="node10" href="mri_processing_protocol.html" target="_top" title="mri_processing_protocol" alt="" coords="837,1097,1125,1185">
+<area shape="rect" id="node11" href="tarchive.html" target="_top" title="tarchive" alt="" coords="901,499,1060,587">
+<area shape="rect" id="node12" href="flag.html" target="_top" title="flag" alt="" coords="899,745,1063,833">
+<area shape="rect" id="node13" href="issues.html" target="_top" title="issues" alt="" coords="902,5,1059,93">
+<area shape="rect" id="node14" href="media.html" target="_top" title="media" alt="" coords="910,992,1051,1080">
+<area shape="rect" id="node16" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1323,480,1501,568">
+<area shape="rect" id="node17" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1289,604,1535,692">
+<area shape="rect" id="node18" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="871,640,1091,728">
+<area shape="rect" id="node19" href="participant_accounts.html" target="_top" title="participant_accounts" alt="" coords="850,216,1111,304">
+<area shape="rect" id="node20" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="1279,1195,1545,1341">
+<area shape="rect" id="node21" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="767,1239,1195,1572">
+<area shape="rect" id="node28" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="433,1271,710,1393">
+<area shape="rect" id="node29" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="420,1411,723,1557">
+<area shape="rect" id="node22" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="1261,1527,1563,1732">
+<area shape="rect" id="node23" href="physiological_channel_type.html" target="_top" title="physiological_channel_type" alt="" coords="824,1589,1137,1677">
+<area shape="rect" id="node24" href="physiological_status_type.html" target="_top" title="physiological_status_type" alt="" coords="830,1695,1131,1783">
+<area shape="rect" id="node25" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="1239,1749,1585,1955">
+<area shape="rect" id="node26" href="physiological_electrode_material.html" target="_top" title="physiological_electrode_material" alt="" coords="801,1911,1160,1999">
+<area shape="rect" id="node27" href="physiological_electrode_type.html" target="_top" title="physiological_electrode_type" alt="" coords="817,1805,1144,1893">
+<area shape="rect" id="node30" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="1250,995,1574,1171">
+<area shape="rect" id="node31" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="1265,1359,1559,1505">
+<area shape="rect" id="node33" href="session_status.html" target="_top" title="session_status" alt="" coords="875,321,1086,409">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/physiological_file.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

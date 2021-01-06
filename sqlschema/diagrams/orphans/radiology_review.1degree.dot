@@ -1,0 +1,46 @@
+digraph "radiology_review" {
+  graph [
+    rankdir="RL"
+    bgcolor="#ffffff"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+    ration="compress"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "radiology_review" [
+   label=<
+    <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="4"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>radiology_review</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="CommentID" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">CommentID</TD></TR></TABLE></TD><TD PORT="CommentID.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="UserID" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">UserID</TD></TR></TABLE></TD><TD PORT="UserID.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Examiner" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Examiner</TD></TR></TABLE></TD><TD PORT="Examiner.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Testdate" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Testdate</TD></TR></TABLE></TD><TD PORT="Testdate.type" ALIGN="LEFT">timestamp[19]</TD></TR>
+      <TR><TD PORT="Data_entry_completion_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Data_entry_completion_status</TD></TR></TABLE></TD><TD PORT="Data_entry_completion_status.type" ALIGN="LEFT">enum[10]</TD></TR>
+      <TR><TD PORT="Date_taken" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Date_taken</TD></TR></TABLE></TD><TD PORT="Date_taken.type" ALIGN="LEFT">date[10]</TD></TR>
+      <TR><TD PORT="Candidate_Age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Candidate_Age</TD></TR></TABLE></TD><TD PORT="Candidate_Age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Window_Difference" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Window_Difference</TD></TR></TABLE></TD><TD PORT="Window_Difference.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Scan_done" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Scan_done</TD></TR></TABLE></TD><TD PORT="Scan_done.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="MRI_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">MRI_date</TD></TR></TABLE></TD><TD PORT="MRI_date.type" ALIGN="LEFT">date[10]</TD></TR>
+      <TR><TD PORT="MRI_date_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">MRI_date_status</TD></TR></TABLE></TD><TD PORT="MRI_date_status.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="Review_date" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Review_date</TD></TR></TABLE></TD><TD PORT="Review_date.type" ALIGN="LEFT">date[10]</TD></TR>
+      <TR><TD PORT="Review_date_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Review_date_status</TD></TR></TABLE></TD><TD PORT="Review_date_status.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="Review_results" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Review_results</TD></TR></TABLE></TD><TD PORT="Review_results.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="abnormal_atypical_exclusionary" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">abnormal_atypical_exclusionary</TD></TR></TABLE></TD><TD PORT="abnormal_atypical_exclusionary.type" ALIGN="LEFT">enum[16]</TD></TR>
+      <TR><TD PORT="Incidental_findings" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Incidental_findings</TD></TR></TABLE></TD><TD PORT="Incidental_findings.type" ALIGN="LEFT">text[65535]</TD></TR>
+      <TR><TD PORT="Incidental_findings_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="215" HEIGHT="16">Incidental_findings_status</TD></TR></TABLE></TD><TD PORT="Incidental_findings_status.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 0</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">820 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 &gt;</TD></TR>
+    </TABLE>>
+    URL="tables/radiology_review.html"
+    target="_top"
+    tooltip="radiology_review"
+  ];
+}

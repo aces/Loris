@@ -1,0 +1,57 @@
+digraph "medical_history" {
+  graph [
+    rankdir="RL"
+    bgcolor="#ffffff"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+    ration="compress"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "medical_history" [
+   label=<
+    <TABLE BORDER="2" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="4"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT"><B>medical_history</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="CommentID" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">CommentID</TD></TR></TABLE></TD><TD PORT="CommentID.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="UserID" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">UserID</TD></TR></TABLE></TD><TD PORT="UserID.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Examiner" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Examiner</TD></TR></TABLE></TD><TD PORT="Examiner.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Testdate" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Testdate</TD></TR></TABLE></TD><TD PORT="Testdate.type" ALIGN="LEFT">timestamp[19]</TD></TR>
+      <TR><TD PORT="Data_entry_completion_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Data_entry_completion_status</TD></TR></TABLE></TD><TD PORT="Data_entry_completion_status.type" ALIGN="LEFT">enum[10]</TD></TR>
+      <TR><TD PORT="Date_taken" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Date_taken</TD></TR></TABLE></TD><TD PORT="Date_taken.type" ALIGN="LEFT">date[10]</TD></TR>
+      <TR><TD PORT="Candidate_Age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Candidate_Age</TD></TR></TABLE></TD><TD PORT="Candidate_Age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="Window_Difference" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">Window_Difference</TD></TR></TABLE></TD><TD PORT="Window_Difference.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="arthritis" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">arthritis</TD></TR></TABLE></TD><TD PORT="arthritis.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="arthritis_age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">arthritis_age</TD></TR></TABLE></TD><TD PORT="arthritis_age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="arthritis_age_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">arthritis_age_status</TD></TR></TABLE></TD><TD PORT="arthritis_age_status.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="pulmonary_issues" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">pulmonary_issues</TD></TR></TABLE></TD><TD PORT="pulmonary_issues.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="pulmonary_issues_specific" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">pulmonary_issues_specific</TD></TR></TABLE></TD><TD PORT="pulmonary_issues_specific.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="hypertension" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">hypertension</TD></TR></TABLE></TD><TD PORT="hypertension.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="hypertension_while_pregnant" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">hypertension_while_pregnant</TD></TR></TABLE></TD><TD PORT="hypertension_while_pregnant.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="hypertension_while_pregnant_age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">hypertension_while_pregnant_age</TD></TR></TABLE></TD><TD PORT="hypertension_while_pregnant_age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="hypertension_while_pregnant_age_status" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">hypertension_while_pregnant_age_status</TD></TR></TABLE></TD><TD PORT="hypertension_while_pregnant_age_status.type" ALIGN="LEFT">enum[12]</TD></TR>
+      <TR><TD PORT="concussion_or_head_trauma" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_or_head_trauma</TD></TR></TABLE></TD><TD PORT="concussion_or_head_trauma.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="concussion_1_description" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_1_description</TD></TR></TABLE></TD><TD PORT="concussion_1_description.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="concussion_1_hospitalized" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_1_hospitalized</TD></TR></TABLE></TD><TD PORT="concussion_1_hospitalized.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="concussion_1_age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_1_age</TD></TR></TABLE></TD><TD PORT="concussion_1_age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="concussion_2_description" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_2_description</TD></TR></TABLE></TD><TD PORT="concussion_2_description.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="concussion_2_hospitalized" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_2_hospitalized</TD></TR></TABLE></TD><TD PORT="concussion_2_hospitalized.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="concussion_2_age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_2_age</TD></TR></TABLE></TD><TD PORT="concussion_2_age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="concussion_3_description" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_3_description</TD></TR></TABLE></TD><TD PORT="concussion_3_description.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="concussion_3_hospitalized" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_3_hospitalized</TD></TR></TABLE></TD><TD PORT="concussion_3_hospitalized.type" ALIGN="LEFT">enum[3]</TD></TR>
+      <TR><TD PORT="concussion_3_age" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">concussion_3_age</TD></TR></TABLE></TD><TD PORT="concussion_3_age.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD PORT="current_concussion_symptoms" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="278" HEIGHT="16">current_concussion_symptoms</TD></TR></TABLE></TD><TD PORT="current_concussion_symptoms.type" ALIGN="LEFT">varchar[255]</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 0</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1,349 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">0 &gt;</TD></TR>
+    </TABLE>>
+    URL="tables/medical_history.html"
+    target="_top"
+    tooltip="medical_history"
+  ];
+}

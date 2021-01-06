@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>session - LORIS Database</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>LORIS</b> Database</a>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>session</h1><p><span id="recordNumber">1136</span> rows</p><br />
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-file-text-o"></i>
+                            <h3 id="Description" class="box-title">Description</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body clearfix">
+                            <p>Table holding session information</p>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ID">ID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="feedback_bvl_thread.SessionID&#39;s name implies that it&#39;s a child of session.ID, but it doesn&#39;t reference that column."><a href='feedback_bvl_thread.html'>feedback_bvl_thread</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="feedback_mri_comments.SessionID references session.ID via FK_feedback_mri_comments_4"><a href='feedback_mri_comments.html'>feedback_mri_comments</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_feedback_mri_comments_4<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="files.SessionID references session.ID via FK_files_1"><a href='files.html'>files</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_files_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="flag.SessionID references session.ID via FK_flag_1"><a href='flag.html'>flag</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_flag_1<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="hrrt_archive.SessionID references session.ID via FK_hrrt_archive_sessionID"><a href='hrrt_archive.html'>hrrt_archive</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_hrrt_archive_sessionID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="issues.sessionID references session.ID via fk_issues_4"><a href='issues.html'>issues</a><span class='relatedKey'>.sessionID</span></td>
+                                                <td class="constraint detail">fk_issues_4<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="media.session_id references session.ID via media_ibfk_1"><a href='media.html'>media</a><span class='relatedKey'>.session_id</span></td>
+                                                <td class="constraint detail">media_ibfk_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="mri_upload.SessionID references session.ID via FK_mriupload_SessionID"><a href='mri_upload.html'>mri_upload</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_mriupload_SessionID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="parameter_session.SessionID references session.ID via FK_parameter_session_1"><a href='parameter_session.html'>parameter_session</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_parameter_session_1<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="participant_accounts.SessionID&#39;s name implies that it&#39;s a child of session.ID, but it doesn&#39;t reference that column."><a href='participant_accounts.html'>participant_accounts</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="physiological_file.SessionID references session.ID via FK_session_ID"><a href='physiological_file.html'>physiological_file</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_session_ID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="session_status.SessionID references session.ID via fk_session_status_1"><a href='session_status.html'>session_status</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">fk_session_status_1<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="tarchive.SessionID references session.ID via FK_tarchive_sessionID"><a href='tarchive.html'>tarchive</a><span class='relatedKey'>.SessionID</span></td>
+                                                <td class="constraint detail">FK_tarchive_sessionID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CandID">CandID</span></td>
+                                    <td>INT</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>0</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="session.CandID references candidate.CandID via FK_session_1"><a href='candidate.html'>candidate</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">FK_session_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CenterID">CenterID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="session.CenterID references psc.CenterID via FK_session_2"><a href='psc.html'>psc</a><span class='relatedKey'>.CenterID</span></td>
+                                                <td class="constraint detail">FK_session_2<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="ProjectID">ProjectID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="session.ProjectID references Project.ProjectID via FK_session_ProjectID"><a href='Project.html'>Project</a><span class='relatedKey'>.ProjectID</span></td>
+                                                <td class="constraint detail">FK_session_ProjectID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="VisitNo">VisitNo</span></td>
+                                    <td>SMALLINT UNSIGNED</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Visit_label">Visit_label</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="SubprojectID">SubprojectID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="session.SubprojectID references subproject.SubprojectID via FK_session_3"><a href='subproject.html'>subproject</a><span class='relatedKey'>.SubprojectID</span></td>
+                                                <td class="constraint detail">FK_session_3<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Submitted">Submitted</span></td>
+                                    <td>enum(&#39;Y&#39;, &#39;N&#39;)</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>N</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Current_stage">Current_stage</span></td>
+                                    <td>enum(&#39;Not Started&#39;, &#39;Screening&#39;, &#39;Visit&#39;, &#39;Approval&#39;, &#39;Subject&#39;, &#39;Recycling Bin&#39;)</td>
+                                    <td>13</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>Not Started</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_stage_change">Date_stage_change</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Screening">Screening</span></td>
+                                    <td>enum(&#39;Pass&#39;, &#39;Failure&#39;, &#39;Withdrawal&#39;, &#39;In Progress&#39;)</td>
+                                    <td>11</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_screening">Date_screening</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Visit">Visit</span></td>
+                                    <td>enum(&#39;Pass&#39;, &#39;Failure&#39;, &#39;Withdrawal&#39;, &#39;In Progress&#39;)</td>
+                                    <td>11</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_visit">Date_visit</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Approval">Approval</span></td>
+                                    <td>enum(&#39;In Progress&#39;, &#39;Pass&#39;, &#39;Failure&#39;)</td>
+                                    <td>11</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_approval">Date_approval</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="Active">Active</span></td>
+                                    <td>enum(&#39;Y&#39;, &#39;N&#39;)</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>Y</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_active">Date_active</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="RegisteredBy">RegisteredBy</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="UserID">UserID</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td></td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_registered">Date_registered</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Testdate">Testdate</span></td>
+                                    <td>TIMESTAMP</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>CURRENT_TIMESTAMP</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Hardcopy_request">Hardcopy_request</span></td>
+                                    <td>enum(&#39;-&#39;, &#39;N&#39;, &#39;Y&#39;)</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>-</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="BVLQCStatus">BVLQCStatus</span></td>
+                                    <td>enum(&#39;Complete&#39;)</td>
+                                    <td>8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="BVLQCType">BVLQCType</span></td>
+                                    <td>enum(&#39;Visual&#39;, &#39;Hardcopy&#39;)</td>
+                                    <td>8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="BVLQCExclusion">BVLQCExclusion</span></td>
+                                    <td>enum(&#39;Excluded&#39;, &#39;Not Excluded&#39;)</td>
+                                    <td>12</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="QCd">QCd</span></td>
+                                    <td>enum(&#39;Visual&#39;, &#39;Hardcopy&#39;)</td>
+                                    <td>8</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Scan_done">Scan_done</span></td>
+                                    <td>enum(&#39;N&#39;, &#39;Y&#39;)</td>
+                                    <td>1</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MRIQCStatus">MRIQCStatus</span></td>
+                                    <td>enum(&#39;&#39;, &#39;Pass&#39;, &#39;Fail&#39;)</td>
+                                    <td>4</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td></td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MRIQCPending">MRIQCPending</span></td>
+                                    <td>enum(&#39;Y&#39;, &#39;N&#39;)</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>N</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MRIQCFirstChangeTime">MRIQCFirstChangeTime</span></td>
+                                    <td>DATETIME</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MRIQCLastChangeTime">MRIQCLastChangeTime</span></td>
+                                    <td>DATETIME</td>
+                                    <td>19</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="MRICaveat">MRICaveat</span></td>
+                                    <td>enum(&#39;true&#39;, &#39;false&#39;)</td>
+                                    <td>5</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>false</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="languageID">languageID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="session.languageID references language.language_id via FK_session_4"><a href='language.html'>language</a><span class='relatedKey'>.language_id</span></td>
+                                                <td class="constraint detail">FK_session_4<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PRIMARY</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_session_2</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>CenterID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_session_4</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>languageID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_session_ProjectID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>ProjectID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>session_candVisit</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span>/<span title='Ascending'>Asc</span></td>
+                                    <td>CandID + VisitNo</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>SessionActive</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>SessionSubproject</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>SubprojectID</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="265,977,516,1300">
+<area shape="rect" id="node2" href="psc.html" target="_top" title="psc" alt="" coords="42,1095,185,1241">
+<area shape="rect" id="node3" href="Project.html" target="_top" title="Project" alt="" coords="5,1285,221,1432">
+<area shape="rect" id="node4" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1688,1555,1979,1789">
+<area shape="rect" id="node5" href="files.html" target="_top" title="files" alt="" coords="1383,1308,1627,1719">
+<area shape="rect" id="node6" href="session.html" target="_top" title="session" alt="" coords="560,1223,985,2289">
+<area shape="rect" id="node7" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1071,1641,1281,1847">
+<area shape="rect" id="node8" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1040,1477,1312,1624">
+<area shape="rect" id="node12" href="language.html" target="_top" title="language" alt="" coords="299,2229,483,2376">
+<area shape="rect" id="node16" href="subproject.html" target="_top" title="subproject" alt="" coords="281,1401,501,1519">
+<area shape="rect" id="node9" href="flag.html" target="_top" title="flag" alt="" coords="1085,375,1267,756">
+<area shape="rect" id="node10" href="issues.html" target="_top" title="issues" alt="" coords="1085,5,1267,357">
+<area shape="rect" id="node11" href="media.html" target="_top" title="media" alt="" coords="1091,2068,1261,2303">
+<area shape="rect" id="node13" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1367,1736,1644,1912">
+<area shape="rect" id="node14" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1053,773,1299,979">
+<area shape="rect" id="node15" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1029,996,1323,1231">
+<area shape="rect" id="node17" href="session_status.html" target="_top" title="session_status" alt="" coords="1071,1248,1281,1424">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/session.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="328,2253,579,2576">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="8,2461,223,2549">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="44,1328,187,1475">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="7,400,223,547">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="758,991,1030,1079">
+<area shape="rect" id="node6" href="CNV.html" target="_top" title="CNV" alt="" coords="828,2285,960,2373">
+<area shape="rect" id="node7" href="examiners_psc_rel.html" target="_top" title="examiners_psc_rel" alt="" coords="334,2593,573,2681">
+<area shape="rect" id="node8" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1960,1467,2251,1701">
+<area shape="rect" id="node9" href="feedback_mri_comment_types.html" target="_top" title="feedback_mri_comment_types" alt="" coords="1151,1548,1485,1636">
+<area shape="rect" id="node10" href="files.html" target="_top" title="files" alt="" coords="1601,2061,1845,2472">
+<area shape="rect" id="node11" href="feedback_mri_predefined_comments.html" target="_top" title="feedback_mri_predefined_comments" alt="" coords="1529,1621,1916,1709">
+<area shape="rect" id="node12" href="session.html" target="_top" title="session" alt="" coords="681,1201,1107,2268">
+<area shape="rect" id="node13" href="mri_scan_type.html" target="_top" title="mri_scan_type" alt="" coords="1215,2181,1421,2269">
+<area shape="rect" id="node14" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="778,2496,1010,2584">
+<area shape="rect" id="node15" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1213,1912,1423,2117">
+<area shape="rect" id="node16" href="mri_processing_protocol.html" target="_top" title="mri_processing_protocol" alt="" coords="1174,2347,1462,2435">
+<area shape="rect" id="node17" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="1223,2484,1413,2572">
+<area shape="rect" id="node18" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1182,1301,1454,1448">
+<area shape="rect" id="node34" href="language.html" target="_top" title="language" alt="" coords="361,705,545,852">
+<area shape="rect" id="node36" href="subproject.html" target="_top" title="subproject" alt="" coords="5,256,225,373">
+<area shape="rect" id="node19" href="files_intermediary.html" target="_top" title="files_intermediary" alt="" coords="1986,2064,2225,2152">
+<area shape="rect" id="node20" href="files_qcstatus.html" target="_top" title="files_qcstatus" alt="" coords="2004,1959,2207,2047">
+<area shape="rect" id="node21" href="flag.html" target="_top" title="flag" alt="" coords="1227,468,1409,849">
+<area shape="rect" id="node22" href="test_names.html" target="_top" title="test_names" alt="" coords="802,567,986,655">
+<area shape="rect" id="node23" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="735,2391,1053,2479">
+<area shape="rect" id="node24" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="723,2601,1065,2689">
+<area shape="rect" id="node25" href="hrrt_archive_files.html" target="_top" title="hrrt_archive_files" alt="" coords="1607,1920,1838,2008">
+<area shape="rect" id="node26" href="issues.html" target="_top" title="issues" alt="" coords="1227,867,1409,1219">
+<area shape="rect" id="node27" href="users.html" target="_top" title="users" alt="" coords="815,708,973,796">
+<area shape="rect" id="node28" href="issues_categories.html" target="_top" title="issues_categories" alt="" coords="776,1096,1012,1184">
+<area shape="rect" id="node29" href="modules.html" target="_top" title="modules" alt="" coords="815,813,973,901">
+<area shape="rect" id="node30" href="issues_attachments.html" target="_top" title="issues_attachments" alt="" coords="1596,869,1849,957">
+<area shape="rect" id="node31" href="issues_comments.html" target="_top" title="issues_comments" alt="" coords="1605,975,1840,1063">
+<area shape="rect" id="node32" href="issues_history.html" target="_top" title="issues_history" alt="" coords="1619,764,1826,852">
+<area shape="rect" id="node33" href="media.html" target="_top" title="media" alt="" coords="1233,216,1403,451">
+<area shape="rect" id="node35" href="mri_protocol_checks_group_target.html" target="_top" title="mri_protocol_checks_group_target" alt="" coords="269,248,637,336">
+<area shape="rect" id="node37" href="mri_protocol_group_target.html" target="_top" title="mri_protocol_group_target" alt="" coords="301,353,605,441">
+<area shape="rect" id="node38" href="mri_protocol_violated_scans.html" target="_top" title="mri_protocol_violated_scans" alt="" coords="1563,1375,1883,1463">
+<area shape="rect" id="node39" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1584,1727,1861,1903">
+<area shape="rect" id="node40" href="mri_upload_rel.html" target="_top" title="mri_upload_rel" alt="" coords="2001,1791,2209,1879">
+<area shape="rect" id="node41" href="mri_violations_log.html" target="_top" title="mri_violations_log" alt="" coords="1604,1480,1841,1568">
+<area shape="rect" id="node42" href="MRICandidateErrors.html" target="_top" title="MRICandidateErrors" alt="" coords="1595,1164,1850,1252">
+<area shape="rect" id="node43" href="notification_spool.html" target="_top" title="notification_spool" alt="" coords="336,1404,571,1492">
+<area shape="rect" id="node44" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="1591,3275,1855,3363">
+<area shape="rect" id="node45" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="1208,3152,1428,3240">
+<area shape="rect" id="node46" href="parameter_file.html" target="_top" title="parameter_file" alt="" coords="2001,2685,2210,2773">
+<area shape="rect" id="node47" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1600,2911,1845,3116">
+<area shape="rect" id="node48" href="participant_status.html" target="_top" title="participant_status" alt="" coords="775,2848,1013,2936">
+<area shape="rect" id="node49" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="1589,2489,1856,2577">
+<area shape="rect" id="node50" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1171,2697,1465,2932">
+<area shape="rect" id="node53" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="755,2743,1033,2831">
+<area shape="rect" id="node54" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="743,3059,1045,3147">
+<area shape="rect" id="node51" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="1588,2595,1857,2683">
+<area shape="rect" id="node52" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="1581,2700,1864,2788">
+<area shape="rect" id="node55" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="1561,3133,1885,3221">
+<area shape="rect" id="node56" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="1575,2805,1870,2893">
+<area shape="rect" id="node57" href="project_subproject_rel.html" target="_top" title="project_subproject_rel" alt="" coords="318,143,589,231">
+<area shape="rect" id="node58" href="session_status.html" target="_top" title="session_status" alt="" coords="1213,1689,1423,1865">
+<area shape="rect" id="node59" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="773,2953,1015,3041">
+<area shape="rect" id="node60" href="tarchive_files.html" target="_top" title="tarchive_files" alt="" coords="2005,1163,2205,1251">
+<area shape="rect" id="node61" href="tarchive_series.html" target="_top" title="tarchive_series" alt="" coords="1615,1269,1830,1357">
+<area shape="rect" id="node62" href="user_project_rel.html" target="_top" title="user_project_rel" alt="" coords="1208,5,1428,93">
+<area shape="rect" id="node63" href="user_psc_rel.html" target="_top" title="user_psc_rel" alt="" coords="1223,111,1413,199">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/session.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="265,501,516,824">
+<area shape="rect" id="node2" href="psc.html" target="_top" title="psc" alt="" coords="42,619,185,765">
+<area shape="rect" id="node3" href="Project.html" target="_top" title="Project" alt="" coords="5,809,221,956">
+<area shape="rect" id="node4" href="feedback_bvl_thread.html" target="_top" title="feedback_bvl_thread" alt="" coords="1047,375,1305,580">
+<area shape="rect" id="node5" href="session.html" target="_top" title="session" alt="" coords="560,1252,985,2319">
+<area shape="rect" id="node13" href="language.html" target="_top" title="language" alt="" coords="299,2331,483,2477">
+<area shape="rect" id="node18" href="subproject.html" target="_top" title="subproject" alt="" coords="281,1431,501,1548">
+<area shape="rect" id="node6" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1688,1604,1979,1839">
+<area shape="rect" id="node7" href="files.html" target="_top" title="files" alt="" coords="1383,789,1627,1200">
+<area shape="rect" id="node8" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1071,633,1281,839">
+<area shape="rect" id="node9" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1040,1255,1312,1401">
+<area shape="rect" id="node10" href="flag.html" target="_top" title="flag" alt="" coords="1085,856,1267,1237">
+<area shape="rect" id="node11" href="issues.html" target="_top" title="issues" alt="" coords="1085,5,1267,357">
+<area shape="rect" id="node12" href="media.html" target="_top" title="media" alt="" coords="1091,2323,1261,2557">
+<area shape="rect" id="node14" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1367,1525,1644,1701">
+<area shape="rect" id="node15" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1053,1419,1299,1624">
+<area shape="rect" id="node16" href="participant_accounts.html" target="_top" title="participant_accounts" alt="" coords="1045,1641,1307,1788">
+<area shape="rect" id="node17" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1029,1805,1323,2040">
+<area shape="rect" id="node19" href="session_status.html" target="_top" title="session_status" alt="" coords="1071,2057,1281,2233">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/session.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="668,903,919,1225">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="348,1111,563,1199">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="384,717,527,864">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="347,1533,563,1680">
+<area shape="rect" id="node7" href="parameter_type_override.html" target="_top" title="parameter_type_override" alt="" coords="5,1513,301,1601">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="1098,583,1370,671">
+<area shape="rect" id="node6" href="CNV.html" target="_top" title="CNV" alt="" coords="1168,2795,1300,2883">
+<area shape="rect" id="node8" href="examiners_psc_rel.html" target="_top" title="examiners_psc_rel" alt="" coords="674,547,913,635">
+<area shape="rect" id="node9" href="family.html" target="_top" title="family" alt="" coords="1163,688,1305,776">
+<area shape="rect" id="node10" href="feedback_bvl_entry.html" target="_top" title="feedback_bvl_entry" alt="" coords="1939,113,2187,201">
+<area shape="rect" id="node11" href="feedback_bvl_thread.html" target="_top" title="feedback_bvl_thread" alt="" coords="1529,111,1787,316">
+<area shape="rect" id="node12" href="feedback_bvl_type.html" target="_top" title="feedback_bvl_type" alt="" coords="1113,216,1355,304">
+<area shape="rect" id="node13" href="session.html" target="_top" title="session" alt="" coords="1021,1675,1447,2741">
+<area shape="rect" id="node39" href="language.html" target="_top" title="language" alt="" coords="701,2595,885,2741">
+<area shape="rect" id="node41" href="subproject.html" target="_top" title="subproject" alt="" coords="345,1813,565,1931">
+<area shape="rect" id="node14" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="2300,2192,2591,2427">
+<area shape="rect" id="node15" href="feedback_mri_comment_types.html" target="_top" title="feedback_mri_comment_types" alt="" coords="1491,2676,1825,2764">
+<area shape="rect" id="node16" href="files.html" target="_top" title="files" alt="" coords="1941,1483,2185,1893">
+<area shape="rect" id="node17" href="feedback_mri_predefined_comments.html" target="_top" title="feedback_mri_predefined_comments" alt="" coords="1869,2585,2256,2673">
+<area shape="rect" id="node18" href="mri_scan_type.html" target="_top" title="mri_scan_type" alt="" coords="1555,1309,1761,1397">
+<area shape="rect" id="node19" href="ImagingFileTypes.html" target="_top" title="ImagingFileTypes" alt="" coords="1118,1533,1350,1621">
+<area shape="rect" id="node20" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1553,1913,1763,2119">
+<area shape="rect" id="node21" href="mri_processing_protocol.html" target="_top" title="mri_processing_protocol" alt="" coords="1514,1451,1802,1539">
+<area shape="rect" id="node22" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="1563,2136,1753,2224">
+<area shape="rect" id="node23" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1522,1068,1794,1215">
+<area shape="rect" id="node24" href="files_intermediary.html" target="_top" title="files_intermediary" alt="" coords="2326,1485,2565,1573">
+<area shape="rect" id="node25" href="files_qcstatus.html" target="_top" title="files_qcstatus" alt="" coords="2344,1591,2547,1679">
+<area shape="rect" id="node26" href="flag.html" target="_top" title="flag" alt="" coords="1567,2277,1749,2659">
+<area shape="rect" id="node27" href="test_names.html" target="_top" title="test_names" alt="" coords="363,2327,547,2415">
+<area shape="rect" id="node28" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="1075,829,1393,917">
+<area shape="rect" id="node29" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="1063,935,1405,1023">
+<area shape="rect" id="node30" href="hrrt_archive_files.html" target="_top" title="hrrt_archive_files" alt="" coords="1947,1916,2178,2004">
+<area shape="rect" id="node31" href="issues.html" target="_top" title="issues" alt="" coords="1567,405,1749,757">
+<area shape="rect" id="node32" href="users.html" target="_top" title="users" alt="" coords="1155,405,1313,493">
+<area shape="rect" id="node33" href="issues_categories.html" target="_top" title="issues_categories" alt="" coords="1116,1040,1352,1128">
+<area shape="rect" id="node34" href="modules.html" target="_top" title="modules" alt="" coords="376,561,535,649">
+<area shape="rect" id="node35" href="issues_attachments.html" target="_top" title="issues_attachments" alt="" coords="1936,1200,2189,1288">
+<area shape="rect" id="node36" href="issues_comments.html" target="_top" title="issues_comments" alt="" coords="1945,313,2180,401">
+<area shape="rect" id="node37" href="issues_history.html" target="_top" title="issues_history" alt="" coords="1959,629,2166,717">
+<area shape="rect" id="node38" href="media.html" target="_top" title="media" alt="" coords="1573,2781,1743,3016">
+<area shape="rect" id="node40" href="mri_protocol_checks_group_target.html" target="_top" title="mri_protocol_checks_group_target" alt="" coords="609,1816,977,1904">
+<area shape="rect" id="node42" href="mri_protocol_group_target.html" target="_top" title="mri_protocol_group_target" alt="" coords="641,1605,945,1693">
+<area shape="rect" id="node43" href="mri_protocol_violated_scans.html" target="_top" title="mri_protocol_violated_scans" alt="" coords="1903,419,2223,507">
+<area shape="rect" id="node44" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1924,901,2201,1077">
+<area shape="rect" id="node45" href="mri_upload_rel.html" target="_top" title="mri_upload_rel" alt="" coords="2341,1251,2549,1339">
+<area shape="rect" id="node46" href="mri_violations_log.html" target="_top" title="mri_violations_log" alt="" coords="1944,524,2181,612">
+<area shape="rect" id="node47" href="MRICandidateErrors.html" target="_top" title="MRICandidateErrors" alt="" coords="1935,1095,2190,1183">
+<area shape="rect" id="node48" href="notification_spool.html" target="_top" title="notification_spool" alt="" coords="676,652,911,740">
+<area shape="rect" id="node49" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="1526,3508,1790,3596">
+<area shape="rect" id="node50" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="1124,3508,1344,3596">
+<area shape="rect" id="node51" href="parameter_file.html" target="_top" title="parameter_file" alt="" coords="2341,3052,2550,3140">
+<area shape="rect" id="node52" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1535,3285,1781,3491">
+<area shape="rect" id="node53" href="participant_accounts.html" target="_top" title="participant_accounts" alt="" coords="1527,1556,1789,1703">
+<area shape="rect" id="node54" href="participant_status.html" target="_top" title="participant_status" alt="" coords="1115,1145,1353,1233">
+<area shape="rect" id="node55" href="participant_status_history.html" target="_top" title="participant_status_history" alt="" coords="1082,1251,1386,1339">
+<area shape="rect" id="node56" href="physiological_archive.html" target="_top" title="physiological_archive" alt="" coords="1929,2983,2196,3071">
+<area shape="rect" id="node57" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1511,3033,1805,3268">
+<area shape="rect" id="node60" href="physiological_modality.html" target="_top" title="physiological_modality" alt="" coords="1095,3047,1373,3135">
+<area shape="rect" id="node61" href="physiological_output_type.html" target="_top" title="physiological_output_type" alt="" coords="1083,3152,1385,3240">
+<area shape="rect" id="node58" href="physiological_channel.html" target="_top" title="physiological_channel" alt="" coords="1928,3088,2197,3176">
+<area shape="rect" id="node59" href="physiological_electrode.html" target="_top" title="physiological_electrode" alt="" coords="1921,3193,2204,3281">
+<area shape="rect" id="node62" href="physiological_parameter_file.html" target="_top" title="physiological_parameter_file" alt="" coords="1901,3396,2225,3484">
+<area shape="rect" id="node63" href="physiological_task_event.html" target="_top" title="physiological_task_event" alt="" coords="1915,2877,2210,2965">
+<area shape="rect" id="node64" href="project_subproject_rel.html" target="_top" title="project_subproject_rel" alt="" coords="658,1711,929,1799">
+<area shape="rect" id="node65" href="session_status.html" target="_top" title="session_status" alt="" coords="1553,1720,1763,1896">
+<area shape="rect" id="node66" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="1113,1356,1355,1444">
+<area shape="rect" id="node67" href="tarchive_files.html" target="_top" title="tarchive_files" alt="" coords="2345,1359,2545,1447">
+<area shape="rect" id="node68" href="tarchive_series.html" target="_top" title="tarchive_series" alt="" coords="1955,1341,2170,1429">
+<area shape="rect" id="node69" href="test_battery.html" target="_top" title="test_battery" alt="" coords="698,1921,889,2009">
+<area shape="rect" id="node70" href="user_project_rel.html" target="_top" title="user_project_rel" alt="" coords="1548,835,1768,923">
+<area shape="rect" id="node71" href="user_psc_rel.html" target="_top" title="user_psc_rel" alt="" coords="1563,5,1753,93">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/session.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>

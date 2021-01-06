@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>candidate - LORIS Database</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="../bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="../bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="../bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="../bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="../bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="../bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='../fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='../fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="../bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="../schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="../bower/html5shiv/html5shiv.min.js"></script>
+        <script src="../bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>LORIS</b> Database</a>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="../index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="../columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="../constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="../relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="../orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="../anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="../routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>candidate</h1><p><span id="recordNumber">671</span> rows</p><br />
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            <h3 id="Columns" class="box-title">Columns</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="standard_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead align='left'>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th title='Are nulls allowed?'>Nulls</th>
+                                    <th title='Is column automatically updated?'>Auto</th>
+                                    <th title='Default value'>Default</th>
+                                    <th title='Columns in tables that reference this column'>Children</th>
+                                    <th title='Columns in tables that are referenced by this column'>Parents</th>
+                                    <th title='Comments' class="toggle"><span>Comments</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ID">ID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title='Automatically updated by the database'>√</td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="CandID">CandID</span></td>
+                                    <td>INT</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>0</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="candidate_consent_rel.CandidateID references candidate.CandID via FK_candidate_consent_rel_CandidateID"><a href='candidate_consent_rel.html'>candidate_consent_rel</a><span class='relatedKey'>.CandidateID</span></td>
+                                                <td class="constraint detail">FK_candidate_consent_rel_CandidateID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="CNV.CandID references candidate.CandID via CNV_ibfk_3"><a href='CNV.html'>CNV</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">CNV_ibfk_3<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="family.CandID&#39;s name implies that it&#39;s a child of candidate.CandID, but it doesn&#39;t reference that column."><a href='family.html'>family</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="feedback_bvl_thread.CandID&#39;s name implies that it&#39;s a child of candidate.CandID, but it doesn&#39;t reference that column."><a href='feedback_bvl_thread.html'>feedback_bvl_thread</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="genomic_candidate_files_rel.CandID references candidate.CandID via genomic_candidate_files_rel_ibfk_1"><a href='genomic_candidate_files_rel.html'>genomic_candidate_files_rel</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">genomic_candidate_files_rel_ibfk_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="genomic_sample_candidate_rel.CandID references candidate.CandID via genomic_sample_candidate_rel_ibfk_1"><a href='genomic_sample_candidate_rel.html'>genomic_sample_candidate_rel</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">genomic_sample_candidate_rel_ibfk_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="issues.candID references candidate.CandID via fk_issues_3"><a href='issues.html'>issues</a><span class='relatedKey'>.candID</span></td>
+                                                <td class="constraint detail">fk_issues_3<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="mri_protocol_violated_scans.CandID&#39;s name implies that it&#39;s a child of candidate.CandID, but it doesn&#39;t reference that column."><a href='mri_protocol_violated_scans.html'>mri_protocol_violated_scans</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="mri_scanner.CandID references candidate.CandID via FK_mri_scanner_1"><a href='mri_scanner.html'>mri_scanner</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">FK_mri_scanner_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="mri_violations_log.CandID&#39;s name implies that it&#39;s a child of candidate.CandID, but it doesn&#39;t reference that column."><a href='mri_violations_log.html'>mri_violations_log</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="parameter_candidate.CandID references candidate.CandID via FK_parameter_candidate_2"><a href='parameter_candidate.html'>parameter_candidate</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">FK_parameter_candidate_2<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="participant_status.CandID references candidate.CandID via fk_participant_status_3"><a href='participant_status.html'>participant_status</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">fk_participant_status_3<span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="participant_status_history.CandID&#39;s name implies that it&#39;s a child of candidate.CandID, but it doesn&#39;t reference that column."><a href='participant_status_history.html'>participant_status_history</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">Implied Constraint<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="session.CandID references candidate.CandID via FK_session_1"><a href='session.html'>session</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">FK_session_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td title="SNP_candidate_rel.CandID references candidate.CandID via fk_SNP_candidate_rel_2"><a href='SNP_candidate_rel.html'>SNP_candidate_rel</a><span class='relatedKey'>.CandID</span></td>
+                                                <td class="constraint detail">fk_SNP_candidate_rel_2<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="PSCID">PSCID</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td></td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="ExternalID">ExternalID</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="DoB">DoB</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="DoD">DoD</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="EDC">EDC</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Sex">Sex</span></td>
+                                    <td>enum(&#39;Male&#39;, &#39;Female&#39;, &#39;Other&#39;)</td>
+                                    <td>6</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RegistrationCenterID">RegistrationCenterID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>0</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="candidate.RegistrationCenterID references psc.CenterID via FK_candidate_1"><a href='psc.html'>psc</a><span class='relatedKey'>.CenterID</span></td>
+                                                <td class="constraint detail">FK_candidate_1<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="RegistrationProjectID">RegistrationProjectID</span></td>
+                                    <td>INT UNSIGNED</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="candidate.RegistrationProjectID references Project.ProjectID via FK_candidate_RegistrationProjectID"><a href='Project.html'>Project</a><span class='relatedKey'>.ProjectID</span></td>
+                                                <td class="constraint detail">FK_candidate_RegistrationProjectID<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Ethnicity">Ethnicity</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='indexedColumn' title='Indexed'><i class='fa fa-sitemap fa-rotate-120' style='padding-right: 5px;'></i><span id="Active">Active</span></td>
+                                    <td>enum(&#39;Y&#39;, &#39;N&#39;)</td>
+                                    <td>1</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>Y</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_active">Date_active</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="RegisteredBy">RegisteredBy</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="UserID">UserID</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td></td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Date_registered">Date_registered</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="flagged_caveatemptor">flagged_caveatemptor</span></td>
+                                    <td>enum(&#39;true&#39;, &#39;false&#39;)</td>
+                                    <td>5</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>false</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="flagged_reason">flagged_reason</span></td>
+                                    <td>INT</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="candidate.flagged_reason references caveat_options.ID via FK_candidate_2"><a href='caveat_options.html'>caveat_options</a><span class='relatedKey'>.ID</span></td>
+                                                <td class="constraint detail">FK_candidate_2<span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="flagged_other">flagged_other</span></td>
+                                    <td>VARCHAR</td>
+                                    <td>255</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="flagged_other_status">flagged_other_status</span></td>
+                                    <td>enum(&#39;not_answered&#39;)</td>
+                                    <td>12</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Testdate">Testdate</span></td>
+                                    <td>TIMESTAMP</td>
+                                    <td>19</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>CURRENT_TIMESTAMP</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="Entity_type">Entity_type</span></td>
+                                    <td>enum(&#39;Human&#39;, &#39;Scanner&#39;)</td>
+                                    <td>7</td>
+                                    <td title=''></td>
+                                    <td title=''></td>
+                                    <td>Human</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="ProbandSex">ProbandSex</span></td>
+                                    <td>enum(&#39;Male&#39;, &#39;Female&#39;, &#39;Other&#39;)</td>
+                                    <td>6</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="ProbandDoB">ProbandDoB</span></td>
+                                    <td>DATE</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-sitemap"></i>
+                            <h3 id="Indexes" class="box-title">Indexes</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="indexes_table" class="table table-bordered table-striped dataTable" role="grid">
+                                <thead>
+                                <tr>
+                                    <th>Constraint Name</th>
+                                    <th>Type</th>
+                                    <th>Sort</th>
+                                    <th>Column(s)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PRIMARY</td>
+                                    <td>Primary key</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>CandID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>CandidateActive</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> ExternalID</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>ExternalID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_candidate_1</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>RegistrationCenterID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_candidate_2_idx</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>flagged_reason</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>FK_candidate_RegistrationProjectID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>RegistrationProjectID</td>
+                                </tr>
+                                <tr>
+                                    <td class='uniqueKey' title='Unique Key'><i class='icon ion-key iconkey'></i> ID</td>
+                                    <td>Must be unique</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>ID</td>
+                                </tr>
+                                <tr>
+                                    <td title='Indexed'>PSCID</td>
+                                    <td>Performance</td>
+                                    <td><span title='Ascending'>Asc</span></td>
+                                    <td>PSCID</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 id="Relationships" class="box-title">Relationships</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom"><!-- Tabs within a box -->
+                                <h5>Close relationships within degrees of separation</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="265,1045,651,1819">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="6,1547,221,1664">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="42,211,185,357">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="5,960,221,1107">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="730,1160,1002,1307">
+<area shape="rect" id="node6" href="CNV.html" target="_top" title="CNV" alt="" coords="759,1324,973,1647">
+<area shape="rect" id="node7" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="707,1700,1025,1823">
+<area shape="rect" id="node8" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="695,1840,1037,1963">
+<area shape="rect" id="node9" href="issues.html" target="_top" title="issues" alt="" coords="1081,5,1263,357">
+<area shape="rect" id="node10" href="session.html" target="_top" title="session" alt="" coords="735,152,997,475">
+<area shape="rect" id="node11" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="771,1980,961,2127">
+<area shape="rect" id="node12" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="734,492,998,697">
+<area shape="rect" id="node13" href="participant_status.html" target="_top" title="participant_status" alt="" coords="738,715,994,920">
+<area shape="rect" id="node14" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="745,937,987,1143">
+</map>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/candidate.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="265,1544,651,2317">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="6,2045,221,2163">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="42,1136,185,1283">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="5,705,221,852">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="730,1352,1002,1499">
+<area shape="rect" id="node6" href="consent.html" target="_top" title="consent" alt="" coords="381,1384,535,1472">
+<area shape="rect" id="node7" href="CNV.html" target="_top" title="CNV" alt="" coords="759,1975,973,2297">
+<area shape="rect" id="node8" href="genotyping_platform.html" target="_top" title="genotyping_platform" alt="" coords="329,2335,587,2423">
+<area shape="rect" id="node9" href="examiners_psc_rel.html" target="_top" title="examiners_psc_rel" alt="" coords="339,1105,577,1193">
+<area shape="rect" id="node10" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="1687,55,1977,143">
+<area shape="rect" id="node11" href="files.html" target="_top" title="files" alt="" coords="1433,109,1599,197">
+<area shape="rect" id="node12" href="session.html" target="_top" title="session" alt="" coords="735,535,997,857">
+<area shape="rect" id="node13" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1119,109,1308,197">
+<area shape="rect" id="node14" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="1119,1316,1308,1463">
+<area shape="rect" id="node15" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1134,215,1293,303">
+<area shape="rect" id="node29" href="language.html" target="_top" title="language" alt="" coords="375,964,541,1052">
+<area shape="rect" id="node32" href="subproject.html" target="_top" title="subproject" alt="" coords="25,549,202,637">
+<area shape="rect" id="node16" href="flag.html" target="_top" title="flag" alt="" coords="1131,320,1295,408">
+<area shape="rect" id="node17" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="707,2315,1025,2437">
+<area shape="rect" id="node18" href="genomic_files.html" target="_top" title="genomic_files" alt="" coords="357,2440,559,2528">
+<area shape="rect" id="node19" href="genomic_cpg.html" target="_top" title="genomic_cpg" alt="" coords="1116,1849,1311,1937">
+<area shape="rect" id="node20" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="695,1835,1037,1957">
+<area shape="rect" id="node21" href="issues.html" target="_top" title="issues" alt="" coords="1123,1480,1304,1832">
+<area shape="rect" id="node22" href="users.html" target="_top" title="users" alt="" coords="787,1247,945,1335">
+<area shape="rect" id="node23" href="issues_categories.html" target="_top" title="issues_categories" alt="" coords="748,1729,984,1817">
+<area shape="rect" id="node24" href="modules.html" target="_top" title="modules" alt="" coords="787,1552,945,1640">
+<area shape="rect" id="node25" href="issues_attachments.html" target="_top" title="issues_attachments" alt="" coords="1389,1507,1643,1595">
+<area shape="rect" id="node26" href="issues_comments.html" target="_top" title="issues_comments" alt="" coords="1399,1612,1633,1700">
+<area shape="rect" id="node27" href="issues_history.html" target="_top" title="issues_history" alt="" coords="1413,1401,1619,1489">
+<area shape="rect" id="node28" href="media.html" target="_top" title="media" alt="" coords="1143,672,1284,760">
+<area shape="rect" id="node30" href="mri_protocol.html" target="_top" title="mri_protocol" alt="" coords="1420,1296,1612,1384">
+<area shape="rect" id="node31" href="mri_protocol_checks_group_target.html" target="_top" title="mri_protocol_checks_group_target" alt="" coords="274,681,642,769">
+<area shape="rect" id="node33" href="mri_protocol_group_target.html" target="_top" title="mri_protocol_group_target" alt="" coords="306,471,610,559">
+<area shape="rect" id="node34" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1427,407,1605,495">
+<area shape="rect" id="node35" href="notification_spool.html" target="_top" title="notification_spool" alt="" coords="341,859,575,947">
+<area shape="rect" id="node36" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="1081,883,1345,1088">
+<area shape="rect" id="node37" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="756,915,976,1003">
+<area shape="rect" id="node38" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1091,777,1336,865">
+<area shape="rect" id="node39" href="participant_status.html" target="_top" title="participant_status" alt="" coords="738,2455,994,2660">
+<area shape="rect" id="node40" href="participant_status_options.html" target="_top" title="participant_status_options" alt="" coords="305,2545,611,2633">
+<area shape="rect" id="node41" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1098,425,1329,513">
+<area shape="rect" id="node42" href="project_subproject_rel.html" target="_top" title="project_subproject_rel" alt="" coords="323,576,593,664">
+<area shape="rect" id="node43" href="session_status.html" target="_top" title="session_status" alt="" coords="1108,531,1319,619">
+<area shape="rect" id="node44" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="745,2677,987,2883">
+<area shape="rect" id="node45" href="SNP.html" target="_top" title="SNP" alt="" coords="387,2709,529,2797">
+<area shape="rect" id="node46" href="user_project_rel.html" target="_top" title="user_project_rel" alt="" coords="1103,1105,1323,1193">
+<area shape="rect" id="node47" href="user_psc_rel.html" target="_top" title="user_psc_rel" alt="" coords="1118,1211,1309,1299">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/candidate.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="265,1328,651,2101">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="6,1829,221,1947">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="42,211,185,357">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="5,1172,221,1319">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="730,1360,1002,1507">
+<area shape="rect" id="node6" href="CNV.html" target="_top" title="CNV" alt="" coords="759,1524,973,1847">
+<area shape="rect" id="node7" href="family.html" target="_top" title="family" alt="" coords="761,1864,971,2011">
+<area shape="rect" id="node8" href="feedback_bvl_thread.html" target="_top" title="feedback_bvl_thread" alt="" coords="1081,1167,1340,1372">
+<area shape="rect" id="node9" href="session.html" target="_top" title="session" alt="" coords="735,152,997,475">
+<area shape="rect" id="node10" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="707,2064,1025,2187">
+<area shape="rect" id="node11" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="695,2204,1037,2327">
+<area shape="rect" id="node12" href="issues.html" target="_top" title="issues" alt="" coords="1120,5,1301,357">
+<area shape="rect" id="node13" href="mri_protocol_violated_scans.html" target="_top" title="mri_protocol_violated_scans" alt="" coords="706,2344,1026,2549">
+<area shape="rect" id="node14" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="771,2567,961,2713">
+<area shape="rect" id="node15" href="mri_violations_log.html" target="_top" title="mri_violations_log" alt="" coords="721,2731,1011,2936">
+<area shape="rect" id="node16" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="734,528,998,733">
+<area shape="rect" id="node17" href="participant_status.html" target="_top" title="participant_status" alt="" coords="738,751,994,956">
+<area shape="rect" id="node18" href="participant_status_history.html" target="_top" title="participant_status_history" alt="" coords="714,973,1018,1120">
+<area shape="rect" id="node19" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="745,1137,987,1343">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/candidate.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="candidate.html" target="_top" title="candidate" alt="" coords="700,1364,1085,2137">
+<area shape="rect" id="node2" href="caveat_options.html" target="_top" title="caveat_options" alt="" coords="393,1865,608,1983">
+<area shape="rect" id="node3" href="psc.html" target="_top" title="psc" alt="" coords="429,1156,572,1303">
+<area shape="rect" id="node4" href="Project.html" target="_top" title="Project" alt="" coords="393,2283,609,2429">
+<area shape="rect" id="node8" href="parameter_type_override.html" target="_top" title="parameter_type_override" alt="" coords="5,536,301,624">
+<area shape="rect" id="node5" href="candidate_consent_rel.html" target="_top" title="candidate_consent_rel" alt="" coords="1165,2459,1437,2605">
+<area shape="rect" id="node6" href="consent.html" target="_top" title="consent" alt="" coords="423,2604,578,2692">
+<area shape="rect" id="node7" href="CNV.html" target="_top" title="CNV" alt="" coords="1194,200,1407,523">
+<area shape="rect" id="node9" href="genotyping_platform.html" target="_top" title="genotyping_platform" alt="" coords="763,499,1022,587">
+<area shape="rect" id="node10" href="examiners_psc_rel.html" target="_top" title="examiners_psc_rel" alt="" coords="773,1187,1012,1275">
+<area shape="rect" id="node11" href="family.html" target="_top" title="family" alt="" coords="1196,1507,1405,1653">
+<area shape="rect" id="node12" href="feedback_bvl_entry.html" target="_top" title="feedback_bvl_entry" alt="" coords="1857,2305,2105,2393">
+<area shape="rect" id="node13" href="feedback_bvl_thread.html" target="_top" title="feedback_bvl_thread" alt="" coords="1517,2293,1776,2499">
+<area shape="rect" id="node14" href="feedback_bvl_type.html" target="_top" title="feedback_bvl_type" alt="" coords="1180,2763,1421,2851">
+<area shape="rect" id="node15" href="session.html" target="_top" title="session" alt="" coords="1170,1743,1431,2065">
+<area shape="rect" id="node34" href="language.html" target="_top" title="language" alt="" coords="810,1081,975,1169">
+<area shape="rect" id="node39" href="subproject.html" target="_top" title="subproject" alt="" coords="412,2447,589,2535">
+<area shape="rect" id="node16" href="feedback_mri_comments.html" target="_top" title="feedback_mri_comments" alt="" coords="2185,1852,2476,1940">
+<area shape="rect" id="node17" href="files.html" target="_top" title="files" alt="" coords="1898,1695,2065,1783">
+<area shape="rect" id="node18" href="hrrt_archive.html" target="_top" title="hrrt_archive" alt="" coords="1552,1379,1741,1467">
+<area shape="rect" id="node19" href="mri_scanner.html" target="_top" title="mri_scanner" alt="" coords="1206,2295,1395,2441">
+<area shape="rect" id="node20" href="tarchive.html" target="_top" title="tarchive" alt="" coords="1567,1695,1726,1783">
+<area shape="rect" id="node21" href="flag.html" target="_top" title="flag" alt="" coords="1565,1589,1729,1677">
+<area shape="rect" id="node22" href="genomic_candidate_files_rel.html" target="_top" title="genomic_candidate_files_rel" alt="" coords="1141,2623,1460,2745">
+<area shape="rect" id="node23" href="genomic_files.html" target="_top" title="genomic_files" alt="" coords="792,2720,993,2808">
+<area shape="rect" id="node24" href="genomic_cpg.html" target="_top" title="genomic_cpg" alt="" coords="1549,2121,1744,2209">
+<area shape="rect" id="node25" href="genomic_sample_candidate_rel.html" target="_top" title="genomic_sample_candidate_rel" alt="" coords="1129,2119,1472,2241">
+<area shape="rect" id="node26" href="issues.html" target="_top" title="issues" alt="" coords="1556,164,1737,516">
+<area shape="rect" id="node27" href="users.html" target="_top" title="users" alt="" coords="1222,59,1379,147">
+<area shape="rect" id="node28" href="issues_categories.html" target="_top" title="issues_categories" alt="" coords="1183,835,1419,923">
+<area shape="rect" id="node29" href="modules.html" target="_top" title="modules" alt="" coords="421,252,580,340">
+<area shape="rect" id="node30" href="issues_attachments.html" target="_top" title="issues_attachments" alt="" coords="1855,5,2108,93">
+<area shape="rect" id="node31" href="issues_comments.html" target="_top" title="issues_comments" alt="" coords="1864,235,2099,323">
+<area shape="rect" id="node32" href="issues_history.html" target="_top" title="issues_history" alt="" coords="1878,129,2085,217">
+<area shape="rect" id="node33" href="media.html" target="_top" title="media" alt="" coords="1576,1165,1717,1253">
+<area shape="rect" id="node35" href="mri_protocol.html" target="_top" title="mri_protocol" alt="" coords="1551,2663,1743,2751">
+<area shape="rect" id="node36" href="mri_protocol_group.html" target="_top" title="mri_protocol_group" alt="" coords="377,2775,624,2863">
+<area shape="rect" id="node37" href="mri_protocol_checks_group.html" target="_top" title="mri_protocol_checks_group" alt="" coords="345,1320,656,1408">
+<area shape="rect" id="node38" href="mri_protocol_checks_group_target.html" target="_top" title="mri_protocol_checks_group_target" alt="" coords="709,2296,1077,2384">
+<area shape="rect" id="node40" href="mri_protocol_group_target.html" target="_top" title="mri_protocol_group_target" alt="" coords="741,2543,1045,2631">
+<area shape="rect" id="node41" href="mri_protocol_violated_scans.html" target="_top" title="mri_protocol_violated_scans" alt="" coords="1821,2083,2141,2288">
+<area shape="rect" id="node42" href="mri_upload.html" target="_top" title="mri_upload" alt="" coords="1892,1871,2071,1959">
+<area shape="rect" id="node43" href="mri_violations_log.html" target="_top" title="mri_violations_log" alt="" coords="1836,1179,2127,1384">
+<area shape="rect" id="node44" href="notification_spool.html" target="_top" title="notification_spool" alt="" coords="775,976,1010,1064">
+<area shape="rect" id="node45" href="parameter_candidate.html" target="_top" title="parameter_candidate" alt="" coords="1169,1012,1433,1217">
+<area shape="rect" id="node46" href="parameter_type.html" target="_top" title="parameter_type" alt="" coords="783,835,1003,923">
+<area shape="rect" id="node47" href="parameter_session.html" target="_top" title="parameter_session" alt="" coords="1524,981,1769,1069">
+<area shape="rect" id="node48" href="participant_accounts.html" target="_top" title="participant_accounts" alt="" coords="1516,1800,1777,1888">
+<area shape="rect" id="node49" href="participant_status.html" target="_top" title="participant_status" alt="" coords="1173,2940,1429,3145">
+<area shape="rect" id="node50" href="participant_status_options.html" target="_top" title="participant_status_options" alt="" coords="739,3016,1046,3104">
+<area shape="rect" id="node51" href="participant_status_history.html" target="_top" title="participant_status_history" alt="" coords="1149,1343,1453,1489">
+<area shape="rect" id="node52" href="physiological_file.html" target="_top" title="physiological_file" alt="" coords="1531,1905,1762,1993">
+<area shape="rect" id="node53" href="project_subproject_rel.html" target="_top" title="project_subproject_rel" alt="" coords="757,2437,1028,2525">
+<area shape="rect" id="node54" href="session_status.html" target="_top" title="session_status" alt="" coords="1541,1484,1752,1572">
+<area shape="rect" id="node55" href="SNP.html" target="_top" title="SNP" alt="" coords="422,572,579,660">
+<area shape="rect" id="node56" href="SNP_candidate_rel.html" target="_top" title="SNP_candidate_rel" alt="" coords="1180,540,1421,745">
+<area shape="rect" id="node57" href="test_battery.html" target="_top" title="test_battery" alt="" coords="797,2155,988,2243">
+<area shape="rect" id="node58" href="user_project_rel.html" target="_top" title="user_project_rel" alt="" coords="1537,665,1757,753">
+<area shape="rect" id="node59" href="user_psc_rel.html" target="_top" title="user_psc_rel" alt="" coords="1551,59,1742,147">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/candidate.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+                <script>
+                    var config = {
+                        pagination: true
+                    }
+                </script>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.1.0</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="../bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="../bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="../bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="../bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="../bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="../bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="../bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="../bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="../bower/pdfmake/pdfmake.min.js"></script>
+        <script src="../bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="../bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="../bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="../bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="../bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="../bower/codemirror/codemirror.js"></script>
+        <script src="../bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="../bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="table.js"></script>
+        <script src="../schemaSpy.js"></script>
+    </body>
+</html>
