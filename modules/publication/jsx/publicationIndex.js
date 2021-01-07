@@ -14,10 +14,7 @@ class PublicationIndex extends React.Component {
     super();
     loris.hiddenHeaders = [
       'Description',
-      'Keywords',
-      'Variables Of Interest',
       'Publication ID',
-      'Collaborators',
     ];
     this.state = {
       isLoaded: false,
