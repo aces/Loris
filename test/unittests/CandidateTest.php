@@ -148,6 +148,7 @@ class CandidateTest extends TestCase
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
         $this->_factory    = NDB_Factory::singleton();
+
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 
@@ -1311,7 +1312,6 @@ class CandidateTest extends TestCase
     {
         $this->_factoryForDB = NDB_Factory::singleton();
         $this->_factoryForDB->reset();
-        $this->_factoryForDB->setTesting(false);
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
         $database      = $this->_config->getSetting('database');
         $this->_DB     = Database::singleton(
@@ -1321,5 +1321,8 @@ class CandidateTest extends TestCase
             $database['host'],
             1
         );
+
+        $this->_factoryForDB->setDatabase($this->_DB);
+        $this->_factoryForDB->setConfig($this->_config);
     }
 }

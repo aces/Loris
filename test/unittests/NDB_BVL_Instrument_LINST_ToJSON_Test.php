@@ -50,7 +50,6 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         ];
 
         $factory = \NDB_Factory::singleton();
-        $factory->setTesting(true);
 
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
