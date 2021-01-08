@@ -38,6 +38,7 @@ class LoginTest extends TestCase
 
     /**
      * A SinglePointLogin instances used for authentication
+     *
      * @var \SinglePointLogin
      */
     private $_authenticator;
