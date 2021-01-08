@@ -29,6 +29,20 @@ use \Laminas\Diactoros\ServerRequest;
 class LoginTest extends TestCase
 {
     /**
+     * A PSR Request object representing the incoming request
+     * to test.
+     *
+     * @var \Psr\Http\Message\ServerRequestInterface
+     */
+    private $_request;
+
+    /**
+     * A SinglePointLogin instances used for authentication
+     * @var \SinglePointLogin
+     */
+    private $_authenticator;
+
+    /**
      * Provide an autoloader for the api module namespace.
      *
      * @return void
