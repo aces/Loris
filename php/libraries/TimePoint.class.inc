@@ -495,7 +495,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
      */
     function getScreeningStatus(): string
     {
-        return $this->_timePointInfo["Screening"] ?? '';
+        return $this->_timePointInfo["Screening"];
     }
 
     /**
