@@ -32,6 +32,11 @@ class VisitTest extends TestCase
 {
     protected $factory;
     protected $DB;
+    protected $config;
+
+    protected $visitController;
+    protected $listOfVisit;
+    protected $listOfVisitProject;
 
     /**
      * Visit object use in tests
@@ -59,7 +64,7 @@ class VisitTest extends TestCase
             $database['host'],
             1
         );
-        $this->_visitController = new \Loris\VisitController($this->DB);
+        $this->visitController = new \Loris\VisitController($this->DB);
 
         $v1 = new \Loris\Visit('V1', 1);
         $v2 = new \Loris\Visit('V2', 2);
@@ -71,7 +76,7 @@ class VisitTest extends TestCase
         $v8 = new \Loris\Visit('Living_Phantom_DCC_SD_3dwi', 8);
         $v9 = new \Loris\Visit('Living_Phantom_DCC_SD_3mprage', 9);
 
-        $this->_listOfVisit = [
+        $this->listOfVisit = [
             $v1,
             $v2,
             $v3,
@@ -83,7 +88,7 @@ class VisitTest extends TestCase
             $v9,
         ];
 
-        $this->_listOfVisitProject = [
+        $this->listOfVisitProject = [
             [$v1, 1, 1],
             [$v1, 1, 2],
             [$v1, 3, 1],
@@ -135,9 +140,9 @@ class VisitTest extends TestCase
      */
     function testAllVisit()
     {
-        $visits = $this->_visitController->getAllVisits();
+        $visits = $this->visitController->getAllVisits();
         $this->assertEquals(
-            $this->_listOfVisit,
+            $this->listOfVisit,
             $visits,
             "the name of the visit does not match value in DB"
         );
@@ -152,9 +157,9 @@ class VisitTest extends TestCase
      */
     function testVisitsProjects()
     {
-        $visits = $this->_visitController->getVisitsProjectSubproject();
+        $visits = $this->visitController->getVisitsProjectSubproject();
         $this->assertEquals(
-            $this->_listOfVisitProject,
+            $this->listOfVisitProject,
             $visits,
             "the project subproject relation does not match value in DB"
         );
@@ -170,7 +175,7 @@ class VisitTest extends TestCase
     function testGetVisitsByName()
     {
         $visit_result = new \Loris\Visit('V1', 1);
-        $visits       = $this->_visitController->getVisitsByName("V1");
+        $visits       = $this->visitController->getVisitsByName("V1");
         $this->assertEquals(
             [$visit_result],
             $visits
