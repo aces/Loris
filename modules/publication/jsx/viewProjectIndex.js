@@ -2,7 +2,7 @@ import ViewProject from './viewProject';
 
 const args = QueryString.get(document.currentScript.src);
 
-$(function() {
+document.addEventListener('DOMContentLoaded', (event) => {
   const viewProject = (
     <div className="page-edit-form">
       <div className="row">

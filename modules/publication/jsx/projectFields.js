@@ -145,14 +145,19 @@ class ProjectFormFields extends React.Component {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
-          $.ajax(
-            url,
-            {
-              method: 'DELETE',
-              success: function() {
-                self.props.fetchData();
-              },
-            });
+
+          fetch(url, {
+            method: 'DELETE',
+          }).then((response) => {
+            if (response.status !== 200) {
+              console.error(response.status);
+              return;
+            }
+
+            self.props.fetchData();
+          }).catch((error) => {
+            console.error(error);
+          });
         }
       });
   }
