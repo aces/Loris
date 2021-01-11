@@ -189,7 +189,7 @@ class PublicationIndex extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   const publicationIndex = (
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
