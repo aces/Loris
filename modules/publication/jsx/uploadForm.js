@@ -37,8 +37,6 @@ class PublicationUploadForm extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
-
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
@@ -48,14 +46,14 @@ class PublicationUploadForm extends React.Component {
       }
 
       response.json().then(
-        (data) => self.setState({
+        (data) => this.setState({
           Data: data,
           isLoaded: true,
         })
       );
     }).catch((error) => {
       console.error(error);
-      self.setState({
+      this.setState({
         loadError: 'An error occurred when loading the form!',
       });
     });

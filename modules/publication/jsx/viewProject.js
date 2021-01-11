@@ -78,7 +78,6 @@ class ViewProject extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
@@ -121,7 +120,7 @@ class ViewProject extends React.Component {
             });
           }
 
-          self.setState({
+          this.setState({
             formData: formData,
             users: data.users,
             statusOpts: data.statusOpts,
@@ -136,7 +135,7 @@ class ViewProject extends React.Component {
         });
     }).catch((error) => {
       console.error(error);
-      self.setState({
+      this.setState({
         error: 'An error occurred when loading the form!',
       });
     });

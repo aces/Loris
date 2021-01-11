@@ -132,7 +132,6 @@ class ProjectFormFields extends React.Component {
    * @param {Number} uploadID
    */
   deleteUpload(uploadID) {
-    let self = this;
     swal.fire({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
@@ -154,7 +153,7 @@ class ProjectFormFields extends React.Component {
               return;
             }
 
-            self.props.fetchData();
+            this.props.fetchData();
           }).catch((error) => {
             console.error(error);
           });
