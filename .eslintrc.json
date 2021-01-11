@@ -23,6 +23,10 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "react/no-string-refs": "off",
+    "no-case-declarations": "off",
+    "no-fallthrough": "off",
+    "react/jsx-no-undef": "off",
     "react/prop-types": "off",
     "no-undef": "off",
     "react/jsx-key": "off",
