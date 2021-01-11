@@ -23,6 +23,9 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "react/prop-types": "off",
+    "no-undef": "off",
+    "no-prototype-builtins": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",
