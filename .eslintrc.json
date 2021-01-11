@@ -25,6 +25,8 @@
     }],
     "react/prop-types": "off",
     "no-undef": "off",
+    "react/jsx-key": "off",
+    "no-extra-semi": "off",
     "no-prototype-builtins": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
