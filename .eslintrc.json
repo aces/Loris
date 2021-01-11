@@ -4,6 +4,11 @@
     "react",
     "no-jquery"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "env": {
     "browser": true,
     "jquery": true,
