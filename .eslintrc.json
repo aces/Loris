@@ -23,6 +23,8 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "no-useless-escape": "off",
+    "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",
     "react/jsx-no-target-blank": "off",
     "react/no-unknown-property": "off",
