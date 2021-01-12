@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
  * dropdown is removed to prevent the user from sending a POST request with an empty
  * value.
  *
- * Known issue: When sorting the datatable, previouly fixed conflicts are
+ * Known issue: When sorting the datatable, previously fixed conflicts are
  * considered unresolved; there is no green checkmark beside the dropdown anymore.
  */
 class FixConflictForm extends Component {
