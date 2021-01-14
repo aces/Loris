@@ -428,7 +428,7 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
-                $this->_passwordChangeRequired = true;
+                $this->_passwordChangeRequired      = true;
                 $_SESSION['PasswordExpiredForUser'] = $username;
                 if ($redirect) {
                     $this->showPasswordExpiryScreen();
