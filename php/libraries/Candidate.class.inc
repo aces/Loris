@@ -929,7 +929,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
              FROM participant_status ps
                 JOIN participant_status_options pso ON (ps.participant_status=pso.ID)
              WHERE CandID=:candid",
-            ['candid' => $this->getCandID()],
+            ['candid' => $this->getCandID()]
         );
         return $res['Description'] ?? '';
     }
