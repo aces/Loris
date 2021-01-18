@@ -1136,6 +1136,13 @@ class UtilityTest extends TestCase
     public function testToDateDisplayFormat()
     {
         $this->_setMockDB();
+
+        $config = $this->getMockBuilder("\NDB_Config")->getMock();
+        $config->expects($this->any())
+            ->method('getSetting')
+            ->willReturn('Y-m-d H:i:s');
+        $this->_mockFactory->setConfig($config);
+
         $date = "2000-01-01";
         $this->assertEquals(
             "2000-01-01 00:00:00",
@@ -1216,7 +1223,6 @@ class UtilityTest extends TestCase
     {
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->reset();
-        $this->_mockFactory->setTesting(false);
         $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
         $database          = $this->_mockConfig->getSetting('database');
         $this->_mockDB     = \Database::singleton(
@@ -1226,5 +1232,8 @@ class UtilityTest extends TestCase
             $database['host'],
             true
         );
+
+        $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_mockFactory->setConfig($this->_mockConfig);
     }
 }

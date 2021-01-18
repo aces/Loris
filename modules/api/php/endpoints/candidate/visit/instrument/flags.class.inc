@@ -35,6 +35,13 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_instrument;
 
     /**
+     * The current flag status
+     *
+     * @var \NDB_BVL_InstrumentStatus
+     */
+    private $_instrumentStatus;
+
+    /**
      * The visit from which the instrument is filled
      *
      * @var \Timepoint

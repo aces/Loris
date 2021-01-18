@@ -64,19 +64,22 @@ abstract class LorisIntegrationTest extends TestCase
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
             1
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
+
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 

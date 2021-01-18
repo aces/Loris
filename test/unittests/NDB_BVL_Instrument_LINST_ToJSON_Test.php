@@ -20,6 +20,13 @@ use PHPUnit\Framework\TestCase;
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**
+     * An instrument class for testing
+     *
+     * @var \NDB_BVL_Instrument
+     */
+    protected $i;
+
+    /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      *
@@ -50,7 +57,6 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         ];
 
         $factory = \NDB_Factory::singleton();
-        $factory->setTesting(true);
 
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();

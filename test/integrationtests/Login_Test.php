@@ -17,10 +17,7 @@ class LorisLoginTest extends LorisIntegrationTest
     function testLoginFailure(): void
     {
         $this->webDriver->get($this->url . '/?logout=true');
-
-        $invalidPassword = 'Just Make This Up';
-        $this->login("UnitTester", $invalidPassword);
-
+        $this->login("UnitTester", "IJUSTMADETHISUP");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
