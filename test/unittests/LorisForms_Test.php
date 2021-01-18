@@ -101,10 +101,27 @@ class LorisForms_Test extends TestCase
             return;
         }
 
+        $msg = '';
+        if (is_array($attribValue)) {
+            $msg = "[";
+            foreach ($attribValue as $i => $val) {
+                if (isset($val['name'])) {
+                    $msg .= $val['name'];
+                } else {
+                    $msg .= $val;
+                }
+                if ($i != count($attribValue)-1) {
+                    $msg .= ', ';
+                }
+            }
+            $msg .= "]";
+        } else {
+            $msg = $attribValue;
+        }
         $this->assertEquals(
             $this->form->form[$el][$attribute],
             $attribValue,
-            "Element $el's $attribute did not match $attribValue"
+            "Element $el's $attribute did not match $msg"
         );
     }
 

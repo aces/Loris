@@ -107,8 +107,6 @@ else
     vendor/bin/phpcs $(join_by ' ' "${params[@]}") || exit $?;
 fi
 
-vendor/bin/phpmd php/,modules/,src/ text 'test/LorisPHPMD.xml' || exit $?;
-
 # Run PHPStan on php/ and modules/
 vendor/bin/phpstan analyse \
     --level max \
