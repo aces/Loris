@@ -37,21 +37,25 @@ class PublicationUploadForm extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (response.status !== 200) {
+        console.error(response.status);
+        return;
+      }
+
+      response.json().then(
+        (data) => this.setState({
           Data: data,
           isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
-          loadError: 'An error occurred when loading the form!',
-        });
-      },
+        })
+      );
+    }).catch((error) => {
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -155,41 +159,35 @@ class PublicationUploadForm extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        // reset form data
-        this.setState({
-          formData: {},
-          numFiles: 0,
-        });
-        swal.fire(
-          {
-            title: 'Submission Successful!',
-            type: 'success',
-          },
-          function() {
-            window.location.replace(loris.BaseURL + '/publication/');
-          }
-        );
-      }.bind(this),
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = '';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (response.status !== 200) {
+        console.error(response.status);
+        return;
+      }
+
+      // reset form data
+      this.setState({
+        formData: {},
+        numFiles: 0,
+      });
+
+      swal.fire(
+        {
+          title: 'Submission Successful!',
+          type: 'success',
+        },
+        function() {
+          window.location.replace(loris.BaseURL + '/publication/');
         }
-        swal.fire('Something went wrong!', resp, 'error');
-      },
+      );
+    }).catch((error) => {
+      console.error(error);
+      swal.fire('Something went wrong!', '', 'error');
     });
-  }
+   }
 
   /**
    * Renders the React component.
