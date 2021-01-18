@@ -25,6 +25,8 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class Create_Timepoint extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * This timepoint's candidate
      *
