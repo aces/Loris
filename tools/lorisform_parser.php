@@ -85,7 +85,7 @@ foreach ($files AS $file) {
 
     echo "Parsing instrument object...\n";
 
-    $output .="test{@}".$obj->testName."\n";
+    $output .="testname{@}".$obj->testName."\n";
     $output .="table{@}".$obj->table."\n";
 
     $output .="title{@}".$obj->getFullName()."\n";

@@ -760,7 +760,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $type = $pieces[0];
 
             switch ($type) {
-            case 'test':
+            case 'testname':
                 $this->testName = trim($pieces[1]);
                 break;
             case 'table':
