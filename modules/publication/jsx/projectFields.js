@@ -140,7 +140,7 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    }, function(willDelete) {
+    }).then(function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
