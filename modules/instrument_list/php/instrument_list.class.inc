@@ -288,7 +288,10 @@ class Instrument_List extends \NDB_Menu_Filter
      */
     function getFeedbackPanel($candID, $sessionID): string
     {
-        $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
+        $feedbackPanel = new \BVL_Feedback_Panel(
+            $candID,
+            new \SessionID($sessionID)
+        );
         $html          =  $feedbackPanel->display();
         return $html;
     }
