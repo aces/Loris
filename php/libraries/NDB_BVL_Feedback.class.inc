@@ -215,7 +215,9 @@ class NDB_BVL_Feedback
             || isset($this->_feedbackObjectInfo['SessionID'])
         ) {
             $this->_feedbackCandidateProfileInfo['SessionID']
-                = $result[0]['SessionID'] ?? $this->_feedbackObjectInfo['SessionID'];
+                = isset($result[0]['SessionID']) ?
+                  new \SessionID($result[0]['SessionID']) :
+                  $this->_feedbackObjectInfo['SessionID'];
         }
     }
 
