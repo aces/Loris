@@ -63,6 +63,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         // Reset calls
         $this->Session->expects($this->exactly(2))
@@ -91,6 +92,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->_setSearchKeyword('abc');
 
@@ -119,6 +121,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->form = new LorisForm();
         $stub->form->applyFilter('__ALL__', 'trim');
@@ -177,6 +180,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->headers      = ['FakeField', "FakeField2"];
         $stub->formToFilter = [

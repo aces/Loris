@@ -20,6 +20,13 @@ use PHPUnit\Framework\TestCase;
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**
+     * An instrument class for testing
+     *
+     * @var \NDB_BVL_Instrument
+     */
+    protected $i;
+
+    /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      *

@@ -31,7 +31,13 @@ require_once 'SessionID.php';
  */
 class NDB_BVL_Instrument_Test extends TestCase
 {
+    /**
+     * The instrument (or instrument mock) being tested.
+     *
+     * @var \NDB_BVL_Instrument
+     */
     private $_instrument;
+
     private $_factory;
     private $_mockConfig;
     private $_mockDB;
@@ -718,7 +724,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_instrument->addScoreColumn(
             "FieldName2",
-            null
+            "",
         );
         $json          = $this->_instrument->toJSON();
         $outArray      = json_decode($json, true);
@@ -852,7 +858,14 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->form     = $this->quickForm;
         $this->_instrument->testName = "Test";
 
-        $json     = $this->_instrument->toJSON();
+        // Phan isn't interpreting the phpdoc correctly and thinks
+        // this is a \PHPUnit\Framework\MockObject\MockObject, not
+        // an instrument, so put it into a variable and assert its
+        // type.
+        $i = $this->_instrument;
+        '@phan-var \NDB_BVL_Instrument $i';
+
+        $json     = $i->toJSON();
         $outArray = json_decode($json, true);
         $page1    = $outArray['Elements'][0];
         $page2    = $outArray['Elements'][1];
@@ -1806,10 +1819,13 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID2';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->form      = $this->getMockBuilder("\LorisForm")
-            ->getMock();
-        $this->_instrument->form
-            ->method('getSubmitValues')->willReturn(['1', '2']);
+
+        $mockform = $this->getMockBuilder("\LorisForm")->getMock();
+
+        $mockform->method('getSubmitValues')->willReturn(['1', '2']);
+
+        $this->_instrument->form = $mockform;
+
         $this->assertFalse($this->_instrument->save());
     }
 
