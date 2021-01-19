@@ -63,11 +63,20 @@ class Datadict extends \DataFrameworkMenu
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // database we need to instantiate the object to get the table name
-            $iObj = \NDB_BVL_Instrument::factory(
-                $instrument,
-                '',
-                ''
-            );
+            try {
+                $iObj = \NDB_BVL_Instrument::factory(
+                    $instrument,
+                    '',
+                    ''
+                );
+            } catch (Exception $e) {
+                error_log("There was a problem instantiating the instrument ".
+                    "'$instrument'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the data ".
+                    "dictionary."
+                );
+                continue;
+            }
             $key  = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
             // Append other testnames if multiple tests use the same table
             $otherNames = '';
