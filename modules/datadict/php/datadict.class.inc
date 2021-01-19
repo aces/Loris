@@ -69,7 +69,7 @@ class Datadict extends \DataFrameworkMenu
                     '',
                     ''
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 error_log(
                     "There was a problem instantiating the instrument ".
                     "'$instrument'. Make sure the instrument is valid and ".
