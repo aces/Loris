@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -9,27 +9,24 @@ import PropTypes from 'prop-types';
  *
  * Alters the filter object and sends it to parent on every update.
  *
+ * @param {props} props
+ * @return {jsx}
+ *
  */
-class Filter extends Component {
-  constructor(props) {
-    super(props);
-    this.onFieldUpdate = this.onFieldUpdate.bind(this);
-    this.renderFilterFields = this.renderFilterFields.bind(this);
-  }
-
+function Filter(props) {
   /**
-   * Takes qeury params from url and triggers an update of the fields that are
+   * Takes query params from url and triggers an update of the fields that are
    * associated with those params, if they exist.
    */
-  componentDidMount() {
-     const searchParams = new URLSearchParams(location.search);
-     searchParams.forEach((value, name) => {
-       // This checks to make sure the filter actually exists
-       if (this.props.fields.find((field) => (field.filter||{}).name == name)) {
-         this.onFieldUpdate(name, searchParams.getAll(name));
-       }
-     });
-   }
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.forEach((value, name) => {
+      // This checks to make sure the filter actually exists
+      if (props.fields.find((field) => (field.filter||{}).name == name)) {
+        onFieldUpdate(name, searchParams.getAll(name));
+      }
+    });
+  }, []);
 
   /**
    * Sets filter object to reflect values of input fields.
@@ -37,31 +34,27 @@ class Filter extends Component {
    * @param {string} name - form element type (i.e component name)
    * @param {string} value - the name of the form element
    */
-  onFieldUpdate(name, value) {
-    const {filter, fields} = JSON.parse(JSON.stringify(this.props));
-    const searchParams = new URLSearchParams(location.search);
+  const onFieldUpdate = (name, value) => {
+    const {fields} = JSON.parse(JSON.stringify(props));
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'));
+
     if (value === null || value === '' ||
         (value.constructor === Array && value.length === 0)) {
-      delete filter[name];
-      searchParams.delete(name);
+      props.removeFilter(name);
     } else {
-      if (value.constructor === Array) {
-        searchParams.delete(name);
-        value.forEach((v) => searchParams.append(name, v));
-      } else {
-        searchParams.set(name, value);
-      }
-      filter[name] = {value, exactMatch};
+      props.addFilter(name, value, exactMatch);
     }
-    this.props.updateFilter(filter);
-    history.replaceState(filter, '', `?${searchParams.toString()}`);
-  }
+  };
 
-  renderFilterFields() {
-    return this.props.fields.reduce((result, field) => {
+  /**
+   * Renders the filters based on the defined fields.
+   *
+   * @return {array}
+   */
+  const renderFilterFields = () => {
+    return props.fields.reduce((result, field) => {
       const filter = field.filter;
       if (filter && filter.hide !== true) {
         let element;
@@ -108,36 +101,34 @@ class Filter extends Component {
             key: filter.name,
             name: filter.name,
             label: field.label,
-            value: (this.props.filter[filter.name] || {}).value || false,
-            onUserInput: this.onFieldUpdate,
+            value: (props.filters[filter.name] || {}).value || false,
+            onUserInput: onFieldUpdate,
           }
         ));
       }
 
       return result;
     }, []);
-  }
+  };
 
-  render() {
-    return (
-      <FormElement
-        id={this.props.id}
-        name={this.props.name}
+  return (
+    <FormElement
+      id={props.id}
+      name={props.name}
+    >
+      <FieldsetElement
+        columns={props.columns}
+        legend={props.title}
       >
-        <FieldsetElement
-          columns={this.props.columns}
-          legend={this.props.title}
-        >
-          {this.renderFilterFields()}
-          <ButtonElement
-            label="Clear Filters"
-            type="reset"
-            onUserInput={this.props.clearFilter}
-          />
-        </FieldsetElement>
-      </FormElement>
-    );
-  }
+        {renderFilterFields()}
+        <ButtonElement
+          label="Clear Filters"
+          type="reset"
+          onUserInput={props.clearFilters}
+        />
+      </FieldsetElement>
+    </FormElement>
+  );
 }
 
 Filter.defaultProps = {
@@ -148,7 +139,7 @@ Filter.defaultProps = {
   columns: 1,
 };
 Filter.propTypes = {
-  filter: PropTypes.object.isRequired,
+  filters: PropTypes.object.isRequired,
   clearFilter: PropTypes.func.isRequired,
   id: PropTypes.string,
   name: PropTypes.string,
