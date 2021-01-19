@@ -70,10 +70,12 @@ class Datadict extends \DataFrameworkMenu
                     ''
                 );
             } catch (Exception $e) {
-                error_log("There was a problem instantiating the instrument ".
+                error_log(
+                    "There was a problem instantiating the instrument ".
                     "'$instrument'. Make sure the instrument is valid and ".
                     "functional in order for it to be displayed in the data ".
-                    "dictionary.");
+                    "dictionary."
+                );
                 continue;
             }
             $key = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
