@@ -31,9 +31,16 @@ class ViewDetails extends \NDB_Form
     public $tarchiveID;
 
     /**
+     * A Database connection to a LORIS DB
+     *
+     * @var \Database
+     */
+    protected $DB;
+
+    /**
      * Keeps array of protocols from mri_protocol
      */
-    var $protocols;
+    public $protocols;
 
     /**
      * Determine whether the user has permission to view this page

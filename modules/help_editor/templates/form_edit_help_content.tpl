@@ -31,7 +31,6 @@
         <input type="hidden" id="section" value="{$section}">
         <input type="hidden" id="subsection" value="{$subsection}">
         <input type="hidden" id="helpID" value="{$helpID}">
-        <input type="hidden" id="parentID" value="{$parentID}">
         <input class="btn btn-sm btn-primary col-sm-offset-3" id="save-help" name="fire_away" value="Save" type="submit" />
         <input type="reset" name="reset" value="Reset" class="btn btn-sm btn-primary" />
         <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />

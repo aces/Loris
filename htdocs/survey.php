@@ -45,6 +45,8 @@ class DirectDataEntryMainPage
      */
     var $Subtest;
 
+    public $CommentID;
+
     var $NumPages;
     var $NextPageNum;
     var $PrevPageNum;

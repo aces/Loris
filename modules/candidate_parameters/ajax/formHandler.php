@@ -281,7 +281,7 @@ function editFamilyInfoFields(\Database $db)
     $relationship     = isset($_POST[$relationshipType]) ?
         $_POST[$relationshipType] : null;
 
-    while ($siblingCandID != null ) {
+    if ($siblingCandID != null ) {
 
         $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
@@ -298,8 +298,6 @@ function editFamilyInfoFields(\Database $db)
         ];
 
         $db->update('family', $updateValues, ['ID' => $siblingID]);
-
-        $i++;
     }
 }
 

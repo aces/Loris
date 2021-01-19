@@ -614,9 +614,9 @@ class Database
      */
     function delete(string $table, array $where): void
     {
-        $query  = "DELETE FROM $table WHERE ";
-        $where  = $this->_implodeWithKeys(' AND ', $where, 'where_');
-        $query .= $where;
+        $query    = "DELETE FROM $table WHERE ";
+        $wherestr = $this->_implodeWithKeys(' AND ', $where, 'where_');
+        $query   .= $wherestr;
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -632,7 +632,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $this->trackChanges($table, [], $where, 'D');
+        $this->trackChanges($table, [], $wherestr, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -641,7 +641,7 @@ class Database
                 "Database DELETE did not execute successfully."
                 . $this->_createPDOErrorString(),
                 $query,
-                $where
+                $where,
             );
         }
     }

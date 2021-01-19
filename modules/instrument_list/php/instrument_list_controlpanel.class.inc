@@ -186,7 +186,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ['Submitted' => $submitted]
             );
 
-                // revert from approval (or the bin)
+            // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
                 $this->setData(
                     [
@@ -713,9 +713,9 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && ! $config->settingEnabled("useScanDone")
+            && (!$config->settingEnabled("useScanDone")
             || $this->getData('Current_stage') == 'Screening'
-            || !empty($scanDone)
+            || !empty($scanDone))
         ) {
             return true;
         }

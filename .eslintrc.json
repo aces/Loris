@@ -37,20 +37,6 @@
       "allow": ["info", "warn", "error"]
     }]
   },
-  "overrides": [
-    {
-      "files": [
-        "modules/dataquery/**"
-      ],
-      "rules": {
-        "require-jsdoc": "warn",
-	"max-len": "warn",
-	"no-unused-vars": "warn",
-	"camelcase": "warn",
-	"guard-for-in": "warn"
-      }
-    }
-  ],
   "globals": {
     "React": true,
     "ReactDOM": true,

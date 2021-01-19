@@ -27,7 +27,7 @@ class SettingsTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
@@ -43,7 +43,7 @@ class SettingsTest extends TestCase
      *
      * @var array database config values
      */
-    private $_databaseConfigValues = array();
+    private $_databaseConfigValues = [];
 
     /**
      * Sets up fixtures:
@@ -54,7 +54,7 @@ class SettingsTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -62,12 +62,12 @@ class SettingsTest extends TestCase
 
         $this->_settings = new Settings($this->_configMock);
 
-        $this->_databaseConfigValues = array(
-                                        'database' => 'LorisTestDB',
-                                        'username' => 'testUser',
-                                        'password' => 'APassWord',
-                                        'host'     => 'localhost',
-                                       );
+        $this->_databaseConfigValues = [
+            'database' => 'LorisTestDB',
+            'username' => 'testUser',
+            'password' => 'APassWord',
+            'host'     => 'localhost',
+        ];
     }
 
     /**
@@ -78,13 +78,13 @@ class SettingsTest extends TestCase
      */
     public function getTrueValue()
     {
-        return array(
-                array(true),
-                array('TRUE'),
-                array('1'),
-                array(1),
-                array('5'),
-               );
+        return [
+            [true],
+            ['TRUE'],
+            ['1'],
+            [1],
+            ['5'],
+        ];
     }
 
     /**
@@ -94,7 +94,7 @@ class SettingsTest extends TestCase
      *  - string '5'
      *
      * @param mixed $sandboxVal sandbox config value to be returned
-     *              by getSetting() mock
+     *                          by getSetting() mock
      *
      * @dataProvider getTrueValue
      *
@@ -117,14 +117,14 @@ class SettingsTest extends TestCase
      */
     public function getFalseValue()
     {
-        return array(
-                array(false),
-                array('FAlse'),
-                array(0),
-                array('0'),
-                array(''),
-                array(null),
-               );
+        return [
+            [false],
+            ['FAlse'],
+            [0],
+            ['0'],
+            [''],
+            [null],
+        ];
     }
 
 

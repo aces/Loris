@@ -16,7 +16,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithViewPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_view')
         );
@@ -30,7 +30,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithEditPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_edit_file_access')
         );
@@ -44,7 +44,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoadsWithUploadPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Data Release",
             $this->_loadWithPermission('data_release_upload')
         );
@@ -59,7 +59,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
      */
     function testPageDoesNotLoadWithoutPermission(): void
     {
-        $this->assertContains(
+        $this->assertStringContainsString(
             'You do not have access',
             $this->_loadWithPermission('')
         );

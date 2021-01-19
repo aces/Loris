@@ -844,15 +844,13 @@ class Edit_User extends \NDB_Form
                 $groupA,
                 'examiner_sites',
                 'Examiner At:',
-                $this->_GUIDelimiter,
-                false
+                $this->_GUIDelimiter
             );
             $this->addGroup(
                 $groupB,
                 'examiner_group',
                 'Examiner Status',
-                $this->_GUIDelimiter,
-                false
+                $this->_GUIDelimiter
             );
             unset($groupA);
             unset($groupB);
@@ -923,8 +921,8 @@ class Edit_User extends \NDB_Form
                 $lastRole = $row['type'];
                 $group[]  = $this->form->createElement(
                     'static',
-                    null,
-                    null,
+                    '',
+                    '',
                     '</div>'
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
@@ -948,7 +946,7 @@ class Edit_User extends \NDB_Form
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "");
         unset($group);
 
         //getting users name and emails to create checkboxes
@@ -964,8 +962,8 @@ class Edit_User extends \NDB_Form
         $group   = [];
         $group[] = $this->form->createElement(
             'static',
-            null,
-            null,
+            '',
+            '',
             '</div>'
             . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
             . "style=\"text-align: center; margin-top: 5px;\"> "
@@ -982,7 +980,7 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
+        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "");
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
@@ -1343,7 +1341,31 @@ class Edit_User extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/user_accounts/js/rejectUser.js"]
+            [
+                $baseURL . '/user_accounts/js/rejectUser.js',
+                $baseURL . '/js/passwordVisibility.js',
+                $baseURL . '/user_accounts/js/edit_user_helper.js',
+                $baseURL . '/js/invalid_form_scroll.js',
+            ]
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/css/password.css",
+            ]
         );
     }
 }

@@ -119,9 +119,23 @@ function lorisModule(mname, entries, override=false) {
   };
 }
 
+let mode = 'production';
+try {
+  const configFile = fs.readFileSync('project/config.xml', 'latin1');
+  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
+              .exec(configFile);
+  if (res && parseInt(res[1]) == 1) mode = 'development';
+} catch (error) {
+  console.error(
+    'Error - Can\'t read config.xml file. '
+    + 'Webpack mode set to production.'
+  );
+}
+
 const config = [
   // Core components
   {
+    mode: mode,
     entry: {
       DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',
@@ -148,30 +162,41 @@ const config = [
     },
     devtool: 'source-map',
     plugins: [
-      new CopyPlugin([
-        {
-          from: path.resolve(__dirname, 'node_modules/react/umd/*'),
-          to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-          force: true,
-          flatten: true,
-          ignore: ['react.profiling.min.js'],
-        },
-        {
-          from: path.resolve(__dirname, 'node_modules/react-dom/umd/*'),
-          to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-          force: true,
-          flatten: true,
-          ignore: [
-            'react-dom.profiling.min.js',
-            'react-dom-server.*',
-            'react-dom-test-utils.*',
-            'react-dom-unstable-fizz.*',
-            'react-dom-unstable-flight-client.*',
-            'react-dom-unstable-flight-server.*',
-            'react-dom-unstable-native-dependencies.*',
-          ],
-        },
-      ]),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'node_modules/react/umd'),
+            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+            flatten: true,
+            force: true,
+            globOptions: {
+              ignore: ['react.profiling.min.js'],
+            },
+            filter: async (path) => {
+              const file = path.split('\\').pop().split('/').pop();
+              const keep = [
+                'react.development.js',
+                'react.production.min.js',
+              ];
+              return keep.includes(file);
+            },
+          },
+          {
+            from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
+            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+            flatten: true,
+            force: true,
+            filter: async (path) => {
+              const file = path.split('\\').pop().split('/').pop();
+              const keep = [
+                'react-dom.development.js',
+                'react-dom.production.min.js',
+              ];
+              return keep.includes(file);
+            },
+          },
+        ],
+      }),
     ],
     optimization: optimization,
     resolve: resolve,
@@ -199,7 +224,8 @@ const config = [
   ]),
   lorisModule('battery_manager', ['batteryManagerIndex']),
   lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-  lorisModule('behavioural_qc', ['behavioural_qc_module']),
+  lorisModule('behavioural_qc', ['behaviouralQCIndex']),
+  lorisModule('create_timepoint', ['createTimepointIndex']),
   lorisModule('candidate_list', [
     'openProfileForm',
     'onLoad',
@@ -231,12 +257,11 @@ const config = [
     'react.tabs',
   ]),
   lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['FileUploadModal']),
+  lorisModule('genomic_browser', ['genomicBrowserIndex']),
   lorisModule('electrophysiology_browser', [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ]),
-  lorisModule('genomic_browser', ['profileColumnFormatter']),
   lorisModule('imaging_browser', [
     'ImagePanel',
     'imagingBrowserIndex',

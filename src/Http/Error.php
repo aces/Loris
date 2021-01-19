@@ -47,11 +47,13 @@ class Error extends HtmlResponse
         $uri     = $request->getURI();
         $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
 
-        $tpl_data = [];
+        $tpl_data = [
+                     'message' => $message,
+                     'baseurl' => $baseurl,
+                    ];
 
         $lorisInstance = $request->getAttribute('loris');
         $user          = $request->getAttribute('user') ?? new \LORIS\AnonymousUser();
-        
 
         // Add a link to the issue tracker as long as a LORIS Instance object
         // is present in the request.
@@ -59,14 +61,10 @@ class Error extends HtmlResponse
             && $lorisInstance !== null
         ) {
             // Add admistrator email.
-            $contact  = $lorisInstance
+            $tpl_data['contact'] = $lorisInstance
                 ->getConfiguration()
                 ->getSetting('mail')['From'];
-            $tpl_data = array(
-                         'message' => $message,
-                         'baseurl' => $baseurl,
-                         'contact' => $contact,
-                        );
+
             // Add issue tracker data if the error is encountered by a user with
             // the correct permissions.
             $canReport = $user->hasAnyPermission(

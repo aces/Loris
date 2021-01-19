@@ -194,13 +194,13 @@ class UploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     // Pipeline has not been triggered yet
@@ -214,13 +214,13 @@ class UploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
+      }).then((result) => {
+        if (result.value) {
           this.uploadFile(true);
         } else {
           swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
         }
-      }.bind(this));
+      });
     }
 
     return;
@@ -287,9 +287,8 @@ class UploadForm extends Component {
           title: 'Upload Successful!',
           text: text,
           type: 'success',
-        }, function() {
-          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
+        window.location.assign(loris.BaseURL + '/imaging_uploader/');
       },
       // Upon errors in upload:
       // - Displays pop up window with submission error message

@@ -335,6 +335,7 @@ class FeedbackPanelRow extends Component {
     );
   }
 }
+
 FeedbackPanelRow.propTypes = {
   fieldname: PropTypes.string,
   type: PropTypes.string,
@@ -342,7 +343,7 @@ FeedbackPanelRow.propTypes = {
   date: PropTypes.string,
   feedbackID: PropTypes.string,
   candID: PropTypes.string,
-  onClickOpen: PropTypes.string,
+  onClickOpen: PropTypes.func,
 };
 
 
