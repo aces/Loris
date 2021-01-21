@@ -11,6 +11,15 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
+    private \NDB_Factory $factory;
+
+    /**
+     * The LORIS base path
+     *
+     * @var string
+     */
+    private string $path;
+
     const PERMISSIONS = [
         'instrument_manager_read',
         'instrument_manager_write'
