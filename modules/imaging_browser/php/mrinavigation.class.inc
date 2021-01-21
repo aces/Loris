@@ -27,6 +27,11 @@ namespace LORIS\imaging_browser;
 
 class MRINavigation
 {
+    private array $_bits;
+    private int $_currentListIndex;
+    private array $_FilteredSessionList;
+
+    private int $_sessionID;
 
     public $urlParams = [];
 
@@ -39,18 +44,19 @@ class MRINavigation
      */
     function __construct($sessionID = null)
     {
-        $this->sessionID           = $sessionID;
-        $this->FilteredSessionList = $_SESSION['State']
+        $this->_sessionID           = $sessionID;
+        $this->_FilteredSessionList = $_SESSION['State']
             ->getProperty('mriSessionsListed');
 
-        if (!is_array($this->FilteredSessionList)) {
-            $this->FilteredSessionList = [];
+        if (!is_array($this->_FilteredSessionList)) {
+            $this->_FilteredSessionList = [];
         }
-        $this->currentListIndex = array_search(
-            $this->sessionID,
-            $this->FilteredSessionList
+        $this->_currentListIndex = array_search(
+            $this->_sessionID,
+            $this->_FilteredSessionList
         );
-        $this->urlParams        = $this->_splitURL();
+
+        $this->urlParams = $this->_splitURL();
     }
     /**
      * Parses the request into hostname/params, so that it can be
@@ -60,10 +66,10 @@ class MRINavigation
      */
     function _splitURL()
     {
-        $linkBase      = $_SERVER['REQUEST_URI'];
-        $this->bits[0] = substr($linkBase, 0, strpos($linkBase, '?'));
-        $this->bits[1] = substr($linkBase, strpos($linkBase, '?')+1);
-        parse_str($this->bits[1], $urlParams);
+        $linkBase       = $_SERVER['REQUEST_URI'];
+        $this->_bits[0] = substr($linkBase, 0, strpos($linkBase, '?'));
+        $this->_bits[1] = substr($linkBase, strpos($linkBase, '?')+1);
+        parse_str($this->_bits[1], $urlParams);
         return $urlParams;
     }
     /**
@@ -75,15 +81,15 @@ class MRINavigation
      */
     function _otherLink($delta)
     {
-        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])
+        if (isset($this->_FilteredSessionList[$this->_currentListIndex+$delta])
         ) {
             $urlParams = $this->urlParams;
             $urlParams['sessionID'] = $this
-                ->FilteredSessionList[$this->currentListIndex+$delta];
+                ->_FilteredSessionList[$this->_currentListIndex+$delta];
 
-            $this->bits[1] = http_build_query($urlParams);
+            $this->_bits[1] = http_build_query($urlParams);
 
-            return implode('?', $this->bits);
+            return implode('?', $this->_bits);
         }
     }
     /**
