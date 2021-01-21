@@ -132,7 +132,6 @@
         "modules/conflict_resolver/**",
         "modules/bvl_feedback/**",
         "modules/candidate_list/**",
-        "modules/datadict/**",
         "modules/dataquery/**",
         "modules/dqt/**",
         "modules/imaging_browser/**",
