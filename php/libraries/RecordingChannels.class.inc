@@ -21,6 +21,21 @@ namespace LORIS;
  */
 class RecordingChannels
 {
+    private ?string $_channelname;
+    private ?string $_channeldescription;
+    private ?string $_channeltype;
+    private ?string $_channeltypedescription;
+    private ?string $_channelstatus;
+    private ?string $_statusdescription;
+    private ?string $_samplingfrequency;
+    private ?string $_lowcutoff;
+    private ?string $_highcutoff;
+    private ?string $_manualflag;
+    private ?string $_notch;
+    private ?string $_reference;
+    private ?string $_unit;
+    private ?string $_filepath;
+
     /**
      * Contructor
      *
