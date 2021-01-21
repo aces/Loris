@@ -14,6 +14,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_Menu_Filter_Test extends TestCase
 {
+    protected $Session;
+
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions

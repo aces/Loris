@@ -33,6 +33,14 @@ class SinglePointLoginTest extends TestCase
     private $_login;
 
     /**
+     * Maps config names to values
+     * Used to set behaviour of NDB_Config test double
+     *
+     * @var array config name => value
+     */
+    private $_configMap = [];
+
+    /**
      * Setup
      *
      * @return void
