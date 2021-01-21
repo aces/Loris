@@ -29,6 +29,7 @@ echo "\n\nQuerying data...\n";
 
 $db = \NDB_Factory::singleton()->database();
 
+$result_count = 1;
 foreach(\Utility::getAllInstruments() as $table => $name) {
     // Query entries in the history table for the latest change
     // made to the Data column of the flag table, for every CommentID.
@@ -60,10 +61,10 @@ foreach(\Utility::getAllInstruments() as $table => $name) {
         continue;
     } else {
         echo "\n\nThe following data can be imported into $table:\n";
-        foreach ($history as $index => $row) {
-            $result = $index + 1;
-            echo "\n\nResult $result:\n";
+        foreach ($history as $row) {
+            echo "\n\nResult $result_count:\n";
             print_r($row);
+            $result_count++;
         }
     }
 
