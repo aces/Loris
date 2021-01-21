@@ -115,7 +115,7 @@ foreach(\Utility::getAllInstruments() as $table => $name) {
         try {
             $db->beginTransaction();
             $stmt_table->execute();
-            $stmt_table->execute();
+            $stmt_flag->execute();
             $db->commit();
             echo "\n\nData import done for $table.\n";
         } catch (Exception $e) {
