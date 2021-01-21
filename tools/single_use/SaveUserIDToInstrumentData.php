@@ -26,88 +26,103 @@ if (isset($argv[1]) && $argv[1] === 'confirm') {
 }
 
 echo "\n\nQuerying data...\n";
-$db      = \NDB_Factory::singleton()->database();
-// Query CommentIDs with DECS 'Complete', and
-// userID for latest changes made to the instrument data
-$history = $db->pselect(
-        "SELECT h1.tbl, h1.primaryVals AS CommentID, h1.userID
-            FROM history h1
-            INNER JOIN
+
+$db = \NDB_Factory::singleton()->database();
+
+foreach(\Utility::getAllInstruments() as $table => $name) {
+    // Query entries in the history table for the latest change
+    // made to the Data column of the flag table, for every CommentID.
+    $history = $db->pselect(
+        "SELECT h1.primaryVals AS CommentID, h1.userID, JSON_MERGE_PATCH(
+            f.Data, CONCAT('{\"UserID\": \"', h1.userID, '\"}')
+         ) AS new_Data
+            FROM $table
+            LEFT JOIN flag f USING (CommentID)
+            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
+            LEFT JOIN
             (
                 SELECT primaryVals, MAX(changeDate) AS max_date
                     FROM history
-                    WHERE primaryVals IN (
-                        SELECT primaryVals
-                        FROM history
-                        WHERE col = 'Data_entry_completion_status'
-                            AND primaryCols = 'CommentID'
-                            AND new = 'Complete'
-                    )
+                    WHERE tbl = 'flag'
+                        AND col = 'Data'
+                        AND userID <> 'unknown'    
                     GROUP BY primaryVals
-            ) h2
-                ON h1.primaryVals = h2.primaryVals
+            ) h2 USING (primaryVals)
+                WHERE h1.tbl = 'flag'
+                    AND h1.col = 'Data'
+                    AND h1.userID <> 'unknown'
                     AND h1.changeDate = h2.max_date
-                WHERE userID <> 'unknown'
-                    AND tbl <> 'flag'
-                    AND col <> 'CommentID'
-                GROUP BY h1.primaryVals, h1.changeDate, h1.userID",
-        array()
-);
-if (empty($history)) {
-    echo "\n\nThere is no data to import.\n";
-    die();
-}
-echo "\n\nThe following data can be imported into the instrument tables:\n";
-foreach ($history as $index => $row) {
-    $result = $index + 1;
-    echo "\n\nResult $result:\n";
-    print_r($row);
-
-    $table     = $row['tbl'];
-    $commentID = $row['CommentID'];
-    $userID    = $row['userID'];
-
-    // Extract old data from flag so we can update it with merge so that we
-    // don't overwrite it
-    $oldData = $db->pselectOne(
-        "SELECT Data FROM flag WHERE CommentID=:cid",
-        array('cid' => $commentID)
-    );
-    echo "\n\nOld Data: \n";
-    print_r($oldData);
-
-    // (The PDO driver seems to return null as "null" for JSON column types)
-    if (!empty($oldData) && $oldData !== "null") {
-        $oldData = json_decode($oldData, true);
+                    AND $table.UserID IS NULL",
+            array()
+        );
+    if (empty($history)) {
+        echo "\n\nThere is no data to import into $table.\n";
+        continue;
     } else {
-        $oldData = array();
+        echo "\n\nThe following data can be imported into $table:\n";
+        foreach ($history as $index => $row) {
+            $result = $index + 1;
+            echo "\n\nResult $result:\n";
+            print_r($row);
+        }
     }
-    $newData = array_merge(
-        $oldData ?? array(),
-        array('UserID' => $userID)
-    ); 
-    echo "\n\nNew Data: \n";
-    print_r(json_encode($newData));
 
+    // Update the intsrument table
     if ($confirm) {
-        echo "\n\nImporting data into respective instrument tables and commentID flag entries...\n";
-        // Update instrument table
-        $db->update(
-            $table,
-            array('UserID' => $userID),
-            array('CommentID' => $commentID)
-        );
+        echo "\n\nImporting data into $table...\n";
+        $table_query = "UPDATE $table
+            LEFT JOIN flag f USING (CommentID)
+            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
+            LEFT JOIN
+            (
+                SELECT primaryVals, MAX(changeDate) AS max_date
+                    FROM history
+                    WHERE tbl = 'flag'
+                        AND col = 'Data'
+                        AND userID <> 'unknown'    
+                    GROUP BY primaryVals
+            ) h2 USING (primaryVals)
+            SET $table.UserID = h1.userID
+                WHERE h1.tbl = 'flag'
+                    AND h1.col = 'Data'
+                    AND h1.userID <> 'unknown'
+                    AND h1.changeDate = h2.max_date
+                    AND $table.UserID IS NULL";
 
-        // Save the JSON to the flag.Data column.
-        //
-        // json_encode ensures that this is safe. If we use the safe wrapper,
-        // HTML encoding the quotation marks will make it invalid JSON.
-        $db->unsafeUpdate(
-            "flag",
-            array("Data" => json_encode($newData)),
-            array('CommentID' => $commentID)
-        );
-        echo "\n\nDone. $userID saved as UserID in $table and flag tables for CommentID $commentID.\n";
+        $flag_query = "UPDATE flag f
+            LEFT JOIN $table USING (CommentID)
+            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
+            LEFT JOIN
+            (
+                SELECT primaryVals, MAX(changeDate) AS max_date
+                    FROM history
+                    WHERE tbl = 'flag'
+                        AND col = 'Data'
+                        AND userID <> 'unknown'    
+                    GROUP BY primaryVals
+            ) h2 USING (primaryVals)
+            SET f.Data = JSON_MERGE_PATCH(
+                f.Data, CONCAT('{\"UserID\": \"', h1.userID, '\"}')
+            )
+                WHERE h1.tbl = 'flag'
+                    AND h1.col = 'Data'
+                    AND h1.userID <> 'unknown'
+                    AND h1.changeDate = h2.max_date
+                    AND $table.UserID IS NULL";
+
+        $stmt_table = $db->prepare($table_query);
+        $stmt_flag  = $db->prepare($flag_query);
+        try {
+            $db->beginTransaction();
+            $stmt_table->execute();
+            $stmt_table->execute();
+            $db->commit();
+            echo "\n\nData import done for $table.\n";
+        } catch (Exception $e) {
+            $db->rollBack();
+            $print("$table was not updated.");
+            $print($e->getMessage());
+        }
     }
 }
 
