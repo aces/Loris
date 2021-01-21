@@ -94,6 +94,15 @@ class NDB_Menu_Filter extends NDB_Menu
     var $formToFilter = [];
 
     /**
+     * A list of filters which should be tested for strict
+     * equality instead of substring equality. Set by subclasses
+     * of NDB_Menu_Filter in their constructor or setup functions.
+     *
+     * @var string[]
+     */
+    protected iterable $EqualityFilters;
+
+    /**
      * An array of all the table headers (optional)
      *
      * The array will automatically be built based on the column array
