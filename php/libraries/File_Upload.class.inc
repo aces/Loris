@@ -38,7 +38,12 @@ class File_Upload
     public $isCLImport        = false;
     public $handlerArgs;
     public $file;
+
+    /**
+     * @var array
+     */
     public $fileInfo;
+
     public $fileHandlers;
     public $destinationDirectory;
     public $destinationFilename;
