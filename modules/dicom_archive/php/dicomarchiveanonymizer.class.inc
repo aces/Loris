@@ -51,6 +51,9 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         $newrow = json_decode(json_encode($resource), true);
+        if(!is_array($newrow)) {
+            throw new \Exception("Error converting DataInstance to array");
+        }
         $cid    = $resource->getCenterID();
 
         // escape any forward slashes
