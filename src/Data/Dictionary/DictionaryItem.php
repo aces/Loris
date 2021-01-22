@@ -18,6 +18,7 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     protected $description;
     protected $scope;
     protected $type;
+    protected Cardinality $cardinality;
 
     /**
      * Construct a DictionaryItem with the given parameters
