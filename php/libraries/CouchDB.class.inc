@@ -562,9 +562,15 @@ class CouchDB
     {
         $getjson = $this->_getRelativeURL($id);
         $getdata = json_decode($getjson, true);
+        if (!is_array($getdata)) {
+            return false;
+        }
 
         $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
+        if (!is_array($data)) {
+            return false;
+        }
 
         if (!isset($data['ok'])) {
             return false;
