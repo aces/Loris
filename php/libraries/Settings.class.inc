@@ -39,6 +39,13 @@ class Settings
     private $_database;
 
     /**
+     * The base of the URL at which LORIS is being served.
+     *
+     * @var string
+     */
+    private $baseURL;
+
+    /**
      * Settings constructor.
      *
      * @param NDB_Config $_config config object
