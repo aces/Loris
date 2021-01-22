@@ -292,7 +292,7 @@ class Statistics_Site extends \NDB_Menu
                 $test_url = $instrument;
 
                 foreach ($results as $row) {
-                    if (!in_array($row['Visit_label'], $visits)) {
+                    if (!in_array($row['Visit_label'] ?? [], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
                     $arrayVar = [

@@ -177,6 +177,7 @@ class Stats_MRI extends \NDB_Form
 
                 // Update the $subcat and total values for each element.
                 // Data
+                assert(is_array($tpl_data['data']));
                 $tpl_data['data'][$subcat] += $row['val'];
                 $tpl_data['data']['total'] += $row['val'];
                 // Data => Visit_Label

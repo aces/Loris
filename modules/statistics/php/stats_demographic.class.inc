@@ -115,6 +115,8 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['DropdownSelected'] = $dropdownSelected;
         $tpl_data['Centers']          = $centers ?? [];
 
+        $tpl_data['data'] = [];
+
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
