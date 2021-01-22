@@ -36,6 +36,12 @@ class OutputWrapper
     private $_logDirectory;
 
     /**
+     * The filename which this script is logging to.
+     *
+     * @var string
+     */
+    private $_loggingFileName;
+    /**
      * Create a new command line helper.
      *
      * @param ?SPLFileInfo $logDirectory The full path to the directory that
