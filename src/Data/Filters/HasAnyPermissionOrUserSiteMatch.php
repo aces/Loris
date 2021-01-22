@@ -29,6 +29,8 @@ use \LORIS\Data\DataInstance;
  */
 class HasAnyPermissionOrUserSiteMatch extends UserSiteMatch
 {
+    protected array $_permissions;
+
     /**
      * Constructor
      *
