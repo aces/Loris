@@ -2123,7 +2123,7 @@ class LorisForm
             }
 
             if ($el['type'] === 'time') {
-                $value = $this->getValue($name);
+                $value = $this->getValue($name) ?? [];
                 if (($value['H'] || $value['H'] === '0')
                     && ($value['i'] || $value['i'] === '0')
                 ) {
