@@ -42,6 +42,7 @@ class Instrument_List_ControlPanel extends \TimePoint
      */
     function __construct($sessionID)
     {
+        $this->tpl_data = [];
         $this->select($sessionID);
     }
 
@@ -466,6 +467,10 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $this->tpl_data['bvl_qc_type_'.$type]['icon']
                     = 'far fa-check-square';
             }
+
+            // ensure the variable checked is set the same way as in display()
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
             if (!$isSelected
@@ -501,6 +506,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
             if (!empty($qcType)
                 && !$isSelected
                 && $this->tpl_data['access']['bvl_qc']
