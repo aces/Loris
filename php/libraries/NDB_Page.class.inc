@@ -92,6 +92,16 @@ class NDB_Page implements RequestHandlerInterface
     protected $tpl_data = [];
 
     /**
+     * The default dateOptions to send to LorisForm to render elements
+     * on this page. This is usually set by subclasses of NDB_Page which
+     * need to modify the options to show on a date (ie. min year, max year,
+     * etc.)
+     *
+     * @var array
+     */
+    public $dateOptions;
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
