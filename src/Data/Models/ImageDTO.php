@@ -141,8 +141,8 @@ class ImageDTO implements \LORIS\Data\DataInstance
     public function jsonSerialize() : array
     {
         return [
-                'fileid'              => $this->tarchiveid,
-                'filename'            => $this->tarname,
+                'fileid'              => $this->fileid,
+                'filename'            => $this->filename,
                 'filelocation'        => $this->filelocation,
                 'outputtype'          => $this->outputtype,
                 'acquisitionprotocol' => $this->acquisitionprotocol,
