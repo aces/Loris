@@ -297,7 +297,11 @@ class Files extends \NDB_Page
         }
 
         // Do some validation and fail early on bad inputs.
-        $body         = $request->getParsedBody();
+        $body = $request->getParsedBody();
+        if (!is_array($body)) {
+            throw new \LorisException("Expected parsed body to be an array");
+        }
+
         $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
         if (is_null($uploadedFile)) {
             return new \LORIS\Http\Response\JSON\BadRequest(

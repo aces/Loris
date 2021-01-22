@@ -77,6 +77,9 @@ class UploadCategory extends \NDB_Page
     {
         $DB            = \Database::singleton();
         $req           = $request->getParsedBody();
+        if(!is_array($req)) {
+            throw new \LorisException("Invalid JSON");
+        }
         $category_name = $req['categoryName']; // required
         $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
         $comments      = isset($req['comments']) ? $req['comments'] : null;
