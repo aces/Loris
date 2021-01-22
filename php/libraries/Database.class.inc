@@ -1507,11 +1507,13 @@ class Database
      */
     private function _createPDOErrorString(): string
     {
+        $error = $this->_PDO->errorInfo();
+
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
-            $this->_PDO->errorInfo[0],
-            $this->_PDO->errorInfo[1],
-            $this->_PDO->errorInfo[2]
+            $error[0],
+            $error[1],
+            $error[2],
         );
     }
 
