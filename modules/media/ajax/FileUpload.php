@@ -43,6 +43,9 @@ function editFile()
     // Read JSON from STDIN
     $stdin       = file_get_contents('php://input');
     $req         = json_decode($stdin, true);
+    if (!is_array($req)) {
+        throw new Exception("Invalid JSON");
+    }
     $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
@@ -289,9 +292,10 @@ function getUploadFields()
             $sessionData[$pscid]['instruments']['all'] = [];
         }
 
-        if ($record["Test_name"] !== null && !in_array(
+        if ($record["Test_name"] !== null
+            && !in_array(
             $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit],
+            $sessionData[$pscid]['instruments'][$visit] ?? [],
             true
         )
         ) {
