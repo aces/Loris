@@ -237,7 +237,8 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
