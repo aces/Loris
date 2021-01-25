@@ -1633,7 +1633,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if ($val===$el['value']) {
+        if ($val===($el['value'] ?? null)) {
             $checked = 'checked="checked"';
         }
 
@@ -2329,7 +2329,7 @@ class LorisFormFileElement extends LorisFormElement
     function __construct($el)
     {
         $this->el   = $el;
-        $this->file = $_FILES[$this->el['name']];
+        $this->file = $_FILES[$this->el['name']] ?? null;
     }
 
     /**
