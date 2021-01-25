@@ -846,7 +846,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
-        $i= $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
                 ["getFullName", "getSubtestList"]

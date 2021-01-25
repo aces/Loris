@@ -84,6 +84,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
         $i->form     = $this->QuickForm;
         $i->testName = "Test";
+
         $this->i = $i;
 
     }
