@@ -92,16 +92,8 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         //These variable are only for checking the permissions.
-        return ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )) || (in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('access_all_profiles')
+            || $this->timePoint->isAccessibleBy($user);
     }
 
     /**
