@@ -597,12 +597,10 @@ class NewThreadPanel extends Component {
   render() {
     let fieldnameSelect;
     let options = [];
-    for (let key in this.props.selectOptions) {
-      if (this.props.selectOptions.hasOwnProperty(key)) {
-        options.push(
-          <option key={key} value={key}>{this.props.selectOptions[key]}</option>
-        );
-      }
+    for (const [key] of Object.entries(this.props.selectOptions)) {
+      options.push(
+        <option key={key} value={key}>{this.props.selectOptions[key]}</option>
+      );
     }
 
     if (this.props.feedbackLevel === 'instrument') {
@@ -627,14 +625,12 @@ class NewThreadPanel extends Component {
 
     let feedbackTypes = this.props.feedbackTypes;
     let input = [];
-    for (let key in feedbackTypes) {
-      if (feedbackTypes.hasOwnProperty(key)) {
-        input.push(
-          <option key={key} value={feedbackTypes[key].Type}>
-            {feedbackTypes[key].Label}
-          </option>
-        );
-      }
+    for (const [key] of Object.entries(feedbackTypes)) {
+      input.push(
+        <option key={key} value={feedbackTypes[key].Type}>
+          {feedbackTypes[key].Label}
+        </option>
+      );
     }
 
     return (

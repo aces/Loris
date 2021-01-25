@@ -136,8 +136,8 @@ class CandidateInfo extends Component {
     let specifyOther = null;
     let otherDisabled = true;
     let otherRequired = false;
-    for (let key in this.state.Data.caveatReasonOptions) {
-      if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
+    if (this.state.Data.caveatReasonOptions !== undefined) {
+      for (let [key] of Object.entries(this.state.Data.caveatReasonOptions)) {
         if (this.state.Data.caveatReasonOptions[key] === 'Other') {
           reasonKey = key;
           break;
@@ -172,8 +172,8 @@ class CandidateInfo extends Component {
     }
     let extraParameterFields = [];
     let extraParameters = this.state.Data.extra_parameters;
-    for (let key2 in extraParameters) {
-      if (extraParameters.hasOwnProperty(key2)) {
+    if (extraParameters !== undefined) {
+      for (let [key2] of Object.entries(extraParameters)) {
         let paramTypeID = extraParameters[key2].ParameterTypeID;
         let name = paramTypeID;
         let value = this.state.formData[paramTypeID];
@@ -185,10 +185,8 @@ class CandidateInfo extends Component {
             types = types.replace(/'/g, '');
             types = types.split(',');
             let selectOptions = {};
-            for (let key3 in types) {
-              if (types.hasOwnProperty(key3)) {
-                selectOptions[types[key3]] = types[key3];
-              }
+            for (let [key3] of Object.entries(types)) {
+              selectOptions[types[key3]] = types[key3];
             }
 
             extraParameterFields.push(
@@ -303,11 +301,9 @@ class CandidateInfo extends Component {
     // Set form data and upload the media file
     let self = this;
     let formData = new FormData();
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key)) {
-        if (myFormData[key] !== '') {
-          formData.append(key, myFormData[key]);
-        }
+    for (let [key] of Object.entries(myFormData)) {
+      if (myFormData[key] !== '') {
+        formData.append(key, myFormData[key]);
       }
     }
 

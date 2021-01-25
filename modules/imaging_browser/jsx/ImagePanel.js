@@ -299,15 +299,13 @@ class ImageQCDropdown extends Component {
     let dropdown;
     if (this.props.editable) {
       let options = [];
-      for (let key in this.props.options) {
-        if (this.props.options.hasOwnProperty(key)) {
-          options.push(
-            <option key={this.props.FormName + this.props.FileID + key}
-                    className="form-control input-sm option"
-                    value={key}>{this.props.options[key]}
-            </option>
-          );
-        }
+      for (let key of this.props.options) {
+        options.push(
+          <option key={this.props.FormName + this.props.FileID + key}
+                  className="form-control input-sm option"
+                  value={key}>{this.props.options[key]}
+          </option>
+        );
       }
       dropdown = (
         <select name={this.props.FormName +

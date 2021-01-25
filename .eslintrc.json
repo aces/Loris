@@ -67,7 +67,7 @@
     "no-undef": "error",
     "react/jsx-key": "off",
     "no-extra-semi": "off",
-    "no-prototype-builtins": "off",
+    "no-prototype-builtins": "error",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",

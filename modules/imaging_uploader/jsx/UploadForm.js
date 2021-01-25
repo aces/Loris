@@ -260,11 +260,9 @@ class UploadForm extends Component {
         // - Returns to Browse tab
         const errorMessage = this.state.errorMessage;
         const hasError = this.state.hasError;
-        for (let i in errorMessage) {
-          if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = '';
-            hasError[i] = false;
-          }
+        for (const [i] of Object.entries(errorMessage)) {
+          errorMessage[i] = '';
+          hasError[i] = false;
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
         let text = '';

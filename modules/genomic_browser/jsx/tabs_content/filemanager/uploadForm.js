@@ -172,10 +172,8 @@ class GenomicUploadForm extends Component {
     // Set form data and upload the media file
     const state = Object.assign({}, this.state);
     let formObj = new FormData();
-    for (let key in state.formData) {
-      if (state.formData.hasOwnProperty(key)) {
-        formObj.append(key, state.formData[key]);
-      }
+    for (const [key] of Object.entries(state.formData)) {
+      formObj.append(key, state.formData[key]);
     }
     fetch(`${this.props.baseURL}/genomic_browser/FileManager`,
       {

@@ -139,38 +139,36 @@ class FamilyInfo extends Component {
     let familyMembers = this.state.familyMembers;
     let familyMembersHTML = [];
 
-    for (let key in familyMembers) {
-      if (familyMembers.hasOwnProperty(key)) {
-        let candID = familyMembers[key].FamilyCandID;
-        let relationship = familyMembers[key].Relationship_type;
-        let link = '?candID=' + candID + '&identifier=' + candID;
+    for (let [key] of Object.entries(familyMembers)) {
+      let candID = familyMembers[key].FamilyCandID;
+      let relationship = familyMembers[key].Relationship_type;
+      let link = '?candID=' + candID + '&identifier=' + candID;
 
-        familyMembersHTML.push(
-          <div key={key}>
-            <StaticElement
-              label="Family Member DCCID"
-              text={<a href={link}>{candID}</a>}
-            />
-            <StaticElement
-              label="Relation Type"
-              text={relationshipOptions[relationship]}
-            />
-            <ButtonElement
-              label="Delete"
-              type="button"
-              onUserInput={this.deleteFamilyMember.bind(
-                null,
-                candID,
-                key,
-                candidateList
-              )}
-            />
-            <hr/>
-          </div>
-        );
-        // remove from list of candidates because it can only be added once
-        delete candidateList[candID];
-      }
+      familyMembersHTML.push(
+        <div key={key}>
+          <StaticElement
+            label="Family Member DCCID"
+            text={<a href={link}>{candID}</a>}
+          />
+          <StaticElement
+            label="Relation Type"
+            text={relationshipOptions[relationship]}
+          />
+          <ButtonElement
+            label="Delete"
+            type="button"
+            onUserInput={this.deleteFamilyMember.bind(
+              null,
+              candID,
+              key,
+              candidateList
+            )}
+          />
+          <hr/>
+        </div>
+      );
+      // remove from list of candidates because it can only be added once
+      delete candidateList[candID];
     };
 
     let alertMessage = '';
@@ -248,12 +246,10 @@ class FamilyInfo extends Component {
     let familyMembers = this.state.familyMembers;
     let familyMember = {};
 
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key)) {
-        if (myFormData[key] !== '') {
-          familyMember[key] = myFormData[key];
-          formData.append(key, myFormData[key]);
-        }
+    for (let [key] of Object.entries(myFormData)) {
+      if (myFormData[key] !== '') {
+        familyMember[key] = myFormData[key];
+        formData.append(key, myFormData[key]);
       }
     }
     formData.append('tab', this.props.tabName);
@@ -346,11 +342,9 @@ class FamilyInfo extends Component {
     let myFormData = this.state.formData;
     let self = this;
     let formData = new FormData();
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key)) {
-        if (myFormData[key] !== '') {
-          formData.append(key, myFormData[key]);
-        }
+    for (let [key] of Object.entries(myFormData)) {
+      if (myFormData[key] !== '') {
+        formData.append(key, myFormData[key]);
       }
     }
     formData.append('tab', 'deleteFamilyMember');

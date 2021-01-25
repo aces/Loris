@@ -148,47 +148,45 @@ class ParticipantStatus extends Component {
         }
 
         let formattedHistory = [];
-        for (let statusKey in this.state.Data.history) {
-            if (this.state.Data.history.hasOwnProperty(statusKey)) {
-                let line = '';
-                for (let field in this.state.Data.history[statusKey]) {
-                    if (this.state.Data.history[statusKey]
-                      .hasOwnProperty(field)
-                    ) {
-                        let current = this.state.Data.history[statusKey][field];
-                        if (current !== null) {
-                            switch (field) {
-                                case 'data_entry_date':
-                                    line += '[';
-                                    line += current;
-                                    line += '] ';
-                                    break;
-                                case 'entry_staff':
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'status':
-                                    line += ' Status: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'suboption':
-                                    line += 'Details: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                case 'reason_specify':
-                                    line += 'Comments: ';
-                                    line += current;
-                                    line += ' ';
-                                    break;
-                                default:
-                            }
-                        }
-                    }
+        if (this.state.Data.history !== undefined) {
+          for (let [statusKey] of Object.entries(this.state.Data.history)) {
+            let line = '';
+            for (let [field] of Object.entries(
+              this.state.Data.history[statusKey]
+            )) {
+              let current = this.state.Data.history[statusKey][field];
+              if (current !== null) {
+                switch (field) {
+                  case 'data_entry_date':
+                    line += '[';
+                    line += current;
+                    line += '] ';
+                    break;
+                  case 'entry_staff':
+                    line += current;
+                    line += ' ';
+                    break;
+                  case 'status':
+                    line += ' Status: ';
+                    line += current;
+                    line += ' ';
+                    break;
+                  case 'suboption':
+                    line += 'Details: ';
+                    line += current;
+                    line += ' ';
+                    break;
+                  case 'reason_specify':
+                    line += 'Comments: ';
+                    line += current;
+                    line += ' ';
+                    break;
+                  default:
                 }
-                formattedHistory.push(<p key={statusKey}>{line}</p>);
+              }
             }
+            formattedHistory.push(<p key={statusKey}>{line}</p>);
+          }
         }
 
         let alertMessage = '';
@@ -265,9 +263,8 @@ class ParticipantStatus extends Component {
     let myFormData = this.state.formData;
     let self = this;
     let formData = new FormData();
-    for (let key in myFormData) {
-      if (myFormData.hasOwnProperty(key) &&
-        myFormData[key] !== '' &&
+    for (let [key] of Object.entries(myFormData)) {
+      if (myFormData[key] !== '' &&
         myFormData[key] !== null &&
         myFormData[key] !== undefined
       ) {

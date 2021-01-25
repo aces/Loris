@@ -149,11 +149,9 @@ class CandidateDOB extends Component {
     // Set form data and upload the media file
     let formData = this.state.formData;
     let formObject = new FormData();
-    for (let key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        if (formData[key] !== '') {
-          formObject.append(key, formData[key]);
-        }
+    for (const [key] of Object.entries(formData)) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
       }
     }
 

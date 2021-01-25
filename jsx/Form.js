@@ -370,10 +370,8 @@ class SearchableDropdown extends Component {
     let newOptions = {};
     let optionList = [];
     if (sortByValue) {
-      for (let key in options) {
-        if (options.hasOwnProperty(key)) {
-          newOptions[options[key]] = key;
-        }
+      for (const [key] of Object.entries(options)) {
+        newOptions[options[key]] = key;
       }
       optionList = Object.keys(newOptions).sort().map(function(option) {
         return (
@@ -560,10 +558,8 @@ class SelectElement extends Component {
     let newOptions = {};
     let optionList = [];
     if (sortByValue) {
-      for (let key in options) {
-        if (options.hasOwnProperty(key)) {
-          newOptions[options[key]] = key;
-        }
+      for (const [key] of Object.entries(options)) {
+        newOptions[options[key]] = key;
       }
       optionList = Object.keys(newOptions).sort().map(function(option) {
         let isDisabled = (newOptions[option] in disabledOptions);
@@ -2575,33 +2571,31 @@ class RadioElement extends React.Component {
     };
 
     let content = [];
-    for (const key in this.props.options) {
-      if (this.props.options.hasOwnProperty(key)) {
-        const checked = this.props.checked === key;
-        content.push(
-          <div key={key}
-               style={styleColumn}>
-            <div style={styleContainer}>
-              <input
-                type='radio'
-                name={this.props.name}
-                value={key}
-                id={key}
-                checked={checked}
-                required={required}
-                disabled={disabled}
-                onChange={this.handleChange}
-                style={styleInput}
-              />
-              <label htmlFor={key}
-                     style={styleLabel}
-              >
-                {this.props.options[key]}
-              </label>
-            </div>
+    for (const [key] of Object.entries(this.props.options)) {
+      const checked = this.props.checked === key;
+      content.push(
+        <div key={key}
+             style={styleColumn}>
+          <div style={styleContainer}>
+            <input
+              type='radio'
+              name={this.props.name}
+              value={key}
+              id={key}
+              checked={checked}
+              required={required}
+              disabled={disabled}
+              onChange={this.handleChange}
+              style={styleInput}
+            />
+            <label htmlFor={key}
+                   style={styleLabel}
+            >
+              {this.props.options[key]}
+            </label>
           </div>
-        );
-      }
+        </div>
+      );
     }
 
     layout.push(

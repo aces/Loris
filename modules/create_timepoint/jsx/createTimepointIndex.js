@@ -135,14 +135,14 @@ class CreateTimepoint extends React.Component {
             state.form.display.project = true;
           }
           // Populate the select options for cohort.
-          if (data.hasOwnProperty('cohortGroups')) {
+          if (data.cohortGroups) {
             // Store the (complete) visit selection information.
             state.storage.cohort = data.cohortGroups;
             // Handle cohort selection.
             this.handleCohort();
           }
           // Populate the select options for visit.
-          if (data.hasOwnProperty('visitGroups')) {
+          if (data.visitGroups) {
             // Store the (complete) visit selection information.
             state.storage.visit = data.visitGroups;
             // Handle visit selection.

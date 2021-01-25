@@ -58,18 +58,16 @@ class ConsentStatus extends Component {
             success: (data) => {
                 let formData = {};
                 let consents = data.consents;
-                for (let cStatus in consents) {
-                    if (consents.hasOwnProperty(cStatus)) {
-                        let cDate = cStatus + '_date';
-                        let cDate2 = cStatus + '_date2';
-                        let cWithdrawal = cStatus + '_withdrawal';
-                        let cWithdrawal2 = cStatus + '_withdrawal2';
-                        formData[cStatus] = data.consentStatuses[cStatus];
-                        formData[cDate] = data.consentDates[cStatus];
-                        formData[cDate2] = data.consentDates[cStatus];
-                        formData[cWithdrawal] = data.withdrawals[cStatus];
-                        formData[cWithdrawal2] = data.withdrawals[cStatus];
-                    }
+                for (let [cStatus] of Object.entries(consents)) {
+                    let cDate = cStatus + '_date';
+                    let cDate2 = cStatus + '_date2';
+                    let cWithdrawal = cStatus + '_withdrawal';
+                    let cWithdrawal2 = cStatus + '_withdrawal2';
+                    formData[cStatus] = data.consentStatuses[cStatus];
+                    formData[cDate] = data.consentDates[cStatus];
+                    formData[cDate2] = data.consentDates[cStatus];
+                    formData[cWithdrawal] = data.withdrawals[cStatus];
+                    formData[cWithdrawal2] = data.withdrawals[cStatus];
                 }
                 this.setState({
                     Data: data,
@@ -95,18 +93,16 @@ class ConsentStatus extends Component {
     setFormData(formElement, value) {
         let formData = this.state.formData;
         formData[formElement] = value;
-        for (let consent in this.state.Data.consents) {
-            if (this.state.Data.consents.hasOwnProperty(consent)) {
-                const oldConsent = this.state.Data.consentStatuses[consent];
-                const newConsent = this.state.formData[consent];
-                // Clear withdrawal date if consent status changes from no
-                // (or empty if uncleaned data) to yes
-                if (formElement === consent) {
-                    if ((newConsent === 'yes' && oldConsent !== 'yes') ||
-                        (newConsent === 'no' && oldConsent === null)) {
-                        formData[consent + '_withdrawal'] = '';
-                        formData[consent + '_withdrawal2'] = '';
-                    }
+        for (let [consent] of Object.entries(this.state.Data.consents)) {
+            const oldConsent = this.state.Data.consentStatuses[consent];
+            const newConsent = this.state.formData[consent];
+            // Clear withdrawal date if consent status changes from no
+            // (or empty if uncleaned data) to yes
+            if (formElement === consent) {
+                if ((newConsent === 'yes' && oldConsent !== 'yes') ||
+                    (newConsent === 'no' && oldConsent === null)) {
+                    formData[consent + '_withdrawal'] = '';
+                    formData[consent + '_withdrawal2'] = '';
                 }
             }
         }
@@ -134,29 +130,28 @@ class ConsentStatus extends Component {
             mm = '0' + mm;
         }
         today = yyyy + '-' + mm + '-' + dd;
-        for (let consentStatus in this.state.Data.consents) {
-            if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
-                let label = this.state.Data.consents[consentStatus];
+        for (let [consentStatus] of Object.entries(this.state.Data.consents)) {
+            let label = this.state.Data.consents[consentStatus];
 
-                let consentDate = consentStatus + '_date';
-                let consentDate2 = consentStatus + '_date2';
+            let consentDate = consentStatus + '_date';
+            let consentDate2 = consentStatus + '_date2';
 
-                let date1 = myFormData[consentDate] ?
-                    myFormData[consentDate] : null;
-                let date2 = myFormData[consentDate2] ?
-                    myFormData[consentDate2] : null;
+            let date1 = myFormData[consentDate] ?
+                myFormData[consentDate] : null;
+            let date2 = myFormData[consentDate2] ?
+                myFormData[consentDate2] : null;
 
-                if (date1 !== date2) {
-                    alert(label + ' dates do not match!');
-                    return;
-                }
-                if (date1 > today) {
-                    alert(label + ' date cannot be later than today!');
-                    return;
-                }
+            if (date1 !== date2) {
+                alert(label + ' dates do not match!');
+                return;
+            }
+            if (date1 > today) {
+                alert(label + ' date cannot be later than today!');
+                return;
+            }
 
-                let consentWithdrawal = consentStatus + '_withdrawal';
-                let consentWithdrawal2 = consentStatus + '_withdrawal2';
+            let consentWithdrawal = consentStatus + '_withdrawal';
+            let consentWithdrawal2 = consentStatus + '_withdrawal2';
 
                 const withdrawDate1 = myFormData[consentWithdrawal] ?
                     myFormData[consentWithdrawal] : null;

@@ -111,11 +111,9 @@ class AcknowledgementsIndex extends Component {
    */
   pickElements(formElement, keys) {
     let subset = {};
-    keys.forEach((key) => {
-      if (formElement.hasOwnProperty(key)) {
-        subset[key] = formElement[key];
-      }
-    });
+    for (const key of keys) {
+      subset[key] = formElement[key];
+    }
     return subset;
   }
 

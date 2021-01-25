@@ -437,25 +437,26 @@ class FieldSelector extends Component {
     let isFile;
     let fieldName;
     let category;
-    let selectedCategory = this.state.selectedCategory;
-    let categoryFields = this.state.categoryFields;
-    if (this.state.filteredFields.length) {
-      categoryFields = {
-        [selectedCategory]: this.state.filteredFields,
-      };
-    }
-    for (i in categoryFields[this.state.selectedCategory]) {
-      if (categoryFields[this.state.selectedCategory].hasOwnProperty(i)) {
-        fieldName = categoryFields[this.state.selectedCategory][i].key[1];
-        category = categoryFields[this.state.selectedCategory][i].key[0];
-        if (this.props.selectedFields[category]
-          && this.props.selectedFields[category][fieldName]
-        ) {
-          // Do nothing, already added
-        } else {
-          isFile = !!(categoryFields[category][i].value.IsFile);
-          this.props.onFieldChange(fieldName, category, isFile);
-        }
+    for ([i] of Object.entries(
+      this.state.categoryFields[this.state.selectedCategory]
+    )) {
+      fieldName = this.state.categoryFields[
+        this.state.selectedCategory
+        ][i].key[1];
+      category = this.state.categoryFields[
+        this.state.selectedCategory
+        ][i].key[0];
+      if (this.props.selectedFields[category]
+        && this.props.selectedFields[category][fieldName]
+      ) {
+        // Do nothing, already added
+      } else {
+        isFile = (this.state.categoryFields[
+          category
+          ][i].value.isFile)
+          ? true
+          : false;
+        this.props.onFieldChange(fieldName, category, isFile);
       }
     }
   }
@@ -468,23 +469,21 @@ class FieldSelector extends Component {
     let fieldName;
     let category;
     let isFile;
-    for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      if (this.state.categoryFields[
+    for ([i] of Object.entries(
+      this.state.categoryFields[this.state.selectedCategory]
+    )) {
+      fieldName = this.state.categoryFields[
         this.state.selectedCategory
-        ].hasOwnProperty(i)) {
-        fieldName = this.state.categoryFields[
-          this.state.selectedCategory
-          ][i].key[1];
-        category = this.state.categoryFields[
-          this.state.selectedCategory
-          ][i].key[0];
-        if (this.props.selectedFields[category]
-          && this.props.selectedFields[category][fieldName]) {
-          isFile = (this.state.categoryFields[category][i].value.IsFile)
-            ? true
-            : false;
-          this.props.onFieldChange(fieldName, category, isFile);
-        }
+        ][i].key[1];
+      category = this.state.categoryFields[
+        this.state.selectedCategory
+        ][i].key[0];
+      if (this.props.selectedFields[category]
+        && this.props.selectedFields[category][fieldName]) {
+        isFile = (this.state.categoryFields[category][i].value.isFile)
+          ? true
+          : false;
+        this.props.onFieldChange(fieldName, category, isFile);
       }
     }
   }
@@ -499,42 +498,32 @@ class FieldSelector extends Component {
     if (this.state.selectedCategory
       && this.props.selectedFields[this.state.selectedCategory]
     ) {
-      for (let field in this.props.selectedFields[
-        this.state.selectedCategory
-        ]) {
-        if (this.props.selectedFields[
-          this.state.selectedCategory
-          ].hasOwnProperty(field)
-        ) {
-          if (this.props.selectedFields[
+      for (const [field] of Object.entries(
+        this.props.selectedFields[this.state.selectedCategory]
+      )) {
+        if (field === 'allVisits') {
+          continue;
+        }
+        if (action === 'check'
+          && !this.props.selectedFields[
             this.state.selectedCategory
-            ].hasOwnProperty(field)
-          ) {
-            if (field === 'allVisits') {
-              continue;
-            }
-            if (action === 'check'
-              && !this.props.selectedFields[
-                this.state.selectedCategory
-                ][field][visit]
-            ) {
-              this.props.fieldVisitSelect(
-                action,
-                visit,
-                {instrument: this.state.selectedCategory, field: field},
-              );
-            } else if (action === 'uncheck'
-              && this.props.selectedFields[
-                this.state.selectedCategory
-                ][field][visit]
-            ) {
-              this.props.fieldVisitSelect(
-                action,
-                visit,
-                {instrument: this.state.selectedCategory, field: field},
-              );
-            }
-          }
+            ][field][visit]
+        ) {
+          this.props.fieldVisitSelect(
+            action,
+            visit,
+            {instrument: this.state.selectedCategory, field: field}
+          );
+        } else if (action === 'uncheck'
+          && this.props.selectedFields[
+            this.state.selectedCategory
+            ][field][visit]
+        ) {
+          this.props.fieldVisitSelect(
+            action,
+            visit,
+            {instrument: this.state.selectedCategory, field: field}
+          );
         }
       }
     }

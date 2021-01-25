@@ -74,10 +74,8 @@ const SearchableDropdown = (props) => {
   let newOptions = {};
   let optionList = [];
   if (sortByValue) {
-    for (let key in options) {
-      if (options.hasOwnProperty(key)) {
-        newOptions[options[key]] = key;
-      }
+    for (const [key] of Object.entries(options)) {
+      newOptions[options[key]] = key;
     }
     optionList = Object.keys(newOptions).sort().map(function(option) {
       return (

@@ -48,8 +48,8 @@ class ViewProject extends React.Component {
     }
     let formData = this.state.formData;
     let formObj = new FormData();
-    for (let key in formData) {
-      if (formData.hasOwnProperty(key) && formData[key] !== '') {
+    for (const [key] of Object.entries(formData)) {
+      if (formData[key] !== '') {
         let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
