@@ -2285,7 +2285,7 @@ class LorisForms_Test extends TestCase
             ->method('hiddenHTML');
 
         $form->addElement("hidden", "abc", "Hello");
-        $form->renderElement($this->form->form['abc']);
+        $form->renderElement($form->form['abc']);
     }
 
     /**

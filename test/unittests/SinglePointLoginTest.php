@@ -62,7 +62,7 @@ class SinglePointLoginTest extends TestCase
             ->onlyMethods($exceptMethod)->getMock();
 
         '@phan-var \SinglePointLogin $login';
-        $this->login = $login;
+        $this->_login = $login;
 
     }
 
