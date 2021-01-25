@@ -532,6 +532,7 @@ class SelectElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let sortByValue = this.props.sortByValue;
     let options = this.props.options;
+    let disabledOptions = this.props.disabledOptions;
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
@@ -564,16 +565,28 @@ class SelectElement extends Component {
         }
       }
       optionList = Object.keys(newOptions).sort().map(function(option) {
+        let isDisabled = (newOptions[option] in disabledOptions);
         return (
-          <option value={newOptions[option]} key={newOptions[option]}>
+          <option
+            value={newOptions[option]}
+            key={newOptions[option]}
+            disabled={isDisabled}
+          >
             {option}
           </option>
         );
       });
     } else {
       optionList = Object.keys(options).map(function(option) {
+        let isDisabled = (option in disabledOptions);
         return (
-          <option value={option} key={option}>{options[option]}</option>
+          <option
+            value={option}
+            key={option}
+            disabled={isDisabled}
+          >
+            {options[option]}
+          </option>
         );
       });
     }
@@ -624,6 +637,7 @@ class SelectElement extends Component {
 SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
+  disabledOptions: PropTypes.object,
   label: PropTypes.string,
   value: PropTypes.oneOfType([
     PropTypes.string,
@@ -644,6 +658,7 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
+  disabledOptions: {},
   value: undefined,
   id: null,
   multiple: false,

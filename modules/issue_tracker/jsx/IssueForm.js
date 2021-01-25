@@ -242,6 +242,7 @@ class IssueForm extends Component {
             label='Assignee'
             emptyOption={true}
             options={this.state.Data.assignees}
+            disabledOptions={this.state.Data.inactiveUsers}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
