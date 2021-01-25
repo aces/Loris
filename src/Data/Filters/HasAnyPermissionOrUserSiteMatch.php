@@ -29,7 +29,7 @@ use \LORIS\Data\DataInstance;
  */
 class HasAnyPermissionOrUserSiteMatch extends UserSiteMatch
 {
-    protected array $_permissions;
+    protected array $permissions;
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ class HasAnyPermissionOrUserSiteMatch extends UserSiteMatch
      */
     public function __construct(array $permissions)
     {
-        $this->_permissions = $permissions;
+        $this->permissions = $permissions;
     }
 
     /**
@@ -52,7 +52,7 @@ class HasAnyPermissionOrUserSiteMatch extends UserSiteMatch
      */
     public function filter(\User $user, DataInstance $resource) : bool
     {
-        if ($user->hasAnyPermission($this->_permissions)) {
+        if ($user->hasAnyPermission($this->permissions)) {
             return true;
         }
         return parent::filter($user, $resource);
