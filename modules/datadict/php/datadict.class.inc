@@ -78,6 +78,8 @@ class Datadict extends \DataFrameworkMenu
                 );
                 continue;
             }
+            // If the instrument saves data in the flag table, there is no table to
+            // use, use the test name.
             $key = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
             // Append other testnames if multiple tests use the same table
             $otherNames = '';
