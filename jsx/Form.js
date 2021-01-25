@@ -879,6 +879,7 @@ class TagsElement extends Component {
             type="button"
             onClick={this.handleRemove}
             data-item={item}
+            key={item}
           >
             {itmTxt}
             &nbsp;
