@@ -259,6 +259,8 @@ const SavedQueriesList = (props) => {
 SavedQueriesList.propTypes = {
   queryDetails: PropTypes.object,
   queriesLoaded: PropTypes.bool,
+  onSelectQuery: PropTypes.func,
+  globalQueries: PropTypes.array,
 };
 SavedQueriesList.defaultProps = {
   queryDetails: {},

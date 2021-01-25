@@ -81,6 +81,9 @@ Card.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   initCollapsed: PropTypes.bool,
+  style: PropTypes.object,
+  cardSize: PropTypes.string,
+  children: PropTypes.array,
 };
 
 Card.defaultProps = {

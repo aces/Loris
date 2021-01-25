@@ -296,6 +296,7 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  submitURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {

@@ -49,6 +49,12 @@ class CategoryItem extends Component {
     );
   }
 }
+CategoryItem.propTypes = {
+  selected: PropTypes.bool,
+  count: PropTypes.number,
+  onClick: PropTypes.func,
+  name: PropTypes.string,
+};
 
 /**
  * CategoryList Component
@@ -111,6 +117,10 @@ class CategoryList extends Component {
     );
   }
 }
+CategoryList.propTypes = {
+  onCategorySelect: PropTypes.func,
+  items: PropTypes.array,
+};
 
 /**
  * FieldItem Component
@@ -233,6 +243,17 @@ class FieldItem extends Component {
     );
   }
 }
+FieldItem.propTypes = {
+  Category: PropTypes.string,
+  FieldName: PropTypes.string,
+  fieldVisitSelect: PropTypes.func,
+  selected: PropTypes.bool,
+  Visits: PropTypes.object,
+  downloadable: PropTypes.bool,
+  onClick: PropTypes.func,
+  Description: PropTypes.string,
+  selectedVisits: PropTypes.array,
+};
 
 /**
  * FieldList Component
@@ -341,6 +362,19 @@ class FieldList extends Component {
     );
   }
 }
+FieldList.propTypes = {
+  selectedVisits: PropTypes.array,
+  onFieldSelect: PropTypes.func,
+  category: PropTypes.string,
+  FieldsPerPage: PropTypes.number,
+  PageNumber: PropTypes.number,
+  Filter: PropTypes.string,
+  selected: PropTypes.bool,
+  changePage: PropTypes.func,
+  items: PropTypes.array,
+  Visits: PropTypes.object,
+  fieldVisitSelect: PropTypes.func,
+};
 
 /**
  * FieldSelector Component
@@ -718,9 +752,14 @@ class FieldSelector extends Component {
     );
   }
 }
-
 FieldSelector.propTypes = {
   selectedFields: PropTypes.object,
+  items: PropTypes.array,
+  onFieldChange: PropTypes.func,
+  Visits: PropTypes.object,
+  title: PropTypes.string,
+  Criteria: PropTypes.string,
+  fieldVisitSelect: PropTypes.func,
 };
 
 window.CategoryItem = CategoryItem;

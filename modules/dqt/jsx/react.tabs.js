@@ -67,6 +67,13 @@ const TabPane = (props) => {
     </div>
   );
 };
+TabPane.propTypes = {
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  TabId: PropTypes.string,
+  Title: PropTypes.string,
+  children: PropTypes.element,
+};
 
 /**
  * InfoTabPane Component
@@ -105,6 +112,12 @@ let InfoTabPane = (props) => {
     </TabPane>
   );
 };
+InfoTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  UpdatedTime: PropTypes.string,
+};
 
 /**
  * FieldSelectTabPane Component
@@ -131,6 +144,16 @@ let FieldSelectTabPane = (props) => {
     </TabPane>
   );
 };
+FieldSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
+  categories: PropTypes.array,
+  onFieldChange: PropTypes.func,
+  selectedFields: PropTypes.array,
+  Visits: PropTypes.array,
+  fieldVisitSelect: PropTypes.array,
+};
 
 /**
  * FilterSelectTabPane Component
@@ -152,6 +175,15 @@ let FilterSelectTabPane = (props) => {
       />
     </TabPane>
   );
+};
+FilterSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  categories: PropTypes.array,
+  updateFilter: PropTypes.func,
+  filter: PropTypes.object,
+  Visits: PropTypes.array,
+  Active: PropTypes.bool,
 };
 
 /**
@@ -596,6 +628,17 @@ class ViewDataTabPane extends Component {
 
 ViewDataTabPane.propTypes = {
   runQuery: PropTypes.func.isRequired,
+  Fields: PropTypes.array,
+  Sessions: PropTypes.array,
+  changeDataDisplay: PropTypes.func,
+  FileData: PropTypes.array,
+  displayVisualizedData: PropTypes.func,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
+  RowHeaders: PropTypes.array,
+  RowInfo: PropTypes.array,
+  Criteria: PropTypes.object,
 };
 
 /**
@@ -838,6 +881,10 @@ class ScatterplotGraph extends Component {
     );
   }
 }
+ScatterplotGraph.propTypes = {
+  Data: PropTypes.array,
+  Fields: PropTypes.array,
+};
 
 /**
  * StatsVisualizationTabPane Component
@@ -952,6 +999,10 @@ StatsVisualizationTabPane.defaultProps = {
 
 StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
+  Fields: PropTypes.array,
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
 };
 
 /**
@@ -1040,6 +1091,10 @@ let SaveQueryDialog = (props) => {
     </div>
   );
 };
+SaveQueryDialog.propTypes = {
+  onDismissClicked: PropTypes.func,
+  onSaveClicked: PropTypes.func,
+};
 
 /**
  * ManageSavedQueryFilter Component
@@ -1118,6 +1173,9 @@ class ManageSavedQueryFilter extends Component {
     );
   }
 }
+ManageSavedQueryFilter.propTypes = {
+  filterItem: PropTypes.object,
+};
 
 /**
  * ManageSavedQueryRow Component
@@ -1342,6 +1400,9 @@ ManageSavedQueriesTabPane.propTypes = {
   globalQueries: PropTypes.array,
   queriesLoaded: PropTypes.bool,
   queryDetails: PropTypes.object,
+  onSelectQuery: PropTypes.func,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
 };
 
 window.Loading = Loading;
