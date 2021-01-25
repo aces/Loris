@@ -56,50 +56,6 @@ class NDB_Menu extends NDB_Page
         parent::__construct($module, $page, $identifier, $commentID);
         $this->menu = $module->getName();
     }
-    /**
-     * Generates a new menu instance
-     *
-     * @param string $menu The name of the menu to use
-     * @param string $mode The menu's mode
-     *
-     * @return object The new object of $menu type
-     */
-    static function &factory($menu, $mode)
-    {
-        // get the name of the class
-        if (class_exists("NDB_Menu_$menu")) {
-            $class = "NDB_Menu_$menu";
-        } elseif (class_exists("NDB_Menu_Filter_$menu")) {
-            $class = "NDB_Menu_Filter_$menu";
-        } elseif (class_exists("NDB_Menu_Filter_Form_$menu")) {
-            $class = "NDB_Menu_Filter_Form_$menu";
-        } else {
-            throw new Exception("The menu class ($menu) is not defined.");
-        }
-
-        if (isset($_REQUEST['test_name'])) {
-            $module = \Module::factory($_REQUEST['test_name']);
-        } else {
-            $module = \Module::factory($menu);
-        }
-
-        $obj = new $class($module, $menu, '', '', 'menu');
-
-        // set the local variables
-        $obj->mode = $mode;
-        $access    = $obj->_hasAccess();
-
-        // check that user has access
-        if ($access == false) {
-            throw new Exception("You do not have access to this page.", 403);
-        }
-
-        $factory  = NDB_Factory::singleton();
-        $settings = $factory->settings();
-        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
-
-        return $obj;
-    }
 
     /**
      * Displays the menu page
