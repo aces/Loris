@@ -2078,7 +2078,7 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $value = $_REQUEST[$key];
+                    $value = array_key_exists($key,$_REQUEST) ? $_REQUEST[$key] : null;
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
