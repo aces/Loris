@@ -43,7 +43,7 @@ class Settings
      *
      * @var string
      */
-    private $baseURL;
+    private $_baseURL;
 
     /**
      * Settings constructor.
@@ -53,8 +53,8 @@ class Settings
      */
     public function __construct(NDB_Config $_config, string $baseURL='')
     {
-        $this->_config = $_config;
-        $this->baseURL = $baseURL;
+        $this->_config  = $_config;
+        $this->_baseURL = $baseURL;
     }
 
     /**
@@ -65,7 +65,7 @@ class Settings
      */
     public function getBaseURL(): string
     {
-        return $this->baseURL;
+        return $this->_baseURL;
     }
 
     /**
