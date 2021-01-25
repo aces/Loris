@@ -1812,9 +1812,12 @@ class Database_Test extends TestCase
         $stub           = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
-
         '@phan-var \Database $stub';
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        '@phan-var \FakePDO $PDO';
+
+        $stub->_PDO = $PDO;
         $val        = $stub->isConnected();
         $this->assertEquals($val, true);
     }

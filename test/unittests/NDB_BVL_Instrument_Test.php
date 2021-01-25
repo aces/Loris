@@ -80,11 +80,15 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->quickForm = new \LorisForm();
 
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getFullName')->willReturn("Test Instrument");
+        $instrument->method('getSubtestList')->willReturn([]);
+
+        '@phan-var \NDB_BVL_Instrument $instrument';
+        $this->_instrument = $instrument;
+
         $this->_instrument->form     = $this->quickForm;
         $this->_instrument->testName = "Test";
     }
@@ -842,27 +846,21 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $i= $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
                 ["getFullName", "getSubtestList"]
             )->addMethods(['_setupForm'])->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn(
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSubtestList')->willReturn(
             [
                 ['Name' => 'Page 1', 'Description' => 'The first page'],
                 ['Name' => 'Page 2', 'Description' => 'The second page'],
             ]
         );
 
-        $this->_instrument->form     = $this->quickForm;
-        $this->_instrument->testName = "Test";
-
-        // Phan isn't interpreting the phpdoc correctly and thinks
-        // this is a \PHPUnit\Framework\MockObject\MockObject, not
-        // an instrument, so put it into a variable and assert its
-        // type.
-        $i = $this->_instrument;
+        $i->form     = $this->quickForm;
+        $i->testName = "Test";
         '@phan-var \NDB_BVL_Instrument $i';
 
         $json     = $i->toJSON();
@@ -1823,6 +1821,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $mockform = $this->getMockBuilder("\LorisForm")->getMock();
 
         $mockform->method('getSubmitValues')->willReturn(['1', '2']);
+        '@phan-var \LorisForm $mockform';
 
         $this->_instrument->form = $mockform;
 
