@@ -273,6 +273,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
         }
+        if (file_exists($base."project/instruments/$instrument.meta")) {
+            $obj->loadInstrumentMetadata(
+                $base . "project/instruments/$instrument.meta"
+            );
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -2317,6 +2322,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $this->commentID),
             array('nofetch' => true)
         );
+    }
+
+    /**
+     * Loads the metadata of an instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
     }
 
     /**
