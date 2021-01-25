@@ -25,18 +25,16 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    string
-     * @access private
+     * @var ?string
      */
-    var $userID;
+    private $userID;
 
     /**
      * Stores the permissions
      *
-     * @var    array<string,bool>
-     * @access private
+     * @var array<string,bool>
      */
-    var $permissions = [];
+    private $permissions = [];
 
 
     /**

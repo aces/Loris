@@ -10,6 +10,7 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
     </rule>
 
     <!-- Pieces of other standards to include... -->
