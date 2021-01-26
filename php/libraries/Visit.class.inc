@@ -27,22 +27,22 @@ class Visit
     /**
      * The visit ID
      *
-     * @var int
+     * @var ?string
      */
     protected $id;
 
     /**
      * The visit name (formely known as visit_label)
      *
-     * @var string
+     * @var ?string
      */
     protected $name;
 
     /**
      * The contructor
      *
-     * @param string|null $name The visit name
-     * @param string|null $id   The ID of the visit
+     * @param ?string $name The visit name
+     * @param ?string $id   The ID of the visit
      */
     public function __construct(
         ?string $name = null,
@@ -59,6 +59,9 @@ class Visit
      */
     public function getName(): string
     {
+        if ($this->name === null) {
+            throw new \LorisException("No name defined for Visit");
+        }
         return $this->name;
     }
 }

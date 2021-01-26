@@ -76,8 +76,11 @@ class LoginTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->_request       = new ServerRequest();
-        $this->_authenticator = $this->createMock('\SinglePointLogin');
+        $this->_request = new ServerRequest();
+
+        $authenticator = $this->createMock('\SinglePointLogin');
+        '@phan-var \SinglePointLogin $authenticator';
+        $this->_authenticator = $authenticator;
     }
 
     /**

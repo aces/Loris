@@ -72,16 +72,21 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this
+        $i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
             ->disableOriginalConstructor()
             ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
-        $this->i->method('getFullName')->willReturn("Test Instrument");
-        $this->i->method('getSessionID')
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSessionID')
             ->willReturn(new \SessionID(strval("123456")));
-        $this->i->form     = $this->QuickForm;
-        $this->i->testName = "Test";
+
+        '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
+        $i->form     = $this->QuickForm;
+        $i->testName = "Test";
+
+        $this->i = $i;
+
     }
 
     /**
