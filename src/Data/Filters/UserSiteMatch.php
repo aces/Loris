@@ -41,7 +41,7 @@ class UserSiteMatch implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        // phan only understands method_exists on simple variables, not 
+        // phan only understands method_exists on simple variables, not
         // Assigning to a variable is the a workaround
         // for false positive 'getCenterIDs doesn't exist errors suggested
         // in https://github.com/phan/phan/issues/2628

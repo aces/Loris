@@ -2479,7 +2479,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // getAttribute only exists on the DOMElement type
             // (which extends DOMNode)
             if ($selectEl instanceof \DOMElement
-                && $selectEl->getAttribute("multiple") == 'multiple') {
+                && $selectEl->getAttribute("multiple") == 'multiple'
+            ) {
                 $element['Multiselect'] = true;
             }
 

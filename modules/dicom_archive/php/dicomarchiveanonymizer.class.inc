@@ -53,7 +53,9 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         if (!method_exists($res, 'getCenterID')) {
-            throw new \LorisException("Mapper requires a resource type with getCenterID");
+            throw new \LorisException(
+                "Mapper requires a resource type with getCenterID"
+            );
         }
 
         $newrow = json_decode(json_encode($res), true);
