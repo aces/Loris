@@ -34,7 +34,6 @@ return [
     "unused_variable_detection" => true,
     "suppress_issue_types" => [
         "PhanUnusedVariable",
-        "PhanUnusedPublicMethodParameter",
         "PhanUnusedPublicNoOverrideMethodParameter",
         "PhanTypePossiblyInvalidDimOffset",
         "PhanUndeclaredMethod",
