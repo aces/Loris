@@ -171,11 +171,11 @@ class File_Upload
                 return false;
             }
 
-            if (!$f->isUploadedFile()) {
+            if(!$f->isUploadedFile()) {
                 return false;
             }
 
-            $this->file     = $f;
+            $this->file = $f;
             $this->fileInfo = $this->file->getValue();
             return true;
         } else {
