@@ -91,7 +91,10 @@ class LoginTest extends TestCase
      */
     public function testLoginSuccess(): void
     {
-        $this->_authenticator->expects($this->once())
+        $authenticator = $this->_authenticator;
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $authenticator';
+
+        $authenticator->expects($this->once())
             ->method('passwordAuthenticate')
             ->with('test_username', 'test_password')
             ->willReturn(true);
@@ -102,11 +105,12 @@ class LoginTest extends TestCase
 
         $handler->expects($this->once())
             ->method('getLoginAuthenticator')
-            ->willReturn($this->_authenticator);
+            ->willReturn($authenticator);
 
         $handler->expects($this->once())
             ->method('getEncodedToken')
             ->willReturn('jwt_token');
+        '@phan-var \LORIS\api\Endpoints\Login $handler';
 
         $request = $this->_request
             ->withAttribute('pathparts', ['login'])

@@ -92,12 +92,12 @@ class Attachment extends \NDB_Page implements ETagCalculator
         $name = rawurldecode($result['file_name']);
 
         return (new \LORIS\Http\Response())
+            ->withStatus(200)
             ->withHeader('Content-Type', $result['mime_type'])
             ->withHeader(
                 'Content-Disposition',
                 'attachment; filename=' . basename($name)
             )
-            ->withStatus(200)
             ->withBody(new \LORIS\Http\FileStream($fileToDownload));
     }
 

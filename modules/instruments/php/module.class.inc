@@ -71,8 +71,8 @@ class Module extends \Module
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
             return (new \Laminas\Diactoros\Response())
-                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
-                ->withStatus(400);
+                ->withStatus(400)
+                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"));
         }
         $instrument = \NDB_BVL_Instrument::factory(
             $instrumentName,
