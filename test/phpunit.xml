@@ -44,6 +44,7 @@
             <directory>../modules/module_manager/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
+            <directory>../modules/my_preferences/test/</directory>
             <directory>../modules/new_profile/test/</directory>
             <directory>../modules/next_stage/test/</directory>
             <directory>../modules/server_processes_manager/test/</directory>
