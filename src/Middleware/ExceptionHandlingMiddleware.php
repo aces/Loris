@@ -31,6 +31,7 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         try {
+            $status = 200;
             return $handler->handle($request);
         } catch (\NotFound $e) {
             error_log($e->getMessage() . $e->getTraceAsString());

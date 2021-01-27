@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09dcf5ce0de8f6a05029f0f8b9cb7217",
+    "content-hash": "c59fc96cd078073baaf4d654e1e8ec3a",
     "packages": [
         {
             "name": "bjeavons/zxcvbn-php",
@@ -1520,16 +1520,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "3.2.7",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "642844acf5acf755d32cc104a4e3ced5521b00d3"
+                "reference": "2e5f16a17aa909c91397c6fbba0309b4fef0df53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/642844acf5acf755d32cc104a4e3ced5521b00d3",
-                "reference": "642844acf5acf755d32cc104a4e3ced5521b00d3",
+                "url": "https://api.github.com/repos/phan/phan/zipball/2e5f16a17aa909c91397c6fbba0309b4fef0df53",
+                "reference": "2e5f16a17aa909c91397c6fbba0309b4fef0df53",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
                 "phpunit/phpunit": "^8.5.0"
             },
             "suggest": {
-                "ext-ast": "Needed for parsing ASTs (unless --use-fallback-parser is used). 1.0.1+ is needed, 1.0.8+ is recommended.",
+                "ext-ast": "Needed for parsing ASTs (unless --use-fallback-parser is used). 1.0.1+ is needed, 1.0.10+ is recommended.",
                 "ext-iconv": "Either iconv or mbstring is needed to ensure issue messages are valid utf-8",
                 "ext-igbinary": "Improves performance of polyfill when ext-ast is unavailable",
                 "ext-mbstring": "Either iconv or mbstring is needed to ensure issue messages are valid utf-8",
@@ -1589,7 +1589,11 @@
                 "php",
                 "static"
             ],
-            "time": "2020-12-13T16:39:58+00:00"
+            "support": {
+                "issues": "https://github.com/phan/phan/issues",
+                "source": "https://github.com/phan/phan/tree/4.0.2"
+            },
+            "time": "2021-01-09T21:32:36+00:00"
         },
         {
             "name": "phar-io/manifest",

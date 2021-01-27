@@ -590,7 +590,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         if (!is_null($clickException)) {
             if (!$allowJavascriptClick) {
-                throw $e;
+                throw $clickException;
             }
 
             $this->webDriver->executeScript(
