@@ -75,9 +75,9 @@ class UploadCategory extends \NDB_Page
      */
     function uploadDocCategory($request): void
     {
-        $DB            = \Database::singleton();
-        $req           = $request->getParsedBody();
-        if(!is_array($req)) {
+        $DB  = \Database::singleton();
+        $req = $request->getParsedBody();
+        if (!is_array($req)) {
             throw new \LorisException("Invalid JSON");
         }
         $category_name = $req['categoryName']; // required

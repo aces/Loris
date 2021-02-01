@@ -40,6 +40,8 @@ class File_Upload
     public $file;
 
     /**
+     * The fileInfo in the format stored by $_FILES
+     *
      * @var array
      */
     public $fileInfo;

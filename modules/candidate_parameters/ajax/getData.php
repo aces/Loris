@@ -544,7 +544,7 @@ function getDODFields(): array
     if ($candidateData === null) {
         throw new \LorisException("Invalid candidate");
     }
-    $result        = [
+    $result = [
         'pscid'  => $candidateData['PSCID'],
         'candID' => $candID->__toString(),
         'dod'    => $candidateData['DoD'],

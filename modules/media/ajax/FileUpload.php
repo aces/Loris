@@ -41,8 +41,8 @@ function editFile()
     }
 
     // Read JSON from STDIN
-    $stdin       = file_get_contents('php://input');
-    $req         = json_decode($stdin, true);
+    $stdin = file_get_contents('php://input');
+    $req   = json_decode($stdin, true);
     if (!is_array($req)) {
         throw new Exception("Invalid JSON");
     }
@@ -294,10 +294,10 @@ function getUploadFields()
 
         if ($record["Test_name"] !== null
             && !in_array(
-            $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit] ?? [],
-            true
-        )
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments'][$visit] ?? [],
+                true
+            )
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
                 = $record["Test_name"];

@@ -470,7 +470,9 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             // ensure the variable checked is set the same way as in display()
             $user =& \User::singleton();
-            $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
+
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
             if (!$isSelected
@@ -507,7 +509,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
             $user =& \User::singleton();
-            $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
             if (!empty($qcType)
                 && !$isSelected
                 && $this->tpl_data['access']['bvl_qc']
