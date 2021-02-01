@@ -243,7 +243,7 @@ class Database
      * escaped to avoid injection.
      *
      * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param array<string,string|int> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -294,7 +294,7 @@ class Database
      * updated.
      *
      * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the row
+     * @param array<string,string|int> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -488,8 +488,8 @@ class Database
      * any HTML in the data being inserted for security.
      *
      * @param string               $table   the table into which to insert the row
-     * @param array<string,string> $set     the values with which to fill the new row
-     * @param array<string,string> $i_where the selection filter, joined as a
+     * @param array<string,string|int> $set     the values with which to fill the new row
+     * @param array<string,string|int> $i_where the selection filter, joined as a
      *                                      boolean and
      *
      * @return void
@@ -606,7 +606,7 @@ class Database
      * Deletes a single row in the specified table
      *
      * @param string               $table the table into which to insert the row
-     * @param array<string,string> $where the selection filter, joined as
+     * @param array<string,string|int> $where the selection filter, joined as
      *                                    a boolean and
      *
      * @return void
@@ -697,7 +697,7 @@ class Database
      *                                       or update prepared
      *                                       statements.
      *
-     * @return array<int,array<string,string>> An array of rows in the format
+     * @return array<int,array<string,string|int>> An array of rows in the format
      *                                  ColName => Value after
      *                                      executing the statement.
      */
@@ -1275,9 +1275,9 @@ class Database
      * without mocking every single query that needs to be used in
      * that test.
      *
-     * @param string                $tableName The table name to fake
-     * @param array<string, string> $rowData   An array of data to be inserted into
-     *                                         the fake table.
+     * @param string  $tableName The table name to fake
+     * @param array[] $rowData   An array of data to be inserted into
+     *                           the fake table.
      *
      * @return void
      */

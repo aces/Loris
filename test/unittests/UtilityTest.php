@@ -130,7 +130,7 @@ class UtilityTest extends TestCase
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     * @var \Database&PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -171,9 +171,12 @@ class UtilityTest extends TestCase
         $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
+        $mock = $this->_dbMock;
+        '@phan-var \Database $mock';
+
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
-        $this->_factory->setDatabase($this->_dbMock);
+        $this->_factory->setDatabase($mock);
     }
 
     /**
@@ -1141,6 +1144,8 @@ class UtilityTest extends TestCase
         $config->expects($this->any())
             ->method('getSetting')
             ->willReturn('Y-m-d H:i:s');
+        '@phan-var \NDB_Config $config';
+
         $this->_mockFactory->setConfig($config);
 
         $date = "2000-01-01";
