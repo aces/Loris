@@ -26,6 +26,8 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      */
     protected $i;
 
+    protected \NDB_Client $Client;
+
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
@@ -39,7 +41,8 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->addMethods(
+
+        $session = $this->getMockBuilder(\stdClass::class)->addMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -47,13 +50,14 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                 'isLoggedIn'
             ]
         )->getMock();
-        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
+
+        $mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
-        $this->Session->method("getProperty")
-            ->willReturn($this->MockSinglePointLogin);
+        $session->method("getProperty")
+            ->willReturn($mockSinglePointLogin);
 
         $_SESSION = [
-            'State' => $this->Session
+            'State' => $session,
         ];
 
         $factory = \NDB_Factory::singleton();
@@ -67,8 +71,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             ->method('pselectOne')
             ->willReturn('999');
 
-        $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
-        $this->Client    = new \NDB_Client;
+        $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
@@ -82,11 +85,10 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             ->willReturn(new \SessionID(strval("123456")));
 
         '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
-        $i->form     = $this->QuickForm;
+        $i->form     = new \LorisForm();
         $i->testName = "Test";
 
         $this->i = $i;
-
     }
 
     /**

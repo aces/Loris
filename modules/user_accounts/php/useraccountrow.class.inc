@@ -11,6 +11,9 @@ class UserAccountRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
+    private array $_centerIDs;
+    private array $_projectIDs;
+
      /**
       * Create a new ModuleRow Instance.
       *
@@ -20,9 +23,10 @@ class UserAccountRow implements \LORIS\Data\DataInstance
       */
     public function __construct(array $row, array $cids, array $pids)
     {
-        $this->CenterIDs  = $cids;
-        $this->ProjectIDs = $pids;
-        $this->DBRow      = $row;
+        $this->_centerIDs  = $cids;
+        $this->_projectIDs = $pids;
+
+        $this->DBRow = $row;
     }
 
     /**
@@ -32,7 +36,7 @@ class UserAccountRow implements \LORIS\Data\DataInstance
      */
     public function getCenterIDs() : array
     {
-        return $this->CenterIDs;
+        return $this->_centerIDs;
     }
 
     /**
@@ -42,7 +46,7 @@ class UserAccountRow implements \LORIS\Data\DataInstance
      */
     public function getProjectIDs() : array
     {
-        return $this->ProjectIDs;
+        return $this->_projectIDs;
     }
 
     /**

@@ -94,6 +94,15 @@ class NDB_Menu_Filter extends NDB_Menu
     var $formToFilter = [];
 
     /**
+     * A list of filters which should be tested for strict
+     * equality instead of substring equality. Set by subclasses
+     * of NDB_Menu_Filter in their constructor or setup functions.
+     *
+     * @var string[]
+     */
+    protected iterable $EqualityFilters;
+
+    /**
      * An array of all the table headers (optional)
      *
      * The array will automatically be built based on the column array
@@ -544,23 +553,6 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (isset($this->searchKeyword)
-            && is_array($this->searchKeyword)
-            && count($this->searchKeyword) > 0
-            && !empty($this->searchKey['keyword'])
-        ) {
-            $WhereClause .= " AND (";
-            $fields       = [];
-            foreach ($this->searchKeyword as $field) {
-                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-            }
-            $WhereClause .= join(" OR ", $fields);
-
-            $qparams['v_searchkey'] = $this->searchKey['keyword'];
-            $WhereClause           .= ")";
-
-        }
-
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $WhereClause .= " GROUP BY $this->group_by ";
@@ -854,10 +846,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-
-        if (!empty($this->limit)) {
-            $query .= " LIMIT $this->limit";
-        }
 
         // get the list
         $result = $DB->pselect($query, $qparams);

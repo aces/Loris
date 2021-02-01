@@ -39,6 +39,13 @@ class Settings
     private $_database;
 
     /**
+     * The base of the URL at which LORIS is being served.
+     *
+     * @var string
+     */
+    private $_baseURL;
+
+    /**
      * Settings constructor.
      *
      * @param NDB_Config $_config config object
@@ -46,8 +53,8 @@ class Settings
      */
     public function __construct(NDB_Config $_config, string $baseURL='')
     {
-        $this->_config = $_config;
-        $this->baseURL = $baseURL;
+        $this->_config  = $_config;
+        $this->_baseURL = $baseURL;
     }
 
     /**
@@ -58,7 +65,7 @@ class Settings
      */
     public function getBaseURL(): string
     {
-        return $this->baseURL;
+        return $this->_baseURL;
     }
 
     /**

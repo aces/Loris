@@ -116,6 +116,8 @@ class CandidateTest extends TestCase
      */
     private $_configMap = [];
 
+    private array $_listOfProjects;
+
     /**
      * Sets up fixtures:
      *  - _candidate object

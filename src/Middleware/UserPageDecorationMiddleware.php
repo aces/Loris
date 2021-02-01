@@ -16,6 +16,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $BaseURL;
     protected $PageName;
 
+    protected \User $user;
+
     public function __construct(
         \User $user,
         string $baseurl,

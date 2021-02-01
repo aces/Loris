@@ -74,6 +74,13 @@ class NDB_ConfigTest extends TestCase
     private $_configMap = [];
 
     /**
+     * A mock NDB_Config object
+     *
+     * @var \NDB_Config
+     */
+    private $_config;
+
+    /**
      * Test double for User object
      *
      * @var User | PHPUnit\Framework\MockObject\MockObject

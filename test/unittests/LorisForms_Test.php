@@ -2246,6 +2246,8 @@ class LorisForms_Test extends TestCase
         $form->expects($this->once())
             ->method('headerHTML');
 
+        '@phan-var \LorisForm $form';
+
         $form->addElement("header", "abc", "Hello");
         $form->renderElement($form->form['abc']);
     }
@@ -2283,6 +2285,7 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $form->expects($this->once())
             ->method('hiddenHTML');
+        '@phan-var \LorisForm $form';
 
         $form->addElement("hidden", "abc", "Hello");
         $form->renderElement($form->form['abc']);
@@ -2328,6 +2331,8 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $f->expects($this->once())
             ->method('linkHTML');
+
+        '@phan-var \LorisForm $f';
 
         $f->addElement("link", "abc", "Hello");
         $f->renderElement($f->form['abc']);

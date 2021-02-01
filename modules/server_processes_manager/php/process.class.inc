@@ -43,7 +43,7 @@ class Process
      *
      * @var string
      */
-    private $_outfile;
+    private $_outFile;
 
     /**
      * Full path ot the file containing the command std error.
@@ -89,7 +89,7 @@ class Process
 
         $this->_shellCommand = $shellCommand;
         $this->_pid          = null;
-        $this->_outfile      = $stdoutFile;
+        $this->_outFile      = $stdoutFile;
         $this->_errFile      = $stderrFile;
         $this->_exitCodeFile = $exitCodeFile;
     }
@@ -139,7 +139,7 @@ class Process
 
         // This is the main command intended to be run by this process.
         // Stdout and stderr are redirected to $_outfile and $_errfile respectively
-        $mainCmd = "$this->_shellCommand > $this->_outfile 2> $this->_errFile";
+        $mainCmd = "$this->_shellCommand > $this->_outFile 2> $this->_errFile";
 
         // This is the command that is used to fetch the exit code of the main
         // command and store it in $_exitCodeFile
@@ -207,9 +207,9 @@ class Process
     }
 
     /**
-     * Accessor for field $_outfile
+     * Accessor for field $_outFile
      *
-     * @return string value of field $_outfile
+     * @return string value of field $_outFile
      */
     function getOutFile()
     {

@@ -7,6 +7,10 @@ namespace LORIS\GUI;
  */
 class MenuItem
 {
+    protected string $category;
+    protected string $label;
+    protected string $link;
+
     /**
      * Constructs a menu item in a given category.
      *

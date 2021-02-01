@@ -33,6 +33,11 @@ class Database
     public $PDO;
 
     /**
+     * The last error that occured, to display to the user
+     */
+    public string $lastErr;
+
+    /**
      * Returns one and only one Database object.
      *
      * @return Database
