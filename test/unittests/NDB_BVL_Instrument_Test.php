@@ -79,14 +79,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         $s = $this->getMockBuilder(\State::class)
             ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
             ->getMock();
-        '@phan-var \State $s';
-        $this->session = $s;
 
         $spe = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
 
-        $this->session->method("getProperty")
+        $s->method("getProperty")
             ->willReturn($spe);
+
+        '@phan-var \State $s';
+        $this->session = $s;
 
         '@phan-var \SinglePointLogin $spe';
         $this->mockSinglePointLogin = $spe;

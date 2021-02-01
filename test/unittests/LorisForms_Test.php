@@ -2250,6 +2250,7 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $form->expects($this->once())
             ->method('submitHTML');
+        '@phan-var \LorisForm $form';
 
         $testSubmit = $form->createSubmit("abc", "Hello", []);
         $form->renderElement($testSubmit);
@@ -2289,6 +2290,7 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $f->expects($this->once())
             ->method('timeHTML');
+        '@phan-var \LorisForm $f';
 
         $testTime = $f->createElement(
             "time",
