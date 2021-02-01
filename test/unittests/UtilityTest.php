@@ -124,7 +124,7 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
+     * @var \NDB_Config&PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
@@ -168,7 +168,9 @@ class UtilityTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        $this->_configMock = $configMock;
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
         $mock = $this->_dbMock;
