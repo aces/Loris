@@ -193,6 +193,7 @@ class Database_Test extends TestCase
             ->method("prepare")->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->update("test", ['field' => '<b>Hello</b>'], []);
 
@@ -221,6 +222,7 @@ class Database_Test extends TestCase
             ->method("prepare")->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
 
@@ -249,7 +251,8 @@ class Database_Test extends TestCase
             ->method("prepare")->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
-        $stub->_PDO = $stub;
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->insert("test", ['field' => '<b>Hello</b>'], []);
 
     }
@@ -277,6 +280,7 @@ class Database_Test extends TestCase
             ->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->unsafeinsert("test", ['field' => '<b>Hello</b>'], []);
 
@@ -812,6 +816,7 @@ class Database_Test extends TestCase
             ->method("prepare")->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->insertOnDuplicateUpdate(
             "test",
@@ -845,6 +850,7 @@ class Database_Test extends TestCase
             ->method("prepare")->will($this->returnValue($stmt));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->unsafeInsertOnDuplicateUpdate(
             "test",
@@ -904,6 +910,7 @@ class Database_Test extends TestCase
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->run("SHOW TABLES");
     }
@@ -928,6 +935,7 @@ class Database_Test extends TestCase
             ->willReturn(new PDOStatement());
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->prepare("SHOW TABLES");
     }
@@ -1616,6 +1624,7 @@ class Database_Test extends TestCase
             ->willReturn("Complex string");
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->quote($string);
     }
@@ -1650,6 +1659,7 @@ class Database_Test extends TestCase
             ->willReturn(true);
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->inTransaction();
     }
@@ -1674,6 +1684,7 @@ class Database_Test extends TestCase
             ->willReturn(true);
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
 
         $stub->beginTransaction();
@@ -1697,6 +1708,7 @@ class Database_Test extends TestCase
         $this->expectException("DatabaseException");
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->beginTransaction();
     }
@@ -1718,6 +1730,7 @@ class Database_Test extends TestCase
         $PDO->expects($this->once())->method("rollBack")->willReturn(true);
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->rollBack();
     }
@@ -1739,6 +1752,7 @@ class Database_Test extends TestCase
         $this->expectException("DatabaseException");
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->rollBack();
     }
@@ -1759,6 +1773,7 @@ class Database_Test extends TestCase
         $PDO->expects($this->once())->method("commit")->willReturn(true);
 
         '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
         $stub->commit();
     }
@@ -1778,7 +1793,10 @@ class Database_Test extends TestCase
         $this->expectException("DatabaseException");
 
         '@phan-var \Database $stub';
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        '@phan-var \PDO $PDO';
+
+        $stub->_PDO = $PDO;
         $stub->commit();
     }
 

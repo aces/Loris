@@ -75,13 +75,21 @@ class NDB_BVL_Instrument_Test extends TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->session = $this->getMockBuilder(\stdClass::class)
+
+        $s = $this->getMockBuilder(\State::class)
             ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
             ->getMock();
-        $this->mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
+        '@phan-var \State $s';
+        $this->session = $s;
+
+        $spe = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
+
         $this->session->method("getProperty")
-            ->willReturn($this->mockSinglePointLogin);
+            ->willReturn($spe);
+
+        '@phan-var \SinglePointLogin $spe';
+        $this->mockSinglePointLogin = $spe;
 
         $_SESSION = [
             'State' => $this->session
@@ -880,7 +888,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $i->form     = $this->quickForm;
         $i->testName = "Test";
 
-        $json     = $instrument->toJSON();
+        $json     = $i->toJSON();
         $outArray = json_decode($json, true);
         $page1    = $outArray['Elements'][0];
         $page2    = $outArray['Elements'][1];
