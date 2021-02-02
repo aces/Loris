@@ -88,7 +88,7 @@ INSERT INTO `permissions` VALUES
     (45,'issue_tracker_reporter','Issue Tracker Module Edit Own, Comment on All', 2),
     (46,'issue_tracker_developer','Issue Tracker Module Edit All', 2),
     (47,'imaging_browser_phantom_allsites','Imaging Browser Module Access Phantom Data All Sites', 2),
-    (48,'imaging_browser_phantom_ownsite','Can access only phantom data from own site in Imaging Browser', 2),
+    (48,'imaging_browser_phantom_ownsite','Imaging Browser Module Access Phantom Data Own Site', 2),
     (49,'data_release_view','Data Rlease Module View', 2),
     (50,'data_release_upload','Data Release: Upload file', 2),
     (51,'data_release_edit_file_access','Data Release Module: Grant View Permission', 2),
