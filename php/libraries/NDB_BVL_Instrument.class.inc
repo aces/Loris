@@ -1105,22 +1105,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     abstract function getSubtestList(): array;
 
     /**
-     * Marks an element in the lorisform object as being required (for
-     * use with the requiredIf rule)
-     *
-     * @param string $elementName the element to add to the required list
-     *
-     * @return void
-     */
-    function setRequired(string $elementName): void
-    {
-        if (!in_array($elementName, $this->form->_required)) {
-            $this->form->_required[] = $elementName;
-        }
-    }
-
-
-    /**
      * Convert a lorisform date or timestamp into a database acceptable
      * (and storable) date or time
      *

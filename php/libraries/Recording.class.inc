@@ -37,6 +37,10 @@ class Recording
 
     private $_entitytype;
 
+    private ?string $_channel_file_path;
+    private ?string $_electrode_file_path;
+    private ?string $_event_file_path;
+    private ?string $_archive_file_path;
     /**
      * Constructor
      *

@@ -140,7 +140,7 @@ class StaticDataTable extends Component {
           SortColumn: colNumber,
         });
       }
-    };
+    }.bind(this);
   }
 
   /**

@@ -26,19 +26,35 @@ namespace LORIS\dashboard;
 class WidgetDependencies
 {
     /**
+     * List of URLs for JS resources that must be loaded for
+     * this widget.
+     *
+     * @var string[]
+     */
+    private iterable $_js;
+
+    /**
+     * List of URLs for CSS resources that must be loaded for
+     * this widget.
+     *
+     * @var string[]
+     */
+    private iterable $_css;
+
+    /**
      * Construct a WidgetDependencies object with the specified properties.
      *
-     * @param array $css An array of CSS requirements that must be loaded for
-     *                   the widget
-     * @param array $js  An array of JS requirements that must be loaded for
-     *                   the widget
+     * @param string[] $css An array of CSS requirements that must be loaded for
+     *                      the widget
+     * @param string[] $js  An array of JS requirements that must be loaded for
+     *                      the widget
      */
     public function __construct(
         array $css,
         array $js
     ) {
-        $this->css = $css;
-        $this->js  = $js;
+        $this->_css = $css;
+        $this->_js  = $js;
     }
 
     /**
@@ -49,7 +65,7 @@ class WidgetDependencies
      */
     public function getJSDependencies() : array
     {
-        return $this->js;
+        return $this->_js;
     }
 
     /**
@@ -60,6 +76,6 @@ class WidgetDependencies
      */
     public function getCSSDependencies() : array
     {
-        return $this->css;
+        return $this->_css;
     }
 }

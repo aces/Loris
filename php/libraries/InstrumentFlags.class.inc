@@ -22,6 +22,10 @@
  */
 class InstrumentFlags
 {
+    private ?string $_dataentry;
+    private ?string $_administration;
+    private ?string $_validity;
+
     /**
      * Contructor
      *

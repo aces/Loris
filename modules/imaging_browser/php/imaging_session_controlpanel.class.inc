@@ -27,6 +27,8 @@ namespace LORIS\imaging_browser;
 
 class Imaging_Session_ControlPanel
 {
+    protected array $tpl_data;
+
     /**
      * Var to store the sessionID.
      */

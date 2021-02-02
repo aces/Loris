@@ -33,6 +33,14 @@ class SinglePointLoginTest extends TestCase
     private $_login;
 
     /**
+     * Maps config names to values
+     * Used to set behaviour of NDB_Config test double
+     *
+     * @var array config name => value
+     */
+    private $_configMap = [];
+
+    /**
      * Setup
      *
      * @return void
@@ -58,8 +66,11 @@ class SinglePointLoginTest extends TestCase
         $method       = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
         $AllMethods   = get_class_methods('SinglePointLogin');
         $exceptMethod = array_diff($AllMethods, $method);
-        $this->_login = $this->getMockBuilder('SinglePointLogin')
+        $login        = $this->getMockBuilder('SinglePointLogin')
             ->onlyMethods($exceptMethod)->getMock();
+
+        '@phan-var \SinglePointLogin $login';
+        $this->_login = $login;
 
     }
 

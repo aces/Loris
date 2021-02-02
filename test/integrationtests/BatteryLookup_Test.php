@@ -25,6 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
+    protected $DB;
+
     /**
      * Set up the data needed for the integration tests.
      *

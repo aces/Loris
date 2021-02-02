@@ -14,6 +14,8 @@ class DataIteratorBinaryStream implements StreamInterface
     protected $eof;
     protected $rowgen;
 
+    protected \Traversable $rows;
+
     public function __construct(\Traversable $data)
     {
         $this->position = 0;

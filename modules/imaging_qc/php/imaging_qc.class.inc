@@ -129,9 +129,9 @@ class Imaging_QC extends \NDB_Menu_Filter
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete'
-              OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              WHEN m.`".$scan_done."` IS NULL THEN ''
+              WHEN (m.`".$scan_done."` = 'Complete'
+              OR m.`".$scan_done."` = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
            CASE
@@ -267,6 +267,18 @@ class Imaging_QC extends \NDB_Menu_Filter
         $scans_done = [];
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
+            // Only include scan types that appear in the MRI Parameter Form
+            $scanTypeInMRIPF = $db->columnExists(
+                'mri_parameter_form',
+                $scan_type .
+                "_Scan_done"
+            );
+
+            if (!$scanTypeInMRIPF) {
+                unset($scan_types[$scan_type]);
+                continue;
+            }
+
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",

@@ -30,6 +30,10 @@ namespace LORIS\dashboard;
  */
 class Widget implements \LORIS\GUI\Widget
 {
+    private WidgetContent $_content;
+    private WidgetDisplayProps $_displayprops;
+    private ?WidgetDependencies $_dependencies;
+
     /**
      * Construct a dashboard widget with the specified properties.
      *
@@ -45,9 +49,9 @@ class Widget implements \LORIS\GUI\Widget
         WidgetDisplayProps $props,
         ?WidgetDependencies $deps=null
     ) {
-        $this->content      = $content;
-        $this->displayprops = $props;
-        $this->dependencies = $deps;
+        $this->_content      = $content;
+        $this->_displayprops = $props;
+        $this->_dependencies = $deps;
     }
 
     /**
@@ -57,7 +61,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getSize() : string
     {
-        return $this->displayprops->getSize();
+        return $this->_displayprops->getSize();
     }
 
     /**
@@ -70,7 +74,7 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getOrder() : int
     {
-        return $this->displayprops->getOrder();
+        return $this->_displayprops->getOrder();
 
     }
 
@@ -81,8 +85,8 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getCSSDependencies() : array
     {
-        if ($this->dependencies !== null) {
-            return $this->dependencies->getCSSDependencies();
+        if ($this->_dependencies !== null) {
+            return $this->_dependencies->getCSSDependencies();
         }
         return [];
     }
@@ -94,8 +98,8 @@ class Widget implements \LORIS\GUI\Widget
      */
     public function getJSDependencies() : array
     {
-        if ($this->dependencies !== null) {
-            return $this->dependencies->getJSDependencies();
+        if ($this->_dependencies !== null) {
+            return $this->_dependencies->getJSDependencies();
         }
         return [];
     }
@@ -111,10 +115,10 @@ class Widget implements \LORIS\GUI\Widget
         $renderer = new \Smarty_NeuroDB("dashboard");
         $renderer->assign(
             [
-                'title'  => $this->content->getTitle(),
-                'body'   => $this->content->getBody(),
-                'footer' => $this->content->getFooter(),
-                'menus'  => $this->displayprops->getMenus(),
+                'title'  => $this->_content->getTitle(),
+                'body'   => $this->_content->getBody(),
+                'footer' => $this->_content->getFooter(),
+                'menus'  => $this->_displayprops->getMenus(),
             ]
         );
         return $renderer->fetch("panel.tpl");

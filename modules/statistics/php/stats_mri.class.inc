@@ -25,6 +25,8 @@ namespace LORIS\statistics;
  */
 class Stats_MRI extends \NDB_Form
 {
+    protected array $params;
+
     /**
      * Checking user's permission
      *

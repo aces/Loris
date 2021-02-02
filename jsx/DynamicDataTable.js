@@ -28,7 +28,7 @@ class DynamicDataTable extends Component {
     this.ajaxFailure = this.ajaxFailure.bind(this);
     this.xhrFunction = this.xhrFunction.bind(this);
     this.xhrProgress = this.xhrProgress.bind(this);
-  };
+  }
 
   /**
    * Called by React when the component has been rendered on the page.

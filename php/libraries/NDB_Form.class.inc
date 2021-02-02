@@ -48,59 +48,6 @@ class NDB_Form extends NDB_Page
     var $_GUIDelimiter = "&nbsp;\n";
 
     /**
-     * Generates a new form instance and runs the appropriate method
-     *
-     * @param string $name       Identifies the form
-     * @param string $page       Identifies the page to show
-     * @param string $identifier Variables passed to form
-     *
-     * @return \NDB_Form
-     */
-    static function &factory($name, $page, $identifier)
-    {
-        // check that the form class exists
-        if (class_exists("NDB_Form_$name")) {
-            $class = "NDB_Form_$name";
-        } else {
-            throw new Exception("The form class ($name) is not defined.");
-        }
-
-        if (isset($_REQUEST['test_name'])) {
-            $module = \Module::factory($_REQUEST['test_name']);
-        } else {
-            $module = \Module::factory($name);
-        }
-
-        // create a form instance
-        $obj = new $class($module, $page, $identifier, '', 'test_form');
-
-        $obj->registerDefaultFilter();
-
-        $access = $obj->_hasAccess();
-
-        // check that user has access
-        if ($access == false) {
-            throw new Exception("You do not have access to this page.", 403);
-        }
-
-        if (method_exists($obj, $page)) {
-            $obj->$page();
-            $obj->template = $page;
-        } elseif (method_exists($obj, $name)) {
-            $obj->$name();
-            $obj->template = $name;
-        } else {
-            throw new Exception("Form does not exist: $name $page", 404);
-        }
-
-        $factory  = NDB_Factory::singleton();
-        $settings = $factory->settings();
-        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
-
-        return $obj;
-    }
-
-    /**
      * By default, trim all fields on the form before any processing/validation
      * is done. Derived classes can override this behaviour if needed.
      *

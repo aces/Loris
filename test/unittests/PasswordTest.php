@@ -33,6 +33,21 @@ class PasswordTest extends TestCase
      */
     private $_configMock;
 
+    /**
+     * Test double for Database object
+     *
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     */
+    private $_dbMock;
+
+    /**
+     * NDB_Factory used in tests.
+     * Test doubles are injected to the factory object.
+     *
+     * @var NDB_Factory
+     */
+    private $_factory;
+
     private $_configInfo = [0 => ['65' => 'false']];
 
     /**

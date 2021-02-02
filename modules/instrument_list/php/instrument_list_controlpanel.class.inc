@@ -31,6 +31,8 @@ namespace LORIS\instrument_list;
  */
 class Instrument_List_ControlPanel extends \TimePoint
 {
+    protected array $tpl_data;
+
     /**
      * Construct function
      *

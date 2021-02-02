@@ -36,16 +36,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $Config;
     protected $BaseURL;
     protected $PageName;
-    /**
-     * Create a constructor for UserPageDecorationMiddleware
-     *
-     * @param \User   $user     The user
-     * @param string $baseurl  The base url
-     * @param string $pagename The page name
-     * @param \NDB_Config $config   The loris config
-     * @param array  $JS       The JS files
-     * @param array  $CSS      The CSS files
-     */
+
+    protected \User $user;
+
     public function __construct(
         \User $user,
         string $baseurl,
@@ -169,15 +162,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
-        if (!is_null($page)) {
-            if (method_exists($page, 'getFeedbackPanel')
-                && $user->hasPermission('bvl_feedback')
-                && $candID !== null
-            ) {
-                $sessionID = null;
-                if (isset($get['sessionID'])) {
-                    $sessionID = new \SessionID($get['sessionID']);
-                }
+        if ($page !== null && method_exists($page, 'getFeedbackPanel')
+            && $user->hasPermission('bvl_feedback')
+            && $candID !== null
+        ) {
+            $sessionID = null;
+            if (isset($get['sessionID'])) {
+                $sessionID = new \SessionID($get['sessionID']);
+            }
 
                 $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
                     $candID,
@@ -285,14 +277,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             return $undecorated;
         }
 
-        // This should be moved out of the middleware and into the modules
-        // that need it, but is currently required for backwards compatibility.
-        // This should also come after the above call to handle() in order for
-        // updated data on the controlPanel to be properly displayed.
-        if (!is_null($page)) {
-            if (method_exists($page, 'getControlPanel')) {
-                $tpl_data['control_panel'] = $page->getControlPanel();
-            }
+        // This should be moved out of the middleware and into the modules that need it,
+        // but is currently required for backwards compatibility.
+        // This should also come after the above call to handle() in order for updated data
+        // on the controlPanel to be properly displayed.
+        if ($page !== null && method_exists($page, 'getControlPanel')) {
+            $tpl_data['control_panel'] = $page->getControlPanel();
         }
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.

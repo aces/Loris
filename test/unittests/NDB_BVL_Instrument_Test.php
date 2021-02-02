@@ -45,6 +45,23 @@ class NDB_BVL_Instrument_Test extends TestCase
     private $_factoryForDB;
     private $_config;
     private $_DB;
+
+    protected $quickForm;
+
+    /**
+     * The State object for this session
+     *
+     * @var \State
+     */
+    protected $session;
+
+    /**
+     * A Mock SinglePointLogin object
+     *
+     * @var \SinglePointLogin
+     */
+    protected $mockSinglePointLogin;
+
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
@@ -58,13 +75,21 @@ class NDB_BVL_Instrument_Test extends TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->session = $this->getMockBuilder(\stdClass::class)
+
+        $s = $this->getMockBuilder(\State::class)
             ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
             ->getMock();
-        $this->mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
+        '@phan-var \State $s';
+        $this->session = $s;
+
+        $spe = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
+
         $this->session->method("getProperty")
-            ->willReturn($this->mockSinglePointLogin);
+            ->willReturn($spe);
+
+        '@phan-var \SinglePointLogin $spe';
+        $this->mockSinglePointLogin = $spe;
 
         $_SESSION = [
             'State' => $this->session
@@ -80,13 +105,17 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->quickForm = new \LorisForm();
 
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn([]);
-        $this->_instrument->form     = $this->quickForm;
-        $this->_instrument->testName = "Test";
+        $instrument->method('getFullName')->willReturn("Test Instrument");
+        $instrument->method('getSubtestList')->willReturn([]);
+
+        '@phan-var \NDB_BVL_Instrument $instrument';
+        $instrument->form     = $this->quickForm;
+        $instrument->testName = "Test";
+
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -842,28 +871,22 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
                 ["getFullName", "getSubtestList"]
             )->addMethods(['_setupForm'])->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn(
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSubtestList')->willReturn(
             [
                 ['Name' => 'Page 1', 'Description' => 'The first page'],
                 ['Name' => 'Page 2', 'Description' => 'The second page'],
             ]
         );
 
-        $this->_instrument->form     = $this->quickForm;
-        $this->_instrument->testName = "Test";
-
-        // Phan isn't interpreting the phpdoc correctly and thinks
-        // this is a \PHPUnit\Framework\MockObject\MockObject, not
-        // an instrument, so put it into a variable and assert its
-        // type.
-        $i = $this->_instrument;
         '@phan-var \NDB_BVL_Instrument $i';
+        $i->form     = $this->quickForm;
+        $i->testName = "Test";
 
         $json     = $i->toJSON();
         $outArray = json_decode($json, true);
@@ -1397,23 +1420,6 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that setRequired sets the required value of the form
-     *
-     * @note This test is being skipped because there is an error in
-     * the setRequired method. Once this is resolved, this test can
-     * be implemented.
-     *
-     * @covers NDB_BVL_Instrument::setRequired
-     * @return void
-     */
-    function testSetRequired()
-    {
-        $this->markTestSkipped("Error in setRequired method");
-        $this->_instrument->setRequired("Required_el");
-        $this->assertEquals("Required_el", $this->_instrument->form->_required[]);
-    }
-
-    /**
      * Test that XINValidate returns true if there are no errors
      * for the given elements array
      *
@@ -1624,10 +1630,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $otherInstrument            = $this
+        $otherInstrument = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+        '@phan-var \NDB_BVL_Instrument $otherInstrument';
+
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1823,6 +1831,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $mockform = $this->getMockBuilder("\LorisForm")->getMock();
 
         $mockform->method('getSubmitValues')->willReturn(['1', '2']);
+        '@phan-var \LorisForm $mockform';
 
         $this->_instrument->form = $mockform;
 

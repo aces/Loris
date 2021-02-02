@@ -30,6 +30,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $ValidityEnabled;
     public $ValidityRequired;
     protected $instrument;
+
+    protected CandID $candID;
+    protected SessionID $sessionID;
+
+    protected string $testname;
+    protected ?string $subtest;
+
     /**
      * Construct a controller for the instrument status control panel
      *
