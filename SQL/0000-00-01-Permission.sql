@@ -67,7 +67,7 @@ INSERT INTO `permissions` VALUES
     (19,'violated_scans_view_allsites','MRI Violated Scan Module View All Sites','2'),
     (22,'config','Configuration Settings Edit','2'),
     (23,'imaging_browser_view_site','Imaging Browser Module View Own Site','2'),
-    (24,'imaging_browser_view_allsites','View all-sites Imaging Browser pages','2'),
+    (24,'imaging_browser_view_allsites','Imaging Browser Module View All Sites','2'),
     (25,'dicom_archive_view_allsites','DICOM Module Archive Access','2'),
     (28,'instrument_builder','Instrument Builder Module Edit Instruments','2'),
     (29,'data_dict_edit','Data Dictionary Edit','2'),
