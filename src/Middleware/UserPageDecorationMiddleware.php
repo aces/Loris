@@ -179,7 +179,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
                     $this->PageName
                 );
-          }
+        }
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
         $tpl_data['issue_tracker_url'] = $this->Config->getSetting(
