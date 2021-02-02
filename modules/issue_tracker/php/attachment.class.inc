@@ -66,6 +66,13 @@ class Attachment extends \NDB_Page implements ETagCalculator
                     WHERE
                         ID = :ID';
         $result  = $DB->pselectRow($query, ['ID' => $ID]);
+        if ($result === null) {
+            return (new \LORIS\Http\Response())
+                ->withHeader('Content-Type', 'text/plain')
+                ->withStatus(404)
+                ->withBody(new \LORIS\Http\StringStream("Not found"));
+
+        }
 
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();

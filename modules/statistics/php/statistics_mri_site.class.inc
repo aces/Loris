@@ -223,7 +223,7 @@ class Statistics_Mri_Site extends Statistics_Site
 
             $test_url = $issue;
             foreach ($results as $row) {
-                if (!in_array($row['Visit_label'], $visits)) {
+                if (!in_array($row['Visit_label'] ?? [], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
                 $results[$row['Visit_label']][] = [

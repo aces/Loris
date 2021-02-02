@@ -38,7 +38,14 @@ class File_Upload
     public $isCLImport        = false;
     public $handlerArgs;
     public $file;
+
+    /**
+     * The fileInfo in the format stored by $_FILES
+     *
+     * @var array
+     */
     public $fileInfo;
+
     public $fileHandlers;
     public $destinationDirectory;
     public $destinationFilename;

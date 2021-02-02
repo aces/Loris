@@ -541,7 +541,10 @@ function getDODFields(): array
         'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
         ['candid' => $candID]
     );
-    $result        = [
+    if ($candidateData === null) {
+        throw new \LorisException("Invalid candidate");
+    }
+    $result = [
         'pscid'  => $candidateData['PSCID'],
         'candID' => $candID->__toString(),
         'dod'    => $candidateData['DoD'],

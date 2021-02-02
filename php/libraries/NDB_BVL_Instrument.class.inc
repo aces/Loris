@@ -2515,7 +2515,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return void (but side-effect modified $formArray to populate the element
      *         with the appropriate format needed for JSON serialization.)
      */
-    function _toJSONParsePageElement(array &$element, array &$formArray): void
+    function _toJSONParsePageElement(array $element, array &$formArray): void
     {
         $name = isset($element['name']) ? $element['name'] : '';
         if ($element['type'] === 'group') {
@@ -2605,8 +2605,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     foreach ($section['elements'] as &$element) {
                         $this->_toJSONParsePageElement($element, $section);
                     }
-                } else {
-                    $this->_toJSONParsePageElement($element, $section);
                 }
             }
         }

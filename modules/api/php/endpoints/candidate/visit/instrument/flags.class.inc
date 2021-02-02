@@ -157,6 +157,12 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $data = json_decode((string) $request->getBody(), true);
 
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
+
         try {
 
             $requiredfields = [
@@ -217,6 +223,11 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(

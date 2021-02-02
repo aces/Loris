@@ -123,8 +123,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json         = $this->i->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",

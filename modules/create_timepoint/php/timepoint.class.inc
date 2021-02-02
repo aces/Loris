@@ -159,6 +159,11 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
+        if (!is_array($values)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(

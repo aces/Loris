@@ -140,6 +140,11 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         $requiredfields = [
             'Meta',

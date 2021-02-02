@@ -141,8 +141,9 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testMetaData()
     {
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
@@ -184,8 +185,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             $not_answered,
             ['multiple' => "multiple"]
         );
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $selectElement  = $outArray['Elements'][0];
         $selectElement2 = $outArray['Elements'][1];
 
@@ -277,8 +279,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "Field Description2 for Text",
             ["value" => "Option"]
         );
-        $json            = $this->_instrument->toJSON();
-        $outArray        = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $textElement     = $outArray['Elements'][0];
         $textareaElement = $outArray['Elements'][1];
 
@@ -343,6 +346,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -407,6 +411,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -506,8 +511,9 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "addEmptyOption" => true,
             ]
         );
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $dateElement  = $outArray['Elements'][0];
         $dateElement2 = $outArray['Elements'][1];
         $dateElement3 = $outArray['Elements'][2];
@@ -582,6 +588,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -652,8 +659,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testNumericElement()
     {
         $this->_instrument->addNumericElement("TestElement", "Test Description");
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
 
         $this->assertEquals(
@@ -679,8 +687,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testNumericElementRD()
     {
         $this->_instrument->addNumericElementRD("TestElement", "Test Description");
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
         $this->assertEquals(
             $numericElement,
@@ -755,8 +764,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName2",
             "",
         );
-        $json          = $this->_instrument->toJSON();
-        $outArray      = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $scoreElement  = $outArray['Elements'][0];
         $scoreElement2 = $outArray['Elements'][1];
 
@@ -808,8 +818,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "Field Description",
             "45"
         );
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $headerElement  = $outArray['Elements'][0];
         $headerElement2 = $outArray['Elements'][1];
 
@@ -848,8 +859,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testLabelElement()
     {
         $this->_instrument->addLabel("I am a label");
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $labelElement = $outArray['Elements'][0];
 
         $this->assertEquals(
@@ -890,8 +902,9 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $json     = $i->toJSON();
         $outArray = json_decode($json, true);
-        $page1    = $outArray['Elements'][0];
-        $page2    = $outArray['Elements'][1];
+        assert(is_array($outArray));
+        $page1 = $outArray['Elements'][0];
+        $page2 = $outArray['Elements'][1];
         $this->assertEquals(
             $page1,
             [
@@ -968,6 +981,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->addYesNoElement("field1", "label1");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => 'select',
@@ -1000,6 +1014,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => 'select',
