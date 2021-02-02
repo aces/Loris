@@ -76,7 +76,7 @@ INSERT INTO `permissions` VALUES
     (33,'genomic_browser_view_site','Genomic Browser Module View Own Sites','2'),
     (34,'genomic_browser_view_allsites','Genomic Browser Module View All Sites','2'),
     (35,'document_repository_view','Document Repository Module View and Upload Own File','2'),
-    (36,'document_repository_delete','Document Repository: Delete All Files','2'),
+    (36,'document_repository_delete','Document Repository Module Delete All Files','2'),
     (37,'server_processes_manager','Server Process Module View','2'),
     (38,'imaging_uploader','Imaging Uploader Module Upload Images for Own Site','2'),
     (39,'acknowledgements_view','Acknowledgement Module View All Sites','2'),
