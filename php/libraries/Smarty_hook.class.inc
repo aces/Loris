@@ -70,7 +70,7 @@ class Smarty_NeuroDB extends Smarty
         // removed after all the warnings/notices from the PHP
         // side of Loris are fixed, and then the templates can be
         // updated..
-        $this->error_reporting = E_ALL & ~E_NOTICE;
+        $this->error_reporting = E_ERROR;
         $sandbox = $config->getSetting("sandbox");
 
         if ($sandbox === '1') {
