@@ -84,7 +84,7 @@ INSERT INTO `permissions` VALUES
     (41,'dataquery_view','Data Query Tool View All Sites','2'),
     (42,'genomic_data_manager','Genomic Browser Module Edit Genomic Files at Own Site','2'),
     (43,'media_write','Media Module Upload, Download, Edit All Sites','2'),
-    (44,'media_read','Media files: Browsing','2'),
+    (44,'media_read','Media Module View File names own site','2'),
     (45,'issue_tracker_reporter','Issue Tracker Module Edit Own, Comment on All', 2),
     (46,'issue_tracker_developer','Issue Tracker Module Edit All', 2),
     (47,'imaging_browser_phantom_allsites','Imaging Browser Module Access Phantom Data All Sites', 2),
