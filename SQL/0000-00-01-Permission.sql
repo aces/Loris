@@ -90,7 +90,7 @@ INSERT INTO `permissions` VALUES
     (47,'imaging_browser_phantom_allsites','Imaging Browser Module Access Phantom Data All Sites', 2),
     (48,'imaging_browser_phantom_ownsite','Imaging Browser Module Access Phantom Data Own Site', 2),
     (49,'data_release_view','Data Release Module View', 2),
-    (50,'data_release_upload','Data Release: Upload file', 2),
+    (50,'data_release_upload','Data Release Module Upload', 2),
     (51,'data_release_edit_file_access','Data Release Module: Grant View Permission', 2),
     (52,'instrument_manager_read','Instrument Manager Module View', 2),
     (53,'instrument_manager_write','Instrument Manager Module Install New Instruments', 2),
