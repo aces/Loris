@@ -51,7 +51,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
                 'Pending_approval' => 'N',
             ]
         );
@@ -130,14 +129,14 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
         // Load the page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
 
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
 
         // Reload
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
 
         // Verify changes appear on the page
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
@@ -303,7 +302,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         string $confirmPassword = ''
     ): void {
         // Go to page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
         $this->setValue(
             self::FORM_FIELD_PASSWORD,
             $password
@@ -329,7 +328,17 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
     }
-
+    /**
+     * Accesses the current user.
+     *
+     * @return void
+     */
+    function _accessUser()
+    {
+        $this->safeGet(
+            $this->url . "/my_preferences/"
+        );
+    }
     /**
      * Performed after every test.
      *
