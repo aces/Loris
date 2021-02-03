@@ -56,14 +56,13 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../test/test_instrument/</directory>
         </testsuite>
-
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
          for now it's disabled, but eventually we'll want to make
          sure everything is tested.. -->
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage>
+        <include>
             <directory suffix=".inc">../php/libraries</directory>
             <!-- CodeCov crashes because installer/ has classes with the same
                  name as libraries/, so for now we only cover libraries and
@@ -72,7 +71,7 @@
             <!--directory suffix=".php">../htdocs</directory-->
             <directory suffix=".inc">../modules/*/php</directory>
             <!--directory>../modules/dashboard/ajax/</directory-->
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
 </phpunit>
