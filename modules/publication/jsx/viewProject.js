@@ -63,7 +63,7 @@ class ViewProject extends React.Component {
       method: 'POST',
       body: formObj,
     }).then((response) => {
-      if (response.status !== 200) {
+      if (!response.ok) {
         console.error(response.status);
         return;
       }
@@ -81,7 +81,7 @@ class ViewProject extends React.Component {
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
-      if (response.status !== 200) {
+      if (!response.ok) {
         console.error(response.status);
         return;
       }

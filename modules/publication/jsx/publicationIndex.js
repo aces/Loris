@@ -42,7 +42,7 @@ class PublicationIndex extends React.Component {
       method: 'GET',
     }).then(
       (response) => {
-        if (response.status !== 200) {
+        if (!response.ok) {
           console.error(response.status);
           return;
         }

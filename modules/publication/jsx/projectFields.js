@@ -148,7 +148,7 @@ class ProjectFormFields extends React.Component {
           fetch(url, {
             method: 'DELETE',
           }).then((response) => {
-            if (response.status !== 200) {
+            if (!response.ok) {
               console.error(response.status);
               return;
             }
