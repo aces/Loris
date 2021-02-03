@@ -2329,7 +2329,7 @@ class LorisFormFileElement extends LorisFormElement
     function __construct($el)
     {
         $this->el   = $el;
-        $this->file = $_FILES[$this->el['name']] ?? null;
+        $this->file = $_FILES[$this->el['name']];
     }
 
     /**
