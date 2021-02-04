@@ -40,6 +40,12 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     private $_factory;
     private $_mockConfig;
+
+    /**
+     * Mock for testing database calls
+     *
+     * @var \Database | \PHPUnit\Framework\MockObject\MockObject
+     */
     private $_mockDB;
 
     private $_factoryForDB;
@@ -98,8 +104,14 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_factory = \NDB_Factory::singleton();
 
-        $this->_mockDB     = $this->getMockBuilder("\Database")->getMock();
-        $this->_mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $mockDB     = $this->getMockBuilder("\Database")->getMock();
+        $mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
+
+        '@phan-var \Database $mockDB';
+        '@phan-var \NDB_Config $mockConfig';
+
+        $this->_mockDB     = $mockDB;
+        $this->_mockConfig = $mockConfig;
 
         $this->_factory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
@@ -1060,6 +1072,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetSessionID()
     {
         $this->_instrument->commentID = 'commentID1';
+
         $this->_mockDB->expects($this->once())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
@@ -2002,7 +2015,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
 
         $this->_factoryForDB->setDatabase($this->_DB);
