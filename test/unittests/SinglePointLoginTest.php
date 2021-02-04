@@ -60,6 +60,9 @@ class SinglePointLoginTest extends TestCase
 
          $mockconfig->method('getSetting')
              ->will($this->returnValueMap($this->_configMap));
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
         $Factory->setConfig($mockconfig);
         $Factory->setDatabase($mockdb);
 
