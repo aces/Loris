@@ -141,7 +141,7 @@ class DirectDataEntryMainPage
     /**
      * Get the page which follows this page
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return int The page which preceeded this one
      */
@@ -171,7 +171,7 @@ class DirectDataEntryMainPage
     /**
      * Get the previous page number
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return string|null the previous page number or "top" if the user is on
      *         the top page
@@ -340,7 +340,7 @@ class DirectDataEntryMainPage
             // Comments is too comment of an instrument fieldname,
             // so just check if ease is set
             $this->updateComments(
-                $_POST['ease'],
+                intval($_POST['ease']),
                 $_POST['comments']
             );
         }

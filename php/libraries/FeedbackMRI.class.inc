@@ -384,7 +384,7 @@ class FeedbackMRI
      *                                    table (optional if
      *                                    using
      *                                    predefinedCommentID)
-     * @param string $predefinedCommentID PredefinedCommentID
+     * @param ?int   $predefinedCommentID PredefinedCommentID
      *                                    from
      *                                    feedback_mri_predefined_comments
      *                                    table
@@ -394,7 +394,7 @@ class FeedbackMRI
     function _addComment(
         string $comment='',
         ?int    $commentTypeID=null,
-        string $predefinedCommentID=''
+        ?int $predefinedCommentID=null
     ): bool {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)
