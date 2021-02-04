@@ -75,7 +75,7 @@ class My_Preferences extends \NDB_Form
         // Notification defaults
         // "notif_".$module."_".$operation."_".$service
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            intval($user->getData("ID"))
         );
         foreach ($curr_sub as $module=>$operations) {
             foreach ($operations as $operation => $services) {
@@ -113,7 +113,7 @@ class My_Preferences extends \NDB_Form
         // START NOTIFICATIONS UPDATE
         // get current notifications for user
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            intval($user->getData("ID"))
         );
 
         // get notification details
@@ -276,7 +276,7 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Your email address must be less than 255 characters long',
             'maxlength',
-            255
+            "255"
         );
 
         // password
