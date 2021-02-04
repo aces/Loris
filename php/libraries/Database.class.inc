@@ -361,20 +361,20 @@ class Database
      * Inserts a single row into the specified table, containing the values specified
      *
      * @param string              $table             the table into which to
-     *                                               insert the row
+     *                                                insert the row
      * @param array<string,mixed> $set               the values with which to
-     *                                               fill the new row
-     * @param bool                $autoescape        determines whether the
-     *                                               values to be set
-     *                                               should automatically
-     *                                               have the html escaped
-     * @param bool                $ignore            determines whether the insert
-     *                                               throws an error or is
-     *                                               discarded when value exists
-     *                                               in DB
-     * @param bool                $onDuplicateUpdate determines whether the row
-     *                                               should be updated upon
-     *                                               unique key duplication
+     *                                                fill the new row
+     * @param bool                 $autoescape        determines whether the
+     *                                                values to be set
+     *                                                should automatically
+     *                                                have the html escaped
+     * @param bool                 $ignore            determines whether the insert
+     *                                                throws an
+     *                                                error or is discarded
+     *                                                when value exists in DB
+     * @param bool                 $onDuplicateUpdate determines whether the row
+     *                                                should be updated
+     *                                                upon unique key duplication
      *
      * @return bool
      */
@@ -490,7 +490,7 @@ class Database
      * @param string              $table   the table into which to insert the row
      * @param array<string,mixed> $set     the values with which to fill the new row
      * @param array<string,mixed> $i_where the selection filter, joined as a
-     *                                     boolean and
+     *                                      boolean and
      *
      * @return void
      */
@@ -607,7 +607,7 @@ class Database
      *
      * @param string              $table the table into which to insert the row
      * @param array<string,mixed> $where the selection filter, joined as
-     *                                   a boolean and
+     *                                    a boolean and
      *
      * @return void
      * @access public
