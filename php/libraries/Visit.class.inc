@@ -37,7 +37,7 @@ class Visit
      * @param ?string $name The visit name
      */
     public function __construct(
-        ?string $name = null,
+        ?string $name = null
     ) {
         $this->name = $name;
     }
