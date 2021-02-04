@@ -1867,9 +1867,10 @@ class LorisForms_Test extends TestCase
      */
     function testAddFormRule()
     {
-        $this->form->addFormRule([$this->form, 'validate']);
+        $callback = [$this->form, 'validate'];
+        $this->form->addFormRule($callback);
         $this->assertEquals(
-            $this->form->validate(),
+            $callback,
             $this->form->formRules[0]
         );
     }
