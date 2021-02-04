@@ -1276,7 +1276,7 @@ class Database
      *
      * @param string                $tableName The table name to fake
      * @param array<string,mixed>[] $rowData   An array of data to be inserted
-     *                                          into the fake table.
+     *                                         into the fake table.
      *
      * @return void
      */
