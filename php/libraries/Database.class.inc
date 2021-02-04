@@ -221,9 +221,8 @@ class Database
      * Determines whether the database connection is alive
      *
      * @return bool
-     * @access public
      */
-    function isConnected(): bool
+    public function isConnected(): bool
     {
         try {
             if (!$this->_PDO) {

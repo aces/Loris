@@ -91,7 +91,7 @@ class FeedbackMRI
 
         // add a new db entry for each comment
         foreach ($predefinedCommentIDs AS $predefinedCommentID) {
-            $success = $this->_addComment('', '', $predefinedCommentID);
+            $success = $this->_addComment('', null, $predefinedCommentID);
 
             // choke if it failed
             if ($success != 'true') {
@@ -379,7 +379,7 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param int    $commentTypeID       CommentTypeID from
+     * @param ?int   $commentTypeID       CommentTypeID from
      *                                    feedback_mri_comment_types
      *                                    table (optional if
      *                                    using
@@ -393,7 +393,7 @@ class FeedbackMRI
      */
     function _addComment(
         string $comment='',
-        int    $commentTypeID='',
+        ?int    $commentTypeID=null,
         string $predefinedCommentID=''
     ): bool {
         // choke if we have no data (or too much)
