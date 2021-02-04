@@ -132,8 +132,15 @@ class CandidateTest extends TestCase
             ]
         ];
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
+
         $this->_factory    = NDB_Factory::singleton();
 
         $this->_factory->setConfig($this->_configMock);
@@ -885,7 +892,7 @@ class CandidateTest extends TestCase
 
         $this->assertFalse(
             Candidate::candidateExists(
-                new CandID(123123),
+                new CandID("123123"),
                 'Test'
             )
         );
@@ -1147,6 +1154,7 @@ class CandidateTest extends TestCase
             ->willReturn([1, 2]);
         $user->expects($this->once())->method("getProjectIDs")
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
+        '@phan-var \User $user';
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertTrue($result);
@@ -1170,6 +1178,7 @@ class CandidateTest extends TestCase
             ->willReturn([1, 2]);
         $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([new \ProjectID("2"), new \ProjectID("3")]);
+        '@phan-var \User $user';
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertFalse($result);
@@ -1193,6 +1202,8 @@ class CandidateTest extends TestCase
             ->willReturn([1, 3]);
         $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
+
+        '@phan-var \User $user';
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertFalse($result);
@@ -1318,7 +1329,7 @@ class CandidateTest extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true
         );
 
         $this->_factoryForDB->setDatabase($this->_DB);
