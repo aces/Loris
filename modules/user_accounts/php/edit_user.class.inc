@@ -763,7 +763,7 @@ class Edit_User extends \NDB_Form
             $siteOptions = \Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
-            $site_arr = $editor->getData('CenterIDs');
+            $site_arr = $editor->getCenterIDs();
             foreach ($site_arr as $key => $val) {
                 $site[$key]        =& \Site::singleton($val);
                 $siteOptions[$val] = $site[$key]->getCenterName();
@@ -994,7 +994,7 @@ class Edit_User extends \NDB_Form
                 $editor->getPermissionIDs()
             );
             foreach ($permDiff as $permID) {
-                $this->addHidden("permID[$permID]", 1);
+                $this->addHidden("permID[$permID]", "1");
             }
         }
 
