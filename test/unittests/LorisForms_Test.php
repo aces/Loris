@@ -94,9 +94,9 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that some attribute of an element
      * is correct
      *
-     * @param string       $el          The element name
-     * @param string       $attribute   The attribute name to assert
-     *                                  (ie class, id, value, etc)
+     * @param string               $el          The element name
+     * @param string               $attribute   The attribute name to assert
+     *                                          (ie class, id, value, etc)
      * @param string|array|boolean $attribValue The expected content of the
      *                                          attribute
      *

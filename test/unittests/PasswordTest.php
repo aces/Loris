@@ -65,7 +65,7 @@ class PasswordTest extends TestCase
         '@phan-var \Database $dbMock';
 
         $this->_configMock = $configMock;
-        $this->_dbMock = $dbMock;
+        $this->_dbMock     = $dbMock;
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);

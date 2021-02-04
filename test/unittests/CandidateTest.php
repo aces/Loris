@@ -141,8 +141,7 @@ class CandidateTest extends TestCase
         $this->_configMock = $configMock;
         $this->_dbMock     = $dbMock;
 
-        $this->_factory    = NDB_Factory::singleton();
-
+        $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
 

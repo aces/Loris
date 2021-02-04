@@ -95,7 +95,7 @@ class NDB_ConfigTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_config     = FakeConfig::singleton();
+        $this->_config = FakeConfig::singleton();
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         $dbMock     = $this->getMockBuilder('Database')->getMock();

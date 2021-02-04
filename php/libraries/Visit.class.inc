@@ -35,7 +35,6 @@ class Visit
      * The contructor
      *
      * @param ?string $name The visit name
-     * @param ?string $id   The ID of the visit
      */
     public function __construct(
         ?string $name = null,
