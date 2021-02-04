@@ -243,6 +243,10 @@ class NDB_Factory_Test extends TestCase
 
         $this->_factory->setDatabase($mockdb);
 
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setDatabase($mockdb);
+
         $candID = new CandID("300001");
         $this->assertEquals(
             Candidate::singleton($candID),
@@ -265,6 +269,12 @@ class NDB_Factory_Test extends TestCase
         $mockdb->expects($this->any())
             ->method('pselectRow')
             ->willReturn(['SessionID' => '1', 'ProjectID' => '1']);
+
+        '@phan-var \NDB_Config $mockconfig';
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
 
         '@phan-var \NDB_Config $mockconfig';
         '@phan-var \Database $mockdb';
