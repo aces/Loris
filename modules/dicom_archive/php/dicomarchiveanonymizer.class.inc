@@ -57,7 +57,6 @@ class DICOMArchiveAnonymizer implements Mapper
                 "Mapper requires a resource type with getCenterID"
             );
         }
-
         $newrow = json_decode(json_encode($res), true);
         if (!is_array($newrow)) {
             throw new \Exception("Error converting DataInstance to array");
