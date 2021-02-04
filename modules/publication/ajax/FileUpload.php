@@ -99,7 +99,7 @@ function uploadPublication() : void
     ];
 
     $db->insert('publication', $fields);
-    $pubID = $db->getLastInsertId();
+    $pubID = intval($db->getLastInsertId());
 
     try {
         // process files
@@ -479,7 +479,7 @@ function notify($pubID, $type) : void
 function editProject() : void
 {
     $db = \Database::singleton();
-    $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+    $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
     if (isset($id)) {
         // double check that current user has edit access
