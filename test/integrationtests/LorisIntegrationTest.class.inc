@@ -301,7 +301,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->DB->execute(
                 $prepare,
                 ["perm" => $value],
-                ['nofetch' => true]
+                ['nofetch' => "true"]
             );
         }
     }

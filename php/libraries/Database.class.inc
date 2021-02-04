@@ -1274,8 +1274,8 @@ class Database
      * without mocking every single query that needs to be used in
      * that test.
      *
-     * @param string                 $tableName The table name to fake
-     * @param array<string,string>[] $rowData   An array of data to be inserted
+     * @param string                $tableName The table name to fake
+     * @param array<string,mixed>[] $rowData   An array of data to be inserted
      *                                          into the fake table.
      *
      * @return void
