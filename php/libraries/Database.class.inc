@@ -855,7 +855,7 @@ class Database
      * an error is thrown.
      *
      * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to prepared
+     * @param array<string,mixed> $params Values to use for binding to prepared
      *                                     statement
      *
      * @throws DatabaseException if the query selected more than one column
@@ -890,7 +890,7 @@ class Database
      * format as the pselectCol() function.
      *
      * @param string               $query     The SQL SELECT query to be run
-     * @param array<string,string> $params    Values to use for binding to the
+     * @param array<string,mixed> $params    Values to use for binding to the
      *                                        prepared statement
      * @param string               $uniqueKey Key to use when re-indexing, this
      *                                        key must be a single column and
@@ -973,7 +973,7 @@ class Database
      * validation with respect to the type of the data returned.
      *
      * @param string               $query  The SQL statement to run
-     * @param array<string,string> $params Values to use for binding in the
+     * @param array<string,mixed> $params Values to use for binding in the
      *                                     prepared statement
      *
      * @return ?string A single cell from the database.
