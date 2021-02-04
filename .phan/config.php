@@ -36,7 +36,6 @@ return [
         "PhanUnusedVariable",
         "PhanUnusedPublicNoOverrideMethodParameter",
         "PhanTypePossiblyInvalidDimOffset",
-        "PhanTypeMismatchArgument",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
