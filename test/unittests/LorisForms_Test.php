@@ -97,7 +97,8 @@ class LorisForms_Test extends TestCase
      * @param string       $el          The element name
      * @param string       $attribute   The attribute name to assert
      *                                  (ie class, id, value, etc)
-     * @param string|array $attribValue The expected content of the attribute
+     * @param string|array|boolean $attribValue The expected content of the
+     *                                          attribute
      *
      * @return void but makes assertions
      */
@@ -1762,18 +1763,6 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that addRule throws a LorisException if the element name is not a string
-     *
-     * @covers LorisForm::addRule
-     * @return void
-     */
-    function testAddRuleIfElementNameNotString()
-    {
-        $this->expectException('\LorisException');
-        $this->form->addRule(0, "Message", "required");
-    }
-
-    /**
      * Test that addRule throws a LorisException if the element
      * is not set in the form
      *
@@ -1878,7 +1867,7 @@ class LorisForms_Test extends TestCase
      */
     function testAddFormRule()
     {
-        $this->form->addFormRule($this->form->validate());
+        $this->form->addFormRule([$this->form, 'validate']);
         $this->assertEquals(
             $this->form->validate(),
             $this->form->formRules[0]
