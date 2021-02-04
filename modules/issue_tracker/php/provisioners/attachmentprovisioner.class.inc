@@ -27,7 +27,7 @@ class AttachmentProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     /**
      * Create a RowProvisioner
      *
-     * @param string $issueID the issue id of the attachment.
+     * @param int $issueID the issue id of the attachment.
      */
     function __construct($issueID)
     {

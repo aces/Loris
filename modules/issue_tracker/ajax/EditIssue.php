@@ -90,7 +90,7 @@ function editIssue()
         }
     }
 
-    $issueID = $_POST['issueID'];
+    $issueID = intval($_POST['issueID']);
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
     $validatedInput = validateInput($validateValues);
@@ -111,7 +111,7 @@ function editIssue()
         $issueValues['reporter']    = $user->getData('UserID');
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
         $db->insert('issues', $issueValues);
-        $issueID = $db->getLastInsertId();
+        $issueID = intval($db->getLastInsertId());
     }
 
     updateHistory($historyValues, $issueID);
@@ -313,8 +313,8 @@ function validateInput($values)
 /**
  * Iterates through submitted values and filters only values that have changed
  *
- * @param array  $issueValues new values
- * @param string $issueID     issue ID
+ * @param array $issueValues new values
+ * @param int   $issueID     issue ID
  *
  * @throws DatabaseException
  *
@@ -339,8 +339,8 @@ function getChangedValues($issueValues, $issueID)
 /**
  * Puts updated fields into the issues_history table.
  *
- * @param array  $values  the new values
- * @param string $issueID the issue ID
+ * @param array $values  the new values
+ * @param int   $issueID the issue ID
  *
  * @throws DatabaseException
  *
@@ -370,7 +370,7 @@ function updateHistory($values, $issueID)
  * Puts updated fields into the issues_comments table.
  *
  * @param string $comment new issue comment
- * @param string $issueID the issue ID
+ * @param int    $issueID the issue ID
  *
  * @throws DatabaseException
  *
@@ -494,7 +494,7 @@ function getComments($issueID)
             $comment['newValue'] = $modules[$mid]->getLongName();
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
-            $comment['newValue']     = getSiteName($comment['newValue']);
+            $comment['newValue']     = getSiteName(intval($comment['newValue']));
             $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
@@ -701,7 +701,7 @@ function getIssueFields()
     if (!empty($_GET['issueID'])
         && $_GET['issueID'] != "new"
     ) { //if an existing issue
-        $issueID   = $_GET['issueID'];
+        $issueID   = intval($_GET['issueID']);
         $issueData = getIssueData($issueID);
 
         $desc = $db->pselect(
@@ -774,7 +774,7 @@ function getIssueFields()
  * If issueID is passed retrieves issue data from database,
  * otherwise return empty issue data object
  *
- * @param string $issueID the ID of the requested issue
+ * @param int $issueID the ID of the requested issue
  *
  * @return array
  */
