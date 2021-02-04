@@ -2302,7 +2302,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $db->execute(
             $prepQ,
             ['CID' => $this->commentID],
-            ['nofetch' => true]
+            ['nofetch' => "true"]
         );
     }
 

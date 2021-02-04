@@ -270,6 +270,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * @return void (modifies both $_SESSION and $this->filter as
      *         a side-effect.)
      */
+    /*
     function _setFilterSortOrder($order)
     {
         // Get the existing filter. It's already been saved into
@@ -285,6 +286,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $_SESSION['State']->setProperty('filter', $savedFilters);
     }
+     */
 
     /**
      * Sets the class variables required for a search key to be used.
@@ -378,9 +380,11 @@ class NDB_Menu_Filter extends NDB_Menu
         // 4. If the user clicked on a sort column, set the order.
         //    It's likely a GET request even though it modifies the data,
         //    so just use $_REQUEST.
+        /*/
         if (isset($_REQUEST['filter']['order'])) {
             $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
+*/
     }
 
     /**

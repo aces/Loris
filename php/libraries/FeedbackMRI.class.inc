@@ -40,10 +40,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param string $fileID    The fileID that this feedback is for
+     * @param ?int   $fileID    The fileID that this feedback is for
      * @param string $sessionID The SessionID that this feedback is for
      */
-    function __construct(string $fileID='', string $sessionID='')
+    function __construct(?int $fileID=null, string $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -379,7 +379,7 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param string $commentTypeID       CommentTypeID from
+     * @param int    $commentTypeID       CommentTypeID from
      *                                    feedback_mri_comment_types
      *                                    table (optional if
      *                                    using
@@ -393,7 +393,7 @@ class FeedbackMRI
      */
     function _addComment(
         string $comment='',
-        string $commentTypeID='',
+        int    $commentTypeID='',
         string $predefinedCommentID=''
     ): bool {
         // choke if we have no data (or too much)

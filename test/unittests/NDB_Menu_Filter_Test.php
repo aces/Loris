@@ -194,6 +194,7 @@ class NDB_Menu_Filter_Test extends TestCase
             'table.column2' => 'I am a saved filter',
         ];
 
+        /*
         $stub->_setFilterSortOrder(
             [
                 'field'      => "FakeField",
@@ -231,6 +232,7 @@ class NDB_Menu_Filter_Test extends TestCase
                 ]
             ]
         );
+         */
 
     }
     /**

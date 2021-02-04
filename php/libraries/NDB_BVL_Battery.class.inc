@@ -560,8 +560,8 @@ class NDB_BVL_Battery
      * a Test name. This differs from createCommentID in that a battery does
      * not have to already be selected.
      *
-     * @param integer $SessionID The session ID to generate a CommentID for
-     * @param string  $Test_name The test name which the CommentID will be for.
+     * @param \SessionID $SessionID The session ID to generate a CommentID for
+     * @param string     $Test_name The test name which the CommentID will be for.
      *
      * @return ?string A Validly formatted CommentID or null if information
      *                  is missing in the database.
@@ -569,6 +569,8 @@ class NDB_BVL_Battery
     static function generateCommentID($SessionID, $Test_name)
     {
         $DB = Database::singleton();
+
+        $SessionID = $SessionID->__toString();
 
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",
