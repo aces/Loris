@@ -196,7 +196,7 @@ class ViewSession extends \NDB_Form
         );
         $this->tpl_data['files'] = [];
         foreach ($files as $fileRow) {
-            $FileObj = new \MRIFile($fileRow['FileID']);
+            $FileObj = new \MRIFile(intval($fileRow['FileID']));
             if (empty($scannerID)) {
                 $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
@@ -213,7 +213,7 @@ class ViewSession extends \NDB_Form
             $checkPicFilename = $FileObj->getParameter(
                 'check_pic_filename'
             ) ?? '';
-            $FileID           = $fileRow['FileID'];
+            $FileID           = intval($fileRow['FileID']);
             $Filename         = $JivFilename = basename($FullFilename);
             $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
             $JivAddress       = str_replace(
@@ -595,7 +595,7 @@ class ViewSession extends \NDB_Form
                     );
                 } elseif ($curCaveat === '0' && $caveatViolationsResolvedID) {
                     $quotedViolationsResolvedID
-                        = $this->_DB->quote($caveatViolationsResolvedID);
+                        = $this->_DB->quote("$caveatViolationsResolvedID");
                     $query = "
                         DELETE FROM mri_violations_log
                         WHERE LogID = (
@@ -779,8 +779,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets candidate's scans with the same acquisitionID.
      *
-     * @param string $initialFileID            the value of initialFileID
-     * @param string $initialFileAcquisitionID the value of initialFileAcquisitionID
+     * @param int $initialFileID            the value of initialFileID
+     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
      *
      * @return string of FileIDs, comma separated
      */
@@ -809,7 +809,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets Selected status from files_qcstatus for a given FileID
      *
-     * @param string $FileID the value of FileID
+     * @param int $FileID the value of FileID
      *
      * @return ?string
      */
@@ -920,7 +920,9 @@ class ViewSession extends \NDB_Form
      */
     function getControlPanel()
     {
-        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
+        $controlPanel = new Imaging_Session_ControlPanel(
+            new \SessionID($_REQUEST['sessionID'])
+        );
         return $controlPanel->display();
     }
     /**

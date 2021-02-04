@@ -31,20 +31,20 @@ class MRINavigation
     private int $_currentListIndex;
     private array $_FilteredSessionList;
 
-    private int $_sessionID;
+    private ?\SessionID $_sessionID;
 
     public $urlParams = [];
 
     /**
      *  Gets the session
      *
-     * @param int $sessionID sessionID
+     * @param ?\SessionID $sessionID sessionID
      *
      * @return NULL
      */
     function __construct($sessionID = null)
     {
-        $this->_sessionID           = $sessionID;
+        $this->_sessionID = $sessionID;
         $this->_FilteredSessionList = $_SESSION['State']
             ->getProperty('mriSessionsListed');
 
