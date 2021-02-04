@@ -124,11 +124,11 @@ class Stats_Behavioural extends \NDB_Form
         if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
 
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+            $currentProject = intval($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects["$currentProject"],
                 ];
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';

@@ -91,8 +91,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param int    $centerID  the value of centerID
+     * @param int    $projectID the value of projectID
      *
      * @return void
      */
@@ -182,8 +182,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
+     * @param int $centerID   the value of centerID
+     * @param int $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
      * @return ?string
@@ -213,8 +213,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
+     * @param int    $centerID   the value of centerID
+     * @param int    $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
      * @return array
