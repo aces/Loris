@@ -127,7 +127,6 @@
     {
       "files": [
         "modules/media/**",
-        "modules/issue_tracker/**",
         "modules/candidate_parameters/**",
         "modules/conflict_resolver/**",
         "modules/bvl_feedback/**",
