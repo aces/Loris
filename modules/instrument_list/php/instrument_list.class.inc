@@ -25,6 +25,8 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Loris\StudyEntities\Candidate\CandID;
 
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Instrument_List
  *
@@ -169,7 +171,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery->selectBattery($this->timePoint->getSessionID());
 
         $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
-            $this->tpl_data['candID']
+            new CandID(strval($this->tpl_data['candID']))
         );
 
         // get the list of instruments

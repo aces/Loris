@@ -12,6 +12,8 @@
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Unit tests for Utility class.
  *
@@ -500,7 +502,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'Not Started',
-            Utility::getStageUsingCandID('1')
+            Utility::getStageUsingCandID(new CandID('1'))
         );
     }
 

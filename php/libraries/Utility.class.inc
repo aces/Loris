@@ -1,16 +1,5 @@
 <?php declare(strict_types=1);
-/**
- * This file contains any static helper functions used by Loris that don't
- * fit elsewhere or are used in many different modules.
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * A class for holding a set of (static) utility/helper functions in a
@@ -570,19 +559,19 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param string $Cand_id candidate ID
+     * @param CandID $Cand_id candidate ID
      *
      * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID(string $Cand_id): string
+    static function getStageUsingCandID(CandID $Cand_id): string
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
-        $stage = $db->pselect($query, ['Cand_id' => $Cand_id]);
+        $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage[0]['Current_stage'];
     }
 
