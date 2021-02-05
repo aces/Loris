@@ -1,8 +1,10 @@
 # NEW
 2020-03-09-SQL_patch_for_HRRT_PET_images_insertion.sql
+2021-01-31-renaming_permissions.sql
 
 # CLEAN-UP
 2020-08-11-removeReliabilityPermissions.sql
+2021-01-31-deleting_permissions.sql
 
 # 23.0
 2018-05-18-adding_physiological_all_sites_permissions.sql

@@ -57,3 +57,4 @@ UPDATE permissions SET description='Documents', moduleID=(SELECT ID FROM modules
 UPDATE permissions SET description='Candidate Surveys', moduleID=(SELECT ID FROM modules WHERE Name='survey_accounts'), action='View' WHERE code='survey_accounts_view';
 UPDATE permissions SET description='Flagged Imaging Entries', moduleID=(SELECT ID FROM modules WHERE Name='imaging_qc'), action='View' WHERE code='imaging_quality_control_view';
 UPDATE permissions SET description='Flagged Behavioural Entries', moduleID=(SELECT ID FROM modules WHERE Name='behavioural_qc'), action='View' WHERE code='behavioural_quality_control_view';
+
