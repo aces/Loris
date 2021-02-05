@@ -72,7 +72,7 @@ class Signup extends \NDB_Page implements ETagCalculator
     function requestAccount(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
+        $values = json_decode((string) $request->getBody(), true) ?? [];
 
         $config           = \NDB_Factory::singleton()->config();
         $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');

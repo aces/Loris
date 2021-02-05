@@ -145,7 +145,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
     function login(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
+        $values = json_decode((string) $request->getBody(), true) ?? [];
 
         $login   = new SinglePointLogin();
         $success = $login->passwordAuthenticate(
