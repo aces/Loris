@@ -13,8 +13,6 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-
 require_once __DIR__ . "/../../../test/integrationtests"
     . "/LorisIntegrationTestWithCandidate.class.inc";
 
@@ -119,13 +117,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-        $this->webDriver->wait(10, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::id('default-panel')
-            )
-        );
-
-        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
+        $this->safeFindElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
         $this->assertStringNotContainsString(
             "New time point successfully registered.",

@@ -12,8 +12,6 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -222,16 +220,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 
         // Ensure that an instrument must be supplied.
         $this->safeGet($this->url . "/survey_accounts/");
-        $this->webDriver->wait(10, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::id('default-panel')
-            )
-        );
-
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -254,16 +244,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 
         // Ensure visit label exists for a candidate.
         $this->safeGet($this->url . "/survey_accounts/");
-        $this->webDriver->wait(10, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::id('default-panel')
-            )
-        );
-
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
