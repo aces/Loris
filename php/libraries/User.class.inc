@@ -338,7 +338,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
-        natcasesort($site_list);
+        ksort($site_list);
         return $site_list;
     }
 
