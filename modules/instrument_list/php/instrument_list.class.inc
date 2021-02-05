@@ -164,6 +164,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
+            $this->loris,
             $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
@@ -226,10 +227,10 @@ class Instrument_List extends \NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status = new \NDB_BVL_InstrumentStatus;
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['CommentID']);
 
-                $ddeStatus = new \NDB_BVL_InstrumentStatus;
+                $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
                 $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";

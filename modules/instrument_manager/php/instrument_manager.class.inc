@@ -54,14 +54,20 @@ class Instrument_Manager extends \NDB_Menu_Filter
      * @param string $commentID The CommentID to load the data for
      * @param string $formname  The name to give this form
      */
-    public function __construct($module, $page, $id, $commentID, $formname)
-    {
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        $module,
+        $page,
+        $id,
+        $commentID,
+        $formname,
+    ) {
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
         $this->_factory     = \NDB_Factory::singleton();
         $this->_path        = $this->_factory->config()->getSetting("base");
 
-        parent::__construct($module, $page, $id, $commentID);
+        parent::__construct($loris, $module, $page, $id, $commentID);
     }
 
     /**
@@ -184,7 +190,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
         try {
-            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+            $table_name = \NDB_BVL_Instrument::factory($this->loris, $instrument, '', '')->table;
         } catch (\NotFound $e) {
             return (new \LORIS\Http\Response\JSON\NotFound(
                 $e->getMessage()

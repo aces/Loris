@@ -54,6 +54,8 @@ class DirectDataEntryMainPage
     var $tpl_data;
     var $caller;
 
+    private $loris;
+
     /**
      * Initialize all of the class variables and things required from the
      * REQUEST.
@@ -78,6 +80,13 @@ class DirectDataEntryMainPage
         $this->key = $_REQUEST['key'];
 
         $DB = Database::singleton();
+
+
+        $this->loris = new \LORIS\LorisInstance(
+            $DB,
+            $config,
+            []
+        );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -346,6 +355,7 @@ class DirectDataEntryMainPage
         }
 
         $workspace = $this->caller->load(
+            $this->loris,
             $this->TestName,
             $this->Subtest ?? '',
             $this->CommentID,

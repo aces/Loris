@@ -114,6 +114,7 @@ class NDB_BVL_Battery
      * @return void
      */
     function createBattery(
+        \LORIS\LorisInstance $loris,
         $SubprojectID,
         $stage=null,
         $visit_label=null,
@@ -154,7 +155,7 @@ class NDB_BVL_Battery
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
-            $this->addInstrument($testName);
+            $this->addInstrument($loris, $testName);
         } // end looping over the list of instruments
     } // end createBattery()
 
@@ -183,7 +184,7 @@ class NDB_BVL_Battery
      *
      * @return string The generated CommentID
      */
-    function addInstrument($testName)
+    function addInstrument($loris, $testName)
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
@@ -212,7 +213,7 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // instantiate instrument object to get table name attribute
-        $obj = NDB_BVL_Instrument::factory($testName, '', '');
+        $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table

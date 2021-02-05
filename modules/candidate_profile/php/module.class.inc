@@ -28,7 +28,9 @@ class Module extends \Module
             $candidate = \Candidate::singleton($candID);
 
             $request = $request->withAttribute('candidate', $candidate);
-            $page    = $this->loadPage("candidate_profile");
+            $loris   = $request->getAttribute("loris");
+            $page    = $this->loadPage($loris, "candidate_profile");
+
             return $page->process($request, $page);
         } catch (\DomainException | \LORISException $e) {
             // A LORISException means the \Candidate::singleton couldn't

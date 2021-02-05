@@ -48,12 +48,13 @@ class NDB_Menu extends NDB_Page
      * @param string $commentID  The CommentID to load the data for
      */
     public function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID);
+        parent::__construct($loris, $module, $page, $identifier, $commentID);
         $this->menu = $module->getName();
     }
 

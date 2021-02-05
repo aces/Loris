@@ -35,6 +35,7 @@ class ConflictDetector
      *               points.
      */
     static function detectConflictsForCommentIds(
+        \LORIS\LorisInstance $loris,
         string $instrumentName,
         string $commentId1,
         string $commentId2
@@ -42,14 +43,14 @@ class ConflictDetector
         $diffResult = [];
 
         // Get data entry status for $commentId1
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId1);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
 
         // Get data entry status for $commentId2
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId2);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
@@ -57,6 +58,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId1
         $instance1 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId1,
             ''
@@ -64,6 +66,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId2
         $instance2 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId2,
             ''

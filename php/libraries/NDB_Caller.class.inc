@@ -78,6 +78,7 @@ class NDB_Caller
      * @return string rendered object, as html
      */
     function load(
+        \LORIS\LorisInstance $loris,
         $test_name,
         $subtest,
         $CommentID='',
@@ -94,6 +95,7 @@ class NDB_Caller
         $linstfile = $base."project/instruments/$test_name.linst";
         if ($this->existsAndRequire($phpfile)) {
             $html       = $this->loadInstrumentDirect(
+                $loris,
                 $test_name,
                 $subtest,
                 $CommentID,
@@ -103,6 +105,7 @@ class NDB_Caller
             return $html;
         } else if (file_exists($linstfile)) {
             $html       = $this->loadInstrumentDirect(
+                $loris,
                 $test_name,
                 $subtest,
                 $CommentID
@@ -126,6 +129,7 @@ class NDB_Caller
      * @return string HTML of the page to render.
      */
     function loadInstrumentDirect(
+        \LORIS\LorisInstance $loris,
         string $instrumentName,
         string $page,
         string $commentID,
@@ -133,6 +137,7 @@ class NDB_Caller
     ): string {
         if ($page === 'finalpage') {
             $instrument = NDB_BVL_Instrument::factory(
+                $loris,
                 $instrumentName,
                 $commentID,
                 $page
@@ -149,6 +154,7 @@ class NDB_Caller
 
         // make an instance of the instrument's object
         $instrument = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentID,
             $page
@@ -161,7 +167,7 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status = new NDB_BVL_InstrumentStatus;
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentID);
 
         $this->page = $instrument;

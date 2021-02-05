@@ -259,7 +259,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * @return NDB_Page
      *         Returns NDB_Page (or subclass) representing this page.
      */
-    public function loadPage(string $page)
+    public function loadPage(\Loris\LORISInstance $loris, string $page)
     {
         // Some URLs are things like "/login/request-account", but `-` isn't valid
         // in a class name, so remove it while loading the module.
@@ -272,7 +272,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
-        $cls        = new $className($this, $page, $identifier, $commentID, $page);
+        $cls        = new $className($loris, $this, $page, $identifier, $commentID, $page);
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
@@ -339,8 +339,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+        $loris = $request->getAttribute("loris");
         try {
-            $page = $this->loadPage($pagename);
+            $page = $this->loadPage($loris, $pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
             if ($this->getName() === $pagename) {

@@ -53,13 +53,14 @@ class Dashboard extends \NDB_Form
      * @param string  $formname   The name to give this form
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID,
-        string $formname
+        string $formname,
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct($loris, $module, $page, $identifier, $commentID, $formname);
 
         // This needs to be done before setup so that the widget specific CSS and
         // javascript are available for getCSSDependencies and getJSDependencies,

@@ -152,7 +152,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+        $loris = $request->getAttribute("loris");
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus($loris);
         $this->_instrumentStatus->select($this->_instrument->commentID);
 
         $data = json_decode((string) $request->getBody(), true);
@@ -213,7 +214,8 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus();
+        $loris = $request->getAttribute("loris");
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus($loris);
         $this->_instrumentStatus->select($this->_instrument->commentID);
 
         if (!$this->_instrument->determineDataEntryAllowed()) {

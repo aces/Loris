@@ -203,6 +203,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @throws Exception
      */
     public static function factory(
+        \LORIS\LORISInstance $loris,
         string $instrument,
         string $commentID = '',
         string $page = '',
@@ -232,10 +233,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.
+                $loris,
                 Module::factory("instruments"),
                 $page,
                 $commentID,
-                $commentID
+                $commentID,
             );
         } else {
             if (!class_exists($class)
@@ -250,6 +252,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             // Now go ahead and instantiate it
             $obj = new $class(
+                $loris,
                 Module::factory("instruments"),
                 $page,
                 $commentID,
@@ -2464,6 +2467,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel(
+                $this->loris,
                 $this->testName,
                 $this->getCommentID() ?? '',
                 $candID,

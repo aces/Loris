@@ -34,15 +34,22 @@ class Instrument_List_ControlPanel extends \TimePoint
     protected array $tpl_data;
 
     /**
+     * @var \LORIS\LorisInstance $loris
+     */
+    protected $loris;
+
+    /**
      * Construct function
      *
      * @param \SessionID $sessionID the value of sessionID
      *
      * @return void
      */
-    function __construct($sessionID)
+    function __construct(\LORIS\LorisInstance $loris, $sessionID)
     {
         $this->tpl_data = [];
+        $this->loris = $loris;
+
         $this->select($sessionID);
     }
 
@@ -226,6 +233,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                         $instrument['CommentID']
                     );
                     $diff =\ConflictDetector::detectConflictsForCommentIds(
+                        $this->loris,
                         $instrument['Test_name'],
                         $instrument['CommentID'],
                         $instrument['DDECommentID']
@@ -351,7 +359,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeConflictDetected = false;
         $dataEntry           = '';
         foreach ($batteryList as $instrument) {
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -361,7 +369,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             //check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -567,7 +575,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -578,7 +586,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -663,7 +671,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -674,7 +682,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {

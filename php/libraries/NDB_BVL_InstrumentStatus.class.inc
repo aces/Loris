@@ -73,6 +73,15 @@ class NDB_BVL_InstrumentStatus
         'Pass',
     ];
 
+
+    /**
+     * @var \LORIS\LorisInstance
+     */
+    protected $loris;
+
+    public function __construct(\LORIS\LorisInstance $loris) {
+        $this->loris = $loris;
+    }
     /**
      * Loads the object with the current status of the instrument
      *
@@ -213,6 +222,7 @@ class NDB_BVL_InstrumentStatus
 
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
+                        $this->loris,
                         $instrumentName,
                         $principalCommentId,
                         $DDECommentId

@@ -37,6 +37,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     protected string $testname;
     protected ?string $subtest;
 
+    protected $loris;
+
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -47,12 +49,14 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
      * @param ?string   $subtest   The page of the instrument being accessed
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         string $testname,
         string $commentid,
         CandID $candid,
         SessionID $sessionid,
         ?string $subtest
     ) {
+        $this->loris      = $loris;
         $this->candID     = $candid;
         $this->testname   = $testname;
         $this->_commentID = $commentid;
@@ -98,6 +102,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             }
             // create an instance of the instrument
             $instrument = NDB_BVL_Instrument::factory(
+                $this->loris,
                 $this->testname,
                 $this->_commentID,
                 $this->subtest ?? ''
@@ -167,6 +172,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $user = User::singleton();
             if ($user->hasPermission('send_to_dcc')) {
                 $instrument = \NDB_BVL_Instrument::factory(
+                    $this->loris,
                     $this->testname,
                     $this->_commentID,
                     $this->subtest ?? ''
