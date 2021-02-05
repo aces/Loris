@@ -91,13 +91,19 @@ class Expired extends \NDB_Page implements ETagCalculator
                     'You cannot keep the same password.'
                 );
             }
-            // Update password
-            $user->updatePassword(
-                new \Password(
-                    $plaintext
-                )
-            );
             unset($_SESSION['PasswordExpiredForUser']);
+            // Update password
+            try {
+                $user->updatePassword(
+                    new \Password(
+                        $plaintext
+                    )
+                );
+            } catch (\InvalidArgumentException $e) {
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    $e->getMessage()
+                );
+            }
         } else {
             return new \LORIS\Http\Response\JSON\Conflict(
                 'Server encountered an error.'
