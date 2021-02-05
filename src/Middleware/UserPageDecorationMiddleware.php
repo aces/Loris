@@ -1,16 +1,4 @@
 <?php
-/**
- * This file handles the UserPageDecorationMiddleware for LORIS
- *
- * PHP Version 7
- *
- * @category LORIS
- * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
- */
-
 namespace LORIS\Middleware;
 
 use \Psr\Http\Message\ServerRequestInterface;
@@ -20,15 +8,6 @@ use \Psr\Http\Server\RequestHandlerInterface;
 
 use LORIS\StudyEntities\Candidate\CandID;
 
-/**
- * PHP Version 7
- *
- * @category LORIS
- * @package  Main
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
- */
 class UserPageDecorationMiddleware implements MiddlewareInterface
 {
     protected $JSFiles;
@@ -63,21 +42,18 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface  $request The incoming request
      * @param RequestHandlerInterface $handler The handler to decorate
      *
-     * @return ResponseInterface a PSR15 response of handler,
-     *  after adding decorations.
+     * @return ResponseInterface a PSR15 response of handler, after adding decorations.
      */
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ) : ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
         ob_start();
         // Set the page template variables
         // $user and $loris is set by the page base router
         $user     = $request->getAttribute("user");
         $loris    = $request->getAttribute("loris");
-        $tpl_data = [
+        $tpl_data = array(
                      'test_name' => $this->PageName,
-                    ];
+                    );
         $menu     = [];
 
         $modules = $loris->getActiveModules();
@@ -123,13 +99,13 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $menu[$cat] = $val;
         }
         // Basic page outline variables
-        $tpl_data += [
+        $tpl_data += array(
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
                       'menus'       => $menu,
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
-                     ];
+                     );
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
@@ -171,28 +147,25 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $sessionID = new \SessionID($get['sessionID']);
             }
 
-                $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
-                    $candID,
-                    $sessionID
-                );
+            $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
+                $candID,
+                $sessionID
+            );
 
-                $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                    $this->PageName
-                );
+            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
+                $this->PageName
+            );
         }
+
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
-        $tpl_data['issue_tracker_url'] = $this->Config->getSetting(
-            'issue_tracker_url'
-        );
+        $tpl_data['issue_tracker_url'] = $this->Config->getSetting('issue_tracker_url');
 
         // We're back in the territory of stuff that belongs here..
 
         // Variables that get passed along to the LorisHelper javascript object.
-        $tpl_data['studyParams'] = [
-                                    'useEDC'      => $this->Config->getSetting(
-                                        'useEDC'
-                                    ),
+        $tpl_data['studyParams'] = array(
+                                    'useEDC'      => $this->Config->getSetting('useEDC'),
                                     'useProband'  => $this->Config->getSetting(
                                         'useProband'
                                     ),
@@ -202,22 +175,22 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                                     'useConsent'  => $this->Config->getSetting(
                                         'useConsent'
                                     ),
-                                   ];
+                                   );
         $tpl_data['jsonParams']  = json_encode(
-            [
+            array(
              'BaseURL'   => $this->BaseURL,
              'TestName'  => $tpl_data['test_name'] ?? '',
              'Subtest'   => $tpl_data['subtest'] ?? '',
              'CandID'    => $tpl_data['candID'] ?? '',
              'SessionID' => $tpl_data['sessionID'] ?? '',
              'CommentID' => $tpl_data['commentID'] ?? '',
-            ]
+            )
         );
 
         // User related template variables that used to be in main.php.
         $site_arr    = $this->user->getData('CenterIDs');
-        $site        = [];
-        $isStudySite = [];
+        $site        = array();
+        $isStudySite = array();
         foreach ($site_arr as $key => $val) {
             $site[$key]        = & \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
@@ -239,7 +212,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // FIXME: This should be array_filter
-        $realPerms = [];
+        $realPerms = array();
         foreach ($this->user->getPermissions() as $permName => $hasPerm) {
             if ($hasPerm === true) {
                 $realPerms[] = $permName;
@@ -250,15 +223,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         //Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 
-        $tpl_data['links'] = [];
+        $tpl_data['links'] = array();
         foreach ($links as $label => $url) {
             $WindowName = md5($url);
 
-            $tpl_data['links'][] = [
+            $tpl_data['links'][] = array(
                                     'url'        => $url,
                                     'label'      => $label,
                                     'windowName' => $WindowName,
-                                   ];
+                                   );
         }
 
         // Handle needs to be called before formaction, because handle potentially
@@ -266,13 +239,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // browser)
         $undecorated = $handler->handle($request);
         $contenttype = $undecorated->getHeaderLine("Content-Type");
-        if ($contenttype != ""
-            && strpos($contenttype, "text/html") === false
-        ) {
-            // FIXME: This should explicitly check for text/html instead of
-            //implicitly treating no content type as text/html, but most of
-            // our code doesn't add an appropriate content type right now,
-            // so we default to assuming HTML.
+        if ($contenttype != "" && strpos($contenttype, "text/html") === false) {
+            // FIXME: This should explicitly check for text/html instead of implicitly treating
+            // no content type as text/html, but most of our code doesn't add an appropriate
+            // content type right now, so we default to assuming HTML.
             return $undecorated;
         }
 
@@ -283,6 +253,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         if ($page !== null && method_exists($page, 'getControlPanel')) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
+
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['FormAction'] = $page->FormAction ?? '';
@@ -296,16 +267,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         ob_end_clean();
 
         // Finally, the actual content and render it..
-        $tpl_data += [
+        $tpl_data += array(
                       'jsfiles'   => $this->JSFiles,
                       'cssfiles'  => $this->CSSFiles,
                       'workspace' => $undecorated->getBody(),
-                     ];
+                     );
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
-        return $undecorated->withBody(
-            new \LORIS\Http\StringStream($smarty->fetch("main.tpl"))
-        );
+        return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("main.tpl")));
     }
 }
