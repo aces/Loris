@@ -51,7 +51,7 @@ class InstrumentUploadForm extends Component {
         swal.fire({
           title: 'Installation Successful!',
           type: 'success',
-        }, function() {
+        }).then(function() {
           window.location.assign(loris.BaseURL + '/instrument_manager/');
         });
       }
@@ -63,7 +63,7 @@ class InstrumentUploadForm extends Component {
           title: 'Upload Successful!',
           type: 'success',
           text: data.message,
-        }, function() {
+        }).then(function() {
           window.location.assign(loris.BaseURL + '/instrument_manager/');
         });
       }
