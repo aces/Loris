@@ -116,7 +116,8 @@ function uploadFile()
     // If required fields are not set, show an error
     if (empty($_FILES)) {
         showMediaError(
-            "File could not be uploaded successfully. Please contact the administrator.",
+            "File could not be uploaded successfully. 
+            Please contact the administrator.",
             400
         );
     }
