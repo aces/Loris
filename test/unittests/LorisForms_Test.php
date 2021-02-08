@@ -1902,22 +1902,6 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that getElement returns a LorisFormFileElement() when
-     * the type of the element is 'file'
-     *
-     * @covers LorisForm::getElement
-     * @return void
-     */
-    function testGetElementFile()
-    {
-        $this->form->addFile("abc", "Hello", []);
-        $this->assertEquals(
-            new LorisFormFileElement($this->form->form['abc']),
-            $this->form->getElement("abc")
-        );
-    }
-
-    /**
      * Test that setElementError correctly sets the 'error' attribute of the element
      * and adds to the errors array of the form
      *

@@ -144,7 +144,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                intval($row['SubprojectID'])
+                intval($row['SubprojectID'] ?? null)
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;

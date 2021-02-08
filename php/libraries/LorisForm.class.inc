@@ -851,7 +851,7 @@ class LorisForm
                 $format = 'month';
                 if ($value) {
                     $value = explode("-", $value);
-                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                    $value = sprintf("%s-%s", $value[0], $value[1]??null);
                 }
                 if (isset($elOptions['minYear'])) {
                     $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
@@ -1633,7 +1633,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if ($val===$el['value']) {
+        if ($val===($el['value'] ?? null)) {
             $checked = 'checked="checked"';
         }
 
@@ -2078,7 +2078,7 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $value = $_REQUEST[$key];
+                    $value = $_REQUEST[$key] ?? null;
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
