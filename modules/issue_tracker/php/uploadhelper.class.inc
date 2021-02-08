@@ -56,9 +56,10 @@ class UploadHelper
     /**
      * Setup uploading configurations.
      *
-     * @param \User $user    The user uploading.
-     * @param array $files   The $_FILES array content.
-     * @param array $values  The post message array content.
+     * @param \User $user   The user uploading.
+     * @param array $files  The $_FILES array content.
+     * @param array $values The post message array content.
+     *
      * @return boolean       success/fail
      */
     function setupUploading(\User $user, array $files, array $values) : bool
