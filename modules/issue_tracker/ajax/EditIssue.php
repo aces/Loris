@@ -572,11 +572,6 @@ function emailUser($issueID, $changed_assignee)
         )
     );
 
-    $msg_data['url']         = $baseurl .
-        "/issue_tracker/issue/?issueID=" . $issueID;
-    $msg_data['issueID']     = $issueID;
-    $msg_data['currentUser'] = $user->getUsername();
-
     foreach ($issue_change_emails as $email) {
         $msg_data['firstname'] = $email['firstname'];
         Email::send($email['Email'], 'issue_change.tpl', $msg_data);
