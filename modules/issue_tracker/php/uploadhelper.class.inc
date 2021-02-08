@@ -49,24 +49,27 @@ class UploadHelper
     private $_values;
 
     /**
+     * The error message if something fails.
+     */
+    public $errorMessage;
+
+    /**
      * Setup uploading configurations.
      *
      * @param \User $user   The user uploading.
      * @param array $files  The $_FILES array content.
      * @param array $values The post message array content.
+     * @return boolean success/fail
      *
-     * @return array (success|error) with a message for the frontend.
      */
-    function setupUploading(\User $user, array $files, array $values) : array
+    function setupUploading(\User $user, array $files, array $values) : bool
     {
         // Check if post.ini max_post configured for the file_size.
         if (!isset($files['file']['tmp_name'])
             || empty($files['file']['tmp_name'])
         ) {
-            return [
-                'error' =>
-                    'The server is not configured to receive a file this large.'
-            ];
+            $this->errorMessage = 'The server is not configured to receive a file this large.';
+            return false;
         }
         $this->_user   = $user;
         $this->_bytes  = $files['file']['size'];
@@ -83,14 +86,16 @@ class UploadHelper
                 'description' => $this->_values['fileDescription'] ?? '',
             ];
 
-        $this->setFullPath($this->_fileToUpload);
+        if(!$this->setFullPath($this->_fileToUpload)) {
+            $this->errorMessage = 'The server is not configured for attachments';
+            return false;
+        }
 
         $DB = \NDB_Factory::singleton()->database();
         $DB->beginTransaction();
         $this->registerFile($this->_fileToUpload);
         $this->endWithSuccess();
-
-        return ['success' => true];
+        return true;
     }
 
     /**
@@ -99,10 +104,9 @@ class UploadHelper
      *
      * @param object $fileToUpload The file to upload
      *
-     * @return void
-     * @throws \LorisException
+     * @return boolean success/fail
      */
-    function setFullPath(Object &$fileToUpload) : void
+    function setFullPath(Object &$fileToUpload) : bool
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -119,11 +123,9 @@ class UploadHelper
             if (!is_dir($fileToUpload->full_path)) {
                 mkdir($fileToUpload->full_path, 0770, true);
             }
-        } else {
-            throw new \LorisException(
-                'Issue_Tracker attachments directory not writable.'
-            );
+            return true;
         }
+        return false;
 
     }
 
