@@ -56,11 +56,10 @@ class UploadHelper
     /**
      * Setup uploading configurations.
      *
-     * @param \User $user   The user uploading.
-     * @param array $files  The $_FILES array content.
-     * @param array $values The post message array content.
-     * @return boolean success/fail
-     *
+     * @param \User $user    The user uploading.
+     * @param array $files   The $_FILES array content.
+     * @param array $values  The post message array content.
+     * @return boolean       success/fail
      */
     function setupUploading(\User $user, array $files, array $values) : bool
     {
@@ -68,7 +67,8 @@ class UploadHelper
         if (!isset($files['file']['tmp_name'])
             || empty($files['file']['tmp_name'])
         ) {
-            $this->errorMessage = 'The server is not configured to receive a file this large.';
+            $this->errorMessage
+                = 'The server is not configured to receive a file this large.';
             return false;
         }
         $this->_user   = $user;
@@ -86,7 +86,7 @@ class UploadHelper
                 'description' => $this->_values['fileDescription'] ?? '',
             ];
 
-        if(!$this->setFullPath($this->_fileToUpload)) {
+        if (!$this->setFullPath($this->_fileToUpload)) {
             $this->errorMessage = 'The server is not configured for attachments';
             return false;
         }
