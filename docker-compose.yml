@@ -1,5 +1,87 @@
-version: '2'
+version: '3'
+  
+networks:
+  laravel:
+
 services:
+  site:
+    build:
+      context: .
+      dockerfile: apache.dockerfile
+    container_name: apache
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    # depends_on:
+    #   - mysql
+    links:
+      - "mysql:database"
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: l8_1
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8089:80
+    networks:
+      - laravel
+
+  composer:
+    image: composer:latest
+    container_name: composer
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - laravel
+    entrypoint: ['composer', '--ignore-platform-reqs']
+
+  npm:
+    image: node:15.7.0-alpine3.10
+    container_name: npm
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - laravel
+    entrypoint: ['npm']
+
+
+
+
+
+
+
+
   db:
     build:
       context: .
@@ -117,3 +199,6 @@ services:
       - selenium-debug:selenium
       - web-debug:web
     entrypoint: /app/test/wait-for-services.sh
+    
+
+
