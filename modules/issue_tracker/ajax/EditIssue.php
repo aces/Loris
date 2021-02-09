@@ -120,7 +120,7 @@ function editIssue()
     // Attachment for new issue.
     if (isset($_FILES['file'])) {
         $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $attachment->setupUploading(
+        $success    = $attachment->setupUploading(
             $user,
             $_FILES,
             [
@@ -128,6 +128,9 @@ function editIssue()
                 'issueID'         => $issueID,
             ]
         );
+        if (!$success) {
+            showError($attachment->errorMessage);
+        }
     }
 
     // Adding new assignee to watching

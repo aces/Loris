@@ -353,6 +353,10 @@ class IssueForm extends Component {
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
+        this.setState({
+          error: 'An error occurred when loading the form!\n Error: ' +
+          response.status + ' (' + response.statusText + ')',
+        });
         return;
       }
 
@@ -384,6 +388,7 @@ class IssueForm extends Component {
         }
       );
     }).catch((error) => {
+      // Network error
       console.error(error);
       this.setState({
         loadError: 'An error occurred when loading the form!',
@@ -428,6 +433,12 @@ class IssueForm extends Component {
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
+        response.json().then((data) => {
+          this.setState({submissionResult: 'error'});
+          let msgType = 'error';
+          let message = data.message || 'Failed to submit issue :(';
+          this.showAlertMessage(msgType, message);
+        });
         return;
       }
 
@@ -443,8 +454,8 @@ class IssueForm extends Component {
         });
       });
     }).catch((error) => {
+      // Network error
       console.error(error);
-
       this.setState({submissionResult: 'error'});
       let msgType = 'error';
       let message = 'Failed to submit issue :(';
@@ -540,7 +551,7 @@ class IssueForm extends Component {
       allowOutsideClick: false,
       allowEscapeKey: false,
       showConfirmButton: confirmation,
-    }, callback.bind(this));
+    }).then(callback.bind(this));
   }
 }
 
