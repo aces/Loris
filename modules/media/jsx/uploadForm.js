@@ -261,7 +261,7 @@ class MediaUploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
+      }).then(function(isConfirm) {
         if (isConfirm) {
           this.uploadFile();
         } else {
