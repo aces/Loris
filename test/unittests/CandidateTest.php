@@ -151,7 +151,7 @@ class CandidateTest extends TestCase
             'Active'                => 'Y',
             'RegisteredBy'          => 'Admin Admin',
             'UserID'                => 'admin',
-            'RegistrationProjectID' => new ProjectID('1'),
+            'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
         ];
 
