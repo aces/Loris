@@ -3,7 +3,7 @@
  * This script is intended for a one-time use only to restore the value of the
  * `UserID` column of instrument tables and the `UserID` key of the instrument
  * JSON `Data` in the flag table.
- * 
+ *
  * This tool queries data from the `history` table and meaningfully imports
  * data from its `userID` column back into the instrument and `flag` tables.
  *
@@ -25,105 +25,108 @@ if (isset($argv[1]) && $argv[1] === 'confirm') {
     $confirm = true;
 }
 
-echo "\n\nQuerying data...\n";
+echo "\n\nQuerying data...\n\n";
 
-$db = \NDB_Factory::singleton()->database();
+// Get history DB
+$DBInfo = $config->getSetting('database');
+$hDB = isset($DBInfo['historydb']) ? $DBInfo['historydb'] : $DBInfo['database'];
 
 $result_count = 1;
-foreach(\Utility::getAllInstruments() as $table => $name) {
-    // Query entries in the history table for the latest change
-    // made to the Data column of the flag table, for every CommentID.
-    $history = $db->pselect(
-        "SELECT h1.primaryVals AS CommentID, h1.userID, JSON_MERGE_PATCH(
-            f.Data, CONCAT('{\"UserID\": \"', h1.userID, '\"}')
-         ) AS new_Data
-            FROM $table
-            LEFT JOIN flag f USING (CommentID)
-            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
-            LEFT JOIN
-            (
-                SELECT primaryVals, MAX(changeDate) AS max_date
-                    FROM history
-                    WHERE tbl = 'flag'
-                        AND col = 'Data'
-                        AND userID <> 'unknown'    
-                    GROUP BY primaryVals
-            ) h2 USING (primaryVals)
-                WHERE h1.tbl = 'flag'
-                    AND h1.col = 'Data'
-                    AND h1.userID <> 'unknown'
-                    AND h1.changeDate = h2.max_date
-                    AND $table.UserID IS NULL",
-            array()
-        );
-    if (empty($history)) {
-        echo "\n\nThere is no data to import into $table.\n";
+
+// Query entries in the history table for the latest change
+// made to the flag table, for every CommentID.
+$history = $DB->pselect(
+    "SELECT f.Test_name, f.CommentID, h1.userID
+      FROM flag f
+      JOIN $hDB.history h1 on (f.CommentID=h1.primaryVals)
+      JOIN
+        (
+          SELECT primaryVals, MAX(changeDate) as changeDate
+            FROM $hDB.history
+            WHERE userID <> 'unknown'
+              AND type='U'
+            GROUP BY primaryVals
+        ) h2 USING (primaryVals, changeDate)
+            GROUP BY CommentID",
+    array()
+);
+// Loop and index results from history by testname
+$idxHist = [];
+foreach ($history as $entry) {
+    $idxHist[$entry['Test_name']][] = $entry;
+}
+
+foreach(\Utility::getAllInstruments() as $testname => $fullName) {
+    // Instantiate instrument object to get information
+    try {
+        $instrument = \NDB_BVL_Instrument::factory($testname, '', '');
+    } catch (Exception $e) {
+        echo "$testname does not seem to be a valid instrument.\n";
+        continue;
+    }
+
+    // Check if instrument saves data in JSON format i.e. no-SQL table
+    $JSONData = $instrument->usesJSONData();
+    $table = null;
+    if ($JSONData === false) {
+        $table = $instrument->table;
+        if (!$DB->tableExists($table)) {
+            echo "Table $table for instrument $testname does not exist in the Database.\n";
+            continue;
+        }
+    }
+
+    if (empty($idxHist[$testname])) {
+        echo "\n\nThere is no data to import into $testname.\n";
         continue;
     } else {
-        echo "\n\nThe following data can be imported into $table:\n";
-        foreach ($history as $row) {
-            echo "\n\nResult $result_count:\n";
-            print_r($row);
+        echo "\n\nThe following data can be imported into $testname:\n";
+        foreach ($idxHist[$testname] as $row) {
+            $commentID = $row['CommentID'];
+            $userID = $row['userID'];
+            echo "\n\nResult $result_count: $commentID user: $userID\n";
             $result_count++;
         }
     }
 
-    // Update the intsrument table
+    // Update the instrument table
     if ($confirm) {
-        echo "\n\nImporting data into $table...\n";
-        $table_query = "UPDATE $table
-            LEFT JOIN flag f USING (CommentID)
-            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
-            LEFT JOIN
-            (
-                SELECT primaryVals, MAX(changeDate) AS max_date
-                    FROM history
-                    WHERE tbl = 'flag'
-                        AND col = 'Data'
-                        AND userID <> 'unknown'    
-                    GROUP BY primaryVals
-            ) h2 USING (primaryVals)
-            SET $table.UserID = h1.userID
-                WHERE h1.tbl = 'flag'
-                    AND h1.col = 'Data'
-                    AND h1.userID <> 'unknown'
-                    AND h1.changeDate = h2.max_date
-                    AND $table.UserID IS NULL";
+        echo "\n\nImporting data into $testname...\n";
 
-        $flag_query = "UPDATE flag f
-            LEFT JOIN $table USING (CommentID)
-            LEFT JOIN history h1 ON (f.CommentID=h1.primaryVals)
-            LEFT JOIN
-            (
-                SELECT primaryVals, MAX(changeDate) AS max_date
-                    FROM history
-                    WHERE tbl = 'flag'
-                        AND col = 'Data'
-                        AND userID <> 'unknown'    
-                    GROUP BY primaryVals
-            ) h2 USING (primaryVals)
-            SET f.Data = JSON_MERGE_PATCH(
-                f.Data, CONCAT('{\"UserID\": \"', h1.userID, '\"}')
-            )
-                WHERE h1.tbl = 'flag'
-                    AND h1.col = 'Data'
-                    AND h1.userID <> 'unknown'
-                    AND h1.changeDate = h2.max_date
-                    AND $table.UserID IS NULL";
+        // Instantiate instrument at the session level in order to
+        // use _saveValues() function
+        foreach ($idxHist[$testname] as $row) {
+            $commentID = $row['CommentID'];
+            $userID = $row['userID'];
 
-        $stmt_table = $db->prepare($table_query);
-        $stmt_flag  = $db->prepare($flag_query);
-        try {
-            $db->beginTransaction();
-            $stmt_table->execute();
-            $stmt_flag->execute();
-            $db->commit();
-            echo "\n\nData import done for $table.\n";
-        } catch (Exception $e) {
-            $db->rollBack();
-            $print("$table was not updated.");
-            $print($e->getMessage());
-        }
+            try {
+                $sessionInst = \NDB_BVL_Instrument::factory(
+                    $testname,
+                    $commentID,
+                    ''
+                );
+            } catch (Exception $e) {
+                echo "\t$testname instrument row with CommentID: $commentID was ".
+                    " Ignored for one of the following reasons:\n".
+                    "  - The candidate is inactive.\n".
+                    "  - The session is inactive.\n\n";
+                continue;
+            }
+
+            if (!$sessionInst) {
+                // instrument does not exist
+                echo "\t$testname for CommentID: $CommentID could not be instantiated.\n";
+                continue;
+            }
+
+            // Save userID
+            echo "\tSaving userID for CommentID: $commentID\n\n";
+            $sessionInst->_saveValues(
+                array(
+                    'UserID' => $userID
+                )
+            );
+        } 
     }
 }
 
