@@ -45,6 +45,9 @@ $history = $DB->pselect(
             FROM $hDB.history
             WHERE userID <> 'unknown'
               AND type='U'
+              AND NOT (
+                col='Data_entry' AND old IS NULL
+              )
             GROUP BY primaryVals
         ) h2 USING (primaryVals, changeDate)
             GROUP BY CommentID, h1.userID",
