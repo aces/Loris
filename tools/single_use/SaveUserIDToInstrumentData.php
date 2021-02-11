@@ -71,7 +71,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
     if ($JSONData === false) {
         $table = $instrument->table;
         if (!$table) {
-            echo "The table name for instrument $testname cannot be found.\n";
+            echo "\n\nERROR: The table name for instrument $testname cannot be found.\n";
             continue;
         } else if (!$DB->tableExists($table)) {
             echo "Table $table for instrument $testname does not exist in the Database.\n";
@@ -83,18 +83,18 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
         echo "\n\nThere is no data to import into $testname.\n";
         continue;
     } else {
-        echo "\n\nThe following data can be imported into $testname:\n";
+        echo "\n\nThe following data can be imported into $testname:\n\n";
         foreach ($idxHist[$testname] as $row) {
             $commentID = $row['CommentID'];
             $userID = $row['userID'];
-            echo "\n\nResult $result_count: $commentID user: $userID\n";
+            echo "\nResult $result_count: $commentID userID: $userID\n";
             $result_count++;
         }
     }
 
     // Update the instrument table
     if ($confirm) {
-        echo "\n\nImporting data into $testname...\n";
+        echo "\nImporting data into $testname...\n\n";
 
         // Instantiate instrument at the session level in order to
         // use _saveValues() function
@@ -123,7 +123,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
             }
 
             // Save userID
-            echo "\tSaving userID for CommentID: $commentID\n\n";
+            echo "\tSaving userID $userID for CommentID: $commentID\n\n";
             $sessionInst->_saveValues(
                 array(
                     'UserID' => $userID
