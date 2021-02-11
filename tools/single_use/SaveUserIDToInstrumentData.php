@@ -47,7 +47,7 @@ $history = $DB->pselect(
               AND type='U'
             GROUP BY primaryVals
         ) h2 USING (primaryVals, changeDate)
-            GROUP BY CommentID",
+            GROUP BY CommentID, h1.userID",
     array()
 );
 // Loop and index results from history by testname
@@ -70,7 +70,10 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
     $table = null;
     if ($JSONData === false) {
         $table = $instrument->table;
-        if (!$DB->tableExists($table)) {
+        if (!$table) {
+            echo "The table name for instrument $testname cannot be found.\n";
+            continue;
+        } else if (!$DB->tableExists($table)) {
             echo "Table $table for instrument $testname does not exist in the Database.\n";
             continue;
         }
