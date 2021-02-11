@@ -115,6 +115,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             }
         }
 
+        var_dump($row);
+        var_dump($this->candidateInfo);
+
         $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
 
         $headerSetting = $config->getSetting('HeaderTable');
