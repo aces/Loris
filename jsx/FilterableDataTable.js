@@ -21,27 +21,71 @@ class FilterableDataTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter: {},
+      filters: {},
     };
-    this.updateFilter = this.updateFilter.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
+    this.updateFilters = this.updateFilters.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
+    this.addFilter = this.addFilter.bind(this);
+    this.removeFilter = this.removeFilter.bind(this);
   }
 
   /**
    * Updates filter state
    *
-   * @param {object} filter passed from FilterForm
+   * @param {object} filters
    */
-  updateFilter(filter) {
-    this.setState({filter});
+  updateFilters(filters) {
+    this.updateQueryParams(filters);
+    this.setState({filters});
+  }
+
+  /**
+   * Updates URL Query Params
+   *
+   * @param {object} filters
+   */
+  updateQueryParams(filters) {
+    const searchParams = new URLSearchParams();
+    Object.entries(filters).forEach(([name, filter]) => {
+      if (filter.value.constructor === Array) {
+        filter.value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.set(name, filter.value);
+      }
+    });
+
+    history.replaceState({}, '', `?${searchParams.toString()}`);
+  }
+
+  /**
+   * Add new filter to the filter object
+   *
+   * @param {string} name
+   * @param {*}      value
+   * @param {bool}   exactMatch
+   */
+  addFilter(name, value, exactMatch) {
+    const filters = this.state.filters;
+    filters[name] = {value, exactMatch};
+    this.updateFilters(filters);
+  }
+
+  /**
+   * Remove filter from the filter object
+   *
+   * @param {string} name
+   */
+  removeFilter(name) {
+    const filters = this.state.filters;
+    delete filters[name];
+    this.updateFilters(filters);
   }
 
   /**
    * Sets Filter to empty object
    */
-  clearFilter() {
-    this.updateFilter({});
-    history.replaceState({}, '', '?');
+  clearFilters() {
+    this.updateFilters({});
   }
 
   render() {
@@ -50,10 +94,11 @@ class FilterableDataTable extends Component {
         name={this.props.name + '_filter'}
         id={this.props.name + '_filter'}
         columns={this.props.columns}
-        filter={this.state.filter}
+        filters={this.state.filters}
         fields={this.props.fields}
-        updateFilter={this.updateFilter}
-        clearFilter={this.clearFilter}
+        addFilter={this.addFilter}
+        removeFilter={this.removeFilter}
+        clearFilters={this.clearFilters}
       />
     );
 
@@ -61,7 +106,7 @@ class FilterableDataTable extends Component {
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
-        filter={this.state.filter}
+        filters={this.state.filters}
         actions={this.props.actions}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
@@ -84,7 +129,7 @@ class FilterableDataTable extends Component {
             const active = this.props.filterPresets.find((preset) => {
               return preset.label === tabId;
             });
-            this.updateFilter(active.filter);
+            this.updateFilters(active.filter);
           }}>
             {tabPanes}
           </Tabs>

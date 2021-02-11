@@ -122,7 +122,7 @@ class DataTable extends Component {
 
   getFilteredRowIndexes() {
     let useKeyword = false;
-    let filterValuesCount = Object.keys(this.props.filter).length;
+    let filterValuesCount = Object.keys(this.props.filters).length;
     let tableData = this.props.data;
     let fieldData = this.props.fields;
 
@@ -137,7 +137,7 @@ class DataTable extends Component {
       return filteredIndexes;
     }
 
-    if (this.props.filter.keyword) {
+    if (this.props.filters.keyword) {
       useKeyword = true;
     }
 
@@ -260,10 +260,10 @@ class DataTable extends Component {
     let searchKey = null;
     let searchString = null;
 
-    if (this.props.filter[name]) {
-      filterData = this.props.filter[name].value;
-      exactMatch = this.props.filter[name].exactMatch;
-      opposite = this.props.filter[name].opposite;
+    if (this.props.filters[name]) {
+      filterData = this.props.filters[name].value;
+      exactMatch = this.props.filters[name].exactMatch;
+      opposite = this.props.filters[name].opposite;
     }
 
     // Handle null inputs
@@ -317,7 +317,7 @@ class DataTable extends Component {
         searchKey = filterData[i].toLowerCase();
         searchString = data ? data.toString().toLowerCase() : '';
 
-        match = (searchString.indexOf(searchKey) > -1);
+        match = (searchString === searchKey);
         if (match) {
           result = true;
         }
@@ -403,7 +403,7 @@ class DataTable extends Component {
     let index = this.sortRows(filteredRowIndexes);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
 
-    if (this.props.filter.keyword) {
+    if (this.props.filters.keyword) {
       useKeyword = true;
     }
 
@@ -580,7 +580,7 @@ DataTable.defaultProps = {
   headers: [],
   data: {},
   rowNumLabel: 'No.',
-  filter: {},
+  filters: {},
   hide: {
     rowsPerPage: false,
     downloadCSV: false,
