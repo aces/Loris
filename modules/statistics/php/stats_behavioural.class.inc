@@ -101,9 +101,10 @@ class Stats_Behavioural extends \NDB_Form
         $projects['']   = 'All Projects';
         $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
