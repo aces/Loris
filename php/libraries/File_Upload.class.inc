@@ -165,16 +165,19 @@ class File_Upload
     function preProcessFile()
     {
         if (!$this->isCLImport) {
-            $this->file = $this->form->getElement($this->fieldName);
-            if (!method_exists($this->file, "isUploadedFile")) {
+            $f = $this->form->getElement($this->fieldName);
+
+            if (!($f instanceof LorisFormFileElement)) {
                 return false;
             }
-            if ($this->file->isUploadedFile()) {
-                $this->fileInfo = $this->file->getValue();
-                return true;
-            } else {
+
+            if (!$f->isUploadedFile()) {
                 return false;
             }
+
+            $this->file     = $f;
+            $this->fileInfo = $this->file->getValue();
+            return true;
         } else {
             $this->file     =$this->CLFiles[$this->fieldName];
             $this->fileInfo =$this->file['info'];
