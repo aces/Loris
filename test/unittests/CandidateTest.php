@@ -1149,7 +1149,7 @@ class CandidateTest extends TestCase
         $user->expects($this->once())->method("getCenterIDs")
             ->willReturn([1, 2]);
         $user->expects($this->once())->method("getProjectIDs")
-            ->willReturn([1, 3]);
+            ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertTrue($result);
@@ -1172,7 +1172,7 @@ class CandidateTest extends TestCase
         $user->expects($this->atLeastOnce())->method("getCenterIDs")
             ->willReturn([1, 2]);
         $user->expects($this->atLeastOnce())->method("getProjectIDs")
-            ->willReturn([2, 3]);
+            ->willReturn([new \ProjectID("2"), new \ProjectID("3")]);
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertFalse($result);
