@@ -100,7 +100,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
         echo "\nImporting data into $testname...\n\n";
 
         // Instantiate instrument at the session level in order to
-        // use _saveValues() function
+        // use _save() function
         foreach ($idxHist[$testname] as $row) {
             $commentID = $row['CommentID'];
             $userID = $row['userID'];
@@ -127,7 +127,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
 
             // Save userID
             echo "\tSaving userID $userID for CommentID: $commentID\n\n";
-            $sessionInst->_saveValues(
+            $sessionInst->_save(
                 array(
                     'UserID' => $userID
                 )
