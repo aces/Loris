@@ -31,9 +31,9 @@ Deploy and log in with username *admin* and the password that's set up during de
 
  * Apache **2.4** or higher
  * MySQL >= 5.7 (or MariaDB >= 10.3)
- * PHP <b>7.4</b> or higher
- * [Composer](https://getcomposer.org/) <b>1.4</b> or higher
- * NodeJS <b>10.13.0</b> or higher
+ * PHP **7.4** or higher
+ * [Composer](https://getcomposer.org/) **1.4** or higher
+ * NodeJS **10.13.0** or higher
  * NPM
  * make
 
@@ -114,6 +114,12 @@ such as the OS you're using, your PHP and Apache versions, etc.
 We are very happy to get code contributions and features from the global LORIS community. 
 
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
+
+Code is merged after a given pull request is reviewed using our code review checklist, has been approved by 2 reviewers, and is tagged [PassedManualTests](https://github.com/aces/Loris/labels/Passed%20Manual%20Tests). The [new Pull Request template](https://github.com/aces/Loris/blob/main/.github/PULL_REQUEST_TEMPLATE.md) has guidelines for how to submit a contribution.
+
+If there are any issues with your pull request, please address them and assign it back to the original reviewer.
+
+Please also visit [the contributing guide](https://github.com/aces/Loris/blob/main/CONTRIBUTING.md) for more details.
 
 ## Powered by MCIN
 

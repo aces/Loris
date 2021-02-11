@@ -2,6 +2,7 @@ site_name: LORIS
 repo_url: https://github.com/aces/Loris
 # Solve the broken 404 page issue
 site_url: https://acesloris.readthedocs.io/en/latest/
+docs_dir: '.'
 
 nav:
     - Home: 'README.md'
@@ -38,6 +39,8 @@ nav:
         - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
+        - 'Instrument Guide': 'docs/wiki/99_Developers/Developer_Instrument_Guide.md'
+        - 'Update LORIS': 'docs/wiki/99_Developers/Update_LORIS.md'
 
 use_directory_urls: False
 
