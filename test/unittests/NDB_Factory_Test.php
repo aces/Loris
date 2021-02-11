@@ -238,7 +238,7 @@ class NDB_Factory_Test extends TestCase
         $this->_factory->setDatabase($mockdb);
         $mockdb->expects($this->any())
             ->method('pselectRow')
-            ->willReturn(['DCCID'=>'300001']);
+            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => '1']);
 
         $candID = new CandID("300001");
         $this->assertEquals(
