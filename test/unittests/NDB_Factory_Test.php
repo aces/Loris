@@ -262,7 +262,7 @@ class NDB_Factory_Test extends TestCase
         $this->_factory->setDatabase($mockdb);
         $mockdb->expects($this->any())
             ->method('pselectRow')
-            ->willReturn(['1']);
+            ->willReturn(['SessionID' => '1', 'ProjectID' => '1']);
 
         $sessionID = new \SessionID("1");
         $this->assertEquals(
