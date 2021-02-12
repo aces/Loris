@@ -108,7 +108,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject(($projectID));
+        $tpl_var = \Utility::getSubprojectsForProject($projectID);
         $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
