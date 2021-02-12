@@ -59,9 +59,9 @@ Class TimePoint_List_ControlPanel extends \Candidate
     {
         $user =& \User::singleton();
 
-        $cand_CenterID = $this->getData('RegistrationCenterID');
+        $cand_CenterID = $this->getCenterID();
 
-        $this->tpl_data['candID'] = $this->getData('CandID');
+        $this->tpl_data['candID'] = $this->getCandID();
 
         $this->tpl_data['isDataEntryPerson']
             = $user->hasCenterPermission("data_entry", $cand_CenterID);

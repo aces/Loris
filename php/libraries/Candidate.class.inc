@@ -435,7 +435,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             'candidate',
             $newData,
             [
-                'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getCandID(),
             ]
         );
         return true;

@@ -113,7 +113,7 @@ class Imaging_Session_ControlPanel
          */
         $params     = [];
         $ID         = 'NULL';
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";
             $params['PVL'] = $timePoint->getVisitLabel();
