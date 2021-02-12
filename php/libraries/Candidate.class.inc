@@ -193,7 +193,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
+     * @param CenterID    $centerID              centerID of the site to which the
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
@@ -211,7 +211,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @static
      */
     static public function createNew(
-        int $centerID,
+        CenterID $centerID,
         ?string $dateOfBirth,
         ?string $edc,
         Sex $sex,

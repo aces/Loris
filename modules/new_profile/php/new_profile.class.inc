@@ -73,7 +73,7 @@ class New_Profile extends \NDB_Form
             $edc = (new \DateTime($edc))->format('Y-m-d');
         }
         $candID = \Candidate::createNew(
-            (int)$values['site'],
+            new \CenterID($values['site']),
             $dob,
             $edc,
             new Sex($values['sex']),
@@ -254,7 +254,7 @@ class New_Profile extends \NDB_Form
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site = \Site::singleton((int) $values['site']);
+                $site = \Site::singleton(new \CenterID($values['site']));
             }
 
             $project = \Project::getProjectFromID(
