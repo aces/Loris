@@ -94,16 +94,6 @@ class UserPermissions
                 $this->permissions[$row['code']] = $userMatch;
             }
         }
-
-        if ($this->hasPermission('superuser')) {
-            // if user has superuser role set all permissions
-            $this->permissions = array_map(
-                function () {
-                    return 1;
-                },
-                $this->permissions
-            );
-        }
     }
 
 
@@ -299,14 +289,13 @@ class UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $perms     = array_filter($this->getPermissions());
-        $permCodes = implode("', '", array_keys($perms));
-        $query     = "SELECT p.permID, p.code, p.description, pc.Description as type
+        $query   = "SELECT p.permID, p.code, p.description, pc.Description as type
             FROM permissions p
+                JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-            WHERE p.code IN ('" . $permCodes . "')
+            WHERE up.userID = :UID
                 ORDER BY p.categoryID, p.description";
-        $results   = $DB->pselect($query, []);
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         return $results;
     }
