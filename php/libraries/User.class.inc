@@ -26,7 +26,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     /**
      * Stores user information
      *
-     * @var    array
+     * @var array
      */
     protected $userInfo = [];
 
@@ -397,7 +397,8 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
      *
      * @return string
      */
-    public function getEmail() : string {
+    public function getEmail() : string
+    {
         return $this->userInfo['Email'];
     }
 
@@ -584,6 +585,12 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         return $projMatch && $centerMatch;
     }
 
+    /**
+     * Returns whether the user's account is pending approval by
+     * an admin.
+     *
+     * @return bool
+     */
     public function isPendingApproval() : bool
     {
         return $this->userInfo['Pending_approval'] == 'Y';
