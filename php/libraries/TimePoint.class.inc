@@ -151,7 +151,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
 
             if ($this->_timePointInfo['ProjectID'] !== null) {
                 $this->_timePointInfo['ProjectID'] = new \ProjectID(
-                    $row['ProjectID']
+                    $this->_timePointInfo['ProjectID']
                 );
             }
         } else {
