@@ -139,7 +139,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
-            $userProjectsIDs = $user->getData('ProjectIDs');
+            $userProjectsIDs = $user->getProjectIDs();
             if (!empty($userProjectsIDs)) {
                 $paramProjects = [];
                 $projectsIDs   = [];

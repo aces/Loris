@@ -50,10 +50,8 @@ abstract class NDB_Notifier_Abstract
 {
     /**
      * Current logged in user issuing the notification.
-     *
-     * @var \User
      */
-    protected $notifier;
+    protected \User $notifier;
 
     /**
      * Boolean for notification being issue as administrator. Comes from DB

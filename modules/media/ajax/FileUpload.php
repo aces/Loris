@@ -133,7 +133,7 @@ function uploadFile()
         return;
     }
 
-    $userID = $user->getData('UserID');
+    $userID = $user->getUsername();
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .

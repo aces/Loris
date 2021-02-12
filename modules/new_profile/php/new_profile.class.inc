@@ -54,7 +54,7 @@ class New_Profile extends \NDB_Form
         /* When a user has only one site and centerID has not been
          * passed, choose the first one in the User's centerID list.
          */
-        $centerIDs = \User::singleton()->getData('CenterIDs');
+        $centerIDs = \User::singleton()->getCenterIDs();
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
         }
@@ -149,7 +149,7 @@ class New_Profile extends \NDB_Form
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $user_list_of_sites = $user->getCenterIDs();
         $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
@@ -281,7 +281,7 @@ class New_Profile extends \NDB_Form
 
         // Validate site entered
         $psc = isset($values['site']) ? (int)$values['site'] : '';
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
             $errors['site'] = "Site must be selected from the available dropdown.";

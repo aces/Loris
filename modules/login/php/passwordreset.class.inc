@@ -57,7 +57,7 @@ class PasswordReset extends \NDB_Form
         $username = $values['username'];
         $user     = \User::factory($username);
 
-        $email = $user->getData('Email');
+        $email = $user->getEmail();
         // check that it is a valid user
         if (empty($email) || empty($user)) {
             return;
@@ -81,7 +81,7 @@ class PasswordReset extends \NDB_Form
                 $msg_data          = [];
                 $msg_data['study'] = $config->getSetting('title');
                 $msg_data['url']   = $factory->settings()->getBaseURL();
-                $msg_data['realname'] = $user->getData('Real_name');
+                $msg_data['realname'] = $user->getFullname();
                 $msg_data['password'] = $password;
                 \Email::send($email, 'lost_password.tpl', $msg_data);
             } else {

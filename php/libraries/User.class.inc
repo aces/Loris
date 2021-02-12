@@ -27,9 +27,9 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
      * Stores user information
      *
      * @var    array
-     * @access private
      */
     protected $userInfo = [];
+
     /**
      * The date format used by MySQL.
      *
@@ -350,8 +350,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     /**
      * Checks that the user's email is valid
      *
-     * @return boolean
-     * @access public
+     * @return bool
      */
     public function isEmailValid(): bool
     {
@@ -359,6 +358,15 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
             return false;
         };
         return true;
+    }
+
+    /**
+     * Returns the user's email address
+     *
+     * @return string
+     */
+    public function getEmail() : string {
+        return $this->userInfo['Email'];
     }
 
     /**
@@ -542,5 +550,10 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         );
 
         return $projMatch && $centerMatch;
+    }
+
+    public function isPendingApproval() : bool
+    {
+        return $this->userInfo['Pending_approval'] == 'Y';
     }
 }
