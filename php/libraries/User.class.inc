@@ -195,6 +195,38 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     }
 
     /**
+     * Returns data from the userInfo array according to the key provided
+     * as argument.
+     *
+     * @param string $var Name of variable to get
+     *
+     * @note   Call without any arguments to get the entire user data array
+     * @return array<array|string>|string
+     * @access public
+     * @throws LorisException
+     */
+    public function getData(string $var = '')
+    {
+        if ($var === '') {
+            return $this->userInfo;
+        } elseif ($var === 'CenterID') {
+            throw new \LorisException(
+                "The function getData('CenterID')
+                                        is deprecated and is replaced
+                                        with getData('CenterIDs')"
+            );
+        } elseif ($var === 'Site') {
+            throw new \LorisException(
+                "The function getData('Site')
+                                        is deprecated and is replaced
+                                        with getData('Sites')"
+            );
+        } else {
+            return $this->userInfo[$var];
+        }
+    }
+
+    /**
      * Get users real name
      *
      * @return string
