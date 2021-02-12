@@ -498,11 +498,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the ID of this candidate's site
      *
-     * @return integer The numeric ID of the candidate's site
+     * @return CenterID The numeric ID of the candidate's site
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
-        return intval($this->candidateInfo["RegistrationCenterID"]);
+        return $this->candidateInfo["RegistrationCenterID"];
     }
 
     /**
@@ -893,7 +893,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $centers = $user->getCenterIDs();
 
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $centerMatch = $user->hasCenter($this->getCenterID());
 
         // The candidate is accessible based on its registration
         // project/center

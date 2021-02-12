@@ -64,10 +64,9 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                intval($_REQUEST['CenterID'])
+                new \CenterID($_REQUEST['CenterID'])
             );
         } else {
-
             // For the short term the user we'll be granted access
             // if at least have permission AND one of the centers
             // The filter _checkCriteria() (please see bellow)
@@ -76,9 +75,8 @@ class Statistics_Site extends \NDB_Menu
             // _checkCriteria() will take care of retriving information
             // only for those centers the user has the specific permission.
             // (please see notes about hasCenterPermission() above)
-
             foreach ($user->getCenterIDs() as $centerID) {
-                if ($user->hasCenterPermission('data_entry', intval($centerID))) {
+                if ($user->hasCenterPermission('data_entry', $centerID)) {
                     $hasCenterPermission = true;
                     break;
                 }

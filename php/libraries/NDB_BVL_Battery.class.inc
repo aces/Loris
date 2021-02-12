@@ -107,7 +107,7 @@ class NDB_BVL_Battery
      * @param string               $stage        Either 'visit' or 'screening'
      * @param string               $visit_label  The visit label to create a
      *                                           battery for.
-     * @param integer              $center_ID    The center of the candidate
+     * @param \CenterID            $center_ID    The center of the candidate
      *                                           having a battery created
      * @param boolean              $firstVisit   Whether this is a first visit
      *                                           battery.  true means ONLY

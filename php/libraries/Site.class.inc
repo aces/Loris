@@ -19,7 +19,7 @@ class Site implements \LORIS\StudyEntities\SiteHaver
     static function &singleton(CenterID $centerID)
     {
         static $siteList = [];
-        $cidS = $centerID->__toString();
+        $cidS            = $centerID->__toString();
         if (!isset($siteList[$cidS])) {
             try {
                 $siteList[$cidS] = new Site();

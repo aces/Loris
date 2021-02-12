@@ -29,7 +29,7 @@ class New_Profile extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(1)) {
+        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
             return $user->hasPermission('data_entry');
         }
 
@@ -280,7 +280,8 @@ class New_Profile extends \NDB_Form
         }
 
         // Validate site entered
-        $psc = isset($values['site']) ? (int)$values['site'] : '';
+        $psc = isset($values['site']) ? new \CenterID($values['site']) : null;
+
         $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {

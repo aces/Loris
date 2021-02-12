@@ -289,7 +289,7 @@ class User extends UserPermissions implements
     /**
      * Get the user's sites' ID numbers
      *
-     * @return array
+     * @return CenterID[]
      */
     function getCenterIDs(): array
     {
@@ -343,7 +343,8 @@ class User extends UserPermissions implements
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
-                $user_study_sites[$val] = $site[$key]->getCenterName();
+                $user_study_sites[$val->__toString()]
+                    = $site[$key]->getCenterName();
             }
         }
         natcasesort($user_study_sites);
@@ -404,11 +405,11 @@ class User extends UserPermissions implements
     /**
      * Determines if the user has a center
      *
-     * @param int $center_id The center id
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter(int $center_id) : bool
+    public function hasCenter(CenterID $center_id) : bool
     {
         return in_array(
             $center_id,
@@ -436,12 +437,12 @@ class User extends UserPermissions implements
      * Determines if the user has a permission
      * for a center
      *
-     * @param string $code      The permission code
-     * @param int    $center_id The center id
+     * @param string   $code      The permission code
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, int $center_id): bool
+    public function hasCenterPermission(string $code, CenterID $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
