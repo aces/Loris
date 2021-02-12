@@ -36,8 +36,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
-     *
-     * @access public
      */
     public $testName;
 

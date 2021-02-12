@@ -12,6 +12,26 @@ use \LORIS\Data\Cardinality;
 trait LorisFormDictionaryImpl
 {
     /**
+     * Variable from NDB_Page. Must be included in trait to avoid
+     * PhanUndeclaredProperty errors.
+     */
+    public $page;
+
+    /**
+     * Variable from NDB_Page. Must be included in trait to avoid
+     * PhanUndeclaredProperty errors.
+     *
+     * @var \LorisForm
+     */
+    public $form;
+
+    /**
+     * Variable from NDB_BVL_Instrument. Must be included in trait
+     * to avoid PhanUndeclaredProperty errors.
+     */
+    public $testName;
+
+    /**
      * Recursively extract non-group elements from $elements, and
      * return the dictionary of the items.
      *
@@ -128,8 +148,12 @@ trait LorisFormDictionaryImpl
     {
         $subtests =$this->getSubtestList();
         foreach ($subtests as $subtest) {
-            $this->page =$subtest['Name'];
+            $this->page = $subtest['Name'];
+
             if (method_exists($this, '_setupForm')) {
+                // False positive from phan. We're inside a
+                // method_exists check
+                /* @phan-suppress-next-line PhanUndeclaredMethod */
                 $this->_setupForm();
             }
         }
@@ -143,4 +167,18 @@ trait LorisFormDictionaryImpl
             ''
         );
     }
+
+    /**
+     * Function from NDB_BVL_Instrument used by trait
+     *
+     * @return array
+     */
+    abstract function getSubtestList(): array;
+
+    /**
+     * Function from NDB_BVL_Instrument used by trait
+     *
+     * @return ?string
+     */
+    abstract public function getFullName(): ?string;
 }

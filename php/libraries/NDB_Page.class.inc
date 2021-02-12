@@ -36,14 +36,14 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The name of the page (subtest) being accessed
      */
-    var $page;
+    public $page;
 
     /**
      * Reference to the HTML QuickForm
      *
      * @var \LorisForm
      */
-    var $form;
+    public $form;
 
     /**
      * The identifier for the item to edit

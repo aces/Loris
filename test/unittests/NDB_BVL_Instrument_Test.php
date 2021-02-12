@@ -900,7 +900,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ['Name' => 'Page 2', 'Description' => 'The second page'],
             ]
         );
-        $this->_instrument->method('getDataDictionary')->willReturn([]);
+        $i->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $i';
         $i->form     = $this->quickForm;
