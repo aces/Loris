@@ -17,7 +17,7 @@ class ProjectID extends ValidatableIdentifier implements \JsonSerializable
     }
 
     /**
-     * Validate that the value of the ProjectID is a positive integer that does
+     * Validate that the value of the ProjectID is a positive integer.
      *
      * This does not check for uniqueness in the database or any other
      * state-related facts.
