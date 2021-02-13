@@ -205,8 +205,10 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getVisitList();
-        $db     = \Database::singleton();
+        $visits  = \Utility::getVisitList();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;
@@ -217,18 +219,12 @@ class Stats_Demographic extends \NDB_Form
 
         $this->tpl_data['showTable'] = true;
 
-        //PROJECTS
-        $factory        = \NDB_Factory::singleton();
-        $user           = $factory->user();
+        // PROJECTS
         $allProjectList = \Utility::getProjectList();
+        $projects       = ['' => 'All Projects'] + $this->getProjectOptions();
 
-        $projects     = [];
-        $projects[''] = 'All Projects';
-
-        $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
-        }
+        $userProjectsIDs            = $user->getProjectIDs();
+        $this->tpl_data['Projects'] = $projects;
 
         if ($user->hasPermission('access_all_profiles')) {
             $projectsString = implode(",", array_keys($allProjectList));
@@ -241,11 +237,10 @@ class Stats_Demographic extends \NDB_Form
 
         if (!empty($demographicProject)) {
             $demographicProject = htmlspecialchars($demographicProject);
-            $this->tpl_data['CurrentProject']
-                = [
-                    'ID'   => $demographicProject,
-                    'Name' => $projects[$demographicProject] ?? '',
-                ];
+            $this->tpl_data['CurrentProject'] = [
+                'ID'   => $demographicProject,
+                'Name' => $projects[$demographicProject] ?? '',
+            ];
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
         }
@@ -258,7 +253,7 @@ class Stats_Demographic extends \NDB_Form
             $subprojects = \Utility::getSubprojectsForProject($demographicProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
-                $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
+                $subprojectQuery = "AND s.SubprojectID IN ($subprojList)";
             }
         }
 
@@ -276,12 +271,8 @@ class Stats_Demographic extends \NDB_Form
         $user    = $factory->user();
 
         //SITES
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $sitesString = implode(",", array_keys($list_of_sites));
+        $list_of_sites = $this->getSiteOptions();
+        $sitesString   = implode(",", array_keys($list_of_sites));
 
         $centers = $db->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -296,7 +287,7 @@ class Stats_Demographic extends \NDB_Form
         );
 
         $sites     = [];
-        $sites[''] ='All sites';
+        $sites[''] = 'All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {

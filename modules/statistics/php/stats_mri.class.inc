@@ -221,7 +221,6 @@ class Stats_MRI extends \NDB_Form
 
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        $user    = $factory->user();
 
         $bigTable_params = [];
         $this->params    = [];
@@ -229,24 +228,16 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['showTable'] = true;
 
         // PROJECTS
-        $allProjectList = \Utility::getProjectList();
-
-        $projects     = [];
-        $projects[''] = 'All Projects';
-
-        $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
-        }
+        $projects = ['' => 'All Projects'] + $this->getProjectOptions();
+        $this->tpl_data['Projects'] = $projects;
 
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
-            $this->tpl_data['CurrentProject']
-                = [
-                    'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
-                ];
+            $this->tpl_data['CurrentProject'] = [
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
             $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
@@ -272,14 +263,10 @@ class Stats_MRI extends \NDB_Form
         }
 
         //SITES PERMISSIONS
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $sitesString = implode(",", array_keys($list_of_sites));
+        $list_of_sites = $this->getSiteOptions();
+        $sitesString   = implode(",", array_keys($list_of_sites));
 
-        $centers   = $DB->pselect(
+        $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     IFNULL(PSCArea,Name) as LongName,
@@ -290,8 +277,7 @@ class Stats_MRI extends \NDB_Form
 	        AND CenterID IN (" . $sitesString . ")",
             []
         );
-        $sites     = [];
-        $sites[''] ="All sites";
+        $sites   = ['' => "All sites"];
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if (isset($_REQUEST['MRIsite'])

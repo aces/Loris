@@ -75,25 +75,8 @@ class Media extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
-
-        $siteList  = [];
+        $db        = \Database::singleton();
         $visitList = \Utility::getVisitList();
-
-        // allow to view all sites data through filter
-        if ($user->hasPermission('access_all_profiles')) {
-            $siteList = \Utility::getSiteList(false);
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
-            foreach ($siteIDs as $val) {
-                $site = \Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$val] = $site->getCenterName();
-                }
-            }
-        }
 
         $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
@@ -128,8 +111,8 @@ class Media extends \DataFrameworkMenu
         return [
             'fileTypes'     => $fileTypeList,
             'visits'        => $visitList,
-            'sites'         => $siteList,
-            'projects'      => \Utility::getProjectList(),
+            'sites'         => $this->getSiteOptions(),
+            'projects'      => $this->getProjectOptions(),
             'instruments'   => $instrumentList,
             'languages'     => $languageList,
             'hidden'        => $hiddenOptions,

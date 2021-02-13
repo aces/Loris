@@ -65,7 +65,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
             ->toArray($user);
         $body = [
             'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions($request),
+            'fieldOptions' => $this->_getFieldOptions(),
             'subprojects'  => \Utility::getSubprojectList(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
@@ -74,25 +74,15 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     /**
      * Provide the field options for the incomplete form.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
      * @return array Dynamic field options
      */
-    private function _getFieldOptions(
-        ServerRequestInterface $request
-    ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
-        $projects    = \Utility::getProjectList();
-        // centerID
-        $list_of_sites = $user->hasPermission('access_all_profiles')
-            ? \Utility::getSiteList()
-            : $user->getStudySites();
+    private function _getFieldOptions() : array
+    {
         return (new \LORIS\behavioural_qc\Views\Incomplete(
-            $visit_array,
+            \Utility::getVisitList(),
             \Utility::getAllInstruments(),
-            $projects,
-            $list_of_sites
+            $this->getProjectOptions(),
+            $this->getSiteOptions()
         ))->toArray();
     }
 

@@ -74,12 +74,8 @@ class Stats_Behavioural extends \NDB_Form
         $user    = $factory->user();
 
         // SITES
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $sitesString = implode(",", array_keys($list_of_sites));
+        $list_of_sites = $this->getSiteOptions();
+        $sitesString   = implode(",", array_keys($list_of_sites));
 
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
@@ -95,18 +91,6 @@ class Stats_Behavioural extends \NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
 
-        // PROJECTS
-        $allProjectList = \Utility::getProjectList();
-        $projects       = [];
-        $projects['']   = 'All Projects';
-        $Param_Project  = '';
-
-        $userProjectsIDs = $user->getData('ProjectIDs');
-        foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
-        }
-
-        $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if (isset($_REQUEST['site'])
@@ -120,9 +104,12 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
+        $projects = ['' => 'All Projects'] + $this->getProjectOptions();
+        $this->tpl_data['Projects'] = $projects;
+        $userProjectsIDs            = $user->getProjectIDs();
+        $Param_Project = '';
 
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
@@ -141,7 +128,7 @@ class Stats_Behavioural extends \NDB_Form
                 $paramProjects[] = ":paramProjectID$key";
                 $this->projectParams["paramProjectID$key"] = $projectID;
             }
-            $Param_Project ="AND (s.ProjectID IS NULL 
+            $Param_Project = "AND (s.ProjectID IS NULL 
                                    OR s.ProjectID IN
                                        (" . implode(',', $paramProjects) . ")
                                  )";
@@ -150,7 +137,6 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
-        //
         //SUBPROJECTS
         $suproject_query = '';
         // Only search for subprojects if $currentProject is a positive int.
@@ -168,14 +154,7 @@ class Stats_Behavioural extends \NDB_Form
         $this->tpl_data['Visits'] = $Visits ?? '';
 
         //SITES
-
         $Param_Centers = '';
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-
         if (!empty($list_of_sites)) {
             $paramCenters      = [];
             $list_of_sites_ids = array_keys($list_of_sites);

@@ -132,7 +132,6 @@ class New_Profile extends \NDB_Form
     {
         $factory   = \NDB_Factory::singleton();
         $config    = $factory->config();
-        $user      = $factory->user();
         $startYear = $config->getSetting('startYear');
         $endYear   = $config->getSetting('endYear');
         $ageMax    = $config->getSetting('ageMax');
@@ -148,18 +147,6 @@ class New_Profile extends \NDB_Form
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
-        // Get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
-        $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
-
-        // Get projects for the select dropdown
-        $projList = [];
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $projectID => $projectName) {
-            $projList[$projectID] = $projectName;
-        }
-        $project = $projList ?? null;
-
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
@@ -173,8 +160,8 @@ class New_Profile extends \NDB_Form
             'edc'       => $edc,
             'sex'       => $sex,
             'pscidSet'  => $pscidSet,
-            'site'      => $site,
-            'project'   => $project,
+            'site'      => $this->getSiteOptions(true, []),
+            'project'   => $this->getProjectOptions(),
         ];
 
         $this->form->addFormRule([&$this, '_validateNewCandidate']);

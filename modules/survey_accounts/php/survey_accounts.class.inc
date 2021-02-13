@@ -87,7 +87,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new SurveyAccountsProvisioner();
+        return (new SurveyAccountsProvisioner())
+            ->filter(new \LORIS\Data\Filters\UserSiteMatch());
     }
 
     /**

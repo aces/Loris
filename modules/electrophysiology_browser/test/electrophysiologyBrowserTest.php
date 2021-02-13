@@ -268,7 +268,9 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilters()
     {
+        $this->setupPermissions(['electrophysiology_browser_view_site']);
         $this->safeGet($this->url . "/electrophysiology_browser/");
+
         $this->_filterTest(
             self::$PSCID,
             self::$display,
@@ -304,19 +306,22 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             'Data Coordinating Center',
             "1 rows"
         );
-        $this->_filterTest(
+        $this->_filterOptionsTest(
             self::$site,
-            self::$display,
-            self::$clearFilter,
             'Montreal',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$project,
             self::$display,
             self::$clearFilter,
+            'Pumpernickel',
+            "1 rows"
+        );
+        $this->_filterOptionsTest(
+            self::$project,
             'Challah',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$visitLabel,

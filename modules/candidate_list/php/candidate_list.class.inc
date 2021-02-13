@@ -75,50 +75,24 @@ class Candidate_List extends \DataFrameworkMenu
 
         // create user object
         $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
         $config  = $factory->config();
 
         // get the list of visit labels
         $visit_label_options = \Utility::getVisitList();
 
-        // get the list of sites available for the user
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $site_options = [];
-        foreach ($list_of_sites as $id => $name) {
-            $site_options[$name] = $name;
-        }
-
-        // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
-        $project_options  = [];
-        foreach ($list_of_projects as $id => $name) {
-            $project_options[$name] = $name;
-        }
-
-        // get the list of subprojects
-        $list_of_subprojects = \Utility::getSubprojectList();
-        $subproject_options  = [];
-        foreach ($list_of_subprojects as $id => $name) {
-            $subproject_options[$name] = $name;
-        }
-
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
         $participant_status_options = [];
-        foreach ($list_of_participant_status as $id => $name) {
+        foreach ($list_of_participant_status as $name) {
             $participant_status_options[$name] = $name;
         }
 
         return [
             'visitlabel'        => $visit_label_options,
-            'site'              => $site_options,
-            'project'           => $project_options,
-            'subproject'        => $subproject_options,
+            'site'              => $this->getSiteOptions(false),
+            'project'           => $this->getProjectOptions(false),
+            'subproject'        => $this->getSubprojectOptions(false),
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
         ];
