@@ -61,7 +61,9 @@ class UserProjectMatch implements \LORIS\Data\Filter
         } elseif (method_exists($res, 'getProjectID')) {
             $resourceProject = $res->getProjectID();
             if (!is_null($resourceProject)) {
-                return $user->hasProject($resourceProject);
+                return $user->hasProject(
+                    new \ProjectID(strval($resourceProject))
+                );
             }
             // We don't know if the resource thought a null ProjectID
             // should mean "no one can access it" or "anyone can access
