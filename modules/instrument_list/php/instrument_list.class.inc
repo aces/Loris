@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Instrument_List
  *
@@ -21,6 +23,7 @@ namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * Instrument_List
@@ -179,9 +182,9 @@ class Instrument_List extends \NDB_Menu_Filter
             $user     =& \User::singleton();
             $username = $user->getData('UserID');
 
-            $feedback_select_inactive = null;
+            $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
-                $feedback_select_inactive = 'Y';
+                $feedback_select_inactive = true;
             }
 
             $x            = -1;
@@ -281,12 +284,12 @@ class Instrument_List extends \NDB_Menu_Filter
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string      $candID    the value of candID
+     * @param CandID      $candID    the value of candID
      * @param ?\SessionID $sessionID the value of sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID): string
+    function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
