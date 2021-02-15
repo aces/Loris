@@ -79,6 +79,9 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
         } else if (!$DB->tableExists($table)) {
             echo "Table $table for instrument $testname does not exist in the Database.\n";
             continue;
+        } else if (!$DB->columnExists($table, 'UserID')) {
+            echo "Column 'UserID' does not exist in the $table table.\n";
+            continue;
         }
     }
 
