@@ -94,7 +94,7 @@ class User extends UserPermissions implements
         $user_cid            = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = intval($val['CenterID']);
+            $user_cid[$key] = new \CenterID($val['CenterID']);
         }
 
         $user_pid = $DB->pselectCol(
