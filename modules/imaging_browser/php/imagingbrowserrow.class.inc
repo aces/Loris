@@ -35,10 +35,10 @@ class ImagingBrowserRow implements \LORIS\Data\DataInstance,
     /**
      * Create a new ImagingBrowserRow
      *
-     * @param array   $row The row (in the same format as \Database::pselectRow
-     *                     returns
+     * @param array     $row The row (in the same format as \Database::pselectRow
+     *                       returns
      * @param \CenterID $cid The centerID affiliated with this row.
-     * @param integer $pid The projectID affiliated with this row.
+     * @param integer   $pid The projectID affiliated with this row.
      */
     public function __construct(array $row, \CenterID $cid, int $pid)
     {
