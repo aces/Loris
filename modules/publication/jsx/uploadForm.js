@@ -42,6 +42,9 @@ class PublicationUploadForm extends React.Component {
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
+        this.setState({
+          loadError: 'An error occurred when loading the form!',
+        });
         return;
       }
 
@@ -52,6 +55,7 @@ class PublicationUploadForm extends React.Component {
         })
       );
     }).catch((error) => {
+      // Network error
       console.error(error);
       this.setState({
         loadError: 'An error occurred when loading the form!',
@@ -165,6 +169,10 @@ class PublicationUploadForm extends React.Component {
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || '';
+          swal.fire('Something went wrong!', message, 'error');
+        });
         return;
       }
 
@@ -178,12 +186,11 @@ class PublicationUploadForm extends React.Component {
         {
           title: 'Submission Successful!',
           type: 'success',
-        },
-        function() {
+        }).then(function() {
           window.location.replace(loris.BaseURL + '/publication/');
-        }
-      );
+        });
     }).catch((error) => {
+      // Network error
       console.error(error);
       swal.fire('Something went wrong!', '', 'error');
     });
