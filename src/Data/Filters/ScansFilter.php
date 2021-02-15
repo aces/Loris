@@ -53,10 +53,10 @@ class ScansFilter implements Filter
             return true;
         }
 
-        if (method_exists($res, 'getCenterID')
+        if ($resource instanceof \LORIS\StudyEntities\SiteHaver
             && $user->hasPermission('imaging_browser_view_site')
         ) {
-            return $user->hasCenter($res->getCenterID());
+            return $user->hasCenter($resource->getCenterID());
         }
 
         return false;

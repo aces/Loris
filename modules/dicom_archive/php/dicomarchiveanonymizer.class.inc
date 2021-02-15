@@ -44,25 +44,23 @@ class DICOMArchiveAnonymizer implements Mapper
         \User $user,
         DataInstance $resource
     ) : DataInstance {
-        $res = $resource;
-        '@phan-var object $res';
 
         static $config = null;
         if ($config === null) {
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-        if (!method_exists($res, 'getCenterID')) {
+        if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
             throw new \LorisException(
                 "Mapper requires a resource type with getCenterID"
             );
         }
-        $newrow = json_decode(json_encode($res), true);
+        $newrow = json_decode(json_encode($resource), true);
         if (!is_array($newrow)) {
             throw new \Exception("Error converting DataInstance to array");
         }
 
-        $cid = $res->getCenterID();
+        $cid = $resource->getCenterID();
 
         // escape any forward slashes
         $pNameRegex      = preg_replace(
