@@ -95,7 +95,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int) $row['RegistrationCenterID'];
+        $cid = new \CenterID($row['RegistrationCenterID']);
         $pid = new \ProjectID($row['RegistrationProjectID']);
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);

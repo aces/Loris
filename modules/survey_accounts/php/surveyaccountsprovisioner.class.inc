@@ -68,7 +68,7 @@ class SurveyAccountsProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = (int )$row['CenterID'];
+        $cid = new \CenterID($row['CenterID']);
         $pid = new \ProjectID($row['ProjectID']);
         return new SurveyAccountsRow($row, $cid, $pid);
     }

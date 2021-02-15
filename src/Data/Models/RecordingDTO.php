@@ -39,7 +39,7 @@ class RecordingDTO implements
 
     private $filetype;
 
-    private $centerid;
+    private \CenterID $centerid;
 
     private $entitytype;
 
@@ -52,7 +52,7 @@ class RecordingDTO implements
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionmodality The aquisition modality
      * @param ?string $filetype            The file type
-     * @param ?int    $centerid            The image session's centerid
+     * @param \CenterID $centerid            The image session's centerid
      * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
@@ -62,7 +62,7 @@ class RecordingDTO implements
         ?string $outputtype,
         ?string $acquisitionmodality,
         ?string $filetype,
-        ?int $centerid,
+        \CenterID $centerid,
         ?string $entitytype
     ) {
         $this->fileid       = $fileid;
@@ -160,6 +160,6 @@ class RecordingDTO implements
      */
     public function getCenterID(): \CenterID
     {
-        return intval($this->centerid);
+        return $this->centerid;
     }
 }
