@@ -44,7 +44,7 @@
     "no-fallthrough": "off",
     "react/jsx-no-undef": "off",
     "react/prop-types": "off",
-    "no-undef": "off",
+    "no-undef": "error",
     "react/jsx-key": "off",
     "no-extra-semi": "off",
     "no-prototype-builtins": "off",
