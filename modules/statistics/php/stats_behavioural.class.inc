@@ -101,9 +101,10 @@ class Stats_Behavioural extends \NDB_Form
         $projects['']   = 'All Projects';
         $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
@@ -135,7 +136,7 @@ class Stats_Behavioural extends \NDB_Form
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
 
-            $currentProject = '';
+            $currentProject = null;
             $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
                 $paramProjects[] = ":paramProjectID$key";
@@ -146,7 +147,7 @@ class Stats_Behavioural extends \NDB_Form
                                        (" . implode(',', $paramProjects) . ")
                                  )";
         } else {
-            $currentProject = '';
+            $currentProject = null;
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
@@ -155,12 +156,14 @@ class Stats_Behavioural extends \NDB_Form
         $suproject_query = '';
         // Only search for subprojects if $currentProject is a positive int.
         if (is_numeric($currentProject) && intval($currentProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            $cpid = new \ProjectID($currentProject);
+
+            $subprojects = \Utility::getSubprojectsForProject($cpid);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
-            $Visits = \Utility::getVisitList($currentProject);
+            $Visits = \Utility::getVisitList($cpid);
         } else {
             $Visits = \Utility::getVisitList();
         }

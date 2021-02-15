@@ -41,13 +41,15 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     {
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
-        $this->_projectid   = $row['ProjectID'] ?? null;
-        $this->_pscid       = $row['PSCID'] ?? null;
-        $this->_sitename    = $row['SiteName'] ?? null;
-        $this->_edc         = $row['EDC'] ?? null;
-        $this->_dob         = $row['DoB'] ?? null;
-        $this->_sex         = $row['Sex'] ?? null;
-        $this->_centerid    = $row['CenterID'] ?? null;
+        if ($row['ProjectID'] !== null) {
+            $this->_projectid = new \ProjectID($row['ProjectID']);
+        }
+        $this->_pscid    = $row['PSCID'] ?? null;
+        $this->_sitename = $row['SiteName'] ?? null;
+        $this->_edc      = $row['EDC'] ?? null;
+        $this->_dob      = $row['DoB'] ?? null;
+        $this->_sex      = $row['Sex'] ?? null;
+        $this->_centerid = $row['CenterID'] ?? null;
     }
 
     /**
@@ -89,13 +91,13 @@ class CandidatesRow implements \LORIS\Data\DataInstance
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match against.
      *
-     * @return integer ProjectID
+     * @return \ProjectID
      */
-    public function getProjectID(): int
+    public function getProjectID(): \ProjectID
     {
         if ($this->_projectid === null) {
             throw new \Exception('ProjectID is null');
         }
-        return intval($this->_projectid);
+        return $this->_projectid;
     }
 }

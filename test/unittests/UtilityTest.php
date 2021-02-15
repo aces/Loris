@@ -328,7 +328,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectList(123)
+            Utility::getSubprojectList(new ProjectID("123"))
         );
     }
 
@@ -358,7 +358,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectsForProject(123)
+            Utility::getSubprojectsForProject(new \ProjectID("123"))
         );
     }
 
@@ -566,7 +566,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['VL1' => 'VL1'],
-            Utility::getVisitList(1)
+            Utility::getVisitList(new \ProjectID("1"))
         );
     }
 

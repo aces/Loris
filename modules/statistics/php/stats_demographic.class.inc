@@ -97,7 +97,7 @@ class Stats_Demographic extends \NDB_Form
     ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
-        $projectID = empty($projectID) ? null : $projectID;
+        $projectID = empty($projectID) ? null : new \ProjectID($projectID);
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
@@ -108,7 +108,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject(intval($projectID));
+        $tpl_var = \Utility::getSubprojectsForProject($projectID);
         $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
@@ -227,7 +227,7 @@ class Stats_Demographic extends \NDB_Form
 
         $userProjectsIDs = $user->getData('ProjectIDs');
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         if ($user->hasPermission('access_all_profiles')) {
@@ -255,7 +255,9 @@ class Stats_Demographic extends \NDB_Form
         $subprojects     = \Utility::getSubprojectList();
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
+            $subprojects = \Utility::getSubprojectsForProject(
+                new \ProjectID($demographicProject)
+            );
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";

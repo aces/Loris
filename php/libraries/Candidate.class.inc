@@ -107,6 +107,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             case 'EntityType':
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
+            case 'RegistrationProjectID':
+                $this->candidateInfo[$key] = new \ProjectID($value);
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -193,13 +196,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
+     *                                           written as YYYY-MM-DD. Value
+     *                                           should be null unless the
+     *                                           useEDC setting is configured
+     *                                           to be true.
      * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param ?ProjectID  $registrationProjectID The project ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
@@ -211,7 +215,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        int $registrationProjectID = null
+        ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
 
@@ -440,11 +444,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for the current candidate
      *
-     * @return integer CandID of candidate
+     * @return \ProjectID RegistrationProjectID of candidate
      */
-    function getProjectID(): int
+    function getProjectID(): \ProjectID
     {
-        return intval($this->candidateInfo["RegistrationProjectID"] ?? null);
+        return $this->candidateInfo["RegistrationProjectID"];
     }
 
     /**
@@ -456,7 +460,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()] ?? '';
+        return $ProjectList[$this->getProjectID()->__toString()] ?? '';
     }
 
     /**
@@ -888,7 +892,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $centers = $user->getCenterIDs();
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers, true);
 
         // The candidate is accessible based on its registration

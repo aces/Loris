@@ -230,13 +230,13 @@ class Utility
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                project.
+     * @param ?ProjectID $projectID Limit visit labels to labels used by this
+     *                              project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      */
-    static function getVisitList(?int $projectID = null) : array
+    static function getVisitList(?ProjectID $projectID = null) : array
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
@@ -287,12 +287,12 @@ class Utility
     /**
      * Returns a list of study Subprojects
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList(?int $projectID = null): array
+    static function getSubprojectList(?ProjectID $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -318,12 +318,12 @@ class Utility
     /**
      * Returns a list of study Subprojects associated with a project
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject(?int $projectID = null): array
+    static function getSubprojectsForProject(?ProjectID $projectID = null): array
     {
         if (is_null($projectID)) {
             return [];
