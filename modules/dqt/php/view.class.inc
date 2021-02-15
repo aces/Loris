@@ -62,7 +62,7 @@ class View extends \NDB_Page
         $cdb = \NDB_Factory::singleton()->couchDB();
 
         // Retrieve the Query params for CouchDB.
-        $children = $values['children'];
+        $children = $values['children'] ?? [];
         $category = 'demographics';
         $results  = [];
 
