@@ -284,20 +284,6 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         return explode(';', $this->userInfo['Sites']);
     }
 
-     /**
-      * Get the user's site's ID number
-      *
-      * @return array
-      */
-    function getCenterID()
-    {
-        throw new \LorisException(
-            "The function getCenterID
-                                   is deprecated and is replaced
-                                   with getCenterIDs"
-        );
-    }
-
     /**
      * Get the user's sites' ID numbers
      *

@@ -31,7 +31,8 @@ define('DOB_NOT_SPECIFIED', 6);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate implements \LORIS\StudyEntities\AccessibleResource
+class Candidate implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
     var $listOfTimePoints;
