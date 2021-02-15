@@ -7,7 +7,9 @@ namespace LORIS\user_accounts;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class UserAccountRow implements \LORIS\Data\DataInstance
+class UserAccountRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
     protected $ProjectIDs;
