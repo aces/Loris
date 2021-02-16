@@ -465,11 +465,23 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
-            if ($options !== null && is_array($options)
-                || $attribs !== null && is_array($attribs)
-            ) {
-                throw new \DomainException("Invalid argument type");
+            if (is_array($options)) {
+                if (empty($options)) {
+                    // The default was [], turn it into '' for addLink
+                    $options = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
             }
+            if (is_array($attribs)) {
+                if (empty($attribs)) {
+                    // The default was [], turn it into '' for addLink
+                    $attribs = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
