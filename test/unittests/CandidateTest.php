@@ -1204,8 +1204,6 @@ class CandidateTest extends TestCase
 
         '@phan-var \User $user';
 
-        '@phan-var \User $user';
-
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertFalse($result);
     }
