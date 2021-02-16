@@ -348,10 +348,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param string $url   The url label to set as href attrib
-     * @param string $link  The value to display as the link
+     * @param string  $name  The element name.
+     * @param string  $label The label to attach to this element.
+     * @param ?string $url   The url label to set as href attrib
+     * @param ?string $link  The value to display as the link
      *
      * @return &array
      */
@@ -465,10 +465,11 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
-            if (is_array($options) || is_array($attribs)) {
+            if ($options !== null && is_array($options)
+                || $attribs !== null && is_array($attribs)
+            ) {
                 throw new \DomainException("Invalid argument type");
             }
-
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
