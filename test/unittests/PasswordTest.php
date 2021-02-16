@@ -59,8 +59,13 @@ class PasswordTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);

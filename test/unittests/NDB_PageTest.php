@@ -678,7 +678,8 @@ class NDB_PageTest extends TestCase
     {
         $this->markTestIncomplete("This test is incomplete!");
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
@@ -724,6 +725,7 @@ class NDB_PageTest extends TestCase
     public function testHasAccess()
     {
         $user = $this->getMockBuilder('\User')->getMock();
+        '@phan-var \User $user';
         $this->assertTrue($this->_page->_hasAccess($user));
     }
 
@@ -779,7 +781,9 @@ class NDB_PageTest extends TestCase
     public function testGetJSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
@@ -812,7 +816,9 @@ class NDB_PageTest extends TestCase
     public function testGetCSSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [

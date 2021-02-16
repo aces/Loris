@@ -62,19 +62,19 @@ class VisitTest extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
         $this->visitController = new \Loris\VisitController($this->DB);
 
-        $v1 = new \Loris\Visit('V1', 1);
-        $v2 = new \Loris\Visit('V2', 2);
-        $v3 = new \Loris\Visit('V3', 3);
-        $v4 = new \Loris\Visit('V4', 4);
-        $v5 = new \Loris\Visit('V5', 5);
-        $v6 = new \Loris\Visit('V6', 6);
-        $v7 = new \Loris\Visit('Living_Phantom_DCC_SD_3t2', 7);
-        $v8 = new \Loris\Visit('Living_Phantom_DCC_SD_3dwi', 8);
-        $v9 = new \Loris\Visit('Living_Phantom_DCC_SD_3mprage', 9);
+        $v1 = new \Loris\Visit('V1');
+        $v2 = new \Loris\Visit('V2');
+        $v3 = new \Loris\Visit('V3');
+        $v4 = new \Loris\Visit('V4');
+        $v5 = new \Loris\Visit('V5');
+        $v6 = new \Loris\Visit('V6');
+        $v7 = new \Loris\Visit('Living_Phantom_DCC_SD_3t2');
+        $v8 = new \Loris\Visit('Living_Phantom_DCC_SD_3dwi');
+        $v9 = new \Loris\Visit('Living_Phantom_DCC_SD_3mprage');
 
         $this->listOfVisit = [
             $v1,
@@ -174,7 +174,7 @@ class VisitTest extends TestCase
      */
     function testGetVisitsByName()
     {
-        $visit_result = new \Loris\Visit('V1', 1);
+        $visit_result = new \Loris\Visit('V1');
         $visits       = $this->visitController->getVisitsByName("V1");
         $this->assertEquals(
             [$visit_result],

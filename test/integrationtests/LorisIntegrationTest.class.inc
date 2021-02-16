@@ -74,7 +74,7 @@ abstract class LorisIntegrationTest extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
 
         $this->factory->setDatabase($this->DB);
@@ -301,7 +301,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->DB->execute(
                 $prepare,
                 ["perm" => $value],
-                ['nofetch' => true]
+                ['nofetch' => "true"]
             );
         }
     }
