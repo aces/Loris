@@ -384,7 +384,7 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($_REQUEST['filter']['order'])) {
             $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
-*/
+        */
     }
 
     /**

@@ -51,10 +51,10 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     // set selected predefined comments
     if (isset($_POST['savecomments']['predefined'])) {
         $predefined = array_map(
-            function($row) {
+            function ($row) {
                 return intval($row);
             },
-            \Utility::asArray($_POST['savecomments']['predefined']), 
+            \Utility::asArray($_POST['savecomments']['predefined']),
         );
         $comments->setPredefinedComments($predefined);
     }

@@ -47,7 +47,7 @@ if ($projectID == 'new') {
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
 } else {
     // Update Project fields
-    $project = \Project::getProjectFromID(intval($projectID));
+    $project = \Project::getProjectFromID(new \ProjectID($projectID));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
@@ -64,9 +64,12 @@ if (!empty($subprojectIDs)) {
     $toAdd     = array_diff($subprojectIDs, $preValues);
     $toRemove  = array_diff($preValues, $subprojectIDs);
 
-    $toAdd = array_map(function($row) {
-        return intval($row);
-    }, $toAdd);
+    $toAdd = array_map(
+        function ($row) {
+            return intval($row);
+        },
+        $toAdd
+    );
 
     $project->insertSubprojectIDs($toAdd);
     $project->deleteSubprojectIDs($toRemove);

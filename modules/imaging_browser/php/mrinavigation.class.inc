@@ -45,6 +45,7 @@ class MRINavigation
     function __construct($sessionID = null)
     {
         $this->_sessionID = $sessionID;
+
         $this->_FilteredSessionList = $_SESSION['State']
             ->getProperty('mriSessionsListed');
 

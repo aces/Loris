@@ -204,12 +204,14 @@ class Module extends \Module
     /**
      * Generates the template data for a progress bar.
      *
-     * @param string $ID                The name of the progress bar being
-     *                                  created.
-     * @param string $title             The title to add to the template variables.
-     * @param int    $recruitmentTarget The target for this recruitment type.
-     * @param int    $totalRecruitment  The total number of candidates of all types.
-     * @param \Database $db             The database connection to get data from.
+     * @param string    $ID                The name of the progress bar being
+     *                                     created.
+     * @param string    $title             The title to add to the template
+     *                                     variables.
+     * @param int       $recruitmentTarget The target for this recruitment type.
+     * @param int       $totalRecruitment  The total number of candidates of all
+     *                                     types.
+     * @param \Database $db                The database connection to get data from.
      *
      * @return array Smarty template data
      */

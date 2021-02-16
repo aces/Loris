@@ -120,7 +120,7 @@ class AddSurvey extends \NDB_Form
             ];
         }
 
-        $projectID = $db->pselectOneInt(
+        $projectID = $db->pselectOne(
             "SELECT ProjectID FROM session
             WHERE CandID=:v_CandID
             AND Visit_Label=:v_VL",

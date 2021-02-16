@@ -23,7 +23,6 @@ namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Loris\StudyEntities\Candidate\CandID;
 
 use \Loris\StudyEntities\Candidate\CandID;
 
