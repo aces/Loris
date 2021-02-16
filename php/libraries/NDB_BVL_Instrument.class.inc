@@ -2823,7 +2823,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * A form extends the basic page handler to call save() on a POST request.
+     * A form extends the basic page handler to 
+     *  (1) call save() on a POST request
+     *  (2) disable form if data entry is complete
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -2835,8 +2837,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
+
+        // Disable form if data entry is complete
+        $commentID = $request->getAttribute("pageclass")->commentID;
+        $user = $request->getAttribute("user");
+        $sessionID = $request->getAttribute("pageclass")->tpl_data['timePoint']['SessionID'];
+        $timepoint = \Timepoint::singleton($sessionID);
+
+        // create an instrument status object	
+        $status = new \NDB_BVL_InstrumentStatus;	
+        $status->select($commentID);	
+
+        // freeze the form to prevent data entry	
+        if ($status->getDataEntryStatus() != 'In Progress'	
+            || !$user->hasPermission('data_entry')	
+            || (isset($timepoint)	
+            && !in_array(	
+                $timepoint->getData("CenterID"),	
+                $user->getData("CenterIDs")	
+            ))	
+        ) {	
+
+            if ($this->preview !== true && $this->DataEntryType !== 'DirectEntry') {	
+                $this->freeze();	
+            }	
+        }
+
         return (new \Laminas\Diactoros\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
-
 }
