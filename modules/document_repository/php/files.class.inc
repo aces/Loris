@@ -74,7 +74,6 @@ class Files extends \NDB_Page
             if (is_numeric($filename)) {
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
-                    ->withStatus(200)
                     ->withBody(
                         new \LORIS\Http\StringStream(
                             json_encode($this->getUploadDocFields($filename))
@@ -120,7 +119,7 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
-        $fileName     = $req['fileName'];
+        $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -129,7 +128,7 @@ class Files extends \NDB_Page
             $db->update(
                 'document_repository',
                 $updateValues,
-                ['record_id' => $req['id']]
+                ['record_id' => $req['id'] ?? null]
             );
             $factory  = \NDB_Factory::singleton();
             $baseURL  = $factory->settings()->getBaseURL();
