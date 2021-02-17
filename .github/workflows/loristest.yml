@@ -10,7 +10,6 @@ jobs:
     strategy:
         matrix:
             testsuite:
-            - static
             - unit
             - integration
             php:
