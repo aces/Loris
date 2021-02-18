@@ -24,6 +24,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        extensions: php-ast
 
     - name: Validate composer.json and composer.lock
       run: composer validate
@@ -39,9 +40,6 @@ jobs:
 
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/7.4/${{ matrix.php }}/g" Dockerfile.test.php7
-
-    - name: Install OS package dependencies
-      run: sudo apt-get install php-ast
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
