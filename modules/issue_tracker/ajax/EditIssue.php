@@ -611,7 +611,7 @@ function getIssueFields()
     $sites = Issue_Tracker::getSites(false, true);
 
     //not yet ideal permissions
-    $assignees = [];
+    $assignees      = [];
     $inactive_users = [];
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
