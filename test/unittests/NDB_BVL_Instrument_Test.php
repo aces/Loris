@@ -83,7 +83,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         date_default_timezone_set("UTC");
 
         $s = $this->getMockBuilder(\State::class)
-            ->onlyMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
+            ->onlyMethods(['setUsername','getUsername','setProperty','getProperty','getLastURL'])
             ->getMock();
 
         $spe = $this->getMockBuilder('SinglePointLogin')
@@ -1002,9 +1002,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
                     'yes' => 'Yes',
-                    'no'  => 'No'
+                    'no'  => 'No',
+                    'not_answered' => 'Not Answered',
                 ],
-                    'RequireResponse' => true
+                    'RequireResponse' => false
                 ]
             ]
         );
@@ -1035,9 +1036,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
                     'yes' => 'Yes',
-                    'no'  => 'No'
+                    'no'  => 'No',
+                    'not_answered' => 'Not Answered'
                 ],
-                    'RequireResponse' => true
+                'RequireResponse' => false
                 ]
             ]
         );
