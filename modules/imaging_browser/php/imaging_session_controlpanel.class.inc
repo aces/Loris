@@ -37,7 +37,7 @@ class Imaging_Session_ControlPanel
     /**
      * Sets up the sessionID
      *
-     * @param int $sessionID current sessionID
+     * @param \SessionID $sessionID current sessionID
      *
      * @return NULL
      */

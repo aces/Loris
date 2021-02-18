@@ -258,35 +258,6 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-     * Set the sort column for the current query page and saves
-     * it into the current filter.
-     *
-     * @param array $order An array of the form
-     *                     [
-     *                     'field' => Form Field Name
-     *                     'fieldOrder' => "ASC|DESC"
-     *                     ]
-     *
-     * @return void (modifies both $_SESSION and $this->filter as
-     *         a side-effect.)
-     */
-    function _setFilterSortOrder($order)
-    {
-        // Get the existing filter. It's already been saved into
-        // the session previously in $this->_setupFilters.
-        $savedFilters = $_SESSION['State']->getProperty('filter');
-        if (!is_array($savedFilters)) {
-            $savedFilters = [];
-        }
-        if (is_array($order) && in_array($order['field'], $this->headers)) {
-            $savedFilters['order'] = $order;
-            $this->filter['order'] = $order;
-        }
-
-        $_SESSION['State']->setProperty('filter', $savedFilters);
-    }
-
-    /**
      * Sets the class variables required for a search key to be used.
      * A search key is like a filter that searches through multiple
      * columns.
@@ -373,13 +344,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (!empty($key)) {
             $this->_setSearchKeyword($key);
 
-        }
-
-        // 4. If the user clicked on a sort column, set the order.
-        //    It's likely a GET request even though it modifies the data,
-        //    so just use $_REQUEST.
-        if (isset($_REQUEST['filter']['order'])) {
-            $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
     }
 

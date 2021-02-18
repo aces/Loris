@@ -1028,7 +1028,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     * @return \LORIS\Data\Models\RecordingDTO[] A traversable of RecordingDTO.php
      */
     public function getRecordings(\User $user): array
     {

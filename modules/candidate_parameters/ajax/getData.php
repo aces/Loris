@@ -469,7 +469,7 @@ function getConsentStatusFields()
 /**
  * Handles the fetching of Consent Status history
  *
- * @param int $pscid current candidate's PSCID
+ * @param string $pscid current candidate's PSCID
  *
  * @throws DatabaseException
  *

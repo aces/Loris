@@ -12,6 +12,8 @@
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Unit tests for Utility class.
  *
@@ -92,11 +94,11 @@ class UtilityTest extends TestCase
      *      by getStageUsingCandID method
      */
     private $_sessionInfo = [
-        ['CandID' => '1',
+        ['CandID' => '100001',
             'SubprojectID'  => '2',
             'Current_stage' => 'Not Started'
         ],
-        ['CandID' => '3',
+        ['CandID' => '100003',
             'SubprojectID'  => '4',
             'Current_stage' => 'Approval'
         ]
@@ -500,7 +502,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'Not Started',
-            Utility::getStageUsingCandID('1')
+            Utility::getStageUsingCandID(new CandID('100001'))
         );
     }
 
@@ -519,12 +521,12 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['Visit_label' => 'VL1',
-                        'CandID'      => '1',
+                        'CandID'      => '100001',
                         'CenterID'    => '2',
                         'Active'      => 'Y'
                     ],
                     ['Visit_label' => 'VL2',
-                        'CandID'      => '3',
+                        'CandID'      => '100003',
                         'CenterID'    => '4',
                         'Active'      => 'Y'
                     ]

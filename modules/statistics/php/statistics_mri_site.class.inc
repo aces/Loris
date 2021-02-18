@@ -31,8 +31,8 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -69,9 +69,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CompleteCount function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return ?string
      */
@@ -83,9 +83,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * GetResults function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return array
      */
@@ -211,7 +211,9 @@ class Statistics_Mri_Site extends Statistics_Site
         // cells for ones that are missing for a given issue in the
         // template
         $visits    = [];
-        $projectID = $_REQUEST['ProjectID'] ?? '';
+        $projectID = isset($_REQUEST['ProjectID'])
+            ? new \ProjectID($_REQUEST['ProjectID'])
+            : null;
 
         $data = [];
         foreach ($this->issues as $issue) {

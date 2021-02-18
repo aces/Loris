@@ -348,10 +348,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param string $url   The url label to set as href attrib
-     * @param string $link  The value to display as the link
+     * @param string  $name  The element name.
+     * @param string  $label The label to attach to this element.
+     * @param ?string $url   The url label to set as href attrib
+     * @param ?string $link  The value to display as the link
      *
      * @return &array
      */
@@ -392,7 +392,7 @@ class LorisForm
      * @param array|string $options An array of other options that should
      *                              be added. This generalls maps to the
      *                              third option of the addX wrapper.
-     * @param array        $attribs Other attributes to be added. This is
+     * @param array|string $attribs Other attributes to be added. This is
      *                              mostly only used for the "select" type,
      *                              where "options" has a different meaning
      *                              and attribs takes the place of what "options"
@@ -465,6 +465,23 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
+            if (is_array($options)) {
+                if (empty($options)) {
+                    // The default was [], turn it into '' for addLink
+                    $options = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+            if (is_array($attribs)) {
+                if (empty($attribs)) {
+                    // The default was [], turn it into '' for addLink
+                    $attribs = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
@@ -593,7 +610,7 @@ class LorisForm
                     $value = isset($_REQUEST[$fieldName][$fieldIdx])
                         ? $_REQUEST[$fieldName][$fieldIdx] : null;
 
-                    $rawValue = $value == 'on' ? 1 : 0;
+                    $rawValue = $value == 'on' ? '1' : '0';
                     return $this->_getFilteredValue($name, $rawValue);
                 }
 

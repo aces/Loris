@@ -615,7 +615,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
      * @param array  $attribs An array of extra HTML attributes to
      *                        add to the element.
      *

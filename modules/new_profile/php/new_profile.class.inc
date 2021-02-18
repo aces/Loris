@@ -248,7 +248,7 @@ class New_Profile extends \NDB_Form
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
             if (empty($values['site'])) { // user is in only one site
-                $centerIDs = $user->getData('CenterIDs');
+                $centerIDs = $user->getCenterIDs();
                 $centerID  = $centerIDs[0];
                 $site      = \Site::singleton($centerID);
             } else {

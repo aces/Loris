@@ -102,7 +102,7 @@ class Imaging_Browser extends \DataFrameworkMenu
                 $siteList[$site] = $site;
             }
         } else {
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {

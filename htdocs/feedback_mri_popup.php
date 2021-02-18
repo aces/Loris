@@ -36,7 +36,10 @@ $tpl_data = [];
 $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object
-$comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
+$comments = new FeedbackMRI(
+    isset($_REQUEST['fileID']) ? intval($_REQUEST['fileID']) : '',
+    isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '',
+);
 
 /*
  * UPDATE SECTION
@@ -47,7 +50,13 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
 
     // set selected predefined comments
     if (isset($_POST['savecomments']['predefined'])) {
-        $comments->setPredefinedComments($_POST['savecomments']['predefined']);
+        $predefined = array_map(
+            function ($row) {
+                return intval($row);
+            },
+            \Utility::asArray($_POST['savecomments']['predefined']),
+        );
+        $comments->setPredefinedComments($predefined);
     }
 
     // save all textual comments but only if there is an entry [sebas]

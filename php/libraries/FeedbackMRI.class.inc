@@ -40,10 +40,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param string $fileID    The fileID that this feedback is for
+     * @param ?int   $fileID    The fileID that this feedback is for
      * @param string $sessionID The SessionID that this feedback is for
      */
-    function __construct(string $fileID='', string $sessionID='')
+    function __construct(?int $fileID=null, string $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -91,7 +91,7 @@ class FeedbackMRI
 
         // add a new db entry for each comment
         foreach ($predefinedCommentIDs AS $predefinedCommentID) {
-            $success = $this->_addComment('', '', $predefinedCommentID);
+            $success = $this->_addComment('', null, $predefinedCommentID);
 
             // choke if it failed
             if ($success != 'true') {
@@ -379,12 +379,12 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param string $commentTypeID       CommentTypeID from
+     * @param ?int   $commentTypeID       CommentTypeID from
      *                                    feedback_mri_comment_types
      *                                    table (optional if
      *                                    using
      *                                    predefinedCommentID)
-     * @param string $predefinedCommentID PredefinedCommentID
+     * @param ?int   $predefinedCommentID PredefinedCommentID
      *                                    from
      *                                    feedback_mri_predefined_comments
      *                                    table
@@ -393,8 +393,8 @@ class FeedbackMRI
      */
     function _addComment(
         string $comment='',
-        string $commentTypeID='',
-        string $predefinedCommentID=''
+        ?int    $commentTypeID=null,
+        ?int $predefinedCommentID=null
     ): bool {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)

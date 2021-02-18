@@ -193,7 +193,7 @@ class File_Upload
      * @param string $field  The name of the class to call.
      * @param string $action The name of the method to call.
      *
-     * @return boolean true if operation succeeded
+     * @return mixed Result of file handler for method
      * @access public
      */
     function callFileHandler($field, $action)
@@ -563,7 +563,7 @@ class File_Upload
     /**
      * Adds the timestamp to the filename in order to make it unique
      *
-     * @param int $name The proposed name for the file.
+     * @param string $name The proposed name for the file.
      *
      * @return string $new_name   New filename
      * @see    File_Upload::moveFile()

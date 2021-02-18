@@ -121,21 +121,18 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
+            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects["$currentProject"],
                 ];
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
-
             $currentProject = null;
             $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
@@ -154,16 +151,13 @@ class Stats_Behavioural extends \NDB_Form
         //
         //SUBPROJECTS
         $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
-            $cpid = new \ProjectID($currentProject);
-
-            $subprojects = \Utility::getSubprojectsForProject($cpid);
+        if ($currentProject !== null) {
+            $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
-            $Visits = \Utility::getVisitList($cpid);
+            $Visits = \Utility::getVisitList($currentProject);
         } else {
             $Visits = \Utility::getVisitList();
         }

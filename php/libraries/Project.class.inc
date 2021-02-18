@@ -380,18 +380,7 @@ class Project implements \JsonSerializable
             ['v_project_id' => $this->_projectId]
         );
 
-        return array_map(
-            function ($row) {
-                return (object) [
-                    'subprojectId'      => (int) $row['subprojectId'],
-                    'title'             => $row['title'],
-                    'useEDC'            => $row['useEDC'],
-                    'windowDifference'  => $row['windowDifference'],
-                    'recruitmentTarget' => $row['recruitmentTarget'],
-                ];
-            },
-            $subProjectData
-        );
+        return $subProjectData;
     }
 
     /**
