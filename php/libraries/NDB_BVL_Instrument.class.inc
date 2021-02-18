@@ -2837,11 +2837,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-
+        
         // Disable form if data entry is complete
         $commentID = $request->getAttribute("pageclass")->commentID;
         $user = $request->getAttribute("user");
-        $sessionID = $request->getAttribute("pageclass")->tpl_data['timePoint']['SessionID'];
+        $sessionID = $request->getQueryParams()["sessionID"];
         $timepoint = \Timepoint::singleton($sessionID);
 
         // create an instrument status object	
@@ -2859,11 +2859,29 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ) {	
 
             if ($this->preview !== true && $this->DataEntryType !== 'DirectEntry') {	
-                $this->freeze();	
+                $this->freeze();
+                $refresh = true;	
             }	
         }
 
+        $factory = NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+
+        $path = $request->getQueryParams()["lorispath"];
+        $candID = $request->getQueryParams()["candID"];
+
+        $link = $baseurl . "/". $path . "?commentID=" . $commentID . "&candID=" . $candID . "&sessionID=" . $sessionID;
+
+        if (isset($refresh)) {
+            return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""))
+            ->withStatus(303)
+            ->withHeader("Location", $link);
+        }
+
         return (new \Laminas\Diactoros\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""))
+            //->withHeader("Location", $link)
+        ;
     }
 }
