@@ -371,6 +371,10 @@ class IssueForm extends Component {
           // the user's sites.
           if (newIssue) {
             formData.centerID = null;
+            Object.keys(data.inactiveUsers).map((user) => {
+              delete data.assignees[user];
+            });
+            data.inactiveUsers = {};
           } else {
             // if we edit an issue
             // a NULL centerID (= All Sites) is converted to the ALL Sites option
