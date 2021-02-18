@@ -621,7 +621,7 @@ function getIssueFields()
         $inactive_users_expanded = $db->pselect(
             "SELECT Real_name, UserID FROM users
               WHERE Active='N'",
-            array()
+            []
         );
     } else {
         $CenterID = implode(',', $user->getCenterIDs());
@@ -644,7 +644,7 @@ function getIssueFields()
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
              WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
              AND Active='N'",
-            array()
+            []
         );
     }
 
