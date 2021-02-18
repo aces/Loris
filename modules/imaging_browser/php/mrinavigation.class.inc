@@ -46,12 +46,12 @@ class MRINavigation
     {
         $this->_sessionID = $sessionID;
 
-        $this->_FilteredSessionList = $_SESSION['State']
-            ->getProperty('mriSessionsListed');
-
-        if (!is_array($this->_FilteredSessionList)) {
-            $this->_FilteredSessionList = [];
+        $this->_FilteredSessionList = [];
+        if (is_array($_SESSION['State']->getProperty('mriSessionsListed'))) {
+            $this->_FilteredSessionList
+                = $_SESSION['State']->getProperty('mriSessionsListed');
         }
+
         $this->_currentListIndex = array_search(
             $this->_sessionID,
             $this->_FilteredSessionList
