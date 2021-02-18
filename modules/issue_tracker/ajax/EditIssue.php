@@ -612,6 +612,7 @@ function getIssueFields()
 
     //not yet ideal permissions
     $assignees = [];
+    $inactive_users = [];
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
             "SELECT Real_name, UserID FROM users",
