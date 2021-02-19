@@ -221,7 +221,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ],
             ]
         );
-
         $this->assertEquals(
             $selectElement2,
             [
@@ -230,9 +229,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Field Description 2",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option"
+                        "value" => "Option",
+                        "not_answered" => "Not Answered",
                     ],
-                    "RequireResponse" => true
+                    "RequireResponse" => false
                 ],
             ]
         );
@@ -248,7 +248,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                         "value" => "Option"
                     ],
                     "RequireResponse" => false,
-                    "AllowMultiple"   => true,
                 ],
             ]
         );
@@ -261,10 +260,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Test Question",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option"
+                        "value" => "Option",
+                        "not_answered" => "Not Answered",
                     ],
-                    "RequireResponse" => true,
-                    "AllowMultiple"   => true,
+                    "RequireResponse" => false,
                 ],
             ]
         );
@@ -470,95 +469,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'rules'   => ['Option', 'hourMinField_status{@}=={@}']
             ]
         );
-    }
-
-    /**
-     * Test that addBasicDate (from NDB_Page) and addDateElement
-     * adds the correct date to the instrument object
-     *
-     * @covers NDB_Page::addBasicDate
-     * @covers NDB_Page::addDateElement
-     * @covers NDB_Page::toJSON
-     * @return void
-     */
-    function testDateElement()
-    {
-        $this->_instrument->addBasicDate(
-            "FieldName",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->_instrument->addBasicDate(
-            "FieldName2",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-
-        $this->_instrument->addDateElement(
-            "FieldName3",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->_instrument->addDateElement(
-            "FieldName4",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-        $json     = $this->_instrument->toJSON();
-        $outArray = json_decode($json, true);
-        assert(is_array($outArray));
-        $dateElement  = $outArray['Elements'][0];
-        $dateElement2 = $outArray['Elements'][1];
-        $dateElement3 = $outArray['Elements'][2];
-        $dateElement4 = $outArray['Elements'][3];
-
-        // They were added with addBasicDate, so response is
-        // not required.
-        $expectedResult = [
-            'Type'        => "date",
-            "Name"        => "FieldName",
-            "Description" => "Field Description",
-            "Options"     => [
-                "MinDate"         => "1990-01-01",
-                "MaxDate"         => "2000-12-31",
-                "RequireResponse" => false
-            ]
-        ];
-
-        $this->assertEquals($dateElement, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName2';
-        $this->assertEquals($dateElement2, $expectedResult);
-
-        unset($expectedResult['Options']['RequireResponse']);
-
-        // The addDateElement wrappers add _date to the field name, the
-        // addBasicDate wrappers do not.
-        $expectedResult['Name'] = 'FieldName3_date';
-        $this->assertEquals($dateElement3, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName4_date';
-        $this->assertEquals($dateElement4, $expectedResult);
     }
 
     /**
