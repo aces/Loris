@@ -83,7 +83,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         date_default_timezone_set("UTC");
 
         $s = $this->getMockBuilder(\State::class)
-            ->onlyMethods(['setUsername','getUsername','setProperty','getProperty','getLastURL'])
+            ->onlyMethods(['setUsername','getUsername','setProperty','getProperty'])
             ->getMock();
 
         $spe = $this->getMockBuilder('SinglePointLogin')
