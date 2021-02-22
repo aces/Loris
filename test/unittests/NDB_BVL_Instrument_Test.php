@@ -1705,9 +1705,10 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testToJsonParseSmartyDateType()
     {
         $el     = ['type' => 'date',
-                   'name' => 'test'];
+            'name' => 'test'
+        ];
         $result = ['type' => 'date',
-                   'name' => 'test',
+            'name'       => 'test',
             'options'    => ['mindate' => "1990-01-01",
                 'maxdate'         => "2000-12-31",
                 'RequireResponse' => false
