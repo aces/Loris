@@ -73,8 +73,7 @@ $("#save-help").click(function(e) {
                 cancelButtonText: "Close",
                 closeOnConfirm: false,
                 closeOnCancel: true,
-            },
-            function(){
+            }).then(function(){
                 location.href = document.referrer;
             });
         },

@@ -444,7 +444,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getProjectID(): int
     {
-        return intval($this->candidateInfo["RegistrationProjectID"]);
+        return intval($this->candidateInfo["RegistrationProjectID"] ?? null);
     }
 
     /**
