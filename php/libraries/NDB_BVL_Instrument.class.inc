@@ -2860,28 +2860,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             if ($this->preview !== true && $this->DataEntryType !== 'DirectEntry') {	
                 $this->freeze();
-                $refresh = true;	
             }	
-        }
-
-        $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-
-        $path = $request->getQueryParams()["lorispath"];
-        $candID = $request->getQueryParams()["candID"];
-
-        $link = $baseurl . "/". $path . "?commentID=" . $commentID . "&candID=" . $candID . "&sessionID=" . $sessionID;
-
-        if (isset($refresh)) {
-            return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""))
-            ->withStatus(303)
-            ->withHeader("Location", $link);
         }
 
         return (new \Laminas\Diactoros\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""))
-            //->withHeader("Location", $link)
         ;
     }
 }
