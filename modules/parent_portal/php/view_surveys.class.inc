@@ -1,9 +1,9 @@
 <?php
 
 /**
- * IBIS module.
+ * Parent Portal module.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Module
  * @package    Main
@@ -15,20 +15,23 @@
 namespace LORIS\parent_portal;
 
 /**
+ * Parent Portal class
  *
- * @category   Module
- * @package    Main
- * @subpackage Parent Portal - View Surveys
- * @author     Sruthy Mathew <sruthy.mathew@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * PHP Version 7
+ *
+ * @category Module
+ * @package  Main
+ * @author   Sruthy Mathew <sruthy.mathew@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class view_surveys extends \NDB_Form
+class View_Surveys extends \NDB_Form
 {
-
-    
-
-
+    /**
+     * Setup function provides the initial data from database
+     *
+     * @return void
+     */
     function setup()
     {
 
@@ -36,17 +39,18 @@ class view_surveys extends \NDB_Form
         $baseURL = $factory->settings()->getBaseURL();
         session_start();
         $email =$_SESSION['email'];
-        $pid=$_SESSION['pid'];
-        if((!isset($email)) && (!isset($pid)))
-        {
-            header ("Location: $baseURL/parent_portal");
+        $pid   =$_SESSION['pid'];
+        if ((!isset($email)) && (!isset($pid)) ) {
+            header("Location: $baseURL/parent_portal");
             exit;
         }
         $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.$pid.')';
-        $survey_url= $baseURL. "/survey.php?key=";
-        $this->tpl_data['survey_url']=$survey_url;
-        $DB =& \Database::singleton();
-        $query=$DB->pselect("select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,p.OneTimePassword,ict.completion_time
+        $survey_url = $baseURL. "/survey.php?key=";
+        $this->tpl_data['survey_url'] =$survey_url;
+        $DB    =& \Database::singleton();
+        $query =$DB->pselect(
+            "select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,
+            p.OneTimePassword,ict.completion_time
             FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
@@ -56,16 +60,20 @@ class view_surveys extends \NDB_Form
             WHERE p.Email=:surv_email
             AND c.ParentID=:pid
             ORDER BY p.Status",
-                array(
-                    'surv_email' => $email,
-                    'pid' => $pid
+            [
+                'surv_email' => $email,
+                'pid'        => $pid
 
-                )
-
-            );
+            ]
+        );
         $this->tpl_data['survey_data'] = $query;
 
     }
+    /**
+     * Loading css dependencies.
+     *
+     * @return void
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();
@@ -73,11 +81,11 @@ class view_surveys extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/parent_portal/css/parent_portal.css")
+            [$baseURL . "/parent_portal/css/parent_portal.css"]
         );
     }
 
 
 }
 
-?>
+
