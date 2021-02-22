@@ -154,6 +154,8 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testMetaData()
     {
+        $this->_setUpMockDB();
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
@@ -176,6 +178,8 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testSelectElement()
     {
+        $this->_setUpMockDB();
+
         $value        = ['value' => "Option"];
         $not_answered = ['value' => 'Option', 'not_answered' => 'Not Answered'];
         $this->_instrument->addSelect("FieldName", "Field Description", $value);
@@ -198,6 +202,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             $not_answered,
             ['multiple' => "multiple"]
         );
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
@@ -281,6 +286,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testTextElement()
     {
+
         $this->_instrument->addTextElement(
             "FieldName",
             "Field Description for Text",
@@ -291,6 +297,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             "Field Description2 for Text",
             ["value" => "Option"]
         );
+        $this->_setUpMockDB();
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
@@ -1696,8 +1704,10 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testToJsonParseSmartyDateType()
     {
-        $el     = ['type' => 'date'];
+        $el     = ['type' => 'date',
+                   'name' => 'test'];
         $result = ['type' => 'date',
+                   'name' => 'test',
             'options'    => ['mindate' => "1990-01-01",
                 'maxdate'         => "2000-12-31",
                 'RequireResponse' => false
