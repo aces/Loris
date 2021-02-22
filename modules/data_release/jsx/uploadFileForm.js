@@ -33,20 +33,6 @@ class UploadFileForm extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    let self = this;
-    fetch(this.props.DataURL, {credentials: 'same-origin'})
-      .then( (resp) => resp.json())
-      .then( (data) => self.setState({data: data, isLoaded: true}))
-      .catch( (error) => {
-        self.setState({error: 'An error occurred when loading the form!'});
-        console.error(error);
-      });
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -209,17 +195,6 @@ class UploadFileForm extends Component {
             }
           });
         } else {
-          // Add file to the list of existing files
-          let files = JSON.parse(JSON.stringify(this.state.data.files));
-          files.push(formData.file.name);
-          // Trigger an update event to update all observers (i.e. DataTable)
-          let event = new CustomEvent('update-datatable');
-          window.dispatchEvent(event);
-          this.setState({
-            files: files,
-            formData: {}, // reset form data after successful file upload
-            uploadProgress: -1,
-          });
           swal.fire({
             text: 'Upload Successful!',
             title: '',
@@ -227,7 +202,6 @@ class UploadFileForm extends Component {
           }).then(function() {
             window.location.assign('/data_release');
           });
-          this.props.fetchData();
         }
       }
     }).catch( (error) => {

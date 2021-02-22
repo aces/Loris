@@ -177,12 +177,9 @@ class DataReleaseIndex extends Component {
         <UploadFileForm
           DataURL={
             loris.BaseURL
-            + '/data_release/ajax/FileUpload.php?action=getData'
+            + '/data_release/files'
           }
-          action={
-            loris.BaseURL
-            + '/data_release/ajax/FileUpload.php?action=upload'
-          }
+          action={loris.BaseURL + '/data_release/files'}
           fetchData={this.fetchData}
         />
       </Modal>
