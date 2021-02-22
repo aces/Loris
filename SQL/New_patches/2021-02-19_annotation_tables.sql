@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS `annotationn_instance`;
-DROP TABLE IF EXISTS `annotation_parameter`;
-DROP TABLE IF EXISTS `annotation_file`;
-DROP TABLE IF EXISTS `annotation_file_type`;
 -- SQL tables for BIDS derivative file structure
 
 -- Create annotation_file_type table
