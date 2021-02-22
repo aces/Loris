@@ -229,7 +229,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Field Description 2",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option",
+                        "value"        => "Option",
                         "not_answered" => "Not Answered",
                     ],
                     "RequireResponse" => false
@@ -260,7 +260,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Test Question",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option",
+                        "value"        => "Option",
                         "not_answered" => "Not Answered",
                     ],
                     "RequireResponse" => false,
@@ -911,8 +911,8 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Name'        => 'field1',
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
-                    'yes' => 'Yes',
-                    'no'  => 'No',
+                    'yes'          => 'Yes',
+                    'no'           => 'No',
                     'not_answered' => 'Not Answered',
                 ],
                     'RequireResponse' => false
@@ -945,11 +945,11 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Name'        => 'field1',
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
-                    'yes' => 'Yes',
-                    'no'  => 'No',
+                    'yes'          => 'Yes',
+                    'no'           => 'No',
                     'not_answered' => 'Not Answered'
                 ],
-                'RequireResponse' => false
+                    'RequireResponse' => false
                 ]
             ]
         );
