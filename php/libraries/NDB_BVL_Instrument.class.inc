@@ -11,7 +11,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -50,6 +52,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $DataEntryType;
     public $XINRules;
     public $XINDebug;
+
+    /**
+     * A flag determining whether the ControlPanel changed
+     * the Data_entry flag status on this page load.
+     */
+    private $DataEntryChanged;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
@@ -2402,6 +2410,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
+            $this->DataEntryChanged = false;
+
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
@@ -2412,7 +2422,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
+                $originalstatus = $controlPanel->getDataEntryStatus();
                 $controlPanel->save();
+
+                if ($controlPanel->getDataEntryStatus() !== $originalstatus) {
+                    $this->DataEntryChanged = true;
+                }
             }
 
             // display the control panel
@@ -2822,6 +2837,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $this->jsonData;
     }
 
+      public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        // The parent middleware needs to be called in order for
+        // the instrument control panel to saved, which triggers
+        // $this->DataEntryChanged being set appropriately.
+        $response = parent::process($request, $handler);
+
+        if ($this->DataEntryChanged) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+            $url = $baseURL . "/instruments/" .
+                urlencode($this->testName) .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+        return $response;
+      }
+
     /**
      * A form extends the basic page handler to
      *  (1) call save() on a POST request
@@ -2839,14 +2881,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Disable form if data entry is complete
-        $commentID = $request->getAttribute("pageclass")->commentID;
         $user      = $request->getAttribute("user");
         $sessionID = $request->getQueryParams()["sessionID"];
+        $candID    = $request->getQueryParams()["candID"];
         $timepoint = \Timepoint::singleton($sessionID);
 
         // create an instrument status object
         $status = new \NDB_BVL_InstrumentStatus;
-        $status->select($commentID);
+        $status->select($this->commentID);
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
@@ -2863,7 +2905,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
-        return (new \Laminas\Diactoros\Response())
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 }
