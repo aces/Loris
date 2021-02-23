@@ -280,30 +280,22 @@ class NDB_BVL_Instrument_Test extends TestCase
      * the instrument
      *
      * @covers NDB_BVL_Instrument::addTextElement
-     * @covers NDB_BVL_Instrument::addTextAreaElement
      * @covers NDB_BVL_Instrument::toJSON
      * @return void
      */
     function testTextElement()
     {
-
+        $this->_setUpMockDB();
         $this->_instrument->addTextElement(
             "FieldName",
             "Field Description for Text",
             ["value" => "Option"]
         );
-        $this->_instrument->addTextAreaElement(
-            "FieldName2",
-            "Field Description2 for Text",
-            ["value" => "Option"]
-        );
-        $this->_setUpMockDB();
 
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
-        $textElement     = $outArray['Elements'][0];
-        $textareaElement = $outArray['Elements'][1];
+        $textElement = $outArray['Elements'][0];
 
         $this->assertEquals(
             $textElement,
@@ -318,35 +310,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
 
-        $this->assertEquals(
-            $textareaElement,
-            [
-                'Type'        => "text",
-                "Name"        => "FieldName2",
-                "Description" => "Field Description2 for Text",
-                "Options"     => [
-                    "Type"            => "large",
-                    "RequireResponse" => true
-                ]
-            ]
-        );
-
-        $textRules     = $this->_instrument->XINRules['FieldName'];
-        $textAreaRules = $this->_instrument->XINRules['FieldName2'];
+        $textRules = $this->_instrument->XINRules['FieldName'];
         $this->assertEquals(
             $textRules,
             [
                 'message' => 'This field is required.',
                 'group'   => 'FieldName_group',
                 'rules'   => ['FieldName_status{@}=={@}', 'Option']
-            ]
-        );
-        $this->assertEquals(
-            $textAreaRules,
-            [
-                'message' => 'This field is required.',
-                'group'   => 'FieldName2_group',
-                'rules'   => ['FieldName2_status{@}=={@}', 'Option']
             ]
         );
     }
@@ -359,6 +329,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddTextAreaElementRD()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addTextAreaElementRD(
             "FieldName1",
             "Field Description1",
@@ -423,6 +394,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddHourMinElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addHourMinElement(
             "hourMinField",
             "hourMinLabel",
@@ -512,6 +484,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddCustomDateElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addCustomDateElement(
             "CustomName",
             "Date Label",
@@ -589,6 +562,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testNumericElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addNumericElement("TestElement", "Test Description");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
@@ -617,6 +591,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testNumericElementRD()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addNumericElementRD("TestElement", "Test Description");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
@@ -686,6 +661,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testScoreElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addScoreColumn(
             "FieldName",
             "Field Description",
@@ -734,6 +710,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // to QuickForm's whims.
         // The first "section" has no elements, and the second one, to make sure
         // that the serialization won't die on a 0 element "section"
+        $this->_setUpMockDB();
         $this->_instrument->form->addElement(
             "header",
             '',
@@ -789,6 +766,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testLabelElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addLabel("I am a label");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
@@ -814,6 +792,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
+        $this->_setUpMockDB();
         $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -909,6 +888,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddYesNoElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addYesNoElement("field1", "label1");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
@@ -938,6 +918,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddYesNoElementWithRules()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addYesNoElement(
             "field1",
             "label1",
@@ -1038,7 +1019,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['SubprojectID' => 2, 'Visit_label' => 'V1', 'CandID' => '300123']
+                ['SubprojectID' => '2', 'ProjectID' => '1',
+                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
     }
@@ -1060,7 +1043,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['SubprojectID' => 2]);
+            ->willReturn(['SubprojectID' => '2','ProjectID' => '1']);
         $this->assertEquals(2, $this->_instrument->getSubprojectID());
     }
 
