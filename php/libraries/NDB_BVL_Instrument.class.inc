@@ -2837,7 +2837,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $this->jsonData;
     }
 
-      public function process(
+    public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
@@ -2862,7 +2862,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ->withHeader("Location", $url);
         }
         return $response;
-      }
+    }
 
     /**
      * A form extends the basic page handler to
