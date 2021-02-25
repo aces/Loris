@@ -4,7 +4,7 @@ This page contains more information about this process, including for Imaging pr
 
 We recommend upgrading to the most recent [LORIS release](https://github.com/aces/Loris/releases).
 
-The LORIS team provides support (on a best-effort basis via the [Loris-dev mailing list](https://github.com/aces/Loris/wiki/Get-in-Touch)) for the last 2 releases of LORIS (including minor releases), and does not support pre-release development branches.
+The LORIS team provides support (on a best-effort basis via the [Loris-dev mailing list](https://mailman.bic.mni.mcgill.ca/mailman/listinfo/loris-dev)) for the last 2 releases of LORIS (including minor releases), and does not support pre-release development branches.
 
 > If you are a developer working on a development branch, note that the main branch reflects the last [stable release](https://github.com/aces/Loris/releases).
 
@@ -16,7 +16,7 @@ Consult the [Release notes](https://github.com/aces/Loris/releases) for the Upgr
  * Update your dependencies
  * Apply the [Release Patch](https://github.com/aces/Loris/tree/main/SQL/Release_patches) to the database
  * Run any upgrade scripts provided
- * Update or merge [custom code](https://github.com/aces/Loris/wiki/Code-Customization) to work with the new release, if necessary
+ * Update or merge [custom code](https://github.com/aces/Loris/blob/main/docs/wiki/99_Developers/Code_Customization.md) to work with the new release, if necessary
  * Update data to match type/column modifications, if necessary
 
 ### Upgrade tips
@@ -32,3 +32,17 @@ Consult the [Release notes](https://github.com/aces/Loris/releases) for the Upgr
  ```
 ## Imaging projects
 Update your [Loris-MRI code](https://github.com/aces/Loris-MRI/releases) to the latest Loris-MRI release and carefully review the Loris-MRI release notes for changes to the imaging pipeline scripts, config files and tables, and follow all recommended steps for Existing Projects. We recommend testing your pipelines after upgrading.
+
+### Troubleshooting 
+In the latest release, Loris needs to upgrade the PHP version. If you have an old PHP version installed, you need to upgrade to the higher PHP version. (example: PHP 7.3 to PHP 7.4 in Ubuntu)
+In order to ensure that this new PHP version is installed correctly, you need to do the following steps: 
+1. `sudo apt-get install -y php7.4 php7.4-mysql php7.4-xml php7.4-json php7.4-mbstring php7.4-gd php-ast`
+2. `sudo apt-get install -y libapache2-mod-php7.4`
+3. `sudo a2dismod php7.3`
+4. `sudo a2enmod php7.4`
+5. `sudo service apache2 restart`
+6. run "/var/www/loris/htdocs$ echo "<?php phpinfo(); ?>" >> test.php "
+   Using test.php to check the current PHP version in your browser.
+7. `make clean`
+8. `make `
+9. `mkdir smarty/template_c/`  and set permission for this new folder (770 or 777).

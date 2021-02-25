@@ -158,7 +158,7 @@ source /var/www/loris/project/tables_sql/$TABLE_NAME$.sql;
 DELETE FROM flag WHERE Test_name="$TABLE_NAME$
 ```
 ### Populating Instrument Forms After Battery Change
-If you are modifying your test battery or an instrument form, you may wish to populate this instrument for timepoints for which data entry is already in progress. To add an instrument form to a timepoint whose visit stage has already been started, run [assign_missing_instruments.php or fix_timepoint_date.php](https://github.com/aces/Loris/wiki/Instrument-Scripts) -- located in the tools/ directory.
+If you are modifying your test battery or an instrument form, you may wish to populate this instrument for timepoints for which data entry is already in progress. To add an instrument form to a timepoint whose visit stage has already been started, run [assign_missing_instruments.php or fix_timepoint_date.php](https://github.com/aces/Loris/tree/main/docs/wiki/99_Developers/Instrument_Scripts.md) -- located in the tools/ directory.
 
 Depending on the use case, either of these scripts will add the instrument to any relevant timepoints according to the contents of the test_battery table.
 
