@@ -428,7 +428,7 @@ class NDB_BVL_Battery
      *                               battery for. If this is specified the
      *                               battery will use this INSTEAD OF the age
      *                               of candidate.
-     * @param integer  $center_ID    (optional) The center ID to look up the visit
+     * @param ?CenterID $center_ID    (optional) The center ID to look up the visit
      *                               battery for. If this is specified the lookup
      *                               will use it as an ADDITIONAL condition to
      *                               $age/$visit_label.

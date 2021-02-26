@@ -73,7 +73,7 @@ class New_Profile extends \NDB_Form
             $edc = (new \DateTime($edc))->format('Y-m-d');
         }
         $candID = \Candidate::createNew(
-            new \CenterID($values['site']),
+            $values['site'],
             $dob,
             $edc,
             new Sex($values['sex']),
