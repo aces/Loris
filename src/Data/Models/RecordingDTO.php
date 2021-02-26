@@ -22,7 +22,9 @@ namespace LORIS\Data\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RecordingDTO implements \LORIS\Data\DataInstance
+class RecordingDTO implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
 
     private $fileid;

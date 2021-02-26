@@ -41,32 +41,17 @@ class UserSiteMatch implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        // phan only understands method_exists on simple variables, not
-        // Assigning to a variable is the a workaround
-        // for false positive 'getCenterIDs doesn't exist errors suggested
-        // in https://github.com/phan/phan/issues/2628
-        $res = $resource;
-        '@phan-var object $res';
-
-        if (method_exists($res, 'getCenterIDs')) {
+        if ($resource instanceof \LORIS\StudyEntities\MultiSiteHaver) {
             // If the Resource belongs to multiple CenterIDs, the user can
             // access the data if the user is part of any of those centers.
-            $resourceSites = $res->getCenterIDs();
-            foreach ($resourceSites as $site) {
+            foreach ($resource->getCenterIDs() as $site) {
                 if ($user->hasCenter($site)) {
                        return true;
                 }
             }
             return false;
-        } elseif (method_exists($res, 'getCenterID')) {
-            $resourceSite = $res->getCenterID();
-            if (!is_null($resourceSite)) {
-                return $user->hasCenter($resourceSite);
-            }
-            // We don't know if the resource thought a null CenterID
-            // should mean "no one can access it" or "anyone can access
-            // it", so throw an exception.
-            throw new \LorisException("getCenterID on resource returned null");
+        } elseif ($resource instanceof \LORIS\StudyEntities\SiteHaver) {
+            return $user->hasCenter($resource->getCenterID());
         }
         throw new \LorisException(
             "Can not implement UserSiteMatch on a resource type that has no sites."

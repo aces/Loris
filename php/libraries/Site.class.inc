@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Site
+class Site implements \LORIS\StudyEntities\SiteHaver
 {
     var $_siteInfo;
 

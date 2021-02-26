@@ -21,7 +21,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleResource
+class User extends UserPermissions implements
+    \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     /**
      * Stores user information
@@ -282,20 +284,6 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
          * Therefore this string must be split and returned as an array.
          */
         return explode(';', $this->userInfo['Sites']);
-    }
-
-     /**
-      * Get the user's site's ID number
-      *
-      * @return array
-      */
-    function getCenterID()
-    {
-        throw new \LorisException(
-            "The function getCenterID
-                                   is deprecated and is replaced
-                                   with getCenterIDs"
-        );
     }
 
     /**

@@ -23,7 +23,8 @@ use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class TimePoint implements \LORIS\StudyEntities\AccessibleResource
+class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     /* NOTE If these are private variables then they should probably be
      * declared and scoped as such. var is equivalent to public.

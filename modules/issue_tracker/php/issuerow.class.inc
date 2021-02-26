@@ -11,7 +11,9 @@ namespace LORIS\issue_tracker;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class IssueRow implements \LORIS\Data\DataInstance
+class IssueRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
     protected $CenterIDs;
@@ -48,9 +50,9 @@ class IssueRow implements \LORIS\Data\DataInstance
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return array The CenterIDs
+     * @return int[] The CenterIDs
      */
-    public function getCenterIDs()
+    public function getCenterIDs() : iterable
     {
         return $this->CenterIDs;
     }

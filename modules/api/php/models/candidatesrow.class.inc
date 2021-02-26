@@ -20,7 +20,8 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesRow implements \LORIS\Data\DataInstance
+class CandidatesRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     private $_candid;
     private $_projectname;
