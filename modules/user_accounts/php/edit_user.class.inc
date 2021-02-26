@@ -142,7 +142,7 @@ class Edit_User extends \NDB_Form
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
-            $user_id  = $user->getData("ID") ?? -1;
+            $user_id  = $user->getId() ?? -1;
             $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
                 $user_id
             );
@@ -270,7 +270,7 @@ class Edit_User extends \NDB_Form
             unset($values['Password_hash']);
         }
         // multi-site UPDATE
-        $uid           = $user->getData('ID');
+        $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
         if (!$this->isCreatingNewUser()) {
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
@@ -467,7 +467,7 @@ class Edit_User extends \NDB_Form
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
-            $uid  = $user->getData('ID');
+            $uid  = $user->getId();
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
@@ -1015,7 +1015,7 @@ class Edit_User extends \NDB_Form
      */
     static function canRejectAccount(\User $user)
     {
-        return $user->getData('Pending_approval') == 'Y'
+        return $user->isPendingApproval()
             && !$user->hasLoggedIn();
     }
 

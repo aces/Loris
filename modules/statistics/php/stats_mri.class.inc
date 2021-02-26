@@ -234,9 +234,9 @@ class Stats_MRI extends \NDB_Form
         $projects     = [];
         $projects[''] = 'All Projects';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         $currentProject = null;

@@ -91,7 +91,8 @@ function editIssue()
     }
 
     $issueID = intval($_POST['issueID']);
-    $issueValues['lastUpdatedBy'] = $user->getData('UserID');
+
+    $issueValues['lastUpdatedBy'] = $user->getUsername();
 
     $validatedInput = validateInput($validateValues);
     if (array_key_exists('sessionID', $validatedInput)) {
@@ -108,7 +109,7 @@ function editIssue()
     if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
-        $issueValues['reporter']    = $user->getData('UserID');
+        $issueValues['reporter']    = $user->getUsername();
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
         $db->insert('issues', $issueValues);
         $issueID = intval($db->getLastInsertId());
@@ -172,7 +173,7 @@ function editIssue()
     // Add editor to the watching table unless they don't want to be added.
     if (isset($_POST['watching']) &&  $_POST['watching'] == 'Yes') {
         $nowWatching = [
-            'userID'  => $user->getData('UserID'),
+            'userID'  => $user->getUsername(),
             'issueID' => $issueID,
         ];
         $db->replace('issues_watching', $nowWatching);
@@ -181,7 +182,7 @@ function editIssue()
             'issues_watching',
             [
                 'issueID' => $issueID,
-                'userID'  => $user->getData('UserID'),
+                'userID'  => $user->getUsername(),
             ]
         );
     }
@@ -359,7 +360,7 @@ function updateHistory($values, $issueID)
                 'newValue'     => $value ?? '',
                 'fieldChanged' => $key,
                 'issueID'      => $issueID,
-                'addedBy'      => $user->getData('UserID'),
+                'addedBy'      => $user->getUsername(),
             ];
             $db->insert('issues_history', $changedValues);
         }
@@ -385,7 +386,7 @@ function updateComments($comment, $issueID)
     if (isset($comment) && $comment != "null") {
         $commentValues = [
             'issueComment' => $comment,
-            'addedBy'      => $user->getData('UserID'),
+            'addedBy'      => $user->getUsername(),
             'issueID'      => $issueID,
         ];
         $db->insert('issues_comments', $commentValues);
@@ -411,7 +412,7 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
     $changedValue = [
         'issueCommentID' => $issueCommentID,
         'newValue'       => $newCommentValue,
-        'editedBy'       => $user->getData('UserID'),
+        'editedBy'       => $user->getUsername(),
     ];
 
     $db->insert('issues_comments_history', $changedValue);
@@ -644,7 +645,7 @@ function getIssueFields()
         []
     );
     foreach ($potential_watchers_expanded as $w_row) {
-        if ($w_row['UserID'] != $user->getData('UserID')) {
+        if ($w_row['UserID'] != $user->getUsername()) {
             $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
         }
     }
@@ -721,7 +722,7 @@ function getIssueFields()
             WHERE issueID=:issueID AND userID=:userID",
             [
                 'issueID' => $issueID,
-                'userID'  => $user->getData('UserID'),
+                'userID'  => $user->getUsername(),
             ]
         );
         if ($isWatching === null) {
@@ -746,7 +747,7 @@ function getIssueFields()
     }
     $issueData['comment'] = null;
 
-    if ($issueData['reporter'] == $user->getData('UserID')) {
+    if ($issueData['reporter'] == $user->getUsername()) {
         $isOwnIssue = true;
     } else {
         $isOwnIssue = false;
@@ -795,9 +796,9 @@ function getIssueData($issueID=null)
     }
 
     return [
-        'reporter'      => $user->getData('UserID'),
+        'reporter'      => $user->getUsername(),
         'dateCreated'   => date('Y-m-d H:i:s'),
-        'centerID'      => $user->getData('CenterIDs'),
+        'centerID'      => $user->getCenterIDs(),
         'status'        => "new",
         'priority'      => "normal",
         'issueID'       => 0, //TODO: this is dumb

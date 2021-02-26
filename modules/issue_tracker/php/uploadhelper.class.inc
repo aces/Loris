@@ -83,7 +83,7 @@ class UploadHelper
                 'mime_type'   => $this->getFileMimeType($files['file']['name']),
                 'tmp_name'    => $files['file']['tmp_name'],
                 'size'        => $this->_bytes,
-                'inserted_by' => $this->_user->getData('UserID'),
+                'inserted_by' => $this->_user->getUsername(),
                 'description' => $this->_values['fileDescription'] ?? '',
             ];
 

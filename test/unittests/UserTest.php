@@ -693,6 +693,7 @@ class UserTest extends TestCase
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
         );
+
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
