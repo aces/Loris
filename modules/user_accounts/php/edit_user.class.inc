@@ -748,7 +748,7 @@ class Edit_User extends \NDB_Form
             // allow only to add to their own site
             $site_arr = $editor->getCenterIDs();
             foreach ($site_arr as $key => $val) {
-                $site["$key"]      =& \Site::singleton($val);
+                $site["$key"]        =& \Site::singleton($val);
                 $siteOptions["$val"] = $site["$key"]->getCenterName();
             }
         }
