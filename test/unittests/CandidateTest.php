@@ -1151,7 +1151,7 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $user = $this->getMockBuilder('\User')->getMock();
         $user->expects($this->once())->method("getCenterIDs")
-            ->willReturn([1, 2]);
+            ->willReturn([new \CenterID("1"), new \CenterID("2")]);
         $user->expects($this->once())->method("getProjectIDs")
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
         '@phan-var \User $user';
