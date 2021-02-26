@@ -146,7 +146,7 @@ class CandidateTest extends TestCase
         $this->_factory->setDatabase($this->_dbMock);
 
         $this->_candidateInfo = [
-            'RegistrationCenterID'  => '2',
+            'RegistrationCenterID'  => new CenterID('2'),
             'CandID'                => new CandID('969664'),
             'PSCID'                 => 'AAA0011',
             'DoB'                   => '2007-03-02',
