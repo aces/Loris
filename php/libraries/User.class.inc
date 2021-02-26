@@ -399,7 +399,7 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(1, $this->userInfo['CenterIDs']));
+        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
     }
 
     /**
