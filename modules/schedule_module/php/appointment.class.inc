@@ -121,60 +121,6 @@ class Appointment extends \NDB_Page
 
     }
     /**
-     * Handle how to operate all the appointments.
-     * DELETE method deletes an appointment.
-     * POST method uploads an appointment.
-     * GET method gets an appointment.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
-     * @return ResponseInterface The outgoing PSR7 response
-     */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        switch ($request->getMethod()) {
-        case "POST":
-            $data = $request->getParsedBody();
-            if (isset($data["edit"]) && ($data["edit"] == "true") ) {
-                $this->editAppointment($data);
-            } else {
-                $this->addAppointment($data);
-            }
-            return new \LORIS\Http\Response\JSON\OK(['appointment added']);
-        case "GET":
-            // todo get session or pscid or dcciid
-            $url  = $request->getUri()->getPath();
-            $type = "Edit";
-            $id   = basename($request->getUri()->getPath());
-            if (strpos($url, 'PSCID') !== false) {
-                $type = "PSCID";
-            }
-            if (strpos($url, 'DCCID') !== false) {
-                $type = "DCCID";
-            }
-            if ($type == "Edit") {
-                $res = $this->getEditForm($id);
-            } else {
-                $res = $this->getMetaForm($type, $id);
-            }
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode($res)
-                    )
-                );
-        case "DELETE":
-            $id = basename($request->getUri()->getPath());
-            $this->deleteAppointment($id);
-            return new \LORIS\Http\Response\JSON\OK(['appointment deleted']);
-        default:
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withHeader("Allow", "GET,POST");
-        }
-    }
-    /**
      * Handles the get all pscid, dccid relative data and session
      * ex. .../dccid/300001 will return pscid mtl001 and session id
      * ex. .../pscid/mtl001 will return dccid 300001 and session id
@@ -258,5 +204,59 @@ class Appointment extends \NDB_Page
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $DB->delete("appointment", ["AppointmentID" => $id]);
+    }
+    /**
+     * Handle how to operate all the appointments.
+     * DELETE method deletes an appointment.
+     * POST method uploads an appointment.
+     * GET method gets an appointment.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        switch ($request->getMethod()) {
+        case "POST":
+            $data = $request->getParsedBody();
+            if (isset($data["edit"]) && ($data["edit"] == "true") ) {
+                $this->editAppointment($data);
+            } else {
+                $this->addAppointment($data);
+            }
+            return new \LORIS\Http\Response\JSON\OK(['appointment added']);
+        case "GET":
+            // todo get session or pscid or dcciid
+            $url  = $request->getUri()->getPath();
+            $type = "Edit";
+            $id   = basename($request->getUri()->getPath());
+            if (strpos($url, 'PSCID') !== false) {
+                $type = "PSCID";
+            }
+            if (strpos($url, 'DCCID') !== false) {
+                $type = "DCCID";
+            }
+            if ($type == "Edit") {
+                $res = $this->getEditForm($id);
+            } else {
+                $res = $this->getMetaForm($type, $id);
+            }
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($res)
+                    )
+                );
+        case "DELETE":
+            $id = basename($request->getUri()->getPath());
+            $this->deleteAppointment($id);
+            return new \LORIS\Http\Response\JSON\OK(['appointment deleted']);
+        default:
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withHeader("Allow", "GET,POST");
+        }
     }
 }
