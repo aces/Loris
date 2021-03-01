@@ -237,6 +237,7 @@ class Appointment extends \NDB_Page
             if (strpos($url, 'DCCID') !== false) {
                 $type = "DCCID";
             }
+            $res = "";
             if ($type !== "Edit") {
                 $res = $this->getMetaForm($type, $id);
             }
