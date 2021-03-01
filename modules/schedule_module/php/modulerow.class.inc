@@ -108,9 +108,9 @@ class ModuleRow implements \LORIS\Data\DataInstance
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match again.
      *
-     * @return integer The ProjectID
+     * @return \ProjectID The ProjectID
      */
-    public function getProjectID(): int
+    public function getProjectID(): \ProjectID
     {
         return $this->ProjectID;
     }

@@ -36,7 +36,7 @@ class ScheduleTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -55,7 +55,7 @@ class ScheduleTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete("appointment", ['AppointmentID' => '1']);
@@ -85,25 +85,13 @@ class ScheduleTest extends LorisIntegrationTest
      */
     function testPageLoadsWithPermissions()
     {
-        $this->assertContains(
-            "Schedule Appointment",
-            $this->_loadWithPermission('schedule_module')
+        $this->checkPagePermissions(
+            '/schedule_module/',
+            [
+                'schedule_module',
+            ],
+            "Schedule Appointment"
         );
-        $this->resetPermissions();
-    }
-    /**
-     * Tests that, the homepage should have "You do not have access to this page."
-     * on the page without permission.
-     *
-     * @return void
-     */
-    function testPageLoadsWithoutPermissions()
-    {
-        $this->assertNotContains(
-            "Schedule Appointment",
-            $this->_loadWithPermission('')
-        );
-        $this->resetPermissions();
     }
     /**
      * Tests add an appointment
