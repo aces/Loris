@@ -58,12 +58,12 @@ function uploadPublication() : void
         showPublicationError('Submitted title already exists', 400);
     }
     $desc            = $_POST['description'] ?? null;
-    $datePublication = $_POST['datePublication'] ?? NULL;
-    $journal         = $_POST['journal'] ?? NULL;
-    $link            = $_POST['link'] ?? NULL;
-    $publishingStatus= $_POST['publishingStatus'] ?? NULL;
-    $leadInvest      = $_POST['leadInvestigator'] ?? null;
-    $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
+    $datePublication = $_POST['datePublication'] ?? null;
+    $journal         = $_POST['journal'] ?? null;
+    $link            = $_POST['link'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $leadInvest       = $_POST['leadInvestigator'] ?? null;
+    $leadInvestEmail  = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
