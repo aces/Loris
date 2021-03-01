@@ -142,7 +142,10 @@ class ScheduleTest extends LorisIntegrationTest
                 "$ms"
             )
         )->getText();
-        $this->assertContains("This appointment already exists", $bodyText);
+        $this->assertStringContainsString(
+            "This appointment already exists",
+            $bodyText
+        );
         // change time and save it again
         $this->safeFindElement(
             WebDriverBy::cssSelector(
