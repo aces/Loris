@@ -237,9 +237,7 @@ class Appointment extends \NDB_Page
             if (strpos($url, 'DCCID') !== false) {
                 $type = "DCCID";
             }
-            if ($type == "Edit") {
-                $res = $this->getEditForm($id);
-            } else {
+            if ($type !== "Edit") {
                 $res = $this->getMetaForm($type, $id);
             }
             return (new \LORIS\Http\Response())
