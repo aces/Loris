@@ -29,6 +29,9 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $SessionID;
     protected $AppointmentTypeID;
     protected $StartsAt;
+    protected $Day;
+    protected $Time;
+    protected $PSCID;
     protected $CandID;
     protected $Visit_label;
     protected $CenterID;
@@ -39,6 +42,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $AppointmentTypeName;
     protected $site;
     protected $dataEntryStatus;
+    protected $ProjectID;
     /**
      * Create a new ModuleRow Instance.
      *
@@ -107,7 +111,8 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match again.
-     *
+     *  
+     * @var \ProjectID
      * @return \ProjectID The ProjectID
      */
     public function getProjectID(): \ProjectID

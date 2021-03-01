@@ -73,8 +73,8 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".btn > div")
         )->getText();
-        $this->assertContains("Schedule", $bodyText);
-        $this->assertNotContains("An error occurred", $bodyText);
+        $this->assertStringContainsString("Schedule", $bodyText);
+        $this->assertStringNotContainsString("An error occurred", $bodyText);
 
     }
     /**
@@ -111,7 +111,7 @@ class ScheduleTest extends LorisIntegrationTest
                 " div > div:nth-child(1)"
             )
         )->getText();
-        $this->assertContains("Add Appointment", $bodyText);
+        $this->assertStringContainsString("Add Appointment", $bodyText);
     }
     /**
      * Tests edit an appointment
@@ -166,7 +166,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
-        $this->assertContains("Appointment modified.", $bodyText);
+        $this->assertStringContainsString("Appointment modified.", $bodyText);
 
     }
     /**
@@ -188,7 +188,7 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
-        $this->assertContains("You won't be able to revert this!", $bodyText);
+        $this->assertStringContainsString("You won't be able to revert this!", $bodyText);
     }
     /**
      * Helper function to set up and load a page with a given permisison code.

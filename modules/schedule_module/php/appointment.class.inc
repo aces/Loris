@@ -47,7 +47,7 @@ class Appointment extends \NDB_Page
         switch ($request->getMethod()) {
         case "POST":
             $data = $request->getParsedBody();
-            if ($data["edit"] == "true") {
+            if ( isset($data["edit"]) && ($data["edit"] == "true") {
                 $this->editAppointment($data);
             } else {
                 $this->addAppointment($data);
@@ -71,7 +71,6 @@ class Appointment extends \NDB_Page
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode($res)
@@ -84,7 +83,6 @@ class Appointment extends \NDB_Page
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withStatus(405)
                 ->withHeader("Allow", "GET,POST");
         }
     }
@@ -118,7 +116,7 @@ class Appointment extends \NDB_Page
                     "candId" => $id,
                 ]
             );
-            $res       = ['PSCID'=>$candidate['PSCID']];
+            $res       = ['PSCID'=>$candidate['PSCID'] ?? ''];
         } else {
             $candidate = $DB->pselectRow(
                 "
@@ -133,7 +131,7 @@ class Appointment extends \NDB_Page
                     "pscid" => $id,
                 ]
             );
-            $res       = ['DCCID'=>$candidate['CandID']];
+            $res       = ['DCCID'=>$candidate['CandID'] ?? ''];
         }
 
         $sessionlist = $DB->pselect(
@@ -147,7 +145,7 @@ class Appointment extends \NDB_Page
     		CandID =:Id
     ",
             [
-                'Id' => $candidate['CandID']
+                'Id' => $candidate['CandID'] ?? ''
             ]
         );
         $sessions    = [];
