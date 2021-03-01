@@ -16,7 +16,7 @@
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "^3.5",
-        "php-webdriver/webdriver" : "dev-main",
+        "facebook/webdriver" : "1.8.x-dev",
         "phpunit/phpunit" : "^7.0",
         "phan/phan": "^2.4",
         "phpmd/phpmd": "~2.8",
