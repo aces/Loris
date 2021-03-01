@@ -58,6 +58,10 @@ function uploadPublication() : void
         showPublicationError('Submitted title already exists', 400);
     }
     $desc            = $_POST['description'] ?? null;
+    $datePublication = $_POST['datePublication'] ?? NULL;
+    $journal         = $_POST['journal'] ?? NULL;
+    $link            = $_POST['link'] ?? NULL;
+    $publishingStatus= $_POST['publishingStatus'] ?? NULL;
     $leadInvest      = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
@@ -94,6 +98,10 @@ function uploadPublication() : void
         'UserID'             => $uid,
         'Title'              => $title,
         'Description'        => $desc,
+        'datePublication'    => $datePublication,
+        'journal'            => $journal,
+        'link'               => $link,
+        'publishingStatus'   => $publishingStatus,
         'LeadInvestigatorID' => $leadInvID,
         'DateProposed'       => $today,
     ];

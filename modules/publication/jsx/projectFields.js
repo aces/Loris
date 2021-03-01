@@ -381,6 +381,11 @@ class ProjectFormFields extends React.Component {
       Imaging: 'Imaging',
     };
 
+    let publishingStatusOptions = {
+      inProgress: 'In progress',
+      published: 'Published',
+    };
+
     const allVOIs = this.props.allVOIs;
     let voiOptions = {};
     let type = this.props.formData.voiType;
@@ -400,6 +405,36 @@ class ProjectFormFields extends React.Component {
           onUserInput={this.props.setFormData}
           required={true}
           value={this.props.formData.description}
+        />
+        <DateElement
+          name="datePublication"
+          label="Date published"
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.datePublication}
+        />
+        <TextboxElement
+          name="journal"
+          label="Journal"
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.journal}
+        />
+        <TextboxElement
+          name="link"
+          label="Link"
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.link}
+        />
+        <SelectElement
+          name="publishingStatus"
+          label="Publishing status"
+          options={publishingStatusOptions}
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.publishingStatus}
+          emptyOption={true}
         />
         <TextboxElement
           name="leadInvestigator"

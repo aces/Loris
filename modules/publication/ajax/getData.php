@@ -78,11 +78,11 @@ function getData($db) : array
 
     // imaging VoIs -- filter out non-human readable DICOM tags
     $imgVOIs = $db->pselectCol(
-        "SELECT DISTINCT p.Name FROM parameter_type p 
-         JOIN parameter_type_category_rel ptcr 
-         ON p.ParameterTypeID=ptcr.ParameterTypeID 
-         JOIN parameter_type_category ptc 
-         ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID 
+        "SELECT DISTINCT p.Name FROM parameter_type p
+         JOIN parameter_type_category_rel ptcr
+         ON p.ParameterTypeID=ptcr.ParameterTypeID
+         JOIN parameter_type_category ptc
+         ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID
          WHERE ptc.Name='MRI Variables'",
         []
     );
@@ -132,7 +132,7 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, DateProposed, '.
+    $query  = 'SELECT Title, Description, datePublication, journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
@@ -169,11 +169,19 @@ function getProjectData($db, $user, $id) : array
 
         $title          = htmlspecialchars_decode($result['Title']);
         $description    = htmlspecialchars_decode($result['Description']);
+        $datePublication = htmlspecialchars_decode($result['datePublication']);
+        $journal         = htmlspecialchars_decode($result['journal']);
+        $link            = htmlspecialchars_decode($result['link']);
+        $publishingStatus= htmlspecialchars_decode($result['publishingStatus']);
         $rejectedReason = htmlspecialchars_decode($result['RejectedReason']);
 
         $pubData = [
             'title'                 => $title,
             'description'           => $description,
+            'datePublication'       => $datePublication,
+            'journal'               => $journal,
+            'link'                  => $link,
+            'publishingStatus'      => $publishingStatus,
             'leadInvestigator'      => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
             'status'                => $result['PublicationStatusID'],
