@@ -188,7 +188,10 @@ class ScheduleTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$ms")
         )->getText();
-        $this->assertStringContainsString("You won't be able to revert this!", $bodyText);
+        $this->assertStringContainsString(
+            "You won't be able to revert this!",
+            $bodyText
+        );
     }
     /**
      * Helper function to set up and load a page with a given permisison code.

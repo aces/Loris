@@ -111,8 +111,8 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match again.
-     *  
-     * @var \ProjectID
+     *
+     * @var    \ProjectID
      * @return \ProjectID The ProjectID
      */
     public function getProjectID(): \ProjectID

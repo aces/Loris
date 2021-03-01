@@ -47,7 +47,7 @@ class Appointment extends \NDB_Page
         switch ($request->getMethod()) {
         case "POST":
             $data = $request->getParsedBody();
-            if ( isset($data["edit"]) && ($data["edit"] == "true") ) {
+            if (isset($data["edit"]) && ($data["edit"] == "true") ) {
                 $this->editAppointment($data);
             } else {
                 $this->addAppointment($data);
