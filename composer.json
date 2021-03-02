@@ -21,7 +21,7 @@
         "phpmd/phpmd": "2.8",
         "phpstan/phpstan": "0.12.58",
         "php-webdriver/webdriver" : "dev-main",
-        "ext-zip": "*",
+        "ext-zip": "*"
 
     },
     "scripts": {
