@@ -1,8 +1,4 @@
 -- SQL tables for BIDS derivative file structure
-DROP TABLE IF EXISTS `annotationn_instance`;
-DROP TABLE IF EXISTS `annotation_file`;
-DROP TABLE IF EXISTS `annotation_parameter`;
-DROP TABLE IF EXISTS `annotation_file_type`;
 
 -- Create annotation_file_type table
 CREATE TABLE `annotation_file_type` (
@@ -63,7 +59,7 @@ CREATE TABLE `annotation_instance` (
 
 -- Insert into annotation_file_type
 INSERT INTO annotation_file_type
-    (Type, Description)
+    (FileType, Description)
     VALUES
     ('tsv',  'TSV File Type, contains information about each annotation'),
     ('json', 'JSON File Type, metadata for annotations');

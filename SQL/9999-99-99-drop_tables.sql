@@ -1,3 +1,9 @@
+-- 0000-00-06-Derivatives.sql
+DROP TABLE IF EXISTS `annotation_instance`;
+DROP TABLE IF EXISTS `annotation_parameter`;
+DROP TABLE IF EXISTS `annotation_file`;
+DROP TABLE IF EXISTS `annotation_file_type`;
+
 -- 0000-00-05-ElectrophysiologyTables.sql
 DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event`;
