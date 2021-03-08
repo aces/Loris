@@ -43,8 +43,8 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
         // setup the form
         $this->_setupForm();
 
-	// set data entry type
-	$this->DataEntryType = 'DirectEntry';
+        // set data entry type
+        $this->DataEntryType = 'DirectEntry';
     }
 
     /**
