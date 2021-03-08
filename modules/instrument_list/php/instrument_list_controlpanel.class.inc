@@ -133,7 +133,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
             $this->startStage($nextStage);
 
-            if ($nextStage = 'Recycling Bin') {
+            if ($nextStage == 'Recycling Bin') {
 
                 $battery = new \NDB_BVL_Battery();
 
