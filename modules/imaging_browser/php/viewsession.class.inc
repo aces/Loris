@@ -80,7 +80,6 @@ class ViewSession extends \NDB_Form
                 ))
                 && $user->hasProject($session->getProject()->getId());
         }
-
         return false;
     }
 

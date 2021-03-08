@@ -105,7 +105,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             case 'Sex':
                 $this->candidateInfo[$key] = new Sex($value);
                 break;
-            case 'EntityType':
+            case 'Entity_type':
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
@@ -544,7 +544,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getEntityType(): ?EntityType
     {
-        return $this->candidateInfo["EntityType"];
+        return $this->candidateInfo["Entity_type"];
     }
 
     /**
