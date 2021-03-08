@@ -198,8 +198,6 @@ class RequestAccount extends \NDB_Form
             ['VEmail' => $from]
         );
 
-        $user_id = null;
-
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $DB->insert('users', $vals);

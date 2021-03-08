@@ -143,7 +143,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testTextElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::Name("testText")
         )->sendKeys("Test Text successful");
         $this->webDriver->findElement(
@@ -164,7 +164,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testCheckBoxElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::Name("testCheckbox")
         )->click();
         $this->webDriver->findElement(

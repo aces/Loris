@@ -232,8 +232,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $newFormFilters = [];
-
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
             if (isset($values[$formKey])) {
@@ -242,8 +240,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 $filteredValue = $values[$formKey];
                 if ($filteredValue !== '') {
                     if (in_array($dbField, $this->validFilters)) {
-                        $newFormFilters[$dbField] = $filteredValue;
-
                         if (in_array($dbField, $this->validHavingFilters)) {
                             $this->having[$dbField] = $filteredValue;
                         } else {
@@ -330,7 +326,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // 3. Set the search keyword (if applicable)
-        $key = null;
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
@@ -440,14 +435,13 @@ class NDB_Menu_Filter extends NDB_Menu
         // create DB object
         $DB =& Database::singleton();
 
-        $qparams = [];
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {
@@ -795,14 +789,13 @@ class NDB_Menu_Filter extends NDB_Menu
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $qparams = [];
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {

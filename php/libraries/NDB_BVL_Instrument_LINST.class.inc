@@ -480,7 +480,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // Add elements is only true if we're parsing the current page,
             // otherwise we don't.. but even on other pages, we need to
             // parse the whole file for table{@} and other meta elements
-            $addElements = true;
             if (!empty($this->page)) {
                 $currentPage = $this->page;
                 $addElements = false;

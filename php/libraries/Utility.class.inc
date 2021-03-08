@@ -351,7 +351,6 @@ class Utility
         $query .= " GROUP BY Test_name ORDER BY Test_name";
 
         // get the list of instruments
-        $rows  = [];
         $tests = [];
         $rows  = $DB->pselect($query, $params);
 

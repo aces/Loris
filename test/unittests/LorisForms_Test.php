@@ -109,7 +109,6 @@ class LorisForms_Test extends TestCase
             return;
         }
 
-        $msg = '';
         if (is_array($attribValue)) {
             $msg = "[";
             foreach ($attribValue as $i => $val) {

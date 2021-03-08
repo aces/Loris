@@ -534,7 +534,7 @@ class CandidateTest extends TestCase
         }
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
-        //$this->assertEquals($expected, $this->_candidate->getListOfVisitLabels());
+        $this->assertEquals($expected, $this->_candidate->getListOfVisitLabels());
 
     }
 

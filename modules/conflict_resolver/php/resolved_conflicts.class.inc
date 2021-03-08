@@ -171,7 +171,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         // Project list, if applicable
         $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $list_of_projects[$value] = $value;
         }
         $this->addSelect('project', 'Project: ', $list_of_projects);

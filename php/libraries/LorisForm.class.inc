@@ -1618,7 +1618,6 @@ class LorisForm
     {
         $val      = $this->getValue($el['name']);
         $checked  = '';
-        $value    = '';
         $disabled = '';
         $value    = $el["checkStates"];
         if ($val === $value[1]) {
@@ -2125,8 +2124,6 @@ class LorisForm
             $bracketIdx = strpos($name, '[');
             if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $this->getValue($fieldName);
                 }
