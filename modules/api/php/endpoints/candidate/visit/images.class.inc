@@ -140,7 +140,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->_visit,
                 ...$images
             ))->toArray();
-
+            break;
         default:
             $view = (new \LORIS\api\Views\Visit\Images_0_0_4_Dev(
                 $this->_visit,
