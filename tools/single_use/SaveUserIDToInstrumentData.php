@@ -1,6 +1,8 @@
 <?php
 /**
- * This script is intended for a one-time use only to restore the value of the
+  * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script. It took 14 hours to run the script on the CCNA DB during testing.
+  *
+  * This script is intended for a one-time use only to restore the value of the
  * `UserID` column of instrument tables and the `UserID` key of the instrument
  * JSON `Data` in the flag table.
  *
