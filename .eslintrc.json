@@ -69,7 +69,7 @@
         "modules/**"
       ],
       "rules": {
-	    "no-jquery/no-other-methods": "error",
+        "no-jquery/no-other-methods": "error",
         "no-jquery/no-other-utils": "error",
         "no-jquery/no-jquery-constructor": "error",
 
