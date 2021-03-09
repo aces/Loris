@@ -149,7 +149,6 @@
       "files": [
         "modules/media/**",
         "modules/candidate_parameters/**",
-        "modules/conflict_resolver/**",
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
         "modules/dqt/**",
