@@ -24,6 +24,13 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $username = \User::singleton()->getUsername();
 
+// With formData, null is passed as a string
+foreach ($_POST as $key => $val) {
+    if ($_POST[$key] === 'null') {
+        $_POST[$key] = null;
+    }
+}
+
 if (isset($_POST['candID']) && !empty($_POST['candID'])) {
     $candID    = new CandID($_POST['candID']);
     $sessionID = null;
