@@ -69,9 +69,9 @@
         "modules/**"
       ],
       "rules": {
-        "no-jquery/no-other-methods": "error",
+        "no-jquery/no-other-methods": "warn",
         "no-jquery/no-other-utils": "error",
-        "no-jquery/no-jquery-constructor": "error",
+        "no-jquery/no-jquery-constructor": "warn",
 
         // methods
         "no-jquery/no-animate": "error",
@@ -147,18 +147,14 @@
     },
     {
       "files": [
-        "modules/media/**",
         "modules/candidate_parameters/**",
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
         "modules/dqt/**",
-        "modules/imaging_browser/**",
         "modules/imaging_uploader/**"
       ],
       "rules": {
-        "no-jquery/no-other-methods": "warn",
         "no-jquery/no-other-utils": "warn",
-        "no-jquery/no-jquery-constructor": "warn",
 
         // methods
         "no-jquery/no-animate": "warn",
