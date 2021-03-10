@@ -65,14 +65,14 @@ class ViewSession extends \NDB_Form
         $candid    = $session->getCandID();
         $candidate = \Candidate::singleton($candid);
 
-        if ($candidate->getData('Entity_type') == 'Scanner') {
+        if ($candidate->getEntityType() == 'Scanner') {
             return ($user->hasPermission('imaging_browser_phantom_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_phantom_ownsite',
                     $session->getCenterID()
                 ))
                 && ($user->hasProject($session->getProject()->getId()));
-        } elseif ($candidate->getData('Entity_type') == 'Human') {
+        } elseif ($candidate->getEntityType() == 'Human') {
             return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',
@@ -80,7 +80,6 @@ class ViewSession extends \NDB_Form
                 ))
                 && $user->hasProject($session->getProject()->getId());
         }
-
         return false;
     }
 
@@ -893,7 +892,7 @@ class ViewSession extends \NDB_Form
         //Need to find the proper way to get the TarchiveID.
         //It should be per file, not per candidate. --Dave
         $params     = [];
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID = ":PPSCID";
             $params['PPSCID'] = $timePoint->getData('PSCID');
