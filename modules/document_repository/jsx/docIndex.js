@@ -35,6 +35,18 @@ class DocIndex extends React.Component {
       .then(() => this.setState({isLoaded: true}));
   }
 
+  htmlSpecialCharsDecode(text) {
+    if (text != null) {
+      return text
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+    } else {
+      return text;
+    }
+  }
+
   handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
@@ -123,11 +135,13 @@ class DocIndex extends React.Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    cell = this.htmlSpecialCharsDecode(cell);
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
-        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(row['File Name']);
-        result = <td><a href={downloadURL} target="_blank" download={row['File Name']}>{cell}</a></td>;
+        let fileName = this.htmlSpecialCharsDecode(row['File Name']);
+        let downloadURL = loris.BaseURL + '/document_repository/Files/' + encodeURIComponent(fileName);
+        result = <td><a href={downloadURL} target="_blank" download={fileName}>{cell}</a></td>;
         break;
       case 'Edit':
         let editURL = loris.BaseURL + '/document_repository/edit/' + row['Edit'];

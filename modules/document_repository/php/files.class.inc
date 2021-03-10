@@ -116,7 +116,7 @@ class Files extends \NDB_Page
                 $uploadedBy = $DB->pselectOne(
                     "SELECT uploaded_by FROM document_repository
                     WHERE File_Name=:name",
-                    array('name' => $record)
+                    array('name' => htmlspecialchars($record))
                 );
                 $file       = $path. "$uploadedBy/$record";
                 return (new \LORIS\Http\Response())
@@ -348,6 +348,7 @@ class Files extends \NDB_Page
         $uploadedFile = $uploadedFiles['file'];
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
+        $fileName     = str_replace("%22", "\"", $fileName);
         $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
         $uploadPath   = $path.$name."/";
         // $category is a string representation of an ID, and so should be at
