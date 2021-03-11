@@ -84,80 +84,76 @@ class ViewProject extends React.Component {
    * Fetch data
    */
   fetchData() {
-    /**
-     * Fetch data
-     */
-    fetchData() {
-      fetch(this.props.DataURL, {
-        method: 'GET',
-      }).then((response) => {
-        if (!response.ok) {
-          console.error(response.status);
-          this.setState({
-            error: 'An error occurred when loading the form!',
-          });
-          return;
-        }
-
-        response.json().then(
-          (data) => {
-            let formData = {
-              title: data.title,
-              description: data.description,
-              datePublication: data.datePublication,
-              journal: data.journal,
-              link: data.link,
-              publishingStatus: data.publishingStatus,
-              leadInvestigator: data.leadInvestigator,
-              leadInvestigatorEmail: data.leadInvestigatorEmail,
-              notifyLead: false,
-              status: data.status,
-              voiFields: data.voi,
-              keywords: data.keywords,
-              collaborators: data.collaborators,
-              usersWithEditPerm: data.usersWithEditPerm,
-              rejectedReason: data.rejectedReason,
-            };
-            // set formdata for file meta data
-            if (data.files) {
-              data.files.forEach(function(f) {
-                let existFileFlag = 'existingUpload_';
-                let pubType = existFileFlag
-                  + 'publicationType_'
-                  + f.PublicationUploadID;
-                let pubCit = existFileFlag
-                  + 'publicationCitation_'
-                  + f.PublicationUploadID;
-                let pubVer = existFileFlag
-                  + 'publicationVersion_'
-                  + f.PublicationUploadID;
-                formData[pubType] = f.PublicationUploadTypeID;
-                formData[pubCit] = f.Citation;
-                formData[pubVer] = f.Version;
-              });
-            }
-
-            this.setState({
-              formData: formData,
-              users: data.users,
-              statusOpts: data.statusOpts,
-              userCanEdit: data.userCanEdit,
-              allVOIs: data.allVOIs,
-              allKWs: data.allKWs,
-              allCollabs: data.allCollabs,
-              uploadTypes: data.uploadTypes,
-              files: data.files,
-              isLoaded: true,
-            });
-          });
-      }).catch((error) => {
-        // Network error
-        console.error(error);
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
         this.setState({
           error: 'An error occurred when loading the form!',
         });
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let formData = {
+            title: data.title,
+            description: data.description,
+            datePublication: data.datePublication,
+            journal: data.journal,
+            link: data.link,
+            publishingStatus: data.publishingStatus,
+            leadInvestigator: data.leadInvestigator,
+            leadInvestigatorEmail: data.leadInvestigatorEmail,
+            notifyLead: false,
+            status: data.status,
+            voiFields: data.voi,
+            keywords: data.keywords,
+            collaborators: data.collaborators,
+            usersWithEditPerm: data.usersWithEditPerm,
+            rejectedReason: data.rejectedReason,
+          };
+          // set formdata for file meta data
+          if (data.files) {
+            data.files.forEach(function(f) {
+              let existFileFlag = 'existingUpload_';
+              let pubType = existFileFlag
+                + 'publicationType_'
+                + f.PublicationUploadID;
+              let pubCit = existFileFlag
+                + 'publicationCitation_'
+                + f.PublicationUploadID;
+              let pubVer = existFileFlag
+                + 'publicationVersion_'
+                + f.PublicationUploadID;
+              formData[pubType] = f.PublicationUploadTypeID;
+              formData[pubCit] = f.Citation;
+              formData[pubVer] = f.Version;
+            });
+          }
+
+          this.setState({
+            formData: formData,
+            users: data.users,
+            statusOpts: data.statusOpts,
+            userCanEdit: data.userCanEdit,
+            allVOIs: data.allVOIs,
+            allKWs: data.allKWs,
+            allCollabs: data.allCollabs,
+            uploadTypes: data.uploadTypes,
+            files: data.files,
+            isLoaded: true,
+          });
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
       });
-    }
+    });
+  }
 
   /**
    * Called by React when the component has been rendered on the page.
