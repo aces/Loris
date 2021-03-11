@@ -116,7 +116,7 @@ function uploadFile()
     // If required fields are not set, show an error
     if (empty($_FILES)) {
         showMediaError(
-            "File could not be uploaded successfully. 
+            "File could not be uploaded successfully.
             Please contact the administrator.",
             400
         );
@@ -130,6 +130,7 @@ function uploadFile()
     checkDateTaken($dateTaken);
 
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileName  = str_replace("%22", "\"", $fileName);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
