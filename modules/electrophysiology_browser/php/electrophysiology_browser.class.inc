@@ -105,6 +105,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
             $list_of_projects[$project] = $project;
         }
 
+        // get list of types
         $list_of_types = [];
         $typeList      = $db->pselect(
             "SELECT OutputTypeName FROM physiological_output_type",

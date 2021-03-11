@@ -126,14 +126,14 @@ class Sessions extends \NDB_Page
 
         if (!isset($parameters['outputType'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'outputType required'
+                'OutputType required'
             ));
         }
 
         $outputType = $parameters['outputType'];
         if (!in_array($outputType, ['raw', 'derivative', 'all_types'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
-                'invalid output type'
+                'Invalid output type'
             ));
         }
 
@@ -333,6 +333,9 @@ class Sessions extends \NDB_Page
             $artefactDesc     = $physioFileObj->getParameter(
                 'SubjectArtefactDescription'
             );
+            $chunksUrl        = $physioFileObj->getParameter(
+                'electrophyiology_chunked_dataset_path'
+            );
 
             $fileSummary['details']['task']['description']     = $taskDesc;
             $fileSummary['details']['instructions']            = $instructions;
@@ -363,7 +366,8 @@ class Sessions extends \NDB_Page
                 $physiologicalFile
             );
 
-            $fileSummary['downloads'] = $links;
+            $fileSummary['downloads']  = $links;
+            $fileSummary['chunks_url'] = $chunksUrl;
 
             $fileCollection[]['file'] = $fileSummary;
         }
@@ -463,6 +467,26 @@ class Sessions extends \NDB_Page
             [
                 $baseurl
                 . '/electrophysiology_browser/js/electrophysiologySessionView.js',
+            ]
+        );
+        return $depends;
+    }
+
+    /**
+     * Get CSS Dependencies
+     *
+     * @return array
+     */
+    function getCSSDependencies()
+    {
+        $depends = parent::getCSSDependencies();
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            [
+                $baseurl
+                . '/electrophysiology_browser/css/electrophysiology_browser.css',
             ]
         );
         return $depends;
