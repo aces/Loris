@@ -1,0 +1,15 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/npm/
+
+[include]
+../../../../jsx
+
+[libs]
+
+[lints]
+
+[options]
+react.runtime=automatic
+module.name_mapper='^jsx' -> '<PROJECT_ROOT>/../../../../jsx/'
+
+[strict]

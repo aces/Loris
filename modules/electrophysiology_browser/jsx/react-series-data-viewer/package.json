@@ -1,0 +1,41 @@
+{
+  "name": "react-series-data-viewer",
+  "homepage": "https://github.com/aces/react-series-data-viewer/",
+  "version": "1.0.0",
+  "description": "react-series-data-viewer React component",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.13.1",
+    "@visx/axis": "^1.4.0",
+    "@visx/group": "^1.0.0",
+    "@visx/responsive": "^1.3.0",
+    "@visx/shape": "^1.4.0",
+    "d3-3d": "0.0.10",
+    "d3-array": "^1.2.4",
+    "d3-dsv": "^1.0.10",
+    "d3-scale": "^2.1.2",
+    "d3-scale-chromatic": "^1.3.3",
+    "differenceequationsignal1d": "^0.1.1",
+    "gl-matrix": "^2.8.1",
+    "google-protobuf": "^3.6.1",
+    "ramda": "^0.25.0",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.6.1",
+    "redux-logger": "^3.0.6",
+    "redux-observable": "^1.0.0",
+    "redux-thunk": "^2.3.0",
+    "resize-observer-polyfill": "^1.5.0",
+    "rxjs": "^6.6.3"
+  },
+  "devDependencies": {
+    "babel-plugin-flow-react-proptypes": "^24.1.2",
+    "flow-bin": "^0.123.0"
+  },
+  "scripts": {
+    "flow": "./node_modules/flow-bin/cli.js",
+    "postinstall": "protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aces/react-series-data-viewer"
+}
