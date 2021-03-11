@@ -150,8 +150,7 @@
         "modules/candidate_parameters/**",
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
-        "modules/dqt/**",
-        "modules/imaging_uploader/**"
+        "modules/dqt/**"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",
