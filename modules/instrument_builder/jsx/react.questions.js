@@ -1081,10 +1081,19 @@ class AddElement extends Component {
     // setting any values
     this.setState(function(state) {
       let temp = state.options;
-      let option = multi ?
-        $('#newmultiSelectOption').val() :
-        $('#newSelectOption').val();
-      temp.push(option);
+      const newmultiSelectOption = document.getElementById(
+        'newmultiSelectOption'
+      );
+      const newSelectOption = document.getElementById(
+        'newSelectOption'
+      );
+
+      if (multi && newmultiSelectOption) {
+        temp.push(newmultiSelectOption.value);
+      } else if (newSelectOption) {
+        temp.push(newSelectOption.value);
+      }
+
       return {
         options: temp,
       };

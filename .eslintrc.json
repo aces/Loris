@@ -153,7 +153,6 @@
         "modules/dataquery/**",
         "modules/dqt/**",
         "modules/imaging_browser/**",
-        "modules/instrument_builder/**",
         "modules/imaging_uploader/**"
       ],
       "rules": {
