@@ -44,7 +44,6 @@ class Survey_Handle extends \NDB_Form
             if ($result) {
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
-                    ->withStatus(200)
                     ->withBody(
                         new \LORIS\Http\StringStream(
                             json_encode($result)
@@ -53,7 +52,6 @@ class Survey_Handle extends \NDB_Form
             }
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withStatus(400)
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("no survey found.")

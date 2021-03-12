@@ -32,7 +32,7 @@ class View_Surveys extends \NDB_Form
      *
      * @return void
      */
-    function setup()
+    function setup(): void
     {
 
         $factory = \NDB_Factory::singleton();
@@ -74,7 +74,7 @@ class View_Surveys extends \NDB_Form
      *
      * @return void
      */
-    function getCSSDependencies()
+    function getCSSDependencies(): void
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
