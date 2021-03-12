@@ -118,7 +118,7 @@ and `my_new_module_edit`. Your PHP code within
 allow a user to do using the `hasAccess()` function.
 
 To add new permissions, append them to the list of existing permissions
-found in `SQL/0000-00-01-Permission.sql`. (This file is found in
+found in `SQL/0000-00-02-Permission.sql`. (This file is found in
 your LORIS root directory, not within the module subdirectory.)
 
 #### Adding/Removing Modules
@@ -137,7 +137,7 @@ module.
 
 Create a file `SQL/New_patches/$date_AddMyNewModule.sql`. This file
 should contain the same commands you added to
-`SQL/0000-00-01-Permission.sql` and `SQL/0000-00-02-Modules.sql`.
+`SQL/0000-00-02-Permission.sql` and `SQL/0000-00-01-Modules.sql`.
 
 ### Interacting with other modules
 
@@ -209,8 +209,8 @@ the following
 * e.g. `SQL/New_patches/$date_Add-New-Module.sql` -- SQL statements to modify an existing LORIS instance to be compatible with the new module.
 
 ## Required modifications to existing files
-* `SQL/0000-00-01-Permission.sql` -- Adding new permissions for your module
-* `SQL/0000-00-02-Modules.sql` -- Containing an entry for the new module
+* `SQL/0000-00-01-Modules.sql` -- Containing an entry for the new module
+* `SQL/0000-00-02-Permission.sql` -- Adding new permissions for your module
 
 ## Optional new files
 * `modules/my_new_module/css/...` -- Custom CSS file(s)

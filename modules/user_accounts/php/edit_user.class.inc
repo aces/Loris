@@ -943,7 +943,7 @@ class Edit_User extends \NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                htmlspecialchars($row['description']) . "<br>",
+                htmlspecialchars($row['label']) . "<br>",
                 $attribs
             );
         }

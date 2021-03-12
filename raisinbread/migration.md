@@ -11,12 +11,15 @@
 2020-07-22_RenameBatteryManagerPermissions.sql
 2020-08-10_add_AcquisitionDate_to_files.sql
 2020-10-29-session-current-stage-default.sql
+2021-01-31-renaming_permissions.sql
 
 # CLEAN-UP
 2020-02-06-NoMultipleSitesConf.sql
 2020-06-18-remove_violated_scans_edit_permission.sql
 2020-08-11-RemoveReliabilityPermissions.sql
 2020-09-09-RemoveHelpParentID.sql
+2021-01-31-deleting_permissions.sql
+
 
 ____________________________________________________________________________________________________________________
 # 23.0

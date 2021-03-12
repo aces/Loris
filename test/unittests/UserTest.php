@@ -151,27 +151,48 @@ class UserTest extends TestCase
         ]
     ];
 
-    private $_permInfo     = [0 => ['permID' => 1,
-        'code'        => "superuser",
-        'description' => "superuser description",
-        'categoryID'  => 1
-    ],
+    private $_permInfo = [
+        0 => ['permID' => 1,
+            'code'        => "superuser",
+            'description' => "superuser description",
+            'categoryID'  => 1,
+            'action'      => null,
+            'moduleID'    => null
+        ],
         1 => ['permID' => 2,
             'code'        => "test_permission",
             'description' => "description 1",
-            'categoryID'  => 2
+            'categoryID'  => 2,
+            'action'      => 'View',
+            'moduleID'    => 2
         ],
         2 => ['permID' => 3,
             'code'        => "test_permission2",
             'description' => "description 2",
-            'categoryID'  => 3
+            'categoryID'  => 3,
+            'action'      => 'Edit',
+            'moduleID'    => 5
         ],
         3 => ['permID' => 4,
             'code'        => "test_permission3",
             'description' => "description 3",
-            'categoryID'  => 4
+            'categoryID'  => 4,
+            'action'      => 'View/Create',
+            'moduleID'    => 5
         ]
     ];
+
+    private $_moduleInfo = [
+        0 => [
+            'ID'   => 2,
+            'Name' => 'candidate_list'
+        ],
+        1 => [
+            'ID'   => 5,
+            'Name' => 'timepoint_list'
+        ],
+    ];
+
     private $_userPermInfo = [0 => ['permID' => 1,
         'userID' => 1
     ],
@@ -1099,22 +1120,36 @@ class UserTest extends TestCase
             "permissions_category",
             $this->_categoryInfo
         );
+        $this->_dbMock->setFakeTableData(
+            "modules",
+            $this->_moduleInfo
+        );
         $this->assertEquals(
             $this->_user->getPermissionsVerbose(),
-            [0 => ['permID' => '1',
-                'code'        => "superuser",
-                'description' => "superuser description",
-                'type'        => "superuser category"
-            ],
+            [
+                0 => ['permID' => '1',
+                    'code'        => "superuser",
+                    'description' => "superuser description",
+                    'type'        => "superuser category",
+                    'action'      => null,
+                    'moduleID'    => null,
+                    'label'       => 'superuser description'
+                ],
                 1 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
-                    'type'        => "category 1"
+                    'type'        => "category 1",
+                    'action'      => "View",
+                    'moduleID'    => 2,
+                    'label'       => "Access Profile: View description 1"
                 ],
                 2 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
-                    'type'        => "category 2"
+                    'type'        => "category 2",
+                    'action'      => "Edit",
+                    'moduleID'    => 5,
+                    'label'       => "Timepoint List: Edit description 2"
                 ]
             ]
         );
