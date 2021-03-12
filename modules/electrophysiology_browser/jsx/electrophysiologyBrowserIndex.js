@@ -139,6 +139,14 @@ class ElectrophysiologyBrowserIndex extends Component {
         name: 'visitLabel',
         type: 'text',
       }},
+      {label: 'Raw or Derived', show: true, filter: {
+        name: 'dataType',
+        type: 'select',
+        options: {
+          Derived: 'Derived',
+          Raw: 'Raw',
+        },
+      }},
       {label: 'Acquisition Time', show: true},
       {label: 'Insertion Time', show: true},
       {label: 'Links', show: true},

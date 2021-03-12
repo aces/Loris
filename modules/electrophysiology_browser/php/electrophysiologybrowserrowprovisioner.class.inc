@@ -45,6 +45,17 @@ class ElectrophysiologyBrowserRowProvisioner
               c.CandID                                  AS DCCID,
               Project.Name                              AS Project,
               s.Visit_label                             AS Visit_Label,
+              GROUP_CONCAT(DISTINCT CASE WHEN EXISTS (
+                SELECT
+                  AnnotationFileID
+                FROM
+                  annotation_file
+                WHERE
+                  PhysiologicalFileID = pf.PhysiologicalFileID) THEN
+                'Derived'
+              ELSE
+                'Raw'
+              END) AS Derived,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
