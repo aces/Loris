@@ -28,10 +28,10 @@ DROP TABLE IF EXISTS `issues_comments`;
 DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
--- 0000-00-02-Modules.sql
+-- 0000-00-01-Modules.sql
 DROP TABLE IF EXISTS `modules`;
 
--- 0000-00-01-Permission.sql
+-- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;

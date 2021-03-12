@@ -11,6 +11,15 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_Manager extends \NDB_Menu_Filter
 {
+    private \NDB_Factory $_factory;
+
+    /**
+     * The LORIS base path
+     *
+     * @var string
+     */
+    private string $_path;
+
     const PERMISSIONS = [
         'instrument_manager_read',
         'instrument_manager_write'
@@ -49,8 +58,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
-        $this->factory      = \NDB_Factory::singleton();
-        $this->path         = $this->factory->config()->getSetting("base");
+        $this->_factory     = \NDB_Factory::singleton();
+        $this->_path        = $this->_factory->config()->getSetting("base");
 
         parent::__construct($module, $page, $id, $commentID);
     }
@@ -112,7 +121,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $uploaded_file = $request->getUploadedFiles()['install_file'];
         $filename      = $uploaded_file->getClientFilename();
         $instrument    = pathinfo($filename)['filename'];
-        $targetdir     = new \SplFileInfo($this->path . 'project/instruments/');
+        $targetdir     = new \SplFileInfo($this->_path . 'project/instruments/');
         $fullpath      = $targetdir->getPathname() . '/' . $filename;
 
         if ($this->instrumentExists($instrument)) {
@@ -149,7 +158,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
 
         // Scripts in tools/ often make relative imports, so we must change
         // our effective directory in order to use them.
-        chdir($this->path . "/tools");
+        chdir($this->_path . "/tools");
         // Use tools/ script to generate an SQL patch file based on the
         // structure of the uploaded .linst file.
         exec(
@@ -190,7 +199,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             " -u" . escapeshellarg($db_config['adminUser']).
             " -p" . escapeshellarg($db_config['adminPassword']).
             " " . escapeshellarg($db_config['database']).
-            " < " . $this->path . "project/tables_sql/".
+            " < " . $this->_path . "project/tables_sql/".
             escapeshellarg($table_name . '.sql'),
             $output, // $output and $status are created automatically
             $status  // by `exec` and so need not be declared above.
@@ -296,12 +305,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkInstrumentType(string $instrument): string
     {
-        $linst = $this->path . "/project/instruments/$instrument.linst";
+        $linst = $this->_path . "/project/instruments/$instrument.linst";
         if (file_exists($linst)) {
             return 'Instrument Builder';
         }
 
-        $php = $this->path .
+        $php = $this->_path .
             "/project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
 
         if (file_exists($php)) {
@@ -321,7 +330,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkPagesValid(string $instrument): string
     {
-        $filename = $this->path . "/project/instruments/$instrument.linst";
+        $filename = $this->_path . "/project/instruments/$instrument.linst";
         if (!file_exists($filename)) {
             return '?';
         } else {
@@ -338,7 +347,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkTableValid(string $instrument): string
     {
-        $filename = $this->path . "/project/instruments/$instrument.linst";
+        $filename = $this->_path . "/project/instruments/$instrument.linst";
         if (!file_exists($filename)) {
             return '?';
         } else {
@@ -357,7 +366,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         // This should also check that all the columns exist and
         // have the right type, for new style instruments
-        $exists = $this->factory->database()->pselectOne(
+        $exists = $this->_factory->database()->pselectOne(
             '
            SELECT count(*)
            FROM information_schema.tables
@@ -365,7 +374,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
            TABLE_NAME=:tablename
           ',
             [
-                'dbname'    => $this->factory->settings()->dbName(),
+                'dbname'    => $this->_factory->settings()->dbName(),
                 'tablename' => $instrument,
             ]
         );
@@ -381,7 +390,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function instrumentExists(string $instrument): bool
     {
-        $count = $this->factory->database()->pselectOne(
+        $count = $this->_factory->database()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
             [':v_instrument' => $instrument]
         );
@@ -399,7 +408,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkType($tablename, $columnname, $type)
     {
-        $db           = $this->factory->database();
+        $db           = $this->_factory->database();
         $sqlSelectOne = "SELECT count(*)".
                         " FROM information_schema.columns".
                         " WHERE TABLE_SCHEMA=:dbname".
@@ -409,7 +418,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $exists       = $db->pselectOne(
             $sqlSelectOne,
             [
-                'dbname'     => $this->factory->settings()->dbName(),
+                'dbname'     => $this->_factory->settings()->dbName(),
                 'columnname' => $columnname,
                 'tablename'  => $tablename,
                 'typename'   => $type,
@@ -430,9 +439,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkTable($instname): string
     {
-        $filename = $this->path . "project/instruments/$instname.linst";
+        $filename = $this->_path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = $this->factory->database();
+        $db       = $this->_factory->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -479,7 +488,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
                     [
-                        'dbname'     => $this->factory->settings()->dbName(),
+                        'dbname'     => $this->_factory->settings()->dbName(),
                         'columnname' => $name,
                         'tablename'  => $instname,
                     ]
@@ -514,9 +523,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function checkPages($instname): string
     {
-        $filename = $this->path . "project/instruments/$instname.linst";
+        $filename = $this->_path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = $this->factory->database();
+        $db       = $this->_factory->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
@@ -555,8 +564,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function isAdminUserConfigured() : bool
     {
-        $db        = $this->factory->database();
-        $db_config = $this->factory->config()->getSetting('database');
+        $db        = $this->_factory->database();
+        $db_config = $this->_factory->config()->getSetting('database');
 
         $credentials_set = !empty($db_config['adminUser'])
             && !empty($db_config['adminPassword']);
@@ -587,8 +596,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     protected function canWriteFiles(): bool
     {
-        $instrument_dir = $this->path . 'project/instruments';
-        $table_dir      = $this->path . 'project/tables_sql';
+        $instrument_dir = $this->_path . 'project/instruments';
+        $table_dir      = $this->_path . 'project/tables_sql';
 
         return is_writable($instrument_dir) && is_writable($table_dir);
     }
@@ -603,7 +612,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     public function getJSDependencies(): array
     {
         $depends = parent::getJSDependencies();
-        $baseURL = $this->factory->settings()->getBaseURL();
+        $baseURL = $this->_factory->settings()->getBaseURL();
         return array_merge(
             $depends,
             [

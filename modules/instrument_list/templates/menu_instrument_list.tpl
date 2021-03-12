@@ -43,7 +43,7 @@
       <th>
         Within Permitted
       </th>
-      {if $SupplementalSessionStatuses }
+      {if $SupplementalSessionStatuses|default}
         {foreach from=$timePoint.status item=status key=name}
           <th>
             {$name}
@@ -90,23 +90,23 @@
         {$display.SubprojectTitle}
       </td>
       <td>
-        {$display.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
+        {$display.Scan_done|default:"<img alt=\"Data Missing\" src=\"{$baseurl|default}/images/help2.gif\" width=\"12\" height=\"12\" />"}
       </td>
       <td>
-        {if $display.WindowInfo.Optimum}
+        {if $display.WindowInfo.Optimum|default}
           Yes
         {else}
           No
         {/if}
       </td>
-      <td {if not $display.WindowInfo.Optimum}class="error"{/if}>
-        {if $display.WindowInfo.Permitted}
+      <td {if not $display.WindowInfo.Optimum|default}class="error"{/if}>
+        {if $display.WindowInfo.Permitted|default}
           Yes
         {else}
           No
         {/if}
       </td>
-      {if $SupplementalSessionStatuses }
+      {if $SupplementalSessionStatuses|default}
         {foreach from=$display.status item=status}
           <td>
             {$status}
@@ -192,21 +192,21 @@
 	    <th>Double Data Entry Form</th>
 	    <th>Double Data Entry Status</th>
     </tr>
-    </thead>	
+    </thead>
 	{section name=instrument loop=$instruments[group]}
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-                <a href="{$baseurl}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
+                <a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
 	            {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
-	    	<td bgcolor="{$instruments[group][instrument].feedbackColor}">
+	    	<td bgcolor="{$instruments[group][instrument].feedbackColor|default}">
 		    	{$instruments[group][instrument].feedbackStatus}
 	        </td>
 			<td>
 				{if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="{$baseurl}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
+				    	<a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
 			   {/if}&nbsp;
 			</td>
 			<td>{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>
@@ -220,6 +220,6 @@
   <div class="col-xs-12 row">
   </div>
   <div class="col-xs-12 row">
-    <button class="btn btn-primary" onclick="location.href='{$baseurl}/imaging_browser/viewSession/?sessionID={$sessionID}'">View Imaging data</button>
+    <button class="btn btn-primary" onclick="location.href='{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}'">View Imaging data</button>
   </div>
 </div>

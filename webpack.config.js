@@ -1,3 +1,4 @@
+const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
@@ -52,12 +53,6 @@ const mod = {
       use: [
         {
           loader: 'babel-loader?cacheDirectory',
-        },
-        {
-          loader: 'eslint-loader',
-          options: {
-            cache: true,
-          },
         },
       ],
       enforce: 'pre',
@@ -162,6 +157,9 @@ const config = [
     },
     devtool: 'source-map',
     plugins: [
+      new ESLintPlugin({
+        cache: true,
+      }),
       new CopyPlugin({
         patterns: [
           {

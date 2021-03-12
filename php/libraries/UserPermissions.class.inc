@@ -25,18 +25,16 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    int
-     * @access private
+     * @var ?string
      */
     var $userID;
 
     /**
      * Stores the permissions
      *
-     * @var    array<string,bool>
-     * @access private
+     * @var array<string,bool>
      */
-    var $permissions = [];
+    private $permissions = [];
 
 
     /**
@@ -54,10 +52,11 @@ class UserPermissions
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = ['UName' => $username];
 
-        $this->userID = \Database::singleton()->pselectOne($query, $params);
-        if (empty($this->userID)) {
+        $userID = \Database::singleton()->pselectOne($query, $params);
+        if ($userID === null) {
             return false;
         }
+        $this->userID = $userID;
 
         // load the user's permissions
         $this->setPermissions();
@@ -290,14 +289,33 @@ class UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $query   = "SELECT p.permID, p.code, p.description, pc.Description as type
+        $query   = "SELECT
+                p.permID,
+                p.code,
+                p.description,
+                pc.Description as type,
+                p.action,
+                p.moduleID
             FROM permissions p
                 JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+                LEFT JOIN modules m ON (p.moduleID=m.ID)
             WHERE up.userID = :UID
-                ORDER BY p.categoryID, p.description";
+                ORDER BY p.categoryID, m.Name, p.description";
         $results = $DB->pselect($query, ['UID' => $this->userID]);
+        $modules = \Module::getActiveModulesIndexed($DB);
+        // Build new meaningful description from combination of columns
+        // Module Long Name: action description
+        foreach ($results as $key=>$perm) {
+            $newDesc = '';
+            if (!empty($perm['moduleID'])) {
+                $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
+            }
+            $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
+            $newDesc .= $perm['description'];
 
+            $results[$key]['label'] = $newDesc;
+        }
         return $results;
     }
 

@@ -203,7 +203,7 @@ class UploadFileForm extends Component {
             showCancelButton: true,
             confirmButtonText: 'Yes, I am sure!',
             cancelButtonText: 'No, cancel it!',
-          }, (isConfirm) => {
+          }).then((isConfirm) => {
             if (isConfirm) {
               this.uploadFile(true);
             }
@@ -224,7 +224,7 @@ class UploadFileForm extends Component {
             text: 'Upload Successful!',
             title: '',
             type: 'success',
-          }, function() {
+          }).then(function() {
             window.location.assign('/data_release');
           });
           this.props.fetchData();

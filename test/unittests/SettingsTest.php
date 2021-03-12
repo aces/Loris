@@ -27,7 +27,7 @@ class SettingsTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
@@ -54,11 +54,13 @@ class SettingsTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        $this->_configMock = $configMock;
 
         $this->_settings = new Settings($this->_configMock);
 

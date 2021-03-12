@@ -27,6 +27,17 @@ namespace LORIS\issue_tracker\Models;
  */
 class AttachmentDTO implements \LORIS\Data\DataInstance
 {
+    public string $ID;
+    public string $issueID;
+    public string $file_hash;
+    public string $date_added;
+    public string $file_name;
+    public string $deleted;
+    public string $user;
+    public string $description;
+    public string $file_size;
+    public string $mime_type;
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *

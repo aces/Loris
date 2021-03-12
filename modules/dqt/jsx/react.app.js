@@ -47,7 +47,7 @@ class DataQueryApp extends Component {
         show: false,
       },
       ActiveTab: 'Info',
-      rowData: {},
+      rowData: [],
       filter: {
         type: 'group',
         activeOperator: 0,
@@ -685,7 +685,7 @@ class DataQueryApp extends Component {
 
     // Reset the rowData and sessiondata
     this.setState({
-      rowData: {},
+      rowData: [],
       sessiondata: {},
       loading: true,
     });
@@ -886,13 +886,21 @@ class DataQueryApp extends Component {
             if (RowHeaders.hasOwnProperty(colHeader)) {
               temp = Identifiers[identifier]
                 + ','
-                + RowHeaders[colHeader].split(' ')[0];
+                + RowHeaders[colHeader].substr(
+                  0,
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                );
               index = sessiondata[temp];
               if (!index) {
                 currow.push('.');
               } else {
-                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+                const instrument = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ') + 1
+                ).split(',')[0];
+                temp = index[instrument];
+                fieldSplit = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                ).split(',');
                 if (temp) {
                   if (temp.data[RowHeaders[colHeader].split(',')[1]]
                     && downloadableFields[fieldSplit[0]
@@ -962,7 +970,7 @@ class DataQueryApp extends Component {
       grouplevel: displayID,
       ...(rowdata.rowdata.length > 0
         ? {rowData: rowdata}
-        : {rowData: {}}),
+        : {rowData: []}),
     });
   }
 

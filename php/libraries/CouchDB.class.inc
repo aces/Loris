@@ -273,8 +273,8 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
-                    longer auto-loading CouchDB credentials, make sure to specify 
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    longer auto-loading CouchDB credentials, make sure to specify
                     all necessary parameters in the function call."
                 );
             } else if (!empty($database)
@@ -294,8 +294,8 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
-                    longer support accepting only a database name, make sure to 
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    longer support accepting only a database name, make sure to
                     specify all necessary parameters in the function call."
                 );
             } else if (empty($database)
@@ -411,7 +411,6 @@ class CouchDB
             } else { // headers are finished
                 $response .= $curLine;
             }
-
         }
         $handler->close();
 
@@ -563,9 +562,15 @@ class CouchDB
     {
         $getjson = $this->_getRelativeURL($id);
         $getdata = json_decode($getjson, true);
+        if (!is_array($getdata)) {
+            return false;
+        }
 
         $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
+        if (!is_array($data)) {
+            return false;
+        }
 
         if (!isset($data['ok'])) {
             return false;

@@ -3,8 +3,8 @@ FROM mysql:5.7
 ARG BASE_DIR
 
 COPY SQL/0000-00-00-schema.sql /0000-00-00-schema.sql
-COPY SQL/0000-00-01-Permission.sql /0000-00-01-Permission.sql
-COPY SQL/0000-00-02-Modules.sql /0000-00-02-Modules.sql
+COPY SQL/0000-00-01-Modules.sql /0000-00-01-Modules.sql
+COPY SQL/0000-00-02-Permission.sql /0000-00-02-Permission.sql
 COPY SQL/0000-00-03-ConfigTables.sql /0000-00-03-ConfigTables.sql
 COPY SQL/0000-00-04-Help.sql /0000-00-04-Help.sql
 COPY SQL/0000-00-05-ElectrophysiologyTables.sql /0000-00-05-ElectrophysiologyTables.sql
@@ -18,8 +18,8 @@ COPY raisinbread/RB_files/*.sql /RB_files/
 
 RUN echo "Use LorisTest;" | cat - \
     0000-00-00-schema.sql \
-    0000-00-01-Permission.sql \
-    0000-00-02-Modules.sql \
+    0000-00-01-Modules.sql \
+    0000-00-02-Permission.sql \
     0000-00-03-ConfigTables.sql \
     0000-00-04-Help.sql \
     0000-00-05-ElectrophysiologyTables.sql \

@@ -20,19 +20,29 @@ use PHPUnit\Framework\TestCase;
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**
+     * An instrument class for testing
+     *
+     * @var \NDB_BVL_Instrument
+     */
+    protected $i;
+
+    protected \NDB_Client $Client;
+
+    /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(
+
+        $session = $this->getMockBuilder(\stdClass::class)->addMethods(
             [
                 'getProperty',
                 'setProperty',
@@ -40,42 +50,49 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                 'isLoggedIn'
             ]
         )->getMock();
-        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
+
+        $mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
-        $this->Session->method("getProperty")
-            ->willReturn($this->MockSinglePointLogin);
+        $session->method("getProperty")
+            ->willReturn($mockSinglePointLogin);
 
         $_SESSION = [
-            'State' => $this->Session
+            'State' => $session,
         ];
 
         $factory = \NDB_Factory::singleton();
-        $factory->setTesting(true);
 
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $factory->setDatabase($mockdb);
-        $factory->setConfig($mockconfig);
         $mockdb->expects($this->any())
             ->method('pselectOne')
             ->willReturn('999');
 
-        $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
-        $this->Client    = new \NDB_Client;
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $factory->setDatabase($mockdb);
+        $factory->setConfig($mockconfig);
+
+        $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this
+        $i = $this
             ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
             ->disableOriginalConstructor()
-            ->setMethods(['getFullName', 'getSessionID'])
+            ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
-        $this->i->method('getFullName')->willReturn("Test Instrument");
-        $this->i->method('getSessionID')
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSessionID')
             ->willReturn(new \SessionID(strval("123456")));
-        $this->i->form     = $this->QuickForm;
-        $this->i->testName = "Test";
+
+        '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
+        $i->form     = new \LorisForm();
+        $i->testName = "Test";
+
+        $this->i = $i;
     }
 
     /**
@@ -88,7 +105,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      */
     function _getAllMethodsExcept($methods)
     {
-        $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
+        $AllMethods = get_class_methods(
+            '\Loris\Behavioural\NDB_BVL_Instrument_LINST'
+        );
 
         return array_diff($AllMethods, $methods);
     }
@@ -108,8 +127,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json         = $this->i->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
@@ -149,7 +169,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                        . "'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}"
                        . "'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}"
                        . "'not_answered'=>'Not Answered'\n";
-        $instrument .= "date{@}FieldName{@}Field Description{@}2003{@}2014\n";
+        $instrument .= "date{@}FieldName_date{@}Field Description{@}2003{@}2014\n";
         $instrument .= "select{@}date_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
         $instrument .= "numeric{@}FieldName{@}Field Description{@}0{@}20\n";
@@ -250,7 +270,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
                 ],
                 [
                     'Type'        => "date",
-                    "Name"        => "FieldName",
+                    "Name"        => "FieldName_date",
                     "Description" => "Field Description",
                     "Options"     => [
                         "MinDate"         => "2003-01-01",

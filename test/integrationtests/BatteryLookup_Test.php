@@ -25,6 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
+    protected $DB;
+
     /**
      * Set up the data needed for the integration tests.
      *
@@ -210,7 +212,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            1,
             null
         );
 
@@ -234,7 +236,7 @@ class NDB_BVL_Battery_Test extends TestCase
     {
         $battery = new NDB_BVL_Battery();
 
-        $instruments = $battery->lookupBattery(50, 2, 'Visit', 'V01', '1', true);
+        $instruments = $battery->lookupBattery(50, 2, 'Visit', 'V01', 1, true);
 
         $this->assertEquals(
             $instruments,
@@ -260,7 +262,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '2',
+            2,
             true
         );
         $instrumentsByVisit = $battery->lookupBattery(
@@ -268,7 +270,7 @@ class NDB_BVL_Battery_Test extends TestCase
             2,
             'Visit',
             'V01',
-            '2',
+            2,
             true
         );
 
@@ -303,7 +305,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            1,
             true
         );
 
@@ -321,7 +323,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            1,
             false
         );
 

@@ -42,7 +42,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -131,7 +131,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "participant_accounts",
@@ -183,7 +183,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Survey Accounts", $bodyText);
+        $this->assertStringContainsString("Survey Accounts", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -199,7 +199,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -218,9 +221,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         // Ensure that an instrument must be supplied.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -236,7 +237,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Please choose an instrument.",
             $bodyText
         );
@@ -244,9 +245,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         // Ensure visit label exists for a candidate.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -267,7 +266,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Visit $visitLabel does not exist for given candidate",
             $bodyText
         );
@@ -288,7 +287,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "PSCID and CandID do not match or candidate does not exist",
             $bodyText
         );
@@ -340,7 +339,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
@@ -353,7 +352,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = self::$clearFilter;

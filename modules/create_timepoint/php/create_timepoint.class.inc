@@ -25,6 +25,8 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class Create_Timepoint extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * This timepoint's candidate
      *
@@ -46,11 +48,7 @@ class Create_Timepoint extends \NDB_Form
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-            (in_array(
-                $this->candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
+            $user->hasCenter($this->candidate->getCenterID())
         );
     }
 

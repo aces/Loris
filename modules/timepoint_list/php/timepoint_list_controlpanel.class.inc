@@ -13,6 +13,7 @@
  */
 
 namespace LORIS\timepoint_list;
+use \Loris\StudyEntities\Candidate\CandID;
 /**
  * This class provides the management GUI for the status flags
  *
@@ -38,10 +39,10 @@ Class TimePoint_List_ControlPanel extends \Candidate
      * Fill the candidateInfo and listOfTimePoints variables using the
      * select function provide by the Candidate class.
      *
-     * @param integer $candID A 6 digit Loris CandID that matches
-     *                        a candidate in the candidate table
+     * @param CandID $candID A 6 digit Loris CandID that matches
+     *                       a candidate in the candidate table
      *
-     * @return null As a side-effect loads candidate into current object
+     * @return void
      */
     function __construct($candID)
     {
@@ -58,9 +59,9 @@ Class TimePoint_List_ControlPanel extends \Candidate
     {
         $user =& \User::singleton();
 
-        $cand_CenterID = $this->getData('RegistrationCenterID');
+        $cand_CenterID = $this->getCenterID();
 
-        $this->tpl_data['candID'] = $this->getData('CandID');
+        $this->tpl_data['candID'] = $this->getCandID();
 
         $this->tpl_data['isDataEntryPerson']
             = $user->hasCenterPermission("data_entry", $cand_CenterID);

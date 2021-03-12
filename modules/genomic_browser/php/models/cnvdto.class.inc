@@ -239,14 +239,4 @@ class CnvDTO implements \LORIS\Data\DataInstance
             'Platform'          => $this->_Platform,
         ];
     }
-    /**
-     * Returns the CenterID for this row, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
-     *
-     * @return string
-     */
-    public function getPSC(): string
-    {
-        return (string) $this->psc;
-    }
 }

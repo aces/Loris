@@ -86,10 +86,21 @@ class DataDictIndex extends Component {
         return (e) => {
           e.stopPropagation();
 
-          let value = e.target.valueOf().innerText;
-          $.post(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
-            fieldname: name, description: value,
-          }, (data) => {});
+          let formData = new FormData();
+          formData.append('description', e.target.valueOf().innerText);
+          formData.append('fieldname', name);
+
+          fetch(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
+            method: 'POST',
+            body: formData,
+          }).then((response) => {
+            if (!response.ok) {
+              console.error(response.status);
+              return;
+            }
+          }).catch((error) => {
+            console.error(error);
+          });
         };
       };
       return (
@@ -126,7 +137,7 @@ class DataDictIndex extends Component {
             show: true,
             filter: {
                 name: 'Source From',
-                type: 'select',
+                type: 'multiselect',
                 options: options.sourceFrom,
             },
         },

@@ -10,6 +10,7 @@ changes in the following format: PR #1234***
 
 ##LORIS 24.0 (Release Date: ??)
 ### Core
+- New classes to describe a data dictionary (PR #6938)
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
@@ -37,7 +38,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
-- *Add item here*
+- New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
+- LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
 ### Notes For Developers
 - *Add item here*
 

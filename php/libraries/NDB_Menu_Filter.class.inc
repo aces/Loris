@@ -94,6 +94,15 @@ class NDB_Menu_Filter extends NDB_Menu
     var $formToFilter = [];
 
     /**
+     * A list of filters which should be tested for strict
+     * equality instead of substring equality. Set by subclasses
+     * of NDB_Menu_Filter in their constructor or setup functions.
+     *
+     * @var string[]
+     */
+    protected iterable $EqualityFilters;
+
+    /**
      * An array of all the table headers (optional)
      *
      * The array will automatically be built based on the column array
@@ -249,35 +258,6 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-     * Set the sort column for the current query page and saves
-     * it into the current filter.
-     *
-     * @param array $order An array of the form
-     *                     [
-     *                     'field' => Form Field Name
-     *                     'fieldOrder' => "ASC|DESC"
-     *                     ]
-     *
-     * @return void (modifies both $_SESSION and $this->filter as
-     *         a side-effect.)
-     */
-    function _setFilterSortOrder($order)
-    {
-        // Get the existing filter. It's already been saved into
-        // the session previously in $this->_setupFilters.
-        $savedFilters = $_SESSION['State']->getProperty('filter');
-        if (!is_array($savedFilters)) {
-            $savedFilters = [];
-        }
-        if (is_array($order) && in_array($order['field'], $this->headers)) {
-            $savedFilters['order'] = $order;
-            $this->filter['order'] = $order;
-        }
-
-        $_SESSION['State']->setProperty('filter', $savedFilters);
-    }
-
-    /**
      * Sets the class variables required for a search key to be used.
      * A search key is like a filter that searches through multiple
      * columns.
@@ -364,13 +344,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (!empty($key)) {
             $this->_setSearchKeyword($key);
 
-        }
-
-        // 4. If the user clicked on a sort column, set the order.
-        //    It's likely a GET request even though it modifies the data,
-        //    so just use $_REQUEST.
-        if (isset($_REQUEST['filter']['order'])) {
-            $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
     }
 
@@ -542,23 +515,6 @@ class NDB_Menu_Filter extends NDB_Menu
                     $this->_addQueryParam($qparams, $field, $prepared_key, $val);
                 }
             }
-        }
-
-        if (isset($this->searchKeyword)
-            && is_array($this->searchKeyword)
-            && count($this->searchKeyword) > 0
-            && !empty($this->searchKey['keyword'])
-        ) {
-            $WhereClause .= " AND (";
-            $fields       = [];
-            foreach ($this->searchKeyword as $field) {
-                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-            }
-            $WhereClause .= join(" OR ", $fields);
-
-            $qparams['v_searchkey'] = $this->searchKey['keyword'];
-            $WhereClause           .= ")";
-
         }
 
         // add GROUP BY if applicable
@@ -854,10 +810,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-
-        if (!empty($this->limit)) {
-            $query .= " LIMIT $this->limit";
-        }
 
         // get the list
         $result = $DB->pselect($query, $qparams);

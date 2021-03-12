@@ -23,8 +23,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * The form object for this instrument.
      *
-     * @var    LorisForm
-     * @access public
+     * @var LorisForm
      */
     public $form;
 
@@ -468,7 +467,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, '', '', "&nbsp;");
         }
 
         $defaults = $this->getInstanceData();
@@ -795,7 +794,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $values = Utility::nullifyEmpty($values, $key);
         }
 
-        if ($this->jsonData !== true) {
+        if ($this->jsonData !== true && !empty($values)) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
             $db->update(
@@ -1104,22 +1103,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return array
      */
     abstract function getSubtestList(): array;
-
-    /**
-     * Marks an element in the lorisform object as being required (for
-     * use with the requiredIf rule)
-     *
-     * @param string $elementName the element to add to the required list
-     *
-     * @return void
-     */
-    function setRequired(string $elementName): void
-    {
-        if (!in_array($elementName, $this->form->_required)) {
-            $this->form->_required[] = $elementName;
-        }
-    }
-
 
     /**
      * Convert a lorisform date or timestamp into a database acceptable
@@ -1556,7 +1539,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $statusField = $field . '_status';
             // field shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
-            if ((is_null($allData[$field]) || $allData[$field] === "")
+            if ((is_null($allData[$field] ?? null) || $allData[$field] === "")
                 && empty($allData[$statusField])
             ) {
                 return 'Incomplete';
@@ -1672,7 +1655,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1700,7 +1683,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "textarea",
             $field,
-            null,
+            '',
             [],
             [
                 'cols' => 25,
@@ -1718,7 +1701,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1763,7 +1746,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule(
@@ -1802,9 +1785,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "time",
             $field,
-            null,
-            null,
-            null
+            '',
         );
 
         $group[] = $this->createSelect(
@@ -1817,7 +1798,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'not_answered' => 'Not Answered',
             ]
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
             $field,
             array_merge($rules, [$field . '_status{@}=={@}']),
@@ -1865,7 +1846,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
@@ -1878,7 +1859,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
 
         unset($group);
@@ -1930,12 +1910,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $dateArray
     ): void {
         $group   = [];
-        $group[] = $this->createDate($name . "_date", null, $dateArray);
+        $group[] = $this->createDate($name . "_date", '', $dateArray);
         //add to array of dates and times.
         $this->dateTimeFields[] = $name . "_date";
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
                 null             => "",
                 '88_refused'     => "88 Refused",
@@ -1948,7 +1928,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
         unset($group);
         $this->XINRegisterRule(
@@ -1987,14 +1966,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null           => "",
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2023,7 +2002,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
                 null             => "",
                 "88_refused"     => "88 Refused",
@@ -2032,7 +2011,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2323,7 +2302,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $db->execute(
             $prepQ,
             ['CID' => $this->commentID],
-            ['nofetch' => true]
+            ['nofetch' => "true"]
         );
     }
 
@@ -2496,7 +2475,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             $selectEl = $html->getElementsByTagName("select")->item(0);
 
-            if ($selectEl->getAttribute("multiple") == 'multiple') {
+            // getElementsByTagName returns DOMNodeList, but
+            // getAttribute only exists on the DOMElement type
+            // (which extends DOMNode)
+            if ($selectEl instanceof \DOMElement
+                && $selectEl->getAttribute("multiple") == 'multiple'
+            ) {
                 $element['Multiselect'] = true;
             }
 
@@ -2509,53 +2493,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         } else if ($element['type'] === "date") {
-            if (get_class($this->form) === 'LorisForm') {
-                $element['options'] = [
-                    'mindate'         => "1990-01-01",
-                    'maxdate'         => "2000-12-31",
-                    'RequireResponse' => false,
-                ];
-                //$element['RequireResponse'] = false;
-            } else {
-                $html = new DOMDocument();
-                $html->loadHTML($element['html']);
-                // Parse the HTML to get the min and max date
-                $selects = $html->getElementsByTagName("select");
-                if ($selects->length > 0) {
-                    // Old school QuickForm style. This should be removed
-                    // after QuickForm is retired.
-                    $year = $selects->item(0);
+            $element['options'] = [
+                'mindate'         => "1990-01-01",
+                'maxdate'         => "2000-12-31",
+                'RequireResponse' => false,
+            ];
 
-                    // If Item 0 is blank, item 1 is the minimum,
-                    $minYear = $year->childNodes->item(0)->textContent;
-
-                    // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
-                    // which seems to be how loadHTML parses spaces. Trim whitespace
-                    // and then specifically trim that character before checking if
-                    // the year is empty, and if it's empty use the next option in
-                    // the dropdown (which should be non-empty)
-                    $minYear = trim($minYear);
-                    $minYear = trim($minYear, chr(0xC2).chr(0xA0));
-                    if (empty($minYear)) {
-                        $minYear = $year->childNodes->item(1)->textContent;
-                    }
-                    // the last item is the maximum year
-                    $maxYear = $year->lastChild->textContent;
-
-                    $element['options'] = [
-                        'mindate' => $minYear . "-01-01",
-                        'maxdate' => $maxYear . "-12-31",
-                    ];
-
-                }
-            }
             if (isset($this->WrapperDateWithStatusElements[$element['name']])) {
                 $element['NoResponse'] = false;
             } else {
                 $element['NoResponse'] = true;
             }
-
         }
+
         return $element;
     }
 
@@ -2570,7 +2520,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return void (but side-effect modified $formArray to populate the element
      *         with the appropriate format needed for JSON serialization.)
      */
-    function _toJSONParsePageElement(array &$element, array &$formArray): void
+    function _toJSONParsePageElement(array $element, array &$formArray): void
     {
         $name = isset($element['name']) ? $element['name'] : '';
         if ($element['type'] === 'group') {
@@ -2660,8 +2610,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     foreach ($section['elements'] as &$element) {
                         $this->_toJSONParsePageElement($element, $section);
                     }
-                } else {
-                    $this->_toJSONParsePageElement($element, $section);
                 }
             }
         }
@@ -2680,17 +2628,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function toJSON(): string
     {
         $smarty = new Smarty_NeuroDB;
-        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
         foreach ($subtests as $subtest) {
-            if (get_class($this->form) === 'LorisForm') {
-                $this->form->addPageBreak(
-                    $subtest['Name'],
-                    $subtest['Description'],
-                    []
-                );
-            }
+            $this->form->addPageBreak(
+                $subtest['Name'],
+                $subtest['Description'],
+                []
+            );
             $this->page = $subtest['Name'];
         }
         $formArray = $this->_toJSONParsePage();

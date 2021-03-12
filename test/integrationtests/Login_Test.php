@@ -17,26 +17,14 @@ class LorisLoginTest extends LorisIntegrationTest
     function testLoginFailure(): void
     {
         $this->webDriver->get($this->url . '/?logout=true');
-
-        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $this->assertEquals('', $username->getAttribute("value"));
-
-        $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
-        $this->assertEquals('', $password->getAttribute("value"));
-
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $this->assertEquals('submit', $login->getAttribute("type"));
-        $this->assertEquals('Login', $login->getAttribute("value"));
-
-        $username->sendKeys("UnitTester");
-        $password->sendKeys("IJUSTMADETHISUP");
-
-        $login->click();
-
+        $this->login("UnitTester", "IJUSTMADETHISUP");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Incorrect username or password", $bodyText);
+        $this->assertStringContainsString(
+            "Incorrect username or password",
+            $bodyText
+        );
     }
 
     /**
@@ -47,25 +35,11 @@ class LorisLoginTest extends LorisIntegrationTest
     function testLoginSuccess()
     {
         $this->webDriver->get($this->url . '/?logout=true');
-        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $this->assertEquals('', $username->getAttribute("value"));
-
-        $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
-        $this->assertEquals('', $password->getAttribute("value"));
-
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $this->assertEquals('submit', $login->getAttribute("type"));
-        $this->assertEquals('Login', $login->getAttribute("value"));
-
-        $username->sendKeys("UnitTester");
-        $password->sendKeys($this->validPassword);
-
-        $login->click();
-
+        $this->login("UnitTester", $this->validPassword);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Welcome", $bodyText);
+        $this->assertStringContainsString("Welcome", $bodyText);
     }
 }
 

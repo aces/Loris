@@ -56,7 +56,9 @@ class Project extends \NDB_Form
         foreach (array_keys($projectList) as $ProjectID) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
             $projects[$ProjectID]['projectSubprojects']
-                = \Utility::getSubprojectsForProject($ProjectID);
+                = \Utility::getSubprojectsForProject(
+                    new \ProjectID(strval($ProjectID))
+                );
         }
         $this->tpl_data['projects']    = $projects;
         $this->tpl_data['subprojects'] = $subprojectList;

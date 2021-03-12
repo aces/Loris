@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-use \LORIS\Installer\Database as Database;
+
 /**
  * Fake NDB_Config class
  *
@@ -54,14 +54,14 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -74,9 +74,16 @@ class NDB_ConfigTest extends TestCase
     private $_configMap = [];
 
     /**
+     * A mock NDB_Config object
+     *
+     * @var \NDB_Config
+     */
+    private $_config;
+
+    /**
      * Test double for User object
      *
-     * @var User | PHPUnit_Framework_MockObject_MockObject
+     * @var User | PHPUnit\Framework\MockObject\MockObject
      */
     private $_user;
 
@@ -85,14 +92,24 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->_config     = FakeConfig::singleton();
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
-        $this->_user       = $this->getMockBuilder('User')->getMock();
-        $this->_factory    = \NDB_Factory::singleton();
+        $this->_config = FakeConfig::singleton();
+
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        $user       = $this->getMockBuilder('User')->getMock();
+
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+        '@phan-var \User $user';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
+        $this->_user       = $user;
+
+        $this->_factory = \NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
         $this->_factory->setUser($this->_user);
@@ -104,7 +121,7 @@ class NDB_ConfigTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -120,7 +137,7 @@ class NDB_ConfigTest extends TestCase
     public function testConfigFilePath()
     {
         $text = $this->_config->configFilePath("config.xml");
-        $this->assertContains("config.xml", $text);
+        $this->assertStringContainsString("config.xml", $text);
 
     }
 
@@ -171,7 +188,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertNull($this->_config->getSettingFromDB("showDatabaseQueries"));
         $this->_dbMock->expects($this->any())
             ->method('isConnected')
-            ->willReturn('true');
+            ->willReturn(true);
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);

@@ -30,6 +30,13 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     public $ValidityEnabled;
     public $ValidityRequired;
     protected $instrument;
+
+    protected CandID $candID;
+    protected SessionID $sessionID;
+
+    protected string $testname;
+    protected ?string $subtest;
+
     /**
      * Construct a controller for the instrument status control panel
      *
@@ -398,7 +405,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         if (!$user->hasPermission('data_entry')
             || !in_array(
                 $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
+                $user->getCenterIDs()
             )
         ) {
             return false;
@@ -406,7 +413,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
 
         // make a feedback object
         $feedback = \NDB_BVL_Feedback::singleton(
-            $user->getData('UserID'),
+            $user->getUsername(),
             null,
             null,
             $this->_commentID

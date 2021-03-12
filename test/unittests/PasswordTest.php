@@ -29,9 +29,24 @@ class PasswordTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
+
+    /**
+     * Test double for Database object
+     *
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     */
+    private $_dbMock;
+
+    /**
+     * NDB_Factory used in tests.
+     * Test doubles are injected to the factory object.
+     *
+     * @var NDB_Factory
+     */
+    private $_factory;
 
     private $_configInfo = [0 => ['65' => 'false']];
 
@@ -44,8 +59,13 @@ class PasswordTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
@@ -58,7 +78,7 @@ class PasswordTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -84,8 +104,6 @@ class PasswordTest extends TestCase
             ['johnnyloris'],
             // Should fail for obvious reasons
             ['password'],
-            // Should fail for using a recent year
-            ['Spring2016!'],
             // Should fail for using just a few simple English words
             ['i am cool'],
             // Should fail for common L33T substitutions
@@ -106,6 +124,7 @@ class PasswordTest extends TestCase
      */
     public function testContructorInvalidValues($invalidValue): void
     {
+        $this->expectException("InvalidArgumentException");
         $this->_configMock->expects($this->any())
             ->method('getSetting')
             ->willReturn('false');

@@ -30,15 +30,15 @@
 	    </ul>
         {/foreach} -->
         <!-- <div class="row"> -->
-        {if $form.errors.UserID_Group}
+        {if $form.errors.UserID_Group|default}
         <div class="row form-group form-inline form-inline has-error">
             {else}
             <div class="row form-group form-inline form-inline">
                 {/if}
-                {if $form.UserID_Group != null}
+                {if $form.UserID_Group|default != null}
                 <label class="col-sm-12 col-sm-2 form-label">
                     {$form.UserID_Group.label}
-                    {if $form.UserID_Group.options.required}
+                    {if $form.UserID_Group.options.required|default}
                         <span class="userid-star" style="color: red">*</span>
                     {/if}
              </label>
@@ -53,7 +53,7 @@
             {else}
             <label class="col-sm-12 col-sm-2 form-label">
                 {$form.UserID.label}
-                {if $form.UserID.options.required}
+                {if $form.UserID.options.required|default}
                     <span style="color: red">*</span>
                 {/if}
             </label>
@@ -65,20 +65,20 @@
      </div>
      <!-- </div> -->
      <br>
-     {if $form.errors.Password}
+     {if $form.errors.Password|default}
         <div class="row form-group form-inline has-error">
      {else}
         <div class="row form-group form-inline">
      {/if}
           <label class="col-sm-2">
-            {$form.Password_hash.label}
+            {$form.Password_hash.label|default}
             <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
           </label>
           <div class="col-sm-2">
               <input type="password" name="{$form.Password_hash.name}" />
           </div>
           <div class="col-sm-4">{$form.NA_Password.html}</div>
-          {if $form.errors.Password}
+          {if $form.errors.Password|default}
           <div class="col-sm-offset-2 col-xs-12">
             <font class="form-error">{$form.errors.Password}</font>
         </div>
@@ -101,41 +101,41 @@
             {$form.Real_name.html}
         </div>
     </div> -->
-    {if $form.errors.First_name}
+    {if $form.errors.First_name|default}
     <div class="row form-group form-inline form-inline has-error">
         {else}
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
-                {$form.First_name.label}
-                {if $form.First_name.required}
+                {$form.First_name.label|default}
+                {if $form.First_name.required|default}
                     <span style="color: red">*</span>
                 {/if}
           </label>
           <div class="col-sm-10">
               {$form.First_name.html}
           </div>
-          {if $form.errors.First_name}
+          {if $form.errors.First_name|default}
           <div class="col-sm-offset-2 col-xs-12">
-            <font class="form-error">{$form.errors.First_name}</font>
+            <font class="form-error">{$form.errors.First_name|default}</font>
         </div>
         {/if}
     </div>
-    {if $form.errors.Last_name}
+    {if $form.errors.Last_name|default}
     <div class="row form-group form-inline form-inline has-error">
         {else}
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
                 {$form.Last_name.label}
-                {if $form.Last_name.required}
+                {if $form.Last_name.required|default}
                     <span style="color: red">*</span>
                 {/if}
           </label>
           <div class="col-sm-10">
               {$form.Last_name.html}
           </div>
-          {if $form.errors.Last_name}
+          {if $form.errors.Last_name|default}
           <div class="col-sm-offset-2 col-xs-12">
             <font class="form-error">{$form.errors.Last_name}</font>
         </div>
@@ -145,7 +145,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Degree.label}
-            {if $form.Degree.required}
+            {if $form.Degree.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -158,7 +158,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Position_title.label}
-            {if $form.Position_title.required}
+            {if $form.Position_title.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -171,7 +171,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Institution.label}
-            {if $form.Institution.required}
+            {if $form.Institution.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -184,7 +184,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Department.label}
-            {if $form.Department.required}
+            {if $form.Department.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -197,7 +197,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Address.label}
-            {if $form.Address.required}
+            {if $form.Address.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -210,7 +210,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.City.label}
-            {if $form.City.required}
+            {if $form.City.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -223,7 +223,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.State.label}
-            {if $form.State.required}
+            {if $form.State.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -232,11 +232,11 @@
     	</div>
     </div>
     {/if}
-    {if $form.ZipCode}
+    {if $form.ZipCode|default}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Zip_code.label}
-            {if $form.Zip_code.required}
+            {if $form.Zip_code.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -249,7 +249,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Country.label}
-            {if $form.Country.required}
+            {if $form.Country.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -262,7 +262,7 @@
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
             {$form.Fax.label}
-            {if $form.Fax.required}
+            {if $form.Fax.required|default}
                 <span style="color: red">*</span>
             {/if}
     	</label>
@@ -271,27 +271,27 @@
     	</div>
     </div>
     {/if}
-    {if $form.errors.Email_Group}
+    {if $form.errors.Email_Group|default}
     <div class="row form-group form-inline form-inline has-error">
         {else}
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2 form-label">
                 {$form.Email_Group.label}
-                {if $form.Email_Group.options.required}
+                {if $form.Email_Group.options.required|default}
                     <span style="color: red">*</span>
                 {/if}
           </label>
           <div class="col-sm-10">
               {$form.Email_Group.html}
           </div>
-          {if $form.errors.Email_Group}
+          {if $form.errors.Email_Group|default}
           <div class="col-sm-offset-2 col-xs-12">
             <font class="form-error">{$form.errors.Email_Group}</font>
         </div>
         {/if}
     </div>
-    {if $form.__ConfirmEmail}
+    {if $form.__ConfirmEmail|default}
     {if $form.errors.__ConfirmEmail}
     <div class="row form-group form-inline form-inline has-error">
         {else}
@@ -313,7 +313,7 @@
         {/if}
     </div>
     {/if}
-    {if $form.errors.sites_group}
+    {if $form.errors.sites_group|default}
     <div class="row form-group form-inline has-error">
     {else}
     <div class="row form-group form-inline">
@@ -327,13 +327,13 @@
         <div class="col-sm-10">
             {$form.CenterIDs.html}
         </div>
-        {if $form.errors.sites_group}
+        {if $form.errors.sites_group|default}
         <div class="col-sm-offset-2 col-xs-12">
             <font class="form-error">{$form.errors.sites_group}</font>
         </div>
         {/if}
     </div>
-        {if $form.errors.projects_group}
+        {if $form.errors.projects_group|default}
         <div class="row form-group form-inline has-error">
             {else}
             <div class="row form-group form-inline">
@@ -347,50 +347,50 @@
                 <div class="col-sm-10">
                     {$form.ProjectIDs.html}
                 </div>
-                {if $form.errors.projects_group}
+                {if $form.errors.projects_group|default}
                     <div class="col-sm-offset-2 col-xs-12">
                         <font class="form-error">{$form.errors.projects_group}</font>
                     </div>
                 {/if}
             </div>
-    {if $form.examiner_sites}
-    {if $form.errors.examiner_sites}
+    {if $form.examiner_sites|default}
+    {if $form.errors.examiner_sites|default}
     <div class="row form-group form-inline form-inline has-error">
         {else}
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2">
                 {$form.examiner_sites.label}
-                {if $form.examiner_sites.required}
+                {if $form.examiner_sites.required|default}
                     <span style="color: red">*</span>
                 {/if}
             </label>
             <div class="col-sm-10">
                 {$form.examiner_sites.html}
             </div>
-            {if $form.errors.examiner_sites}
+            {if $form.errors.examiner_sites|default}
             <div class="col-sm-offset-2 col-xs-12">
                 <font class="form-error">{$form.errors.examiner_sites}</font>
             </div>
             {/if}
         </div>
     {/if}
-      {if $form.examiner_group}
-    {if $form.errors.examiner_group}
+      {if $form.examiner_group|default}
+    {if $form.errors.examiner_group|default}
     <div class="row form-group form-inline form-inline has-error">
         {else}
         <div class="row form-group form-inline form-inline">
             {/if}
             <label class="col-sm-2">
                 {$form.examiner_group.label}
-                {if $form.examiner_group.required}
+                {if $form.examiner_group.required|default}
                     <span style="color: red">*</span>
                 {/if}
             </label>
             <div class="col-sm-10">
                 <b>{$form.examiner_group.html}</b>
                 </div>
-                {if $form.errors.examiner_group}
+                {if $form.errors.examiner_group|default}
                 <div class="col-sm-offset-2 col-xs-12">
                     <font class="form-error">{$form.errors.examiner_group}</font>
                 </div>
@@ -399,50 +399,50 @@
       {/if}
       <div class="row form-group form-inline">
            <label class="col-sm-2">
-               {$form.Active.label}
-               {if $form.Active.required}
+               {$form.Active.label|default}
+               {if $form.Active.required|default}
                    <span style="color: red">*</span>
                {/if}
           </label>
           <div class="col-sm-10">
-              {$form.Active.html}
+              {$form.Active.html|default}
           </div>
       </div>
 
-	{if $form.errors.active_timeWindows}
+	{if $form.errors.active_timeWindows|default}
 	    <div class="alert alert-danger" role="alert">
-	        {$form.errors.active_timeWindows}
+	        {$form.errors.active_timeWindows|default}
 	    </div>
 	{/if}
 
-	{if $form.errors.active_timeWindows}
+	{if $form.errors.active_timeWindows|default}
 		<div class="row form-group form-inline form-inline has-error">
 	{else}
 		<div class="row form-group form-inline">
 	{/if}
 		<label class="col-sm-2">
-			{$form.active_from.label}
-            {if $form.active_from.required}
+			{$form.active_from.label|default}
+            {if $form.active_from.required|default}
                 <span style="color: red">*</span>
             {/if}
 		 </label>
 		 <div class="col-sm-10">
-			{$form.active_from.html}
+			{$form.active_from.html|default}
 		 </div>
 	</div>
-	{if $form.errors.active_timeWindows}
+	{if $form.errors.active_timeWindows|default}
 		<div class="row form-group form-inline form-inline has-error">
 	{else}
 		<div class="row form-group form-inline">
 	{/if}
 		<label class="col-sm-2">
-			{$form.active_to.label}
-            {if $form.active_to.required}
+			{$form.active_to.label|default}
+            {if $form.active_to.required|default}
                 <span style="color: red">*</span>
             {/if}
 		 </label>
 		 <div class="col-sm-10">
-			{$form.active_to.html}
+			{$form.active_to.html|default}
 		 </div>
 	</div>
 
@@ -457,19 +457,19 @@
 
       <div class="row form-group form-inline">
        <label class="col-sm-2">
-           {$form.Pending_approval.label}
-           {if $form.Pending_approval.required}
+           {$form.Pending_approval.label|default}
+           {if $form.Pending_approval.required|default}
                <span style="color: red">*</span>
            {/if}
       </label>
       <div class="col-sm-10">
-          {$form.Pending_approval.html}
+          {$form.Pending_approval.html|default}
       </div>
   </div>
   <div class="row form-group form-inline">
    <label class="col-sm-2">
        {$form.PermID_Group.label}
-       {if $form.PermID_Group.required}
+       {if $form.PermID_Group.required|default}
            <span style="color: red">*</span>
        {/if}
   </label>
@@ -482,7 +482,7 @@
 <div class="row form-group form-inline">
     <label class="col-sm-2">
         {$form.Supervisors_Group.label}
-        {if $form.Supervisors_Group.required}
+        {if $form.Supervisors_Group.required|default}
             <span style="color: red">*</span>
         {/if}
   </label>
@@ -500,7 +500,7 @@
     <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset"/>
 </div>
 <div class="col-sm-2">
-  <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
+  <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl|default}/user_accounts/'" value="Back" type="button" />
 </div>
 {if $can_reject}
 

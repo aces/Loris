@@ -23,7 +23,8 @@ use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class TimePoint
+class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     /* NOTE If these are private variables then they should probably be
      * declared and scoped as such. var is equivalent to public.
@@ -128,7 +129,8 @@ class TimePoint
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
-                         pr.Name as ProjectName, p.Alias as SiteAlias
+                         pr.Name as ProjectName, p.Alias as SiteAlias,
+                         s.ProjectID as ProjectID
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
@@ -143,10 +145,16 @@ class TimePoint
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                intval($row['SubprojectID'])
+                intval($row['SubprojectID'] ?? null)
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;
+
+            if ($this->_timePointInfo['ProjectID'] !== null) {
+                $this->_timePointInfo['ProjectID'] = new \ProjectID(
+                    $this->_timePointInfo['ProjectID']
+                );
+            }
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -954,7 +962,9 @@ class TimePoint
         if (!is_null($this->getSubprojectID())) {
             $settings = \NDB_Config::singleton()
                 ->getSubprojectSettings($this->getSubprojectID());
-            if ($settings['options']['useEDC'] == "true") {
+            if (isset($settings['options']['useEDC'])
+                && $settings['options']['useEDC'] == "true"
+            ) {
                 return $candidate->getCandidateEDC();
             }
         }
@@ -1019,7 +1029,7 @@ class TimePoint
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     * @return \LORIS\Data\Models\RecordingDTO[] A traversable of RecordingDTO.php
      */
     public function getRecordings(\User $user): array
     {
@@ -1185,6 +1195,33 @@ class TimePoint
         return \NDB_Factory::singleton()->project(
             $this->getData('ProjectName')
         );
+    }
+
+    /**
+     * Returns the ProjectID for this TimePoint
+     *
+     * @return \ProjectID
+     */
+    public function getProjectID() : \ProjectID
+    {
+        return $this->getData('ProjectID');
+    }
+
+    /**
+     * Implements the AccessibleResource interface. A TimePoint can
+     * be accessed by a user if it has a project and a site in common.
+     *
+     * @param \User $user The user whose access should be validated.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user) : bool
+    {
+        $centers = $user->getCenterIDs();
+
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
+        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        return $projMatch && $centerMatch;
     }
 }
 

@@ -30,7 +30,7 @@ if (isset($_REQUEST['action'])) {
 
         }
     } elseif ($action === 'getProjectData') {
-        $id = $_REQUEST['id'];
+        $id = intval($_REQUEST['id']);
         if (userCanGetData($db, $user, $id)) {
             exit(json_encode(getProjectData($db, $user, $id)));
         } else {

@@ -132,7 +132,6 @@ class ProjectFormFields extends React.Component {
    * @param {Number} uploadID
    */
   deleteUpload(uploadID) {
-    let self = this;
     swal.fire({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
@@ -140,19 +139,24 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: 'No, cancel it!',
-    }, function(willDelete) {
+    }).then(function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL
                     + '/publication/ajax/FileDelete.php?uploadID='
                     + uploadID;
-          $.ajax(
-            url,
-            {
-              method: 'DELETE',
-              success: function() {
-                self.props.fetchData();
-              },
-            });
+
+          fetch(url, {
+            method: 'DELETE',
+          }).then((response) => {
+            if (!response.ok) {
+              console.error(response.status);
+              return;
+            }
+
+            this.props.fetchData();
+          }).catch((error) => {
+            console.error(error);
+          });
         }
       });
   }

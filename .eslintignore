@@ -1,4 +1,5 @@
 node_modules/*
+vendor/*
 
 # compiled js ignored since it is run on the jsx directory
 modules/*/js/*
@@ -16,3 +17,7 @@ htdocs/js/shims/*
 htdocs/js/c3.min.js
 htdocs/js/d3.min.js
 htdocs/js/FileSaver.min.js
+htdocs/vendor/
+htdocs/fontawesome/
+htdocs/bootstrap/
+

@@ -47,7 +47,7 @@ if ($projectID == 'new') {
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
 } else {
     // Update Project fields
-    $project = \Project::getProjectFromID($projectID);
+    $project = \Project::getProjectFromID(new \ProjectID($projectID));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
@@ -57,13 +57,19 @@ if ($projectID == 'new') {
 // Subproject information isn't mandatory. If the array is empty, give an
 // OK response.
 if (!empty($subprojectIDs)) {
-
     // Update subprojectIDs if data submitted.
     // It's important not to delete and reinsert the values due to delete
     // cascades on tables referencing project_subproject_rel in the database.
     $preValues = array_column($project->getSubprojects(), 'subprojectId');
     $toAdd     = array_diff($subprojectIDs, $preValues);
     $toRemove  = array_diff($preValues, $subprojectIDs);
+
+    $toAdd = array_map(
+        function ($row) {
+            return intval($row);
+        },
+        $toAdd
+    );
 
     $project->insertSubprojectIDs($toAdd);
     $project->deleteSubprojectIDs($toRemove);

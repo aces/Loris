@@ -35,7 +35,6 @@ async function processLines(data, rowcb, endstreamcb) {
                 row = [];
                 continue;
             case 0x04: // end of stream
-                rowcb(row);
                 endstreamcb(row);
                 return {remainder: [], eos: true};
         }

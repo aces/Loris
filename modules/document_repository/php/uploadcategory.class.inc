@@ -52,8 +52,8 @@ class UploadCategory extends \NDB_Page
         if ($request->getMethod() == "POST") {
             $this->uploadDocCategory($request);
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
+                ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully")
@@ -61,8 +61,8 @@ class UploadCategory extends \NDB_Page
                 );
         } else {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
+                ->withHeader("Content-Type", "text/plain")
                 ->withHeader("Allow", "POST");
         }
     }
@@ -75,8 +75,11 @@ class UploadCategory extends \NDB_Page
      */
     function uploadDocCategory($request): void
     {
-        $DB            = \Database::singleton();
-        $req           = $request->getParsedBody();
+        $DB  = \Database::singleton();
+        $req = $request->getParsedBody();
+        if (!is_array($req)) {
+            throw new \LorisException("Invalid JSON");
+        }
         $category_name = $req['categoryName']; // required
         $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
         $comments      = isset($req['comments']) ? $req['comments'] : null;

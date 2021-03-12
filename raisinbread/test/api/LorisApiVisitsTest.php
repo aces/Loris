@@ -135,6 +135,11 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // Erase sites that were setup in LorisApiAuthenticatedTest
+        // setup for data access in other tests.
+        $this->DB->run(
+            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+        );
         /**
         * Test changing from a site with no affiliation to a site with affiliation
         * Candidate 400266 is from site Rome. The test user only has access to
@@ -208,6 +213,16 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // The visit has CenterID 2, we need to ensure that
+        // the user has access to visitTest (which we deleted
+        // above to test the permission denied.) or this
+        // test will return a 403 instead of a 400.
+        $this->DB->insert("user_psc_rel",
+            [
+                'UserID' => '999990',
+                'CenterID' => '2'
+            ]
+        );
         // Test what happen when a field is missing (here, Battery)
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,

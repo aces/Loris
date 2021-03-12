@@ -38,7 +38,14 @@ class File_Upload
     public $isCLImport        = false;
     public $handlerArgs;
     public $file;
+
+    /**
+     * The fileInfo in the format stored by $_FILES
+     *
+     * @var array
+     */
     public $fileInfo;
+
     public $fileHandlers;
     public $destinationDirectory;
     public $destinationFilename;
@@ -158,16 +165,19 @@ class File_Upload
     function preProcessFile()
     {
         if (!$this->isCLImport) {
-            $this->file = $this->form->getElement($this->fieldName);
-            if (!method_exists($this->file, "isUploadedFile")) {
+            $f = $this->form->getElement($this->fieldName);
+
+            if (!($f instanceof LorisFormFileElement)) {
                 return false;
             }
-            if ($this->file->isUploadedFile()) {
-                $this->fileInfo = $this->file->getValue();
-                return true;
-            } else {
+
+            if (!$f->isUploadedFile()) {
                 return false;
             }
+
+            $this->file     = $f;
+            $this->fileInfo = $this->file->getValue();
+            return true;
         } else {
             $this->file     =$this->CLFiles[$this->fieldName];
             $this->fileInfo =$this->file['info'];
@@ -183,7 +193,7 @@ class File_Upload
      * @param string $field  The name of the class to call.
      * @param string $action The name of the method to call.
      *
-     * @return boolean true if operation succeeded
+     * @return mixed Result of file handler for method
      * @access public
      */
     function callFileHandler($field, $action)
@@ -352,10 +362,6 @@ class File_Upload
         if (is_object($class)) {
             $test =&$class;
         } else if (class_exists($class)) {
-            // Phan seems to think this is always a string and fails as a result.
-            // FIXME This should be investigated further but for now it's not
-            // breaking anything.
-            // @phan-suppress-next-line PhanTypeExpectedObjectOrClassName
             $test =new $class;
         } else {
             $this->setError($field, "$class does not exist.");
@@ -557,7 +563,7 @@ class File_Upload
     /**
      * Adds the timestamp to the filename in order to make it unique
      *
-     * @param int $name The proposed name for the file.
+     * @param string $name The proposed name for the file.
      *
      * @return string $new_name   New filename
      * @see    File_Upload::moveFile()

@@ -22,7 +22,9 @@ namespace LORIS\Data\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ImageDTO implements \LORIS\Data\DataInstance
+class ImageDTO implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
 
     private $fileid;
@@ -141,8 +143,8 @@ class ImageDTO implements \LORIS\Data\DataInstance
     public function jsonSerialize() : array
     {
         return [
-                'fileid'              => $this->tarchiveid,
-                'filename'            => $this->tarname,
+                'fileid'              => $this->fileid,
+                'filename'            => $this->filename,
                 'filelocation'        => $this->filelocation,
                 'outputtype'          => $this->outputtype,
                 'acquisitionprotocol' => $this->acquisitionprotocol,
