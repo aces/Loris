@@ -106,7 +106,7 @@ class File_Decompress
      */
     function gzipDecompress()
     {
-        $decomp_file  = new \PharData($this->file_name);
+        $decomp_file = new \PharData($this->file_name);
         // creates /path/to/my.tar
         $return_value = $decomp_file->decompress();
         return $return_value;

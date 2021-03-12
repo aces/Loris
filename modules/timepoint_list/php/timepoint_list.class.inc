@@ -76,8 +76,8 @@ class Timepoint_List extends \NDB_Menu
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
 
-        $this->tpl_data['candID'] = $this->candID;
-        $this->tpl_data['PSCID']  = $candidate->getPSCID();
+        $this->tpl_data['candID']    = $this->candID;
+        $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
 
         $listOfSessionIDs = $candidate->getListOfTimePoints();
