@@ -1,7 +1,7 @@
 -- SQL tables for BIDS derivative file structure
-DROP TABLE IF EXISTS `annotationn_instance`;
-DROP TABLE IF EXISTS `annotation_file`;
+DROP TABLE IF EXISTS `annotation_instance`;
 DROP TABLE IF EXISTS `annotation_parameter`;
+DROP TABLE IF EXISTS `annotation_file`;
 DROP TABLE IF EXISTS `annotation_file_type`;
 
 -- Create annotation_file_type table
@@ -31,7 +31,6 @@ CREATE TABLE `annotation_file` (
 CREATE TABLE `annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
-    `IntendedFor`           VARCHAR(255) NOT NULL,
     `Sources`               VARCHAR(255),
     `Author`                VARCHAR(50),
     PRIMARY KEY (`AnnotationParameterID`),
@@ -43,12 +42,12 @@ CREATE TABLE `annotation_parameter` (
 -- Create annotation_tsv table
 -- Note: This corresponds with the .tsv annotation files
 CREATE TABLE `annotation_instance` (
-    `AnnotationInstanceID`  INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
-    `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
-    `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL,
-    `Onset`                 INT(10),
-    `Duration`              INT(10)      DEFAULT 0,
-    `Label`                 VARCHAR(255) NOT NULL,
+    `AnnotationInstanceID`  INT(10)       UNSIGNED NOT NULL AUTO_INCREMENT,
+    `AnnotationFileID`      INT(10)       UNSIGNED NOT NULL,
+    `AnnotationParameterID` INT(10)       UNSIGNED NOT NULL,
+    `Onset`                 DECIMAL(10, 3) NOT NULL,
+    `Duration`              INT(10)       NOT NULL DEFAULT 0,
+    `Label`                 VARCHAR(255)  NOT NULL,
     `Channel`               VARCHAR(255),
     `AbsoluteTime`          TIMESTAMP,
     `Description`           VARCHAR(255),
@@ -63,7 +62,7 @@ CREATE TABLE `annotation_instance` (
 
 -- Insert into annotation_file_type
 INSERT INTO annotation_file_type
-    (Type, Description)
+    (FileType, Description)
     VALUES
     ('tsv',  'TSV File Type, contains information about each annotation'),
     ('json', 'JSON File Type, metadata for annotations');
