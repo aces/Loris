@@ -72,9 +72,9 @@ class View_Surveys extends \NDB_Form
     /**
      * Loading css dependencies.
      *
-     * @return void
+     * @return array
      */
-    function getCSSDependencies(): void
+    function getCSSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
