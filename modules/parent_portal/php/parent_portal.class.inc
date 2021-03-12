@@ -36,7 +36,7 @@ class Parent_Portal extends \NDB_Form
      * CommonPageSetup sets up the common form elements which
      * are on the page, regardless of HTTP request method.
      *
-     * @return none
+     * @return void
      */
     function setup(): void
     {
@@ -119,7 +119,7 @@ class Parent_Portal extends \NDB_Form
      *
      * @param array $values the values array
      *
-     * @return none
+     * @return void
      */
     function _process($values): void
     {
