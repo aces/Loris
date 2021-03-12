@@ -38,7 +38,7 @@ class Parent_Portal extends \NDB_Form
      *
      * @return none
      */
-    function setup()
+    function setup(): void
     {
         $this->tpl_data['page_title'] = 'Parent Portal';
         $this->addBasicText(
@@ -103,9 +103,9 @@ class Parent_Portal extends \NDB_Form
     /**
      * GetDefaults function
      *
-     * @return none
+     * @return array
      */
-    function _getDefaults()
+    function _getDefaults(): array
     {
 
         $sanitize = array_map('htmlentities', $_GET);
@@ -121,7 +121,7 @@ class Parent_Portal extends \NDB_Form
      *
      * @return none
      */
-    function _process($values)
+    function _process($values): void
     {
         $factory           = \NDB_Factory::singleton();
         $baseURL           = $factory->settings()->getBaseURL();
