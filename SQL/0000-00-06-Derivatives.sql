@@ -22,6 +22,20 @@ CREATE TABLE `annotation_file` (
         REFERENCES `annotation_file_type` (`FileType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create annotation_archive which will store archives of all the annotation files for
+-- Front-end download
+CREATE TABLE `annotation_archive` (
+  `AnnotationArchiveID`   INT(10) UNSIGNED NOT NULL   AUTO_INCREMENT,
+  `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
+  `Blake2bHash`              VARCHAR(128)     NOT NULL,
+  `FilePath`                 VARCHAR(255)     NOT NULL,
+  PRIMARY KEY (`AnnotationArchiveID`),
+  CONSTRAINT `FK_physiological_file_ID`
+    FOREIGN KEY (`PhysiologicalFileID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Create annotation_parameter table
 -- Note: This corresponds with the JSON annotation files
 CREATE TABLE `annotation_parameter` (

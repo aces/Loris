@@ -1,6 +1,7 @@
 -- 0000-00-06-Derivatives.sql
 DROP TABLE IF EXISTS `annotation_instance`;
 DROP TABLE IF EXISTS `annotation_parameter`;
+DROP TABLE IF EXISTS `annotation_archive`;
 DROP TABLE IF EXISTS `annotation_file`;
 DROP TABLE IF EXISTS `annotation_file_type`;
 

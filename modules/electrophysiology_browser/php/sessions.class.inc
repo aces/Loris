@@ -398,6 +398,7 @@ class Sessions extends \NDB_Page
             'physiological_electrode'  => 'physiological_electrode_file',
             'physiological_channel'    => 'physiological_channel_file',
             'physiological_task_event' => 'physiological_task_event_file',
+            'annotation_archive'       => 'annotation_files',
             'physiological_archive'    => 'all_files',
         ];
 

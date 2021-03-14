@@ -1,8 +1,4 @@
 -- SQL tables for BIDS derivative file structure
-DROP TABLE IF EXISTS `annotation_instance`;
-DROP TABLE IF EXISTS `annotation_parameter`;
-DROP TABLE IF EXISTS `annotation_file`;
-DROP TABLE IF EXISTS `annotation_file_type`;
 
 -- Create annotation_file_type table
 CREATE TABLE `annotation_file_type` (
@@ -24,6 +20,20 @@ CREATE TABLE `annotation_file` (
     CONSTRAINT `FK_annotation_file_type`
         FOREIGN KEY (`FileType`)
         REFERENCES `annotation_file_type` (`FileType`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create annotation_archive which will store archives of all the annotation files for
+-- Front-end download
+CREATE TABLE `annotation_archive` (
+  `AnnotationArchiveID`   INT(10) UNSIGNED NOT NULL   AUTO_INCREMENT,
+  `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
+  `Blake2bHash`              VARCHAR(128)     NOT NULL,
+  `FilePath`                 VARCHAR(255)     NOT NULL,
+  PRIMARY KEY (`AnnotationArchiveID`),
+  CONSTRAINT `FK_physiological_file_ID`
+    FOREIGN KEY (`PhysiologicalFileID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`)
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create annotation_parameter table
