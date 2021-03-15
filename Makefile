@@ -25,7 +25,7 @@ clean:
 checkstatic: phpdev
 	npm run lint:php
 	npm run lint:javascript
-	vendor/bin/phan
+	vendor/bin/phan --allow-polyfill-parser
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
