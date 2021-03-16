@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $scores = array(
                    "total_score_1_18"                                 => "",
