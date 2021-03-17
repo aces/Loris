@@ -68,6 +68,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
+        $scope = new Scope(Scope::SESSION);
+
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
@@ -80,6 +82,18 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->dateOptions = $dateOptions;
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->dictionary = array_merge(
+            $this->dictionary,
+            [
+                new DictionaryItem(
+                    'Date_taken',
+                    'Date of Administration',
+                    $scope,
+                    new \LORIS\Data\Types\DateType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+            ]
+        );
 
         if (strrpos($this->testName, '_proband') === false) {
             if ($this->postMortem) {
@@ -87,15 +101,52 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     'Candidate_Age',
                     'Candidate Age (Months)'
                 );
+                $this->dictionary = array_merge(
+                    $this->dictionary,
+                    [
+                        new DictionaryItem(
+                            'Candidate_age',
+                            'Candidate Age (Months)',
+                            $scope,
+                            new \LORIS\Data\Types\Duration(),
+                            new Cardinality(Cardinality::SINGLE),
+                        ),
+                    ]
+                );
+
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
                     'Candidate_Age_at_Death'
                 );
+                $this->dictionary = array_merge(
+                    $this->dictionary,
+                    [
+                        new DictionaryItem(
+                            'Candidate_age',
+                            'Candidate Age At Death (Months)',
+                            $scope,
+                            new \LORIS\Data\Types\Duration(),
+                            new Cardinality(Cardinality::SINGLE),
+                        ),
+                    ]
+                );
             }
             $this->addScoreColumn(
                 'Window_Difference',
                 'Window Difference (+/- Days)'
+            );
+            $this->dictionary = array_merge(
+                $this->dictionary,
+                [
+                    new DictionaryItem(
+                        'Window_Difference',
+                        'Window difference from test battery (days)',
+                        $scope,
+                        new \LORIS\Data\Types\Duration(),
+                        new Cardinality(Cardinality::SINGLE),
+                    ),
+                ]
             );
         }
         $examiners = $this->_getExaminerNames();
@@ -108,6 +159,22 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         );
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
+
+        $this->dictionary = array_merge(
+            $this->dictionary,
+            [
+                new DictionaryItem(
+                    'Examiner',
+                    'Examiner',
+                    $scope,
+                    // This should be an enum of examiners, but
+                    // getExaminerNames currently returns an empty
+                    // array if CommentID is not set.
+                    new StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+            ]
+        );
     }
 
     /**
@@ -471,43 +538,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'table':
                     $this->testName = trim($pieces[1]);
                     $this->table    = trim($pieces[1]);
-
-                    // Add things that are added by addMetaDatafields()
-                    // but aren't in the .linst file to dictionary
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                'Date_taken',
-                                'Date of Administration',
-                                $scope,
-                                new \LORIS\Data\Types\DateType(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Candidate_age',
-                                'Candidate Age (Months)',
-                                $scope,
-                                new \LORIS\Data\Types\Duration(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Window_Difference',
-                                'Window difference from test battery (days)',
-                                $scope,
-                                new \LORIS\Data\Types\Duration(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Examiner',
-                                'Examiner',
-                                $scope,
-                                // Should this be an enum of examiners?
-                                new StringType(255),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                        ]
-                    );
                     break;
                 case 'title':
                     $this->fullName = $pieces[1];
