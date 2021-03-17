@@ -137,7 +137,7 @@ class DataDictIndex extends Component {
             show: true,
             filter: {
                 name: 'Source From',
-                type: 'select',
+                type: 'multiselect',
                 options: options.sourceFrom,
             },
         },
@@ -145,9 +145,8 @@ class DataDictIndex extends Component {
             label: 'Name',
             show: true,
             filter: {
-                name: 'Source From',
-                type: 'multiselect',
-                options: options.sourceFrom,
+                name: 'Name',
+                type: 'text',
             },
         },
         {
