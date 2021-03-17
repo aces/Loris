@@ -515,6 +515,7 @@ class CandidateTest extends TestCase
      */
     public function testGetListOfVisitLabels()
     {
+        $this->markTestSkipped("Test is incomplete");
         $this->_setUpTestDoublesForSelectCandidate();
 
         $selectReturns = [
