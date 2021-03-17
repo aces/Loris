@@ -2201,13 +2201,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         if ($this->jsonData) {
-            // We filter out if Data is null for 2 reasons.
-            // 1. Otherwise getInstanceData will re-query the database since
-            //    $newinst->instanceData is null and commentID is set
-            // 2. The Data column being null in the flag table is equivalent
-            //    to there not being a row in the table in the non-JSON
-            //    case (where it will also not get returned because there's
-            //    no row in the table.)
             $jsondata = $db->pselect(
                 "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
