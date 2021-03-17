@@ -2209,8 +2209,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             //    case (where it will also not get returned because there's
             //    no row in the table.)
             $jsondata = $db->pselect(
-                "SELECT CommentID, Data FROM flag WHERE Data IS NOT NULL" .
-                " AND CommentID IN ("
+                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2219,7 +2218,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
-                    $newinst->instanceData = json_decode($row['Data'], true);
+                    $newinst->instanceData = json_decode(
+                        $row['Data'],
+                        true,
+                    ) ?? [];
 
                     return $newinst;
                 },
