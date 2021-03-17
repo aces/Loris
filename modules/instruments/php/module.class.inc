@@ -158,12 +158,10 @@ class Module extends \Module
      */
     public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
     {
-        $DB = $loris->getDatabaseConnection();
-
-        $rows = $DB->pselectCol("SELECT Test_name FROM test_names", []);
+        $tests = array_keys(\Utility::getAllInstruments());
 
         $dict = [];
-        foreach ($rows as $testname) {
+        foreach ($tests as $testname) {
             try {
                 $inst   = \NDB_BVL_Instrument::factory($testname, "", "");
                 $cat    = new \LORIS\Data\Dictionary\Category(
