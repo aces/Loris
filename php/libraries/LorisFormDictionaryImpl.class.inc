@@ -68,7 +68,7 @@ trait LorisFormDictionaryImpl
                     $this->_getDataDictionaryGroup(
                         $prefix,
                         $cat,
-                        $element['elements'],
+                        $element['elements'] ?? [],
                         $label,
                     ),
                 );
