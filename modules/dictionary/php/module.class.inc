@@ -127,6 +127,8 @@ class Module extends \Module
      * class name instead.
      *
      * @param string $page the Page name being accessed.
+     *
+     * @return \NDB_Page
      */
     public function loadPage(string $page)
     {
