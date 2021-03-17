@@ -60,7 +60,7 @@ class Fields extends \NDB_Page
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withHeader("X-StatusDesc", $status)
-                ->withStatus(201)
+                ->withStatus(204)
                 ->withBody(
                     new \LORIS\Http\StringStream("")
                 );
