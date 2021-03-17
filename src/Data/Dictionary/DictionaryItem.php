@@ -6,10 +6,6 @@ use \LORIS\Data\Scope;
 use \LORIS\Data\Type;
 use \LORIS\Data\Cardinality;
 
-use \LORIS\Data\Scope;
-use \LORIS\Data\Type;
-use \LORIS\Data\Cardinality;
-
 /**
  * A DictionaryItem represents a description of a type of data
  * managed by LORIS.
@@ -88,51 +84,6 @@ class DictionaryItem implements \LORIS\StudyEntities\AccessibleResource
     public function getDataType() : \LORIS\Data\Type
     {
         return $this->type;
-    }
-
-    /**
-     * Return the data cardinality of this DictionaryItem. ie. for
-     * each entity of type Scope how many pieces of data should
-     * exist for this DictionaryItem.
-     *
-     * @return \LORIS\Data\Cardinality
-     */
-    public function getCardinality() : \LORIS\Data\Cardinality
-    {
-        return $this->cardinality;
-    }
-
-    /**
-     * The DictionaryItem instance implements the AccessibleResource
-     * interface in order to make it possible to restrict items per
-     * user. However, by default DictionaryItems are accessible by
-     * all users. In order to restrict access to certain items, a
-     * module would need to extend this class and override the
-     * isAccessibleBy method with its prefered business logic.
-     *
-     * @param \User $user The user whose access should be
-     *                    validated
-     *
-     * @return bool
-     */
-    public function isAccessibleBy(\User $user): bool
-    {
-        return true;
-    }
-
-    public function getScope() : Scope {
-        return $this->scope;
-    }
-
-    /**
-     * Return the data type for the data which this DictionaryItem
-     * describes.
-     *
-     * @return \LORIS\Data\Type
-     */
-    public function getDataType() : \LORIS\Data\Type
-    {
-        return $this->typ;
     }
 
     /**
