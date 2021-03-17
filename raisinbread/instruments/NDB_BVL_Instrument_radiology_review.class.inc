@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;

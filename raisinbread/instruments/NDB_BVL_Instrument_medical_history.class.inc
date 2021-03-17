@@ -24,6 +24,7 @@
 class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;

@@ -23,6 +23,7 @@
 class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;

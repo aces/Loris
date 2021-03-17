@@ -10,6 +10,7 @@
 class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
 {
     use \LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.

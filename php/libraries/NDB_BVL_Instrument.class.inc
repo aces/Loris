@@ -36,8 +36,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
-     *
-     * @access public
      */
     public $testName;
 
@@ -2770,5 +2768,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return (new \Laminas\Diactoros\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
+
+    /**
+     * Return the data dictionary for this instrument.
+     * LorisForm based instruments can use the trait `\LorisFormDictionaryImpl`
+     * in order to implement this function.
+     *
+     * @return iterable
+     */
+    abstract public function getDataDictionary() : iterable;
 
 }

@@ -120,9 +120,13 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
+
         $instrument->method('getFullName')->willReturn("Test Instrument");
         $instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $instrument';
         $instrument->form     = $this->quickForm;
@@ -899,7 +903,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
-                ["getFullName", "getSubtestList"]
+                ["getFullName", "getSubtestList", "getDataDictionary"]
             )->addMethods(['_setupForm'])->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
@@ -908,6 +912,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ['Name' => 'Page 2', 'Description' => 'The second page'],
             ]
         );
+        $i->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $i';
         $i->form     = $this->quickForm;
@@ -1662,9 +1667,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
-
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
