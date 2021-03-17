@@ -77,7 +77,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         if (strrpos($this->testName, '_proband') === false) {
-            if ($this->postMortem) {
+            if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
                     'Candidate Age (Months)'
