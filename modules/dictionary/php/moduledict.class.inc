@@ -13,7 +13,7 @@ class ModuleDict extends \NDB_Page
     protected $module;
 
     /**
-     * Override the hndle to return a dictionary for a given module
+     * Override the handle to return a dictionary for a given module
      *
      * @param ServerRequestInterface $request the incoming PSR7 request
      *
