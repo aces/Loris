@@ -120,10 +120,16 @@ class Module extends \Module
 
     /**
      * Overload loadPage to delegate 'module' to 'moduledict' in order to
-     * handle the URL `dictionary/module/$name`, since the Module class name
-     * is already used for the module descriptor.
+     * handle the URL `dictionary/module/$name`. LORIS delegates to classes
+     * of the same name as the page being accessed, bt the "Module" class
+     * name is already used by the Module class descriptor and can't be used
+     * by the page, so we arbitrarily map "module" URLs to the "moduledict"
+     * class name instead.
+     *
+     * @param string $page the Page name being accessed.
      */
-    public function loadPage(string $page) {
+    public function loadPage(string $page)
+    {
         if ($page === 'module') {
             return $this->loadPage('moduledict');
         }
