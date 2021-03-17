@@ -229,18 +229,8 @@ class Sessions extends \NDB_Page
                          pf.PhysiologicalFileID,
                          pf.FilePath
                        FROM
-                         physiological_file pf ';
-
-        if ($outputType != 'all_types') {
-            $query        .= 'LEFT JOIN physiological_output_type pot ON ';
-            $query        .= 'pf.PhysiologicalOutputTypeID='
-                .'pot.PhysiologicalOutputTypeID ';
-            $query        .= 'WHERE SessionID=:SID ';
-            $query        .= 'AND pot.OutputTypeName = :OTN ';
-            $params['OTN'] = $outputType;
-        } else {
-            $query .= "WHERE SessionID=:SID";
-        }
+                         physiological_file pf 
+                       WHERE SessionID=:SID';
 
         $physiologicalFiles = $db->pselect($query, $params);
 

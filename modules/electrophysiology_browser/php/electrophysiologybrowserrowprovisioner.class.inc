@@ -45,23 +45,19 @@ class ElectrophysiologyBrowserRowProvisioner
               c.CandID                                  AS DCCID,
               Project.Name                              AS Project,
               s.Visit_label                             AS Visit_Label,
-              GROUP_CONCAT(DISTINCT CASE WHEN EXISTS (
-                SELECT
-                  AnnotationFileID
-                FROM
-                  annotation_file
-                WHERE
-                  PhysiologicalFileID = pf.PhysiologicalFileID) THEN
-                'Derived'
-              ELSE
-                'Raw'
-              END) AS Derived,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
-              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
+              GROUP_CONCAT(DISTINCT CASE 
+                WHEN pot.OutputTypeName='derivatives' THEN 'raw,derivatives'
+                ELSE 'raw'
+              END) AS Links,
+              GROUP_CONCAT(DISTINCT CASE 
+                WHEN pot.OutputTypeName='derivatives' THEN 'Derivatives'
+                ELSE 'Raw'
+              END) AS Type,
               s.ID                                      AS SessionID,
               s.CenterID                                AS CenterID,
-              s.ProjectID                               AS ProjectID
+              s.ProjectID                               AS ProjectID              
             FROM physiological_file pf
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
               LEFT JOIN candidate c USING (CandID)

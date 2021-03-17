@@ -255,23 +255,6 @@ class FilePanel extends Component {
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'}
                      style={stylesFile.div.element.download_title}
-                >Annotation Files</div>
-                <div className={'col-xs-2'}>
-                  <a id='download_annotation_files'
-                     href={'/mri/jiv/get_file.php?file='
-                          + this.state.data.downloads[4].file}
-                     target='_blank'
-                     download={this.state.data.downloads[0].file}
-                  >
-                    <button id='btn_download_annotation_files'
-                            style={stylesFile.button.download}
-                    >Download</button>
-                  </a>
-                </div>
-              </div>
-              <div className={'form-group row flex-v-center'}>
-                <div className={'col-xs-5'}
-                     style={stylesFile.div.element.download_title}
                 >EEG File</div>
                 <div className={'col-xs-2'}>
                   <a id='download_eeg_file'
@@ -332,6 +315,23 @@ class FilePanel extends Component {
                      download={this.state.data.downloads[0].file}
                   >
                     <button id='btn_download_events'
+                            style={stylesFile.button.download}
+                    >Download</button>
+                  </a>
+                </div>
+              </div>
+              <div className={'form-group row flex-v-center'}>
+                <div className={'col-xs-5'}
+                     style={stylesFile.div.element.download_title}
+                >Annotations</div>
+                <div className={'col-xs-2'}>
+                  <a id='download_annotation_files'
+                     href={'/mri/jiv/get_file.php?file='
+                          + this.state.data.downloads[4].file}
+                     target='_blank'
+                     download={this.state.data.downloads[0].file}
+                  >
+                    <button id='btn_download_annotation_files'
                             style={stylesFile.button.download}
                     >Download</button>
                   </a>
