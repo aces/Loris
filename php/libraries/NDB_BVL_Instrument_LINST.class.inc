@@ -20,11 +20,6 @@ use \LORIS\Data\Types\IntegerType;
 use \LORIS\Data\Types\Enumeration;
 use \LORIS\Data\Types\DateType;
 
-use \LORIS\Data\Types\StringType;
-use \LORIS\Data\Types\IntegerType;
-use \LORIS\Data\Types\Enumeration;
-use \LORIS\Data\Types\DateType;
-
 /**
  * Base class for all NeuroDB behavioural instruments
  *
