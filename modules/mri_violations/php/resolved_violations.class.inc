@@ -200,16 +200,22 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
-        $siteClauseElements = [];
-        foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
-        }
-        $siteClause = sprintf(
+        $siteClauseElements = array_keys($accessibleSites);
+        $siteClause         = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",
             implode(',', $siteClauseElements)
         );
 
-        $this->query    = " FROM (
+        // Build the component of the WHERE clause (for the query below)
+        // that will be used to restrict the search to the data associated
+        // to projects the user has access to
+        $projectClauseElements = $user->getProjectIDs();
+        $projectClause         = sprintf(
+            "(v.Project IS NULL OR v.Project IN (%s))",
+            implode(',', $projectClauseElements)
+        );
+
+        $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 s.ProjectID as Project,
@@ -225,7 +231,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                               time_run
                    )
                 ) as hash,
-                mpvs.ID as join_id,                
+                mpvs.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans AS mpvs
@@ -291,7 +297,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                  ON (v.Subproject = subpjct.SubprojectID)
-            WHERE $siteClause";
+            WHERE $siteClause AND $projectClause";
+
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = [
@@ -331,8 +338,6 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        // create user object
-        $user        =&        \User::singleton();
         $config      =&        \NDB_Config::singleton();
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
@@ -360,6 +365,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'Protocol Violation'           => 'MRI Protocol Check violation',
             ]
         );
+
         // violation resolved
         $this->addSelect(
             'Resolved',
@@ -374,41 +380,26 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 'other'         => 'Other',
             ]
         );
-        // project
-        $list_of_projects = \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
-            ['' => 'All'] + $list_of_projects
+            ['' => 'All'] + $this->getProjectOptions()
         );
-
-        // Subproject
-        $list_of_subprojects = \Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
             'Subproject',
-            ['' => 'All'] + $list_of_subprojects
+            ['' => 'All'] + $this->getSubprojectOptions()
         );
 
-        // Get sites
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites  = [
+        $this->addSelect(
+            'Site',
+            'Site',
+            [
                 ''         => 'All (including unknown)',
                 'AllKnown' => 'All (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            ];
-            $sites += \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites  = [
-                ''         => 'All user sites (including unknown)',
-                'AllKnown' => 'All user sites (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            ];
-            $sites +=  $user->getStudySites();
-        }
-        $this->addSelect('Site', 'Site', $sites);
+            ] + $this->getSiteOptions(),
+        );
     }
 
     /**
