@@ -147,7 +147,7 @@ class ElectrophysiologyBrowserIndex extends Component {
         type: 'select',
         options: {
           Raw: 'Raw',
-          Derivatives: 'Derivatives',
+          Derivative: 'Derivative',
         },
       }},
       {label: 'SessionID', show: false},

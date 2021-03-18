@@ -48,11 +48,11 @@ class ElectrophysiologyBrowserRowProvisioner
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT CASE 
-                WHEN pot.OutputTypeName='derivatives' THEN 'raw,derivatives'
+                WHEN pot.OutputTypeName='derivatives' THEN 'raw,derivative'
                 ELSE 'raw'
               END) AS Links,
               GROUP_CONCAT(DISTINCT CASE 
-                WHEN pot.OutputTypeName='derivatives' THEN 'Derivatives'
+                WHEN pot.OutputTypeName='derivatives' THEN 'Derivative'
                 ELSE 'Raw'
               END) AS Type,
               s.ID                                      AS SessionID,

@@ -137,7 +137,7 @@ class ElectrophysiologySessionView extends Component {
                 file: '',
               },
               {
-                type: 'annotation_files',
+                type: 'physiological_annotation_files',
                 file: '',
               },
               {

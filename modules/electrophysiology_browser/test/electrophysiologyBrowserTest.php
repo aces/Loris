@@ -268,7 +268,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilters()
     {
-        $this->markTestSkipped('Must be updated with annotation additions to pass');
+        $this->markTestSkipped('Must be updated with annotations to pass');
         $this->safeGet($this->url . "/electrophysiology_browser/?");
         $this->_filterTest(
             self::$PSCID,
@@ -343,7 +343,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testEEGBrowserSortableByColumn()
     {
-        $this->markTestSkipped('Must be updated with annotation additions to pass');
+        $this->markTestSkipped('Must be updated with annotations to pass');
         $this->safeGet($this->url . "/electrophysiology_browser/?");
 
         //Test PSCID Header
@@ -389,7 +389,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testAllTypesLink()
     {
-        $this->markTestSkipped('Must be updated with annotation additions to pass');
+        $this->markTestSkipped('Must be updated with annotations to pass');
         $this->safeGet($this->url . "/electrophysiology_browser/");
         $link = self::$allLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
@@ -409,7 +409,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testRawLink()
     {
-        $this->markTestSkipped('Must be updated with annotation additions to pass');
+        $this->markTestSkipped('Must be updated with annotations to pass');
         $this->safeGet($this->url . "/electrophysiology_browser/");
         $link = self::$rawLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
@@ -522,7 +522,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testSessionsNavigation()
     {
-        $this->markTestSkipped('Must be updated with annotation additions to pass');
+        $this->markTestSkipped('Must be updated with annotations to pass');
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
         $link = self::$nextLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
