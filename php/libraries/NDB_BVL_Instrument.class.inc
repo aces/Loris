@@ -2900,18 +2900,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $status->select($this->commentID);
 
         // freeze the form to prevent data entry
+        // IF (1) Instrument is NOT in progress
+        // OR (2) The user does NOT have `data_entry` permission
+        // OR (3) The user does NOT have access to the timepoint
+        //        at which the instrument is instantiated
+        // OR (4) The instrument is NOT in preview mode
+        // OR (5) the instrument is NOT a direct entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
             || (isset($timepoint)
             && !in_array(
                 $timepoint->getData("CenterID"),
-                $user->getData("CenterIDs")
+                $user->getData("CenterIDs"),
+                true
             ))
+            || $this->preview !== true
+            || $this->DataEntryType !== 'DirectEntry'
         ) {
-
-            if ($this->preview !== true && $this->DataEntryType !== 'DirectEntry') {
-                $this->freeze();
-            }
+            $this->freeze();
         }
 
         return (new \LORIS\Http\Response())
