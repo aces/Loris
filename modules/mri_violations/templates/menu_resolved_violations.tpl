@@ -36,6 +36,14 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
+                            <label class="col-sm-12 col-md-2">{$form.Subproject.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Subproject.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Site.html}</div>
                             <label class="col-sm-12 col-md-2">{$form.Resolved.label}</label>
