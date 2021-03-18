@@ -86,6 +86,39 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
+        // create user object
+        $user     = \User::singleton();
+        $siteList = [];
+
+        // get list of sites available for the user
+        if ($user->hasPermission('imaging_browser_view_allsites')
+            || $user->hasPermission('imaging_browser_phantom_allsites')
+        ) {
+            // get the list of study sites
+            $siteList = \Utility::getSiteList();
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
+            }
+        } else {
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = \Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
+        }
+
+        // get list of projects
+        $list_of_projects = [];
+        $projectList      = \Utility::getProjectList();
+        foreach ($projectList as $key => $project) {
+            unset($projectList[$key]);
+            $list_of_projects[$project] = $project;
+        }
+
         // get visit QC status options
         $visitQCStatus = [
             'Pass' => 'Pass',
@@ -117,19 +150,14 @@ class Imaging_Browser extends \DataFrameworkMenu
         );
 
         return [
-            'sites'         => $this->getSiteOptions(
-                false,
-                [
-                    'imaging_browser_view_allsites',
-                    'imaging_browser_phantom_allsites',
-                ]
-            ),
-            'projects'      => $this->getProjectOptions(false),
+            'sites'         => $siteList,
+            'projects'      => $list_of_projects,
             'visitQCStatus' => $visitQCStatus,
             'sequenceTypes' => $all_scan_types,
             'pendingNew'    => $pending,
             'configLabels'  => $scan_id_types,
         ];
+
     }
 
     /**

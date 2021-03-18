@@ -40,19 +40,13 @@ class Module extends \Module
         // Build the component of the WHERE clause (for the query below)
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
-        $siteClauseElements = array_keys($accessibleSites);
-        $siteClause         = sprintf(
+        $siteClauseElements = [];
+        foreach (array_keys($accessibleSites) as $siteID) {
+            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+        }
+        $siteClause = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",
             implode(',', $siteClauseElements)
-        );
-
-        // Build the component of the WHERE clause (for the query below)
-        // that will be used to restrict the search to the data associated
-        // to projects the user has access to
-        $projectClauseElements = $user->getProjectIDs();
-        $projectClause         = sprintf(
-            "(v.Project IS NULL OR v.Project IN (%s))",
-            implode(',', $projectClauseElements)
         );
 
         // Subquery to retrieve tghe violations in table mri_protocol_violated_scans
@@ -160,7 +154,8 @@ class Module extends \Module
             LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project AS pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject AS subpjct ON (v.Subproject = subpjct.SubprojectID)
-            WHERE $siteClause AND $projectClause";
+            WHERE $siteClause
+        ";
 
         return $query;
     }

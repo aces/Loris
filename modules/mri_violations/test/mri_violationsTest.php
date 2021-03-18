@@ -50,13 +50,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "user_project_rel",
-            [
-                'UserID'    => '999990',
-                'ProjectID' => '7777',
-            ]
-        );
-        $this->DB->insert(
             "psc",
             [
                 'CenterID'  => '55',
@@ -301,13 +294,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             [
                 'CenterID' => '55',
                 'Name'     => 'TESTinPSC',
-            ]
-        );
-        $this->DB->delete(
-            "user_project_rel",
-            [
-                'UserID'    => '999990',
-                'ProjectID' => '7777',
             ]
         );
         $this->DB->delete(
