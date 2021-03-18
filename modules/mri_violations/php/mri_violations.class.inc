@@ -53,7 +53,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      */
     function _process($values)
     {
-        if (!is_array($values) || count($values) == 0) {
+        if (!is_array($values) || count($values) ==0) {
             return true;
         }
         $DB   = \Database::singleton();
@@ -117,7 +117,6 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
                 }
-
                 // Table 2: mri_violations_log
                 $ID_mri_violations_log = $DB->pselectOne(
                     "SELECT LogID
@@ -300,6 +299,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
+        // create user object
+        $user    =& \User::singleton();
         $config  =& \NDB_Config::singleton();
         $db      =& \Database::singleton();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
@@ -338,26 +339,43 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
+
+        // project
+        $list_of_projects = ['' => 'Any'] + \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
-            ['' => 'All'] + $this->getProjectOptions()
-        );
-        $this->addSelect(
-            'Subproject',
-            'Subproject',
-            ['' => 'All'] + $this->getSubprojectOptions()
+            $list_of_projects
         );
 
+        // Subproject
+        $list_of_subprojects = ['' => 'Any'] +
+            \Utility::getSubprojectList();
         $this->addSelect(
-            'Site',
-            'Site',
-            [
+            'Subproject',
+            'Subproject',
+            $list_of_subprojects
+        );
+
+        // Get sites
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites  = [
                 ''         => 'All (including unknown)',
                 'AllKnown' => 'All (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            ] + $this->getSiteOptions(),
-        );
+            ];
+            $sites += \Utility::getSiteList();
+        } else {
+            // allow only to view own site data
+            $sites  = [
+                ''         => 'All user sites (including unknown)',
+                'AllKnown' => 'All user sites (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            ];
+            $sites +=  $user->getStudySites();
+        }
+        $this->addSelect('Site', 'Site', $sites);
     }
 
     /**
