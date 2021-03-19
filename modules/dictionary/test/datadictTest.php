@@ -47,7 +47,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         parent::setUp();
         $this->DB->insert(
@@ -69,7 +69,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown() : void
     {
         parent::tearDown();
         $this->DB->delete(
@@ -87,17 +87,18 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/dictionary/");
 
-                $this->webDriver->wait(120, 1000)->until(
-                    WebDriverExpectedCondition::presenceOfElementLocated(
-                        WebDriverBy::Name("Name")
-                    )
-                );
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Name("Name")
+            )
+        );
 
-                $bodyText = $this->webDriver->findElement(
-                    WebDriverBy::cssSelector("body")
-                )->getText();
-                $this->assertContains("Data Dictionary", $bodyText);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Data Dictionary", $bodyText);
     }
+
     /**
      * Testing UI elements when page loads
      *
@@ -110,7 +111,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
             $text = $this->safeFindElement(
                 WebDriverBy::cssSelector($value)
             )->getText();
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
 }

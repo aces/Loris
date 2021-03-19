@@ -58,9 +58,9 @@ class Fields extends \NDB_Page
                 $request->getBody()->__toString()
             );
             return (new \LORIS\Http\Response())
+                ->withStatus(204)
                 ->withHeader("Content-Type", "text/plain")
                 ->withHeader("X-StatusDesc", $status)
-                ->withStatus(204)
                 ->withBody(
                     new \LORIS\Http\StringStream("")
                 );

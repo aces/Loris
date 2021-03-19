@@ -72,6 +72,8 @@ class ModuleDict extends \NDB_Page
             return new \LORIS\Http\Response\JSON\NotFound('module not found');
         }
 
+        assert($this->Module instanceof Module);
+
         $data = $this->Module->getUserModuleCategories($user, $loris, $modulename);
         $prov = (new DataDictRowProvisioner($loris, $data['CategoryItems']))
             ->filter(new \LORIS\Data\Filters\AccessibleResourceFilter());

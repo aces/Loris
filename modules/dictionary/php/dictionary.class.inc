@@ -14,6 +14,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 class Dictionary extends \DataFrameworkMenu
 {
     protected array $modules;
+    protected array $categories;
+    protected array $categoryitems;
 
     /**
      * {@inheritDoc}
@@ -134,7 +136,9 @@ class Dictionary extends \DataFrameworkMenu
         \User $user, ServerRequestInterface $request
     ) : void {
         $this->lorisinstance = $request->getAttribute("loris");
-        $modulesandcats      = $this->Module->getUserModuleCategories(
+
+        assert($this->Module instanceof Module);
+        $modulesandcats = $this->Module->getUserModuleCategories(
             $user,
             $this->lorisinstance,
         );

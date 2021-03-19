@@ -27,6 +27,11 @@ class Categories extends \NDB_Page
 
         // getUserModuleCategories enforces permissions and strips out modules
         // that don't have any dictionary.
+        //
+        // We need to ensure that $this->Module is a Module descriptor for this
+        // type of module, not a generic \Module in order for static analysis tools
+        // to realize the function is defined.
+        assert($this->Module instanceof Module);
         $modulesandcats = $this->Module->getUserModuleCategories(
             $user,
             $request->getAttribute("loris"),
