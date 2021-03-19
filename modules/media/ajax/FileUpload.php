@@ -179,7 +179,7 @@ function uploadFile()
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
-            $db->insertOnDuplicateUpdate('media', $query);
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
             showMediaError("Could not upload the file. Please try again!", 500);

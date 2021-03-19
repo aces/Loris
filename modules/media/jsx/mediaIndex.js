@@ -64,18 +64,6 @@ class MediaIndex extends Component {
     }
   }
 
-  htmlSpecialCharsDecode(text) {
-    if (text != null) {
-      return text
-        .replace(/&amp;/g, '&')
-        .replace(/&quot;/g, '"')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>');
-    } else {
-      return text;
-    }
-  }
-
   /**
    * Modify behaviour of specified column cells in the Data Table component
    *
@@ -93,13 +81,11 @@ class MediaIndex extends Component {
     switch (column) {
     case 'File Name':
       if (this.props.hasPermission('media_write')) {
-        let fileName = this.htmlSpecialCharsDecode(row['File Name']);
-        cell = this.htmlSpecialCharsDecode(cell);
         const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
-          encodeURIComponent(fileName);
+          encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>
-            <a href={downloadURL} target="_blank" download={fileName}>
+            <a href={downloadURL} target="_blank" download={row['File Name']}>
               {cell}
             </a>
           </td>
