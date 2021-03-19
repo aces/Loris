@@ -2908,9 +2908,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // OR (5) the instrument is NOT a direct entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
-            || (isset($timepoint) && $user->hasCenter($timepoint->getCenterID()))
-            || $this->preview !== true
-            || $this->DataEntryType !== 'DirectEntry'
+            || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
+            && $this->preview !== true
+            && $this->DataEntryType !== 'DirectEntry'
         ) {
             $this->freeze();
         }
