@@ -1232,14 +1232,4 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     {
         return $this->subtests;
     }
-
-    /**
-     * Returns the dictionary for this instrument.
-     *
-     * @return \LORIS\Data\Dictionary\DictionaryItem[]
-     */
-    public function getDataDictionary() : iterable
-    {
-         return $this->dictionary;
-    }
 }
