@@ -2904,8 +2904,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // OR (2) The user does NOT have `data_entry` permission
         // OR (3) The user does NOT have access to the timepoint
         //        at which the instrument is instantiated
-        // OR (4) The instrument is NOT in preview mode
-        // OR (5) the instrument is NOT a direct entry
+        // AND (4) The instrument is NOT in preview mode
+        // AND (5) the instrument is NOT a direct entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
             || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
