@@ -15,7 +15,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
 {
     protected \Module $itemmodule;
     protected Category $itemcategory;
-    protected DictionaryItem$item;
+    protected DictionaryItem $item;
     protected string $desc;
     protected string $status;
 
