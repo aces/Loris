@@ -13,6 +13,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 
 class Dictionary extends \DataFrameworkMenu
 {
+    protected array $modules;
+
     /**
      * {@inheritDoc}
      *

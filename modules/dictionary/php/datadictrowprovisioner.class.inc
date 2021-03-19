@@ -12,6 +12,7 @@ use \LORIS\Data\Dictionary\Category;
 class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 {
     protected \LORIS\LorisInstance $loris;
+    protected array $items;
 
     /**
      * Create a DataDictRowProvisioner, which gets rows for
