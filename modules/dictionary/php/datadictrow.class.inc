@@ -13,6 +13,12 @@ use \LORIS\Data\Dictionary\DictionaryItem;
 class DataDictRow implements \LORIS\Data\DataInstance,
     \LORIS\StudyEntities\AccessibleResource
 {
+    protected \Module $itemmodule;
+    protected Category $itemcategory;
+    protected DictionaryItem$item;
+    protected string $desc;
+    protected string $status;
+
     /**
      * Construct a DataDictRow
      *
@@ -25,8 +31,8 @@ class DataDictRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(
         \Module $itemmodule,
-        \LORIS\Data\Dictionary\Category $cat,
-        \LORIS\Data\Dictionary\DictionaryItem $item,
+        Category $cat,
+        DictionaryItem $item,
         string $desc,
         string $descstatus
     ) {

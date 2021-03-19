@@ -11,6 +11,8 @@ use \LORIS\Data\Dictionary\Category;
  */
 class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 {
+    protected \LORIS\LorisInstance $loris;
+
     /**
      * Create a DataDictRowProvisioner, which gets rows for
      * the datadict menu table.

@@ -464,6 +464,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function loadInstrumentFile(string $filename, bool $base64 = false): void
     {
         $scope = new Scope(Scope::SESSION);
+
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
 
@@ -652,13 +653,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         } else {
                             $this->addTextElement($pieces[1], $pieces[2]);
                         }
-                        $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new StringType(255),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $pieces[1],
@@ -684,13 +678,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         } else {
                             $this->addTextAreaElement($pieces[1], $pieces[2]);
                         }
-                        $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new StringType(),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $pieces[1],
@@ -719,13 +706,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 'emptyOptionValue' => null,
                             ];
                         }
-                        $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new DateType(),
-                            new Cardinality(Cardinality::SINGLE),
-                        );
 
                         $this->dictionary[] = new DictionaryItem(
                             $pieces[1],
