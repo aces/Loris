@@ -70,7 +70,7 @@ class SurveyAccountsRow implements \LORIS\Data\DataInstance,
     }
 
     /**
-     * Returns he ProjectID for this row
+     * Returns the ProjectID for this row
      *
      * @return \ProjectID The ProjectID
      */
