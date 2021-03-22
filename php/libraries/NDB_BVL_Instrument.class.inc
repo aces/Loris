@@ -2778,4 +2778,118 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     abstract public function getDataDictionary() : iterable;
 
+    /**
+     * Static function returning a full list of instruments defined in the database.
+     * Only instantiable instruments are returned in the format
+     * test_name => Instrument object.
+     *
+     * Note: An error_log entry is logged if an instrument is in the database but
+     * can not be instantiated. this check should eventually be replaced with an
+     * exception.
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getInstrumentsList() : array
+    {
+        $Factory     = \NDB_Factory::singleton();
+        $DB          = $Factory->Database();
+        $instruments = $DB->pselectCol("SELECT Test_name FROM test_names", []);
+
+        $instrumentList = [];
+        foreach ($instruments as $inst) {
+            try {
+                $instrumentList[$inst] = NDB_BVL_Instrument::factory($inst, "", "");
+            } catch (Exception $e) {
+                error_log(
+                    "Instrument $inst does not seem to be a valid instrument."
+                );
+            }
+        }
+        return $instrumentList;
+    }
+
+    /**
+     * Static function returning list of all test_names available in the database as
+     * an associative array with format $testName => $fullName. Only Names of
+     * instruments which are instantiable are returned, invalid instruments will not
+     * appear in this list.
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getInstrumentNamesList() : array
+    {
+        $instrumentsList = self::getInstrumentsList();
+
+        $instrumentNames = [];
+        foreach ($instrumentsList as $testName => $instrument) {
+            $fullName = $instrument->getFullName();
+            $instrumentNames[$testName] =$fullName;
+        }
+
+        return $instrumentNames;
+    }
+
+    /**
+     * Static function returning list of all test_names with Double Data Entry
+     * configuration enabled in the database. The list is returned as an associative
+     * array with format $testName => $fullName. Only Names of instruments which are
+     * instantiable are returned, invalid instruments will not appear in this list.
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getDDEInstrumentNamesList() : array
+    {
+        $Factory = \NDB_Factory::singleton();
+        $config  = $Factory->config();
+
+        $instrumentNamesList = self::getInstrumentNamesList();
+
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+
+        $instrumentNames = [];
+        foreach ($instrumentNamesList as $testName => $fullName) {
+            if (in_array($testName, $doubleDataEntryInstruments, true)) {
+                $instrumentNames[$testName] = $fullName;
+            }
+        }
+
+        return $instrumentNames;
+    }
+
+    /**
+     * Static function returning list of all test_names with Direct Data Entry
+     * configuration enabled in the database. The list is returned as an associative
+     * array with format $testName => $fullName. Only Names of instruments which are
+     * instantiable are returned, invalid instruments will not appear in this list.
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getDirectEntryInstrumentNamesList() : array
+    {
+        $Factory = \NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+
+        $instrumentNamesList = self::getInstrumentNamesList();
+
+        $directEntryInstruments = $DB->pselectCol(
+            "SELECT Test_name FROM test_names WHERE IsDirectEntry=true",
+            []
+        );
+
+        $instrumentNames = [];
+        foreach ($instrumentNamesList as $testName => $instrument) {
+            $fullName = $instrument->getFullName();
+            if (in_array($testName, $directEntryInstruments, true)) {
+                $instrumentNames[$testName] = $fullName;
+            }
+        }
+
+        return $instrumentNames;
+    }
 }
