@@ -906,9 +906,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // we need to be able to access the candidate to get to it.
         $timepoints = $this->getListOfTimePoints();
         foreach ($timepoints as $sessionID) {
+            var_dump('before singleton');
+            var_dump($sessionID);
+            var_dump(new \SessionID(strval($sessionID)));
             $timepoint = \TimePoint::singleton(
                 new \SessionID(strval($sessionID))
             );
+            var_dump($timepoint);
+
             if ($timepoint->isAccessibleBy($user)) {
                 // There's at least one, we don't need to check
                 // any more.
