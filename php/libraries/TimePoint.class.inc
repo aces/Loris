@@ -262,7 +262,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             'SubprojectID'    => $SubprojectID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
-            'CenterID'        => $psc->getCenterID(),
+            'CenterID'        => $psc->getCenterID()->__toString(),
             'ProjectID'       => $project->getId(),
             'Current_stage'   => 'Not Started',
             'Submitted'       => 'N',
@@ -441,7 +441,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getCenterID(): \CenterID
     {
-        return $this->_timePointInfo['CenterID'];
+        return new \CenterID($this->_timePointInfo['CenterID']);
     }
 
     /**
