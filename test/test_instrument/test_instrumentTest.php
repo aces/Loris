@@ -56,6 +56,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert('flag', array(
             'ID' => '999999',
             'SessionID' => '999999',
+            'Data_entry'=> 'In Progress',
             'Test_name' => 'testtest',
             'CommentID' => '11111111111111111',
         ));
