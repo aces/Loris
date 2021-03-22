@@ -86,20 +86,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         // instantiate new TimePoint object
         static $timePointList = [];
-        if (!isset($timePointList[(string) $sessionID])) {
+        if (!isset($timePointList["$sessionID"])) {
             try {
-                $timePointList[(string) $sessionID] = new TimePoint();
+                $timePointList["$sessionID"] = new TimePoint();
 
-                $timePointList[(string) $sessionID]->select($sessionID);
+                $timePointList["$sessionID"]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[(string) $sessionID]);
+                unset($timePointList["$sessionID"]);
                 throw $e;
             }
         }
 
-        return $timePointList[(string) $sessionID];
+        return $timePointList["$sessionID"];
     }
 
 
