@@ -36,14 +36,14 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The name of the page (subtest) being accessed
      */
-    var $page;
+    public $page;
 
     /**
      * Reference to the HTML QuickForm
      *
      * @var \LorisForm
      */
-    var $form;
+    public $form;
 
     /**
      * The identifier for the item to edit
@@ -90,6 +90,16 @@ class NDB_Page implements RequestHandlerInterface
      * @var array<mixed>
      */
     protected $tpl_data = [];
+
+    /**
+     * The default dateOptions to send to LorisForm to render elements
+     * on this page. This is usually set by subclasses of NDB_Page which
+     * need to modify the options to show on a date (ie. min year, max year,
+     * etc.)
+     *
+     * @var array
+     */
+    public $dateOptions;
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -172,7 +182,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', null, $header);
+        $this->form->addElement('header', '', $header);
     }
 
     /**
@@ -209,7 +219,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', null, $label);
+        $this->form->addElement('static', '', $label);
     }
 
     /**
@@ -343,16 +353,16 @@ class NDB_Page implements RequestHandlerInterface
                 ]
             );
         }
-        $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
+        $this->addGroup($radGroup, $name . '_group', $groupLabel, '');
     }
 
     /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string $name    The name of the hidden element to add
-     * @param array  $value   The value of the hidden element to add
-     * @param array  $attribs Additional html attributes for element
+     * @param string  $name    The name of the hidden element to add
+     * @param ?string $value   The value of the hidden element to add
+     * @param array   $attribs Additional html attributes for element
      *
      * @return void
      */
@@ -389,7 +399,7 @@ class NDB_Page implements RequestHandlerInterface
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, '');
 
     }
 
@@ -414,10 +424,10 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Adds a QuickForm rule to an element on the page.
      *
-     * @param string $element The name of the element to have the rule
-     * @param string $message The message to show on failure
-     * @param string $type    The type of rule to add
-     * @param string $format  See QuickForm documentation.
+     * @param string|array $element The name of the element to have the rule
+     * @param string       $message The message to show on failure
+     * @param string       $type    The type of rule to add
+     * @param string       $format  See QuickForm documentation.
      *
      * @return void
      *
@@ -456,7 +466,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name      The name to give this group
      * @param string $label     A label to attach to the group
      * @param string $delimiter The separator to use between group elements
-     * @param string $options   An optional array to include prefix_wrapper and
+     * @param ?array $options   An optional array to include prefix_wrapper and
      *                          postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
@@ -507,7 +517,7 @@ class NDB_Page implements RequestHandlerInterface
     {
         return $this->form->createElement(
             "static",
-            null,
+            '',
             $labelString
         );
     }
@@ -585,7 +595,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $attribs Attributes to pass to HTML_QuickForm
+     * @param array  $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */
@@ -605,7 +615,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
      * @param array  $attribs An array of extra HTML attributes to
      *                        add to the element.
      *
@@ -688,14 +698,14 @@ class NDB_Page implements RequestHandlerInterface
         // Format should be deprecated and getting the page in different formats
         // should be a different endpoint or use HTTP content negotiation headers.
         $get = $request->getQueryParams();
-        if (isset($get['format'])) {
+        if (isset($get['format']) && $get['format'] === 'json') {
             $this->format = $get['format'];
             return $handler->handle($request)
                 ->withHeader("Content-Type", "application/json");
         }
+
         return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-            ->process($request, $handler)
-            ->withHeader("Content-Type", "text/html");
+            ->process($request, $handler);
     }
 
     /**

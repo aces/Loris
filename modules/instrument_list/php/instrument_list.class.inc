@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Instrument_List
  *
@@ -21,6 +23,8 @@ namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * Instrument_List
@@ -92,16 +96,8 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         //These variable are only for checking the permissions.
-        return ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )) || (in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('access_all_profiles')
+            || $this->timePoint->isAccessibleBy($user);
     }
 
     /**
@@ -173,27 +169,23 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
 
-        $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
-            $this->tpl_data['candID']
-        );
-        $this->tpl_data['subprojectID'] = \Utility::getSubprojectIDUsingCandID(
-            $this->tpl_data['candID']
+        $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
+            new CandID(strval($this->tpl_data['candID']))
         );
 
         // get the list of instruments
         $listOfInstruments = $this->getBatteryInstrumentList(
-            $this->tpl_data['stage'],
-            $this->tpl_data['subprojectID']
+            $this->tpl_data['stage']
         );
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
-            $username = $user->getData('UserID');
+            $username = $user->getUsername();
 
-            $feedback_select_inactive = null;
+            $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
-                $feedback_select_inactive = 'Y';
+                $feedback_select_inactive = true;
             }
 
             $x            = -1;
@@ -293,12 +285,12 @@ class Instrument_List extends \NDB_Menu_Filter
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string      $candID    the value of candID
+     * @param CandID      $candID    the value of candID
      * @param ?\SessionID $sessionID the value of sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID): string
+    function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
@@ -309,15 +301,14 @@ class Instrument_List extends \NDB_Menu_Filter
      * Gets an associative array of instruments which are members of the current
      * battery for instrument list module
      *
-     * @param string  $stage        Either 'visit' or 'screening' - determines
-     *                              whether to register only screening instruments
-     *                              or visit instruments
-     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
+     * @param string $stage Either 'visit' or 'screening' - determines
+     *                      whether to register only screening instruments
+     *                      or visit instruments
      *
      * @return array an associative array containing Test_name,
      *         Full_name, Sub_group, CommentID
      */
-    function getBatteryInstrumentList($stage=null, $SubprojectID=null)
+    function getBatteryInstrumentList($stage=null)
     {
         $DB = \Database::singleton();
 

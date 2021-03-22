@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 
+/**
+ * Candidate date of birth component
+ */
 class CandidateDOB extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -21,11 +28,18 @@ class CandidateDOB extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
     .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -36,6 +50,11 @@ class CandidateDOB extends Component {
       });
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -44,6 +63,11 @@ class CandidateDOB extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (this.state.error) {
         return <h3>An error occured while loading the page.</h3>;

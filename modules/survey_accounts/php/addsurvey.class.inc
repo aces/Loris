@@ -129,7 +129,9 @@ class AddSurvey extends \NDB_Form
                 'v_VL'     => $values['VL']
             ]
         );
-        if (!\NDB_Factory::singleton()->user()->hasProject($projectID)) {
+
+        $user = \NDB_Factory::singleton()->user();
+        if (!$user->hasProject(new \ProjectID($projectID))) {
             return [
                 'Project' => "You are not affiliated with this session's project"
             ];
@@ -208,7 +210,7 @@ class AddSurvey extends \NDB_Form
         }
         $battery = new \NDB_BVL_Battery();
         $battery->selectBattery(
-            strval(new \SessionID($SessionID))
+            new \SessionID($SessionID)
         );
 
         $commentID = $battery->addInstrument($values['Test_name']);

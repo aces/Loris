@@ -13,6 +13,10 @@ import swal from 'sweetalert2';
  *
  * */
 class DocCategoryForm extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -30,10 +34,17 @@ class DocCategoryForm extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -44,6 +55,11 @@ class DocCategoryForm extends React.Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error) {
@@ -91,10 +107,9 @@ class DocCategoryForm extends React.Component {
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
-
+  /** *******************************************************************************
+   *                      ******     Helper methods     *******
+   *********************************************************************************/
 
   /**
    * Handle form submission
@@ -104,7 +119,8 @@ class DocCategoryForm extends React.Component {
     e.preventDefault();
     this.uploadFile();
   }
-  /*
+
+  /**
    * Uploads the file to the server
    */
   uploadFile() {
@@ -116,7 +132,8 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-   fetch(this.props.action, {
+
+    fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
@@ -134,6 +151,7 @@ class DocCategoryForm extends React.Component {
         swal.fire('Add Successful!', '', 'success');
     });
   }
+
   /**
    * Set the form data based on state values of child elements/componenets
    *

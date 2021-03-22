@@ -9,12 +9,24 @@ import CandidateDOB from './CandidateDOB';
 import CandidateDOD from './CandidateDOD';
 import {Tabs, TabPane} from 'Tabs';
 
+/**
+ * Candidate parameters component
+ */
 class CandidateParameters extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.getTabPanes = this.getTabPanes.bind(this);
   }
 
+  /**
+   * Get tab panes
+   * @param {object} tabList
+   * @return {JSX} - React markup for the component
+   */
   getTabPanes(tabList) {
     const actionURL = loris.BaseURL
                       + '/candidate_parameters/ajax/formHandler.php';
@@ -37,6 +49,11 @@ class CandidateParameters extends Component {
     return tabPanes;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let tabList = [
       {

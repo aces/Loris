@@ -43,6 +43,8 @@ class IssueWatcherMapper implements Mapper
         \User $user,
         DataInstance $resource
     ) : DataInstance {
+        $res = $resource;
+        assert($res instanceof IssueRow);
 
         static $config = null;
         if ($config === null) {
@@ -61,8 +63,8 @@ class IssueWatcherMapper implements Mapper
 
         return new IssueRow(
             $newrow,
-            $resource->getCenterIDs(),
-            $resource->getModule()
+            $res->getCenterIDs(),
+            $res->getModule()
         );
     }
 }

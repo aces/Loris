@@ -86,7 +86,7 @@ class Media extends \DataFrameworkMenu
             $siteList = \Utility::getSiteList(false);
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
@@ -155,7 +155,11 @@ class Media extends \DataFrameworkMenu
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = parent::getDataProvisionerWithFilters();
-
+        $user        = \NDB_Factory::singleton()->user();
+        if ($user->hasPermission('superuser')) {
+            // We don't filter out hidden files.
+            return $provisioner;
+        }
         return $provisioner->filter(new HideFileFilter());
     }
 

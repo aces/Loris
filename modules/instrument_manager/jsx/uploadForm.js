@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
+/**
+ * Instrument Upload Form component
+ */
 class InstrumentUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -15,12 +22,21 @@ class InstrumentUploadForm extends Component {
     this.upload = this.upload.bind(this);
   }
 
+  /**
+   * Update selectedFile on file selection
+   *
+   * @param {string} element - Element name
+   * @param {string} file
+   */
   fileSelected(element, file) {
     this.setState({
       selectedFile: file,
     });
   }
 
+  /**
+   * Upload instrument
+   */
   upload() {
     const data = new FormData();
     data.append('install_file', this.state.selectedFile);
@@ -35,7 +51,7 @@ class InstrumentUploadForm extends Component {
         swal.fire({
           title: 'Installation Successful!',
           type: 'success',
-        }, function() {
+        }).then(function() {
           window.location.assign(loris.BaseURL + '/instrument_manager/');
         });
       }
@@ -47,7 +63,7 @@ class InstrumentUploadForm extends Component {
           title: 'Upload Successful!',
           type: 'success',
           text: data.message,
-        }, function() {
+        }).then(function() {
           window.location.assign(loris.BaseURL + '/instrument_manager/');
         });
       }
@@ -64,6 +80,11 @@ class InstrumentUploadForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const disabled = () => this.state.selectedFile === null;
 

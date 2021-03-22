@@ -281,7 +281,7 @@ function editFamilyInfoFields(\Database $db)
     $relationship     = isset($_POST[$relationshipType]) ?
         $_POST[$relationshipType] : null;
 
-    while ($siblingCandID != null ) {
+    if ($siblingCandID != null ) {
 
         $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
@@ -298,8 +298,6 @@ function editFamilyInfoFields(\Database $db)
         ];
 
         $db->update('family', $updateValues, ['ID' => $siblingID]);
-
-        $i++;
     }
 }
 
@@ -357,7 +355,7 @@ function editParticipantStatusFields(\Database $db)
     $id = null;
     if (!(is_null($_SESSION['State']))) {
         $currentUser =& User::singleton($_SESSION['State']->getUsername());
-        $id          = $currentUser->getData("UserID");
+        $id          = $currentUser->getUsername();
     }
 
     $updateValues = [

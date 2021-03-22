@@ -5,6 +5,9 @@ import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /**
  * Issue add/edit form
  *
@@ -13,11 +16,12 @@ import swal from 'sweetalert2';
  * and editing an existing issue.
  *
  * @author Caitrin Armstrong
- * */
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
+ */
 class IssueForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -43,14 +47,26 @@ class IssueForm extends Component {
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.getFormData();
   }
 
+  /**
+   * Open 'Attachment Upload' Modal
+   *
+   * @param {object} e - Event object
+   */
   openAttachmentUploadModal(e) {
     e.preventDefault();
     this.setState({showAttachmentUploadModal: true});
   }
+
+  /**
+   * Close 'Attachment Upload' Modal
+   */
   closeAttachmentUploadModal() {
     this.setState({
       upload: {
@@ -63,6 +79,11 @@ class IssueForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -327,39 +348,51 @@ class IssueForm extends Component {
    * Creates an ajax request and sets the state with the result
    */
   getFormData() {
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let newIssue = !data.issueData.issueID;
-        let formData = data.issueData;
-        // ensure that if the user is at multiple sites and
-        // its a new issue, the centerID (which is a dropdown)
-        // is set to the empty option instead of an array of
-        // the user's sites.
-        if (newIssue) {
-          formData.centerID = null;
-        } else {
-          // if we edit an issue
-          // a NULL centerID (= All Sites) is converted to the ALL Sites option
-          if (formData.centerID == null) {
-            formData.centerID = 'all';
-          }
-        }
-
-        this.setState({
-          Data: data,
-          isLoaded: true,
-          issueData: data.issueData,
-          formData: formData,
-          isNewIssue: !data.issueData.issueID,
-        });
-      }.bind(this),
-      error: function(err) {
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
         this.setState({
           error: 'An error occurred when loading the form!\n Error: ' +
-          err.status + ' (' + err.statusText + ')',
+          response.status + ' (' + response.statusText + ')',
         });
-      }.bind(this),
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let newIssue = !data.issueData.issueID;
+          let formData = data.issueData;
+          // ensure that if the user is at multiple sites and
+          // its a new issue, the centerID (which is a dropdown)
+          // is set to the empty option instead of an array of
+          // the user's sites.
+          if (newIssue) {
+            formData.centerID = null;
+          } else {
+            // if we edit an issue
+            // a NULL centerID (= All Sites) is converted to the ALL Sites option
+            if (formData.centerID == null) {
+              formData.centerID = 'all';
+            }
+          }
+
+          this.setState({
+            Data: data,
+            isLoaded: true,
+            issueData: data.issueData,
+            formData: formData,
+            isNewIssue: !data.issueData.issueID,
+          });
+        }
+      );
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -394,15 +427,22 @@ class IssueForm extends Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      dataType: 'json',
-      contentType: false,
-      processData: false,
-      success: function(data) {
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          this.setState({submissionResult: 'error'});
+          let msgType = 'error';
+          let message = data.message || 'Failed to submit issue :(';
+          this.showAlertMessage(msgType, message);
+        });
+        return;
+      }
+
+      response.json().then((data) => {
         let msgType = 'success';
         let message = this.state.isNewIssue ?
           'You will be redirected to main page in 2 seconds!' :
@@ -412,15 +452,14 @@ class IssueForm extends Component {
           submissionResult: 'success',
           issueID: data.issueID,
         });
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        this.setState({submissionResult: 'error'});
-        let msgType = 'error';
-        let message = err.responseJSON.message || 'Failed to submit issue :(';
-
-        this.showAlertMessage(msgType, message);
-      }.bind(this),
+      });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({submissionResult: 'error'});
+      let msgType = 'error';
+      let message = 'Failed to submit issue :(';
+      this.showAlertMessage(msgType, message);
     });
   }
 
@@ -512,7 +551,7 @@ class IssueForm extends Component {
       allowOutsideClick: false,
       allowEscapeKey: false,
       showConfirmButton: confirmation,
-    }, callback.bind(this));
+    }).then(callback.bind(this));
   }
 }
 

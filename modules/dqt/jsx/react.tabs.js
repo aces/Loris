@@ -528,7 +528,11 @@ class ViewDataTabPane extends Component {
 }
 
 ViewDataTabPane.propTypes = {
+  Data: PropTypes.array,
   runQuery: PropTypes.func.isRequired,
+};
+ViewDataTabPane.defaultProps = {
+  Data: [],
 };
 
 /**
@@ -1085,7 +1089,9 @@ class ManageSavedQueryRow extends Component {
             if (this.props.Query.Fields[instrument].hasOwnProperty(field)
               && field !== 'allVisits'
             ) {
-              fields.push(<li key={instrument}>{instrument},{field}</li>);
+              fields.push(
+                <li key={instrument + field}>{instrument},{field}</li>
+              );
             }
           }
         }
@@ -1101,7 +1107,7 @@ class ManageSavedQueryRow extends Component {
         let filter;
       if (this.props.Query.Conditions.activeOperator) {
         if (this.props.Query.Conditions.children) {
-          if (this.props.Query.Conditions.activeOperator === 0) {
+          if (this.props.Query.Conditions.activeOperator === '0') {
             operator = (<span>AND</span>);
           } else {
             operator = (<span>OR</span>);

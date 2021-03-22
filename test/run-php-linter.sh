@@ -1,6 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+has_param() {
+    local param="$1"
+    shift
+    for arg; do
+        if [[ $arg == "$param" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+join_by() {
+    local d=$1; shift;
+    local f=$1; shift;
+    printf %s "$f" "${@/#/$d}";
+}
+
+fix=false
+if has_param '-f' "$@"; then
+    echo "Fix mode set to true"
+    fix=true
+fi
+
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
 find docs modules htdocs php src tools \
@@ -13,58 +36,42 @@ find docs modules htdocs php src tools \
 # php/
 # htdocs/
 # modules/
+# test/
+# tools/
 
-# Also run PHPCS on all tools/ scripts in this array
-declare -a tools_list=(
-    'assign_missing_instruments.php'
-    'configuration_check.php'
-    'config_to_db.php'
-    'data_integrity_check.php'
-    'delete_candidate.php'
-    'delete_ignored_conflicts.php'
-    'delete_timepoint.php'
-    'CouchDB_Confirm_Integrity.php'
-    'detect_duplicated_commentids.php'
-    'generate_project_statistics_csv.php'
-    'generic_includes.php'
-    'importers/CandidateImporter.php'
-    'importers/DataImporter.class.inc'
-    'importers/InstrumentImporter.php'
-    'importers/VisitImporter.php'
-    'importers/openScienceDataImporter.php'
-    'exporters/dataExtractor.php'
-    'mri_violations_resolver.php'
-    'populate_examiners_psc_rel.php'
-    'raisinbread_refresh.php'
-    'recreate_conflicts.php'
-    'resetpassword.php'
-    'detect_conflicts.php'
-    'setconfig.php'
-    'single_use/Cleanup_multiple_firstVisits.php'
-    'single_use/Convert_LorisMenuID_to_ModuleID.php'
-    'generate_tables_sql.php'
-    'lorisform_parser.php'
-    'populate_visit_windows.php'
-    'manage_modules.php'
-    'DB_date_zeros_removal.php'
-    'CouchDB_Import_MRI.php'
-    'CouchDB_Import_Demographics.php'
-    'CouchDB_Import_Instruments.php'
+# except:
+declare -a ignored_files=(
+    tools/single_use/Cleanup_Consent_Data.php
+    tools/single_use/Engine_Change_MyISAM_to_INNODB.php
+    tools/single_use/normalize_mri_protocol_range_data.php
+    tools/single_use/Update_scan_type_of_mri_violations_log_when_manual_caveat.php
+    tools/single_use/instrument_double_escape_report.php
+    tools/single_use/cleanup_mri_tables_for_19-0_release.php
+    tools/single_use/Normalize_protocol_split_rows.php
+    tools/single_use/migrate_sql_to_json.php
+    tools/single_use/data_dictionary_cleaner.php
+    tools/single_use/Normalize_Consent_Data.php
+    tools/single_use/remove_logged_passwords.php
+    tools/deprecated/create_candidates.php
+    tools/deprecated/excelDump.php
 )
 
-# And on all PHP files in this array
-declare -a test_list=(
-    'unittests/Database_Test.php'
+declare -a params=(
+    --standard=test/LorisCS.xml
+    --extensions=php,inc
+    --ignore=$(join_by ',' "${ignored_files[@]}")
+    php/
+    htdocs/
+    modules/
+    test/
+    tools/
 )
 
-vendor/bin/phpcs --standard=test/LorisCS.xml --extensions=php,inc \
-    php/ \
-    htdocs/ \
-    modules/ \
-    "test/integrationtests/" \
-    "${tools_list[@]/#/tools/}" \
-    "${test_list[@]/#/test/}" \
-    || exit $?;
+if [ "$fix" = true ] ; then
+    vendor/bin/phpcbf $(join_by ' ' "${params[@]}") || exit $?;
+else
+    vendor/bin/phpcs $(join_by ' ' "${params[@]}") || exit $?;
+fi
 
 # Ensure strict typing is used in these files
 declare -a strict_libraries=(
@@ -72,12 +79,31 @@ declare -a strict_libraries=(
     'OutputWrapper.class.inc'
 )
 
-vendor/bin/phpcs --standard=test/StrictTypesCS.xml --extensions=php,inc "${strict_libraries[@]/#/php/libraries/}" || exit $?;
+declare -a params=(
+    '--standard=test/StrictTypesCS.xml'
+    '--extensions=php,inc'
+    "${strict_libraries[@]/#/php/libraries/}"
+)
+
+if [ "$fix" = true ] ; then
+    vendor/bin/phpcbf $(join_by ' ' "${params[@]}") || exit $?;
+else
+    vendor/bin/phpcs $(join_by ' ' "${params[@]}") || exit $?;
+fi
 
 # Run PHPCS on src/ directory using a different ruleset conforming to PSR2.
-vendor/bin/phpcs --standard=test/SrcCS.xml --extensions=php/php src/ || exit $?;
 
-vendor/bin/phpmd php/,modules/,src/ text 'test/LorisPHPMD.xml' || exit $?;
+declare -a params=(
+    '--standard=test/SrcCS.xml'
+    '--extensions=php/php'
+    'src/'
+)
+
+if [ "$fix" = true ] ; then
+    vendor/bin/phpcbf $(join_by ' ' "${params[@]}") || exit $?;
+else
+    vendor/bin/phpcs $(join_by ' ' "${params[@]}") || exit $?;
+fi
 
 # Run PHPStan on php/ and modules/
 vendor/bin/phpstan analyse \

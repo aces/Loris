@@ -30,6 +30,7 @@
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
+            <directory>../modules/electrophysiology_browser/test/</directory>
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
@@ -44,6 +45,7 @@
             <directory>../modules/api_docs/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
             <directory>../modules/mri_violations/test/</directory>
+            <directory>../modules/my_preferences/test/</directory>
             <directory>../modules/new_profile/test/</directory>
             <directory>../modules/next_stage/test/</directory>
             <directory>../modules/server_processes_manager/test/</directory>
@@ -55,14 +57,13 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../test/test_instrument/</directory>
         </testsuite>
-
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
          for now it's disabled, but eventually we'll want to make
          sure everything is tested.. -->
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage>
+        <include>
             <directory suffix=".inc">../php/libraries</directory>
             <!-- CodeCov crashes because installer/ has classes with the same
                  name as libraries/, so for now we only cover libraries and
@@ -71,7 +72,7 @@
             <!--directory suffix=".php">../htdocs</directory-->
             <directory suffix=".inc">../modules/*/php</directory>
             <!--directory>../modules/dashboard/ajax/</directory-->
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 
 </phpunit>

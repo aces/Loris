@@ -17,6 +17,10 @@ import swal from 'sweetalert2';
  * issue_tracker attachments list.
  */
 class AttachmentsList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -145,6 +149,11 @@ class AttachmentsList extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const footerCSS = {
       float: 'right',

@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $scores = array(
                    "total_score_1_18"                                 => "",
@@ -546,7 +547,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         // null scores
         $this->_nullScores($this->scores);
 
-        $score_record = NDB_BVL_Instrument::loadInstanceData($this);
+        $score_record = $this->getInstanceData();
         //Calculate first 6 item scores from their input grids
 
         //Question 1

@@ -27,7 +27,7 @@
         </title>
         <script type="text/javascript">
           $(document).ready(function() {
-            {if $breadcrumbs != "" && empty($error_message)}
+            {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
 
               ReactDOM.render(
@@ -90,7 +90,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <img width=17 src="{$baseurl}/images/help.gif">
                         </button>
-                       {if $bvl_feedback}
+                       {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="glyphicon glyphicon-edit" style="color:white"></span>
@@ -99,7 +99,7 @@
 
 
                        <!-- toggle sidebar in mobile view -->
-                        {if $control_panel}
+                        {if $control_panel|default}
                             <a id="menu-toggle" href="#" class="navbar-brand">
                                 <span class="glyphicon glyphicon-th-list"></span>
                             </a>
@@ -124,7 +124,7 @@
                             {/foreach}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
-                            {if $bvl_feedback}
+                            {if $bvl_feedback|default}
                             <li class="hidden-xs hidden-sm">
                                 <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                     <span class="glyphicon glyphicon-edit"></span>
@@ -170,14 +170,14 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-		{if $control_panel or $feedback_panel}
-			{if $control_panel}
+		{if $control_panel|default or $feedback_panel|default}
+			{if $control_panel|default}
 				<div id = "page_wrapper_sidebar" class ="wrapper">
 			{/if}
 		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
-                            {$feedback_panel}
-			    {if $control_panel}
+                            {$feedback_panel|default}
+			    {if $control_panel|default}
                     <div id="sidebar-wrapper" class="sidebar-div">
                        <div id="sidebar-content">
                             {$control_panel}
@@ -212,11 +212,11 @@
                     </div>
 
                 {/if}
-                {if $breadcrumbs != "" && empty($error_message)}
+                {if $breadcrumbs|default != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
-                            {if $error_message != ""}
+                            {if $error_message|default != ""}
                                 <p>
                                     The following errors occurred while attempting to display this page:
                                     <ul>
@@ -258,12 +258,12 @@
 
 	</div>
 
-        {if $control_panel or $feedback_panel}
+        {if $control_panel|default or $feedback_panel|default}
         </div></div>
         {/if}
 
         {if $dynamictabs neq "dynamictabs"}
-            {if $control_panel}
+            {if $control_panel|default}
             <div id="footer" class="footer navbar-bottom wrapper">
             {else}
             <div id="footer" class="footer navbar-bottom">

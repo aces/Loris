@@ -14,7 +14,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
+/**
+ * Media Edit Form component
+ */
 class MediaEditForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -30,6 +37,9 @@ class MediaEditForm extends Component {
     this.setFormData = this.setFormData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -59,6 +69,11 @@ class MediaEditForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error !== undefined) {

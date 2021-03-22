@@ -66,9 +66,6 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =======================================================
 
         if (!empty($scan_id_types)) {
-            $acqpid       = "AND AcquisitionProtocolID IN ("
-                . implode(",", array_keys($scan_id_types))
-                . ")";
             $isFirst      = true;
             $acqpif       = '';
             $newQueryCase = '';
@@ -89,7 +86,6 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
             $acqpif       .= ",'new','')";
             $newQueryCase .= ")";
         } else {
-            $acqpid       = '';
             $acqpif       = "'new'";
             $newQueryCase ='';
         }
@@ -208,8 +204,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               $left_joins
             WHERE
               s.Active = 'Y' AND
-              f.FileType IN ('mnc', 'nii') AND
-              pt.Name='acquisition_date'
+              f.FileType IN ('mnc', 'nii')
             GROUP BY s.ID
             ORDER BY c.PSCID, s.Visit_label
             ",

@@ -75,7 +75,7 @@ class My_Preferences extends \NDB_Form
         // Notification defaults
         // "notif_".$module."_".$operation."_".$service
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            $user->getId()
         );
         foreach ($curr_sub as $module=>$operations) {
             foreach ($operations as $operation => $services) {
@@ -113,7 +113,7 @@ class My_Preferences extends \NDB_Form
         // START NOTIFICATIONS UPDATE
         // get current notifications for user
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            $user->getId()
         );
 
         // get notification details
@@ -138,7 +138,7 @@ class My_Preferences extends \NDB_Form
                                 [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
-                                    "user_id"    => $user->getData("ID"),
+                                    "user_id"    => $user->getId(),
                                 ]
                             );
                         }
@@ -149,7 +149,7 @@ class My_Preferences extends \NDB_Form
                                 [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
-                                    "user_id"    => $user->getData("ID"),
+                                    "user_id"    => $user->getId(),
                                 ]
                             );
                         }
@@ -276,7 +276,7 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Your email address must be less than 255 characters long',
             'maxlength',
-            255
+            "255"
         );
 
         // password
@@ -299,9 +299,8 @@ class My_Preferences extends \NDB_Form
         $this->addGroup(
             $nGroup,
             "notification_headers",
-            null,
+            '',
             $this->_GUIDelimiter,
-            false
         );
         unset($nGroup);
 
@@ -342,9 +341,8 @@ class My_Preferences extends \NDB_Form
                 $this->addGroup(
                     $nGroup,
                     "row_".$module."_".$operation,
-                    null,
-                    $this->_GUIDelimiter,
-                    false
+                    '',
+                    $this->_GUIDelimiter
                 );
                 $notification_rows[] ="row_".$module."_".$operation;
                 unset($nGroup);
@@ -454,6 +452,45 @@ class My_Preferences extends \NDB_Form
         }
 
         return null;
+    }
+
+    /**
+     * Add dependency for password visibility
+     *
+     * @return array of javascript files to be sourced
+     */
+    function getJSDependencies()
+    {
+        $factory  = \NDB_Factory::singleton();
+        $baseurl  = $factory->settings()->getBaseURL();
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            [
+                $baseurl . '/js/passwordVisibility.js',
+                $baseurl . '/my_preferences/js/my_preferences_helper.js',
+            ]
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/css/password.css",
+            ]
+        );
     }
 }
 

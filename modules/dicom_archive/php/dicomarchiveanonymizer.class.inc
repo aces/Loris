@@ -50,8 +50,17 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
+        if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
+            throw new \LorisException(
+                "Mapper requires a resource type with getCenterID"
+            );
+        }
         $newrow = json_decode(json_encode($resource), true);
-        $cid    = $resource->getCenterID();
+        if (!is_array($newrow)) {
+            throw new \Exception("Error converting DataInstance to array");
+        }
+
+        $cid = $resource->getCenterID();
 
         // escape any forward slashes
         $pNameRegex      = preg_replace(

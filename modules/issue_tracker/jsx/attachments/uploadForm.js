@@ -13,8 +13,12 @@ import swal from 'sweetalert2';
  * @author Alizée Wickenheiser
  * @version 1.0.0
  *
- * */
+ */
 class IssueUploadAttachmentForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -54,7 +58,7 @@ class IssueUploadAttachmentForm extends Component {
     this.uploadFile();
   }
 
-  /*
+  /**
    * Uploads the file to the server
    */
   uploadFile() {
@@ -111,6 +115,11 @@ class IssueUploadAttachmentForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className='row'>

@@ -34,7 +34,7 @@ class Process
     /**
      * Unix PID
      *
-     * @var int
+     * @var ?int
      */
     private $_pid;
 
@@ -43,7 +43,7 @@ class Process
      *
      * @var string
      */
-    private $_outfile;
+    private $_outFile;
 
     /**
      * Full path ot the file containing the command std error.
@@ -62,7 +62,7 @@ class Process
     /**
      * Will provide access to the database
      *
-     * @var IDatabaseProvider
+     * @var IProcessMonitor
      */
     private $_processMonitor;
 
@@ -89,7 +89,7 @@ class Process
 
         $this->_shellCommand = $shellCommand;
         $this->_pid          = null;
-        $this->_outfile      = $stdoutFile;
+        $this->_outFile      = $stdoutFile;
         $this->_errFile      = $stderrFile;
         $this->_exitCodeFile = $exitCodeFile;
     }
@@ -110,7 +110,7 @@ class Process
     /**
      * Accessor for field $_processMonitor
      *
-     * @return IDatabaseProvider value of field $_processMonitor
+     * @return IProcessMonitor
      */
     public function getProcessMonitor()
     {
@@ -139,7 +139,7 @@ class Process
 
         // This is the main command intended to be run by this process.
         // Stdout and stderr are redirected to $_outfile and $_errfile respectively
-        $mainCmd = "$this->_shellCommand > $this->_outfile 2> $this->_errFile";
+        $mainCmd = "$this->_shellCommand > $this->_outFile 2> $this->_errFile";
 
         // This is the command that is used to fetch the exit code of the main
         // command and store it in $_exitCodeFile
@@ -150,11 +150,13 @@ class Process
         // Since both command are run in succession, when the main command is
         // finished, the $getExitCodeCmd will be run, storing the $mainCmd
         // exit code in $_exitCodeFile
-        $this->_pid = exec(
-            "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
-            . " echo $!",
-            $execOutput,
-            $returnStatus
+        $this->_pid = intval(
+            exec(
+                "(bash -c '$mainCmd ; $getExitCodeCmd') > /dev/null 2> /dev/null & "
+                . " echo $!",
+                $execOutput,
+                $returnStatus
+            )
         );
 
         if ($returnStatus != 0) {
@@ -197,7 +199,7 @@ class Process
     /**
      * Accessor for field $_pid
      *
-     * @return int value of field $_pid
+     * @return ?int value of field $_pid
      */
     function getPid()
     {
@@ -205,9 +207,9 @@ class Process
     }
 
     /**
-     * Accessor for field $_outfile
+     * Accessor for field $_outFile
      *
-     * @return string value of field $_outfile
+     * @return string value of field $_outFile
      */
     function getOutFile()
     {

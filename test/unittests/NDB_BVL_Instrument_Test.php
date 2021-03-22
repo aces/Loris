@@ -31,60 +31,108 @@ require_once 'SessionID.php';
  */
 class NDB_BVL_Instrument_Test extends TestCase
 {
+    /**
+     * The instrument (or instrument mock) being tested.
+     *
+     * @var \NDB_BVL_Instrument
+     */
     private $_instrument;
+
     private $_factory;
     private $_mockConfig;
+
+    /**
+     * Mock for testing database calls
+     *
+     * @var \Database | \PHPUnit\Framework\MockObject\MockObject
+     */
     private $_mockDB;
 
     private $_factoryForDB;
     private $_config;
     private $_DB;
+
+    protected $quickForm;
+
+    /**
+     * The State object for this session
+     *
+     * @var \State
+     */
+    protected $session;
+
+    /**
+     * A Mock SinglePointLogin object
+     *
+     * @var \SinglePointLogin
+     */
+    protected $mockSinglePointLogin;
+
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         global $_SESSION;
         if (!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->session = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(
-                array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn')
-            )
-            ->getMock();
-        $this->mockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')
-            ->getMock();
-        $this->session->method("getProperty")
-            ->willReturn($this->mockSinglePointLogin);
 
-        $_SESSION = array(
+        $s = $this->getMockBuilder(\State::class)
+            ->onlyMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
+            ->getMock();
+
+        $spe = $this->getMockBuilder('SinglePointLogin')
+            ->getMock();
+
+        $s->method("getProperty")
+            ->willReturn($spe);
+
+        '@phan-var \State $s';
+        $this->session = $s;
+
+        '@phan-var \SinglePointLogin $spe';
+        $this->mockSinglePointLogin = $spe;
+
+        $_SESSION = [
             'State' => $this->session
-        );
+        ];
 
         $this->_factory = \NDB_Factory::singleton();
-        $this->_factory->setTesting(true);
 
-        $this->_mockDB = $this->getMockBuilder("\Database")->getMock();
-        $this->_mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $mockDB     = $this->getMockBuilder("\Database")->getMock();
+        $mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        \NDB_Factory::$db = $this->_mockDB;
-        \NDB_Factory::$testdb = $this->_mockDB;
-        \NDB_Factory::$config = $this->_mockConfig;
+        '@phan-var \Database $mockDB';
+        '@phan-var \NDB_Config $mockConfig';
+
+        $this->_mockDB     = $mockDB;
+        $this->_mockConfig = $mockConfig;
+
+        $this->_factory->setDatabase($this->_mockDB);
+        $this->_factory->setConfig($this->_mockConfig);
 
         $this->quickForm = new \LorisForm();
 
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(array("getFullName", "getSubtestList"))->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn(array());
-        $this->_instrument->form = $this->quickForm;
-        $this->_instrument->testName = "Test";
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
+
+        $instrument->method('getFullName')->willReturn("Test Instrument");
+        $instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([]);
+
+        '@phan-var \NDB_BVL_Instrument $instrument';
+        $instrument->form     = $this->quickForm;
+        $instrument->testName = "Test";
+
+        $this->_instrument = $instrument;
     }
 
     /**
@@ -110,14 +158,15 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testMetaData()
     {
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
-            'InstrumentVersion' => "1l",
+            'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
-            "ShortName" => "Test",
-            "LongName" => "Test Instrument",
-            "IncludeMetaDataFields" => "true",
+            "ShortName"               => "Test",
+            "LongName"                => "Test Instrument",
+            "IncludeMetaDataFields"   => "true",
         ];
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
@@ -131,40 +180,45 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testSelectElement()
     {
-        $value = array('value' => "Option");
-        $not_answered = array('value' => 'Option', 'not_answered' => 'Not Answered');
+        $value        = ['value' => "Option"];
+        $not_answered = ['value' => 'Option', 'not_answered' => 'Not Answered'];
         $this->_instrument->addSelect("FieldName", "Field Description", $value);
         $this->_instrument->addSelect(
-            "FieldName2", "Field Description 2", $not_answered
+            "FieldName2",
+            "Field Description 2",
+            $not_answered
         );
         $this->_instrument->form->addElement(
             'select',
             "multiselect1",
             "Test Question",
-            $value, array("multiple" => 'multiple')
+            $value,
+            ["multiple" => 'multiple']
         );
         $this->_instrument->form->addElement(
             'select',
             "multiselect2",
             "Test Question",
-            $not_answered, array('multiple' => "multiple")
+            $not_answered,
+            ['multiple' => "multiple"]
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
-        $selectElement = $outArray['Elements'][0];
+        assert(is_array($outArray));
+        $selectElement  = $outArray['Elements'][0];
         $selectElement2 = $outArray['Elements'][1];
 
-        $multiselectElement = $outArray['Elements'][2];
+        $multiselectElement  = $outArray['Elements'][2];
         $multiselectElement2 = $outArray['Elements'][3];
 
         $this->assertEquals(
             $selectElement,
             [
-                'Type' => "select",
-                "Name" => "FieldName",
+                'Type'        => "select",
+                "Name"        => "FieldName",
                 "Description" => "Field Description",
-                "Options" => [
-                    "Values" => [
+                "Options"     => [
+                    "Values"          => [
                         "value" => "Option"
                     ],
                     "RequireResponse" => false
@@ -175,11 +229,11 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $selectElement2,
             [
-                'Type' => "select",
-                "Name" => "FieldName2",
+                'Type'        => "select",
+                "Name"        => "FieldName2",
                 "Description" => "Field Description 2",
-                "Options" => [
-                    "Values" => [
+                "Options"     => [
+                    "Values"          => [
                         "value" => "Option"
                     ],
                     "RequireResponse" => true
@@ -190,15 +244,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $multiselectElement,
             [
-                'Type' => "select",
-                "Name" => "multiselect1",
+                'Type'        => "select",
+                "Name"        => "multiselect1",
                 "Description" => "Test Question",
-                "Options" => [
-                    "Values" => [
+                "Options"     => [
+                    "Values"          => [
                         "value" => "Option"
                     ],
                     "RequireResponse" => false,
-                    "AllowMultiple" => true,
+                    "AllowMultiple"   => true,
                 ],
             ]
         );
@@ -206,15 +260,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $multiselectElement2,
             [
-                'Type' => "select",
-                "Name" => "multiselect2",
+                'Type'        => "select",
+                "Name"        => "multiselect2",
                 "Description" => "Test Question",
-                "Options" => [
-                    "Values" => [
+                "Options"     => [
+                    "Values"          => [
                         "value" => "Option"
                     ],
                     "RequireResponse" => true,
-                    "AllowMultiple" => true,
+                    "AllowMultiple"   => true,
                 ],
             ]
         );
@@ -233,14 +287,19 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testTextElement()
     {
         $this->_instrument->addTextElement(
-            "FieldName", "Field Description for Text", array("value" => "Option")
+            "FieldName",
+            "Field Description for Text",
+            ["value" => "Option"]
         );
         $this->_instrument->addTextAreaElement(
-            "FieldName2", "Field Description2 for Text", array("value" => "Option")
+            "FieldName2",
+            "Field Description2 for Text",
+            ["value" => "Option"]
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
-        $textElement = $outArray['Elements'][0];
+        assert(is_array($outArray));
+        $textElement     = $outArray['Elements'][0];
         $textareaElement = $outArray['Elements'][1];
 
         $this->assertEquals(
@@ -269,22 +328,22 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
 
-        $textRules = $this->_instrument->XINRules['FieldName'];
+        $textRules     = $this->_instrument->XINRules['FieldName'];
         $textAreaRules = $this->_instrument->XINRules['FieldName2'];
         $this->assertEquals(
             $textRules,
             [
                 'message' => 'This field is required.',
-                'group' => 'FieldName_group',
-                'rules' => ['FieldName_status{@}=={@}', 'Option']
+                'group'   => 'FieldName_group',
+                'rules'   => ['FieldName_status{@}=={@}', 'Option']
             ]
         );
         $this->assertEquals(
             $textAreaRules,
             [
                 'message' => 'This field is required.',
-                'group' => 'FieldName2_group',
-                'rules' => ['FieldName2_status{@}=={@}', 'Option']
+                'group'   => 'FieldName2_group',
+                'rules'   => ['FieldName2_status{@}=={@}', 'Option']
             ]
         );
     }
@@ -298,10 +357,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testAddTextAreaElementRD()
     {
         $this->_instrument->addTextAreaElementRD(
-            "FieldName1", "Field Description1", array("value" => "Option")
+            "FieldName1",
+            "Field Description1",
+            ["value" => "Option"]
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -310,32 +372,32 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $groupEl,
             [
-                'type' => 'group',
-                'name' => 'FieldName1_group',
-                'elements' => [
+                'type'      => 'group',
+                'name'      => 'FieldName1_group',
+                'elements'  => [
                     ['label' => null,
-                     'name' => 'FieldName1',
-                     'type' => 'textarea',
-                     'html' => $this->_instrument->form
-                         ->renderElement($groupEl['elements'][0])
+                        'name'  => 'FieldName1',
+                        'type'  => 'textarea',
+                        'html'  => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][0])
                     ],
                     ['label' => '',
-                     'name' => 'FieldName1_status',
-                     'class' => 'form-control input-sm',
-                     'type' => 'select',
-                     'options' => ['' => '',
-                                   '88_refused' => '88 Refused',
-                                   '99_do_not_know' => '99 Do not know',
-                                   'not_answered' => 'Not Answered'
-                                  ],
-                     'html' => $this->_instrument->form
-                         ->renderElement($groupEl['elements'][1])
+                        'name'    => 'FieldName1_status',
+                        'class'   => 'form-control input-sm',
+                        'type'    => 'select',
+                        'options' => ['' => '',
+                            '88_refused'     => '88 Refused',
+                            '99_do_not_know' => '99 Do not know',
+                            'not_answered'   => 'Not Answered'
+                        ],
+                        'html'    => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][1])
                     ],
                 ],
-                'label' => 'Field Description1',
+                'label'     => 'Field Description1',
                 'delimiter' => ' ',
-                'options' => false,
-                'html' => $this->_instrument->form->groupHTML($groupEl)
+                'options'   => false,
+                'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
         $textRules = $this->_instrument->XINRules['FieldName1'];
@@ -343,8 +405,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $textRules,
             [
                 'message' => 'You must specify or select from the drop-down',
-                'group' => 'FieldName1_group',
-                'rules' => ['FieldName1_status{@}=={@}', 'Option']
+                'group'   => 'FieldName1_group',
+                'rules'   => ['FieldName1_status{@}=={@}', 'Option']
             ]
         );
     }
@@ -359,10 +421,14 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testAddHourMinElement()
     {
         $this->_instrument->addHourMinElement(
-            "hourMinField", "hourMinLabel", ["value" => "Option"], "Rule_message"
+            "hourMinField",
+            "hourMinLabel",
+            ["value" => "Option"],
+            "Rule_message"
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -371,32 +437,32 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $groupEl,
             [
-                'type' => 'group',
-                'name' => 'hourMinField_group',
-                'elements' => [
+                'type'      => 'group',
+                'name'      => 'hourMinField_group',
+                'elements'  => [
                     ['label' => null,
-                     'name' => 'hourMinField',
-                     'type' => 'time',
-                     'html' => $this->_instrument->form
-                         ->renderElement($groupEl['elements'][0])
+                        'name'  => 'hourMinField',
+                        'type'  => 'time',
+                        'html'  => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][0])
                     ],
                     ['label' => '',
-                     'name' => 'hourMinField_status',
-                     'class' => 'form-control input-sm',
-                     'type' => 'select',
-                     'options' => [null => '',
-                                   'dnk' => 'DNK',
-                                   'refusal' => 'Refusal',
-                                   'not_answered' => 'Not Answered',
-                                  ],
-                     'html' => $this->_instrument->form
-                         ->renderElement($groupEl['elements'][1])
+                        'name'    => 'hourMinField_status',
+                        'class'   => 'form-control input-sm',
+                        'type'    => 'select',
+                        'options' => [null => '',
+                            'dnk'          => 'DNK',
+                            'refusal'      => 'Refusal',
+                            'not_answered' => 'Not Answered',
+                        ],
+                        'html'    => $this->_instrument->form
+                            ->renderElement($groupEl['elements'][1])
                     ]
                 ],
-                'label' => 'hourMinLabel',
+                'label'     => 'hourMinLabel',
                 'delimiter' => ' ',
-                'options' => false,
-                'html' => $this->_instrument->form->groupHTML($groupEl)
+                'options'   => false,
+                'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
         $rules = $this->_instrument->XINRules['hourMinField'];
@@ -404,8 +470,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $rules,
             [
                 'message' => 'Rule_message',
-                'group' => 'hourMinField_group',
-                'rules' => ['Option', 'hourMinField_status{@}=={@}']
+                'group'   => 'hourMinField_group',
+                'rules'   => ['Option', 'hourMinField_status{@}=={@}']
             ]
         );
     }
@@ -425,9 +491,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName",
             "Field Description",
             [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
+                'format'         => 'YMd',
+                "minYear"        => "1990",
+                "maxYear"        => "2000",
                 "addEmptyOption" => false,
             ]
         );
@@ -435,9 +501,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName2",
             "Field Description",
             [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
+                'format'         => 'YMd',
+                "minYear"        => "1990",
+                "maxYear"        => "2000",
                 "addEmptyOption" => true,
             ]
         );
@@ -446,9 +512,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName3",
             "Field Description",
             [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
+                'format'         => 'YMd',
+                "minYear"        => "1990",
+                "maxYear"        => "2000",
                 "addEmptyOption" => false,
             ]
         );
@@ -456,15 +522,16 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName4",
             "Field Description",
             [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
+                'format'         => 'YMd',
+                "minYear"        => "1990",
+                "maxYear"        => "2000",
                 "addEmptyOption" => true,
             ]
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
-        $dateElement = $outArray['Elements'][0];
+        assert(is_array($outArray));
+        $dateElement  = $outArray['Elements'][0];
         $dateElement2 = $outArray['Elements'][1];
         $dateElement3 = $outArray['Elements'][2];
         $dateElement4 = $outArray['Elements'][3];
@@ -472,15 +539,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         // They were added with addBasicDate, so response is
         // not required.
         $expectedResult = [
-                'Type'        => "date",
-                "Name"        => "FieldName",
-                "Description" => "Field Description",
-                "Options"     => [
-                    "MinDate" => "1990-01-01",
-                    "MaxDate" => "2000-12-31",
-                    "RequireResponse" => false
-                ]
-            ];
+            'Type'        => "date",
+            "Name"        => "FieldName",
+            "Description" => "Field Description",
+            "Options"     => [
+                "MinDate"         => "1990-01-01",
+                "MaxDate"         => "2000-12-31",
+                "RequireResponse" => false
+            ]
+        ];
 
         $this->assertEquals($dateElement, $expectedResult);
 
@@ -511,11 +578,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $this->_instrument->form->form["Field1"],
             [
-                'label' => 'Label 1',
-                'name' => 'Field1',
-                'type' => 'date',
+                'label'   => 'Label 1',
+                'name'    => 'Field1',
+                'type'    => 'date',
                 'options' => ['value' => 'Option',
-                              'format' => 'YM']
+                    'format' => 'YM'
+                ]
             ]
         );
         $this->assertEquals($this->_instrument->monthYearFields[0], "Field1");
@@ -531,10 +599,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testAddCustomDateElement()
     {
         $this->_instrument->addCustomDateElement(
-            "CustomName", "Date Label", array("value" => "Option")
+            "CustomName",
+            "Date Label",
+            ["value" => "Option"]
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -543,37 +614,37 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $groupEl,
             [
-                'type' => 'group',
-                'name' => 'CustomName_date_group',
-                'elements' => [
+                'type'      => 'group',
+                'name'      => 'CustomName_date_group',
+                'elements'  => [
                     [
-                        'label' => null,
-                        'name' => 'CustomName_date',
-                        'class' => 'form-control input-sm',
-                        'type' => 'date',
-                        'html' => $this->_instrument->form
+                        'label'   => null,
+                        'name'    => 'CustomName_date',
+                        'class'   => 'form-control input-sm',
+                        'type'    => 'date',
+                        'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][0]),
                         'options' => ['value' => 'Option']
                     ],
                     [
-                        'label' => null,
-                        'name' => 'CustomName_date_status',
-                        'class' => 'form-control input-sm',
-                        'type' => 'select',
+                        'label'   => null,
+                        'name'    => 'CustomName_date_status',
+                        'class'   => 'form-control input-sm',
+                        'type'    => 'select',
                         'options' => [
-                            null => '',
-                            '88_refused' => "88 Refused",
+                            null             => '',
+                            '88_refused'     => "88 Refused",
                             '99_do_not_know' => "99 Do not know",
                             'not_answered'   => "Not Answered"
                         ],
-                        'html' => $this->_instrument->form
+                        'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][1])
                     ]
                 ],
-                'label' => 'Date Label',
+                'label'     => 'Date Label',
                 'delimiter' => "</td>\n<td>",
-                'options' => false,
-                'html' => $this->_instrument->form->groupHTML($groupEl)
+                'options'   => false,
+                'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
         $rule1 = $this->_instrument->XINRules['CustomName_date'];
@@ -581,8 +652,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $rule1,
             [
                 'message' => "You must specify or select from the drop-down",
-                'group' => 'CustomName_date_group',
-                'rules' => ['CustomName_date_status{@}=={@}']
+                'group'   => 'CustomName_date_group',
+                'rules'   => ['CustomName_date_status{@}=={@}']
             ]
         );
         $rule2 = $this->_instrument->XINRules['CustomName_date_status'];
@@ -590,8 +661,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $rule2,
             [
                 'message' => "You must specify or select from the drop-down",
-                'group' => 'CustomName_date_group',
-                'rules' => ['CustomName_date{@}=={@}']
+                'group'   => 'CustomName_date_group',
+                'rules'   => ['CustomName_date{@}=={@}']
             ]
         );
     }
@@ -605,17 +676,18 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testNumericElement()
     {
         $this->_instrument->addNumericElement("TestElement", "Test Description");
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
 
         $this->assertEquals(
             $numericElement,
             [
-                "Type" => "numeric",
-                "Name" => "TestElement",
+                "Type"        => "numeric",
+                "Name"        => "TestElement",
                 "Description" => "Test Description",
-                "Options" => [
+                "Options"     => [
                     "NumberType" => "decimal"
                 ]
             ]
@@ -632,8 +704,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testNumericElementRD()
     {
         $this->_instrument->addNumericElementRD("TestElement", "Test Description");
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
         $this->assertEquals(
             $numericElement,
@@ -643,39 +716,39 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $groupEl,
             [
-                'type' => 'group',
-                'name' => 'TestElement_group',
-                'elements' => [
+                'type'      => 'group',
+                'name'      => 'TestElement_group',
+                'elements'  => [
                     [
-                        'type' => 'text',
-                        'name' => 'TestElement',
-                        'label' => 'Test Description',
-                        'class' => 'form-control input-sm',
-                        'numeric' => true,
+                        'type'       => 'text',
+                        'name'       => 'TestElement',
+                        'label'      => 'Test Description',
+                        'class'      => 'form-control input-sm',
+                        'numeric'    => true,
                         'numericMsg' => 'Numbers only, please',
-                        'html' => $this->_instrument->form
+                        'html'       => $this->_instrument->form
                             ->renderElement($groupEl['elements'][0])
                     ],
                     [
-                        'type' => 'select',
-                        'name' => 'TestElement_status',
-                        'label' => null,
-                        'class' => 'form-control input-sm not-answered',
+                        'type'    => 'select',
+                        'name'    => 'TestElement_status',
+                        'label'   => null,
+                        'class'   => 'form-control input-sm not-answered',
                         'options' => [
-                            '' => '',
-                            '88_refused' => '88 Refused',
+                            ''               => '',
+                            '88_refused'     => '88 Refused',
                             '99_do_not_know' => '99 Do not know',
-                            'not_answered' => 'Not Answered'
+                            'not_answered'   => 'Not Answered'
                         ],
-                        'html' => $this->_instrument->form
+                        'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][1])
                     ]
                 ],
-                'label' => 'Test Description',
+                'label'     => 'Test Description',
                 'delimiter' => ' ',
-                'options' => false,
-                'numeric' => [0],
-                'html' => $this->_instrument->form->groupHTML($groupEl)
+                'options'   => false,
+                'numeric'   => [0],
+                'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
         $rule = $this->_instrument->XINRules['TestElement'];
@@ -683,8 +756,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $rule,
             [
                 'message' => 'This field is required',
-                'group' => 'TestElement_group',
-                'rules' => ['TestElement_status{@}=={@}']
+                'group'   => 'TestElement_group',
+                'rules'   => ['TestElement_status{@}=={@}']
             ]
         );
     }
@@ -706,11 +779,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_instrument->addScoreColumn(
             "FieldName2",
-            null
+            "",
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
-        $scoreElement = $outArray['Elements'][0];
+        assert(is_array($outArray));
+        $scoreElement  = $outArray['Elements'][0];
         $scoreElement2 = $outArray['Elements'][1];
 
         $this->assertEquals(
@@ -724,8 +798,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $scoreElement2,
             [
-                'Type'        => "score",
-                "Name"        => "FieldName2",
+                'Type' => "score",
+                "Name" => "FieldName2",
             ]
         );
 
@@ -747,20 +821,25 @@ class NDB_BVL_Instrument_Test extends TestCase
         // The first "section" has no elements, and the second one, to make sure
         // that the serialization won't die on a 0 element "section"
         $this->_instrument->form->addElement(
-            "header", null, "I am your test header"
+            "header",
+            '',
+            "I am your test header"
         );
         $this->_instrument->form->addElement(
-            "header", null, "I am another test header"
+            "header",
+            '',
+            "I am another test header"
         );
         $this->_instrument->addScoreColumn(
             "FieldName2",
             "Field Description",
             "45"
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
-        $headerElement = $outArray['Elements'][0];
-        $headerElement2= $outArray['Elements'][1];
+        assert(is_array($outArray));
+        $headerElement  = $outArray['Elements'][0];
+        $headerElement2 = $outArray['Elements'][1];
 
         $this->assertEquals(
             $headerElement,
@@ -797,8 +876,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testLabelElement()
     {
         $this->_instrument->addLabel("I am a label");
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $labelElement = $outArray['Elements'][0];
 
         $this->assertEquals(
@@ -820,41 +900,44 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
-        $this->_instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(
-                array("getFullName", "getSubtestList", '_setupForm')
-            )->getMock();
-        $this->_instrument->method('getFullName')->willReturn("Test Instrument");
-        $this->_instrument->method('getSubtestList')->willReturn(
-            array(
-                array('Name' => 'Page 1', 'Description' => 'The first page'),
-                array('Name' => 'Page 2', 'Description' => 'The second page'),
-            )
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->addMethods(['_setupForm'])->getMock();
+        $i->method('getFullName')->willReturn("Test Instrument");
+        $i->method('getSubtestList')->willReturn(
+            [
+                ['Name' => 'Page 1', 'Description' => 'The first page'],
+                ['Name' => 'Page 2', 'Description' => 'The second page'],
+            ]
         );
+        $i->method('getDataDictionary')->willReturn([]);
 
-        $this->_instrument->form = $this->quickForm;
-        $this->_instrument->testName = "Test";
+        '@phan-var \NDB_BVL_Instrument $i';
+        $i->form     = $this->quickForm;
+        $i->testName = "Test";
 
-        $json = $this->_instrument->toJSON();
+        $json     = $i->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $page1 = $outArray['Elements'][0];
         $page2 = $outArray['Elements'][1];
         $this->assertEquals(
             $page1,
             [
-                'Type' => 'ElementGroup',
-                'GroupType' => 'Page',
-                'Elements' => [],
+                'Type'        => 'ElementGroup',
+                'GroupType'   => 'Page',
+                'Elements'    => [],
                 'Description' => 'The first page'
             ]
         );
         $this->assertEquals(
             $page2,
             [
-                'Type' => 'ElementGroup',
-                'GroupType' => 'Page',
-                'Elements' => [],
+                'Type'        => 'ElementGroup',
+                'GroupType'   => 'Page',
+                'Elements'    => [],
                 'Description' => 'The second page'
             ]
         );
@@ -885,7 +968,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testCalculateAgeMonths()
     {
-        $age = array('year' => 3, 'mon' => 4, 'day' => 23);
+        $age    = ['year' => 3, 'mon' => 4, 'day' => 23];
         $months = $this->_instrument->calculateAgeMonths($age);
         $this->assertEquals(40.8, $months);
     }
@@ -899,7 +982,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testCalculateAgeDays()
     {
-        $age = array('year' => 3, 'mon' => 4, 'day' => 23);
+        $age  = ['year' => 3, 'mon' => 4, 'day' => 23];
         $days = $this->_instrument->calculateAgeDays($age);
         $this->assertEquals(1238, $days);
     }
@@ -914,18 +997,21 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testAddYesNoElement()
     {
         $this->_instrument->addYesNoElement("field1", "label1");
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
-            array('Type' => 'select',
-                  'Name' => 'field1',
-                  'Description' => 'label1',
-                  'Options' => array('Values' => array('' => '',
-                                                       'yes' => 'Yes',
-                                                       'no' => 'No'),
-                                     'RequireResponse' => true)
-            )
+            ['Type' => 'select',
+                'Name'        => 'field1',
+                'Description' => 'label1',
+                'Options'     => ['Values' => ['' => '',
+                    'yes' => 'Yes',
+                    'no'  => 'No'
+                ],
+                    'RequireResponse' => true
+                ]
+            ]
         );
     }
 
@@ -939,28 +1025,34 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testAddYesNoElementWithRules()
     {
         $this->_instrument->addYesNoElement(
-            "field1", "label1", ["rule1"], "Rule message"
+            "field1",
+            "label1",
+            ["rule1"],
+            "Rule message"
         );
-        $json = $this->_instrument->toJSON();
+        $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
-            array('Type' => 'select',
-                'Name' => 'field1',
+            ['Type' => 'select',
+                'Name'        => 'field1',
                 'Description' => 'label1',
-                'Options' => array('Values' => array('' => '',
+                'Options'     => ['Values' => ['' => '',
                     'yes' => 'Yes',
-                    'no' => 'No'),
-                    'RequireResponse' => true)
-            )
+                    'no'  => 'No'
+                ],
+                    'RequireResponse' => true
+                ]
+            ]
         );
         $rules = $this->_instrument->XINRules["field1"];
         $this->assertEquals(
             $rules,
-            array('message' => 'Rule message',
-                  'group' => '',
-                  'rules' => ['rule1']
-            )
+            ['message' => 'Rule message',
+                'group'   => '',
+                'rules'   => ['rule1']
+            ]
         );
     }
 
@@ -985,6 +1077,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetSessionID()
     {
         $this->_instrument->commentID = 'commentID1';
+
         $this->_mockDB->expects($this->once())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
@@ -998,7 +1091,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that getSessionID throws a NotFound exception if nothing was found in the
+     * Test that getSessionID will return null if nothing was found in the
      * database for the given commentID
      *
      * @covers NDB_BVL_Instrument::getSessionID
@@ -1009,8 +1102,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID3';
-        $this->expectException('NotFound');
-        $this->_instrument->getSessionID();
+        $this->assertNull($this->_instrument->getSessionID());
     }
 
     /**
@@ -1100,34 +1192,34 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that loadInstanceData returns data from the correct database
+     * Test that getInstanceData returns data from the correct database
      *
-     * @covers NDB_BVL_Instrument::loadInstanceData
+     * @covers NDB_BVL_Instrument::getInstanceData
      * @return void
      */
-    function testLoadInstanceData()
+    function testGetInstanceData()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'flag';
-        $defaults = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $this->_instrument->table     = 'flag';
+        $defaults = $this->_instrument->getInstanceData();
         $defaults['Testdate'] = '2020-01-01 00:00:00';
         $this->assertEquals(
             $defaults,
             [
-                'ID' => '1000',
-                'SessionID' => '123',
-                'Test_name' => 'Test_name1',
-                'CommentID' => 'commentID1',
-                'Data_entry' => null,
+                'ID'             => '1000',
+                'SessionID'      => '123',
+                'Test_name'      => 'Test_name1',
+                'CommentID'      => 'commentID1',
+                'Data_entry'     => null,
                 'Administration' => null,
-                'Validity' => null,
-                'Exclusion' => null,
-                'Flag_status' => null,
-                'UserID' => '456',
-                'Testdate' => '2020-01-01 00:00:00',
-                'Data' => null
+                'Validity'       => null,
+                'Exclusion'      => null,
+                'Flag_status'    => null,
+                'UserID'         => '456',
+                'Testdate'       => '2020-01-01 00:00:00',
+                'Data'           => null
             ]
         );
     }
@@ -1143,7 +1235,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             'Test Examiner1',
             $this->_instrument->getFieldValue('Examiner')
@@ -1162,7 +1254,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             ['year' => 11, 'mon' => 4, 'day' => 4],
             $this->_instrument->getCandidateAge()
@@ -1182,7 +1274,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_DB->run("UPDATE candidate SET DoD=null WHERE CandID=1");
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             ['year' => 11, 'mon' => 4, 'day' => 4],
             $this->_instrument->getCandidateAge()
@@ -1202,7 +1294,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE CandID=1");
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             ['year' => 6, 'mon' => 5, 'day' => 1],
             $this->_instrument->getCandidateAge()
@@ -1220,7 +1312,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             ['year' => 4, 'mon' => 8, 'day' => 3],
             $this->_instrument->getCandidateAge('2003-09-04')
@@ -1237,10 +1329,10 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testSetDefaultsArray()
     {
         $defaults = ['Test' => 'Test1',
-                     'Window_Difference' => 1,
-                     'Candidate_Age' => '2020-01-01'
+            'Window_Difference' => 1,
+            'Candidate_Age'     => '2020-01-01'
         ];
-        $result = $this->_instrument->_setDefaultsArray($defaults);
+        $result   = $this->_instrument->_setDefaultsArray($defaults);
         $defaults['Candidate_Age'] = '2020-01-01 (Age out of range)';
         $this->assertEquals($defaults, $result);
         $this->assertEquals(["Date_taken"], $this->_instrument->dateTimeFields);
@@ -1258,15 +1350,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
-        $this->_instrument->testName = 'Test Name1';
+        $this->_instrument->table     = 'medical_history';
+        $this->_instrument->testName  = 'Test Name1';
         $values = ['Date_taken' => '2005-06-06'];
         $this->_instrument->_saveCandidateAge($values);
         $this->assertEquals(
             $values,
             [
-                'Date_taken' => '2005-06-06',
-                'Candidate_Age' => 77.2,
+                'Date_taken'        => '2005-06-06',
+                'Candidate_Age'     => 77.2,
                 'Window_Difference' => 0
             ]
         );
@@ -1282,19 +1374,19 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testNullStatus()
     {
         $values = ['Test1' => 'field1',
-                   'Test2' => 'field2',
-                   'Test3' => 'field3',
-                   'Test1_status' => 'status1',
-                   'Test2_status' => 'status2',
-                   'Test3_status' => ''
+            'Test2'        => 'field2',
+            'Test3'        => 'field3',
+            'Test1_status' => 'status1',
+            'Test2_status' => 'status2',
+            'Test3_status' => ''
         ];
         $this->_instrument->_nullStatus($values);
         $this->assertEquals(
             $values,
             [
-                'Test1' => '',
-                'Test2' => '',
-                'Test3' => 'field3',
+                'Test1'        => '',
+                'Test2'        => '',
+                'Test3'        => 'field3',
                 'Test1_status' => 'status1',
                 'Test2_status' => 'status2',
                 'Test3_status' => ''
@@ -1315,12 +1407,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
-        $this->_instrument->testName = 'TestName1';
-        $this->_instrument->formType = "XIN";
+        $this->_instrument->table     = 'medical_history';
+        $this->_instrument->testName  = 'TestName1';
+        $this->_instrument->formType  = "XIN";
         $values = ['Date_taken' => '2005-06-06',
-                   'arthritis_age' => 2,
-                   'arthritis_age_status' => 'status'
+            'arthritis_age'        => 2,
+            'arthritis_age_status' => 'status'
         ];
         $this->_instrument->_saveValues($values);
         $dbData = $this->_DB->pselect("SELECT * FROM medical_history", []);
@@ -1354,28 +1446,11 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             '2010-05-05',
             $this->_instrument->getDateOfAdministration()
         );
-    }
-
-    /**
-     * Test that setRequired sets the required value of the form
-     *
-     * @note This test is being skipped because there is an error in
-     * the setRequired method. Once this is resolved, this test can
-     * be implemented.
-     *
-     * @covers NDB_BVL_Instrument::setRequired
-     * @return void
-     */
-    function testSetRequired()
-    {
-        $this->markTestSkipped("Error in setRequired method");
-        $this->_instrument->setRequired("Required_el");
-        $this->assertEquals("Required_el", $this->_instrument->form->_required[]);
     }
 
     /**
@@ -1388,7 +1463,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testXINValidatNoErrors()
     {
         $elements = ['el1' => 'val1',
-                     'el2' => 'val2'
+            'el2' => 'val2'
         ];
         $this->assertTrue($this->_instrument->XINValidate($elements));
     }
@@ -1402,14 +1477,17 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testXINRegisterRule()
     {
         $this->_instrument->XINRegisterRule(
-            'elname1', ['rule1', 'rule2'], 'message1', 'group1'
+            'elname1',
+            ['rule1', 'rule2'],
+            'message1',
+            'group1'
         );
         $this->assertEquals(
             $this->_instrument->XINRules['elname1'],
             [
                 'message' => 'message1',
-                'group' => 'group1',
-                'rules' => ['rule1', 'rule2']
+                'group'   => 'group1',
+                'rules'   => ['rule1', 'rule2']
             ]
         );
     }
@@ -1448,7 +1526,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_DB->run(
             "UPDATE medical_history SET arthritis_age=null
                 WHERE CommentID='commentID1'"
@@ -1481,7 +1559,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_DB->run(
             "UPDATE medical_history SET arthritis_age=60
                 WHERE CommentID='commentID1'"
@@ -1513,7 +1591,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
             'Incomplete',
             $this->_instrument->getDataEntryCompletionStatus()
@@ -1532,9 +1610,9 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals('Complete', $data['Data_entry_completion_status']);
     }
 
@@ -1550,7 +1628,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->expectException('Exception');
         $this->_instrument->_setDataEntryCompletionStatus('BadString');
     }
@@ -1567,9 +1645,9 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data = $this->_instrument->getInstanceData();
         $this->assertEquals(null, $data['Examiner']);
     }
 
@@ -1585,25 +1663,29 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
-        $otherInstrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
+        $this->_instrument->table     = 'medical_history';
+        $otherInstrument = $this
+            ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->setMethods(array("getFullName", "getSubtestList"))->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
+        '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
-        $otherInstrument->table = 'medical_history';
+        $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
             $this->_instrument->diff($otherInstrument),
             [
                 [
-                    'TableName' => 'medical_history',
+                    'TableName'      => 'medical_history',
                     'ExtraKeyColumn' => null,
-                    'ExtraKey1' => ' ',
-                    'ExtraKey2' => ' ',
-                    'FieldName' => 'Examiner',
-                    'CommentId1' => 'commentID1',
-                    'Value1' => 'Test Examiner1',
-                    'CommentId2' => 'commentID2',
-                    'Value2' => 'Test Examiner2'
+                    'ExtraKey1'      => ' ',
+                    'ExtraKey2'      => ' ',
+                    'FieldName'      => 'Examiner',
+                    'CommentId1'     => 'commentID1',
+                    'Value1'         => 'Test Examiner1',
+                    'CommentId2'     => 'commentID2',
+                    'Value2'         => 'Test Examiner2'
                 ]
             ]
         );
@@ -1622,16 +1704,16 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $conflicts_data = [
             [
-                'ConflictID' => '123',
-                'TableName' => '',
+                'ConflictID'     => '123',
+                'TableName'      => '',
                 'ExtraKeyColumn' => null,
-                'ExtraKey1' => '',
-                'ExtraKey2' => '',
-                'FieldName' => '',
-                'CommentId1' => 'commentID1',
-                'Value1' => null,
-                'CommentId2' => '',
-                'Value2' => null
+                'ExtraKey1'      => '',
+                'ExtraKey2'      => '',
+                'FieldName'      => '',
+                'CommentId1'     => 'commentID1',
+                'Value1'         => null,
+                'CommentId2'     => '',
+                'Value2'         => null
             ]
         ];
         $this->_DB->setFakeTableData(
@@ -1639,14 +1721,16 @@ class NDB_BVL_Instrument_Test extends TestCase
             $conflicts_data
         );
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $conflictsBefore = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved", []
+            "SELECT * FROM conflicts_unresolved",
+            []
         );
         $this->_instrument->clearInstrument();
-        $data = \NDB_BVL_Instrument::loadInstanceData($this->_instrument);
+        $data           = $this->_instrument->getInstanceData();
         $conflictsAfter = $this->_DB->pselect(
-            "SELECT * FROM conflicts_unresolved", []
+            "SELECT * FROM conflicts_unresolved",
+            []
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
@@ -1672,7 +1756,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table = 'medical_history';
+        $this->_instrument->table     = 'medical_history';
         $this->assertTrue($this->_instrument->determineDataEntryAllowed());
         $this->assertTrue($this->_instrument->validate(['value1']));
         $this->_instrument->commentID = 'commentID2';
@@ -1706,41 +1790,14 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testToJsonParseSmartyDateType()
     {
-        $el = ['type' => 'date'];
+        $el     = ['type' => 'date'];
         $result = ['type' => 'date',
-                   'options' => ['mindate' => "1990-01-01",
-                                 'maxdate' => "2000-12-31",
-                                 'RequireResponse' => false],
-                   'NoResponse' => true
+            'options'    => ['mindate' => "1990-01-01",
+                'maxdate'         => "2000-12-31",
+                'RequireResponse' => false
+            ],
+            'NoResponse' => true
         ];
-        $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
-    }
-
-    /**
-     * Test that _toJSONParseSmarty returns an array with the
-     * correct information for a date type element when the form
-     * is not a LorisForm.
-     *
-     * @covers NDB_BVL_Instrument::_toJSONParseSmarty
-     * @return void
-     */
-    function testToJsonParseSmartyDateTypeNotLorisForm()
-    {
-        $date = ['options' => ['minYear' => '1990',
-                               'maxYear' => '2000'],
-                 'type' => 'select'
-
-        ];
-        $dateHTML = $this->_instrument->form->renderElement($date);
-        $el = ['type' => 'date',
-               'html' => $dateHTML];
-        $result = ['type' => 'date',
-                   'html' => $dateHTML,
-                   'options' => ['mindate' => "1990-01-01",
-                                 'maxdate' => "2000-12-31"],
-                   'NoResponse' => true
-        ];
-        $this->_instrument->form = new \Candidate();
         $this->assertEquals($result, $this->_instrument->_toJSONParseSmarty($el));
     }
 
@@ -1754,11 +1811,11 @@ class NDB_BVL_Instrument_Test extends TestCase
     function toJsonParseSmartySelectType()
     {
         $select = ['type' => 'select',
-                   'multiple' => 'multiple',
-                   'option' => ['value' => 'not_answered']
+            'multiple' => 'multiple',
+            'option'   => ['value' => 'not_answered']
         ];
-        $html = $this->_instrument->form->renderElement($select);
-        $el = ['type' => 'select', 'html' => $html];
+        $html   = $this->_instrument->form->renderElement($select);
+        $el     = ['type' => 'select', 'html' => $html];
         $this->assertEquals($el, $this->_instrument->_toJSONParseSmarty($select));
     }
 
@@ -1786,7 +1843,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->setup("commentID1", "page");
         $this->_instrument->table = 'medical_history';
-        $this->assertContains(
+        $this->assertStringContainsString(
             "<input  name=\"candID\" value=\"\" type=\"hidden\">\n",
             $this->_instrument->display()
         );
@@ -1804,10 +1861,15 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID2';
-        $this->_instrument->table = 'medical_history';
-        $this->_instrument->form = $this->getMockBuilder("\LorisForm")->getMock();
-        $this->_instrument->form
-            ->method('getSubmitValues')->willReturn(['1', '2']);
+        $this->_instrument->table     = 'medical_history';
+
+        $mockform = $this->getMockBuilder("\LorisForm")->getMock();
+
+        $mockform->method('getSubmitValues')->willReturn(['1', '2']);
+        '@phan-var \LorisForm $mockform';
+
+        $this->_instrument->form = $mockform;
+
         $this->assertFalse($this->_instrument->save());
     }
 
@@ -1841,24 +1903,24 @@ class NDB_BVL_Instrument_Test extends TestCase
             "flag",
             [
                 [
-                    'ID' => '1000',
-                    'SessionID' => '123',
-                    'CommentID' => 'commentID1',
-                    'Test_name' => 'Test_name1',
-                    'UserID'    => '456',
-                    'Data_entry' => 'Incomplete',
+                    'ID'             => '1000',
+                    'SessionID'      => '123',
+                    'CommentID'      => 'commentID1',
+                    'Test_name'      => 'Test_name1',
+                    'UserID'         => '456',
+                    'Data_entry'     => 'Incomplete',
                     'Administration' => 'admin1',
-                    'Validity' => 'valid1'
+                    'Validity'       => 'valid1'
                 ],
                 [
-                    'ID' => '2000',
-                    'SessionID' => '234',
-                    'CommentID' => 'commentID2',
-                    'Test_name' => 'Test_name2',
-                    'UserID'    => '457',
-                    'Data_entry' => 'Complete',
+                    'ID'             => '2000',
+                    'SessionID'      => '234',
+                    'CommentID'      => 'commentID2',
+                    'Test_name'      => 'Test_name2',
+                    'UserID'         => '457',
+                    'Data_entry'     => 'Complete',
                     'Administration' => 'admin2',
-                    'Validity' => 'valid2'
+                    'Validity'       => 'valid2'
                 ],
             ]
         );
@@ -1867,15 +1929,15 @@ class NDB_BVL_Instrument_Test extends TestCase
             [
                 [
                     'CandID' => 1,
-                    'DoB' => '1999-01-01',
-                    'DoD' => '2016-01-01',
-                    'PSCID' => '345'
+                    'DoB'    => '1999-01-01',
+                    'DoD'    => '2016-01-01',
+                    'PSCID'  => '345'
                 ],
                 [
                     'CandID' => 2,
-                    'DoB' => '1999-01-01',
-                    'DoD' => '2016-01-01',
-                    'PSCID' => '346'
+                    'DoB'    => '1999-01-01',
+                    'DoD'    => '2016-01-01',
+                    'PSCID'  => '346'
                 ]
             ]
         );
@@ -1883,13 +1945,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID' => '123',
-                    'CandID' => 1,
+                    'ID'           => '123',
+                    'CandID'       => 1,
                     'SubprojectID' => '12'
                 ],
                 [
-                    'ID' => '234',
-                    'CandID' => 2,
+                    'ID'           => '234',
+                    'CandID'       => 2,
                     'SubprojectID' => '12'
                 ]
             ]
@@ -1898,17 +1960,17 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
-                    'CommentID' => 'commentID1',
-                    'UserID' => '456',
-                    'Examiner' => 'Test Examiner1',
-                    'Date_taken' => '2010-05-05 00:00:01',
+                    'CommentID'                    => 'commentID1',
+                    'UserID'                       => '456',
+                    'Examiner'                     => 'Test Examiner1',
+                    'Date_taken'                   => '2010-05-05 00:00:01',
                     'Data_entry_completion_status' => 'Incomplete'
                 ],
                 [
-                    'CommentID' => 'commentID2',
-                    'UserID' => '457',
-                    'Examiner' => 'Test Examiner2',
-                    'Date_taken' => '2010-05-05 00:00:01',
+                    'CommentID'                    => 'commentID2',
+                    'UserID'                       => '457',
+                    'Examiner'                     => 'Test Examiner2',
+                    'Date_taken'                   => '2010-05-05 00:00:01',
                     'Data_entry_completion_status' => 'Incomplete'
                 ],
             ]
@@ -1917,11 +1979,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active' => 'Y',
-                    'Test_name' => 'TestName1_proband',
+                    'Active'       => 'Y',
+                    'Test_name'    => 'TestName1_proband',
                     'SubprojectID' => '12',
-                    'AgeMinDays' => 0,
-                    'AgeMaxDays' => 100
+                    'AgeMinDays'   => 0,
+                    'AgeMaxDays'   => 100
                 ]
             ]
         );
@@ -1931,12 +1993,12 @@ class NDB_BVL_Instrument_Test extends TestCase
                 [
                     'Description' => 'description 1',
                     'SourceField' => 'Not validity',
-                    'SourceFrom' => 'Testname1'
+                    'SourceFrom'  => 'Testname1'
                 ],
                 [
                     'Description' => 'description 2',
                     'SourceField' => 'Validity',
-                    'SourceFrom' => 'Testname1'
+                    'SourceFrom'  => 'Testname1'
                 ]
             ]
         );
@@ -1951,16 +2013,19 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_factoryForDB = \NDB_Factory::singleton();
         $this->_factoryForDB->reset();
-        $this->_factoryForDB->setTesting(false);
+
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
-        $database     = $this->_config->getSetting('database');
+        $database      = $this->_config->getSetting('database');
         $this->_DB     = \Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->_factoryForDB->setDatabase($this->_DB);
+        $this->_factoryForDB->setConfig($this->_config);
     }
 }
-?>
+

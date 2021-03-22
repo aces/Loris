@@ -7,9 +7,15 @@ namespace LORIS\user_accounts;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class UserAccountRow implements \LORIS\Data\DataInstance
+class UserAccountRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
+    protected $ProjectIDs;
+
+    private array $_centerIDs;
+    private array $_projectIDs;
 
      /**
       * Create a new ModuleRow Instance.
@@ -20,9 +26,10 @@ class UserAccountRow implements \LORIS\Data\DataInstance
       */
     public function __construct(array $row, array $cids, array $pids)
     {
-        $this->CenterIDs  = $cids;
-        $this->ProjectIDs = $pids;
-        $this->DBRow      = $row;
+        $this->_centerIDs  = $cids;
+        $this->_projectIDs = $pids;
+
+        $this->DBRow = $row;
     }
 
     /**
@@ -32,17 +39,17 @@ class UserAccountRow implements \LORIS\Data\DataInstance
      */
     public function getCenterIDs() : array
     {
-        return $this->CenterIDs;
+        return $this->_centerIDs;
     }
 
     /**
      * Returns the ProjectID for this row.
      *
-     * @return array The ProjectIds
+     * @return \ProjectID[] The ProjectIds
      */
     public function getProjectIDs() : array
     {
-        return $this->ProjectIDs;
+        return $this->_projectIDs;
     }
 
     /**

@@ -8,7 +8,14 @@ import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
 
+/**
+ * Doc index component
+ */
 class DocIndex extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -31,11 +38,19 @@ class DocIndex extends React.Component {
     this.getContent = this.getContent.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Handle global
+   * @param {*} formElement
+   * @param {boolean} value
+   */
   handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
@@ -47,6 +62,10 @@ class DocIndex extends React.Component {
     }
   }
 
+  /**
+   * Get all data
+   * @return {Promise<void>}
+   */
   getAllData() {
     return fetch(loris.BaseURL + '/document_repository/docTree/0')
       .then((response) => response.json())
@@ -70,7 +89,12 @@ class DocIndex extends React.Component {
       });
   }
 
-  // function change tableData;
+  /**
+   * Data by node
+   * Change tableData
+   * @param {Number} id
+   * @return {Promise<void>}
+   */
   dataByNode(id) {
     return fetch(loris.BaseURL + '/document_repository/docTree/' + id)
       .then((response) => response.json())
@@ -94,6 +118,10 @@ class DocIndex extends React.Component {
       });
   }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -108,10 +136,17 @@ class DocIndex extends React.Component {
       });
   }
 
+  /**
+   * Get content
+   * @param {object} obj
+   */
   getContent(obj) {
     this.dataByNode(obj[0]);
   }
 
+  /**
+   * New category state
+   */
   newCategoryState() {
     this.setState({newCategory: true});
   }
@@ -147,17 +182,21 @@ class DocIndex extends React.Component {
         break;
       case 'Delete File':
         let id = row['Edit'];
+
+        /**
+         * Click
+         */
         function click() {
           swal.fire({
             title: 'Are you sure?',
-            text: 'Your will not be able to recover this file!',
+            text: 'You won\'t be able to revert this!',
             type: 'warning',
             showCancelButton: true,
-            confirmButtonClass: 'btn-danger',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-            closeOnConfirm: false,
-          },
-          function() {
+           }).then((result) => {
+           if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
               fetch(deleteurl, {
               method: 'DELETE',
@@ -168,9 +207,10 @@ class DocIndex extends React.Component {
                   location.reload();
                   swal.fire('delete Successful!', '', 'success');
                 });
-          }
-          );
+           }
+          });
         }
+
         result = <td>
           <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
         </td>;
@@ -179,6 +219,11 @@ class DocIndex extends React.Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

@@ -73,8 +73,8 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -140,6 +140,11 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request): ResponseInterface
     {
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         $requiredfields = [
             'Meta',

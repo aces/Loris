@@ -20,17 +20,17 @@ Test Battery.
 ### Permissions
 
 **Testing with no permissions** [Automation Testing]
-  1. Access the module with a regular user (without superuser permissions).
-  2. By default, the access to module should be denied.
+  1. Access the module with a user **not having** the `superuser`, `battery_manager_view` or `battery_manager_edit` permissions.
+  2. The access to module should be denied.
 
 **Testing with view permission** [Automation Testing]
-  1. Add view permission to the aforementioned user.
-  2. Battery Manager module should be accessible and only present with **one** tab (Browse).
+  1. Add `battery_manager_view` permission to the aforementioned user.
+  2. Battery Manager module should be accessible in read-only mode.
   3. The **Change Status** column should not be in the data table.
   4. The **Edit Metadata** column should not be in the data table.
 
 **Testing with edit permission** [Automation Testing]
-  1. Add edit permission.
+  1. Add `battery_manager_edit permissions` permission.
   2. Battery Manager module should now have an action button labeled "New Test".
   3. The **Change Status** column should be in the data table.
   4. The **Edit Metadata** column should be in the data table.
@@ -45,8 +45,8 @@ Test Battery.
 
 **Testing add functionality**
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
-  3. Check that you can only enter numbers between 0 and 127 in Instrument order.
+  2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
+  3. Check that you can only enter positive numbers (including 0) in Instrument order.
   4. Check that when you try to add an entry that has an active duplicate in the table (Active = 'Y'), you receive an error message.
   5. Try to add an entry that does not have a duplicate.
      - Ensure that a success message appears and the modal window is closed.
@@ -67,7 +67,6 @@ Test Battery.
 
 **Testing Change Status column**
   1. Press the `Deactivate` button in the `Change Status` column on an entry in the data table.
-     - Ensure that a warning message appears that asks you to confirm the action.
      - Ensure that when you press "Yes", a success message appears and the page refreshes.
      - Ensure the entry has the new Active status in the data table.
   2. Repeat step 1 using the `Activate` button.
@@ -77,7 +76,7 @@ Test Battery.
      - Ensure that you are taken to an Edit page with a form that is populated with the entry's values.
 
 **Test filters**
-  1. Under **Browse**, a selection filter should be present on top of the page containing the following fields:
+  1. A selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
      - Instrument, Stage, Subproject, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
   2. Type text in the Minimum age and verify that the table gets filtered as you type.
@@ -89,15 +88,13 @@ Test Battery.
 
 **Testing edit (activate/deactivate/add) functionality**
   1. Check that you cannot edit an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
-  2. Check that you can only enter a site that exists.
-  3. Check that you can only enter numbers between 0 and 99999 in Minumum age (days) and Maximum age (days).
-  4. Check that you can only enter numbers between 0 and 127 in Instrument order.
-  5. Check that when you try to edit an entry without making changes to the form, you receive an error message.
-  6. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
-  7. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
+  2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
+  3. Check that you can only enter positive numbers (including 0) in Instrument order.
+  4. Check that when the edited entry has the same values as another active entry in the Test Battery, you receive an error message.
+  5. Try to edit an entry so that it has the same values as another deactivated entry in the Test Battery.
      - Ensure that a warning message appears giving the option to activate the other entry and deactivate the original entry.
      - Ensure that when you press "Yes", a success message appears and the modal window is closed.
      - Ensure the original entry was deactivated and the other duplicate entry has been activated in the data table.
-  8. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
+  6. Try to edit an entry so that it does not have a duplicate (i.e. itself or another entry).
      - Ensure that a success message appears and the modal window is closed.
-     - Ensure the original entry was deactivated and the new entry has been added to the data table.
+     - Ensure the original entry was modified.

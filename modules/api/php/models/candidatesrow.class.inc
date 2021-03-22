@@ -20,10 +20,12 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesRow implements \LORIS\Data\DataInstance
+class CandidatesRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     private $_candid;
     private $_projectname;
+    private $_projectid;
     private $_pscid;
     private $_sitename;
     private $_edc;
@@ -40,12 +42,15 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     {
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
-        $this->_pscid       = $row['PSCID'] ?? null;
-        $this->_sitename    = $row['SiteName'] ?? null;
-        $this->_edc         = $row['EDC'] ?? null;
-        $this->_dob         = $row['DoB'] ?? null;
-        $this->_sex         = $row['Sex'] ?? null;
-        $this->_centerid    = $row['CenterID'] ?? null;
+        if ($row['ProjectID'] !== null) {
+            $this->_projectid = new \ProjectID($row['ProjectID']);
+        }
+        $this->_pscid    = $row['PSCID'] ?? null;
+        $this->_sitename = $row['SiteName'] ?? null;
+        $this->_edc      = $row['EDC'] ?? null;
+        $this->_dob      = $row['DoB'] ?? null;
+        $this->_sex      = $row['Sex'] ?? null;
+        $this->_centerid = $row['CenterID'] ?? null;
     }
 
     /**
@@ -56,13 +61,14 @@ class CandidatesRow implements \LORIS\Data\DataInstance
     public function jsonSerialize() : array
     {
         $obj = [
-            'CandID'  => $this->_candid,
-            'Project' => $this->_projectname,
-            'PSCID'   => $this->_pscid,
-            'Site'    => $this->_sitename,
-            'EDC'     => $this->_edc,
-            'DoB'     => $this->_dob,
-            'Sex'     => $this->_sex,
+            'CandID'    => $this->_candid,
+            'Project'   => $this->_projectname,
+            'ProjectID' => $this->_projectid,
+            'PSCID'     => $this->_pscid,
+            'Site'      => $this->_sitename,
+            'EDC'       => $this->_edc,
+            'DoB'       => $this->_dob,
+            'Sex'       => $this->_sex,
         ];
 
         return $obj;
@@ -80,5 +86,19 @@ class CandidatesRow implements \LORIS\Data\DataInstance
             throw new \Exception('CenterID is null');
         }
         return intval($this->_centerid);
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match against.
+     *
+     * @return \ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        if ($this->_projectid === null) {
+            throw new \Exception('ProjectID is null');
+        }
+        return $this->_projectid;
     }
 }

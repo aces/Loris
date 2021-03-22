@@ -268,6 +268,7 @@ class FieldList extends Component {
     // Display the fields using the FieldItem component
     for (let i = start; i < filteredItems.length; i += 1) {
       fieldName = filteredItems[i].key[1];
+      desc = filteredItems[i].value.Description;
       type = filteredItems[i].value.Type || 'varchar(255)';
 
       // Check if field is a file, if so set flag to true

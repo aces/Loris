@@ -28,10 +28,10 @@ DROP TABLE IF EXISTS `issues_comments`;
 DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
--- 0000-00-02-Modules.sql
+-- 0000-00-01-Modules.sql
 DROP TABLE IF EXISTS `modules`;
 
--- 0000-00-01-Permission.sql
+-- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
@@ -149,6 +149,7 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
+DROP TABLE IF EXISTS `mri_upload_rel`;
 
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
@@ -173,5 +174,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `visit_project_subproject_rel`;
 DROP TABLE IF EXISTS `visit`;
 DROP TABLE IF EXISTS `project_subproject_rel`;
+DROP TABLE IF EXISTS `consent_group`;
+DROP TABLE IF EXISTS `hrrt_archive_files`;
+DROP TABLE IF EXISTS `hrrt_archive`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;

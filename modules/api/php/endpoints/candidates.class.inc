@@ -73,8 +73,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            "v0.0.2",
             "v0.0.3",
+            "v0.0.4-dev",
         ];
     }
 
@@ -152,7 +152,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
-            ->filter($filter);
+            ->filter($filter)
+            ->filter(new \LORIS\Data\Filters\UserProjectMatch());
 
         $candidates = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)

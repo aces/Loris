@@ -10,6 +10,10 @@ import Modal from 'Modal';
  * Module component rendering the manage permissions form modal window
  */
 class ManagePermissionsForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -24,6 +28,9 @@ class ManagePermissionsForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
     .then(() => this.setState({isLoaded: true}));
@@ -44,10 +51,14 @@ class ManagePermissionsForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {data, error, isLoaded} = this.state;
     const {options} = this.props;
-
 
     // Data loading error
     if (error !== undefined) {

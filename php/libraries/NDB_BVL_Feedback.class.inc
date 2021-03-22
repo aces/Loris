@@ -215,7 +215,9 @@ class NDB_BVL_Feedback
             || isset($this->_feedbackObjectInfo['SessionID'])
         ) {
             $this->_feedbackCandidateProfileInfo['SessionID']
-                = $result[0]['SessionID'] ?? $this->_feedbackObjectInfo['SessionID'];
+                = isset($result[0]['SessionID']) ?
+                  new \SessionID($result[0]['SessionID']) :
+                  $this->_feedbackObjectInfo['SessionID'];
         }
     }
 
@@ -369,9 +371,9 @@ class NDB_BVL_Feedback
      * This function returns the greatest type of active feedback for the
      * candidate/timepoint/instrument
      *
-     * @param string $select_inactive_threads If non-empty returns inactive
-     *                                        threads, otherwise only returns
-     *                                        active threads
+     * @param boolean $select_inactive_threads If true returns inactive
+     *                                         threads, otherwise only returns
+     *                                         active threads
      *
      * @return ?string the higest-order status of an active thread
      */
@@ -726,7 +728,7 @@ class NDB_BVL_Feedback
         $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
-        $feedbackID = $DB->getLastInsertId();
+        $feedbackID = intval($DB->getLastInsertId());
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment, $this->_username);
@@ -984,7 +986,7 @@ class NDB_BVL_Feedback
             SET Status = \'closed\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, ['nofetch' => true]);
+        $db->execute($stmt, $params, ['nofetch' => 'true']);
         return $stmt->rowCount();
     }
 
@@ -1013,7 +1015,7 @@ class NDB_BVL_Feedback
             SET Status = \'opened\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, ['nofetch' => true]);
+        $db->execute($stmt, $params, ['nofetch' => 'true']);
         return $stmt->rowCount();
 
     }

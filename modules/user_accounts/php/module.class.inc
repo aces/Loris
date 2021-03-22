@@ -85,8 +85,7 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-                    WHERE users.Pending_approval='Y'
-                        AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
+                    WHERE users.Pending_approval='Y'",
                     'user_accounts_multisite',
                     'upr.CenterID',
                     $baseURL . "/user_accounts/?pendingApproval=Y",

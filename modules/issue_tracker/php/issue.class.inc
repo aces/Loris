@@ -107,7 +107,7 @@ class Issue extends \NDB_Form
             ['issueID' => $issueID]
         );
         return (is_null($issueData)
-            || in_array($issueData['centerID'], $user->getData('CenterIDs'))
+            || in_array($issueData['centerID'], $user->getCenterIDs())
             || ($user->hasPermission('access_all_profiles'))
             || (empty($issueData['centerID']))
         );

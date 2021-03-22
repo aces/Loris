@@ -21,6 +21,14 @@ namespace LORIS;
  */
 class RecordingElectrodes
 {
+    private ?string $_electrodename;
+    private ?string $_electrodetype;
+    private ?string $_electrodematerial;
+    private ?string $_x;
+    private ?string $_y;
+    private ?string $_z;
+    private ?string $_impedance;
+    private ?string $_filepath;
     /**
      * Contructor
      *

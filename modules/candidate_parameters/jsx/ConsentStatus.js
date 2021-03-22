@@ -11,6 +11,10 @@ import Loader from 'Loader';
  * Renders the contents of the Consent Status tab, consisting of the FormElement component
  */
 class ConsentStatus extends Component {
+    /**
+     * @constructor
+     * @param {object} props - React Component properties
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -37,6 +41,9 @@ class ConsentStatus extends Component {
         this.renderConsent = this.renderConsent.bind(this);
     }
 
+    /**
+     * Called by React when the component has been rendered on the page.
+     */
     componentDidMount() {
         this.fetchData();
     }
@@ -211,10 +218,17 @@ class ConsentStatus extends Component {
         });
     }
 
+    /**
+     * Show history
+     */
     showHistory() {
         this.setState({showHistory: !this.state.showHistory});
     }
 
+    /**
+     * Render formatted history
+     * @return {JSX} - React markup for the component
+     */
     renderFormattedHistory() {
         const historyBtnLabel = this.state.showHistory ?
             'Hide Consent History' : 'Show Consent History';
@@ -271,6 +285,11 @@ class ConsentStatus extends Component {
         );
     }
 
+    /**
+     * Render Consent
+     * @param {string} consentName
+     * @return {JSX} - React markup for the component
+     */
     renderConsent(consentName) {
         // Allow editing if user has permission
         let disabled = loris.userHasPermission('candidate_parameter_edit')
@@ -373,6 +392,11 @@ class ConsentStatus extends Component {
         );
     }
 
+    /**
+     * Renders the React component.
+     *
+     * @return {JSX} - React markup for the component
+     */
     render() {
         // If error occurs, return a message.
         // XXX: Replace this with a UI component for 500 errors.

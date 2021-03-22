@@ -1,7 +1,3 @@
-/**
- * Created by Alizée Wickenheiser on 6/25/18.
- */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -26,7 +22,17 @@ const style = {
   },
 };
 
+/**
+ * This file contains React component for the Electrophysiology module sidebar.
+ *
+ * @author Alizée Wickenheiser.
+ *
+ */
 class Sidebar extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -38,6 +44,9 @@ class Sidebar extends Component {
     this.saveSidebarRef = this.saveSidebarRef.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.setState({
 
@@ -45,10 +54,17 @@ class Sidebar extends Component {
     this.saveSidebarWidth();
   }
 
+  /**
+   * Save the sidebar reference
+   * @param {object} node - DOM node
+   */
   saveSidebarRef(node) {
     this.sidebar = node;
   }
 
+  /**
+   * Save the sidebar width
+   */
   saveSidebarWidth() {
     const width = this.sidebar.offsetWidth;
 
@@ -59,6 +75,11 @@ class Sidebar extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const styleSidebar = {...style.sidebar, ...this.props.styles.sidebar};
     const rootProps = {
