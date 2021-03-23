@@ -130,7 +130,7 @@ function uploadFile()
     checkDateTaken($dateTaken);
 
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
-    $fileName  = str_replace("%22", "\"", $fileName);
+    $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
