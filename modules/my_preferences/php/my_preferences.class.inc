@@ -21,8 +21,6 @@ class My_Preferences extends \NDB_Form
      */
     function _getDefaults()
     {
-        $defaults = [];
-
         $user = \User::factory($this->identifier);
         // get the user defaults
         $defaults = $user->getData();

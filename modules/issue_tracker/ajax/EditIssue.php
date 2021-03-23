@@ -606,7 +606,6 @@ function getIssueFields()
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
-    $sites   = [];
 
     // get field options
     $sites = Issue_Tracker::getSites(false, true);

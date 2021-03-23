@@ -110,7 +110,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
     public function testGetFeedbackTypeIdByNameForNoneExistingValue()
     {
         $this->assertEmpty(
-            $res = $this->_feedbackObj->getFeedbackTypeIdByName(
+            $this->_feedbackObj->getFeedbackTypeIdByName(
                 'None existing value'
             )
         );

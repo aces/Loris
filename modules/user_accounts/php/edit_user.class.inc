@@ -784,7 +784,7 @@ class Edit_User extends \NDB_Form
         $editorProjects = $editor->getProjectIDs();
         $projects       = \Utility::getProjectList();
         $projectOptions = [];
-        foreach ($editorProjects as $key => $projectID) {
+        foreach (array_values($editorProjects) as $projectID) {
             $projectOptions[$projectID->__toString()]
                 = $projects[$projectID->__toString()];
         }

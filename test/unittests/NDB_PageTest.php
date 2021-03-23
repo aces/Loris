@@ -763,7 +763,6 @@ class NDB_PageTest extends TestCase
         $this->_page->name = "page_name";
         $this->_page->page = "page_name";
         $name = $this->_page->name;
-        $page = $this->_page->page;
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name")

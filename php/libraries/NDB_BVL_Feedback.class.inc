@@ -1041,7 +1041,6 @@ class NDB_BVL_Feedback
         // new DB Object
         $db = Database::singleton();
 
-        $record =[];
         // StatusID is passed in as an integer, but the field in the database
         // is an enum, so we need to do WHERE Status+0= .. to convert it to
         // an int (of the index into the enum) so that this query works.

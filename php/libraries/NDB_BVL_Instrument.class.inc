@@ -2191,7 +2191,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ];
         $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
-        $age = [];
         if (empty($dates['DoD']) || $dates['DoD'] > $dateTaken) {
             $age = Utility::calculateAge($dates['DoB'], $dateTaken);
         } else {
