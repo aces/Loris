@@ -1,6 +1,4 @@
-SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE `parameter_type`;
-LOCK TABLES `parameter_type` WRITE;
+SET FOREIGN_KEY_CHECKS=0;nTRUNCATE TABLE `parameter_type`;nLOCK TABLES `parameter_type` WRITE;
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
@@ -630,5 +628,6 @@ INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, 
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1148,'electrode_file_blake2b_hash','text','electrode_file_blake2b_hash magically created by lib.physiological python class',NULL,NULL,NULL,'physiological_parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1149,'channel_file_blake2b_hash','text','channel_file_blake2b_hash magically created by lib.physiological python class',NULL,NULL,NULL,'physiological_parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1150,'event_file_blake2b_hash','text','event_file_blake2b_hash magically created by lib.physiological python class',NULL,NULL,NULL,'physiological_parameter_file',NULL,0,0);
+INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (1151,'electrophyiology_chunked_dataset_path','text','electrophyiology_chunked_dataset_path magically created by lib.physiological python class',NULL,NULL,NULL,'physiological_parameter_file',NULL,0,0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
