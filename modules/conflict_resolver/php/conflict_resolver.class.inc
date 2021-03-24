@@ -258,7 +258,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
-        $instruments = \Utility::getAllInstruments();
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList();
 
         // Get visits
         $visits = \Utility::getVisitList();

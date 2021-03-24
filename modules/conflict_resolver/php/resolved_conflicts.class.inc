@@ -111,7 +111,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
-        $instruments = \Utility::getAllInstruments();
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList();
 
         // Get visits
         $visits = \Utility::getVisitList();

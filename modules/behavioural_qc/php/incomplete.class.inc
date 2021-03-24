@@ -90,7 +90,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
             : $user->getStudySites();
         return (new \LORIS\behavioural_qc\Views\Incomplete(
             $visit_array,
-            \Utility::getAllInstruments(),
+            \NDB_BVL_Instrument::getInstrumentNamesList(),
             $projects,
             $list_of_sites
         ))->toArray();

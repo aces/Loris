@@ -54,7 +54,9 @@ class Project
         return [
             'Meta'        => $meta,
             'Candidates'  => $this->_project->getCandidateIds(),
-            'Instruments' => array_keys(\Utility::getAllInstruments()),
+            'Instruments' => array_keys(
+                \NDB_BVL_Instrument::getInstrumentNamesList()
+            ),
             'Visits'      => $this->_getVisits(),
         ];
     }

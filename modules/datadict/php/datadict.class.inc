@@ -59,7 +59,7 @@ class Datadict extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         return [
-            'sourceFrom' => \Utility::getAllInstruments(),
+            'sourceFrom' => \NDB_BVL_Instrument::getInstrumentNamesList(),
         ];
     }
 

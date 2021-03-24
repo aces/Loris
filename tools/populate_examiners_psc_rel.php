@@ -29,7 +29,7 @@ $examinersRows = $db->pselect(
 );
 
 //get all instruments to update examiner fields
-$instruments = Utility::getAllInstruments();
+$instruments = \NDB_BVL_Instrument::getInstrumentNamesList();
 
 $examinersOrganized =[];
 
@@ -98,8 +98,8 @@ if (!empty($pendingNullCheck)) {
 }
 ///////// certification.examinerID NOT in examiners.examinerID
 $certCheck = $db->pselect(
-    "SELECT DISTINCT examinerID 
-     FROM certification 
+    "SELECT DISTINCT examinerID
+     FROM certification
      WHERE examinerID NOT IN (SELECT examinerID FROM examiners)",
     []
 );
@@ -128,8 +128,8 @@ foreach ($instruments as $table => $name) {
     }
 }
 $frrCheck = $db->pselect(
-    "SELECT * FROM final_radiological_review 
-      WHERE Final_Examiner2 NOT IN (SELECT examinerID FROM examiners) 
+    "SELECT * FROM final_radiological_review
+      WHERE Final_Examiner2 NOT IN (SELECT examinerID FROM examiners)
           OR Final_Examiner NOT IN (SELECT examinerID FROM examiners) ",
     []
 );
@@ -243,9 +243,9 @@ foreach ($examinersOrganized as $name => $data_array) {
 echo <<<'DONE'
 
 
-The script ran successfully, make sure to run the clean-up commands available 
+The script ran successfully, make sure to run the clean-up commands available
 in the SQL/Archive/18.0/clean-up directory.
-These commands will drop the now redundant fields and add new constraints to 
+These commands will drop the now redundant fields and add new constraints to
 the examiner tables.
 
 DONE;

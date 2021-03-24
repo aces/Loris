@@ -67,7 +67,7 @@ class Configuration extends \NDB_Form
             'Ym'  => 'Ym (EX: 2015-12)'
         ];
 
-        $instruments     = \Utility::getAllInstruments();
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList();
         $instruments[''] = '';
 
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
@@ -94,8 +94,8 @@ class Configuration extends \NDB_Form
         $DB = \Database::singleton();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );

@@ -59,7 +59,7 @@ class TestOptionsEndpoint extends \NDB_Page
     private function _getOptions() : array
     {
         return [
-            'instruments' => \Utility::getAllInstruments(),
+            'instruments' => \NDB_BVL_Instrument::getInstrumentNamesList(),
             'stages'      => $this->_getStageList(),
             'subprojects' => \Utility::getSubprojectList(null),
             'visits'      => \Utility::getVisitList(),

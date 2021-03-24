@@ -23,7 +23,7 @@ class Fields extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new \LORIS\Http\Response\JSON\OK(
-            ['sourceFrom' => \Utility::getAllInstruments()]
+            ['sourceFrom' => \NDB_BVL_Instrument::getInstrumentNamesList()]
         );
     }
 }

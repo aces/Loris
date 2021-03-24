@@ -269,7 +269,7 @@ class CouchDBInstrumentImporter
      */
     function getInstruments()
     {
-        return \Utility::getAllInstruments();
+        return \NDB_BVL_Instrument::getInstrumentNamesList();
     }
 
     /**

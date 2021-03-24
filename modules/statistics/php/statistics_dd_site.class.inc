@@ -51,7 +51,7 @@ class Statistics_DD_Site extends statistics_site
      */
     function _setInstrumentName()
     {
-        $this->instruments = \Utility::getAllInstruments();
+        $this->instruments = \NDB_BVL_Instrument::getInstrumentNamesList();
         foreach (array_keys($this->instruments) as $k) {
             $this->instruments[$k] = $k;
         }
@@ -85,13 +85,13 @@ class Statistics_DD_Site extends statistics_site
             "SELECT count(s.CandID)  FROM session s, candidate c,
                 flag f, $safe_instrument i
              WHERE
-                s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
+                s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
                 AND s.CenterID <> '1'
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
-                AND f.Data_entry='Complete' AND f.Administration='All' 
+                AND f.Data_entry='Complete' AND f.Administration='All'
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
@@ -112,10 +112,10 @@ class Statistics_DD_Site extends statistics_site
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
-                lower(s.Visit_label) as Visit_label 
+                lower(s.Visit_label) as Visit_label
                 FROM session s, candidate c, flag f, $safe_instrument i
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
-                s.CandID=c.CandID  AND s.Active='Y' 
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND
+                s.CandID=c.CandID  AND s.Active='Y'
                 AND s.CenterID <> '1'
                 $this->query_criteria
                 AND s.Current_stage <> 'Recycling Bin'

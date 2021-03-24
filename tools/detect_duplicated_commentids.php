@@ -81,7 +81,7 @@ $diff           = null;
 $commentids     = [];
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
-    $instruments = Utility::getAllInstruments();
+    $instruments = \NDB_BVL_Instrument::getInstrumentNamesList();
 } else {
     $instruments = [$instrument => $instrument];
 }

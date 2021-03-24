@@ -87,7 +87,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
             : $user->getStudySites();
         return (new \LORIS\behavioural_qc\Views\Behavioral(
             $visit_array,
-            \Utility::getAllInstruments(),
+            \NDB_BVL_Instrument::getInstrumentNamesList(),
             \Utility::getProjectList(),
             $list_of_sites
         ))->toArray();
