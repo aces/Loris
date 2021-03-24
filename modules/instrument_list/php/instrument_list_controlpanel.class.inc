@@ -721,7 +721,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-            && $user->hasCenter($this->getData('CenterID'))
+            && $user->hasCenter($this->getCenterID())
             && $this->getData('Submitted')=='N'
             && in_array(
                 $this->getData('Current_stage'),
