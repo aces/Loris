@@ -40,11 +40,11 @@ $result_count = 1;
 $history = $DB->pselect(
     "SELECT f.Test_name, f.CommentID, h1.userID
       FROM flag f
-      JOIN $hDB.history h1 on (f.CommentID=h1.primaryVals)
+      JOIN " . $DB->escape($hDB) . ".history h1 on (f.CommentID=h1.primaryVals)
       JOIN
         (
           SELECT primaryVals, MAX(changeDate) as changeDate
-            FROM $hDB.history
+            FROM " . $DB->escape($hDB) . ".history
             WHERE userID <> 'unknown'
               AND type='U'
               AND NOT (
