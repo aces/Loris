@@ -111,6 +111,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             case 'RegistrationProjectID':
                 $this->candidateInfo[$key] = new \ProjectID($value);
                 break;
+            case 'RegistrationCenterID':
+                $this->candidateInfo[$key] = new \CenterID($value);
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
