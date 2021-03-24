@@ -1,4 +1,6 @@
-SET FOREIGN_KEY_CHECKS=0;nTRUNCATE TABLE `physiological_parameter_file`;nLOCK TABLES `physiological_parameter_file` WRITE;
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `physiological_parameter_file`;
+LOCK TABLES `physiological_parameter_file` WRITE;
 INSERT INTO `physiological_parameter_file` (`PhysiologicalParameterFileID`, `PhysiologicalFileID`, `ParameterTypeID`, `InsertTime`, `Value`) VALUES (1,1,1125,'2019-08-21 15:09:57','CMS');
 INSERT INTO `physiological_parameter_file` (`PhysiologicalParameterFileID`, `PhysiologicalFileID`, `ParameterTypeID`, `InsertTime`, `Value`) VALUES (2,1,1126,'2019-08-21 15:09:57','256');
 INSERT INTO `physiological_parameter_file` (`PhysiologicalParameterFileID`, `PhysiologicalFileID`, `ParameterTypeID`, `InsertTime`, `Value`) VALUES (3,1,1127,'2019-08-21 15:09:57','0');

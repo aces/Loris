@@ -1,4 +1,6 @@
-SET FOREIGN_KEY_CHECKS=0;nTRUNCATE TABLE `parameter_type`;nLOCK TABLES `parameter_type` WRITE;
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `parameter_type`;
+LOCK TABLES `parameter_type` WRITE;
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
 INSERT INTO `parameter_type` (`ParameterTypeID`, `Name`, `Type`, `Description`, `RangeMin`, `RangeMax`, `SourceField`, `SourceFrom`, `SourceCondition`, `Queryable`, `IsFile`) VALUES (4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,0,0);
