@@ -1156,8 +1156,13 @@ class CandidateTest extends TestCase
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
         '@phan-var \User $user';
 
-        var_dump($this->_candidate);
-        var_dump($user);
+        var_dump('projMatch');
+        var_dump($this->_candidate->getProjectID());
+        var_dump($user->getProjectIDs());
+
+        var_dump('centerMatch');
+        var_dump($user->getCenterIDs());
+        var_dump($this->_candidate->getCenterID());
 
         $result = $this->_candidate->isAccessibleBy($user);
         $this->assertTrue($result);
