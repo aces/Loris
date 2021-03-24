@@ -893,8 +893,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
-
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = $user->hasCenter($this->getCenterID());
 
@@ -909,13 +907,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // we need to be able to access the candidate to get to it.
         $timepoints = $this->getListOfTimePoints();
         foreach ($timepoints as $sessionID) {
-            var_dump('before singleton');
-            var_dump($sessionID);
-            var_dump(new \SessionID(strval($sessionID)));
             $timepoint = \TimePoint::singleton(
                 new \SessionID(strval($sessionID))
             );
-            var_dump($timepoint);
 
             if ($timepoint->isAccessibleBy($user)) {
                 // There's at least one, we don't need to check
