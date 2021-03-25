@@ -140,7 +140,7 @@
           "name" : "since",
           "in" : "query",
           "description" : "A date",
-          "required" : true,
+          "required" : false,
           "style" : "form",
           "explode" : true,
           "schema" : {
