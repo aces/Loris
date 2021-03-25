@@ -22,8 +22,7 @@ class Categories extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $queryparams = $request->getQueryParams();
-        $user        = $request->getAttribute("user");
+        $user = $request->getAttribute("user");
 
         // getUserModuleCategories enforces permissions and strips out modules
         // that don't have any dictionary.
