@@ -107,7 +107,7 @@ paths:
         - name: since
           in: query
           description: A date
-          required: true
+          required: false
           schema:
             type: string
       responses:
@@ -222,7 +222,7 @@ paths:
             type: string
       responses:
         '200':
-          description: The new candidate
+          description: The candidate
           content:
             application/json:
               schema:
@@ -254,7 +254,7 @@ paths:
             type: string
       responses:
         '200':
-          description: The new candidate
+          description: The candidate's visit
           content:
             application/json:
               schema:
