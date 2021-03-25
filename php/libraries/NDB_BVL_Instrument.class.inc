@@ -2786,13 +2786,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * can not be instantiated. this check should eventually be replaced with an
      * exception.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getInstrumentsList() : array
+    static function getInstrumentsList(\LORIS\LorisInstance $loris) : array
     {
-        $Factory     = \NDB_Factory::singleton();
-        $DB          = $Factory->Database();
+        $DB          = $loris->getDatabaseConnection();
         $instruments = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 
         $instrumentList = [];
@@ -2814,12 +2815,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instruments which are instantiable are returned, invalid instruments will not
      * appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getInstrumentNamesList() : array
+    static function getInstrumentNamesList(\LORIS\LorisInstance $loris) : array
     {
-        $instrumentsList = self::getInstrumentsList();
+        $instrumentsList = self::getInstrumentsList($loris);
 
         $instrumentNames = [];
         foreach ($instrumentsList as $testName => $instrument) {
@@ -2836,15 +2839,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList() : array
+    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
     {
-        $Factory = \NDB_Factory::singleton();
-        $config  = $Factory->config();
+        $config = $loris->getConfiguration();
 
-        $instrumentNamesList = self::getInstrumentNamesList();
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
 
         $doubleDataEntryInstruments = $config->getSetting(
             'DoubleDataEntryInstruments'
@@ -2866,15 +2870,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getDirectEntryInstrumentNamesList() : array
-    {
-        $Factory = \NDB_Factory::singleton();
-        $DB      = $Factory->Database();
+    static function getDirectEntryInstrumentNamesList(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
 
-        $instrumentNamesList = self::getInstrumentNamesList();
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
 
         $directEntryInstruments = $DB->pselectCol(
             "SELECT Test_name FROM test_names WHERE IsDirectEntry=true",
