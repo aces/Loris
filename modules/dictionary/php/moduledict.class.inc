@@ -21,6 +21,10 @@ class ModuleDict extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($request->getMethod() !== 'GET') {
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET']);
+        }
+
         $user = $request->getAttribute("user");
         if ($user === null && !($user instanceof \User)) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
