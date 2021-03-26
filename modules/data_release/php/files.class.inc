@@ -2,7 +2,6 @@
 namespace LORIS\data_release;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Handles the /files endpoint of the module to upload or
@@ -16,7 +15,7 @@ class Files extends \NDB_Page
     public $AjaxModule   = true;
     public $skipTemplate = true;
 
-    private $filesdir;
+    private $filesDir;
     /**
      * Check user permissions
      *
@@ -85,6 +84,7 @@ class Files extends \NDB_Page
         }
 
         $posted = $request->getParsedBody();
+        assert(is_array($posted));
         return $this->moveFile(
             $uploadhandler,
             $user,
@@ -189,7 +189,7 @@ class Files extends \NDB_Page
         return $files->handle($request);
     }
  
-    public function handleGet(ServerRequestInterface $request) : ResponseInterface {
+    private function handleGet(ServerRequestInterface $request) : ResponseInterface {
         $matches = [];
         $regexmatch = preg_match("#files(/\d+)?(/)?$#", $request->getURI()->getPath(), $matches);
 
