@@ -60,19 +60,25 @@ class Files extends \NDB_Page
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
-        $overwrite = $request->getQueryParams()['overwrite'] ?? false;
+        $overwrite = !empty($request->getQueryParams()['overwrite']);
 
         try {
             $uploadhandler = new \LORIS\FilesUploadHandler(new \SplFileInfo($uploaddir));
             $uploadhandler = $uploadhandler->withOverwrite($overwrite);
         } catch (\ConfigurationException $e) {
+            // FilesUploadHandler throws an exception if there's a problem with
+            // the uploaddir.
             return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
         }
 
         $file = $request->getUploadedFiles()['file'];
         $fileName = $file->getClientFilename();
 
-        $validateError = $this->validateUserCanUpload($fileName, $overwrite);
+        $validateError = $this->validateUserCanUpload(
+            $request->getAttribute("user"),
+            $fileName,
+            $overwrite
+        );
         if($validateError !== null) {
             return $validateError;
         }
@@ -82,11 +88,13 @@ class Files extends \NDB_Page
             $uploadhandler,
             $fileName,
             $request,
-            $posted['version']
+            $posted['version'],
+            $overwrite,
         );
     }
 
     private function validateUserCanUpload(
+        \User $user,
         string $fileName,
         bool $overwrite
     ) : ?ResponseInterface {
@@ -103,20 +111,17 @@ class Files extends \NDB_Page
             return null;
         }
         
-        // FIXME: $overwrite is never set here.
         if ($overwrite) {
             // File is duplicate and overwrite is set, verify permission
             $userPermission = $DB->pselectRow(
                 "SELECT userid FROM data_release_permissions
-                WHERE userid=:u AND data_release_id=:d",
-            ['u' => $user->getId(), 'd' => $duplicateFile['id']]
+                    WHERE userid=:u AND data_release_id=:d",
+                ['u' => $user->getId(), 'd' => $duplicateFile['id']]
             );
             if (!isset($userPermission) && !$user->hasPermission('superuser')) {
-                $msg = "File overwrite failed. Current user does not have
-                    permission for file.";
-                error_log('ERROR: ' . $msg);
-                header("HTTP/1.1 403 Forbidden");
-                exit;
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    "File overwrite failed. You do not have permission for this file."
+                );
             }
         } else {
             // File is duplicate and overwrite not declared
@@ -126,15 +131,19 @@ class Files extends \NDB_Page
     }
 
     private function moveFile(
-        \LORIS\FilesUploadHandler $files, string $fileName,
-        ServerRequestInterface $request, ?string $version) : ResponseInterface {
+        \LORIS\FilesUploadHandler $files,
+        string $fileName,
+        ServerRequestInterface $request,
+        ?string $version,
+        bool $overwrite) : ResponseInterface {
         $DB = \Database::singleton();
         if ($version !== null) {
             $version = strtolower($version);
         }
 
         // FIXME: Add to transaction and roll back if anything goes wrong
-        if (isset($duplicateFile)) {
+        $upload_date = date('Y-m-d');
+        if ($overwrite) {
             // update file in data_release table.
             $DB->update(
                 'data_release',

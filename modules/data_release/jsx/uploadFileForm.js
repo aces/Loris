@@ -161,24 +161,14 @@ class UploadFileForm extends Component {
     }
 
     // fetch API to upload the file
-    const url = overwrite ? this.props.action + '&overwrite=true'
+    const url = overwrite ? this.props.action + '?overwrite=true'
       : this.props.action;
     fetch(url, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
     }).then( (response) => {
-      if (!response.ok) {
-        let msg = response.statusText ? response.statusText : 'Upload error!';
-        this.setState({
-          errorMessage: msg,
-          uploadProgress: -1,
-        });
-        swal.fire(msg, '', 'error');
-        console.error(msg);
-      } else {
-        const responseUrl = new URL(response.url);
-        if (responseUrl.searchParams.has('duplicate')) {
+      if (response.status === 409) {
           swal.fire({
             title: 'Are you sure?',
             text: 'A file with this name already exists!\n '
@@ -190,11 +180,19 @@ class UploadFileForm extends Component {
             confirmButtonText: 'Yes, I am sure!',
             cancelButtonText: 'No, cancel it!',
           }).then((isConfirm) => {
-            if (isConfirm) {
+            if (isConfirm && isConfirm.value) {
               this.uploadFile(true);
             }
           });
-        } else {
+      } else if (!response.ok) {
+        let msg = response.statusText ? response.statusText : 'Upload error!';
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal.fire(msg, '', 'error');
+        console.error(msg);
+      } else {
           swal.fire({
             text: 'Upload Successful!',
             title: '',
@@ -202,7 +200,6 @@ class UploadFileForm extends Component {
           }).then(function() {
             window.location.assign('/data_release');
           });
-        }
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';

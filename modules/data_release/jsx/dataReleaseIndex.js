@@ -180,7 +180,6 @@ class DataReleaseIndex extends Component {
             + '/data_release/files'
           }
           action={loris.BaseURL + '/data_release/files'}
-          fetchData={this.fetchData}
         />
       </Modal>
   );
