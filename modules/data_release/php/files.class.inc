@@ -23,7 +23,7 @@ class Files extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    public function _hasAccess(\User $user) : bool
     {
         // check user permissions
         return $user->hasAnyPermission(
@@ -44,9 +44,9 @@ class Files extends \NDB_Page
             return $this->handleGet($request);
         case 'POST':
             return $this->handleUpload($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
         }
-        return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream("I am a test"));
     }
 
     public function handleUpload(ServerRequestInterface $request) {
@@ -74,8 +74,10 @@ class Files extends \NDB_Page
         $file = $request->getUploadedFiles()['file'];
         $fileName = $file->getClientFilename();
 
+        $user = $request->getAttribute("user");
+
         $validateError = $this->validateUserCanUpload(
-            $request->getAttribute("user"),
+            $user,
             $fileName,
             $overwrite
         );
@@ -86,6 +88,7 @@ class Files extends \NDB_Page
         $posted = $request->getParsedBody();
         return $this->moveFile(
             $uploadhandler,
+            $user,
             $fileName,
             $request,
             $posted['version'],
@@ -132,6 +135,7 @@ class Files extends \NDB_Page
 
     private function moveFile(
         \LORIS\FilesUploadHandler $files,
+        \User $user,
         string $fileName,
         ServerRequestInterface $request,
         ?string $version,
@@ -165,45 +169,19 @@ class Files extends \NDB_Page
                 );
 
         }
-        // FIXME: Handle permission
+
+        $fileID = $DB->pselectOne(
+            "SELECT ID FROM data_release WHERE file_name=:filename",
+            ['filename' => $fileName]
+        );
+        $DB->insertIgnore(
+            "data_release_permissions",
+            [
+                'userid'          => $user->getId(),
+                'data_release_id' => $fileID,
+            ]
+        );
         return $files->handle($request);
-        /*
-        // get the ID of the user who uploaded the file
-        $user_ID = $DB->pselectOne(
-            "SELECT ID FROM users WHERE userid=:UserID",
-            ['UserID' => $user->getUsername()]
-        );
-        // get the ID of the file inserted in the data_release table
-        $version_where = $version ? "version=:version"
-            : "version IS :version";
-        $ID            = $DB->pselectOne(
-            "SELECT
-            id
-            FROM
-            data_release
-            WHERE
-            file_name=:file_name
-            AND $version_where
-            AND upload_date=:upload_date",
-                [
-                    'file_name'   => $fileName,
-                    'version'     => $version,
-                    'upload_date' => $upload_date,
-                ]
-        );
-
-                // add permission to the user for the uploaded data_release file
-                $DB->insert(
-                    'data_release_permissions',
-                    [
-                        'userid'          => $user_ID,
-                        'data_release_id' => $ID,
-                    ]
-                );
-
-         */
-
-        return new \LORIS\Http\Response\JSON\OK("I am a test");
     }
  
     public function handleGet(ServerRequestInterface $request) : ResponseInterface {
