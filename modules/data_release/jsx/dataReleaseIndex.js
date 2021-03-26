@@ -221,7 +221,7 @@ class DataReleaseIndex extends Component {
           }
           action={
             loris.BaseURL
-            + '/data_release/ajax/AddPermission.php?action=managepermissions'
+            + '/data_release/permissions?action=manage'
           }
           options={this.state.data.fieldOptions}
           fetchData={this.fetchData}
