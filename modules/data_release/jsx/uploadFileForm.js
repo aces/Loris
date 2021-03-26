@@ -167,7 +167,7 @@ class UploadFileForm extends Component {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
-    }).then( (response) => {
+    }).then(async (response) => {
       if (response.status === 409) {
           swal.fire({
             title: 'Are you sure?',
@@ -185,7 +185,16 @@ class UploadFileForm extends Component {
             }
           });
       } else if (!response.ok) {
-        let msg = response.statusText ? response.statusText : 'Upload error!';
+        console.log(response);
+        const body = await response.json();
+        let msg;
+        if (body && body.error) {
+            msg = body.error;
+        } else if (response.statusText) {
+            msg = response.statusText;
+        } else {
+            msg = 'Upload error!';
+        }
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,

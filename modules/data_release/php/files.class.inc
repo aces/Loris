@@ -109,8 +109,14 @@ class Files extends \NDB_Page
         );
 
         if (!isset($duplicateFile)) {
-            // File doesn't exist, user can upload.
-            // XXX: Check permission?
+            // File doesn't exist, user can upload as long as they have
+            // permission.
+            if (!$user->hasPermission("data_release_upload")) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    "Permission denied."
+                );
+
+            }
             return null;
         }
         
@@ -123,7 +129,8 @@ class Files extends \NDB_Page
             );
             if (!isset($userPermission) && !$user->hasPermission('superuser')) {
                 return new \LORIS\Http\Response\JSON\Forbidden(
-                    "File overwrite failed. You do not have permission for this file."
+                    "Overwrite failed. A file of this name already exists which "
+                    . " you do not have permission to overwrite."
                 );
             }
         } else {
