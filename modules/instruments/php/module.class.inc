@@ -166,7 +166,7 @@ class Module extends \Module
         $dict = [];
         foreach ($tests as $testname) {
             try {
-                $inst   = \NDB_BVL_Instrument::factory($testname, "", "");
+                $inst   = \NDB_BVL_Instrument::factory($loris, $testname, "", "");
                 $cat    = new \LORIS\Data\Dictionary\Category(
                     $testname,
                     $inst->getFullName()
