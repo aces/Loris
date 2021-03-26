@@ -106,8 +106,8 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
           const downloadURL = loris.BaseURL
-            + '/data_release/ajax/GetFile.php?File='
-            + encodeURIComponent(row['File Name']);
+            + '/data_release/files/'
+            + encodeURIComponent(row['Data Release ID']);
           result = (
             <td>
               <a
@@ -161,6 +161,8 @@ class DataReleaseIndex extends Component {
         name: 'uploadDate',
         type: 'text',
       }},
+      {label: 'Data Release ID', show: false,
+      },
     ];
 
     // Upload File modal window
