@@ -16,6 +16,7 @@ class Files extends \NDB_Page
     public $AjaxModule   = true;
     public $skipTemplate = true;
 
+    private $filesdir;
     /**
      * Check user permissions
      *
@@ -36,9 +37,16 @@ class Files extends \NDB_Page
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface {
-        // Get -> if /files -> list all files in ajax
-        //           /files/id - specific file content
-        // Post -> upload file, return id
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $this->filesDir = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
+        if (empty($this->filesDir) || $this->filesDir === '/') {
+            // Whether you're uploading or downloading, it's going to be an error
+            // if the dataReleasePath is misconfigured..
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+
         switch ($request->getMethod()) {
         case 'GET':
             return $this->handleGet($request);
@@ -50,20 +58,11 @@ class Files extends \NDB_Page
     }
 
     public function handleUpload(ServerRequestInterface $request) {
-        // FIXME: Validate no extra stuff, only a request to /files should be handled.
-        // Constructor handles dir exists/is_writable
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $uploaddir = \Utility::appendForwardSlash($config->getSetting('dataReleasePath'));
-        if (empty($uploaddir)) {
-            return new \LORIS\Http\Response\JSON\InternalServerError();
-        }
-
         $overwrite = !empty($request->getQueryParams()['overwrite']);
 
         try {
-            $uploadhandler = new \LORIS\FilesUploadHandler(new \SplFileInfo($uploaddir));
+            // Constructor handles dir exists/is_writable
+            $uploadhandler = new \LORIS\FilesUploadHandler(new \SplFileInfo($this->filesDir));
             $uploadhandler = $uploadhandler->withOverwrite($overwrite);
         } catch (\ConfigurationException $e) {
             // FilesUploadHandler throws an exception if there's a problem with
@@ -152,7 +151,6 @@ class Files extends \NDB_Page
             $version = strtolower($version);
         }
 
-        // FIXME: Add to transaction and roll back if anything goes wrong
         $upload_date = date('Y-m-d');
         if ($overwrite) {
             // update file in data_release table.
@@ -192,8 +190,50 @@ class Files extends \NDB_Page
     }
  
     public function handleGet(ServerRequestInterface $request) : ResponseInterface {
-        // FIXME: Check if it's /files/ID, this assumes /files
+        $matches = [];
+        $regexmatch = preg_match("#files(/\d+)?(/)?$#", $request->getURI()->getPath(), $matches);
+
+        if (!$regexmatch) {
+            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+        }
+
         $DB = \Database::singleton();
+        if (isset($matches[1])) {
+            $fileID = substr($matches[1], 1);
+            $filename = $DB->pselectOne(
+                "SELECT file_name FROM data_release WHERE id=:fileid",
+                ['fileid' => $fileID]
+            );
+            if ($filename === null) {
+                return new \LORIS\Http\Response\JSON\NotFound("Not found");
+            }
+
+            $user = $request->getAttribute("user");
+            if (!$user->hasPermission("data_release_view")) {
+                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
+            }
+
+            $hasFilePerm = $DB->pselectOne(
+                "SELECT 'x' FROM data_release_permissions WHERE
+                    data_release_id=:fileid AND userid = :user",
+                ['fileid' => $fileID,
+                  'user' => $user->getId()]
+            );
+            if ($hasFilePerm === null) {
+                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
+            }
+
+            try {
+                $downloadhandler = new \LORIS\FilesDownloadHandler(new \SplFileInfo($this->filesDir));
+                $request = $request->withAttribute("filename", $filename);
+                return $downloadhandler->handle($request);
+            } catch (\LorisException $e) {
+                // FilesUploadHandler throws an exception if there's a problem with
+                // the downloaddir.
+                return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
+            }
+        }
+
         $filesList = $DB->pselect(
             "SELECT id, file_name FROM data_release",
             []
