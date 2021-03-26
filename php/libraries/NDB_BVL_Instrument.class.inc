@@ -2986,7 +2986,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $instrumentList = [];
         foreach ($instruments as $inst) {
             try {
-                $instrumentList[$inst] = NDB_BVL_Instrument::factory($inst, "", "");
+                $instrumentList[$inst] = NDB_BVL_Instrument::factory($loris, $inst, "", "");
             } catch (Exception $e) {
                 error_log(
                     "Instrument $inst does not seem to be a valid instrument."
