@@ -116,8 +116,6 @@ class Signup extends \NDB_Page implements ETagCalculator
             ['VEmail' => $from]
         );
 
-        $user_id = null;
-
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $DB->insert('users', $vals);
