@@ -128,7 +128,7 @@ class NDB_Page implements RequestHandlerInterface
         \Module $module,
         string $page,
         string $identifier,
-        string $commentID,
+        string $commentID
     ) {
         $this->loris  = $loris;
         $this->Module = $module;

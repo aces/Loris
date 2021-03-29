@@ -64,7 +64,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $page,
         $id,
         $commentID,
-        $formname,
+        $formname
     ) {
         $this->AjaxModule   = true;
         $this->skipTemplate = true;

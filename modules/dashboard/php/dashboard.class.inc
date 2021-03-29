@@ -62,7 +62,7 @@ class Dashboard extends \NDB_Form
         string $page,
         string $identifier,
         string $commentID,
-        string $formname,
+        string $formname
     ) {
         parent::__construct(
             $loris,
