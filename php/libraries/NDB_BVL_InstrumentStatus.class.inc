@@ -75,11 +75,21 @@ class NDB_BVL_InstrumentStatus
 
 
     /**
+     * The LORIS instance that the status comes from
+     *
      * @var \LORIS\LorisInstance
      */
     protected $loris;
 
-    public function __construct(\LORIS\LorisInstance $loris) {
+    /**
+     * Construct an NDB_BVL_InstrumentStatus object to manage
+     * instrument status flags.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance hosting
+     *                                    the instrument
+     */
+    public function __construct(\LORIS\LorisInstance $loris)
+    {
         $this->loris = $loris;
     }
     /**

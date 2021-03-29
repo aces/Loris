@@ -62,7 +62,7 @@ class Module extends \Module
         // and SessionID are valid, and if so attach the models to
         // the request.
         $loris = $request->getAttribute("loris");
-        $page = $this->loadPage($loris, "instrument_list");
+        $page  = $this->loadPage($loris, "instrument_list");
         '@phan-var Instrument_List $page';
 
         $gets = $request->getQueryParams();

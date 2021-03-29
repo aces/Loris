@@ -68,12 +68,16 @@ class NDB_Caller
     /**
      * Renders the called menu, form or the instrument into html
      *
-     * @param string      $test_name The object type to load.  The test_name of the
-     *                               menu, form or instrument
-     * @param string      $subtest   The subpage of the module to load
-     * @param string      $CommentID The CommentID identifier to load the page with
-     * @param string|null $nextpage  The page to go to after submitting this
-     * @param bool        $anonymous True if the user has not logged in.
+     * @param \LORIS\LorisInstance $loris     The LORIS instance the call is being
+     *                                        handled for.
+     * @param string               $test_name The object type to load.  The test_name
+     *                                        of the menu, form or instrument
+     * @param string               $subtest   The subpage of the module to load
+     * @param string               $CommentID The CommentID identifier to load the
+     *                                        page with
+     * @param ?string              $nextpage  The page to go to after submitting
+     *                                        this
+     * @param bool                 $anonymous True if the user has not logged in
      *
      * @return string rendered object, as html
      */
@@ -120,11 +124,17 @@ class NDB_Caller
     /**
      * Renders html for a direct data entry Instrument
      *
-     * @param string      $instrumentName      Name of the instrument to load
-     * @param string      $page                Page (subtest) of the instrument
-     * @param string      $commentID           CommentID of the instrument to load
-     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
-     *                                         loaded successfully.
+     * @param \LORIS\LorisInstance $loris               The LORIS instance the
+     *                                                  survey is being loaded
+     *                                                  for
+     * @param string               $instrumentName      Name of the instrument to
+     *                                                  load
+     * @param string               $page                Page (subtest) of the
+     *                                                  instrument
+     * @param string               $commentID           CommentID of the instrument
+     *                                                  to load
+     * @param string|null          $redirectToOnSuccess URL to redirect to if the
+     *                                                  page is loaded successfully.
      *
      * @return string HTML of the page to render.
      */

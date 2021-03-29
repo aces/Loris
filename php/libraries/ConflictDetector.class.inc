@@ -27,9 +27,11 @@ class ConflictDetector
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
-     * @param string $instrumentName The instrument being checked
-     * @param string $commentId1     The first data entry CommentID
-     * @param string $commentId2     The second data entry CommentID
+     * @param \LORIS\LorisInstance $loris          The LORIS instance with the
+     *                                             comment IDs being compared
+     * @param string               $instrumentName The instrument being checked
+     * @param string               $commentId1     The first data entry CommentID
+     * @param string               $commentId2     The second data entry CommentID
      *
      * @return array An array of differences between the 2 data entry
      *               points.

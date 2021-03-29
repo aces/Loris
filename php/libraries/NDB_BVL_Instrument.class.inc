@@ -188,14 +188,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * $instrument, and runs the setup() method on that new
      * instrument.
      *
-     * @param string  $instrument       The name of the instrument to use
-     * @param string  $commentID        The CommentID identifying the data to load
-     *                                  load
-     * @param string  $page             If a multipage form, the page to show
-     * @param boolean $guarantee_exists If true the factory will throw an
-     *                                  error if the file does not exist, otherwise
-     *                                  will silently return if the instrument is
-     *                                  missing.
+     * @param \LORIS\LorisInstance $loris            The LORIS instance with the
+     *                                               instrument
+     * @param string               $instrument       The name of the instrument to
+     *                                               use
+     * @param string               $commentID        The CommentID identifying the
+     *                                               data to load
+     * @param string               $page             If a multipage form, the page to
+     *                                               show
+     * @param boolean              $guarantee_exists If true the factory will throw
+     *                                               an error if the file does not
+     *                                               exist, otherwise will silently
+     *                                               return if the instrument is
+     *                                               missing.
      *
      * @return object|null the new object of $instrument type
      * @access public
@@ -2986,7 +2991,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $instrumentList = [];
         foreach ($instruments as $inst) {
             try {
-                $instrumentList[$inst] = NDB_BVL_Instrument::factory($loris, $inst, "", "");
+                $instrumentList[$inst] = NDB_BVL_Instrument::factory(
+                    $loris,
+                    $inst,
+                    "",
+                    ""
+                );
             } catch (Exception $e) {
                 error_log(
                     "Instrument $inst does not seem to be a valid instrument."

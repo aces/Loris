@@ -100,16 +100,20 @@ class NDB_BVL_Battery
      * on age AND SubprojectID, adds all appropriate instruments to the
      * battery
      *
-     * @param integer $SubprojectID The SubprojectID that we want the battery
-     *                              for
-     * @param string  $stage        Either 'visit' or 'screening'
-     * @param string  $visit_label  The visit label to create a battery for.
-     * @param integer $center_ID    The center of the candidate having a battery
-     *                              created
-     * @param boolean $firstVisit   Whether this is a first visit battery.
-     *                              true means ONLY first visit
-     *                              false means NOT first visit
-     *                              null can be any visit.
+     * @param \LORIS\LorisInstance $loris        The LORIS instance to add
+     *                                           instruments to
+     * @param integer              $SubprojectID The SubprojectID that we want
+     *                                           the battery for
+     * @param string               $stage        Either 'visit' or 'screening'
+     * @param string               $visit_label  The visit label to create a
+     *                                           battery for.
+     * @param integer              $center_ID    The center of the candidate
+     *                                           having a battery created
+     * @param boolean              $firstVisit   Whether this is a first visit
+     *                                           battery.  true means ONLY
+     *                                           first visit, false means NOT
+     *                                           first visit, null can be any
+     *                                           visit.
      *
      * @return void
      */
@@ -179,8 +183,10 @@ class NDB_BVL_Battery
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
      *
-     * @param string $testName The test to be added to the currently
-     *                         selected battery.
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to add the
+     *                                       instrument to
+     * @param string               $testName The test to be added to the
+     *                                       currently selected battery.
      *
      * @return string The generated CommentID
      */

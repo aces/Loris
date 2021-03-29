@@ -81,8 +81,7 @@ class DirectDataEntryMainPage
 
         $DB = Database::singleton();
 
-
-        $this->loris = new \LORIS\LorisInstance(
+        $this->loris     = new \LORIS\LorisInstance(
             $DB,
             $config,
             []

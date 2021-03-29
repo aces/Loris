@@ -75,7 +75,7 @@ class Module extends \Module
                 ->withBody(new \LORIS\Http\StringStream("Missing CommentID"));
         }
 
-        $loris = $request->getAttribute("loris");
+        $loris      = $request->getAttribute("loris");
         $instrument = \NDB_BVL_Instrument::factory(
             $loris,
             $instrumentName,

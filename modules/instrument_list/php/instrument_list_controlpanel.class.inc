@@ -34,6 +34,8 @@ class Instrument_List_ControlPanel extends \TimePoint
     protected array $tpl_data;
 
     /**
+     * The LORIS Instance that this timepoint exists on
+     *
      * @var \LORIS\LorisInstance $loris
      */
     protected $loris;
@@ -41,14 +43,16 @@ class Instrument_List_ControlPanel extends \TimePoint
     /**
      * Construct function
      *
-     * @param \SessionID $sessionID the value of sessionID
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance.
+     * @param \SessionID           $sessionID SessionID that this control
+     *                                        panel is controlling.
      *
      * @return void
      */
     function __construct(\LORIS\LorisInstance $loris, $sessionID)
     {
         $this->tpl_data = [];
-        $this->loris = $loris;
+        $this->loris    = $loris;
 
         $this->select($sessionID);
     }

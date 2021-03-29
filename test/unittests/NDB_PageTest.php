@@ -47,7 +47,7 @@ class NDB_PageTest extends TestCase
         parent::setUp();
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
-        $mockdb = $this->getMockBuilder('Database')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
 
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';

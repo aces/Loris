@@ -254,15 +254,19 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     /**
      * Loads a page within this module and calls all necessary setup.
      *
-     * @param string $page The name of the page within the module to load.
+     * @param \LORIS\LorisInstance $loris The LORIS instance that the module
+     *                                    is serving.
+     * @param string               $page  The name of the page within the
+     *                                    module to load.
      *
      * @return NDB_Page
      *         Returns NDB_Page (or subclass) representing this page.
      */
     public function loadPage(\Loris\LORISInstance $loris, string $page)
     {
-        // Some URLs are things like "/login/request-account", but `-` isn't valid
-        // in a class name, so remove it while loading the module.
+        // Some URLs are things like "/login/request-account", but
+        // `-` isn't valid in a class name, so remove it while loading
+        // the module.
         $page = str_replace("-", "", $page);
 
         $className = "\LORIS\\" . $this->name . "\\$page";
@@ -272,7 +276,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
-        $cls        = new $className($loris, $this, $page, $identifier, $commentID, $page);
+        $cls        = new $className(
+            $loris,
+            $this,
+            $page,
+            $identifier,
+            $commentID,
+            $page,
+        );
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
@@ -338,7 +349,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             $pagename = explode("/", $path)[0];
         }
 
-        $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+        $user  = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
         $loris = $request->getAttribute("loris");
         try {
             $page = $this->loadPage($loris, $pagename);

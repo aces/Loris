@@ -49,7 +49,7 @@ class Module extends \Module
         } catch (\NotFound $e) {
         }
         $loris = $request->getAttribute("loris");
-        $page = $this->loadPage($loris, "timepoint_list");
+        $page  = $this->loadPage($loris, "timepoint_list");
         return $page->process($request, $page);
     }
 

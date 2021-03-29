@@ -84,7 +84,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
-        $loris = $request->getAttribute("loris");
+        $loris     = $request->getAttribute("loris");
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
