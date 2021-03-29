@@ -38,16 +38,14 @@ function PaginationLink({
   };
 
   return (
-    <>
-      <div
-        style={style}
-        onClick={onClick}
-        onMouseOver={hoverOn}
-        onMouseOut={hoverOff}
-      >
-         {children}
-      </div>
-    </>
+    <div
+      style={style}
+      onClick={onClick}
+      onMouseOver={hoverOn}
+      onMouseOut={hoverOff}
+    >
+       {children}
+    </div>
   );
 };
 
