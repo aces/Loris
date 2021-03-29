@@ -85,7 +85,7 @@ class Reset extends \NDB_Page implements ETagCalculator
 
         // Check if valid user.
         if ($user->userID) {
-            $email = $user->getData('Email');
+            $email = $user->getEmail();
             if (empty($email)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     'Not a valid user'
@@ -111,7 +111,7 @@ class Reset extends \NDB_Page implements ETagCalculator
                     $msg_data          = [];
                     $msg_data['study'] = $config->getSetting('title');
                     $msg_data['url']   = $factory->settings()->getBaseURL();
-                    $msg_data['realname'] = $user->getData('Real_name');
+                    $msg_data['realname'] = $user->getFullname();
                     $msg_data['password'] = $password;
                     \Email::send($email, 'lost_password.tpl', $msg_data);
                 } else {
