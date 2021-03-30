@@ -216,7 +216,6 @@ class Login extends Component {
               class={'col-sm-12'}
               required={true}
               autoComplete={'current-password'}
-              isPassword={true}
             />
             {error}
             <ButtonElement
