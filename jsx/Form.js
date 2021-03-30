@@ -634,6 +634,7 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
+  autoSelect: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -650,6 +651,7 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
+  autoSelect: true,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {
