@@ -45,6 +45,10 @@ class PasswordExpired extends Component {
   setForm(formElement, value) {
     const state = JSON.parse(JSON.stringify(this.state));
     state.form.value[formElement] = value;
+    if (state.form.error.toggle) {
+      state.form.error.message = '';
+      state.form.error.toggle = false;
+    }
     this.setState(state);
   }
 
@@ -55,8 +59,13 @@ class PasswordExpired extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
     const state = JSON.parse(JSON.stringify(this.state));
+    if (state.form.value.confirm !== state.form.value.password) {
+      state.form.error.message = 'New Password mismatch!';
+      state.form.error.toggle = true;
+      this.setState(state);
+      return;
+    }
     fetch(
       window.location.origin + '/login/Expired', {
         method: 'POST',
