@@ -100,6 +100,15 @@ function uploadPublication() : void
     $db->insert('publication', $fields);
     $pubID = $db->getLastInsertId();
 
+    // give creator permission to edit
+    $db->insert(
+        'publication_users_edit_perm_rel',
+        [
+            'PublicationID' => $pubID,
+            'UserID'        => $uid,
+        ]
+    );
+
     try {
         // process files
         processFiles($pubID);
