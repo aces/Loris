@@ -154,7 +154,12 @@ class DataDictIndex extends Component {
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-        .then((resp) => resp.json())
+        .then((resp) => {
+              if (!resp.ok) {
+                  throw new Error('invalid response');
+              }
+              return resp.json();
+        })
         .then((data) => {
             this.setState({data});
         })
