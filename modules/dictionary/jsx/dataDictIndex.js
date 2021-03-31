@@ -85,7 +85,7 @@ class DataDictIndex extends Component {
               + '/dictionary/fields/'
               + encodeURI(row['Field Name']);
 
-          // The fetch happens asyncronously, which means that the
+          // The fetch happens asynchronously, which means that the
           // swal closes before it returns. We find the index that
           // was being updated and aggressively update it, then
           // re-update or reset it when the PUT request returns.
@@ -148,7 +148,7 @@ class DataDictIndex extends Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
+   * Retrieve data from the provided URL and save it in state
    *
    * @return {object}
    */
@@ -172,7 +172,7 @@ class DataDictIndex extends Component {
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
    *
-   * @return {*} a formated table cell for a given column
+   * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
