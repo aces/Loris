@@ -130,6 +130,8 @@ function uploadFile()
     checkDateTaken($dateTaken);
 
     $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    // urldecode() necessary to decode double quotes encoded automatically 
+    // by chrome browsers to avoid XSS attacks
     $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
