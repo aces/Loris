@@ -25,28 +25,28 @@ $data = $DB->pselect(
 
 foreach($data as $key => $file) {
 
-    // decode special characters in the file name
-    // print("File name is: " . $file['file_name'] . "\n");
+    // fileNameURLencoded is needed for the step line 48 as the file name got rid of '"' and replaced it with %22
+    // urldecode will get rid of %22 and replace it correctly for it to be inserted into the table
     $fileNameURLencoded = htmlspecialchars_decode($file['file_name']);
     $fileName = urldecode($fileNameURLencoded);
-    // print("Now file name is: " . $fileName . "\n");
 
     // update only if file name has been updated
     if($fileName !== $file['file_name']) {
-        print($fileNameURLencoded . "\n");
-//        $DB->unsafeupdate(
-//            "media",
-//            [
-//                "file_name" => $fileName
-//            ],
-//            [
-//                "id" => $file['id']
-//            ]
-//        );
+
+        // change name in sql table media
+        $DB->unsafeupdate(
+            "media",
+            [
+                "file_name" => $fileName
+            ],
+            [
+                "id" => $file['id']
+            ]
+        );
 
         // update name in file system
-        //shell_exec("mv /data/uploads/$fileNameURLencoded /data/uploads/" . addslashes($fileName));
-//        print("File name was: " . $file['file_name'] . "\n");
-//        print("Now file name is: " . $fileName . "\n");
+        shell_exec("mv " . escapeshellarg("/data/uploads/$fileNameURLencoded") . " " . escapeshellarg("/data/uploads/$fileName"));
+        print("File name was: " . $file['file_name'] . "\n");
+        print("Now file name is: " . $fileName . "\n");
     }
 }
