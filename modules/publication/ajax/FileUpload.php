@@ -101,6 +101,15 @@ function uploadPublication() : void
     $db->insert('publication', $fields);
     $pubID = intval($db->getLastInsertId());
 
+    // give creator permission to edit
+    $db->insert(
+        'publication_users_edit_perm_rel',
+        [
+            'PublicationID' => $pubID,
+            'UserID'        => $uid,
+        ]
+    );
+
     try {
         // process files
         processFiles($pubID);
@@ -449,7 +458,18 @@ function notify($pubID, $type) : void
     $emailData['User']        = $user->getFullname();
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
-
+    $Notifier = new \NDB_Notifier(
+        "publication",
+        $type
+    );
+    $msg_data = [
+        'URL'         => $emailData['URL'],
+        'Title'       => $emailData['Title'],
+        'User'        => $emailData['User'],
+        'ProjectName' => $emailData['ProjectName'],
+        'Date'        => $emailData['Date']
+    ];
+    $Notifier->notify($msg_data);
     $sendTo = isset($_POST['notifyLead']) && $_POST['notifyLead'] === 'true'
         ? [$data['LeadInvestigatorEmail']] : [];
     // get collaborators to notify

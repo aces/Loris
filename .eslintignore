@@ -1,5 +1,7 @@
 node_modules/*
 vendor/*
+project/*
+p_*/*
 
 # compiled js ignored since it is run on the jsx directory
 modules/*/js/*
