@@ -16,6 +16,9 @@
  */
 
 require_once __DIR__."/../generic_includes.php";
+$config = NDB_Config::singleton();
+
+$media_path = $config->getSetting('mediaPath');
 
 $data = $DB->pselect(
     "SELECT id, file_name
@@ -45,8 +48,7 @@ foreach($data as $key => $file) {
         );
 
         // update name in file system
-        shell_exec("mv " . escapeshellarg("/data/uploads/$fileNameURLencoded") . " " . escapeshellarg("/data/uploads/$fileName"));
-        print("File name was: " . $file['file_name'] . "\n");
-        print("Now file name is: " . $fileName . "\n");
+        shell_exec("mv " . escapeshellarg($media_path . $fileNameURLencoded) . " " . escapeshellarg($media_path . $fileName));
+        print("Old file name: " . $file['file_name'] . ". New file name: " . $fileName . "\n\n");
     }
 }
