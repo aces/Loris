@@ -26,8 +26,8 @@ class FilterableDataTable extends Component {
     this.state = {
       filters: {},
     };
-    this.updateFilter = this.updateFilter.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
+    this.updateFilters = this.updateFilters.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
     this.validFilters = this.validFilters.bind(this);
     this.addFilter = this.addFilter.bind(this);
     this.removeFilter = this.removeFilter.bind(this);
@@ -109,7 +109,7 @@ class FilterableDataTable extends Component {
             return;
         }
         const filtername = field.filter.name;
-        const filterval = this.state.filter[filtername];
+        const filterval = this.state.filters[filtername];
         if (!filterval) {
             return;
         }

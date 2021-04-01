@@ -24,7 +24,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: zip, php${{ matrix.php }}-ast
+        extensions: zip, php-ast
 
     - name: Validate composer.json and composer.lock
       run: composer validate
