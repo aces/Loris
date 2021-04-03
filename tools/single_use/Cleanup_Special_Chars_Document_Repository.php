@@ -21,7 +21,7 @@ $config = NDB_Config::singleton();
 $document_repository_path = $config->getSetting('documentRepositoryPath');
 
 $data = $DB->pselect(
-    "SELECT record_id, File_name
+    "SELECT record_id, File_name, uploaded_by
         FROM document_repository",
     []
 );
@@ -40,7 +40,8 @@ foreach($data as $key => $file) {
         $DB->unsafeupdate(
             "document_repository",
             [
-                "file_name" => $fileName
+                "file_name" => $fileName,
+                "Data_dir"  => $fileName
             ],
             [
                 "record_id" => $file['id']
@@ -48,7 +49,7 @@ foreach($data as $key => $file) {
         );
 
         // update name in file system
-        shell_exec("mv " . escapeshellarg($document_repository_path . $fileNameURLencoded) . " " . escapeshellarg($document_repository_path . $fileName));
+        shell_exec("mv " . escapeshellarg($document_repository_path . $file['uploaded_by'] . "/" . $fileNameURLencoded) . " " . escapeshellarg($document_repository_path . $file['uploaded_by'] . "/" . $fileName));
         print("Old file name: " . $file['File_name'] . ". New file name: " . $fileName . "\n\n");
     }
 }
