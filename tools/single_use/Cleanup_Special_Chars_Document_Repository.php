@@ -44,7 +44,7 @@ foreach($data as $key => $file) {
                 "Data_dir"  => $fileName
             ],
             [
-                "record_id" => $file['id']
+                "record_id" => $file['record_id']
             ]
         );
 

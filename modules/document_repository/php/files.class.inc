@@ -350,9 +350,9 @@ class Files extends \NDB_Page
         $fileName     = $uploadedFile->getClientFileName();
         // urldecode() necessary to decode double quotes encoded automatically
         // by chrome browsers to avoid XSS attacks
-        $fileName     = urldecode($fileName);
-        $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = $path.$name."/";
+        $fileName   = urldecode($fileName);
+        $fileType   = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uploadPath = $path.$name."/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
