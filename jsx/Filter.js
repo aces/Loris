@@ -117,7 +117,7 @@ function Filter(props) {
   const filterPresets = () => {
     if (props.filterPresets) {
       const presets = props.filterPresets.map((preset) => {
-        const handleClick = () => props.updateFilter(preset.filter);
+        const handleClick = () => props.updateFilters(preset.filter);
         return <li><a onClick={handleClick}>{preset.label}</a></li>;
       });
       return (
