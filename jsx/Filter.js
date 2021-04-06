@@ -141,7 +141,7 @@ function Filter(props) {
     <ul className='nav nav-tabs navbar-right' style={{borderBottom: 'none'}}>
       {filterPresets()}
       <li>
-        <a role='button' name='reset' onClick={props.clearFilter}>
+        <a role='button' name='reset' onClick={props.clearFilters}>
           Clear Filter
         </a>
       </li>
