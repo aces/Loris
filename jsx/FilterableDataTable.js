@@ -143,6 +143,7 @@ class FilterableDataTable extends Component {
         filterPresets={this.props.filterPresets}
         fields={this.props.fields}
         addFilter={this.addFilter}
+        updateFilters={this.updateFilters}
         removeFilter={this.removeFilter}
         clearFilters={this.clearFilters}
       />
