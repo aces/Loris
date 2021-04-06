@@ -2854,7 +2854,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Disable form if data entry is complete
         $user      = $request->getAttribute("user");
         $sessionID = $request->getQueryParams()["sessionID"];
-        $timepoint = \Timepoint::singleton($sessionID);
+        $timepoint = \Timepoint::singleton(new SessionID($sessionID));
 
         // create an instrument status object
         $status = new \NDB_BVL_InstrumentStatus;
