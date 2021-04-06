@@ -159,11 +159,6 @@ function Filter(props) {
       >
         {filterActions}
         {renderFilterFields()}
-        <ButtonElement
-          label="Clear Filters"
-          type="reset"
-          onUserInput={props.clearFilters}
-        />
       </FieldsetElement>
     </FormElement>
   );
