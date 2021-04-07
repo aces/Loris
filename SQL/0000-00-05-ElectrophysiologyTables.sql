@@ -287,7 +287,7 @@ INSERT INTO physiological_output_type
   (`OutputTypeName`, `OutputTypeDescription`)
   VALUES
   ('raw',         'raw dataset'),
-  ('derivatives', 'derivative/processed dataset');
+  ('derivative',  'derivative/processed dataset');
 
 -- Insert into physiological_channel_type
 INSERT INTO physiological_channel_type

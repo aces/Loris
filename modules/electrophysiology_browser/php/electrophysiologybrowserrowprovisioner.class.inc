@@ -47,17 +47,11 @@ class ElectrophysiologyBrowserRowProvisioner
               s.Visit_label                             AS Visit_Label,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
-              GROUP_CONCAT(DISTINCT CASE 
-                WHEN pot.OutputTypeName='derivatives' THEN 'raw,derivative'
-                ELSE 'raw'
-              END) AS Links,
-              GROUP_CONCAT(DISTINCT CASE 
-                WHEN pot.OutputTypeName='derivatives' THEN 'Derivative'
-                ELSE 'Raw'
-              END) AS Type,
+              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
+              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Type,
               s.ID                                      AS SessionID,
               s.CenterID                                AS CenterID,
-              s.ProjectID                               AS ProjectID              
+              s.ProjectID                               AS ProjectID
             FROM physiological_file pf
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
               LEFT JOIN candidate c USING (CandID)

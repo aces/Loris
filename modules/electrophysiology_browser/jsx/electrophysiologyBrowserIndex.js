@@ -73,6 +73,10 @@ class ElectrophysiologyBrowserIndex extends Component {
       case 'Links':
         let cellTypes = cell.split(',');
         let cellLinks = [];
+        if (!cellTypes.includes('raw')) {
+          cellTypes.push('raw');
+        }
+        cellTypes.reverse();
         for (let i = 0; i < cellTypes.length; i += 1) {
           cellLinks.push(<a key={i} href={loris.BaseURL +
             '/electrophysiology_browser/sessions/' +
@@ -144,11 +148,8 @@ class ElectrophysiologyBrowserIndex extends Component {
       {label: 'Links', show: true},
       {label: 'Type', show: false, filter: {
         name: 'type',
-        type: 'select',
-        options: {
-          Raw: 'Raw',
-          Derivative: 'Derivative',
-        },
+        type: 'multiselect',
+        options: options.types,
       }},
       {label: 'SessionID', show: false},
     ];
