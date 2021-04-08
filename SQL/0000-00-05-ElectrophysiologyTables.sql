@@ -261,13 +261,13 @@ CREATE TABLE `physiological_annotation_label` (
 -- Create annotation_tsv table
 -- Note: This corresponds with the .tsv annotation files
 CREATE TABLE `physiological_annotation_instance` (
-    `AnnotationInstanceID`  INT(10)        UNSIGNED NOT NULL AUTO_INCREMENT,
-    `AnnotationFileID`      INT(10)        UNSIGNED NOT NULL,
-    `AnnotationParameterID` INT(10)        UNSIGNED NOT NULL,
-    `Onset`                 DECIMAL(10, 3)          NOT NULL,
-    `Duration`              INT(10)                 NOT NULL DEFAULT 0,
-    `AnnotationLabelID` INT(5)         UNSIGNED NOT NULL,
-    `Channel`               VARCHAR(255),
+    `AnnotationInstanceID`  INT(10)         UNSIGNED NOT NULL AUTO_INCREMENT,
+    `AnnotationFileID`      INT(10)         UNSIGNED NOT NULL,
+    `AnnotationParameterID` INT(10)         UNSIGNED NOT NULL,
+    `Onset`                 DECIMAL(10, 3),
+    `Duration`              INT(10)         DEFAULT 0,
+    `AnnotationLabelID`     INT(5)          UNSIGNED NOT NULL,
+    `Channels`              TEXT,
     `AbsoluteTime`          TIMESTAMP,
     `Description`           VARCHAR(255),
     PRIMARY KEY (`AnnotationInstanceID`),

@@ -131,7 +131,7 @@ class Sessions extends \NDB_Page
         }
 
         $outputType = $parameters['outputType'];
-        if (!in_array($outputType, ['raw', 'derivatives', 'all_types'])) {
+        if (!in_array($outputType, ['raw', 'derivative', 'all_types'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
                 'invalid output type'
             ));
