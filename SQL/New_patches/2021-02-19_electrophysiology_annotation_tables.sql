@@ -1,11 +1,6 @@
 -- SQL tables for BIDS derivative file structure
+
 -- Create physiological_annotation_file_type table
-DROP TABLE IF EXISTS `physiological_annotation_instance`;
-DROP TABLE IF EXISTS `physiological_annotation_parameter`;
-DROP TABLE IF EXISTS `physiological_annotation_archive`;
-DROP TABLE IF EXISTS `physiological_annotation_file`;
-DROP TABLE IF EXISTS `physiological_annotation_file_type`;
-DROP TABLE IF EXISTS `physiological_annotation_label`;
 CREATE TABLE `physiological_annotation_file_type` (
     `FileType`        VARCHAR(20)   NOT NULL UNIQUE,
     `Description` VARCHAR(255),
