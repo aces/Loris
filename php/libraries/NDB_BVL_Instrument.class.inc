@@ -3013,6 +3013,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $instrumentNames[$testName] =$fullName;
         }
 
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
+
         return $instrumentNames;
     }
 
@@ -3043,6 +3046,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $instrumentNames[$testName] = $fullName;
             }
         }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
     }
@@ -3077,6 +3083,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $instrumentNames[$testName] = $fullName;
             }
         }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
     }
