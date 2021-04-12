@@ -541,43 +541,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // the feature is completely deprecated.
                     $this->testName = $this->testName ?? trim($pieces[1]);
                     $this->table    = $this->table ?? trim($pieces[1]);
-
-                    // Now that we have the category, add things that are added by
-                    // addMetaDatafields() but aren't in the .linst file
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                'Date_taken',
-                                'Date of Administration',
-                                $scope,
-                                new \LORIS\Data\Types\DateType(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Candidate_age',
-                                'Candidate Age (Months)',
-                                $scope,
-                                new \LORIS\Data\Types\Duration(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Window_Difference',
-                                'Window difference from test battery (days)',
-                                $scope,
-                                new \LORIS\Data\Types\Duration(),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                            new DictionaryItem(
-                                'Examiner',
-                                'Examiner',
-                                $scope,
-                                // Should this be an enum of examiners?
-                                new StringType(255),
-                                new Cardinality(Cardinality::SINGLE),
-                            ),
-                        ]
-                    );
                     break;
                 case 'title':
                     $this->fullName = $pieces[1];

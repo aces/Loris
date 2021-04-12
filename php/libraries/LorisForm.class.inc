@@ -148,7 +148,7 @@ class LorisForm
         $el['type']    = 'select';
         $el['options'] = $options;
 
-        if (isset($attribs['multiple'])) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -912,9 +912,7 @@ class LorisForm
             }
 
             $element['html'] = $this->renderElement($element);
-            if (!is_array($element['html'])) {
-                $retVal .= $element['html'];
-            }
+            $retVal         .= $element['html'];
 
             if (isset($el['options']['postfix_wrapper'])) {
                 $retVal .= $el['options']['postfix_wrapper'];
