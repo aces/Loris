@@ -1646,7 +1646,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
+        $this->_instrument->_nullScores(['CommentId1' => 'commentID1']);
         $data = $this->_instrument->getInstanceData();
         $this->assertEquals(null, $data['Examiner']);
     }
