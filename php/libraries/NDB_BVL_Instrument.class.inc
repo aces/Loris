@@ -2193,6 +2193,77 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Loads multiple instruments representing multiple commentIDs from the
+     * database in bulk. This function must be called on an instrument instantiated
+     * as \NDB_BVL_Instrument::factory('instrumentname') without a comment ID, and
+     * will return an array of copies of the instrument type with the data for
+     * the given commentIDs loaded.
+     *
+     * @param $commentIDs string[] A list of commentIDs to load in bulk.
+     *
+     * @return \NDB_BVL_Instrument[]
+     */
+    function bulkLoadInstanceData(iterable $commentIDs): array
+    {
+        if ($this->commentID !== null && $this->commentID !== '') {
+            throw new \LogicException(
+                "Must bulk load from instrument loaded without commentID"
+            );
+        }
+        $db = \Database::singleton();
+
+        $prepBindings = [];
+        $prepValues   = [];
+
+        $i = 0;
+        foreach ($commentIDs as $commentID) {
+            $i++;
+
+            $prepBindings[]      = ":cid$i";
+            $prepValues["cid$i"] = $commentID;
+        }
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselect(
+                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->instanceData = json_decode(
+                        $row['Data'],
+                        true,
+                    ) ?? [];
+
+                    return $newinst;
+                },
+                $jsondata
+            );
+        } else {
+            $defaults = $db->pselect(
+                "SELECT * FROM $this->table WHERE CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->instanceData = $row;
+
+                    return $newinst;
+                },
+                $defaults
+            );
+        }
+    }
+
+    /**
      * Calculates the candidate's age at the time of this instrument.
      * If Date_taken is passed, this function  will calculate the age as of
      * the value of that argument. This is used, for instance, in
