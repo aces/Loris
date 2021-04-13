@@ -2,11 +2,11 @@
 
 ## Purpose
 
-The API Documentation module leverages the Swagger UI structure to document the LORIS REST 
-API and offer an easy-to-use interface for users to learn more about it, test it
-and integrate it in their own work. The module offers textual explanations 
-combined with code examples and interactive sections designed to give users the
-full experience of using the API.
+The API Documentation module leverages the Swagger UI structure to document the LORIS
+core and module specific REST APIs and offer an easy-to-use interface for users to 
+learn more about them, test them and integrate them in their own work. The module 
+offers textual explanations combined with code examples and interactive sections 
+designed to give users the full experience of using the APIs.
 
 ## Intended Users
 
