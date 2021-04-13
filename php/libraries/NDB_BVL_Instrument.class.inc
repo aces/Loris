@@ -2908,13 +2908,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $status->select($this->commentID);
 
         // freeze the form to prevent data entry
-        // IF (1) Instrument is NOT in progress
+        // IF (1) Instrument is set to complete
         // OR (2) The user does NOT have `data_entry` permission
         // OR (3) The user does NOT have access to the timepoint
         //        at which the instrument is instantiated
         // AND (4) The instrument is NOT in preview mode
         // AND (5) the instrument is NOT a direct entry
-        if ($status->getDataEntryStatus() != 'In Progress'
+        if (($status->getDataEntryStatus() == 'Complete')
             || !$user->hasPermission('data_entry')
             || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
             && $this->preview !== true
