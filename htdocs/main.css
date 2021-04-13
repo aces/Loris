@@ -41,6 +41,10 @@ th, td, input, textarea, select {
     font-weight: normal;
 }
 
+input[type="checkbox"] {
+    vertical-align: bottom;
+}
+
 ul {
 	margin-left: 25px;
     }
