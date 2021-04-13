@@ -254,7 +254,7 @@ function getFamilyInfoFields()
     );
 
     $siblings = [];
-    foreach ($siblingsList as $key => $siblingArray) {
+    foreach (array_values($siblingsList) as $siblingArray) {
         foreach ($siblingArray as $ID) {
             array_push($siblings, $ID);
         }

@@ -108,7 +108,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $loris = $request->getAttribute('loris');
         // Ensure the user is allowed to upload.
-        if (! $request->getAttribute('user')->hasPermission('superuser')) {
+        if (! $request->getAttribute('user')->hasPermission(
+            'instrument_manager_write'
+        )
+        ) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
         // Ensure the server is properly configured.

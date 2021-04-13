@@ -108,8 +108,6 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = [];
-
             if ($user->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {

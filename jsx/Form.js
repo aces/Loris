@@ -518,7 +518,7 @@ class SelectElement extends Component {
       }
     }
 
-    this.props.onUserInput(this.props.name, value, e.target.id, 'select');
+    this.props.onUserInput(this.props.name, value);
   }
 
   /**
@@ -1553,7 +1553,23 @@ class FileElement extends Component {
    */
   render() {
     const required = this.props.required ? 'required' : null;
-    const fileName = this.props.value ? this.props.value.name : undefined;
+
+    let fileName = undefined;
+    if (this.props.value) {
+      switch (typeof this.props.value) {
+        case 'string':
+          fileName = this.props.value;
+          break;
+
+        case 'object':
+          fileName = this.props.value.name;
+          break;
+
+        default:
+          break;
+      }
+    }
+
     let requiredHTML = null;
     let errorMessage = '';
     let elementClass = 'row form-group';

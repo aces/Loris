@@ -903,8 +903,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
@@ -926,8 +925,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $PDO->expects($this->once())
             ->method("prepare")
@@ -1188,7 +1186,7 @@ class Database_Test extends TestCase
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DomainException");
-        $allSetting = $this->DB->pselectRow(
+        $this->DB->pselectRow(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
         );

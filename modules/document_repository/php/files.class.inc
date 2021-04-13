@@ -334,9 +334,7 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        $fileSize = $uploadedFile->getSize();
-        $fileName = $uploadedFile->getClientFileName();
-        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        $filename = $uploadedFile->getClientFileName();
         try{
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(

@@ -53,7 +53,6 @@ class CandIDGenerator extends IdentifierGenerator
      */
     public function generate(): CandID
     {
-        $validID = false;
         do {
             $this->checkIDRangeFull();
             $id = new CandID(

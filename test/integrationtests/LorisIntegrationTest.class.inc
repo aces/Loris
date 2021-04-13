@@ -202,7 +202,7 @@ abstract class LorisIntegrationTest extends TestCase
     public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
+            xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
         }
 
@@ -505,7 +505,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url,$waitPeriod=15)
     {
-        $newWebDriver = null;
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(

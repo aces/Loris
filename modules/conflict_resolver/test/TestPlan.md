@@ -1,29 +1,29 @@
 # Conflict Resolver Test Plan
 
 1. Menu item and permissions [Automation Testing]
- a) Menu item 'Clinical > Conflict Resolver' appears for users with permission 'Resolving conflicts'
- b) Menu item loads the module page
- c) Check for existence of 'Resolving conflicts' permission checkbox on 'User Accounts > Edit User'
-    Verify that the permission works as expected (hides menu item and blocks page access)
+    1. Menu item 'Clinical > Conflict Resolver' appears for users with permission 'Resolving conflicts'
+    2. Menu item loads the module page
+    3. Check for existence of 'Resolving conflicts' permission checkbox on 'User Accounts > Edit User'
+       Verify that the permission works as expected (hides menu item and blocks page access)
 2. Verify the following conditions are required for creation of new unresolved conflict
    to be instantiated in the module table:[Manual Testing]
- a) Double data entry active on instrument
- b) Instrument time-point must be entered twice
- c) Mismatch of values on a given field
- d) Candidate is not in 'Recycling Bin'
- e) Instrument is marked Data Entry = 'Complete' for initial and double data entries
+    1. Double data entry active on instrument
+    2. Instrument time-point must be entered twice
+    3. Mismatch of values on a given field
+    4. Candidate is not in 'Recycling Bin'
+    5. Instrument is marked Data Entry = 'Complete' for initial and double data entries
 3. Correct display of Unresolved conflicts:[Manual Testing]
- a) Table displays list of unresolved conflicts
- b) The 'Correct answer' field has dropdown menu containing a list of options for each row
- c) Save & Reset buttons at bottom of table
- d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
- e) Clicking on a column name sorts data properly
+    1. Table displays list of unresolved conflicts
+    2. The 'Correct answer' field has dropdown menu containing a list of options for each row
+    3. Save & Reset buttons at bottom of table
+    4. Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
+    5. Clicking on a column name sorts data properly
 4. Correct display of Resolved conflicts:[Manual Testing]
- a) Use 'resolved conflicts' tab to switch views
- b) Table displays resolved conflicts
- c) Field 'Corrected answer' has a value
- d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
- e) Clicking on a column name sorts data properly
+    1. Use 'resolved conflicts' tab to switch views
+    2. Table displays resolved conflicts
+    3. Field 'Corrected answer' has a value
+    4. Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
+    5. Clicking on a column name sorts data properly
 5. Filter for the specific parameter (Choose the one that applies):[Automation Testing]
   - Select the right instrument from the 'All Instruments' drop-down
   - Input the right DCCID
@@ -68,3 +68,4 @@
     with the filters preset to filter for that instrument and visit
   - Ensure that clicking on an instrument in the legend takes you to the conflict resolver
     with the filter preset for that instrument (but no filter for visit)
+

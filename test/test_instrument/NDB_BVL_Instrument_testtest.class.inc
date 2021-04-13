@@ -35,8 +35,6 @@ class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
         $this->table     = 'testtest';
         $this->commentID = $commentID; // data keyed by commentID
 
-        $config = NDB_Config::singleton();
-
         // setup the form
         $this->_setupForm();
     }
