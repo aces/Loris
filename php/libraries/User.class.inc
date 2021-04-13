@@ -491,6 +491,10 @@ class User extends UserPermissions implements
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
             );
+        } else if (password_verify($this->userInfo['UserID'], (string) $password)) {
+            throw new \InvalidArgumentException(
+                'Password cannot be set to username'
+            );
         }
 
         $this->update(
