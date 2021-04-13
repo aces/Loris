@@ -35,7 +35,7 @@ class API_Docs extends \NDB_Page
      */
     public function hasAccess(\User $user): bool
     {
-        return $user->hasPermission('superuser');
+        return $user->hasPermission('api_docs');
     }
 
     /**
