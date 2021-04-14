@@ -1,3 +1,21 @@
+ALTER TABLE permissions
+    ADD COLUMN `moduleID` int(11) unsigned AFTER `description`,
+    ADD COLUMN `action` enum (
+    'View',
+    'Create',
+    'Edit',
+    'Download',
+    'Upload',
+    'Delete',
+    'View/Create',
+    'View/Edit',
+    'View/Download',
+    'View/Upload',
+    'View/Create/Edit',
+    'Create/Edit',
+    'Edit/Upload',
+    'Edit/Upload/Delete') AFTER `moduleID`;
+
 UPDATE permissions SET description='User Accounts - Own Sites', moduleID=(SELECT ID FROM modules WHERE Name='user_accounts'), action='View/Create/Edit' WHERE code='user_accounts';
 UPDATE permissions SET description='User Accounts - All Sites', moduleID=(SELECT ID FROM modules WHERE Name='user_accounts'), action='View/Create/Edit' WHERE code='user_accounts_multisite';
 UPDATE permissions SET description='Help documentation', moduleID=(SELECT ID FROM modules WHERE Name='help_editor'), action='Edit' WHERE code='context_help';
