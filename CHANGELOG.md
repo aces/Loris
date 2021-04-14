@@ -14,6 +14,7 @@ changes in the following format: PR #1234***
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
+- Login module adds toggle visibility for password field.
 
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
