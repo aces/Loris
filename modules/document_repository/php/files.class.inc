@@ -348,8 +348,11 @@ class Files extends \NDB_Page
         $uploadedFile = $uploadedFiles['file'];
         $fileSize     = $uploadedFile->getSize();
         $fileName     = $uploadedFile->getClientFileName();
-        $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
-        $uploadPath   = $path.$name."/";
+        // urldecode() necessary to decode double quotes encoded automatically
+        // by chrome browsers to avoid XSS attacks
+        $fileName   = urldecode($fileName);
+        $fileType   = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uploadPath = $path.$name."/";
         // $category is a string representation of an ID, and so should be at
         // least equal to zero.
         if (intval($category) < 0) {
@@ -377,7 +380,7 @@ class Files extends \NDB_Page
         ) {
                 $uploadedFile->moveTo($uploadPath.$fileName);
 
-                $DB->insert(
+                $DB->unsafeInsertOnDuplicateUpdate(
                     'document_repository',
                     array(
                         'File_category' => $category,
