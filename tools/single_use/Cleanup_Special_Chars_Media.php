@@ -48,7 +48,7 @@ foreach($data as $key => $file) {
         );
 
         // update name in file system
-        shell_exec("mv " . escapeshellarg($media_path . $fileNameURLencoded) . " " . escapeshellarg($media_path . $fileName));
+        rename(escapeshellarg($media_path . $fileNameURLencoded), escapeshellarg($media_path . $fileName));
         print("Old file name: " . $file['file_name'] . ". New file name: " . $fileName . "\n\n");
     }
 }
