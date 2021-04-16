@@ -49,7 +49,7 @@ foreach($data as $key => $file) {
         );
 
         // update name in file system
-        shell_exec("mv " . escapeshellarg($document_repository_path . $file['uploaded_by'] . "/" . $fileNameURLencoded) . " " . escapeshellarg($document_repository_path . $file['uploaded_by'] . "/" . $fileName));
+        rename($document_repository_path . $file['uploaded_by'] . "/" . $fileNameURLencoded, $document_repository_path.$file['uploaded_by']."/".$fileName);
         print("Old file name: " . $file['File_name'] . ". New file name: " . $fileName . "\n\n");
     }
 }
