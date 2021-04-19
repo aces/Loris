@@ -187,7 +187,9 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db        = \Database::singleton();
+        $db    = \Database::singleton();
+        $email = $values['Email'];
+        unset($values['Email']);
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
@@ -217,11 +219,11 @@ class AddSurvey extends \NDB_Form
 
         $key = $this->_generateSurveyKey();
 
-        $email = false;
+        $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
-            $email = true;
+            $sendEmail = true;
         }
-        if ($email) {
+        if ($sendEmail) {
             $status = 'Sent';
         } else {
             $status = 'Created';
@@ -233,7 +235,6 @@ class AddSurvey extends \NDB_Form
                 [
                     'SessionID'       => $SessionID,
                     'Test_name'       => $values['Test_name'],
-                    'Email'           => $values['Email'],
                     'Status'          => $status,
                     'OneTimePassword' => $key,
                     'CommentID'       => $commentID,
@@ -246,16 +247,15 @@ class AddSurvey extends \NDB_Form
         $this->tpl_data['success'] = true;
 
         if ($email) {
-            $config  = \NDB_Config::singleton();
-            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-
+            $config   = \NDB_Config::singleton();
+            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
                 'study'     => $config->getSetting("title"),
                 'url'       => $baseURL . '/survey.php?key=' .
-                                         urlencode($key),
+                        urlencode($key),
                 'EmailForm' => $values['email_dialog'],
             ];
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($email, 'new_survey.tpl', $msg_data);
         }
     }
 

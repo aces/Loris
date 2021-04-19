@@ -99,7 +99,6 @@ class Stats_Behavioural extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
         $projects['']   = 'All Projects';
-        $Param_Project  = '';
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
@@ -166,7 +165,6 @@ class Stats_Behavioural extends \NDB_Form
 
         //SITES
 
-        $Param_Centers = '';
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {

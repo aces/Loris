@@ -128,7 +128,8 @@ INSERT INTO `permissions` VALUES
     (57,'document_repository_edit','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Edit/Upload','2'),
     (58,'survey_accounts_view', 'Candidate Surveys',(SELECT ID FROM modules WHERE Name='survey_accounts'),'View', 2),
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
-    (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2');
+    (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
+    (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

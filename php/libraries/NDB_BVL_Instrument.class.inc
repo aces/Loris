@@ -1,6 +1,8 @@
 <?php
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -33,6 +35,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $DataEntryType;
     public $XINRules;
     public $XINDebug;
+
+    /**
+     * A flag determining whether the ControlPanel changed
+     * the Data_entry flag status on this page load.
+     */
+    private $_DataEntryChanged;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
@@ -260,6 +268,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+        }
+        if (file_exists($base."project/instruments/$instrument.meta")) {
+            $obj->loadInstrumentMetadata(
+                $base . "project/instruments/$instrument.meta"
+            );
         }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -740,6 +753,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (strrpos($this->testName, "_proband") === false) {
             $this->_saveCandidateAge($values);
+        }
+
+        // Save UserID, the data entry personnel, into flag Data and
+        // instrument table
+        $user = \NDB_Factory::singleton()->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            // Add UserID to $values
+            $values['UserID'] = $user->getUsername();
         }
 
         //Convert select multiple elements into database storable values
@@ -2037,7 +2058,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->getInstanceData();
+        $record    = $this->getInstanceData();
+        $scoreCols = array_combine($scoreCols, $scoreCols);
+        // order is important here because it keeps values of first array
+        // unsetting all columns which are not scores
+        $data = array_intersect_key($record, $scoreCols);
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2168,6 +2193,77 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Loads multiple instruments representing multiple commentIDs from the
+     * database in bulk. This function must be called on an instrument instantiated
+     * as \NDB_BVL_Instrument::factory('instrumentname') without a comment ID, and
+     * will return an array of copies of the instrument type with the data for
+     * the given commentIDs loaded.
+     *
+     * @param $commentIDs string[] A list of commentIDs to load in bulk.
+     *
+     * @return \NDB_BVL_Instrument[]
+     */
+    function bulkLoadInstanceData(iterable $commentIDs): array
+    {
+        if ($this->commentID !== null && $this->commentID !== '') {
+            throw new \LogicException(
+                "Must bulk load from instrument loaded without commentID"
+            );
+        }
+        $db = \Database::singleton();
+
+        $prepBindings = [];
+        $prepValues   = [];
+
+        $i = 0;
+        foreach ($commentIDs as $commentID) {
+            $i++;
+
+            $prepBindings[]      = ":cid$i";
+            $prepValues["cid$i"] = $commentID;
+        }
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselect(
+                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->instanceData = json_decode(
+                        $row['Data'],
+                        true,
+                    ) ?? [];
+
+                    return $newinst;
+                },
+                $jsondata
+            );
+        } else {
+            $defaults = $db->pselect(
+                "SELECT * FROM $this->table WHERE CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->instanceData = $row;
+
+                    return $newinst;
+                },
+                $defaults
+            );
+        }
+    }
+
+    /**
      * Calculates the candidate's age at the time of this instrument.
      * If Date_taken is passed, this function  will calculate the age as of
      * the value of that argument. This is used, for instance, in
@@ -2191,7 +2287,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ];
         $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
-        $age = [];
         if (empty($dates['DoD']) || $dates['DoD'] > $dateTaken) {
             $age = Utility::calculateAge($dates['DoB'], $dateTaken);
         } else {
@@ -2305,6 +2400,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Loads the metadata of an instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
+    }
+
+    /**
      * Parses a file that isn't written in PHP and loads it into a format
      * that LORIS understands.
      *
@@ -2367,6 +2477,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
+            $this->_DataEntryChanged = false;
+
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
@@ -2377,7 +2489,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
+                $originalstatus = $controlPanel->getDataEntryStatus();
                 $controlPanel->save();
+
+                if ($controlPanel->getDataEntryStatus() !== $originalstatus) {
+                    $this->_DataEntryChanged = true;
+                }
             }
 
             // display the control panel
@@ -2753,7 +2870,46 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * A form extends the basic page handler to call save() on a POST request.
+     * Override of page process in order to refresh after control panel change
+     *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
+     * @return ResponseInterface the PSR15 response that was generated by the
+     * middleware*
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        // The parent middleware needs to be called in order for
+        // the instrument control panel to saved, which triggers
+        // $this->_DataEntryChanged being set appropriately.
+        $response = parent::process($request, $handler);
+
+        if ($this->_DataEntryChanged) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+            $url = $baseURL . "/instruments/" .
+                urlencode($this->testName) .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+        return $response;
+    }
+
+    /**
+     * A form extends the basic page handler to
+     *  (1) call save() on a POST request
+     *  (2) disable form if data entry is complete
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -2765,7 +2921,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-        return (new \Laminas\Diactoros\Response())
+
+        // Disable form if data entry is complete
+        $user      = $request->getAttribute("user");
+        $sessionID = $request->getQueryParams()["sessionID"];
+        $timepoint = \Timepoint::singleton(new SessionID($sessionID));
+
+        // create an instrument status object
+        $status = new \NDB_BVL_InstrumentStatus;
+        $status->select($this->commentID);
+
+        // freeze the form to prevent data entry
+        // IF (1) Instrument is NOT in progress
+        // OR (2) The user does NOT have `data_entry` permission
+        // OR (3) The user does NOT have access to the timepoint
+        //        at which the instrument is instantiated
+        // AND (4) The instrument is NOT in preview mode
+        // AND (5) the instrument is NOT a direct entry
+        if ($status->getDataEntryStatus() != 'In Progress'
+            || !$user->hasPermission('data_entry')
+            || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
+            && $this->preview !== true
+            && $this->DataEntryType !== 'DirectEntry'
+        ) {
+            $this->freeze();
+        }
+
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
@@ -2787,13 +2969,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * can not be instantiated. this check should eventually be replaced with an
      * exception.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getInstrumentsList() : array
+    static function getInstrumentsList(\LORIS\LorisInstance $loris) : array
     {
-        $Factory     = \NDB_Factory::singleton();
-        $DB          = $Factory->Database();
+        $DB          = $loris->getDatabaseConnection();
         $instruments = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 
         $instrumentList = [];
@@ -2815,18 +2998,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * instruments which are instantiable are returned, invalid instruments will not
      * appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getInstrumentNamesList() : array
+    static function getInstrumentNamesList(\LORIS\LorisInstance $loris) : array
     {
-        $instrumentsList = self::getInstrumentsList();
+        $instrumentsList = self::getInstrumentsList($loris);
 
         $instrumentNames = [];
         foreach ($instrumentsList as $testName => $instrument) {
             $fullName = $instrument->getFullName();
             $instrumentNames[$testName] =$fullName;
         }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
     }
@@ -2837,15 +3025,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getDDEInstrumentNamesList() : array
+    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
     {
-        $Factory = \NDB_Factory::singleton();
-        $config  = $Factory->config();
+        $config = $loris->getConfiguration();
 
-        $instrumentNamesList = self::getInstrumentNamesList();
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
 
         $doubleDataEntryInstruments = $config->getSetting(
             'DoubleDataEntryInstruments'
@@ -2858,6 +3047,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
+
         return $instrumentNames;
     }
 
@@ -2867,15 +3059,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * array with format $testName => $fullName. Only Names of instruments which are
      * instantiable are returned, invalid instruments will not appear in this list.
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
      * @return array
      * @throws DatabaseException
      */
-    static function getDirectEntryInstrumentNamesList() : array
-    {
-        $Factory = \NDB_Factory::singleton();
-        $DB      = $Factory->Database();
+    static function getDirectEntryInstrumentNamesList(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
 
-        $instrumentNamesList = self::getInstrumentNamesList();
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
 
         $directEntryInstruments = $DB->pselectCol(
             "SELECT Test_name FROM test_names WHERE IsDirectEntry=true",
@@ -2889,6 +3083,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $instrumentNames[$testName] = $fullName;
             }
         }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
     }

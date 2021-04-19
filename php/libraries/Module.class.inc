@@ -108,14 +108,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $config  = $factory->config();
         $base    = $config->getSetting("base");
 
-        $mpath = "";
         // TODO: Module search path should be a config option.
         if (is_dir($base . "project/modules/$name")) {
             $mpath = $base . "project/modules/$name";
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisNoSuchModuleException("No such module: $name");
+            throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -539,7 +538,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         return false;
     }
 
-    /*
+    /**
      * Return a data dictionary of data types managed by this module.
      * DictionaryItems are grouped into categories and a module may
      * provide 0 or more categories of dictionaryitems.

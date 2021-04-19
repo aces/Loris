@@ -37,8 +37,8 @@ $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object
 $comments = new FeedbackMRI(
-    isset($_REQUEST['fileID']) ? intval($_REQUEST['fileID']) : '',
-    isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '',
+    isset($_REQUEST['fileID']) ? intval($_REQUEST['fileID']) : null,
+    isset($_REQUEST['sessionID']) ? new \SessionID($_REQUEST['sessionID']) : null,
 );
 
 /*

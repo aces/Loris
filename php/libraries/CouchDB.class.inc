@@ -400,7 +400,6 @@ class CouchDB
 
         $response        = '';
         $finishedHeaders = false;
-        $curLine         = '';
         while (!$handler->eof()) {
             $curLine = $handler->gets();
 
@@ -525,8 +524,6 @@ class CouchDB
      */
     function getDoc(string $id, array $options = []): array
     {
-        $json = $this->_getRelativeURL($id);
-
         if (!empty($options)) {
             if (strpos($id, "?") === false) {
                 $url = $id . "?" . http_build_query($options);
@@ -701,9 +698,7 @@ class CouchDB
         array $params,
         bool $full_json = false
     ) {
-        $keys = null;
         if (isset($params['keys'])) {
-
             $keys = $params['keys'];
             unset($params['keys']);
 

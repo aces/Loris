@@ -22,16 +22,6 @@ namespace LORIS\api_docs;
 class Module extends \Module
 {
     /**
-     * This module is publicly available to people who are not logged in to LORIS.
-     *
-     * @return bool
-     */
-    public function isPublicModule()
-    {
-        return true;
-    }
-
-    /**
      * Return the long name of this module. The long name is intended
      * to be the friendly, human-readable name and can not be automatically
      * derived. It may contain spaces, punctuation, or capitalization. The
@@ -45,7 +35,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API documentation";
+        return "API Documentation";
     }
 
     /**

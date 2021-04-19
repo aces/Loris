@@ -208,12 +208,12 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $projectList  = \Utility::getProjectList();
         $projectList2 = [];
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $projectList2[$value] = $value;
         }
         $subprojectList  = \Utility::getSubprojectList();
         $subprojectList2 = [];
-        foreach ($subprojectList as $key => $value) {
+        foreach (array_values($subprojectList) as $value) {
             $subprojectList2[$value] = $value;
         }
         //print_r($subprojectList2);

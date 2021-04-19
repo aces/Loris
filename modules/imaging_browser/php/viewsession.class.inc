@@ -235,7 +235,6 @@ class ViewSession extends \NDB_Form
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
             $SeriesNumber        = $FileObj->getParameter('series_number');
-            $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
                 2

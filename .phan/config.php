@@ -13,8 +13,6 @@ return [
     // suppressed rules, we should consider reducing this value to detect more
     // suspicious code.
     "minimum_severity" => 1,
-    // FIXME: allow_missing_properties should be false, but there's
-    // too many other things to fix first.
     "allow_missing_properties" => false,
     "null_casts_as_any_type" => false,
     "scalar_implicit_cast" => false,
@@ -29,11 +27,8 @@ return [
     "ignore_undeclared_variables_in_global_scope" => true,
     // FIXME: We should add this.
     "dead_code_detection" => false,
-    // FIXME: We should add this. Note that dead_code_detection also covers
-    // unused_variable_detection. It might be a good idea to enable this first.
     "unused_variable_detection" => true,
     "suppress_issue_types" => [
-        "PhanUnusedVariable",
         "PhanUnusedPublicNoOverrideMethodParameter",
         "PhanTypePossiblyInvalidDimOffset",
     ],

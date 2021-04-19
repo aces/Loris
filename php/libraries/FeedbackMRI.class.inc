@@ -24,11 +24,15 @@ class FeedbackMRI
 {
     /**
      * FileID from files table
+     *
+     * @var ?int
      */
     var $fileID;
 
     /**
      * ID from session table
+     *
+     * @var ?\SessionID
      */
     var $sessionID;
 
@@ -40,10 +44,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param ?int   $fileID    The fileID that this feedback is for
-     * @param string $sessionID The SessionID that this feedback is for
+     * @param ?int        $fileID    The fileID that this feedback is for
+     * @param ?\SessionID $sessionID The SessionID that this feedback is for
      */
-    function __construct(?int $fileID=null, string $sessionID='')
+    function __construct(?int $fileID=null, ?\SessionID $sessionID=null)
     {
         // set object properties
         $this->fileID    = $fileID;
