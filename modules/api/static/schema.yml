@@ -1282,77 +1282,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dicoms'
-    post:
-      tags:
-        - Dicoms
-      summary: Upload a dicom to this timepoint
-      parameters:
-        - name: candid
-          in: path
-          description: ID of the candidate
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: visit
-          in: path
-          description: This timepoint visit label
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: LORIS-Overwrite
-          in: header
-          description: 'If set to ''overwrite'', will replace server file with the same name'
-          required: false
-          style: simple
-          explode: false
-          schema:
-            type: string
-            enum:
-              - overwrite
-      requestBody:
-        content:
-          multipart/mixed:
-            schema:
-              $ref: '#/components/schemas/body_1'
-            encoding:
-              mriFile:
-                contentType: 'application/gzip, application/tar, application/tar+gzip, application/x-tar'
-                headers:
-                  LORIS-Overwrite:
-                    style: simple
-                    explode: false
-                    schema:
-                      type: string
-                      enum:
-                        - overwrite
-                style: form
-      responses:
-        '303':
-          description: 'On success, redirect to this dicom upload server processes (mri_upload)'
-          headers:
-            Location:
-              description: The URL of the processes.
-              style: simple
-              explode: false
-              schema:
-                type: string
-        '403':
-          description: The _imaging_uploader_ permission is required
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: 500 Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      x-codegen-request-body-name: DicomUploadForm
+
   '/candidates/{candid}/{visit}/dicoms/{tarname}':
     get:
       tags:
@@ -1391,11 +1321,12 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/dicoms/{tarname}/processes':
-    get:
+
+  '/candidates/{candid}/{visit}/recordings':
+    get:  
       tags:
-        - Dicoms
-      summary: List server processes executed on that dicom
+        - Electrophysiology
+      summary: Get the recording files for that visit
       parameters:
         - name: candid
           in: path
@@ -1408,14 +1339,6 @@ paths:
         - name: visit
           in: path
           description: This timepoint visit label
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: tarname
-          in: path
-          description: The dicom filename
           required: true
           style: simple
           explode: false
@@ -1423,100 +1346,43 @@ paths:
             type: string
       responses:
         '200':
-          description: The processes list
+          description: Recordings which have been acquired for that visit
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DicomProcesses'
-    post:
+                $ref: '#/components/schemas/Recordings'
+  '/candidates/{candid}/{visit}/recordings/{filename}':
+    get:  
       tags:
-        - Dicoms
-      summary: Start a server process on that dicom
+        - Electrophysiology
+      summary: Get a recording file
       parameters:
         - name: candid
           in: path
           description: ID of the candidate
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
         - name: visit
           in: path
           description: This timepoint visit label
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
-        - name: tarname
+        - name: filename
           in: path
-          description: The dicom filename
+          description: The recording filename
           required: true
-          style: simple
-          explode: false
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_2'
       responses:
-        '202':
-          description: 'On success, put the generated server processes location in the headers'
-          headers:
-            Location:
-              description: The URL of the processes.
-              style: simple
-              explode: false
+        '200':
+          description: The dicom file content
+          content:
+            application/octet-stream:
               schema:
                 type: string
-  '/candidates/{candid}/{visit}/dicoms/{tarname}/processes/{processid}':
-    get:
-      tags:
-        - Dicoms
-      summary: Get the state of a server process
-      parameters:
-        - name: candid
-          in: path
-          description: ID of the candidate
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: visit
-          in: path
-          description: This timepoint visit label
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: tarname
-          in: path
-          description: The dicom filename
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: processid
-          in: path
-          description: The process id
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: number
-      responses:
-        '200':
-          description: The process state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_6'
+                format: binary
 components:
   schemas:
     Project:
@@ -1936,41 +1802,25 @@ components:
             - PT
         SeriesUID:
           type: string
-    DicomProcesses:
+    Recordings:
       type: object
       properties:
-        mri_uploads:
+        Meta:
+          $ref: '#/components/schemas/TimepointMeta'
+        Files:
           type: array
           items:
-            $ref: '#/components/schemas/MRIUploadProcesses'
-    MRIUploadProcesses:
+            $ref: '#/components/schemas/Recording'
+    Recording:
       type: object
       properties:
-        mri_upload_id:
-          type: number
-        processes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Process'
-    Process:
-      type: object
-      properties:
-        ID:
+        OutputType:
           type: string
-        PID:
+        Filename:
           type: string
-        STATE:
+        AcquisitionModality:
           type: string
-        PROGRESS:
-          type: string
-          enum:
-            - SUCCESS
-            - RUNNING
-            - ERROR
-        EXIT_CODE:
-          type: string
-        END_TIME:
-          type: string
+
     Error:
       required:
         - error
@@ -2033,48 +1883,7 @@ components:
           $ref: '#/components/schemas/inline_response_200_5_Meta'
         Value:
           type: string
-    body_1:
-      required:
-        - CandID
-        - IsPhantom
-        - PSCID
-        - Visit
-        - mriFile
-      type: object
-      properties:
-        CandID:
-          type: string
-        PSCID:
-          type: string
-        Visit:
-          type: string
-        IsPhantom:
-          type: string
-          enum:
-            - 'true'
-            - 'false'
-        mriFile:
-          type: string
-          format: binary
-    body_2:
-      required:
-        - MRIUploadID
-        - ProcessType
-      type: object
-      properties:
-        ProcessType:
-          type: string
-          enum:
-            - mri_upload
-        MRIUploadID:
-          type: number
-    inline_response_200_6:
-      type: object
-      properties:
-        process_state:
-          type: array
-          items:
-            $ref: '#/components/schemas/Process'
+ 
     Project_Meta:
       type: object
       properties:
