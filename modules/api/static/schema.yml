@@ -184,6 +184,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectVisits'
+  '/projects/{project}/recordings':
+    get:
+      tags:
+        - Projects
+      summary: List all existing visit label of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectRecordings'
   /candidates:
     get:
       tags:
@@ -1615,6 +1636,34 @@ components:
           type: array
           items:
             type: string
+    ProjectRecordings:
+      type: object
+      properties:
+        Recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRecording'
+    ProjectRecording:
+      type: object
+      properties:
+        Candidate:
+          type: string
+        PSCID:
+          type: string
+        Visit:
+          type: string
+        Visit_date:
+          type: string
+        Site:
+          type: string
+        File:
+          type: string
+        Modality:
+          type: string
+        InsertTime:
+          type: string
+        Link:
+          type: string
     Candidates:
       type: object
       properties:
@@ -2174,3 +2223,4 @@ components:
       type: apiKey
       name: Authorization
       in: header
+
