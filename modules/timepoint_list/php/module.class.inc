@@ -61,4 +61,10 @@ class Module extends \Module
     {
         return "Timepoint List";
     }
+
+    public function hasAPISpecification(): bool
+    {
+        return true;
+    }
+
 }
