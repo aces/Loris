@@ -2937,7 +2937,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $timepoint = \Timepoint::singleton(new SessionID($sessionID));
 
         // create an instrument status object
-        $status = new \NDB_BVL_InstrumentStatus;
+        $status = new \NDB_BVL_InstrumentStatus($this->loris);
         $status->select($this->commentID);
 
         // freeze the form to prevent data entry
