@@ -33,20 +33,6 @@ class UploadFileForm extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    let self = this;
-    fetch(this.props.DataURL, {credentials: 'same-origin'})
-      .then( (resp) => resp.json())
-      .then( (data) => self.setState({data: data, isLoaded: true}))
-      .catch( (error) => {
-        self.setState({error: 'An error occurred when loading the form!'});
-        console.error(error);
-      });
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -175,24 +161,14 @@ class UploadFileForm extends Component {
     }
 
     // fetch API to upload the file
-    const url = overwrite ? this.props.action + '&overwrite=true'
+    const url = overwrite ? this.props.action + '?overwrite=true'
       : this.props.action;
     fetch(url, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
-    }).then( (response) => {
-      if (!response.ok) {
-        let msg = response.statusText ? response.statusText : 'Upload error!';
-        this.setState({
-          errorMessage: msg,
-          uploadProgress: -1,
-        });
-        swal.fire(msg, '', 'error');
-        console.error(msg);
-      } else {
-        const responseUrl = new URL(response.url);
-        if (responseUrl.searchParams.has('duplicate')) {
+    }).then(async (response) => {
+      if (response.status === 409) {
           swal.fire({
             title: 'Are you sure?',
             text: 'A file with this name already exists!\n '
@@ -204,22 +180,28 @@ class UploadFileForm extends Component {
             confirmButtonText: 'Yes, I am sure!',
             cancelButtonText: 'No, cancel it!',
           }).then((isConfirm) => {
-            if (isConfirm) {
+            if (isConfirm && isConfirm.value) {
               this.uploadFile(true);
             }
           });
+      } else if (!response.ok) {
+        console.log(response);
+        const body = await response.json();
+        let msg;
+        if (body && body.error) {
+            msg = body.error;
+        } else if (response.statusText) {
+            msg = response.statusText;
         } else {
-          // Add file to the list of existing files
-          let files = JSON.parse(JSON.stringify(this.state.data.files));
-          files.push(formData.file.name);
-          // Trigger an update event to update all observers (i.e. DataTable)
-          let event = new CustomEvent('update-datatable');
-          window.dispatchEvent(event);
-          this.setState({
-            files: files,
-            formData: {}, // reset form data after successful file upload
-            uploadProgress: -1,
-          });
+            msg = 'Upload error!';
+        }
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal.fire(msg, '', 'error');
+        console.error(msg);
+      } else {
           swal.fire({
             text: 'Upload Successful!',
             title: '',
@@ -227,8 +209,6 @@ class UploadFileForm extends Component {
           }).then(function() {
             window.location.assign('/data_release');
           });
-          this.props.fetchData();
-        }
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';
