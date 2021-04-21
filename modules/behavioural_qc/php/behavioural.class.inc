@@ -89,6 +89,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
             $visit_array,
             \Utility::getAllInstruments(),
             \Utility::getProjectList(),
+            \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();
     }
