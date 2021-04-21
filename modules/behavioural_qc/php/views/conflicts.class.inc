@@ -31,10 +31,10 @@ class Conflicts
      * @param array $sites       The sites for form element
      */
     public function __construct(
-        $visits, 
-        $instruments, 
-        $projects, 
-        $subprojects, 
+        $visits,
+        $instruments,
+        $projects,
+        $subprojects,
         $sites
     ) {
         $this->_formElement = [
