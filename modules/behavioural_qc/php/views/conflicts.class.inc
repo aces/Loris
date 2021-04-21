@@ -27,6 +27,7 @@ class Conflicts
      * @param array $visits      The visits for form element
      * @param array $instruments The instruments for form element
      * @param array $projects    The projects for form element
+     * @param array $subprojects The subprojects for form element
      * @param array $sites       The sites for form element
      */
     public function __construct($visits, $instruments, $projects, $subprojects, $sites)
