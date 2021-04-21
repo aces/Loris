@@ -30,8 +30,13 @@ class Behavioral
      * @param array $subprojects The subprojects for form element
      * @param array $sites       The sites for form element
      */
-    public function __construct($visits, $instruments, $projects, $subprojects, $sites)
-    {
+    public function __construct(
+        $visits, 
+        $instruments, 
+        $projects, 
+        $subprojects, 
+        $sites
+    ) {
         $this->_formElement = [
             'instruments' => $instruments,
             'visits'      => $visits,
