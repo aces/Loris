@@ -611,10 +611,17 @@ function getIssueFields()
     $sites = Issue_Tracker::getSites(false, true);
 
     //not yet ideal permissions
-    $assignees = [];
+    $assignees      = [];
+    $inactive_users = [];
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
             "SELECT Real_name, UserID FROM users",
+            []
+        );
+
+        $inactive_users_expanded = $db->pselect(
+            "SELECT Real_name, UserID FROM users
+              WHERE Active='N'",
             []
         );
     } else {
@@ -632,10 +639,22 @@ function getIssueFields()
                 'DCC'      => $DCCID,
             ]
         );
+
+        $inactive_users_expanded = $db->pselect(
+            "SELECT DISTINCT u.Real_name, u.UserID FROM users u
+             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
+             WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+             AND Active='N'",
+            []
+        );
     }
 
     foreach ($assignee_expanded as $a_row) {
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
+    }
+
+    foreach ($inactive_users_expanded as $u_row) {
+        $inactive_users[$u_row['UserID']] = $u_row['Real_name'];
     }
 
     $otherWatchers = [];
@@ -754,6 +773,7 @@ function getIssueFields()
 
     $result = [
         'assignees'         => $assignees,
+        'inactiveUsers'     => $inactive_users,
         'sites'             => $sites,
         'statuses'          => $statuses,
         'priorities'        => $priorities,
