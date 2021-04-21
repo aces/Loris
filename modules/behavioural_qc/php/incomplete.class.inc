@@ -93,8 +93,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
             \Utility::getAllInstruments(),
             $projects,
             \Utility::getSubprojectList(),
-            $list_of_sites,
-            $subprojects
+            $list_of_sites
         ))->toArray();
     }
 
