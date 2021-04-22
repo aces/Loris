@@ -241,6 +241,7 @@ const config = [
     'react.sidebar',
     'react.tabs',
   ]),
+  lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [
     'components/expansionpanels',
     'components/searchabledropdown',

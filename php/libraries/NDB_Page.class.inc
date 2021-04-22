@@ -28,6 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class NDB_Page implements RequestHandlerInterface
 {
+    protected $lorisinstance;
     /**
      * The name of the test_name being accessed
      */
@@ -683,6 +684,9 @@ class NDB_Page implements RequestHandlerInterface
                     new \LORIS\Http\StringStream("Permission Denied")
                 )->withStatus(403);
         }
+
+        $loris = $request->getAttribute("loris");
+        $this->lorisinstance = $loris;
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
