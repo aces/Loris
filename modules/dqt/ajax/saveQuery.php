@@ -69,7 +69,7 @@ if ($_REQUEST['SharedQuery'] === "true") {
                                     ': ' .
                                     $_REQUEST['QueryName'];
 }
-$fields = $_REQUEST['Fields'];
+$fields = json_decode($_REQUEST['Fields']);
 $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
