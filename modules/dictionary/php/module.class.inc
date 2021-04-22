@@ -126,15 +126,18 @@ class Module extends \Module
      * by the page, so we arbitrarily map "module" URLs to the "moduledict"
      * class name instead.
      *
-     * @param string $page the Page name being accessed.
+     * @param \LORIS\LorisInstance $loris The LORIS instance that the module
+     *                                    is serving.
+     * @param string               $page  The name of the page within the
+     *                                    module to load.
      *
      * @return \NDB_Page
      */
-    public function loadPage(string $page)
+    public function loadPage(\Loris\LORISInstance $loris, string $page)
     {
         if ($page === 'module') {
-            return $this->loadPage('moduledict');
+            return $this->loadPage($loris, 'moduledict');
         }
-        return parent::loadPage($page);
+        return parent::loadPage($loris, $page);
     }
 }
