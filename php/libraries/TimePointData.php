@@ -1,0 +1,81 @@
+<?php declare(strict_types=1);
+/**
+ * A TimePointData object is a DTO (data transfer object) to
+ * store a representation of data associated with a TimePoint
+ * object in LORIS.
+ *
+ * The TimePointData may be partially loaded, in which case any
+ * getter trying to access an unknown will throw an exception.
+ * This allows modules to only load relevant data in a query,
+ * and avoid the overhead of the TimePoint::singleton() constructor.
+ *
+ * For instance, a query that selected CenterID and ProjectID on
+ * the database could instantiate a TimePoint as:
+ *    $visit = new TimePoint(new TimePointData(null, $projectid, $centerid));
+ *
+ * with data loaded from the query, and then call
+ * `$visit->isAccessibleBy($user)` without having to load all the
+ * over data that TimePoint::singleton() does. If an attempt is
+ * made to access a property not in the DTO (session in this example),
+ * an exception is thrown, rather than silently returning the incorrect
+ * value.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class TimePointData {
+    protected $projectID;
+    protected $centerID;
+    protected $sessionID;
+
+    /**
+     * Construct a TimePointData DTO for a TimePoint object
+     *
+     * @param ?SessionID $SessionID
+     * @param ?ProjectID $ProjectID
+     * @param ?int       $CenterID
+     */
+    public function __construct(?SessionID $SessionID, ?int $ProjectID, ?int $CenterID) {
+        $this->sessionID = $SessionID;
+        $this->projectID = $ProjectID;
+        $this->centerID = $CenterID;
+    }
+
+    /**
+     * Return the SessionID for this TimePoint, or throw
+     * an exception if unknown.
+     *
+     * @return ?SessionID
+     */
+    public function getSessionID() : SessionID {
+        if($this->sessionID === null) {
+            throw new \Exception("No SessionID loaded into data model");
+        }
+        return $this->sessionID;
+    }
+
+    /**
+     * Return the ProjectID for this TimePoint, or throw
+     * an exception if unknown.
+     *
+     * @return ?ProjectID
+     */
+    public function getProjectID () : ProjectID {
+        if($this->projectID === null) {
+            throw new \Exception("No ProjectID loaded into data model");
+        }
+        return $this->projectID;
+    }
+
+    /**
+     * Return the CenterID for this TimePoint, or throw
+     * an exception if unknown.
+     *
+     * @return ?int
+     */
+    public function getCenterID () : int {
+        if($this->centerID === null) {
+            throw new \Exception("No CenterID loaded into data model");
+        }
+        return $this->centerID;
+    }
+}

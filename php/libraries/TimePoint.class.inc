@@ -74,6 +74,19 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
 
     /**
+     * A DTO for TimePoint related data
+     */
+    protected TimePointData $data;
+
+    /**
+     * Construct a TimePoint object seeded with the data
+     * from the given DTO.
+     */
+    public function __construct(?TimePointData $data=null) {
+        $this->data = $data;
+    }
+
+    /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
      *
@@ -141,6 +154,13 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             ['SID' => $sessionID]
         );
 
+
+        $this->data = new TimePointData(
+            $sessionID,
+            new ProjectID($row['ProjectID']),
+            intval($row['CenterID']),
+        );
+
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
@@ -149,12 +169,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;
-
-            if ($this->_timePointInfo['ProjectID'] !== null) {
-                $this->_timePointInfo['ProjectID'] = new \ProjectID(
-                    $this->_timePointInfo['ProjectID']
-                );
-            }
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -421,7 +435,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getSessionID(): SessionID
     {
-        return (new SessionID($this->_timePointInfo["SessionID"]));
+        return $this->data->getSessionID();
     }
 
     /**
@@ -441,7 +455,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getCenterID(): \CenterID
     {
-        return new \CenterID($this->_timePointInfo['CenterID']);
+        return $this->data->getCenterID();
     }
 
     /**
@@ -1200,7 +1214,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getProjectID() : \ProjectID
     {
-        return $this->getData('ProjectID');
+        return $this->data->getProjectID();
     }
 
     /**
