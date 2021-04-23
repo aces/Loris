@@ -24,8 +24,25 @@
  */
 class TimePointData
 {
+    /**
+     * The TimePoint's ProjectID
+     *
+     * @var ?ProjectID
+     */
     protected $projectID;
+
+    /**
+     * The TimePoint's CenterID
+     *
+     * @var ?int
+     */
     protected $centerID;
+
+    /**
+     * The TimePoint's SessionID
+     *
+     * @var ?SessionID
+     */
     protected $sessionID;
 
     /**
@@ -49,7 +66,7 @@ class TimePointData
      * Return the SessionID for this TimePoint, or throw
      * an exception if unknown.
      *
-     * @return ?SessionID
+     * @return SessionID
      */
     public function getSessionID() : SessionID
     {
@@ -63,7 +80,7 @@ class TimePointData
      * Return the ProjectID for this TimePoint, or throw
      * an exception if unknown.
      *
-     * @return ?ProjectID
+     * @return ProjectID
      */
     public function getProjectID() : ProjectID
     {
@@ -77,7 +94,7 @@ class TimePointData
      * Return the CenterID for this TimePoint, or throw
      * an exception if unknown.
      *
-     * @return ?int
+     * @return int
      */
     public function getCenterID() : int
     {

@@ -76,7 +76,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * A DTO for TimePoint related data
      */
-    protected TimePointData $data;
+    protected ?TimePointData $data;
 
     /**
      * Construct a TimePoint object seeded with the data
@@ -159,8 +159,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $this->data = new TimePointData(
             $sessionID,
-            new ProjectID($row['ProjectID']),
-            intval($row['CenterID']),
+            isset($row['ProjectID'])
+                ? new ProjectID($row['ProjectID'])
+                : null,
+            isset($row['CenterID'])
+                ? intval($row['CenterID'])
+                : null,
         );
 
         // store user data in object property
