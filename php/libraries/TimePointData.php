@@ -22,7 +22,8 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class TimePointData {
+class TimePointData
+{
     protected $projectID;
     protected $centerID;
     protected $sessionID;
@@ -30,14 +31,18 @@ class TimePointData {
     /**
      * Construct a TimePointData DTO for a TimePoint object
      *
-     * @param ?SessionID $SessionID
-     * @param ?ProjectID $ProjectID
-     * @param ?int       $CenterID
+     * @param ?SessionID $SessionID The SessionID for the TimePoint
+     * @param ?ProjectID $ProjectID The ProjectID for the TimePoint
+     * @param ?int       $CenterID  The CenterID for the TimePoint
      */
-    public function __construct(?SessionID $SessionID, ?int $ProjectID, ?int $CenterID) {
+    public function __construct(
+        ?SessionID $SessionID,
+        ?ProjectID $ProjectID,
+        ?int $CenterID
+    ) {
         $this->sessionID = $SessionID;
         $this->projectID = $ProjectID;
-        $this->centerID = $CenterID;
+        $this->centerID  = $CenterID;
     }
 
     /**
@@ -46,8 +51,9 @@ class TimePointData {
      *
      * @return ?SessionID
      */
-    public function getSessionID() : SessionID {
-        if($this->sessionID === null) {
+    public function getSessionID() : SessionID
+    {
+        if ($this->sessionID === null) {
             throw new \Exception("No SessionID loaded into data model");
         }
         return $this->sessionID;
@@ -59,8 +65,9 @@ class TimePointData {
      *
      * @return ?ProjectID
      */
-    public function getProjectID () : ProjectID {
-        if($this->projectID === null) {
+    public function getProjectID() : ProjectID
+    {
+        if ($this->projectID === null) {
             throw new \Exception("No ProjectID loaded into data model");
         }
         return $this->projectID;
@@ -72,8 +79,9 @@ class TimePointData {
      *
      * @return ?int
      */
-    public function getCenterID () : int {
-        if($this->centerID === null) {
+    public function getCenterID() : int
+    {
+        if ($this->centerID === null) {
             throw new \Exception("No CenterID loaded into data model");
         }
         return $this->centerID;

@@ -81,8 +81,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Construct a TimePoint object seeded with the data
      * from the given DTO.
+     *
+     * @param ?TimePointData $data The Timepoint DTO
      */
-    public function __construct(?TimePointData $data=null) {
+    public function __construct(?TimePointData $data=null)
+    {
         $this->data = $data;
     }
 
@@ -153,7 +156,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             $query,
             ['SID' => $sessionID]
         );
-
 
         $this->data = new TimePointData(
             $sessionID,
