@@ -57,6 +57,8 @@ class New_Profile extends \NDB_Form
         $centerIDs = \User::singleton()->getCenterIDs();
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
+        } else {
+            $values['site'] = new \CenterID($values['site']);
         }
         //TODO: add similar logic to projects when user-projects association is
         //incorporated.
