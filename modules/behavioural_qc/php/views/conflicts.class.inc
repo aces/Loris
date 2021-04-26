@@ -43,7 +43,6 @@ class Conflicts
             'projects'    => $projects,
             'subprojects' => $subprojects,
             'sites'       => $sites,
-            'subprojects' => $subprojects,
         ];
     }
 
