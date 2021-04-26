@@ -105,8 +105,8 @@ foreach ($instruments AS $instrument) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
         switch($bits[0]){
-	    case "testname":
-		break;
+	          case "testname":
+		          break;
             case "table":
                 $table = $bits[1];
                 print "Instrument: $table\n";
@@ -366,4 +366,3 @@ function enumizeOptions($options, $table, $name)
     $enum =implode(",", $enum);
     return "enum($enum)";
 }
-
