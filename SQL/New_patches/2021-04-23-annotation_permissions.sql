@@ -1,0 +1,2 @@
+INSERT INTO `permissions` (`code`, `description`, `moduleID`, `action`, `categoryID`) VALUES ('electrophysiology_browser_view_annotations', 'EEG - View Annotations', (SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'View', 2);
+INSERT INTO `permissions` (`code`, `description`, `moduleID`, `action`, `categoryID`) VALUES ('electrophysiology_browser_edit_annotations', 'EEG - Create/Edit Annotations', (SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', 2);

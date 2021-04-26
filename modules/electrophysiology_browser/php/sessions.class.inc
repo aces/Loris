@@ -54,6 +54,32 @@ class Sessions extends \NDB_Page
     }
 
     /**
+     * Determine whether the user has permission to view the derivatives
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool whether the user can view the derivatives
+     */
+    function _hasViewDerivPerms(\User $user) : bool
+    {
+        return ($user->hasPermission('electrophysiology_browser_view_annotations'));
+
+    }
+
+    /**
+     * Determine whether the user has permission to create and edit the derivatives
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool whether the user can create and edit the derivatives
+     */
+    function _hasEditDerivPerms(\User $user) : bool
+    {
+        return ($user->hasPermission('electrophysiology_browser_edit_annotations'));
+
+    }
+
+    /**
      * Load the required variables in order to check that the  user
      * has access to the session.
      *
