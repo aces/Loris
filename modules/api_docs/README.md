@@ -20,9 +20,7 @@ This module is designed to be used for documentation and demonstration purposes 
 
 ## Permissions
 
-The API Documentation module is meant to be used solely with the `superuser` 
-(Superuser - supersedes all permissions) permission. As such only administrators 
-with this permission have access to this resource.
+The `api_docs` permission is required to access this module.
 
 ## Configurations
 
