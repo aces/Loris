@@ -25,13 +25,14 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
         parent::__construct(
             "
             SELECT DISTINCT
-	          s.CandID AS _candID,
-	          ca.PSCID AS _pscID,
-	          c.FieldName AS _fieldName,
-	          c.TableName AS _tableName,
-	          t.full_name AS _test_name_display,
-	          s.visit_label AS _visit,
+  	          s.CandID AS _candID,
+  	          ca.PSCID AS _pscID,
+  	          c.FieldName AS _fieldName,
+  	          c.TableName AS _tableName,
+  	          t.full_name AS _test_name_display,
+  	          s.visit_label AS _visit,
               s.ProjectID AS _project,
+              s.SubprojectID AS _subproject,
               f.SessionID AS _sessionID,
               f.commentid AS _commentID,
               t.Full_name AS _instrument,
