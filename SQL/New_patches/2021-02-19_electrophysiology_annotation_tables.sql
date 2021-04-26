@@ -64,7 +64,7 @@ CREATE TABLE `physiological_annotation_instance` (
     `AnnotationFileID`      INT(10)         UNSIGNED NOT NULL,
     `AnnotationParameterID` INT(10)         UNSIGNED NOT NULL,
     `Onset`                 DECIMAL(10, 4),
-    `Duration`              DECIMAL(10, 4), DEFAULT 0,
+    `Duration`              DECIMAL(10, 4)  DEFAULT 0,
     `AnnotationLabelID`     INT(5)          UNSIGNED NOT NULL,
     `Channels`              TEXT,
     `AbsoluteTime`          TIMESTAMP,
