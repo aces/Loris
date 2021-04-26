@@ -53,18 +53,6 @@ class Sessions extends \NDB_Page
             ) && $user->hasProject($this->timepoint->getProject()->getId()));
     }
 
-    /**
-     * Determine whether the user has permission to view the derivatives
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool whether the user can view the derivatives
-     */
-    function _hasViewDerivPerms(\User $user) : bool
-    {
-        return ($user->hasPermission('electrophysiology_browser_view_annotations'));
-
-    }
 
     /**
      * Determine whether the user has permission to create and edit the derivatives
@@ -515,14 +503,14 @@ class Sessions extends \NDB_Page
                 }
 
                 $splitPhysioFile = $splitData['splitPhysioFile'];
-
-                $downloadLinks[] = [
-                    'groupName' => 'Split '.($i+1),
-                    'links'     => $this->getPhysioFileDownloadlinks(
-                        $splitPhysioFile
-                    ),
-                ];
+                
+            //Get the annotation data if the output type is derivative
+            if (!in_array($outputType, ['derivatives', 'all_types'])) {
+                $annotations = $this->getAnnotations(intval($physiologicalFileID));
+                $fileSummary['annotations'] = $annotations;
             }
+
+            $fileCollection[]['file'] = $fileSummary;
         }
         return $downloadLinks;
     }
@@ -615,6 +603,66 @@ class Sessions extends \NDB_Page
             ];
         }
         return $downloadLinks;
+    }
+
+    /**
+     * Gets the annotation data for the given physiological file
+     *
+     * @param int $physioFileID Electrophysiological file ID
+     *
+     * @return array array with the data for each annotation for the file
+     */
+    function getAnnotations(int $physioFileID) : array
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        $result         = [];
+        $params         = [];
+        $params['PFID'] = $physioFileID;
+
+        //Get the annotation file IDs
+        $instanceFileID = $db->pselect(
+            'SELECT AnnotationFileID
+                FROM physiological_annotation_file
+                WHERE PhysiologicalFileID=:PFID
+                AND FileType="tsv"',
+            $params
+        );
+        $metadataFileID = $db->pselect(
+            'SELECT AnnotationFileID
+                FROM physiological_annotation_file
+                WHERE PhysiologicalFileID=:PFID
+                AND FileType="json"',
+            $params
+        );
+
+        $params['instance_FID'] = $instanceFileID;
+        $params['metadata_FID'] = $metadataFileID;
+
+        //Get the information for each annotation for the given file
+        $annotationInstance  = $db->pselect(
+            'SELECT * FROM physiological_annotation_instance
+                WHERE AnnotationFileID=:instance_FID',
+            $params
+        );
+        $result['instances'] = $annotationInstance;
+
+        //Get the metadata for the annotations of the given file
+        $annotationMetadata = $db->pselect(
+            'SELECT * FROM physiological_annotation_parameter
+                WHERE AnnotationFileID=:metadata_FID',
+            $params
+        );
+        $result['metadata'] = $annotationMetadata;
+
+        //Get all pre-existing label types
+        $annotationLabels = $db->pselect(
+            'SELECT * FROM physiological_annotation_label',
+            $params
+        );
+        $result['labels'] = $annotationLabels;
+
+        return $result;
     }
 
     /**
