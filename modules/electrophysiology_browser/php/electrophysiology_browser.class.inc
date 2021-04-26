@@ -5,13 +5,6 @@
  * electrophysiology browser module.
  *
  * PHP version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Electrophysiology
- * @author     Loris team <info-loris.mni@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://github.com/aces/Loris
  */
 namespace LORIS\electrophysiology_browser;
 /**
@@ -73,7 +66,6 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions(): array
     {
-        // create user object
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
@@ -89,13 +81,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         }
 
         return [
-            'sites'    => $this->getSiteOptions(
-                false,
-                [
-                    'electrophysiology_browser_view_allsites'
-                ]
-            ),
-            'projects' => $this->getProjectOptions(false),
+            'sites'    => $this->getSiteOptions($user, false),
+            'projects' => $this->getProjectOptions($user, false),
             'types'    => $list_of_types
         ];
     }
