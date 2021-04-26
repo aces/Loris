@@ -1,6 +1,4 @@
   <link rel="stylesheet" type="text/css" href="/api_docs/css/swagger-ui.css">
-  <script src="/api_docs/js/swagger-ui-standalone-preset.js"></script>
-  <script src="/api_docs/js/swagger-ui-bundle.js"></script>
   <div id="swagger-ui" class="container"></div>
   <style>
     html
@@ -24,23 +22,13 @@
     {
       background-color: inherit;
     }
+    .svg-assets
+    {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
   </style>
   <script>
-    window.addEventListener('load', () => {
-      const ui = SwaggerUIBundle({
-        urls: {$schema_urls},
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
-        layout: 'StandaloneLayout',
-        validatorUrl: null,
-      })
-      window.ui = ui;
-    });
+  const schema_urls = {$schema_urls};
   </script>

@@ -289,6 +289,7 @@ const config = [
   lorisModule('server_processes_manager', ['server_processes_managerIndex']),
   lorisModule('instruments', ['CandidateInstrumentList']),
   lorisModule('candidate_profile', ['CandidateInfo']),
+  lorisModule('api_docs', ['swagger-ui_custom']),
 ];
 
 // Support project overrides

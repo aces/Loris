@@ -94,4 +94,25 @@ class API_Docs extends \NDB_Page
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display()));
     }
+
+    /**
+     * Add JS dependency
+     *
+     * @return array of javascript files to be included
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            [
+                $baseurl . '/api_docs/js/swagger-ui_custom.js',
+            ]
+        );
+
+    }
 }
