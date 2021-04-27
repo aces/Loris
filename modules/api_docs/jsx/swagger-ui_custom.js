@@ -1,4 +1,5 @@
 import {SwaggerUIBundle, SwaggerUIStandalonePreset} from 'swagger-ui-dist';
+import 'swagger-ui-dist/swagger-ui.css';
 
 window.addEventListener('load', () => {
   /* jshint newcap: false */

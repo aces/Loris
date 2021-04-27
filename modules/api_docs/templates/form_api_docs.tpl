@@ -1,4 +1,3 @@
-  <link rel="stylesheet" type="text/css" href="/api_docs/css/swagger-ui.css">
   <div id="swagger-ui" class="container"></div>
   <style>
     html
