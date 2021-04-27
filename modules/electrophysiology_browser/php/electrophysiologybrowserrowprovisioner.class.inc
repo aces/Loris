@@ -48,6 +48,7 @@ class ElectrophysiologyBrowserRowProvisioner
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
+              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Type,
               s.ID                                      AS SessionID,
               s.CenterID                                AS CenterID,
               s.ProjectID                               AS ProjectID

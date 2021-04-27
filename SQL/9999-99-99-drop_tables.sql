@@ -1,4 +1,10 @@
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `physiological_annotation_instance`;
+DROP TABLE IF EXISTS `physiological_annotation_parameter`;
+DROP TABLE IF EXISTS `physiological_annotation_archive`;
+DROP TABLE IF EXISTS `physiological_annotation_file`;
+DROP TABLE IF EXISTS `physiological_annotation_file_type`;
+DROP TABLE IF EXISTS `physiological_annotation_label`;
 DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_electrode`;
