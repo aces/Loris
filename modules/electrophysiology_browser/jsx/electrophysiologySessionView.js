@@ -310,14 +310,14 @@ class ElectrophysiologySessionView extends Component {
                 >
                   <SeriesRenderer />
                   <div className='row'>
-                    <div className='col-sm-3'>
+                    <div className='col-md-6 col-lg-4'>
                       <SummaryPanel
                         data={this.state.database[i].file}
                         id={'filename_summary_' + i}
                       />
                     </div>
                     <EEGMontage />
-                    <div className='col-sm-4'>
+                    <div className='col-md-6 col-lg-4'>
                       <DownloadPanel
                         id={'file_download_' + i}
                         data={this.state.database[i].file}
@@ -390,19 +390,11 @@ window.onload = function() {
   );
 
   const eegSidebarDOM = document.createElement('div');
-  eegSidebarDOM.style.top =
-  eegSidebarDOM.style.bottom =
-  eegSidebarDOM.style.left = '0';
-  eegSidebarDOM.style.display = 'table-cell';
-  eegSidebarDOM.style.height = 'calc(100%);';
-  eegSidebarDOM.style.position = 'fixed';
   eegSidebarDOM.id = 'eegSidebar';
 
-  let page = document.getElementById('page');
-  page.style.verticalAlign = 'top';
-  page.style.position = 'relative';
-  page.style.width = 'auto';
-  page.style.marginLeft = '150px';
+  const page = document.getElementById('page');
+  page.classList.add('eegBrowser');
+
   const wrapDOM = document.getElementById('wrap');
   wrapDOM.insertBefore(eegSidebarDOM, page);
 

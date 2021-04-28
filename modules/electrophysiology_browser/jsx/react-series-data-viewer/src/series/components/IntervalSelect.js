@@ -1,24 +1,20 @@
 // @flow
 
 import * as R from 'ramda';
-import {vec2} from 'gl-matrix';
-import {Group} from '@visx/group';
 import {connect} from 'react-redux';
-import {scaleLinear} from 'd3-scale';
 import {
   startDragInterval,
   continueDragInterval,
   endDragInterval,
 } from '../store/logic/dragBounds';
-import ResponsiveViewer from './ResponsiveViewer';
-import Axis from './Axis';
-import React, {useCallback, useEffect, useState} from 'react';
 import {setInterval} from '../store/state/bounds';
 import {updateFilteredEpochs} from '../store/logic/filterEpochs';
+import {Slider, Rail, Handles, Ticks} from 'react-compound-slider';
+import {Handle, Tick} from './components';
+import React, {useState} from 'react';
 
 type Props = {
   viewerHeight: number,
-  seriesViewerWidth: number,
   domain: [number, number],
   interval: [number, number],
   setInterval: [number, number] => void,
@@ -30,7 +26,6 @@ type Props = {
 
 const IntervalSelect = ({
   viewerHeight,
-  seriesViewerWidth,
   domain,
   interval,
   setInterval,
@@ -39,75 +34,19 @@ const IntervalSelect = ({
   dragEnd,
   updateFilteredEpochs,
 }: Props) => {
-  const [refNode, setRefNode] = useState<?HTMLDivElement>(null);
-  const [bounds, setBounds] = useState<?ClientRect>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  useEffect(() => {
-    if (refNode) {
-      setBounds(refNode.getBoundingClientRect());
-    }
-  }, [seriesViewerWidth]);
-
-  const getNode = useCallback((domNode) => {
-    if (domNode) {
-      setRefNode(domNode);
-    }
-  }, []);
-
-  const topLeft = vec2.fromValues(
-    -seriesViewerWidth/2,
-    viewerHeight/2
-  );
-  const bottomRight = vec2.fromValues(
-    seriesViewerWidth/2,
-    -viewerHeight/2
-  );
-
-  const scale = scaleLinear()
-    .domain(domain)
-    .range([-seriesViewerWidth/2, seriesViewerWidth/2]);
-
-  const ySlice = (x) => ({
-    p0: vec2.fromValues(x, topLeft[1]),
-    p1: vec2.fromValues(x, bottomRight[1]),
-  });
-
-  const start = ySlice(scale(interval[0])).p1[0];
-  const end = ySlice(scale(interval[1])).p0[0];
-  const width = Math.abs(end - start);
-  const center = (start + end) / 2;
-
-  const BackShadowLayer = ({interval}) => (
-    <rect
-      fill='#ECF1F6'
-      stroke='#E4EBF2'
-      width={width}
-      height={'100%'}
-      x={center - width/2}
-      y={-viewerHeight/2}
-    />
-  );
-
-  const AxisLayer = ({viewerWidth, viewerHeight, domain}) => (
-    <Group top={viewerHeight/2} left={-viewerWidth/2}>
-      <Axis domain={domain} range={[0, viewerWidth]} orientation='top' />
-    </Group>
-  );
-
-  const onMouseMove = (v : MouseEvent) => {
-    if (bounds === null || bounds === undefined) return;
-    const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
-    dragContinue(x);
+  const sliderStyle = {
+    position: 'relative',
   };
 
-  const onMouseUp = (v : MouseEvent) => {
-    if (bounds === null || bounds === undefined) return;
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-    const x = Math.min(100, Math.max(0, (v.pageX - bounds.left)/bounds.width));
-
-    dragEnd(x);
-    updateFilteredEpochs();
+  const railStyle = {
+    position: 'absolute',
+    width: '100%',
+    height: 10,
+    marginTop: -9,
+    borderBottom: '1px solid #000',
+    cursor: 'pointer',
   };
 
   return (
@@ -118,7 +57,7 @@ const IntervalSelect = ({
           color: '#064785',
           fontWeight: 'bold',
           paddingLeft: '15px',
-          marginBottom: '10px',
+          marginBottom: '15px',
         }}
       >
         Timeline Range View
@@ -136,30 +75,80 @@ const IntervalSelect = ({
       <div
         className='col-xs-offset-1 col-xs-11'
         style={{height: viewerHeight}}
-        ref={getNode}
       >
-        <ResponsiveViewer
-          mouseDown={(v) => {
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-            R.compose(dragStart, R.nth(0))(v);
+        <Slider
+          mode={2}
+          rootStyle={sliderStyle}
+          domain={[domain[0], domain[1]]}
+          values={[interval[0], interval[1]]}
+          onUpdate={(values) => {
+            if (!isDragging) {
+              dragStart(values);
+              setIsDragging(true);
+            } else {
+              dragContinue(values);
+            }
+          }}
+          onChange={(values) => {
+            dragStart(values);
+            dragEnd(values);
+            setIsDragging(false);
           }}
         >
-          <BackShadowLayer interval={interval} />
-          <AxisLayer
-            viewerWidth={0}
-            viewerHeight={0}
-            domain={domain}
-          />
-        </ResponsiveViewer>
+          <Rail>
+            {({getRailProps}) => (
+              <div style={railStyle} {...getRailProps()} />
+            )}
+          </Rail>
+          <Handles>
+            {({handles, getHandleProps}) => (
+              <div className="slider-handles">
+                {handles.map((handle) => (
+                  <Handle
+                    key={handle.id}
+                    handle={handle}
+                    domain={domain}
+                    getHandleProps={getHandleProps}
+                  />
+                ))}
+              </div>
+            )}
+          </Handles>
+          <Ticks count={10}>
+            {({ticks}) => (
+              <div
+                className="slider-ticks"
+                style={{
+                  position: 'relative',
+                  zIndex: 1,
+                  pointerEvents: 'none',
+                }}
+              >
+                {ticks.map((tick) => (
+                  <Tick key={tick.id} tick={tick} count={ticks.length} />
+                ))}
+              </div>
+            )}
+          </Ticks>
+        </Slider>
+
+        <div
+          style={{
+            fontSize: 10,
+            top: '-25px',
+            right: '15px',
+            position: 'absolute',
+          }}
+        >
+          Time (s)
+        </div>
       </div>
     </div>
   );
 };
 
 IntervalSelect.defaultProps = {
-  viewerHeight: 50,
-  seriesViewerWidth: 400,
+  viewerHeight: 20,
   domain: [0, 1],
   interval: [0.25, 0.75],
 };
@@ -168,7 +157,6 @@ export default connect(
   (state) => ({
     domain: state.bounds.domain,
     interval: state.bounds.interval,
-    seriesViewerWidth: state.bounds.viewerWidth,
   }),
   (dispatch: any => void) => ({
     dragStart: R.compose(

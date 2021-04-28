@@ -6,7 +6,7 @@ import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear} from 'd3-scale';
-import {MAX_RENDERED_EPOCHS, MAX_CHANNELS} from '../../vector';
+import {MAX_RENDERED_EPOCHS, MAX_CHANNELS, SIGNAL_UNIT} from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
 import LineChunk from './LineChunk';
@@ -330,19 +330,25 @@ const SeriesRenderer = ({
   return (
     <Panel
       id='channel-viewer'
-      title={'Channel and Epoch Viewer'}
+      title={'Signal Viewer'}
     >
       {channels.length > 0 ? (
         <div className='row'>
-          <div className={rightPanel ? 'col-xs-10' : 'col-xs-12'}>
+          <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
             <IntervalSelect />
             <div className='row'>
               <div className='col-xs-offset-1 col-xs-11'>
                 <div
                   className='row'
-                  style={{paddingTop: '20px', paddingBottom: '15px'}}
+                  style={{paddingTop: '15px', paddingBottom: '10px'}}
                 >
-                  <div className='col-xs-8'>
+                  <div
+                    className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
+                    style={{
+                      paddingTop: '5px',
+                      paddingBottom: '5px',
+                    }}
+                  >
                     <div className='btn-group'>
                       <input
                         type='button'
@@ -374,12 +380,11 @@ const SeriesRenderer = ({
                         className="btn btn-xs btn-primary dropdown-toggle"
                         data-toggle='dropdown'
                       >
-                        <div className="col-xs-10">
-                          <span className="pull-left">
-                            {HIGH_PASS_FILTERS[highPass].label}
-                          </span>
-                        </div>
-                        <div className="pull-right">
+                        {HIGH_PASS_FILTERS[highPass].label}
+                        <div
+                          style={{paddingLeft: '5px'}}
+                          className="pull-right"
+                        >
                           <span
                             className="glyphicon glyphicon-menu-down"
                           ></span>
@@ -407,12 +412,11 @@ const SeriesRenderer = ({
                         className="btn btn-xs btn-primary dropdown-toggle"
                         data-toggle='dropdown'
                       >
-                        <div className="col-xs-10">
-                          <span className="pull-left">
-                            {LOW_PASS_FILTERS[lowPass].label}
-                          </span>
-                        </div>
-                        <div className="pull-right">
+                        {LOW_PASS_FILTERS[lowPass].label}
+                        <div
+                          style={{paddingLeft: '5px'}}
+                          className="pull-right"
+                        >
                           <span
                             className="glyphicon glyphicon-menu-down"
                           ></span>
@@ -433,8 +437,13 @@ const SeriesRenderer = ({
                   </div>
 
                   <div
-                    className='col-xs-4'
-                    style={{textAlign: 'right'}}
+                    className={
+                      (rightPanel ? '' : 'pull-right-lg ')
+                      + 'pagination-nav'
+                    }
+                    style={{
+                      padding: '5px 15px',
+                    }}
                   >
                     <small style={{marginRight: '10px'}}>
                       Showing{' '}
@@ -509,13 +518,30 @@ const SeriesRenderer = ({
                 onMouseLeave={() => setCursor(null)}
               >
                 <div style={{position: 'relative'}}>
-                  {cursor && (
-                    <SeriesCursor
-                      cursor={cursor}
-                      channels={channels}
-                      interval={interval}
-                    />
-                  )}
+                  <div
+                    style={{
+                      fontSize: 10,
+                      left: '-25px',
+                      position: 'absolute',
+                    }}
+                  >
+                    ({SIGNAL_UNIT})
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      bottom: '-20px',
+                      right: 0,
+                      position: 'absolute',
+                    }}
+                  >
+                    Time (s)
+                  </div>
+                  <SeriesCursor
+                    cursor={cursor}
+                    channels={channels}
+                    interval={interval}
+                  />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       transparent={true}
@@ -548,7 +574,7 @@ const SeriesRenderer = ({
               className='row'
               style={{
                 marginTop: '25px',
-                marginBottom: '25px',
+                marginBottom: '15px',
               }}
             >
               <div className='col-xs-offset-1 col-xs-11'>
@@ -572,10 +598,11 @@ const SeriesRenderer = ({
                 }
 
                 <div
-                  className='pull-right'
+                  className='pull-right col-xs-7'
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
+                    paddingRight: 0,
                   }}
                 >
                   {[...Array(epochs.length).keys()].filter((i) =>
@@ -590,7 +617,6 @@ const SeriesRenderer = ({
                       }}
                     >
                       Too many events to display for the timeline range.
-                      Limit the time range.
                     </div>
                   }
                 </div>
@@ -598,10 +624,7 @@ const SeriesRenderer = ({
             </div>
           </div>
           {rightPanel &&
-            <div
-              className='col-xs-2'
-              style={{paddingTop: '40px'}}
-            >
+            <div className='col-md-3'>
               {rightPanel === 'annotationForm' && <AnnotationForm />}
               {rightPanel === 'epochList' && <EventManager />}
             </div>

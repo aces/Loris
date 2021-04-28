@@ -6,7 +6,7 @@ import {bisector} from 'd3-array';
 import {colorOrder} from '../../color';
 import type {Channel, Epoch} from '../store/types';
 import {connect} from 'react-redux';
-import {MAX_RENDERED_EPOCHS} from '../../vector';
+import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE} from '../../vector';
 import {useEffect} from 'react';
 
 type CursorContentProps = {
@@ -37,6 +37,8 @@ const SeriesCursor = (
     showMarker,
   }: Props
 ) => {
+  if (!cursor) return null;
+
   let reversedEpochs = [...filteredEpochs].reverse();
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
@@ -94,12 +96,13 @@ const SeriesCursor = (
         position: 'absolute',
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#eee',
+        backgroundColor: '#fff',
+        color: '#064785',
         padding: '2px 2px',
         borderRadius: '3px',
       }}
     >
-      {time}
+      {Math.round(time)}
     </div>
   );
 
@@ -180,7 +183,7 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
           const idx = bisectTime(indices, time);
           const value = chunk.values[idx-1];
 
-          return value;
+          return value * SIGNAL_SCALE;
         };
 
         return (
@@ -195,7 +198,7 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
             }}
           >
             {showMarker && (<Marker color={colorOrder(contentIndex)} />)}
-            {chunk && computeValue(chunk)}
+            {chunk && Math.round(computeValue(chunk))}
           </div>
         );
       })}

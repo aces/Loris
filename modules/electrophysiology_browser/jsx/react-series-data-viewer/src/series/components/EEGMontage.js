@@ -37,7 +37,6 @@ const EEGMontage = (
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [view3D, setView3D] = useState(false);
-  const [selectedElectrode, setSelectedElectrode] = useState(null);
 
   const scale = 1200;
   let scatter3D = [];
@@ -134,34 +133,34 @@ const EEGMontage = (
     <Group>
       <line
         x1="25" y1="-135"
-        x2="0" y2="-155"
+        x2="0" y2="-150"
         stroke="black"
       />
       <line
         x1="-25" y1="-135"
-        x2="0" y2="-155"
+        x2="0" y2="-150"
         stroke="black"
       />
       <ellipse
-        cx="140" cy="0"
+        cx="135" cy="0"
         rx="15" ry="40"
         stroke="black"
         fillOpacity='0'
       />
       <ellipse
-        cx="-140" cy="0"
+        cx="-135" cy="0"
         rx="15" ry="40"
         stroke="black"
         fillOpacity='0'
       />
       <circle
-        r='140'
+        r='138'
         stroke="black"
         fill='white'
       />
       {scatter2D.map((point, i) =>
         <Group
-          className={(selectedElectrode == i ? 'hover ' : '') + 'electrode'}
+          className='electrode'
           key={i}
         >
           <circle
@@ -197,7 +196,7 @@ const EEGMontage = (
   );
 
   return (
-    <div className='col-sm-5'>
+    <div className='col-lg-4 col-md-6'>
       <Panel
         id='electrode-montage'
         title={'Electrode Map'}
@@ -209,65 +208,26 @@ const EEGMontage = (
             height: '300px',
           }}
         >
-          <div
-            className={'col-xs-4'}
-            style={{height: '100%'}}
-          >
-            <div
-              className="list-group"
-              style={{
-                maxHeight: '100%',
-                overflowY: 'scroll',
-                marginBottom: 0,
-              }}
-            >
-              {electrodes.map((electrode, i) => {
-                return (
-                  <div
-                    key={i}
-                    data-key={i}
-                    className='list-group-item list-group-item-action'
-                    style={{
-                      position: 'relative',
-                    }}
-                    onMouseEnter={(e) => setSelectedElectrode(
-                      e.currentTarget.getAttribute('data-key')
-                    )}
-                    onMouseLeave={(e) => setSelectedElectrode(null)}
-                  >
-                    <small>{i+1}. </small>
-                    <strong
-                      style={{color: 'rgb(7, 71, 133)'}}
-                    >{electrode.name}</strong>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className={'col-xs-8'} style={{height: '100%'}}>
+          <div style={{height: '100%', position: 'relative'}}>
             {view3D ?
-              <div className={'col-xs-12'} style={{height: '100%'}}>
-                <ResponsiveViewer
-                  mouseMove={dragged}
-                  mouseDown={dragStart}
-                  mouseUp={dragEnd}
-                  mouseLeave={dragEnd}
-                >
-                  <Montage3D />
-                </ResponsiveViewer>
-              </div>
+              <ResponsiveViewer
+                mouseMove={dragged}
+                mouseDown={dragStart}
+                mouseUp={dragEnd}
+                mouseLeave={dragEnd}
+              >
+                <Montage3D />
+              </ResponsiveViewer>
             :
-              <div className={'col-xs-12'} style={{height: '100%'}}>
-                <ResponsiveViewer>
-                  <Montage2D />
-                </ResponsiveViewer>
-              </div>
+              <ResponsiveViewer>
+                <Montage2D />
+              </ResponsiveViewer>
             }
             <div
               className="btn-group"
               style={{
-                top: '15px',
-                left: 0,
+                top: '0',
+                left: '15px',
                 position: 'absolute',
               }}
             >
