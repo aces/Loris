@@ -234,7 +234,8 @@ CREATE TABLE `physiological_annotation_file` (
     `AnnotationFileID`    INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `PhysiologicalFileID` INT(10)      UNSIGNED NOT NULL,
     `FileType`            VARCHAR(20)  NOT NULL,
-    `FilePath`            VARCHAR(255) NOT NULL,
+    `FilePath`            VARCHAR(255),
+    `LastUpdate`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     PRIMARY KEY (`AnnotationFileID`),
     CONSTRAINT `FK_phys_file_ID`
         FOREIGN KEY (`PhysiologicalFileID`)

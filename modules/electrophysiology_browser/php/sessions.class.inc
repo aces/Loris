@@ -677,7 +677,7 @@ class Sessions extends \NDB_Page
      *
      * @return void
      */
-    function _updateAnnotations(ServerRequestInterface $request)
+    function _updateAnnotation(ServerRequestInterface $request)
     {
         $values        = $request->getQueryParams();
         $instance_data = $values['instance'];
@@ -731,12 +731,10 @@ class Sessions extends \NDB_Page
 
                 $params_tsv  = [
                     'PhysiologicalFileID' => $physioFileID,
-                    'FilePath'            => $values['tsv_path'],
                     'FileType'            => 'tsv'
                 ];
                 $params_json = [
                     'PhysiologicalFileID' => $physioFileID,
-                    'FilePath'            => $values['json_path'],
                     'FileType'            => 'json'
                 ];
                 $db->insert("physiological_annotation_file", $params_tsv);
@@ -790,7 +788,7 @@ class Sessions extends \NDB_Page
      *
      * @return void
      */
-    function _deleteAnnotations(ServerRequestInterface $request)
+    function _deleteAnnotation(ServerRequestInterface $request)
     {
         $values = $request->getQueryParams();
         $user   = \NDB_Factory::singleton()->user();
