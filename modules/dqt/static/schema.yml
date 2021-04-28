@@ -12,18 +12,67 @@ info:
 servers:
   - url: /api/v0.0.3-dev
 paths:
- 
-  /dqt/queries:
+  '/dqt/search':
+    post:
+      tags:
+        - Querying
+      description: Execute the query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '201':
+          description: Results created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Created results url
+
+  '/dqt/categories':
     get:
+      tags:
+        - Fields
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+          
+          
+  '/dqt/categories/{category}':
+    get:
+      tags:
+        - Fields
+      parameters:
+        - in: path
+          name: category
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: List of fields in that category
+  '/dqt/queries':
+    get:
+      tags:
+        - Saved Queries
       description: List available queries
       responses:
         '200':
-          description: All the queries in 3 lists ; History, Saved, Shared
+          description: 'All the queries in 3 lists ; History, Saved, Shared'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Queries'
     post:
+      tags:
+        - Saved Queries
       description: Saves the current query
       requestBody:
         required: true
@@ -32,14 +81,34 @@ paths:
             schema:
               $ref: '#/components/schemas/Query'
       responses:
-        '204': 
+        '204':
           description: The query has been added to the saved queries
         '403':
-          description: The query can't be saved because of insuficient user permission or the query has already been saved. 
-  
-  '/dqt/queries/{queryId}': 
+          description: The query can't be saved because of insuficient user permission or the query has already been saved.
+          
+  '/dqt/queries/{queryId}':
+    get:
+      tags:
+        - Saved Queries
+      description: 'Get one query details'
+      parameters:
+        - in: path
+          name: queryId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: The Query details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedQuery'
+          
     patch:
-      description: Change the name of, or un/share a query
+      tags:
+        - Saved Queries
+      description: 'Change the name of, or un/share a query'
       parameters:
         - in: path
           name: queryId
@@ -55,11 +124,10 @@ paths:
       responses:
         '204':
           description: Query updated
-        
     delete:
-      description: 
-        Remove a query from the shared and saved queries.<br>
-        *The query might still be showned in the query  history.*  
+      tags:
+        - Saved Queries
+      description: Remove a query from the shared and saved queries.<br> *The query might still be showned in the query  history.*
       parameters:
         - in: path
           name: queryId
@@ -69,9 +137,10 @@ paths:
       responses:
         '204':
           description: Query removed
-          
-  /dqt/results/{hash}/{revision}:
+  '/dqt/results/{hash}/{revision}':
     get:
+      tags:
+        - Querying
       description: Download the results
       parameters:
         - in: path
@@ -96,18 +165,20 @@ paths:
                 type: string
                 format: binary
     post:
+      tags:
+        - Querying
       description: Copy results to other location
       parameters:
-      - in: path
-        name: hash
-        schema:
-          type: string
-        required: true
-      - in: path
-        name: revision
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: hash
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: revision
+          schema:
+            type: integer
+          required: true
       requestBody:
         required: true
         content:
@@ -116,30 +187,27 @@ paths:
               type: object
               properties:
                 destination:
-                 type: string
+                  type: string
       responses:
         '204':
           description: File moved successfully
-  /dqt/search:
-    post:
-      description: Execute the query
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Query'
-      responses:
-        '201':
-          description: Results created
-          headers:
-            Location:
-              schema:
-                type: string
-              description: Created results url
-                 
+
+  
+
+  
 components:
   schemas:
+    Categories:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    
+    Category:
+      type: object
+      
     Queries:
       type: object
       properties:
@@ -155,7 +223,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SavedQuery'
-    
     SavedQuery:
       type: object
       required:
@@ -171,12 +238,11 @@ components:
         creatorUsername:
           type: string
           description: This value will be ignored in POST and PATCH requests.
-        creationTimestamp: 
+        creationTimestamp:
           type: string
           description: This value will be ignored in POST and PATCH requests.
         query:
           $ref: '#/components/schemas/Query'
-    
     Query:
       type: object
       required:
@@ -186,11 +252,42 @@ components:
         fields:
           $ref: '#/components/schemas/Fields'
         filters:
-          $ref: '#/components/schemas/Filters'
-          
+          discriminator:
+            propertyName: type
+          oneOf:
+          - $ref: '#/components/schemas/Group'
+          - $ref: '#/components/schemas/Filter'
+          example:
+            type: group
+            operator: AND
+            items:
+              - type: filter
+                operator: equals
+                category: demographics
+                field: Sex
+                value: Female
+              - type: group
+                operator: OR
+                items:
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-09-15'
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-10-15'
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-11-15' 
     Fields:
-      anyOf:
-        - $ref: '#/components/schemas/Field'
+      type: array
+      items:
+        $ref: '#/components/schemas/Field'
         
     Field:
       type: object
@@ -198,22 +295,13 @@ components:
         - category
         - field
       properties:
-        category:
+        categoryname:
           type: string
-        field:
+        fieldname:
           type: string
-        visits:
-          type: array
-          items:
-            type: string
+        visitlabel:
+          type: string
       
-    Filters:
-      oneOf:
-        - $ref: '#/components/schemas/Group'
-        - $ref: '#/components/schemas/Filter'
-      discriminator:
-        propertyName: type
-  
     Group:
       type: object
       required:
@@ -224,48 +312,19 @@ components:
         type:
           type: string
           enum:
-            - 'group'
+            - group
         operator:
           type: string
           enum:
-            - 'AND'
-            - 'OR'
+            - AND
+            - OR
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Filters'
+            anyOf:
+            - $ref: '#/components/schemas/Group'
+            - $ref: '#/components/schemas/Filter'
 
-      example:
-        ex1: 
-          type: 'group'
-          operator: 'AND'
-          items:
-            - type: object
-              operator: 'equals'
-              category: 'demographics'
-              field: 'Sex'
-              value: 'Female'
-            - type: object
-              properties:
-                type: 'group'
-                operator: 'OR'
-                items:
-                  - type: object
-                    operator: 'equals'
-                    category: 'demographics'
-                    field: 'DoB'
-                    value: '1936-09-15'
-                  - type: object
-                    operator: 'equals'
-                    category: 'demographics'
-                    field: 'DoB'
-                    value: '1936-10-15'
-                  - type: object
-                    operator: 'equals'
-                    category: 'demographics'
-                    field: 'DoB'
-                    value: '1936-11-15'
-            
     Filter:
       type: object
       required:
@@ -277,25 +336,25 @@ components:
         type:
           type: string
           enum:
-            - 'filter'
+            - filter
         operator:
           type: string
           enum:
-            - 'equal'
-            - 'notEqual'
-            - 'lessThanEqual'
-            - 'greaterThanEqual'
-            - 'startsWith'
-            - 'contains'
-            - 'isNull'
-            - 'isNotNull'
+            - equal
+            - notEqual
+            - lessThanEqual
+            - greaterThanEqual
+            - startsWith
+            - contains
+            - isNull
+            - isNotNull
         category:
           type: string
         field:
           type: string
         value:
           type: string
-      
+          
     ResultsJSON:
       type: object
       properties:
@@ -307,7 +366,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ResultRow'
-        
+            
     ResultRow:
       type: object
       properties:
@@ -317,8 +376,7 @@ components:
             type: string
         doc:
           type: object
-        
-      
+          
     Error:
       type: object
       properties:
@@ -327,8 +385,6 @@ components:
           type: string
       required:
         - error
-        
-    
   responses:
     InternalServerError:
       description: 500 Internal server error
