@@ -100,10 +100,10 @@ class ViewProject extends React.Component {
           let formData = {
             title: data.title,
             description: data.description,
+            publishingStatus: data.publishingStatus,
             datePublication: data.datePublication,
             journal: data.journal,
             link: data.link,
-            publishingStatus: data.publishingStatus,
             leadInvestigator: data.leadInvestigator,
             leadInvestigatorEmail: data.leadInvestigatorEmail,
             notifyLead: false,
@@ -288,6 +288,11 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
         <StaticElement
+          name="publishingStatus"
+          label="Publishing status"
+          text={this.state.formData.publishingStatus}
+        />
+        <StaticElement
           name="datePublication"
           label="Date published"
           text={this.state.formData.datePublication}
@@ -301,11 +306,6 @@ class ViewProject extends React.Component {
           name="link"
           label="Link"
           text={this.state.formData.link}
-        />
-        <StaticElement
-          name="publishingStatus"
-          label="Publishing status"
-          text={this.state.formData.publishingStatus}
         />
         <StaticElement
           name="leadInvestigator"

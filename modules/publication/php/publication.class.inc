@@ -85,7 +85,9 @@ class Publication extends \NDB_Menu_Filter_Form
             "LEFT JOIN publication_keyword pk ".
             "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
             "LEFT JOIN publication_users_edit_perm_rel puepr ".
-            "ON puepr.PublicationID=p.PublicationID ";
+            "ON puepr.PublicationID=p.PublicationID ".
+            "LEFT JOIN users u ".
+            "ON u.ID=p.UserID ";
         $query .= " WHERE 1=1 ";
         // allow user access to module if they have edit
         // access to any project proposal
@@ -104,6 +106,11 @@ class Publication extends \NDB_Menu_Filter_Form
             'pcli.Name as LeadInvestigator',
             'p.DateProposed',
             'ps.Label', // Status (Approved, Pending, Rejected, etc.)
+            'p.journal',
+            'p.link',
+            'p.publishingStatus',
+            'p.datePublication',
+            'u.Real_name',
             'p.Description',
             'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
@@ -122,6 +129,11 @@ class Publication extends \NDB_Menu_Filter_Form
             'Lead Investigator',
             'Date Proposed',
             'Approval Status',
+            'Journal',
+            'Link',
+            'Publishing Status',
+            'Date published',
+            'Project Proposal Creator',
             'Description',
             'Collaborators',
             'Variables Of Interest',
@@ -194,9 +206,29 @@ class Publication extends \NDB_Menu_Filter_Form
             'keywords',
             'Keywords'
         );
+
         $this->addBasicText(
             'variablesOfInterest',
             'Variables of Interest'
+        );
+
+        $this->addBasicText(
+            'journal',
+            'Journal'
+        );
+
+        $this->addBasicText(
+            'link',
+            'Link'
+        );
+
+        $this->addSelect(
+            'publishingStatus',
+            'Publishing Status',
+            [
+                'published' => 'Published',
+                'inProgress' => 'In Progress'
+            ]
         );
     }
 

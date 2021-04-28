@@ -182,6 +182,15 @@ class PublicationIndex extends React.Component {
         </td>
       );
     }
+    if (column === 'Publishing Status') {
+      let status = '';
+      if (cell === 'inProgress') {
+        status = 'In Progress';
+      } else if (cell === 'published') {
+        status = 'Published';
+      }
+      return <td className={classes}>{status}</td>;
+    }
     return <td className={classes}>{cell}</td>;
   }
 }

@@ -58,10 +58,10 @@ function uploadPublication() : void
         showPublicationError('Submitted title already exists', 400);
     }
     $desc            = $_POST['description'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication = $_POST['datePublication'] ?? null;
     $journal         = $_POST['journal'] ?? null;
     $link            = $_POST['link'] ?? null;
-    $publishingStatus = $_POST['publishingStatus'] ?? null;
     $leadInvest       = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail  = $_POST['leadInvestigatorEmail'] ?? null;
 
@@ -70,7 +70,7 @@ function uploadPublication() : void
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Name = :n OR Email = :e',
+        'WHERE Email = :e',
         [
             'n' => $leadInvest,
             'e' => $leadInvestEmail,
@@ -98,10 +98,10 @@ function uploadPublication() : void
         'UserID'             => $uid,
         'Title'              => $title,
         'Description'        => $desc,
+        'publishingStatus'   => $publishingStatus,
         'datePublication'    => $datePublication,
         'journal'            => $journal,
         'link'               => $link,
-        'publishingStatus'   => $publishingStatus,
         'LeadInvestigatorID' => $leadInvID,
         'DateProposed'       => $today,
     ];
@@ -521,6 +521,10 @@ function editProject() : void
     $statusID         = $_POST['status'] ?? null;
     $rejectedReason   = $_POST['rejectedReason'] ?? null;
     $description      = $_POST['description'] ?? null;
+    $publishingStatus= $_POST['publishingStatus'] ?? null;
+    $datePublication = $_POST['datePublication'] ?? null;
+    $journal         = $_POST['journal'] ?? null;
+    $link            = $_POST['link'] ?? null;
     $leadInvestigator = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
@@ -553,6 +557,18 @@ function editProject() : void
     }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
+    }
+    if ($pubData['publishingStatus'] !== $publishingStatus) {
+        $toUpdate['publishingStatus'] = $publishingStatus;
+    }
+    if ($pubData['datePublication'] !== $datePublication) {
+        $toUpdate['datePublication'] = $datePublication;
+    }
+    if ($pubData['journal'] !== $journal) {
+        $toUpdate['journal'] = $journal;
+    }
+    if ($pubData['link'] !== $link) {
+        $toUpdate['link'] = $link;
     }
     if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
         $leadInvToUpdate['Name'] = $leadInvestigator;

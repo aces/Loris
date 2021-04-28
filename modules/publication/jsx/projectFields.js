@@ -397,6 +397,9 @@ class ProjectFormFields extends React.Component {
       voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
     }
 
+    let published = this.props.formData.publishingStatus==='published';
+    let publishInProgress = this.props.formData.publishingStatus==='inProgress';
+
     return (
       <div>
         <TextareaElement
@@ -406,27 +409,6 @@ class ProjectFormFields extends React.Component {
           required={true}
           value={this.props.formData.description}
         />
-        <DateElement
-          name="datePublication"
-          label="Date published"
-          onUserInput={this.props.setFormData}
-          required={true}
-          value={this.props.formData.datePublication}
-        />
-        <TextboxElement
-          name="journal"
-          label="Journal"
-          onUserInput={this.props.setFormData}
-          required={true}
-          value={this.props.formData.journal}
-        />
-        <TextboxElement
-          name="link"
-          label="Link"
-          onUserInput={this.props.setFormData}
-          required={true}
-          value={this.props.formData.link}
-        />
         <SelectElement
           name="publishingStatus"
           label="Publishing status"
@@ -435,6 +417,30 @@ class ProjectFormFields extends React.Component {
           required={true}
           value={this.props.formData.publishingStatus}
           emptyOption={true}
+        />
+        <DateElement
+          name="datePublication"
+          label="Date published"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.datePublication}
+          disabled={publishInProgress}
+        />
+        <TextboxElement
+          name="journal"
+          label="Journal"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.journal}
+          disabled={publishInProgress}
+        />
+        <TextboxElement
+          name="link"
+          label="Link"
+          onUserInput={this.props.setFormData}
+          required={published}
+          value={this.props.formData.link}
+          disabled={publishInProgress}
         />
         <TextboxElement
           name="leadInvestigator"
