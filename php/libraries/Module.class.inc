@@ -531,6 +531,17 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     }
 
     /**
+     * Returns true if a schema.yml file exists under the satic directory of that
+     * module.
+     *
+     * @return bool
+     */
+    public function hasAPISpecification(): bool
+    {
+        return false;
+    }
+
+    /**
      * Return a data dictionary of data types managed by this module.
      * DictionaryItems are grouped into categories and a module may
      * provide 0 or more categories of dictionaryitems.
