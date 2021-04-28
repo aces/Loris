@@ -226,7 +226,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'publishingStatus',
             'Publishing Status',
             [
-                'published' => 'Published',
+                'published'  => 'Published',
                 'inProgress' => 'In Progress'
             ]
         );

@@ -57,13 +57,13 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc            = $_POST['description'] ?? null;
+    $desc = $_POST['description'] ?? null;
     $publishingStatus = $_POST['publishingStatus'] ?? null;
-    $datePublication = $_POST['datePublication'] ?? null;
-    $journal         = $_POST['journal'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
     $link            = $_POST['link'] ?? null;
-    $leadInvest       = $_POST['leadInvestigator'] ?? null;
-    $leadInvestEmail  = $_POST['leadInvestigatorEmail'] ?? null;
+    $leadInvest      = $_POST['leadInvestigator'] ?? null;
+    $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
@@ -521,11 +521,11 @@ function editProject() : void
     $statusID         = $_POST['status'] ?? null;
     $rejectedReason   = $_POST['rejectedReason'] ?? null;
     $description      = $_POST['description'] ?? null;
-    $publishingStatus= $_POST['publishingStatus'] ?? null;
-    $datePublication = $_POST['datePublication'] ?? null;
-    $journal         = $_POST['journal'] ?? null;
-    $link            = $_POST['link'] ?? null;
-    $leadInvestigator = $_POST['leadInvestigator'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
+    $link = $_POST['link'] ?? null;
+    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
