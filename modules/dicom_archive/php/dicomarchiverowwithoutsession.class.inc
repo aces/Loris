@@ -25,23 +25,22 @@ namespace LORIS\dicom_archive;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class DICOMArchiveRow implements \LORIS\Data\DataInstance,
-    \LORIS\StudyEntities\SiteHaver
+class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
-    protected $CenterID;
 
     /**
-     * Create a new DICOMArchiveRow
+     * Create a new DICOMArchiveRow without a session.
      *
-     * @param array     $row The row (in the same format as \Database::pselectRow
-     *                       returns
-     * @param \CenterID $cid The centerID affiliated with this row.
+     * Session-less DICOMArchiveRows do not have CenterIDs to be filtered
+     * by. 
+     *
+     * @param array $row The row (in the same format as \Database::pselectRow
+     *                   returns)
      */
-    public function __construct(array $row, \CenterID $cid)
+    public function __construct(array $row)
     {
         $this->DBRow    = $row;
-        $this->CenterID = $cid;
     }
 
     /**
@@ -52,16 +51,5 @@ class DICOMArchiveRow implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return $this->DBRow;
-    }
-
-    /**
-     * Returns the CenterID for this row, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
-     *
-     * @return \CenterID
-     */
-    public function getCenterID() : \CenterID
-    {
-        return $this->CenterID;
     }
 }
