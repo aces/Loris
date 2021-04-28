@@ -100,20 +100,25 @@ class NDB_BVL_Battery
      * on age AND SubprojectID, adds all appropriate instruments to the
      * battery
      *
-     * @param integer $SubprojectID The SubprojectID that we want the battery
-     *                              for
-     * @param string  $stage        Either 'visit' or 'screening'
-     * @param string  $visit_label  The visit label to create a battery for.
-     * @param integer $center_ID    The center of the candidate having a battery
-     *                              created
-     * @param boolean $firstVisit   Whether this is a first visit battery.
-     *                              true means ONLY first visit
-     *                              false means NOT first visit
-     *                              null can be any visit.
+     * @param \LORIS\LorisInstance $loris        The LORIS instance to add
+     *                                           instruments to
+     * @param integer              $SubprojectID The SubprojectID that we want
+     *                                           the battery for
+     * @param string               $stage        Either 'visit' or 'screening'
+     * @param string               $visit_label  The visit label to create a
+     *                                           battery for.
+     * @param integer              $center_ID    The center of the candidate
+     *                                           having a battery created
+     * @param boolean              $firstVisit   Whether this is a first visit
+     *                                           battery.  true means ONLY
+     *                                           first visit, false means NOT
+     *                                           first visit, null can be any
+     *                                           visit.
      *
      * @return void
      */
     function createBattery(
+        \LORIS\LorisInstance $loris,
         $SubprojectID,
         $stage=null,
         $visit_label=null,
@@ -154,7 +159,7 @@ class NDB_BVL_Battery
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
-            $this->addInstrument($testName);
+            $this->addInstrument($loris, $testName);
         } // end looping over the list of instruments
     } // end createBattery()
 
@@ -178,12 +183,14 @@ class NDB_BVL_Battery
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
      *
-     * @param string $testName The test to be added to the currently
-     *                         selected battery.
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to add the
+     *                                       instrument to
+     * @param string               $testName The test to be added to the
+     *                                       currently selected battery.
      *
      * @return string The generated CommentID
      */
-    function addInstrument($testName)
+    function addInstrument($loris, $testName)
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
@@ -212,7 +219,7 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // instantiate instrument object to get table name attribute
-        $obj = NDB_BVL_Instrument::factory($testName, '', '');
+        $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table

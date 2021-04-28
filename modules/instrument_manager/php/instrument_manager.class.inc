@@ -48,20 +48,30 @@ class Instrument_Manager extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param Module $module    The test name being accessed
-     * @param string $page      The subtest being accessed (may be an empty string)
-     * @param string $id        The identifier for the data to load on this page
-     * @param string $commentID The CommentID to load the data for
-     * @param string $formname  The name to give this form
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance that is serving
+     *                                        the page
+     * @param Module               $module    The test name being accessed
+     * @param string               $page      The subtest being accessed (may be
+     *                                        an empty string)
+     * @param string               $id        The identifier for the data to load
+     *                                        on this page
+     * @param string               $commentID The CommentID to load the data for
+     * @param string               $formname  The name to give this form
      */
-    public function __construct($module, $page, $id, $commentID, $formname)
-    {
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        $module,
+        $page,
+        $id,
+        $commentID,
+        $formname
+    ) {
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
         $this->_factory     = \NDB_Factory::singleton();
         $this->_path        = $this->_factory->config()->getSetting("base");
 
-        parent::__construct($module, $page, $id, $commentID);
+        parent::__construct($loris, $module, $page, $id, $commentID);
     }
 
     /**
@@ -184,7 +194,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
         // messsage from MySQL. This will be stored in $result and
         // logged via LorisException.
         try {
-            $table_name = \NDB_BVL_Instrument::factory($instrument, '', '')->table;
+            $table_name = \NDB_BVL_Instrument::factory(
+                $this->loris,
+                $instrument,
+                '',
+                '',
+            )->table;
         } catch (\NotFound $e) {
             return (new \LORIS\Http\Response\JSON\NotFound(
                 $e->getMessage()

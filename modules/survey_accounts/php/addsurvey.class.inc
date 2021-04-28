@@ -152,6 +152,7 @@ class AddSurvey extends \NDB_Form
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 $instrument_instance = \NDB_BVL_Instrument::factory(
+                    $this->loris,
                     $instrument['Test_name']
                 );
                 return [
@@ -210,12 +211,12 @@ class AddSurvey extends \NDB_Form
         if ($InstrumentExists == 'x') {
             return;
         }
-        $battery = new \NDB_BVL_Battery();
+        $battery = new \NDB_BVL_Battery($this->loris);
         $battery->selectBattery(
             new \SessionID($SessionID)
         );
 
-        $commentID = $battery->addInstrument($values['Test_name']);
+        $commentID = $battery->addInstrument($this->loris, $values['Test_name']);
 
         $key = $this->_generateSurveyKey();
 

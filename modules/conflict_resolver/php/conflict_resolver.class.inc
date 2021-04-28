@@ -132,6 +132,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                     $TableName = $row['TableName'];
 
                     $Instrument = \NDB_BVL_Instrument::factory(
+                        $this->loris,
                         $TableName,
                         $row['CommentId1'],
                         '',
@@ -154,6 +155,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                     }
 
                     $Instrument = \NDB_BVL_Instrument::factory(
+                        $this->loris,
                         $TableName,
                         $row['CommentId2'],
                         '',

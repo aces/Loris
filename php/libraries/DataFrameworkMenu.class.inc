@@ -44,18 +44,22 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      * Constructor for a DataFrameworkMenu class. This signature must match
      * the base NDB_Page type in order for LORIS to be able to load the page.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS instance the page is serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be an
+     *                                         empty string)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     public function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID);
+        parent::__construct($loris, $module, $page, $identifier, $commentID);
 
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
