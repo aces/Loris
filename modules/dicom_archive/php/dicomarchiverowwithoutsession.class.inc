@@ -33,14 +33,14 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
      * Create a new DICOMArchiveRow without a session.
      *
      * Session-less DICOMArchiveRows do not have CenterIDs to be filtered
-     * by. 
+     * by.
      *
      * @param array $row The row (in the same format as \Database::pselectRow
      *                   returns)
      */
     public function __construct(array $row)
     {
-        $this->DBRow    = $row;
+        $this->DBRow = $row;
     }
 
     /**

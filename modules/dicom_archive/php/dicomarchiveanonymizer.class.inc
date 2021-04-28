@@ -50,7 +50,6 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-
         $newrow = json_decode(json_encode($resource), true);
         if (!is_array($newrow)) {
             throw new \Exception("Error converting DataInstance to array");

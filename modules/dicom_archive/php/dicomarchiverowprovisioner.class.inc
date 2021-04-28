@@ -72,7 +72,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        if($row['CenterID'] !== null) {
+        if ($row['CenterID'] !== null) {
             $cid = new \CenterID($row['CenterID']);
             unset($row['CenterID']);
             return new DICOMArchiveRowWithSession($row, $cid);
