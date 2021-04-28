@@ -55,7 +55,7 @@ class SummaryPanel extends Component {
         >
           <div
             style={{
-              height: '300px',
+              minHeight: '300px',
             }}
           >
             <table

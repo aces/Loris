@@ -4,8 +4,6 @@
   "version": "1.0.0",
   "description": "react-series-data-viewer React component",
   "dependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.13.1",
     "@visx/axis": "^1.4.0",
     "@visx/group": "^1.0.0",
     "@visx/responsive": "^1.3.0",
@@ -19,6 +17,9 @@
     "gl-matrix": "^2.8.1",
     "google-protobuf": "^3.6.1",
     "ramda": "^0.25.0",
+    "react": "^16.12.0",
+    "react-compound-slider": "^3.3.1",
+    "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "redux": "^4.0.0",
     "redux-actions": "^2.6.1",

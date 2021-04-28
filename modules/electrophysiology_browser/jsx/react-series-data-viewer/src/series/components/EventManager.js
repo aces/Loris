@@ -38,7 +38,7 @@ const EventManager = ({
             justifyContent: 'space-between',
           }}
       >
-        Events/Annotations <br/>
+        Events / Annotations
         in timeline view
         <i
           className='glyphicon glyphicon-remove'
@@ -55,7 +55,7 @@ const EventManager = ({
         <div
           className="list-group"
           style={{
-            maxHeight: '510px',
+            maxHeight: '540px',
             overflowY: 'scroll',
             marginBottom: 0,
           }}

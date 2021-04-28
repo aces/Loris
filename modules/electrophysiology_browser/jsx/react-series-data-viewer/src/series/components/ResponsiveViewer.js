@@ -74,7 +74,7 @@ const ResponsiveViewer = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflow: 'visible'}}
+      style={{overflow: 'hidden'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(

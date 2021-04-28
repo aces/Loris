@@ -36,6 +36,7 @@ const Axis = ({
       tickValues={tickValues}
       tickFormat={format}
       hideAxisLine={hideLine}
+      hideZero={true}
     />
   );
 };

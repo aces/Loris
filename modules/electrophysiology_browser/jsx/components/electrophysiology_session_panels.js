@@ -70,9 +70,8 @@ class FilePanel extends Component {
               >
                 <div
                   className={'no-gutters'}
-                  style={{background: '#efefef'}}
                 >
-                  <div className={'col-xs-6'}>
+                  <div className={'col-md-6'}>
                     <div className='table-responsive'>
                       <table
                         style={styles.table.style}
@@ -164,7 +163,7 @@ class FilePanel extends Component {
                     </div>
                   </div>
 
-                  <div className={'col-xs-6'}>
+                  <div className={'col-md-6'}>
                     <div className='table-responsive'>
                       <table
                         style={styles.table.style}

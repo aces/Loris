@@ -20,8 +20,8 @@ class DownloadPanel extends Component {
       data: this.props.data,
       labels: {
         physiological_file: 'EEG File',
-        physiological_electrode_file: 'Electrode Info',
-        physiological_channel_file: 'Channels Info',
+        physiological_electrode_file: 'Electrodes',
+        physiological_channel_file: 'Channels',
         physiological_task_event_file: 'Events',
         physiological_annotation_files: 'Annotations',
         all_files: 'All Files',
@@ -46,6 +46,8 @@ class DownloadPanel extends Component {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          maxWidth: '250px',
+          margin: '0 auto',
         }}>
           {this.state.data.downloads
             .filter((download) =>
@@ -56,20 +58,21 @@ class DownloadPanel extends Component {
               return (
                 <div
                   key={i}
-                  className={'form-group row'}
+                  className={'form-group'}
                 >
                   <div
-                    className='col-xs-offset-1 col-xs-5'
+                    className='col-lg-offset-1 col-xs-5'
                     style={{
                       color: '#074785',
                       fontWeight: 'bold',
                       lineHeight: '30px',
                       verticalAlign: 'middle',
+                      paddingLeft: 0,
                     }}
                   >{this.state.labels[download.type]}</div>
                   {disabled
                     ? <a
-                        className='btn disabled col-xs-4'
+                        className='btn disabled col-xs-5'
                         style={{
                           color: '#b3b3b3',
                           cursor: 'not-allowed',
@@ -78,7 +81,7 @@ class DownloadPanel extends Component {
                         }}
                       >Not Available</a>
                     : <a
-                        className='btn btn-primary download col-xs-4'
+                        className='btn btn-primary download col-xs-5'
                         href={'/mri/jiv/get_file.php?file=' + download.file}
                         target='_blank'
                         download={this.state.data.downloads[0].file}

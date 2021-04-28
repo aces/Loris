@@ -15,4 +15,8 @@ export const MAX_VIEWED_CHUNKS = 3;
 
 export const MAX_CHANNELS = 6;
 
+export const SIGNAL_SCALE = Math.pow(10, 6);
+
+export const SIGNAL_UNIT = 'µV';
+
 export const MAX_RENDERED_EPOCHS = 100;
