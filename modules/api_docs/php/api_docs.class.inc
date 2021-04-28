@@ -14,8 +14,8 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * This class list the schema files of this LORIS instance modules
- * for the swagger-ui app to present. It is a public module but will only
- * show specification (schemas) of module that the user can access.
+ * for the swagger-ui app to present. It will only show specification(s)
+ * of modules that the user can access.
  *
  * @category Documentation
  * @package  Main
