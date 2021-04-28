@@ -188,14 +188,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * $instrument, and runs the setup() method on that new
      * instrument.
      *
-     * @param string  $instrument       The name of the instrument to use
-     * @param string  $commentID        The CommentID identifying the data to load
-     *                                  load
-     * @param string  $page             If a multipage form, the page to show
-     * @param boolean $guarantee_exists If true the factory will throw an
-     *                                  error if the file does not exist, otherwise
-     *                                  will silently return if the instrument is
-     *                                  missing.
+     * @param \LORIS\LorisInstance $loris            The LORIS instance with the
+     *                                               instrument
+     * @param string               $instrument       The name of the instrument to
+     *                                               use
+     * @param string               $commentID        The CommentID identifying the
+     *                                               data to load
+     * @param string               $page             If a multipage form, the page to
+     *                                               show
+     * @param boolean              $guarantee_exists If true the factory will throw
+     *                                               an error if the file does not
+     *                                               exist, otherwise will silently
+     *                                               return if the instrument is
+     *                                               missing.
      *
      * @return object|null the new object of $instrument type
      * @access public
@@ -203,6 +208,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @throws Exception
      */
     public static function factory(
+        \LORIS\LORISInstance $loris,
         string $instrument,
         string $commentID = '',
         string $page = '',
@@ -232,10 +238,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.
+                $loris,
                 Module::factory("instruments"),
                 $page,
                 $commentID,
-                $commentID
+                $commentID,
             );
         } else {
             if (!class_exists($class)
@@ -250,6 +257,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             // Now go ahead and instantiate it
             $obj = new $class(
+                $loris,
                 Module::factory("instruments"),
                 $page,
                 $commentID,
@@ -2464,6 +2472,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel(
+                $this->loris,
                 $this->testName,
                 $this->getCommentID() ?? '',
                 $candID,
@@ -2928,7 +2937,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $timepoint = \Timepoint::singleton(new SessionID($sessionID));
 
         // create an instrument status object
-        $status = new \NDB_BVL_InstrumentStatus;
+        $status = new \NDB_BVL_InstrumentStatus($this->loris);
         $status->select($this->commentID);
 
         // freeze the form to prevent data entry
@@ -2982,7 +2991,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $instrumentList = [];
         foreach ($instruments as $inst) {
             try {
-                $instrumentList[$inst] = NDB_BVL_Instrument::factory($inst, "", "");
+                $instrumentList[$inst] = NDB_BVL_Instrument::factory(
+                    $loris,
+                    $inst,
+                    "",
+                    ""
+                );
             } catch (Exception $e) {
                 error_log(
                     "Instrument $inst does not seem to be a valid instrument."

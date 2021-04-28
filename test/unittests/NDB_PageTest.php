@@ -46,8 +46,15 @@ class NDB_PageTest extends TestCase
     {
         parent::setUp();
 
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
         $this->_module = new NullModule("test_module");
         $this->_page   = new NDB_Page(
+            new \LORIS\LorisInstance($mockdb, $mockconfig, []),
             $this->_module,
             "test_page",
             "515",

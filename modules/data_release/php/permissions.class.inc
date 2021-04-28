@@ -59,6 +59,7 @@ class Permissions extends \NDB_Page
         $loris       = $request->getAttribute("loris");
         $DB          = $loris->getDatabaseConnection();
         $releasePage = $this->Module->loadPage(
+            $loris,
             'data_release',
         );
         assert($releasePage instanceof Data_Release);
@@ -206,7 +207,7 @@ class Permissions extends \NDB_Page
         $DB    = $loris->getDatabaseConnection();
 
         // Get current user version files and list of files for each version.
-        $dataRelease = $this->Module->loadPage('data_release');
+        $dataRelease = $this->Module->loadPage($loris, 'data_release');
         assert($dataRelease instanceof Data_Release);
         $userVersionFiles = $dataRelease->getUserVersionFiles($DB);
         $versionFiles     = $dataRelease->getVersionFiles($DB);
