@@ -146,10 +146,12 @@ class Sessions extends \NDB_Page
         }
 
         $method = $request->getMethod();
-        if ($method == 'POST' && $outputType != 'raw') {
+        //If method is POST, insert or update annotations
+        //Can update annotations if output type is raw (adding new annotations)
+        if ($method == 'POST') {
             $this->_updateAnnotation($request);
         }
-
+        //If method is DELETE, delete annotation instance
         if ($method == 'DELETE' && $outputType != 'raw') {
             $this->_deleteAnnotation($request);
         }
@@ -694,18 +696,8 @@ class Sessions extends \NDB_Page
 
         if ($this->_hasEditDerivPerms($user)) {
 
-            //If no derivative files exist, must create new files
-            $params        = ['FID' => $physioFileID];
-            $annotationFID = $db->pselect(
-                "SELECT AnnotationFileID
-                    FROM physiological_annotation_file
-                    WHERE PhysiologicalFileID=:FID",
-                $params
-            );
-
-            $isNew = empty($annotationFID);
-
             //If the label is new, add to annotation label table
+            //and get label ID
             $labelID = $db->pselect(
                 "SELECT AnnotationLabelID
                     FROM physiological_annotation_label
@@ -726,6 +718,32 @@ class Sessions extends \NDB_Page
                 );
             }
 
+            //If no derivative files exist, must create new files
+            $params        = ['FID' => $physioFileID];
+            $annotationFID = $db->pselect(
+                "SELECT AnnotationFileID
+                    FROM physiological_annotation_file
+                    WHERE PhysiologicalFileID=:FID",
+                $params
+            );
+
+            $isNew = empty($annotationFID);
+
+            //Get data from POST request
+            $metadata = [
+                'Sources' => $values['sources'],
+                'Author'  => $values['author']
+            ];
+
+            $instance = [
+                'Onset'             => $instance_data['onset'],
+                'Duration'          => $instance_data['duration'],
+                'AnnotationLabelID' => $labelID,
+                'Channels'          => $instance_data['channels'],
+                'AbsoluteTime'      => $instance_data['abs_time'],
+                'Description'       => $instance_data['description']
+            ];
+
             //Insert new files and data into DB
             if ($isNew) {
 
@@ -741,28 +759,24 @@ class Sessions extends \NDB_Page
                 $db->insert("physiological_annotation_file", $params_json);
 
                 //Get new annotation file ID
-                $annotation_ID = $db->pselect(
+                $annotation_tsv_ID = $db->pselect(
                     "SELECT AnnotationFileID
                     FROM physiological_annotation_file
-                    WHERE PhysiologicalFileID=:FID",
+                    WHERE PhysiologicalFileID=:FID
+                    AND FileType='tsv'",
+                    $params
+                );
+                //Get new annotation file ID
+                $annotation_json_ID = $db->pselect(
+                    "SELECT AnnotationFileID
+                    FROM physiological_annotation_file
+                    WHERE PhysiologicalFileID=:FID
+                    AND FileType='json'",
                     $params
                 );
 
-                $metadata = [
-                    'AnnotationFileID' => $annotation_ID,
-                    'Sources'          => $values['sources'],
-                    'Author'           => $values['author']
-                ];
-
-                $instance = [
-                    'AnnotationFileID'  => $annotation_ID,
-                    'Onset'             => $instance_data['onset'],
-                    'Duration'          => $instance_data['duration'],
-                    'AnnotationLabelID' => $labelID,
-                    'Channels'          => $instance_data['channels'],
-                    'AbsoluteTime'      => $instance_data['abs_time'],
-                    'Description'       => $instance_data['description']
-                ];
+                $metadata['AnnotationFileID'] = $annotation_json_ID;
+                $instance['AnnotationFileID'] = $annotation_tsv_ID;
 
                 $db->insert("physiological_annotation_parameter", $metadata);
 
@@ -771,12 +785,79 @@ class Sessions extends \NDB_Page
                     "SELECT AnnotationParameterID
                     FROM physiological_annotation_parameter
                     WHERE AnnotationFileID=:annotation_ID",
-                    ['annotation_ID' => $annotation_ID]
+                    ['annotation_ID' => $annotation_json_ID]
                 );
 
                 $instance['AnnotationParameterID'] = $metadata_ID;
 
                 $db->insert("physiological_annotation_instance", $instance);
+            } else {
+                //If the files are not new
+                //Get annotation file ID for the tsv file
+                $tsv_ID = $db->pselect(
+                    "SELECT AnnotationFileID
+                    FROM physiological_annotation_file
+                    WHERE PhysiologicalFileID=:FID
+                    AND FileType='tsv'",
+                    $params
+                );
+                //Get annotation file ID for the json file
+                $json_ID = $db->pselect(
+                    "SELECT AnnotationFileID
+                    FROM physiological_annotation_file
+                    WHERE PhysiologicalFileID=:FID
+                    AND FileType='json'",
+                    $params
+                );
+
+                $instance['AnnotationFileID'] = $tsv_ID;
+                $metadata['AnnotationFileID'] = $json_ID;
+
+                $parameters = [];
+                $parameters['annotationFID'] = $annotationFID;
+
+                /* If no instance ID is specified, insert new instance
+                 * into instance table and get the parameter file ID
+                 * from the parameter table
+                 */
+                if (empty($values['instance_id'])) {
+                    $parameterID = $db->pselectone(
+                        "SELECT AnnotationParameterID
+                        FROM physiological_annotation_parameter
+                        WHERE AnnotationFileID=:annotationFID",
+                        $parameters
+                    );
+                    $instance['AnnotationParameterID'] = $parameterID;
+
+                    $db->insert('physiological_annotation_instance', $instance);
+                } else {
+                    //Update instance table
+                    if (!empty($values['instance_id'])) {
+                        $db->update(
+                            'physiological_annotation_instance',
+                            $instance,
+                            ['AnnotationInstanceID' => $values['instance_id']]
+                        );
+                    }
+                    //Update parameter table
+                    if (!empty($values['parameter_id'])) {
+                        $db->update(
+                            'physiological_annotation_parameter',
+                            $metadata,
+                            ['AnnotationParameterID' => $values['parameter_id']]
+                        );
+                    }
+
+                }
+
+                //In all cases where files are not new,
+                //set new LastUpdate time for all related files
+                $db->update(
+                    'physiological_annotation_file',
+                    ['LastUpdate' => date("Y-m-d H:i:s")],
+                    ['PhysiologicalFileID' => $physioFileID]
+                );
+
             }
         }
     }
