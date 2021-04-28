@@ -36,7 +36,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 #### API Documentation (**New Module**)
-- New module mostly intended for developers, this module provides a user interface to inspect and try LORIS's API.
+- New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects

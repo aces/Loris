@@ -2,7 +2,6 @@ import {SwaggerUIBundle, SwaggerUIStandalonePreset} from 'swagger-ui-dist';
 import 'swagger-ui-dist/swagger-ui.css';
 
 window.addEventListener('load', () => {
-  /* jshint newcap: false */
   const ui = new SwaggerUIBundle({
     urls: schema_urls,
     dom_id: '#swagger-ui',
