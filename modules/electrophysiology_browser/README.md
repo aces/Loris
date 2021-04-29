@@ -23,7 +23,7 @@ datasets can also be accessed and annotated via this module.
 
 The Electrophysiology Browser uses the following permissions. Either of the first two is 
 sufficient to provide access to view data in the module. The third permission provides editing
-permissions for derivative datasets.
+permissions to add or modify annotations (derivatives) for data from the sites the user has access to in this module.
 
 electrophysiology_browser_view_allsites
   - This permission gives the user access to all electrophysiology datasets present in the database.
