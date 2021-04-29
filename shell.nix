@@ -1,0 +1,8 @@
+{ pkgs ? import <nixpkgs> {} }:
+let
+  php = pkgs.php80.withExtensions ({ enabled, all }:
+    enabled ++ [ all.ast ]);
+in
+pkgs.mkShell {
+  buildInputs = with pkgs; [ php git nodejs php80Packages.composer ];
+}
