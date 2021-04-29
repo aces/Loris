@@ -176,7 +176,6 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         $this->query   = $query;
         $this->group_by = '';
         $this->order_by = 'v.File_name';
-        }
     }
 
     /**
