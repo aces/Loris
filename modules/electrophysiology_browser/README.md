@@ -17,7 +17,7 @@ been correctly inserted into LORIS.
 
 The Electrophysiology Browser displays electrophysiology datasets that have been
 inserted into LORIS from a BIDS-format collection. Derived or processed electrophysiology
-datasets can also be accessed and edited via this module.
+datasets can also be accessed and annotated via this module.
 
 ## Permissions
 
