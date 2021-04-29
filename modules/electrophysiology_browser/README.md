@@ -4,7 +4,7 @@
 
 The Electrophysiology Browser is intended to allow users to view candidate
 electrophysiology (EEG, MEG...) sessions collected for a study and any associated
-annotations or derivative datasets for the session.
+annotations (derivatives) for each recording.
 
 ## Intended Users
 
