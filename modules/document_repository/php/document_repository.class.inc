@@ -159,7 +159,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             $query .= " AND (hidden_file='no' OR hidden_file IS NULL)";
         }
         // set the class variables
-        $this->columns =[
+        $this->columns  =[
             'v.File_name',
             'v.version',
             'v.File_type',
@@ -173,7 +173,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'v.File_category as category',
             'v.Data_dir',
         ];
-        $this->query   = $query;
+        $this->query    = $query;
         $this->group_by = '';
         $this->order_by = 'v.File_name';
     }
