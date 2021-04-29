@@ -384,7 +384,7 @@ class Files extends \NDB_Page
         $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
         $comments   = !empty($body['comments'])   ? $body['comments']   : null;
         $version    = !empty($body['version'])    ? $body['version']    : null;
-        $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : 'false';
+        $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : null;
 
         $fileSize = $uploadedFile->getSize();
         $fileType = pathinfo($filename, PATHINFO_EXTENSION);

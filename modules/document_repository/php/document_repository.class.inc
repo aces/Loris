@@ -152,51 +152,30 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         $user = \User::singleton();
-        if ($user->hasPermission('document_repository_hidden')) {
-            // the base query
-            $query  = " FROM document_repository v";
-            $query .= " WHERE COALESCE(v.hide_video, false)=false";
-            // set the class variables
-            $this->columns  = [
-                'v.File_name',
-                'v.version',
-                'v.File_type',
-                'v.Instrument',
-                'v.uploaded_by',
-                '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-                'v.comments',
-                'v.Date_uploaded',
-                'v.record_id as Edit',
-                'v.record_id as Delete_File',
-                'v.File_category as category',
-                'v.Data_dir',
-            ];
-            $this->query    = $query;
-            $this->group_by = '';
-            $this->order_by = 'v.File_name';
-        } else {
-            // the base query
-            $query  = " FROM document_repository v";
-            $query .= " WHERE COALESCE(v.hide_video, false)=false";
-            $query .= " AND (hidden_file='false' OR hidden_file IS NULL)";
-            // set the class variables
-            $this->columns  = [
-                'v.File_name',
-                'v.version',
-                'v.File_type',
-                'v.Instrument',
-                'v.uploaded_by',
-                '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-                'v.comments',
-                'v.Date_uploaded',
-                'v.record_id as Edit',
-                'v.record_id as Delete_File',
-                'v.File_category as category',
-                'v.Data_dir',
-            ];
-            $this->query    = $query;
-            $this->group_by = '';
-            $this->order_by = 'v.File_name';
+        // the base query
+        $query  = " FROM document_repository v";
+        $query .= " WHERE COALESCE(v.hide_video, false)=false";
+        if (!$user->hasPermission('document_repository_hidden')) {
+            $query .= " AND (hidden_file='no' OR hidden_file IS NULL)";
+        }
+        // set the class variables
+        $this->columns =[
+            'v.File_name',
+            'v.version',
+            'v.File_type',
+            'v.Instrument',
+            'v.uploaded_by',
+            '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
+            'v.comments',
+            'v.Date_uploaded',
+            'v.record_id as Edit',
+            'v.record_id as Delete_File',
+            'v.File_category as category',
+            'v.Data_dir',
+        ];
+        $this->query   = $query;
+        $this->group_by = '';
+        $this->order_by = 'v.File_name';
         }
     }
 
