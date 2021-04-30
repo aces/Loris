@@ -92,7 +92,9 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $el_dropdown->selectByVisibleText("Data Coordinating Center");
         $this->safeClick(WebDriverBy::Name("fire_away"));
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#lorisworkspace > fieldset > div > div > p:nth-child(1)")
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > fieldset > div > div > p:nth-child(1)"
+            )
         )->getText();
         $this->assertStringContainsString("New candidate created.", $bodyText);
         $this->restoreConfigSetting("useEDC");
