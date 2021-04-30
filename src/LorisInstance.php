@@ -18,17 +18,19 @@ class LorisInstance
      */
     private $config;
     private $DB;
+    private $couchdb;
 
     /**
      * Construct a LORISInstance for the install connected to $db
      * which uses modules from $moduleDirs.
      *
-     * @param \Database $db         A database connection to this
-     *                              instance.
-     * @param \NDB_Config $config   A set of configuration settings used by this
-     *                              instance.
-     * @param string[]  $moduleDirs A list of directories that may
-     *                              contain modules for this instance.
+     * @param \Database   $db         A database connection to this
+     *                                instance.
+     * @param \NDB_Config $config     A set of configuration settings used by this
+     *                                instance.
+     * @param string[]    $moduleDirs A list of directories that may
+     *                                contain modules for this
+     *                                instance.
      */
     public function __construct(
         \Database $db,
@@ -48,6 +50,28 @@ class LorisInstance
     public function getDatabaseConnection() : \Database
     {
         return $this->DB;
+    }
+
+    /**
+     * Return a configured CouchDB object.
+     *
+     * @return \Database
+     */
+    public function getCouchDBConnection() : \CouchDB
+    {
+        if (!isset($this->couchdb)) {
+            $setting = $this->config
+                ->getSetting("CouchDB");
+
+            $this->couchdb = \NDB_Factory::couchDB(
+                $setting['dbName'],
+                $setting['hostname'],
+                intval($setting['port']),
+                $setting['admin'],
+                $setting['adminpass']
+            );
+        }
+        return $this->couchdb;
     }
 
     /**

@@ -14,6 +14,9 @@
  */
 namespace LORIS\dqt;
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * Class module implements the basic LORIS module functionality
  *
@@ -36,6 +39,38 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) && $user->hasPermission('dataquery_view');
+    }
+
+    /**
+     * Handles requests to this endpoint by delegating to known paths or
+     * default to its superclass handle function.
+     *
+     * @param ServerRequestInterface $request The request to handle
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $path      = trim($request->getURI()->getPath(), "/");
+        $pathparts = explode('/', $path);
+
+        // Look if the first element of pathparts is a known handler; Default to
+        // Module superclass behaviour.
+        switch ($pathparts[0]) {
+        case 'categories':
+            $handler = new Endpoints\Categories();
+            break;
+        default:
+            return parent::handle($request);
+        }
+
+        // Remove the first element of the pathparts since we know the handler, then
+        // add the pathpaths as an attribute to the request.
+        array_shift($pathparts);
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
+        return $handler->process($request, $handler);
     }
 
     /**
