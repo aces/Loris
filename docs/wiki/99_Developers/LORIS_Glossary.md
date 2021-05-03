@@ -14,7 +14,7 @@ Below is a list of terms used mostly in the context of the LORIS user-facing fro
 
 **BVLQCStatus:** null or “Complete”
 
-**Candidate Age:** the difference between the candidate’s date of birth and the instrument’s date of administration.
+**Candidate Age:** the difference between the candidate's date of birth and the instrument's date of administration.
 
 **Candidate/Subject:** patient or participant in the study
 
