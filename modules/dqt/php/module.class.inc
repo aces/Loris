@@ -92,4 +92,14 @@ class Module extends \Module
     {
         return "Data Query Tool (Beta)";
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool Whether an api schema is available fro this module.
+     */
+    public function hasAPISpecification(): bool
+    {
+        return true;
+    }
 }

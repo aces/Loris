@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: LORIS - REST API endpoints
+  title: LORIS - REST API endpoints for the Data Query Tool module
   description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
   contact:
     name: LORIS Development Team
@@ -8,11 +8,42 @@ info:
   license:
     name: 'GNU Public License, Version 3'
     url: 'https://opensource.org/licenses/GPL-3.0'
-  version: 0.0.3-dev
+  version: 2.0.0
 servers:
-  - url: /api/v0.0.3-dev
+  - url: /
 paths:
-  '/dqt/search':
+
+  '/dqt/categories':
+    get:
+      tags:
+        - Fields & filters
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+
+  '/dqt/categories/{category}':
+    get:
+      tags:
+        -  Fields & filters
+      parameters:
+        - in: path
+          name: category
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: List of fields in that category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  
+  '/dqt/query':
     post:
       tags:
         - Querying
@@ -24,44 +55,17 @@ paths:
             schema:
               $ref: '#/components/schemas/Query'
       responses:
-        '201':
-          description: Results created
-          headers:
-            Location:
-              schema:
-                type: string
-              description: Created results url
-
-  '/dqt/categories':
-    get:
-      tags:
-        - Fields
-      responses:
         '200':
-          description: List of categories
+          description: Query and results url created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Categories'
-          
-          
-  '/dqt/categories/{category}':
-    get:
-      tags:
-        - Fields
-      parameters:
-        - in: path
-          name: category
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: List of fields in that category
+                $ref: '#/components/schemas/SearchResult'
+
   '/dqt/queries':
     get:
       tags:
-        - Saved Queries
+        - Queries
       description: List available queries
       responses:
         '200':
@@ -72,7 +76,7 @@ paths:
                 $ref: '#/components/schemas/Queries'
     post:
       tags:
-        - Saved Queries
+        - Queries
       description: Saves the current query
       requestBody:
         required: true
@@ -89,7 +93,7 @@ paths:
   '/dqt/queries/{queryId}':
     get:
       tags:
-        - Saved Queries
+        - Queries
       description: 'Get one query details'
       parameters:
         - in: path
@@ -103,11 +107,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SavedQuery'
+                allOf:
+                  - $ref: '#/components/schemas/QueryMetadata'
+                  - $ref: '#/components/schemas/Query'
           
     patch:
       tags:
-        - Saved Queries
+        - Queries
       description: 'Change the name of, or un/share a query'
       parameters:
         - in: path
@@ -120,13 +126,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SavedQuery'
+              $ref: '#/components/schemas/Query'
       responses:
         '204':
           description: Query updated
     delete:
       tags:
-        - Saved Queries
+        - Queries
       description: Remove a query from the shared and saved queries.<br> *The query might still be showned in the query  history.*
       parameters:
         - in: path
@@ -137,19 +143,15 @@ paths:
       responses:
         '204':
           description: Query removed
-  '/dqt/results/{hash}/{revision}':
+          
+  '/dqt/queries/{queryId}/results':
     get:
       tags:
-        - Querying
+        - Queries
       description: Download the results
       parameters:
         - in: path
-          name: hash
-          schema:
-            type: string
-          required: true
-        - in: path
-          name: revision
+          name: queryId
           schema:
             type: integer
           required: true
@@ -164,85 +166,60 @@ paths:
               schema:
                 type: string
                 format: binary
-    post:
-      tags:
-        - Querying
-      description: Copy results to other location
-      parameters:
-        - in: path
-          name: hash
-          schema:
-            type: string
-          required: true
-        - in: path
-          name: revision
-          schema:
-            type: integer
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                destination:
-                  type: string
-      responses:
-        '204':
-          description: File moved successfully
 
-  
-
-  
 components:
   schemas:
-    Categories:
+
+    QueryMetadata:
       type: object
       properties:
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/Category'
-    
-    Category:
-      type: object
-      
+        id:
+          type: string
+        creatorUsername:
+          type: string
+        creationTimestamp:
+          type: string
+
+    QuerySummary:
+      allOf:
+        - $ref: '#/components/schemas/QueryMetadata'
+        - type: object
+          properties:
+            link:
+              type: string
+              
+    SavedQuerySummary:
+      allOf:
+        - $ref: '#/components/schemas/QueryMetadata'
+        - type: object
+          properties:
+            name:
+              type: string
+            shared:
+              type: boolean
+            link:
+              type: string
+       
     Queries:
       type: object
       properties:
         history:
           type: array
           items:
-            $ref: '#/components/schemas/Query'
+            $ref: '#/components/schemas/QuerySummary'
         saved:
           type: array
           items:
-            $ref: '#/components/schemas/SavedQuery'
+            $ref: '#/components/schemas/SavedQuerySummary'
         shared:
           type: array
           items:
-            $ref: '#/components/schemas/SavedQuery'
-    SavedQuery:
-      type: object
-      required:
-        - name
-        - shared
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        shared:
-          type: boolean
-        creatorUsername:
-          type: string
-          description: This value will be ignored in POST and PATCH requests.
-        creationTimestamp:
-          type: string
-          description: This value will be ignored in POST and PATCH requests.
-        query:
-          $ref: '#/components/schemas/Query'
+            $ref: '#/components/schemas/SavedQuerySummary'
+            
+
+        
+       
+
     Query:
       type: object
       required:
@@ -250,13 +227,13 @@ components:
         - filters
       properties:
         fields:
-          $ref: '#/components/schemas/Fields'
+          $ref: '#/components/schemas/SelectedFields'
         filters:
           discriminator:
             propertyName: type
           oneOf:
-          - $ref: '#/components/schemas/Group'
           - $ref: '#/components/schemas/Filter'
+          - $ref: '#/components/schemas/Group'
           example:
             type: group
             operator: AND
@@ -284,12 +261,65 @@ components:
                     category: demographics
                     field: DoB
                     value: '1936-11-15' 
-    Fields:
+                    
+    Categories:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              link:
+                type: string
+                format: url
+    
+    Category:
+      type: object
+      properties:
+        name: 
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Field'
+          
+    Field:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        datatype:
+          type: string
+          enum:
+            - boolean
+            - numeric
+            - integer
+            - string
+        dataformat:
+          type: string
+          enum:
+            - array
+            - object
+            - date
+            - float
+            - double
+            - url
+            - time
+            - duration
+        unit:
+          type: string
+          
+    SelectedFields:
       type: array
       items:
-        $ref: '#/components/schemas/Field'
+        $ref: '#/components/schemas/SelectedField'
         
-    Field:
+    SelectedField:
       type: object
       required:
         - category
@@ -362,6 +392,10 @@ components:
           $ref: '#/components/schemas/Query'
         revision:
           type: integer
+        columns:
+          type: array
+          items:
+            type: string
         data:
           type: array
           items:
@@ -376,7 +410,18 @@ components:
             type: string
         doc:
           type: object
-          
+    
+    SearchResult:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            query:
+              type: string
+            results:
+              type: string
+    
     Error:
       type: object
       properties:
