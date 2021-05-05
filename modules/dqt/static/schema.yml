@@ -216,10 +216,6 @@ components:
           items:
             $ref: '#/components/schemas/SavedQuerySummary'
             
-
-        
-       
-
     Query:
       type: object
       required:
@@ -233,7 +229,7 @@ components:
             propertyName: type
           oneOf:
           - $ref: '#/components/schemas/Filter'
-          - $ref: '#/components/schemas/Group'
+          - $ref: '#/components/schemas/FilterGroup'
           example:
             type: group
             operator: AND
@@ -281,6 +277,10 @@ components:
       properties:
         name: 
           type: string
+        visits:
+          type: array
+          items:
+            type: string
         fields:
           type: array
           items:
@@ -291,27 +291,9 @@ components:
       properties:
         name:
           type: string
-        label:
+        descrption:
           type: string
         datatype:
-          type: string
-          enum:
-            - boolean
-            - numeric
-            - integer
-            - string
-        dataformat:
-          type: string
-          enum:
-            - array
-            - object
-            - date
-            - float
-            - double
-            - url
-            - time
-            - duration
-        unit:
           type: string
           
     SelectedFields:
@@ -322,8 +304,9 @@ components:
     SelectedField:
       type: object
       required:
-        - category
-        - field
+        - categoryname
+        - fieldname
+        - visitlabel
       properties:
         categoryname:
           type: string
@@ -332,7 +315,7 @@ components:
         visitlabel:
           type: string
       
-    Group:
+    FilterGroup:
       type: object
       required:
         - type
@@ -352,9 +335,9 @@ components:
           type: array
           items:
             anyOf:
-            - $ref: '#/components/schemas/Group'
             - $ref: '#/components/schemas/Filter'
-
+            - $ref: '#/components/schemas/FilterGroup'
+            
     Filter:
       type: object
       required:

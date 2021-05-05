@@ -6,7 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
 use \LORIS\dqt\Views\Category as VCategory;
-use \LORIS\dqt\Provisioners\CategoryProvisioner;
+use \LORIS\dqt\Provisioners\CategoryFieldsProvisioner;
+use \LORIS\dqt\Provisioners\CategoryVisitsProvisioner;
 
 
 class Category extends Endpoint implements ETagCalculator
@@ -99,13 +100,16 @@ class Category extends Endpoint implements ETagCalculator
             $loris       = $request->getAttribute('loris');
             $user        = $request->getAttribute('user');
 
-            $provisioner = new CategoryProvisioner($loris, $this->_name);
+            $visitsprov = new CategoryVisitsProvisioner($loris, $this->_name);
+            $visits     = $visitsprov->execute($user);
 
-            $categories = $provisioner->execute($user);
+            $categoryprov = new CategoryFieldsProvisioner($loris, $this->_name);
+            $fields       = $categoryprov->execute($user);
 
             $this->_cache = [
                 'name'   => $this->_name,
-                'fields' => iterator_to_array($categories)
+                'visits' => iterator_to_array($visits),
+                'fields' => iterator_to_array($fields)
             ];
         }
 
