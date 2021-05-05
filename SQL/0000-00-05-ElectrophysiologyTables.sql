@@ -264,6 +264,7 @@ CREATE TABLE `physiological_annotation_archive` (
 CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
+    `Description`           TEXT         NOT NULL,
     `Sources`               VARCHAR(255),
     `Author`                VARCHAR(255),
     PRIMARY KEY (`AnnotationParameterID`),

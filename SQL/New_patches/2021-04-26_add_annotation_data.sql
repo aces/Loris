@@ -18,7 +18,8 @@ CREATE TABLE `physiological_annotation_file` (
     `AnnotationFileID`    INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `PhysiologicalFileID` INT(10)      UNSIGNED NOT NULL,
     `FileType`            VARCHAR(20)  NOT NULL,
-    `FilePath`            VARCHAR(255) NOT NULL,
+    `FilePath`            VARCHAR(255),
+    `LastUpdate`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`AnnotationFileID`),
     CONSTRAINT `FK_phys_file_ID`
         FOREIGN KEY (`PhysiologicalFileID`)
@@ -47,6 +48,7 @@ CREATE TABLE `physiological_annotation_archive` (
 CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
+    `Description`           TEXT         NOT NULL,
     `Sources`               VARCHAR(255),
     `Author`                VARCHAR(50),
     PRIMARY KEY (`AnnotationParameterID`),
@@ -126,12 +128,12 @@ UPDATE physiological_output_type SET OutputTypeName='derivative' WHERE Physiolog
 
 SET FOREIGN_KEY_CHECKS=0;
 
-INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`) VALUES (1, 11, 'tsv', 'bids_imports/derivatives/sub-DCC0001/sesV01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_iee_annotations.tsv');
-INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`) VALUES (2, 11, 'json', 'bids_imports/derivatives/sub-DCC0001/sesV01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_iee_annotations.json');
+INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (1, 11, 'tsv', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tsv', '2021-06-05 15:57:15');
+INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (2, 11, 'json', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.json', '2021-06-05 15:57:15');
 
-INSERT INTO `physiological_annotation_archive` (`AnnotationArchiveID`, `PhysiologicalFileID`, `Blake2bHash`, `FilePath`) VALUES (1, 11, '3a61e50c57cf4bc3a43900fcf4e3dbfb16f69ce9 ', 'bids_imports/derivatives/sub-DCC0001/sesV01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_iee_annotations.tgz');
+INSERT INTO `physiological_annotation_archive` (`AnnotationArchiveID`, `PhysiologicalFileID`, `Blake2bHash`, `FilePath`) VALUES (1, 11, '3a61e50c57cf4bc3a43900fcf4e3dbfb16f69ce9 ', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tgz');
 
-INSERT INTO `physiological_annotation_parameter` (`AnnotationParameterID`, `AnnotationFileID`, `Sources`, `Author`) VALUES (1, 2, NULL, 'Alexandra Livadas');
+INSERT INTO `physiological_annotation_parameter` (`AnnotationParameterID`, `AnnotationFileID`, `Description`, `Sources`, `Author`) VALUES (1, 2, 'Annotations for BIDS Derivatives', NULL, 'Alexandra Livadas');
 
 INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (1, 1, 1, 0.488, 0.996, 2, NULL, NULL, 'Left hand flinch');
 INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (2, 1, 1, 3.224, 0.566, 2, NULL, '2009-06-15T13:45:30', 'Head turned left');
