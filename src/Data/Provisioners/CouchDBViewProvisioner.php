@@ -15,6 +15,7 @@ namespace LORIS\Data\Provisioners;
 use \LORIS\Data\ProvisionerInstance;
 use \LORIS\Data\DataInstance;
 use \LORIS\Data\CouchDBViewQuery;
+use \LORIS\Data\CouchDBResultRow;
 use \LORIS\LorisInstance as Loris;
 
 /**
@@ -104,10 +105,10 @@ abstract class CouchDBViewProvisioner extends ProvisionerInstance
             }
 
             if (preg_match('/^(\{.*}),*/', $line, $matches)) {
+                $row = new CouchDBResultRow($matches[1]);
                 // This is a data line
-                if ($this->_filter($matches[1])) {
-                    error_log(print_r($matches[1], true));
-                    yield $this->getInstance($matches[1]);
+                if ($this->_filter($row)) {
+                    yield $this->getInstance($row);
                 }
             }
         }

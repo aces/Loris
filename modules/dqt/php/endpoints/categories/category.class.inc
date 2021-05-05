@@ -1,21 +1,20 @@
-<?php declare(strict_types=1);
-
-namespace LORIS\dqt\Endpoints;
+<?php
+namespace LORIS\dqt\Endpoints\Categories;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
 use \LORIS\Middleware\ETagCalculator;
-use \LORIS\dqt\Views\Categories as VCategories;
-use \LORIS\dqt\Provisioners\CategoriesProvisioner;
+use \LORIS\dqt\Views\Category as VCategory;
+use \LORIS\dqt\Provisioners\CategoryProvisioner;
 
-class Categories extends Endpoint implements ETagCalculator
+
+class Category extends Endpoint implements ETagCalculator
 {
-    /**
-     * A cache of the endpoint results, so that it doesn't need to be
-     * recalculated for the ETag and handler.
-     */
-    private $_cache;
+    public function __construct(string $name)
+    {
+        $this->_name = $name;
+    }
 
     /**
      * Returns true if the user has permission to access
@@ -29,8 +28,7 @@ class Categories extends Endpoint implements ETagCalculator
     {
         return $user->hasPermission('dataquery_view');
     }
-
-
+    
     /**
      * Implements the ETagCalculator interface.
      *
@@ -67,6 +65,9 @@ class Categories extends Endpoint implements ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+        if (!empty($pathparts)) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
 
         if (empty($pathparts)) {
             switch ($request->getMethod()) {
@@ -83,16 +84,6 @@ class Categories extends Endpoint implements ETagCalculator
                 );
             }
         }
-
-        // Delegate to known subendpoints
-        $categoryname = array_shift($pathparts);
-        $handler      = new Categories\Category($categoryname);
-
-        // Update the request with the shortened pathparts.
-        $newrequest = $request
-            ->withAttribute('pathparts', $pathparts);
-
-        return $handler->process($newrequest, $handler);
     }
 
     /**
@@ -105,19 +96,22 @@ class Categories extends Endpoint implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (!isset($this->_cache)) {
-            $loris = $request->getAttribute('loris');
-            $user  = $request->getAttribute('user');
+            $loris       = $request->getAttribute('loris');
+            $user        = $request->getAttribute('user');
 
-            $provisioner = new CategoriesProvisioner($loris);
+            $provisioner = new CategoryProvisioner($loris, $this->_name);
 
             $categories = $provisioner->execute($user);
 
-            $this->_cache = (new VCategories($categories))
-                ->toArray();
+            $this->_cache = [
+                'name'   => $this->_name,
+                'fields' => iterator_to_array($categories)
+            ];
         }
 
         return new \LORIS\Http\Response\JsonResponse(
             $this->_cache
         );
     }
+
 }

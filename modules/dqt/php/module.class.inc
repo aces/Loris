@@ -54,9 +54,10 @@ class Module extends \Module
         $path      = trim($request->getURI()->getPath(), "/");
         $pathparts = explode('/', $path);
 
-        // Look if the first element of pathparts is a known handler; Default to
-        // Module superclass behaviour.
-        switch ($pathparts[0]) {
+        // Extract the first element of pathparts then delegate to subhandlers if
+        // it is a known path. Default to Module superclass behaviour.
+        $first = array_shift($pathparts);
+        switch ($first) {
         case 'categories':
             $handler = new Endpoints\Categories();
             break;
@@ -64,13 +65,11 @@ class Module extends \Module
             return parent::handle($request);
         }
 
-        // Remove the first element of the pathparts since we know the handler, then
-        // add the pathpaths as an attribute to the request.
-        array_shift($pathparts);
+        // Update the request with the shortened pathparts.
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);
 
-        return $handler->process($request, $handler);
+        return $handler->process($newrequest, $handler);
     }
 
     /**

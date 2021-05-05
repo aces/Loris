@@ -14,10 +14,11 @@ namespace LORIS\dqt\Provisioners;
 use \LORIS\Data\DataInstance;
 use \LORIS\Data\Provisioners\CouchDBViewProvisioner;
 use \LORIS\Data\CouchDBViewQuery;
+use \LORIS\Data\CouchDBResultRow;
 use \LORIS\LorisInstance as Loris;
-use \LORIS\dqt\Models\CategoriesInstance;
+use \LORIS\dqt\Models\CategoryFieldInstance;
 /**
- * Data provisioner for Categories
+ * Data provisioner for a Category
  *
  * PHP version 7
  *
@@ -27,19 +28,20 @@ use \LORIS\dqt\Models\CategoriesInstance;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class CategoriesProvisioner extends CouchDBViewProvisioner
+class CategoryProvisioner extends CouchDBViewProvisioner
 {
     /**
      * Create a RowProvisioner
      */
-    public function __construct(Loris $loris)
+    public function __construct(Loris $loris, string $name)
     {
         $query = new CouchDBViewQuery(
             'DQG-2.0',
             'datadictionary',
             [
-                "reduce" => "true",
-                'group_level' => 1,
+                "reduce" => "false",
+                "startkey" => json_encode([$name]),
+                "endkey" => json_encode([$name, new \stdClass()])
             ]
         );
 
@@ -51,8 +53,10 @@ class CategoriesProvisioner extends CouchDBViewProvisioner
 
     public function getInstance($row): DataInstance
     {
-        $name = $row->getKey()[0];
+        if (!$row instanceof CouchDBResultRow) {
+            throw new \InvalidArgumentException('TypeError: row must be an instance of CouchDBResultRow.');
+        }
 
-        return new CategoriesInstance($name);
+        return new CategoryFieldInstance($row);
     }
 }
