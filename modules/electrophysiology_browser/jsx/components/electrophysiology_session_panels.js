@@ -22,6 +22,7 @@ class FilePanel extends Component {
       id: this.props.fileId,
     };
     this.handleClick = this.handleClick.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   /**
@@ -106,10 +107,11 @@ class FilePanel extends Component {
     handleClick() {
         console.log('The link was clicked.');
         console.log(this.state.id);
+        const data = {physioFileID: this.state.id};
 
         fetch(this.props.url, {
             method: 'PUT',
-            body: {physioFileID: this.state.id},
+            body: JSON.stringify(data),
         }).then((response) => {
             if (!response.ok) {
                 console.error(response.status);
@@ -139,7 +141,7 @@ class FilePanel extends Component {
      */
     showAlertMessage(msgType, message) {
         let type = 'success';
-        let title = 'Issue updated!';
+        let title = 'Files updated!';
         let text = message || '';
         let timer = null;
         let confirmation = true;
