@@ -226,7 +226,6 @@ class ElectrophysiologySessionView extends Component {
                 info: data.patient,
             },
         });
-
         document.getElementById(
           'nav_next'
         ).href = dataURL + data.nextSession + outputTypeArg;

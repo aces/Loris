@@ -25,16 +25,23 @@ class TestEditingDerivatives
      */
     function testHashGenerator()
     {
+        $db = \NDB_Factory::singleton()->database();
+
         $f    = file_get_contents(
-            "/data-raisinbread/bids_imports/Face13_BIDSVersion_1.1.0/"
-            ."sub-OTT166/ses-V1/eeg/sub-OTT166_ses-V1_task-faceO_eeg.tgz"
+            "/data/loris-mri/data/bids_imports/derivatives/"
+            ."loris_annotations/sub-DCC0001/ses-V01/ieeg/"
+            ."sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tgz"
         );
         $hash = sodium_crypto_generichash($f);
 
-        $realHash = 'a8ce4528e4ea23bd8834a03abd413f24c0008c66e9f5405326a91c2'
-            .'f1c49f0039b9fbe7d14330f334939776b9e0ce4d3c5e6a49cda6f20'
-            .'52c25a9b1010be7af2';
-        if ($hash = $realHash) {
+        $dbHash = $db->pselectone(
+            'SELECT Blake2bHash
+            FROM physiological_annotation_archive
+            WHERE PhysiologicalFileID=:id',
+            ['id' => '11']
+        );
+
+        if ($hash = $dbHash) {
             echo "Hash generator works\n";
         } else {
             echo "Hash generator does not work\n";
@@ -91,8 +98,8 @@ class TestEditingDerivatives
         $tsv_file  = fopen($tsv_path, 'a+');
         $json_file = fopen($json_path, 'a+');
         $tgz_file  = new PharData($tgz_path);
-        $tgz_file->addFile($tsv_path);
-        $tgz_file->addFile($json_path);
+        $tgz_file->addFile($tsv_path, basename($tsv_path));
+        $tgz_file->addFile($json_path, basename($json_path));
         fclose($tsv_file);
         fclose($json_file);
 
@@ -111,32 +118,30 @@ class TestEditingDerivatives
     {
 
         $db =& \Database::singleton();
-        // Specify current database
-        //$database = $config->getSetting('database');
-        //$dbName = $database['database'];
-        //$db->insert(
-        //'physiological_annotation_label',
-        //[
-        //  'AnnotationLabelID' => 25,
-        //  'LabelName'         => 'TestLabel',
-        //  'LabelDescription'  => 'Test Description'
-        //]
-        //);
+
+        $db->insert(
+            'physiological_annotation_label',
+            [
+                'AnnotationLabelID' => 27,
+                'LabelName'         => 'Great Label',
+                'LabelDescription'  => 'Great Description'
+            ]
+        );
         $db->insert(
             'physiological_annotation_instance',
             [
                 'AnnotationFileID'      => '1',
                 'AnnotationParameterID' => '1',
-                'AnnotationLabelID'     => '24',
-                'Channels'              => 'channel1',
-                'Description'           => 'Description 2'
+                'AnnotationLabelID'     => '27',
+                'Channels'              => 'Channel 7',
+                'Description'           => 'Description 7'
             ]
         );
         $db->update(
             'physiological_annotation_parameter',
             [
-                'Sources' => 'Source Test',
-                'Author'  => 'Real Fake Person'
+                'Sources' => 'Source',
+                'Author'  => 'First Last'
             ],
             ['AnnotationParameterID' => '1']
         );
@@ -145,8 +150,6 @@ class TestEditingDerivatives
             ['LastUpdate' => date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, 2022))],
             ['PhysiologicalFileID' => 11]
         );
-        $physioFileID = 11;
-        self::updateDerivativeFiles($physioFileID);
     }
 
     /**
@@ -156,7 +159,7 @@ class TestEditingDerivatives
      *
      * @return void
      */
-    static function updateDerivativeFiles(int $physioFileID=null): void
+    function updateDerivativeFiles(int $physioFileID=null): void
     {
         $db = \NDB_Factory::singleton()->database();
 
@@ -332,15 +335,16 @@ class TestEditingDerivatives
 
             //Make archive tgz and create new hash
             $tgz_file = new \PharData($tgz_path);
-            $tgz_file->addFile($tsv_path);
-            $tgz_file->addFile($json_path);
+            $tgz_file->addFile($tsv_path, basename($tsv_path));
+            $tgz_file->addFile($json_path, basename($json_path));
 
             $f    = file_get_contents($tgz_path);
             $hash = sodium_crypto_generichash($f);
+
             //Update database with hash
             $db->update(
                 'physiological_annotation_archive',
-                ['Blake2bHash' => $hash],
+                ['Blake2bHash' => bin2hex($hash)],
                 ['PhysiologicalFileID' => $physioFileID]
             );
         }
@@ -348,5 +352,9 @@ class TestEditingDerivatives
 }
 
 $testSessions = new TestEditingDerivatives();
-$testSessions->testFilepathGeneration();
-$testSessions->testAddDataToDB();
+//$testSessions->testFilepathGeneration();
+//$testSessions->testAddDataToDB();
+$physioFileID = 11;
+$testSessions->updateDerivativeFiles($physioFileID);
+$testSessions->testHashGenerator();
+

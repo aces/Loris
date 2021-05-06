@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
+import swal from 'sweetalert2';
 
 /**
  * File Panel
@@ -99,24 +100,92 @@ class FilePanel extends Component {
   }
 
     /**
-     * jsdoc
+     * Called by download all or download annotations button to
+     * update the annotation files before downloading
      */
     handleClick() {
         console.log('The link was clicked.');
         console.log(this.state.id);
+
+        fetch(this.props.url, {
+            method: 'PUT',
+            body: {physioFileID: this.state.id},
+        }).then((response) => {
+            if (!response.ok) {
+                console.error(response.status);
+                return;
+            }
+
+            response.json().then((data) => {
+                let msgType = 'success';
+                let message = 'Your files will be downloaded in 2 seconds!';
+                this.showAlertMessage(msgType, message);
+                console.log(message);
+            });
+        }).catch((error) => {
+            console.error(error);
+
+            let msgType = 'error';
+            let message = 'Failed to update annotation files';
+            this.showAlertMessage(msgType, message);
+            console.log(message);
+        });
+    }
+
+    /**
+     * Display a success/error alert message after form submission
+     * @param {string} msgType - error/success message
+     * @param {string} message - message content
+     */
+    showAlertMessage(msgType, message) {
+        let type = 'success';
+        let title = 'Issue updated!';
+        let text = message || '';
+        let timer = null;
+        let confirmation = true;
+        let callback = function() {};
+
+        if (msgType === 'success') {
+            title = 'Files Updated!';
+            timer = 2000;
+            confirmation = false;
+        } else if (msgType === 'error') {
+            type = 'error';
+            title = 'Error!';
+        }
+
+        swal.fire({
+            title: title,
+            type: type,
+            text: text,
+            timer: timer,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: confirmation,
+        }, callback.bind(this));
     }
 }
 
 FilePanel.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
+<<<<<<< 71ac66786a31e96af100e755009ff2d5a9bacbb2
   data: PropTypes.array,
+=======
+  data: PropTypes.object,
+  url: PropTypes.string,
+>>>>>>> Download button functionality
 };
 
 FilePanel.defaultProps = {
   id: 'file_panel',
   title: 'FILENAME',
+<<<<<<< 71ac66786a31e96af100e755009ff2d5a9bacbb2
   data: [],
+=======
+  data: {},
+  url: '',
+>>>>>>> Download button functionality
 };
 
 export {
