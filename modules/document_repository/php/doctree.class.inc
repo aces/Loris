@@ -63,8 +63,8 @@ class DocTree extends \NDB_Page
         if ($request->getMethod()=='GET') {
             $id = basename($request->getUri()->getPath());
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
+                ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode($this->fileTree($id))

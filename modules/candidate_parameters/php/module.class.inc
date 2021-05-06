@@ -2,6 +2,9 @@
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateInfo;
 use LORIS\candidate_profile\CandidateWidget;
+use LORIS\Data\Scope;
+use LORIS\Data\Cardinality;
+use LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * {@inheritDoc}
@@ -184,5 +187,118 @@ class Module extends \Module
             $entries[] = new CandidateInfo($param['Description'], $param['Value']);
         }
         return $entries;
+    }
+
+    /**
+     * Return a data dictionary of data types managed by this module.
+     * DictionaryItems are grouped into categories and a module may
+     * provide 0 or more categories of dictionaryitems.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
+     *                                    dictionary should be retrieved.
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        $candscope = new Scope(Scope::CANDIDATE);
+        $sesscope  = new Scope(Scope::SESSION);
+
+        $ids = new \LORIS\Data\Dictionary\Category(
+            "Identifiers",
+            "Candidate Identifiers"
+        );
+
+        $ids = $ids->withItems(
+            [
+                new DictionaryItem(
+                    "CandID",
+                    "LORIS Candidate Identifier",
+                    $candscope,
+                    new \LORIS\Data\Types\IntegerType(999999),
+                    new Cardinality(Cardinality::UNIQUE),
+                ),
+                new DictionaryItem(
+                    "PSCID",
+                    "Project Candidate Identifier",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    // PSCIDs aren't unique because scanners candidates
+                    // share the same PSCID, but each candidate has
+                    // a single PSCID..
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+            ]
+        );
+
+        $demographics = new \LORIS\Data\Dictionary\Category(
+            "Demographics",
+            "Candidate Demographics"
+        );
+        $demographics = $demographics->withItems(
+            [
+                new DictionaryItem(
+                    "DoB",
+                    "Date of Birth",
+                    $candscope,
+                    new \LORIS\Data\Types\DateType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "DoD",
+                    "Date of Death",
+                    $candscope,
+                    new \LORIS\Data\Types\DateType(),
+                    new Cardinality(Cardinality::OPTIONAL),
+                ),
+                new DictionaryItem(
+                    "Sex",
+                    "Candidate's biological sex",
+                    $candscope,
+                    new \LORIS\Data\Types\Enumeration('Male', 'Female', 'Other'),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+            ]
+        );
+
+        $meta = new \LORIS\Data\Dictionary\Category("Meta", "Other parameters");
+        $meta = $meta->withItems(
+            [
+                new DictionaryItem(
+                    "VisitLabel",
+                    "The study visit label",
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::UNIQUE),
+                ),
+                new DictionaryItem(
+                    "Project",
+                    "The LORIS project to categorize this session",
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration(
+                        ...array_values(\Utility::getProjectList())
+                    ),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "Subproject",
+                    "The LORIS subproject used for battery selection",
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration(
+                        ...array_values(\Utility::getSubprojectList())
+                    ),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "Site",
+                    "The Site at which a visit occurred",
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration(...\Utility::getSiteList()),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+            ]
+        );
+
+        return [$ids, $demographics, $meta];
     }
 }

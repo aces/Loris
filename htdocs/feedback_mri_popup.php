@@ -36,7 +36,10 @@ $tpl_data = [];
 $tpl_data['has_permission'] = $user->hasPermission('imaging_browser_qc');
 
 // instantiate feedback mri object
-$comments = new FeedbackMRI($_REQUEST['fileID'] ?? '', $_REQUEST['sessionID'] ?? '');
+$comments = new FeedbackMRI(
+    isset($_REQUEST['fileID']) ? intval($_REQUEST['fileID']) : null,
+    isset($_REQUEST['sessionID']) ? new \SessionID($_REQUEST['sessionID']) : null,
+);
 
 /*
  * UPDATE SECTION
@@ -46,7 +49,15 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     $comments->clearAllComments();
 
     // set selected predefined comments
-    $comments->setPredefinedComments($_POST['savecomments']['predefined']);
+    if (isset($_POST['savecomments']['predefined'])) {
+        $predefined = array_map(
+            function ($row) {
+                return intval($row);
+            },
+            \Utility::asArray($_POST['savecomments']['predefined']),
+        );
+        $comments->setPredefinedComments($predefined);
+    }
 
     // save all textual comments but only if there is an entry [sebas]
     foreach (\Utility::asArray($_POST['savecomments']['text'])
@@ -58,7 +69,9 @@ if (isset($_POST['fire_away']) && $_POST['fire_away']) {
     }
 
     // save all comment status fields
-    if (is_array($_POST['saveCommentStatusField'])) {
+    if (isset($_POST['saveCommentStatusField'])
+        && is_array($_POST['saveCommentStatusField'])
+    ) {
         foreach ($_POST['saveCommentStatusField'] as $status_field => $value) {
             $comments->setMRIValue($status_field, $value);
         }

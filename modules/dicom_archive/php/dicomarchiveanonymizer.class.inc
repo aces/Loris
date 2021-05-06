@@ -50,8 +50,17 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
+        if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
+            throw new \LorisException(
+                "Mapper requires a resource type with getCenterID"
+            );
+        }
         $newrow = json_decode(json_encode($resource), true);
-        $cid    = $resource->getCenterID();
+        if (!is_array($newrow)) {
+            throw new \Exception("Error converting DataInstance to array");
+        }
+
+        $cid = $resource->getCenterID();
 
         // escape any forward slashes
         $pNameRegex      = preg_replace(
@@ -74,19 +83,21 @@ class DICOMArchiveAnonymizer implements Mapper
             '\/',
             $config['patientIDRegex']
         );
-        if (!preg_match(
-            "/$pNameRegex/",
-            $newrow['patientName']
-        )
-            && !preg_match(
-                "/$legoPhanRegex/",
-                $newrow['patientName']
-            )
-            && !preg_match(
-                "/$livingPhanRegex/",
-                $newrow['patientName']
-            )
-        ) {
+
+        if ($newrow['IsPhantom'] === 'Y') {
+            $isValid = preg_match("/$legoPhanRegex/", $newrow['patientName'])
+                || preg_match("/$livingPhanRegex/", $newrow['patientName']);
+        } elseif ($newrow['IsPhantom'] === 'N') {
+            $isValid = preg_match("/$pNameRegex/", $newrow['patientName']);
+        } else {
+            // if scan was uploaded via non-imaging uploader method
+            // run patient name through all regex validations
+            $isValid = preg_match("/$legoPhanRegex/", $newrow['patientName'])
+                || preg_match("/$livingPhanRegex/", $newrow['patientName'])
+                || preg_match("/$pNameRegex/", $newrow['patientName']);
+        }
+
+        if (!$isValid) {
             $newrow['patientName'] = 'INVALID - HIDDEN';
         }
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {

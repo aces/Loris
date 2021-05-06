@@ -27,6 +27,8 @@ namespace LORIS\imaging_browser;
 
 class Imaging_Session_ControlPanel
 {
+    protected array $tpl_data;
+
     /**
      * Var to store the sessionID.
      */
@@ -35,7 +37,7 @@ class Imaging_Session_ControlPanel
     /**
      * Sets up the sessionID
      *
-     * @param int $sessionID current sessionID
+     * @param \SessionID $sessionID current sessionID
      *
      * @return NULL
      */
@@ -110,8 +112,7 @@ class Imaging_Session_ControlPanel
         * any way by any user.
          */
         $params     = [];
-        $ID         = 'NULL';
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";
             $params['PVL'] = $timePoint->getVisitLabel();

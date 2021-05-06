@@ -139,8 +139,8 @@ class DocCategoryForm extends React.Component {
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => resp.json())
-    .then(()=>{
+    .then((resp) => {
+      if (resp.ok) {
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
@@ -148,7 +148,19 @@ class DocCategoryForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal.fire('Add Successful!', '', 'success');
+        swal.fire('Category Successfully Added!', '', 'success');
+      } else {
+        resp.json().then((data) => {
+          swal.fire('Could not add category!', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire(
+            'Unknown Error!',
+            'Please report the issue or contact your administrator.',
+            'error'
+          );
+        });
+      }
     });
   }
 

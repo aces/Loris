@@ -14,10 +14,7 @@ class PublicationIndex extends React.Component {
     super();
     loris.hiddenHeaders = [
       'Description',
-      'Keywords',
-      'Variables Of Interest',
       'Publication ID',
-      'Collaborators',
     ];
     this.state = {
       isLoaded: false,
@@ -41,19 +38,22 @@ class PublicationIndex extends React.Component {
    * Fetch data
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      },
-    });
+    }).then(
+      (response) => {
+        if (!response.ok) {
+          console.error(response.status);
+          return;
+        }
+
+        response.json().then(
+          (data) => this.setState({
+            Data: data,
+            isLoaded: true,
+          })
+        );
+    }).catch((error) => console.error(error));
   }
 
   /**
@@ -186,7 +186,7 @@ class PublicationIndex extends React.Component {
   }
 }
 
-$(function() {
+document.addEventListener('DOMContentLoaded', () => {
   const publicationIndex = (
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>

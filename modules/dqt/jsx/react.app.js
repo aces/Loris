@@ -47,7 +47,7 @@ class DataQueryApp extends Component {
         show: false,
       },
       ActiveTab: 'Info',
-      rowData: {},
+      rowData: [],
       filter: {
         type: 'group',
         activeOperator: 0,
@@ -210,9 +210,11 @@ class DataQueryApp extends Component {
 
     let filter = this.saveFilterGroup(this.state.filter);
 
+    const fields = JSON.stringify(this.state.selectedFields);
+
     $.post(loris.BaseURL
-      + '/AjaxHelper.php?Module=dataquery&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
+      + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
+      Fields: fields,
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
@@ -229,7 +231,7 @@ class DataQueryApp extends Component {
         }
       }
       $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+        + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
         + id,
         (value) => {
           let queries = this.state.savedQueries;
@@ -504,23 +506,23 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    for (let i = 0; i < fieldsList.length; i++) {
-      $.ajax({
+    $.ajax({
         url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
-          if (data[0].value.IsFile) {
-            let key = data[0].key[0] + ',' + data[0].key[1];
-            let downloadable = this.state.downloadableFields;
-            downloadable[key] = true;
-            this.setState({
-              downloadableFields: downloadable,
-            });
+          for (let i = 0; i < fieldsList.length; i++) {
+            if (data[i].value.IsFile) {
+              let key = data[i].key[0] + ',' + data[i].key[1];
+              let downloadable = this.state.downloadableFields;
+              downloadable[key] = true;
+              this.setState({
+                downloadableFields: downloadable,
+              });
+            }
           }
         },
-        data: {key: fieldsList[i]},
+        data: {keys: JSON.stringify(fieldsList)},
         dataType: 'json',
       });
-    }
   }
 
   /**
@@ -685,7 +687,7 @@ class DataQueryApp extends Component {
 
     // Reset the rowData and sessiondata
     this.setState({
-      rowData: {},
+      rowData: [],
       sessiondata: {},
       loading: true,
     });
@@ -886,13 +888,21 @@ class DataQueryApp extends Component {
             if (RowHeaders.hasOwnProperty(colHeader)) {
               temp = Identifiers[identifier]
                 + ','
-                + RowHeaders[colHeader].split(' ')[0];
+                + RowHeaders[colHeader].substr(
+                  0,
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                );
               index = sessiondata[temp];
               if (!index) {
                 currow.push('.');
               } else {
-                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+                const instrument = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ') + 1
+                ).split(',')[0];
+                temp = index[instrument];
+                fieldSplit = RowHeaders[colHeader].substr(
+                  RowHeaders[colHeader].lastIndexOf(' ')
+                ).split(',');
                 if (temp) {
                   if (temp.data[RowHeaders[colHeader].split(',')[1]]
                     && downloadableFields[fieldSplit[0]
@@ -962,7 +972,7 @@ class DataQueryApp extends Component {
       grouplevel: displayID,
       ...(rowdata.rowdata.length > 0
         ? {rowData: rowdata}
-        : {rowData: {}}),
+        : {rowData: []}),
     });
   }
 

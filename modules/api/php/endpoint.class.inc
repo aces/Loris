@@ -66,8 +66,11 @@ abstract class Endpoint implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
         }
 
+        // Hack so that phan doesn't forget it's a RequestHandler inside
+        // the if statement when passed as an argument to process
+        $h = $handler;
         if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
-            return (new \LORIS\Middleware\ETag())->process($request, $handler);
+            return (new \LORIS\Middleware\ETag())->process($request, $h);
         }
 
         return $handler->handle($request);

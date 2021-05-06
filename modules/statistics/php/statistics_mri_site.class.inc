@@ -31,8 +31,8 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -69,9 +69,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CompleteCount function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return ?string
      */
@@ -83,9 +83,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * GetResults function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return array
      */
@@ -97,8 +97,8 @@ class Statistics_Mri_Site extends Statistics_Site
         $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", []);
         $where      = "WHERE (";
         $counter    = 1;
-        foreach ($scan_types as $index=>$scan) {
-            foreach ($scan as $type=>$label) {
+        foreach (array_values($scan_types) as $scan) {
+            foreach (array_values($scan) as $label) {
                 if ($counter < sizeof($scan_types)) {
                     $where .= "m.$label <> 'No' OR m.$label IS NULL OR ";
                 } else {
@@ -132,8 +132,8 @@ class Statistics_Mri_Site extends Statistics_Site
         case 'Files_Missing':
             $where   = "WHERE (";
             $counter = 1;
-            foreach ($scan_types as $index=>$scan) {
-                foreach ($scan as $type=>$label) {
+            foreach (array_values($scan_types) as $scan) {
+                foreach (array_values($scan) as $label) {
                     if ($counter < sizeof($scan_types)) {
                         $where .= "m.$label <> 'No' OR ";
                     } else {
@@ -211,7 +211,9 @@ class Statistics_Mri_Site extends Statistics_Site
         // cells for ones that are missing for a given issue in the
         // template
         $visits    = [];
-        $projectID = $_REQUEST['ProjectID'] ?? '';
+        $projectID = isset($_REQUEST['ProjectID'])
+            ? new \ProjectID($_REQUEST['ProjectID'])
+            : null;
 
         $data = [];
         foreach ($this->issues as $issue) {
@@ -223,7 +225,7 @@ class Statistics_Mri_Site extends Statistics_Site
 
             $test_url = $issue;
             foreach ($results as $row) {
-                if (!in_array($row['Visit_label'], $visits)) {
+                if (!in_array($row['Visit_label'] ?? [], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
                 $results[$row['Visit_label']][] = [

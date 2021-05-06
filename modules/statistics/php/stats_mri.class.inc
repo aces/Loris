@@ -25,6 +25,8 @@ namespace LORIS\statistics;
  */
 class Stats_MRI extends \NDB_Form
 {
+    protected array $params;
+
     /**
      * Checking user's permission
      *
@@ -58,20 +60,20 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string  $sectionHeader     the value of sectionHeader
-     * @param string  $tableHeader       the value of tableHeader
-     * @param array   $subcats           the value of subcats
-     * @param array   $visits            the value of visits
-     * @param string  $dropdown_name     the value of dropdown_name
-     * @param string  $dropdown_opt      the value of dropdown_opt
-     * @param string  $dropdown_selected the value of dropdown_selected
-     * @param array   $centers           the value of centers
-     * @param array   $data              the value of data
-     * @param string  $Subsection        the value of Subsection=''
-     * @param string  $disclamer         the value of disclamer=''
-     * @param ?string $projectID         the value of projectID is null
-     * @param bool    $renderTable       whether to render the table or display a
-     *                                   default error message
+     * @param string      $sectionHeader     the value of sectionHeader
+     * @param string      $tableHeader       the value of tableHeader
+     * @param array       $subcats           the value of subcats
+     * @param array       $visits            the value of visits
+     * @param string      $dropdown_name     the value of dropdown_name
+     * @param array       $dropdown_opt      the value of dropdown_opt
+     * @param string      $dropdown_selected the value of dropdown_selected
+     * @param array       $centers           the value of centers
+     * @param array       $data              the value of data
+     * @param string      $Subsection        the value of Subsection=''
+     * @param string      $disclamer         the value of disclamer=''
+     * @param ?\ProjectID $projectID         the value of projectID is null
+     * @param bool        $renderTable       whether to render the table or display a
+     *                                       default error message
      *
      * @return string
      */
@@ -175,6 +177,7 @@ class Stats_MRI extends \NDB_Form
 
                 // Update the $subcat and total values for each element.
                 // Data
+                assert(is_array($tpl_data['data']));
                 $tpl_data['data'][$subcat] += $row['val'];
                 $tpl_data['data']['total'] += $row['val'];
                 // Data => Visit_Label
@@ -231,18 +234,18 @@ class Stats_MRI extends \NDB_Form
         $projects     = [];
         $projects[''] = 'All Projects';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
-            $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
+            $currentProject = new \ProjectID($_REQUEST['MRIProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects[$currentProject->__toString()],
                 ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
@@ -321,7 +324,7 @@ class Stats_MRI extends \NDB_Form
         if (empty($scans_selected_input)) {
             $scans_selected = $scan_types ?? [];
         } else {
-            foreach ($scans_selected_input as $key => $scid) {
+            foreach ($scans_selected_input as $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
             }
         }

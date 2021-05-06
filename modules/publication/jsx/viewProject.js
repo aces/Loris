@@ -59,26 +59,24 @@ class ViewProject extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        swal.fire('Edit Successful!', '', 'success');
-      },
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = 'Something went wrong!';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
-        }
-        swal.fire('Edit failed!', resp, 'error');
-      },
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || 'Something went wrong!';
+          swal.fire('Edit failed!', message, 'error');
+        });
+        return;
+      }
+
+      swal.fire('Edit Successful!', '', 'success');
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      swal.fire('Edit failed!', 'Something went wrong!', 'error');
     });
   }
 
@@ -86,61 +84,70 @@ class ViewProject extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let formData = {
-          title: data.title,
-          description: data.description,
-          leadInvestigator: data.leadInvestigator,
-          leadInvestigatorEmail: data.leadInvestigatorEmail,
-          notifyLead: false,
-          status: data.status,
-          voiFields: data.voi,
-          keywords: data.keywords,
-          collaborators: data.collaborators,
-          usersWithEditPerm: data.usersWithEditPerm,
-          rejectedReason: data.rejectedReason,
-        };
-        // set formdata for file meta data
-        if (data.files) {
-          data.files.forEach(function(f) {
-            let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag
-                          + 'publicationType_'
-                          + f.PublicationUploadID;
-            let pubCit = existFileFlag
-                         + 'publicationCitation_'
-                         + f.PublicationUploadID;
-            let pubVer = existFileFlag
-                         + 'publicationVersion_'
-                         + f.PublicationUploadID;
-            formData[pubType] = f.PublicationUploadTypeID;
-            formData[pubCit] = f.Citation;
-            formData[pubVer] = f.Version;
-          });
-        }
-
-        self.setState({
-          formData: formData,
-          users: data.users,
-          statusOpts: data.statusOpts,
-          userCanEdit: data.userCanEdit,
-          allVOIs: data.allVOIs,
-          allKWs: data.allKWs,
-          allCollabs: data.allCollabs,
-          uploadTypes: data.uploadTypes,
-          files: data.files,
-          isLoaded: true,
-        });
-      },
-      error: function(error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        this.setState({
           error: 'An error occurred when loading the form!',
         });
-      },
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let formData = {
+            title: data.title,
+            description: data.description,
+            leadInvestigator: data.leadInvestigator,
+            leadInvestigatorEmail: data.leadInvestigatorEmail,
+            notifyLead: false,
+            status: data.status,
+            voiFields: data.voi,
+            keywords: data.keywords,
+            collaborators: data.collaborators,
+            usersWithEditPerm: data.usersWithEditPerm,
+            rejectedReason: data.rejectedReason,
+          };
+          // set formdata for file meta data
+          if (data.files) {
+            data.files.forEach(function(f) {
+              let existFileFlag = 'existingUpload_';
+              let pubType = existFileFlag
+                + 'publicationType_'
+                + f.PublicationUploadID;
+              let pubCit = existFileFlag
+                + 'publicationCitation_'
+                + f.PublicationUploadID;
+              let pubVer = existFileFlag
+                + 'publicationVersion_'
+                + f.PublicationUploadID;
+              formData[pubType] = f.PublicationUploadTypeID;
+              formData[pubCit] = f.Citation;
+              formData[pubVer] = f.Version;
+            });
+          }
+
+          this.setState({
+            formData: formData,
+            users: data.users,
+            statusOpts: data.statusOpts,
+            userCanEdit: data.userCanEdit,
+            allVOIs: data.allVOIs,
+            allKWs: data.allKWs,
+            allCollabs: data.allCollabs,
+            uploadTypes: data.uploadTypes,
+            files: data.files,
+            isLoaded: true,
+          });
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 

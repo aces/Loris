@@ -76,17 +76,21 @@ class Database_Test extends TestCase
 {
     protected $factory;
     protected $DB;
+
+    private $_PDO;
+
+    protected \NDB_Config $config;
+
     /**
      * This method is called before each test is executed.
      * Sets up fixtures: factory, config, database
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
         $this->DB     = Database::singleton(
@@ -94,8 +98,11 @@ class Database_Test extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
     }
 
     /**
@@ -104,7 +111,7 @@ class Database_Test extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->factory->reset();
@@ -172,19 +179,22 @@ class Database_Test extends TestCase
      */
     function testUpdateEscapesHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['update']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['update']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->update("test", ['field' => '<b>Hello</b>'], []);
 
     }
@@ -197,20 +207,23 @@ class Database_Test extends TestCase
      */
     function testUnsafeUpdateDoesntEscapeHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['unsafeupdate']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['unsafeupdate']))
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '<b>Hello</b>'])
         );
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
 
     }
@@ -223,19 +236,23 @@ class Database_Test extends TestCase
      */
     function testInsertEscapesHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['insert']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')
+            ->onlyMethods(['lastInsertId'])->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->insert("test", ['field' => '<b>Hello</b>'], []);
 
     }
@@ -248,20 +265,23 @@ class Database_Test extends TestCase
      */
     function testUnsafeInsertDoesntEscapeHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['unsafeinsert']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['unsafeinsert']))
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
-        $stub->_PDO->expects($this->once())->method("prepare")
+        $PDO->expects($this->once())->method("prepare")
             ->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->unsafeinsert("test", ['field' => '<b>Hello</b>'], []);
 
     }
@@ -607,18 +627,18 @@ class Database_Test extends TestCase
         $this->DB->replace(
             "ConfigSettings",
             [
-                'ID'          => 99991,
+                'ID'          => '99991',
                 'Name'        => 'test 1',
-                'Visible'     => 1,
+                'Visible'     => '1',
                 'Description' => null
             ]
         );
         $this->DB->replace(
             "ConfigSettings",
             [
-                'ID'          => 99992,
+                'ID'          => '99992',
                 'Name'        => 'test 2',
-                'Visible'     =>  1,
+                'Visible'     =>  '1',
                 'Description' => null
             ]
         );
@@ -779,22 +799,25 @@ class Database_Test extends TestCase
      */
     function testInsertOnDuplicateUpdateEscapesHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods(
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods(
                 $this->_getAllMethodsExcept(['insertOnDuplicateUpdate'])
             )
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
         );
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->insertOnDuplicateUpdate(
             "test",
             ['field' => '<b>Hello</b>'],
@@ -810,22 +833,25 @@ class Database_Test extends TestCase
      */
     function testUnsafeInsertOnDuplicateUpdateDoesntEscapeHTML()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods(
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods(
                 $this->_getAllMethodsExcept(['unsafeInsertOnDuplicateUpdate'])
             )
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
         );
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->unsafeInsertOnDuplicateUpdate(
             "test",
             ['field' => '<b>Hello</b>'],
@@ -874,15 +900,17 @@ class Database_Test extends TestCase
      */
     function testRun()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['run']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->run("SHOW TABLES");
     }
 
@@ -894,17 +922,19 @@ class Database_Test extends TestCase
      */
     function testPrepare()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt       = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
-        $stub->_PDO->expects($this->once())
+        $PDO->expects($this->once())
             ->method("prepare")
             ->with($this->equalTo("SHOW TABLES"))
             ->willReturn(new PDOStatement());
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->prepare("SHOW TABLES");
     }
 
@@ -981,7 +1011,7 @@ class Database_Test extends TestCase
         $allSetting = $this->DB->execute(
             $statement,
             [':id' => 99991, ':name' => 'new name'],
-            ['nofetch' => true]
+            ['nofetch' => "true"]
         );
         $check      = $this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
@@ -1011,17 +1041,20 @@ class Database_Test extends TestCase
      */
     function testPselectCallsFunctions()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['pselect']))->getMock();
 
+        '@phan-var \Database $stub';
         $stmt   = $stub->prepare("SHOW TABLES");
         $params = ['test' => 'test'];
 
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $stub';
         $stub->expects($this->once())
             ->method("prepare")->with($this->equalTo("SHOW TABLES"));
         $stub->expects($this->once())->method("execute")
             ->with($this->equalTo($stmt), $this->equalTo($params), []);
+
+        '@phan-var \Database $stub';
         $stub->pselect("SHOW TABLES", $params);
     }
 
@@ -1066,9 +1099,8 @@ class Database_Test extends TestCase
      */
     function testPselectRowCallsPrepare()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['pselectRow']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['pselectRow']))
             ->getMock();
 
         $query  = "SELECT ID, Name, Description, Visible FROM ConfigSettings";
@@ -1078,6 +1110,8 @@ class Database_Test extends TestCase
                 $this->equalTo($query . " LIMIT 2"),
                 $params
             );
+
+        '@phan-var \Database $stub';
         $stub->pselectRow(
             $query,
             $params
@@ -1152,7 +1186,7 @@ class Database_Test extends TestCase
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DomainException");
-        $allSetting = $this->DB->pselectRow(
+        $this->DB->pselectRow(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
         );
@@ -1312,9 +1346,8 @@ class Database_Test extends TestCase
         $this->markTestIncomplete(
             "This test calls a private method, making it fail for now"
         );
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['insertIgnore']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['insertIgnore']))
             ->getMock();
 
         $table = "ConfigSettings";
@@ -1322,6 +1355,8 @@ class Database_Test extends TestCase
 
         $stub->expects($this->once())
             ->method("_realinsert")->with($this->equalTo($table), $set, true, true);
+
+        '@phan-var \Database $stub';
         $stub->insertIgnore($table, $set);
     }
 
@@ -1577,16 +1612,18 @@ class Database_Test extends TestCase
      */
     function testQuote()
     {
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['quote']))->getMock();
 
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['quote']))->getMock();
-
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $string = "Co'mpl''ex \"st'\"ring";
-        $stub->_PDO->expects($this->once())->method("quote")
+        $PDO->expects($this->once())->method("quote")
             ->willReturn("Complex string");
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->quote($string);
     }
 
@@ -1610,15 +1647,18 @@ class Database_Test extends TestCase
      */
     function testInTransaction()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['inTransaction']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['inTransaction']))
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
-        $stub->_PDO->expects($this->once())->method("inTransaction")
+        $PDO->expects($this->once())->method("inTransaction")
             ->willReturn(true);
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->inTransaction();
     }
 
@@ -1631,16 +1671,20 @@ class Database_Test extends TestCase
      */
     function testBeginTransaction()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['beginTransaction']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(false);
-        $stub->_PDO->expects($this->once())->method("beginTransaction")
+        $PDO->expects($this->once())->method("beginTransaction")
             ->willReturn(true);
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
+
         $stub->beginTransaction();
     }
 
@@ -1652,15 +1696,18 @@ class Database_Test extends TestCase
      */
     function testBeginTransactionThrowsException()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['beginTransaction']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['beginTransaction']))
             ->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(true);
         $this->expectException("DatabaseException");
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->beginTransaction();
     }
 
@@ -1672,14 +1719,17 @@ class Database_Test extends TestCase
      */
     function testRollback()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(true);
-        $stub->_PDO->expects($this->once())->method("rollBack")->willReturn(true);
+        $PDO->expects($this->once())->method("rollBack")->willReturn(true);
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->rollBack();
     }
 
@@ -1691,14 +1741,17 @@ class Database_Test extends TestCase
      */
     function testRollbackThrowsException()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['rollBack']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(false);
         $this->expectException("DatabaseException");
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->rollBack();
     }
 
@@ -1710,14 +1763,16 @@ class Database_Test extends TestCase
      */
     function testCommit()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['commit']))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stub->expects($this->once())->method("inTransaction")->willReturn(true);
-        $stub->_PDO->expects($this->once())->method("commit")->willReturn(true);
+        $PDO->expects($this->once())->method("commit")->willReturn(true);
+
+        '@phan-var \Database $stub';
+        '@phan-var \PDO $PDO';
+        $stub->_PDO = $PDO;
         $stub->commit();
     }
 
@@ -1729,14 +1784,17 @@ class Database_Test extends TestCase
      */
     function testCommitThrowsException()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['commit']))->getMock();
-
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['commit']))->getMock();
 
         $stub->expects($this->once())->method("inTransaction")->willReturn(false);
         $this->expectException("DatabaseException");
+
+        '@phan-var \Database $stub';
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        '@phan-var \PDO $PDO';
+
+        $stub->_PDO = $PDO;
         $stub->commit();
     }
 
@@ -1748,11 +1806,11 @@ class Database_Test extends TestCase
      */
     function testIsConnectedNoPDO()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['isConnected']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
 
+        '@phan-var \Database $stub';
         $val = $stub->isConnected();
         $this->assertEquals($val, false);
     }
@@ -1765,12 +1823,15 @@ class Database_Test extends TestCase
      */
     function testIsConnectedWithPDO()
     {
-        $this->_factory = NDB_Factory::singleton();
-        $stub           = $this->getMockBuilder('FakeDatabase')
-            ->setMethods($this->_getAllMethodsExcept(['isConnected']))
+        $stub = $this->getMockBuilder('FakeDatabase')
+            ->onlyMethods($this->_getAllMethodsExcept(['isConnected']))
             ->getMock();
+        '@phan-var \Database $stub';
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
+        '@phan-var \FakePDO $PDO';
+
+        $stub->_PDO = $PDO;
         $val        = $stub->isConnected();
         $this->assertEquals($val, true);
     }

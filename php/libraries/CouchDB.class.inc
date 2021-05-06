@@ -273,8 +273,8 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
-                    longer auto-loading CouchDB credentials, make sure to specify 
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    longer auto-loading CouchDB credentials, make sure to specify
                     all necessary parameters in the function call."
                 );
             } else if (!empty($database)
@@ -294,8 +294,8 @@ class CouchDB
                 $user     = $couchConfig['admin'];
                 $password = $couchConfig['adminpass'];
                 error_log(
-                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
-                    longer support accepting only a database name, make sure to 
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no
+                    longer support accepting only a database name, make sure to
                     specify all necessary parameters in the function call."
                 );
             } else if (empty($database)
@@ -400,8 +400,6 @@ class CouchDB
 
         $response        = '';
         $finishedHeaders = false;
-        $lastLine        = '';
-        $curLine         = '';
         while (!$handler->eof()) {
             $curLine = $handler->gets();
 
@@ -412,8 +410,6 @@ class CouchDB
             } else { // headers are finished
                 $response .= $curLine;
             }
-
-            $lastLine = $curLine;
         }
         $handler->close();
 
@@ -528,8 +524,6 @@ class CouchDB
      */
     function getDoc(string $id, array $options = []): array
     {
-        $json = $this->_getRelativeURL($id);
-
         if (!empty($options)) {
             if (strpos($id, "?") === false) {
                 $url = $id . "?" . http_build_query($options);
@@ -565,9 +559,15 @@ class CouchDB
     {
         $getjson = $this->_getRelativeURL($id);
         $getdata = json_decode($getjson, true);
+        if (!is_array($getdata)) {
+            return false;
+        }
 
         $json = $this->_getRelativeURL($id . "?rev=" . $getdata['_rev'], "DELETE");
         $data = json_decode($json, true);
+        if (!is_array($data)) {
+            return false;
+        }
 
         if (!isset($data['ok'])) {
             return false;
@@ -698,9 +698,7 @@ class CouchDB
         array $params,
         bool $full_json = false
     ) {
-        $keys = null;
         if (isset($params['keys'])) {
-
             $keys = $params['keys'];
             unset($params['keys']);
 

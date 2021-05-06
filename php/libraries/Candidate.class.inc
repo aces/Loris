@@ -31,7 +31,8 @@ define('DOB_NOT_SPECIFIED', 6);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate implements \LORIS\StudyEntities\AccessibleResource
+class Candidate implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
     var $listOfTimePoints;
@@ -104,8 +105,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             case 'Sex':
                 $this->candidateInfo[$key] = new Sex($value);
                 break;
-            case 'EntityType':
+            case 'Entity_type':
                 $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            case 'RegistrationProjectID':
+                $this->candidateInfo[$key] = new \ProjectID($value);
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -193,13 +197,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
+     *                                           written as YYYY-MM-DD. Value
+     *                                           should be null unless the
+     *                                           useEDC setting is configured
+     *                                           to be true.
      * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param ?ProjectID  $registrationProjectID The project ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
@@ -211,7 +216,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        int $registrationProjectID = null
+        ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
 
@@ -298,7 +303,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID    = false;
         $attemptcount = 0;
         do {
             // Reset on each iteration
@@ -360,12 +364,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array|null Non-associative array of SessionIDs 1st Time Point
+     * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
-    function getListOfTimePoints(): ?array
+    function getListOfTimePoints(): array
     {
-        return $this->listOfTimePoints;
+        return $this->listOfTimePoints ?? [];
     }
 
     /**
@@ -430,7 +434,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             'candidate',
             $newData,
             [
-                'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getCandID(),
             ]
         );
         return true;
@@ -440,11 +444,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for the current candidate
      *
-     * @return integer CandID of candidate
+     * @return \ProjectID RegistrationProjectID of candidate
      */
-    function getProjectID(): int
+    function getProjectID(): \ProjectID
     {
-        return intval($this->candidateInfo["RegistrationProjectID"]);
+        return $this->candidateInfo["RegistrationProjectID"];
     }
 
     /**
@@ -456,7 +460,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()] ?? '';
+        return $ProjectList[$this->getProjectID()->__toString()] ?? '';
     }
 
     /**
@@ -539,7 +543,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getEntityType(): ?EntityType
     {
-        return $this->candidateInfo["EntityType"];
+        return $this->candidateInfo["Entity_type"];
     }
 
     /**
@@ -643,8 +647,35 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $subprojList;
     }
+
     /**
-     * Returns first visit for a candidate based on Date_visit
+     * Returns the SubprojectID and subproject title of the candidate's last visit
+     * based on Date_visit
+     *
+     * @return array|null Array with values SubprojectID and title
+     *                    for the candidate's last visit or NULL if none exist
+     */
+    public function getSubprojectForMostRecentVisit(): ?array
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+        $query  = "SELECT SubprojectID, title FROM session
+          LEFT JOIN subproject USING (SubprojectID)
+          WHERE CandID=:cid AND Date_visit IS NOT NULL
+          ORDER BY Date_visit DESC LIMIT 1";
+        $where  = ['cid' => $candID];
+        $result = $db->pselect($query, $where);
+
+        if (empty($result)) {
+            return null;
+        }
+        return $result[0];
+    }
+
+    /**
+     * Returns first visit for a candidate based on VisitNo
      *
      * @return string The visit label for the candidate's first visit
      */
@@ -850,7 +881,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
     /**
      * Implements the AccessibleResource interface. A candidate can
-     * be accessed by a user if it has a project and a site in common.
+     * be accessed by a user if it shares the same registration project
+     * and site or it has access to any of the timepoints.
      *
      * @param \User $user The user whose access should be validated.
      *
@@ -860,25 +892,30 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $centers = $user->getCenterIDs();
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers, true);
 
-        if ($centerMatch === false) {
-            // getCenterID is just the RegistrationCenterID, if a visit
-            // has a center in common, we should still allow access to
-            // the candidate.
-            $timepoints = $this->getListOfTimePoints();
-            foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton(
-                    new \SessionID(strval($sessionID))
-                );
-                if (in_array($timepoint->getCenterID(), $centers, true)) {
-                    $centerMatch = true;
-                    break;
-                }
+        // The candidate is accessible based on its registration
+        // project/center
+        if ($projMatch && $centerMatch) {
+            return true;
+        }
+
+        // If we can't access due the registration, check if we
+        // have access to any sites. If we have access to a site,
+        // we need to be able to access the candidate to get to it.
+        $timepoints = $this->getListOfTimePoints();
+        foreach ($timepoints as $sessionID) {
+            $timepoint = \TimePoint::singleton(
+                new \SessionID(strval($sessionID))
+            );
+            if ($timepoint->isAccessibleBy($user)) {
+                // There's at least one, we don't need to check
+                // any more.
+                return true;
             }
         }
-        return $projMatch && $centerMatch;
+        return false;
     }
 
     /**

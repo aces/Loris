@@ -68,9 +68,9 @@ class Statistics_DD_Site extends statistics_site
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param int        $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -99,9 +99,9 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param int        $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */

@@ -28,7 +28,7 @@ if($record['unit_classification'] == 'metric') {
       $bmi        = $record['weight_kgs']/ ($height_mts*$height_mts);
    }
 
-} else if($record['unit_classification'] == 'standard') {
+} else if($record['unit_classification'] == 'imperial') {
     $ht_inches =0;
     if(is_numeric($record['height_feet'])) {
         $ht_inches = $record['height_feet']*12;

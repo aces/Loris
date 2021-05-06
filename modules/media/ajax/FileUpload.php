@@ -41,8 +41,11 @@ function editFile()
     }
 
     // Read JSON from STDIN
-    $stdin       = file_get_contents('php://input');
-    $req         = json_decode($stdin, true);
+    $stdin = file_get_contents('php://input');
+    $req   = json_decode($stdin, true);
+    if (!is_array($req)) {
+        throw new Exception("Invalid JSON");
+    }
     $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
@@ -114,7 +117,15 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES, $pscid, $visit)) {
+    if (empty($_FILES)) {
+        showMediaError(
+            "File could not be uploaded successfully. 
+            Please contact the administrator.",
+            400
+        );
+    }
+
+    if (!isset($pscid, $visit)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
@@ -130,7 +141,7 @@ function uploadFile()
         return;
     }
 
-    $userID = $user->getData('UserID');
+    $userID = $user->getUsername();
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
@@ -172,6 +183,32 @@ function uploadFile()
             // Insert or override db record if file_name already exists
             $db->insertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
+            $qparam = ['ID' => $sessionID];
+            $result = $db->pselect(
+                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+                            from session 
+                        where ID=:ID',
+                $qparam
+            )[0];
+            echo json_encode(
+                [
+                    'full_name'      => $fileName,
+                    'pscid'          => $pscid,
+                    'visit_label'    => $result['ProjectID'],
+                    'language'       => $language,
+                    'instrument'     => $instrument,
+                    'site'           => $result['CenterID'],
+                    'project'        => $result['ProjectID'],
+                    'uploaded_by'    => $userID,
+                    'date_taken'     => $dateTaken,
+                    'comments'       => $comments,
+                    'last_modified'  => date("Y-m-d H:i:s"),
+                    'file_type'      => $fileType,
+                    'CandID'         => $result['CandID'],
+                    'SessionID'      => $sessionID,
+                    'fileVisibility' => 0,
+                ]
+            );
         } catch (DatabaseException $e) {
             showMediaError("Could not upload the file. Please try again!", 500);
         }
@@ -232,8 +269,6 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
-    $visit           = '';
-    $pscid           = '';
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData = [];
@@ -263,11 +298,12 @@ function getUploadFields()
             $sessionData[$pscid]['instruments']['all'] = [];
         }
 
-        if ($record["Test_name"] !== null && !in_array(
-            $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit],
-            true
-        )
+        if ($record["Test_name"] !== null
+            && !in_array(
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments'][$visit] ?? [],
+                true
+            )
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
                 = $record["Test_name"];
@@ -345,9 +381,9 @@ function showMediaError($message, $code)
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
- * @param array  $options array of options
- * @param string $item    key
- * @param string $item2   value
+ * @param array   $options array of options
+ * @param string  $item    key
+ * @param ?string $item2   value
  *
  * @return array
  */

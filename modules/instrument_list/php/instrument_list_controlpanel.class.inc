@@ -31,15 +31,29 @@ namespace LORIS\instrument_list;
  */
 class Instrument_List_ControlPanel extends \TimePoint
 {
+    protected array $tpl_data;
+
+    /**
+     * The LORIS Instance that this timepoint exists on
+     *
+     * @var \LORIS\LorisInstance $loris
+     */
+    protected $loris;
+
     /**
      * Construct function
      *
-     * @param \SessionID $sessionID the value of sessionID
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance.
+     * @param \SessionID           $sessionID SessionID that this control
+     *                                        panel is controlling.
      *
      * @return void
      */
-    function __construct($sessionID)
+    function __construct(\LORIS\LorisInstance $loris, $sessionID)
     {
+        $this->tpl_data = [];
+        $this->loris    = $loris;
+
         $this->select($sessionID);
     }
 
@@ -133,7 +147,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
             $this->startStage($nextStage);
 
-            if ($nextStage = 'Recycling Bin') {
+            if ($nextStage == 'Recycling Bin') {
 
                 $battery = new \NDB_BVL_Battery();
 
@@ -186,7 +200,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ['Submitted' => $submitted]
             );
 
-                // revert from approval (or the bin)
+            // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
                 $this->setData(
                     [
@@ -223,6 +237,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                         $instrument['CommentID']
                     );
                     $diff =\ConflictDetector::detectConflictsForCommentIds(
+                        $this->loris,
                         $instrument['Test_name'],
                         $instrument['CommentID'],
                         $instrument['DDECommentID']
@@ -348,7 +363,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeConflictDetected = false;
         $dataEntry           = '';
         foreach ($batteryList as $instrument) {
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -358,7 +373,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             //check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -464,6 +479,12 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $this->tpl_data['bvl_qc_type_'.$type]['icon']
                     = 'far fa-check-square';
             }
+
+            // ensure the variable checked is set the same way as in display()
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
+
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
             if (!$isSelected
@@ -499,6 +520,9 @@ class Instrument_List_ControlPanel extends \TimePoint
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
             if (!empty($qcType)
                 && !$isSelected
                 && $this->tpl_data['access']['bvl_qc']
@@ -555,7 +579,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -566,7 +590,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -651,7 +675,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -662,7 +686,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -713,9 +737,9 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && ! $config->settingEnabled("useScanDone")
+            && (!$config->settingEnabled("useScanDone")
             || $this->getData('Current_stage') == 'Screening'
-            || !empty($scanDone)
+            || !empty($scanDone))
         ) {
             return true;
         }

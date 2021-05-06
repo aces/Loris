@@ -105,6 +105,7 @@ class VisitSummary extends \NDB_Page
             $commentID = $row['CommentID'];
 
             $instrument = \NDB_BVL_Instrument::factory(
+                $this->loris,
                 $testName,
                 $commentID,
                 '',

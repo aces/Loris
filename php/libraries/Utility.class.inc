@@ -1,16 +1,5 @@
 <?php declare(strict_types=1);
-/**
- * This file contains any static helper functions used by Loris that don't
- * fit elsewhere or are used in many different modules.
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * A class for holding a set of (static) utility/helper functions in a
@@ -230,13 +219,13 @@ class Utility
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                project.
+     * @param ?ProjectID $projectID Limit visit labels to labels used by this
+     *                              project.
      *
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      */
-    static function getVisitList(?int $projectID = null) : array
+    static function getVisitList(?ProjectID $projectID = null) : array
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
@@ -287,12 +276,12 @@ class Utility
     /**
      * Returns a list of study Subprojects
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList(?int $projectID = null): array
+    static function getSubprojectList(?ProjectID $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -300,7 +289,7 @@ class Utility
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
                 "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID) 
+                JOIN project_subproject_rel USING (SubprojectID)
                 WHERE ProjectID=:pID",
                 ['pID' => $projectID]
             );
@@ -318,12 +307,12 @@ class Utility
     /**
      * Returns a list of study Subprojects associated with a project
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject(?int $projectID = null): array
+    static function getSubprojectsForProject(?ProjectID $projectID = null): array
     {
         if (is_null($projectID)) {
             return [];
@@ -362,7 +351,6 @@ class Utility
         $query .= " GROUP BY Test_name ORDER BY Test_name";
 
         // get the list of instruments
-        $rows  = [];
         $tests = [];
         $rows  = $DB->pselect($query, $params);
 
@@ -469,6 +457,12 @@ class Utility
      */
     static function getAllInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
@@ -492,6 +486,12 @@ class Utility
      */
     static function getAllDDEInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllDDEInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $config        = $Factory->config();
@@ -524,12 +524,18 @@ class Utility
      */
     static function getDirectInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getDirectInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDirectEntryInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         $instruments   = [];
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
             []
         );
@@ -570,38 +576,20 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param string $Cand_id candidate ID
+     * @param CandID $Cand_id candidate ID
      *
      * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID(string $Cand_id): string
+    static function getStageUsingCandID(CandID $Cand_id): string
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
-        $stage = $db->pselect($query, ['Cand_id' => $Cand_id]);
+        $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage[0]['Current_stage'];
-    }
-
-    /**
-     * Looks up visit stage using candidate ID.
-     *
-     * @param string $Cand_id candidate ID
-     *
-     * @return int
-     * @throws DatabaseException
-     */
-    static function getSubprojectIDUsingCandID(string $Cand_id): int
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, ['CandID' => $Cand_id]);
-        return intval($stage[0]['SubprojectID']);
     }
 
     /**
@@ -869,8 +857,10 @@ class Utility
                 "Input must be a valid date/time string: $e"
             );
         }
+
+        $factory = \NDB_Factory::singleton();
         return $dt->format(
-            \NDB_Config::singleton()->getSetting('dateDisplayFormat')
+            $factory->config()->getSetting('dateDisplayFormat')
             ?? DateTime::ATOM
         );
     }
@@ -909,7 +899,7 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type 
+            "SELECT ID, Scan_type
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
             []

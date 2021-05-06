@@ -2,6 +2,7 @@ site_name: LORIS
 repo_url: https://github.com/aces/Loris
 # Solve the broken 404 page issue
 site_url: https://acesloris.readthedocs.io/en/latest/
+docs_dir: '../docs'
 
 nav:
     - Home: 'README.md'

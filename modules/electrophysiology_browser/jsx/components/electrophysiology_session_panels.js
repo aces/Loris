@@ -30,6 +30,7 @@ class FilePanel extends Component {
       'download_electrode_info',
       'download_channels_info',
       'download_events',
+      'download_annotations',
       'download_all_files',
       'download_fdt_file',
     ];
@@ -241,7 +242,7 @@ class FilePanel extends Component {
                 <div className={'col-xs-2'}>
                   <a id='download_all_files'
                      href={'/mri/jiv/get_file.php?file='
-                          + this.state.data.downloads[4].file}
+                          + this.state.data.downloads[5].file}
                      target='_blank'
                      download={this.state.data.downloads[0].file}
                   >
@@ -314,6 +315,23 @@ class FilePanel extends Component {
                      download={this.state.data.downloads[0].file}
                   >
                     <button id='btn_download_events'
+                            style={stylesFile.button.download}
+                    >Download</button>
+                  </a>
+                </div>
+              </div>
+              <div className={'form-group row flex-v-center'}>
+                <div className={'col-xs-5'}
+                     style={stylesFile.div.element.download_title}
+                >Annotations</div>
+                <div className={'col-xs-2'}>
+                  <a id='download_annotations'
+                     href={'/mri/jiv/get_file.php?file='
+                          + this.state.data.downloads[4].file}
+                     target='_blank'
+                     download={this.state.data.downloads[0].file}
+                  >
+                    <button id='btn_download_annotations'
                             style={stylesFile.button.download}
                     >Download</button>
                   </a>

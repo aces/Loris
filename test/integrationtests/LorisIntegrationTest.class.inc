@@ -59,24 +59,27 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
+
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
@@ -196,10 +199,10 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
+            xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
         }
 
@@ -298,7 +301,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->DB->execute(
                 $prepare,
                 ["perm" => $value],
-                ['nofetch' => true]
+                ['nofetch' => "true"]
             );
         }
     }
@@ -502,7 +505,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url,$waitPeriod=15)
     {
-        $newWebDriver = null;
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -587,7 +589,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         if (!is_null($clickException)) {
             if (!$allowJavascriptClick) {
-                throw $e;
+                throw $clickException;
             }
 
             $this->webDriver->executeScript(
@@ -660,8 +662,8 @@ abstract class LorisIntegrationTest extends TestCase
         string $haystack,
         string $jsError= "An error occured while loading the page."
     ): void {
-        $this->assertContains($needle, $haystack);
-        $this->assertNotContains($jsError, $haystack);
+        $this->assertStringContainsString($needle, $haystack);
+        $this->assertStringNotContainsString($jsError, $haystack);
         $this->resetPermissions();
     }
 
@@ -713,7 +715,7 @@ abstract class LorisIntegrationTest extends TestCase
                 WebDriverBy::cssSelector("$row")
             )->getText();
             // 4 means there are 4 records under this site.
-            $this->assertContains($expect_records, $bodyText);
+            $this->assertStringContainsString($expect_records, $bodyText);
             //test clear filter
             $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
     }
@@ -733,7 +735,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->safeGet($this->url . '/dashboard/');
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
         $this->webDriver->wait(3, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -741,6 +743,6 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         $pageSource = $this->webDriver->getPageSource();
-        $this->assertContains($label, $pageSource);
+        $this->assertStringContainsString($label, $pageSource);
     }
 }

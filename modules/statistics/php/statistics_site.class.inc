@@ -91,8 +91,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param int        $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -108,8 +108,6 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = [];
-
             if ($user->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
@@ -139,7 +137,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
-            $userProjectsIDs = $user->getData('ProjectIDs');
+            $userProjectsIDs = $user->getProjectIDs();
             if (!empty($userProjectsIDs)) {
                 $paramProjects = [];
                 $projectsIDs   = [];
@@ -182,9 +180,9 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param int        $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -213,9 +211,9 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param int        $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */
@@ -292,7 +290,7 @@ class Statistics_Site extends \NDB_Menu
                 $test_url = $instrument;
 
                 foreach ($results as $row) {
-                    if (!in_array($row['Visit_label'], $visits)) {
+                    if (!in_array($row['Visit_label'] ?? [], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
                     $arrayVar = [

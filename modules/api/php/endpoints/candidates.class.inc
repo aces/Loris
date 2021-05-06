@@ -73,8 +73,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            "v0.0.2",
             "v0.0.3",
+            "v0.0.4-dev",
         ];
     }
 
@@ -121,7 +121,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $candidate = \NDB_Factory::singleton()
                 ->candidate(new CandID($pathparts[1]));
-        } catch (\NotFound | \LorisException $e) {
+        } catch (\NotFound | \LorisException | \DomainException $e) {
             return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
         }
 

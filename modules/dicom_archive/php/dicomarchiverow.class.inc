@@ -25,7 +25,8 @@ namespace LORIS\dicom_archive;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class DICOMArchiveRow implements \LORIS\Data\DataInstance
+class DICOMArchiveRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     protected $DBRow;
     protected $CenterID;
@@ -59,7 +60,7 @@ class DICOMArchiveRow implements \LORIS\Data\DataInstance
      *
      * @return integer The CenterID
      */
-    public function getCenterID()
+    public function getCenterID() : int
     {
         return $this->CenterID;
     }

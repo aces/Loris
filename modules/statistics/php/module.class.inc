@@ -204,11 +204,13 @@ class Module extends \Module
     /**
      * Generates the template data for a progress bar.
      *
-     * @param $ID                The name of the progress bar being
-     *                           created.
-     * @param $title             The title to add to the template variables.
-     * @param $recruitmentTarget The target for this recruitment type.
-     * @param $totalRecruitment  The total number of candidates of all types.
+     * @param string    $ID                The name of the progress bar being
+     *                                     created.
+     * @param string    $title             The title to add to the template
+     *                                     variables.
+     * @param int       $recruitmentTarget The target for this recruitment type.
+     * @param int       $totalRecruitment  The total number of candidates of all
+     *                                     types.
      * @param \Database $db                The database connection to get data from.
      *
      * @return array Smarty template data
@@ -232,7 +234,7 @@ class Module extends \Module
         if ($ID == 'overall') {
             $totalFemales = $this->_getTotalSex($db, "Female");
         } else {
-            $totalFemales = $this->getTotalSexByProject($db, "Female", $ID);
+            $totalFemales = $this->getTotalSexByProject($db, "Female", intval($ID));
         }
         $rv['female_total']   = $totalFemales;
         $rv['female_percent']
@@ -240,7 +242,7 @@ class Module extends \Module
         if ($ID == 'overall') {
             $totalMales = $this->_getTotalSex($db, "Male");
         } else {
-            $totalMales = $this->getTotalSexByProject($db, "Male", $ID);
+            $totalMales = $this->getTotalSexByProject($db, "Male", intval($ID));
         }
         $rv['male_total']   = $totalMales;
         $rv['male_percent']
@@ -297,7 +299,7 @@ class Module extends \Module
             AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             [
                 'sex' => $sex,
-                'PID' => $projectID,
+                'PID' => "$projectID",
             ]
         ) ?? 0;
     }
@@ -321,7 +323,7 @@ class Module extends \Module
               AND c.RegistrationProjectID=:PID
               AND c.Entity_type='Human'
               AND c.RegistrationCenterID <> 1",
-            ['PID' => $projectID]
+            ['PID' => "$projectID"]
         ) ?? 0;
     }
 }

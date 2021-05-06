@@ -114,7 +114,157 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-        $this->markTestSkipped('No access to create visits for any site');
+        // Test changing the Project & Battery
+        $json     = ['CandID'  => '900000',
+            'Visit'   => "V1",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "High Yeast",
+            'Project' => "Rye",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/900000/V1",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(204, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        // Erase sites that were setup in LorisApiAuthenticatedTest
+        // setup for data access in other tests.
+        $this->DB->run(
+            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+        );
+        /**
+        * Test changing from a site with no affiliation to a site with affiliation
+        * Candidate 400266 is from site Rome. The test user only has access to
+        * Data Coordinating Center. He should not be able to modify a visit 
+        * for a candidate from a site he has no access to.
+        */
+        $json     = ['CandID'  => '400266',
+            'Visit'   => "V3",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/400266/V3",
+            [
+                'headers' => $this->headers,
+                'json'    => $json,
+                'http_errors' => false
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        // Test changing the Battery from a visit that is already initiated.
+        $json     = ['CandID'  => "115788",
+            'Visit'   => "V3",
+            'Site'    => "Data Coordinating Center",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/115788/V3",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(409, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
+
+        // Test assigning site with no affiliation. It changes the site from
+        // Data Coordinating Center, which the test user has its only affiliation,
+        // to Montreal, where he has no affiliation.
+        $json     = ['CandID'  => '900000',
+            'Visit'   => "V1",
+            'Site'    => "Montreal",
+            'Battery' => "Stale",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/900000/V1",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(403, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        // The visit has CenterID 2, we need to ensure that
+        // the user has access to visitTest (which we deleted
+        // above to test the permission denied.) or this
+        // test will return a 403 instead of a 400.
+        $this->DB->insert("user_psc_rel",
+            [
+                'UserID' => '999990',
+                'CenterID' => '2'
+            ]
+        );
+        // Test what happen when a field is missing (here, Battery)
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Data Coordinating Center",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/$this->candidTest/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(400, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
+
+        // Test CandID in URL should match CandID in the request fields
+        $json     = ['CandID'  => $this->candidTest,
+            'Visit'   => $this->visitTest,
+            'Site'    => "Montreal",
+            'Battery' => "Low Yeast",
+            'Project' => "Pumpernickel",
+        ];
+        $response = $this->client->request(
+            'PUT',
+            "candidates/300001/$this->visitTest",
+            [
+                'headers'     => $this->headers,
+                'json'        => $json,
+                'http_errors' => false
+            ]
+        );
+        // verify the status code
+        $this->assertequals(400, $response->getstatuscode());
+        // verify the endpoint has a body
+        $body = $response->getbody();
+        $this->assertnotempty($body);
     }
 
     /**

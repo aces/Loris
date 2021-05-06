@@ -115,8 +115,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
-            // FIXME: This assumes the baseURL is under /
-            $path    = $uri->getPath();
             $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL($baseurl);

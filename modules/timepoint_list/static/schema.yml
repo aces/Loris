@@ -1,0 +1,39 @@
+openapi: 3.0.1
+info:
+  title: LORIS - REST API endpoints
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 0.0.3
+servers:
+  - url: /
+security:
+  - ApiKeyAuth: []
+paths:
+  '/{candid}':
+    get:
+      tags:
+        - Visit
+      parameters:
+        - name: candid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The module HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
