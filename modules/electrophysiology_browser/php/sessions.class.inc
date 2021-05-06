@@ -1081,6 +1081,7 @@ class Sessions extends \NDB_Page
                     $instance['Onset'],
                     $instance['Duration'],
                     $label_name,
+                    $instance['Channels'],
                     $instance['AbsoluteTime'],
                     $instance['Description']
                 ];
@@ -1153,6 +1154,16 @@ class Sessions extends \NDB_Page
                 ['PhysiologicalFileID' => $physioFileID]
             );
         }
+
+        $mimeType = 'application/tar+gzip'; //find this
+        header("Content-type: $mimeType");
+        error_log(print_r($tgz_path, true));
+        header("Content-Disposition: attachment; filename=$tgz_path");
+
+        $fp = fopen($tgz_path, 'r');
+        fpassthru($fp);
+        fclose($fp);
+
     }
 
     /**

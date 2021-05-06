@@ -21,8 +21,8 @@ class FilePanel extends Component {
       data: this.props.data,
       id: this.props.fileId,
     };
-    this.handleClick = this.handleClick.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   /**
@@ -171,23 +171,13 @@ class FilePanel extends Component {
 FilePanel.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
-<<<<<<< 71ac66786a31e96af100e755009ff2d5a9bacbb2
   data: PropTypes.array,
-=======
-  data: PropTypes.object,
-  url: PropTypes.string,
->>>>>>> Download button functionality
 };
 
 FilePanel.defaultProps = {
   id: 'file_panel',
   title: 'FILENAME',
-<<<<<<< 71ac66786a31e96af100e755009ff2d5a9bacbb2
   data: [],
-=======
-  data: {},
-  url: '',
->>>>>>> Download button functionality
 };
 
 export {
