@@ -106,6 +106,12 @@ class Category extends Endpoint implements ETagCalculator
             $categoryprov = new CategoryFieldsProvisioner($loris, $this->_name);
             $fields       = $categoryprov->execute($user);
 
+            if (!$fields->valid()) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Unknown category or no fields'
+                );
+            }
+
             $this->_cache = [
                 'name'   => $this->_name,
                 'visits' => iterator_to_array($visits),

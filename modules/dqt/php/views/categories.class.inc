@@ -38,6 +38,6 @@ class Categories
             '\LORIS\dqt\Views\Categories::_mapper',
             iterator_to_array($this->_iterator)
         );
-        return ['Categories' => $categories];
+        return ['categories' => $categories];
     }
 }
