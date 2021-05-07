@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
-import swal from 'sweetalert2';
 
 /**
  * File Panel
@@ -23,7 +22,6 @@ class FilePanel extends Component {
       annotationsAction: loris.BaseURL
                          + '/electrophysiology_browser/annotations/',
     };
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   /**
@@ -99,39 +97,6 @@ class FilePanel extends Component {
         </div>
       </Panel>
     );
-  }
-
-  /**
-   * Display a success/error alert message after form submission
-   * @param {string} msgType - error/success message
-   * @param {string} message - message content
-   */
-  showAlertMessage(msgType, message) {
-    let type = 'success';
-    let title = 'Files updated!';
-    let text = message || '';
-    let timer = null;
-    let confirmation = true;
-    let callback = function() {};
-
-    if (msgType === 'success') {
-        title = 'Files Updated!';
-        timer = 2000;
-        confirmation = false;
-    } else if (msgType === 'error') {
-        type = 'error';
-        title = 'Error!';
-    }
-
-    swal.fire({
-        title: title,
-        type: type,
-        text: text,
-        timer: timer,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: confirmation,
-    }, callback.bind(this));
   }
 }
 

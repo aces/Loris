@@ -17,7 +17,6 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
-use SodiumException;
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
@@ -137,41 +136,6 @@ class Sessions extends \NDB_Page
             ));
         }
 
-        switch ($request->getMethod()) {
-        case 'GET':
-
-            if (array_key_exists('physioFileID', $parameters)
-                && array_key_exists('filePath', $parameters)
-            ) {
-                $physioFileID = intval($parameters['physioFileID']) ?? null;
-                error_log(print_r("physio ID: ".$physioFileID, true));
-                error_log(print_r("path: ".$parameters['filePath'], true));
-
-                self::updateDerivativeFiles($physioFileID);
-
-                $config       = \NDB_Factory::singleton()->config();
-                $downloadpath = \Utility::appendForwardSlash(
-                    $config->getSetting("dataDirBasepath")
-                );
-
-                $file     = $parameters['filePath'] ?? null;
-                $filename = urldecode(basename($file));
-                $path     = dirname($file);
-
-                $downloader = new \LORIS\FilesDownloadHandler(
-                    new \SPLFileInfo($downloadpath . $path)
-                );
-                return $downloader->handle(
-                    $request->withAttribute('filename', $filename)
-                );
-            } else {
-                return $this->getSessionData($outputType);
-            }
-
-        case 'DELETE':
-            $this->_deleteAnnotation($request);
-        }
-
         return $this->getSessionData($outputType);
     }
 
@@ -245,6 +209,8 @@ class Sessions extends \NDB_Page
         return $subjectData;
     }
 
+
+
     /**
      * Get the list of electrophysiology recordings with their recording information.
      *
@@ -268,7 +234,7 @@ class Sessions extends \NDB_Page
         if ($outputType != 'all_types') {
             $query        .= 'LEFT JOIN physiological_output_type pot ON ';
             $query        .= 'pf.PhysiologicalOutputTypeID='
-                . 'pot.PhysiologicalOutputTypeID ';
+                .'pot.PhysiologicalOutputTypeID ';
             $query        .= 'WHERE SessionID=:SID ';
             $query        .= 'AND pot.OutputTypeName = :OTN ';
             $params['OTN'] = $outputType;
@@ -295,6 +261,8 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
+        $db = \NDB_Factory::singleton()->database();
+
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
         $physioFileObj   = new ElectrophysioFile($physioFileID);
@@ -492,6 +460,24 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
+        $fileOutput = $db->pselectone(
+            'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+            ['PFID' => $physioFileID]
+        );
+
+        //Get the annotation data if the output type is derivative
+        //Get the annotation data if the output type is derivative
+        if (strcmp($fileOutput, 'derivative') == 0) {
+            $annotations = new ElectrophysioAnnotations(
+                intval($physioFileID)
+            );
+            $fileSummary['annotations'] = $annotations->getData();
+        }
+
         $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
 
         return $fileSummary;
@@ -626,6 +612,7 @@ class Sessions extends \NDB_Page
     }
 
     /**
+<<<<<<< 6017917c6662c96c59cb99d774f8c4ffcf8871e4
      * Gets the annotation data for the given physiological file
      *
      * @param int $physioFileID Electrophysiological file ID
@@ -1173,5 +1160,4 @@ class Sessions extends \NDB_Page
             )
         );
     }
-
 }
