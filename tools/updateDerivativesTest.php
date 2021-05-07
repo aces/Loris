@@ -125,15 +125,15 @@ class TestEditingDerivatives
                 'AnnotationFileID'      => '13',
                 'AnnotationParameterID' => '5',
                 'AnnotationLabelID'     => '12',
-                'Channels'              => 'Fantastic Channel',
-                'Description'           => 'Fantastic Description'
+                'Channels'              => 'Test Channel',
+                'Description'           => 'Test Description'
             ]
         );
         $db->update(
             'physiological_annotation_parameter',
             [
-                'Sources' => 'Source 900',
-                'Author'  => 'Hemingway'
+                'Sources' => 'Test Source',
+                'Author'  => 'Real Person'
             ],
             ['AnnotationParameterID' => '5']
         );
@@ -358,8 +358,6 @@ class TestEditingDerivatives
         $user          = \NDB_Factory::singleton()->user();
         $db            = \NDB_Factory::singleton()->database();
 
-        //if ($this->_hasEditDerivPerms($user)) {
-
         $physioFilePath = $db->pselectone(
             'SELECT FilePath
             FROM physiological_file
@@ -575,7 +573,6 @@ class TestEditingDerivatives
                 ['PhysiologicalFileID' => $physioFileID]
             );
         }
-        //}
     }
 
     /**
@@ -594,18 +591,14 @@ class TestEditingDerivatives
             'AnnotationFileID'     => $values['annotationFileID'],
             'AnnotationInstanceID' => $values['instance_id']
         ];
-
-        //if ($this->_hasEditDerivPerms($user)) {
         $db->delete("physiological_annotation_instance", $params);
-        //}
     }
 }
 
-$testSessions = new TestEditingDerivatives();
+//$testSessions = new TestEditingDerivatives();
 //$testSessions->testFilepathGeneration();
 //$testSessions->testAddDataToDB();
-$physioFileID = 11;
-//$testSessions->updateDerivativeFiles($physioFileID);
+//$testSessions->updateDerivativeFiles(11);
 //$testSessions->testHashGenerator();
 
 //Testing adding a new instance with new label/updating parameter table
@@ -643,6 +636,7 @@ $values2 = [
 ];
 //Test creating new annotation files for a physiological file
 //that doesn't have any annotation files
+//Note: empty all annotation DB tables before running with this array
 $values3 = [
     'physioFileID' => 11,
     'description'  => 'New Description New File!',
@@ -665,4 +659,3 @@ $values4 = [
 ];
 $testSessions->_updateAnnotation($values1);
 //$testSessions->_deleteAnnotation($values4);
-
