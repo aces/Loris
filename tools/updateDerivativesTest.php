@@ -122,20 +122,20 @@ class TestEditingDerivatives
         $db->insert(
             'physiological_annotation_instance',
             [
-                'AnnotationFileID'      => '1',
-                'AnnotationParameterID' => '1',
-                'AnnotationLabelID'     => '27',
-                'Channels'              => 'Channel 7',
-                'Description'           => 'Description 7'
+                'AnnotationFileID'      => '13',
+                'AnnotationParameterID' => '5',
+                'AnnotationLabelID'     => '12',
+                'Channels'              => 'Fantastic Channel',
+                'Description'           => 'Fantastic Description'
             ]
         );
         $db->update(
             'physiological_annotation_parameter',
             [
-                'Sources' => 'Source',
-                'Author'  => 'First Last'
+                'Sources' => 'Source 900',
+                'Author'  => 'Hemingway'
             ],
-            ['AnnotationParameterID' => '1']
+            ['AnnotationParameterID' => '5']
         );
         $db->update(
             'physiological_annotation_file',
@@ -465,16 +465,16 @@ class TestEditingDerivatives
             $params_tsv     = [
                 'PhysiologicalFileID' => $physioFileID,
                 'FileType'            => 'tsv',
-                'FilePath'            => $tsv_path
+                'FilePath'            => str_replace($dataDir, '', $tsv_path)
             ];
             $params_json    = [
                 'PhysiologicalFileID' => $physioFileID,
                 'FileType'            => 'json',
-                'FilePath'            => $json_path,
+                'FilePath'            => str_replace($dataDir, '', $json_path),
             ];
             $params_archive = [
                 'PhysiologicalFileID' => $physioFileID,
-                'FilePath'            => $tgz_path,
+                'FilePath'            => str_replace($dataDir, '', $tgz_path),
                 'Blake2bHash'         => bin2hex($hash)
             ];
             $db->insert("physiological_annotation_file", $params_tsv);
@@ -603,7 +603,7 @@ class TestEditingDerivatives
 
 $testSessions = new TestEditingDerivatives();
 //$testSessions->testFilepathGeneration();
-$testSessions->testAddDataToDB();
+//$testSessions->testAddDataToDB();
 $physioFileID = 11;
 //$testSessions->updateDerivativeFiles($physioFileID);
 //$testSessions->testHashGenerator();
@@ -611,7 +611,7 @@ $physioFileID = 11;
 //Testing adding a new instance with new label/updating parameter table
 $values1 = [
     'physioFileID' => $physioFileID,
-    'parameter_id' => 1,
+    'parameter_id' => 5,
     'description'  => 'A New Description!',
     'sources'      => 'Source Source',
     'author'       => 'Shakespeare',
@@ -644,7 +644,7 @@ $values2 = [
 //Test creating new annotation files for a physiological file
 //that doesn't have any annotation files
 $values3 = [
-    'physioFileID' => 1,
+    'physioFileID' => 11,
     'description'  => 'New Description New File!',
     'sources'      => 'New File Source',
     'author'       => 'Shakespeare Again',
@@ -663,6 +663,6 @@ $values4 = [
     'annotationFileID' => 1,
     'instance_id'      => 2,
 ];
-//$testSessions->_updateAnnotation($values3);
+$testSessions->_updateAnnotation($values1);
 //$testSessions->_deleteAnnotation($values4);
 

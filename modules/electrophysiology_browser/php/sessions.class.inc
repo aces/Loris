@@ -155,14 +155,38 @@ class Sessions extends \NDB_Page
         }
 
         switch ($request->getMethod()) {
-        case 'POST':
-            $this->_updateAnnotation($request);
+        case 'GET':
+
+            if (array_key_exists('physioFileID', $parameters)
+                && array_key_exists('filePath', $parameters)
+            ) {
+                $physioFileID = intval($parameters['physioFileID']) ?? null;
+                error_log(print_r("physio ID: ".$physioFileID, true));
+                error_log(print_r("path: ".$parameters['filePath'], true));
+
+                self::updateDerivativeFiles($physioFileID);
+
+                $config       = \NDB_Factory::singleton()->config();
+                $downloadpath = \Utility::appendForwardSlash(
+                    $config->getSetting("dataDirBasepath")
+                );
+
+                $file     = $parameters['filePath'] ?? null;
+                $filename = urldecode(basename($file));
+                $path     = dirname($file);
+
+                $downloader = new \LORIS\FilesDownloadHandler(
+                    new \SPLFileInfo($downloadpath . $path)
+                );
+                return $downloader->handle(
+                    $request->withAttribute('filename', $filename)
+                );
+            } else {
+                return $this->getSessionData($outputType);
+            }
+
         case 'DELETE':
             $this->_deleteAnnotation($request);
-        case 'PUT':
-            $data         = json_decode((string) $request->getBody(), true) ?? '';
-            $physioFileID = intval($data['physioFileID']) ?? '';
-            self::updateDerivativeFiles($physioFileID);
         }
 
         return $this->getSessionData($outputType);
@@ -805,16 +829,16 @@ class Sessions extends \NDB_Page
                 $params_tsv     = [
                     'PhysiologicalFileID' => $physioFileID,
                     'FileType'            => 'tsv',
-                    'FilePath'            => $tsv_path
+                    'FilePath'            => str_replace($dataDir, '', $tsv_path)
                 ];
                 $params_json    = [
                     'PhysiologicalFileID' => $physioFileID,
                     'FileType'            => 'json',
-                    'FilePath'            => $json_path,
+                    'FilePath'            => str_replace($dataDir, '', $json_path),
                 ];
                 $params_archive = [
                     'PhysiologicalFileID' => $physioFileID,
-                    'FilePath'            => $tgz_path,
+                    'FilePath'            => str_replace($dataDir, '', $tgz_path),
                     'Blake2bHash'         => bin2hex($hash)
                 ];
                 $db->insert("physiological_annotation_file", $params_tsv);
@@ -1154,16 +1178,6 @@ class Sessions extends \NDB_Page
                 ['PhysiologicalFileID' => $physioFileID]
             );
         }
-
-        $mimeType = 'application/tar+gzip'; //find this
-        header("Content-type: $mimeType");
-        error_log(print_r($tgz_path, true));
-        header("Content-Disposition: attachment; filename=$tgz_path");
-
-        $fp = fopen($tgz_path, 'r');
-        fpassthru($fp);
-        fclose($fp);
-
     }
 
     /**
