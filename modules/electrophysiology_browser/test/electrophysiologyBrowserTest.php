@@ -522,7 +522,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testSessionsNavigation()
     {
-        $this->markTestSkipped("Currently causing a timeout exception");
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
         $link = self::$nextLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
