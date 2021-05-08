@@ -612,7 +612,6 @@ class Sessions extends \NDB_Page
     }
 
     /**
-<<<<<<< 6017917c6662c96c59cb99d774f8c4ffcf8871e4
      * Gets the annotation data for the given physiological file
      *
      * @param int $physioFileID Electrophysiological file ID

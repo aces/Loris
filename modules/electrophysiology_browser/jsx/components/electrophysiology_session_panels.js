@@ -20,7 +20,7 @@ class FilePanel extends Component {
       data: this.props.data,
       physiologicalFileID: this.props.physiologicalFileID,
       annotationsAction: loris.BaseURL
-                         + '/electrophysiology_browser/annotations/',
+                         + '/electrophysiology_browser/annotations',
     };
   }
 
@@ -35,6 +35,8 @@ class FilePanel extends Component {
       this.state.data.slice(0, halfSize),
       this.state.data.slice(halfSize),
     ];
+
+    console.log(this.state.data.downloads);
 
     return (
       <Panel id={this.props.id} title={this.props.title}>

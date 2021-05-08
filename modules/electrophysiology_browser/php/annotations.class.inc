@@ -5,7 +5,7 @@ use \Psr\Http\Message\ResponseInterface;
 use SodiumException;
 
 /**
- * Contains the File_Reader class used for electrophysiological browser
+ * Contains the Annotations class used for electrophysiological browser
  *
  * PHP Version 7
  *
@@ -18,18 +18,6 @@ use SodiumException;
 class Annotations extends \NDB_Page
 {
     /**
-     * Determine whether the user has permission to create and edit the derivatives
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool whether the user can create and edit the derivatives
-     */
-    function _hasAccess(\User $user): bool
-    {
-        return ($user->hasPermission('electrophysiology_browser_edit_annotations'));
-    }
-
-    /**
      * Handle how to operate all the files.
      * GET method gets a file.
      *
@@ -40,47 +28,70 @@ class Annotations extends \NDB_Page
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $parameters = $request->getQueryParams();
-        $user       = $request->getAttribute('user');
-        
-        if (!$this->_hasAccess($user)) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-                ->process(
-                    $request,
-                    new \LORIS\Http\StringStream("Permission denied")
-                )->withStatus(403);
-        }
+        $factory    = \NDB_Factory::singleton();
+        $user       = $factory->user();
+        $db         = $factory->database();
 
-        $config       = \NDB_Factory::singleton()->config();
-        $downloadpath = \Utility::appendForwardSlash(
-            $config->getSetting("dataDirBasepath")
-        );
-        
         switch ($request->getMethod()) {
         case 'GET':
-            if (array_key_exists('physioFileID', $parameters)
-                && array_key_exists('filePath', $parameters)
+            $sessionID = $db->pselectOne(
+                'SELECT SessionID
+                    FROM physiological_file
+                    WHERE PhysiologicalFileID=:PFID',
+                ['PFID' => $parameters['physioFileID']]
+            );
+
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionID))
+            );
+
+            if (!(($user->hasPermission('electrophysiology_browser_view_allsites')
+                || ($user->hasCenter($timepoint->getCenterID())
+                && $user->hasPermission('electrophysiology_browser_view_site')))
+                && $user->hasProject($timepoint->getProject()->getId()))
             ) {
-                $physioFileID = intval($parameters['physioFileID']) ?? null;
-                self::updateDerivativeFiles($physioFileID);
-
-                $config       = \NDB_Factory::singleton()->config();
-                $downloadpath = \Utility::appendForwardSlash(
-                    $config->getSetting("dataDirBasepath")
-                );
-
-                $file     = $parameters['filePath'] ?? null;
-                $filename = urldecode(basename($file));
-                $path     = dirname($file);
-
-                $downloader = new \LORIS\FilesDownloadHandler(
-                    new \SPLFileInfo($downloadpath . $path)
-                );
-                return $downloader->handle(
-                    $request->withAttribute('filename', $filename)
-                );
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
+
+            if (!isset($parameters['physioFileID'])
+                || !isset($parameters['filePath'])
+            ) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+
+            $physioFileID = intval($parameters['physioFileID']);
+            self::updateFiles($physioFileID);
+
+            $config       = \NDB_Factory::singleton()->config();
+            $downloadpath = \Utility::appendForwardSlash(
+                $config->getSetting("dataDirBasepath")
+            );
+
+            $file     = $parameters['filePath'] ?? null;
+            $filename = urldecode(basename($file));
+            $path     = dirname($file);
+
+            $downloader = new \LORIS\FilesDownloadHandler(
+                new \SPLFileInfo($downloadpath . $path)
+            );
+            return $downloader->handle(
+                $request->withAttribute('filename', $filename)
+            );
         case 'DELETE':
-            $this->_deleteAnnotation($request);
+            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
+            ) {
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
+
+            if (!isset($parameters['instance_id'])) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+
+            $db->delete(
+                "physiological_annotation_instance",
+                ['AnnotationInstanceID' => $parameters['instance_id']]
+            );
+
             return (new \LORIS\Http\Response\JSON\OK());
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
@@ -89,7 +100,6 @@ class Annotations extends \NDB_Page
         }
     }
 
-
     /**
      * Gets the annotation data for the given physiological file
      *
@@ -97,54 +107,38 @@ class Annotations extends \NDB_Page
      *
      * @return array array with the data for each annotation for the file
      */
-    function getAnnotations(int $physioFileID): array
+    static function get(int $physioFileID): array
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $result         = [];
-        $params         = [];
-        $params['PFID'] = $physioFileID;
-
-        //Get the annotation file IDs
-        $instanceFileID = $db->pselectone(
-            'SELECT AnnotationFileID
-                FROM physiological_annotation_file
-                WHERE PhysiologicalFileID=:PFID
-                AND FileType="tsv"',
-            $params
-        );
-        $metadataFileID = $db->pselectone(
-            'SELECT AnnotationFileID
-                FROM physiological_annotation_file
-                WHERE PhysiologicalFileID=:PFID
-                AND FileType="json"',
-            $params
+        $annotationInstance = $db->pselect(
+            'SELECT i.* 
+                FROM physiological_annotation_instance AS i
+                JOIN physiological_annotation_file AS f
+                ON f.AnnotationFileID = i.AnnotationFileID 
+                WHERE f.PhysiologicalFileID=:PFID AND f.FileType="tsv"',
+            ['PFID' => $physioFileID]
         );
 
-        //Get the information for each annotation for the given file
-        $annotationInstance  = $db->pselect(
-            'SELECT * FROM physiological_annotation_instance
-                WHERE AnnotationFileID=:instance_FID',
-            ['instance_FID' => $instanceFileID]
-        );
-        $result['instances'] = $annotationInstance;
-
-        //Get the metadata for the annotations of the given file
         $annotationMetadata = $db->pselect(
-            'SELECT * FROM physiological_annotation_parameter
-                WHERE AnnotationFileID=:metadata_FID',
-            ['metadata_FID' => $metadataFileID]
+            'SELECT p.*
+                FROM physiological_annotation_parameter AS p
+                JOIN physiological_annotation_file AS f
+                ON f.AnnotationFileID = p.AnnotationFileID
+                WHERE f.PhysiologicalFileID=:PFID AND f.FileType="json"',
+            ['PFID' => $physioFileID]
         );
-        $result['metadata'] = $annotationMetadata;
 
-        //Get all pre-existing label types
         $annotationLabels = $db->pselect(
             'SELECT * FROM physiological_annotation_label',
-            $params
+            ['PFID' => $physioFileID]
         );
-        $result['labels'] = $annotationLabels;
 
-        return $result;
+        return [
+            'instances' => $annotationInstance,
+            'metadata'  => $annotationMetadata,
+            'labels'    => $annotationLabels,
+        ];
     }
 
     /**
@@ -156,27 +150,32 @@ class Annotations extends \NDB_Page
      *
      * @return void
      */
-    function _updateAnnotation(ServerRequestInterface $request)
-    {
-        $user = \NDB_Factory::singleton()->user();
+    static function update(
+        int $physioFileID,
+        array $instance_data,
+        string $description,
+        string $sources,
+        string $author,
+        int $instance_id,
+        int $parameter_id
+    ): void {
+        // TODO reduce arguments
+
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+
         if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
-
-            $values        = $request->getQueryParams();
-            $physioFileID  = $values['physioFileID'];
-            $params        = ['PFID' => $physioFileID];
-            $instance_data = $values['instance'];
-            $db            = \NDB_Factory::singleton()->database();
-
-            $physioFilePath = $db->pselectone(
+            $physioFilePath = $db->pselectOne(
                 'SELECT FilePath
                     FROM physiological_file
                     WHERE PhysiologicalFileID=:PFID',
-                $params
+                ['PFID' => $physioFileID]
             );
 
             //If the label is new, add to annotation label table
             //and get label ID
-            $labelID = $db->pselectone(
+            $labelID = $db->pselectOne(
                 "SELECT AnnotationLabelID
                     FROM physiological_annotation_label
                     WHERE LabelName=:label",
@@ -188,7 +187,7 @@ class Annotations extends \NDB_Page
                     'LabelDescription' => $instance_data['label_description']
                 ];
                 $db->insert("physiological_annotation_label", $data);
-                $labelID = $db->pselectone(
+                $labelID = $db->pselectOne(
                     "SELECT AnnotationLabelID
                         FROM physiological_annotation_label
                         WHERE LabelName=:label",
@@ -201,14 +200,14 @@ class Annotations extends \NDB_Page
                 "SELECT AnnotationFileID
                     FROM physiological_annotation_file
                     WHERE PhysiologicalFileID=:PFID",
-                $params
+                ['PFID' => $physioFileID]
             );
 
             //Get data from POST request
             $metadata = [
-                'Description' => $values['description'],
-                'Sources'     => $values['sources'],
-                'Author'      => $values['author']
+                'Description' => $description,
+                'Sources'     => $sources,
+                'Author'      => $author
             ];
 
             $instance = [
@@ -222,10 +221,9 @@ class Annotations extends \NDB_Page
 
             //Insert new files and data into DB
             if (empty($annotationFID)) {
-
                 //Create new filepaths
                 //Get data directory base path from Config
-                $dataDir = $db->pselectone(
+                $dataDir = $db->pselectOne(
                     'SELECT Value
                     FROM Config AS config
                     INNER JOIN ConfigSettings AS c
@@ -243,6 +241,7 @@ class Annotations extends \NDB_Page
                     mkdir($dirname, 0777, true);
                     echo "Derivative folder created\n";
                 }
+
                 //Replace file type with "annotations"
                 $pathWithoutEDF = substr(
                     $pathWithDeriv,
@@ -253,6 +252,7 @@ class Annotations extends \NDB_Page
                 $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
                 $json_path = $pathWithoutEDF . "_annotations.json";
                 $tgz_path  = $pathWithoutEDF . "_annotations.tgz";
+
                 //Create files
                 $tsv_file  = fopen($tsv_path, 'a+');
                 $json_file = fopen($json_path, 'a+');
@@ -285,20 +285,20 @@ class Annotations extends \NDB_Page
                 $db->insert("physiological_annotation_archive", $params_archive);
 
                 //Get new annotation file ID
-                $annotation_tsv_ID = $db->pselectone(
+                $annotation_tsv_ID = $db->pselectOne(
                     "SELECT AnnotationFileID
                         FROM physiological_annotation_file
                         WHERE PhysiologicalFileID=:PFID
                         AND FileType='tsv'",
-                    $params
+                    ['PFID' => $physioFileID]
                 );
                 //Get new annotation file ID
-                $annotation_json_ID = $db->pselectone(
+                $annotation_json_ID = $db->pselectOne(
                     "SELECT AnnotationFileID
                         FROM physiological_annotation_file
                         WHERE PhysiologicalFileID=:PFID
                         AND FileType='json'",
-                    $params
+                    ['PFID' => $physioFileID]
                 );
                 echo $annotation_json_ID . "\n";
                 $metadata['AnnotationFileID'] = $annotation_json_ID;
@@ -307,7 +307,7 @@ class Annotations extends \NDB_Page
                 $db->insert("physiological_annotation_parameter", $metadata);
 
                 //Get new metadata file ID
-                $metadata_ID = $db->pselectone(
+                $metadata_ID = $db->pselectOne(
                     "SELECT AnnotationParameterID
                         FROM physiological_annotation_parameter
                         WHERE AnnotationFileID=:annotation_ID",
@@ -321,20 +321,20 @@ class Annotations extends \NDB_Page
             } else {
                 //If the files are not new
                 //Get annotation file ID for the tsv file
-                $tsv_ID = $db->pselectone(
+                $tsv_ID = $db->pselectOne(
                     "SELECT AnnotationFileID
                         FROM physiological_annotation_file
                         WHERE PhysiologicalFileID=:PFID
                         AND FileType='tsv'",
-                    $params
+                    ['PFID' => $physioFileID]
                 );
                 //Get annotation file ID for the json file
-                $json_ID = $db->pselectone(
+                $json_ID = $db->pselectOne(
                     "SELECT AnnotationFileID
                         FROM physiological_annotation_file
                         WHERE PhysiologicalFileID=:PFID
                         AND FileType='json'",
-                    $params
+                    ['PFID' => $physioFileID]
                 );
 
                 $instance['AnnotationFileID'] = $tsv_ID;
@@ -344,8 +344,8 @@ class Annotations extends \NDB_Page
                  * into instance table and get the parameter file ID
                  * from the parameter table
                  */
-                if (empty($values['instance_id'])) {
-                    $parameterID = $db->pselectone(
+                if (empty($instance_id)) {
+                    $parameterID = $db->pselectOne(
                         "SELECT AnnotationParameterID
                             FROM physiological_annotation_parameter
                             WHERE AnnotationFileID=:annotationFID",
@@ -358,20 +358,23 @@ class Annotations extends \NDB_Page
                     $db->update(
                         'physiological_annotation_instance',
                         $instance,
-                        ['AnnotationInstanceID' => $values['instance_id']]
+                        ['AnnotationInstanceID' => $instance_id]
                     );
                 }
                 //Update parameter table if parameter ID provided
-                if (!empty($values['parameter_id'])) {
+                if (!empty($parameter_id)) {
                     $db->update(
                         'physiological_annotation_parameter',
                         $metadata,
-                        ['AnnotationParameterID' => $values['parameter_id']]
+                        ['AnnotationParameterID' => $parameter_id]
                     );
                 }
 
                 //In all cases where files are not new,
                 //set LastUpdate time for all related files
+
+                // TODO Last written
+
                 $db->update(
                     'physiological_annotation_file',
                     ['LastUpdate' => date("Y-m-d H:i:s")],
@@ -382,25 +385,18 @@ class Annotations extends \NDB_Page
     }
 
     /**
-     * Deletes one annotation from a given physiological file
+     * Deletes one annotation
      *
-     * @param ServerRequestInterface $request DELETE request from server
+     * @param int $annotationID Annotation ID
      *
      * @return void
      */
-    function _deleteAnnotation(ServerRequestInterface $request)
+    static function delete(int $annotationID): void
     {
-        $user = \NDB_Factory::singleton()->user();
-        if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
-
-            $values = $request->getQueryParams();
-            $db     = \NDB_Factory::singleton()->database();
-            $params = [
-                'AnnotationFileID'     => $values['annotationFileID'],
-                'AnnotationInstanceID' => $values['instance_id']
-            ];
-            $db->delete("physiological_annotation_instance", $params);
-        }
+        $db->delete(
+            "physiological_annotation_instance",
+            ['AnnotationInstanceID' => annotationID]
+        );
     }
 
     /**
@@ -412,16 +408,16 @@ class Annotations extends \NDB_Page
      * @return void
      * @throws SodiumException
      */
-    static function updateDerivativeFiles(int $physioFileID): void
+    static function updateFiles(int $physioFileID): void
     {
         $db = \NDB_Factory::singleton()->database();
 
         //Get data directory base path from Config
-        $dataDir = $db->pselectone(
+        $dataDir = $db->pselectOne(
             'SELECT Value
-        FROM Config AS config
-        INNER JOIN ConfigSettings AS c
-        ON c.Name=:name AND config.ConfigID=c.ID',
+            FROM Config AS config
+            INNER JOIN ConfigSettings AS c
+            ON c.Name=:name AND config.ConfigID=c.ID',
             ['name' => 'dataDirBasepath']
         );
 
@@ -429,7 +425,6 @@ class Annotations extends \NDB_Page
             'onset', 'duration', 'label', 'channels', 'aboslute_time', 'description'
         ];
 
-        $params   = ['PFID' => $physioFileID];
         $tsv      = $db->pselect(
             "SELECT
               AnnotationFileID AS id,
@@ -438,7 +433,7 @@ class Annotations extends \NDB_Page
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:PFID
             AND FileType='tsv'",
-            $params
+            ['PFID' => $physioFileID]
         );
         $json     = $db->pselect(
             "SELECT
@@ -448,13 +443,13 @@ class Annotations extends \NDB_Page
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:PFID
             AND FileType='json'",
-            $params
+            ['PFID' => $physioFileID]
         );
-        $tgz_path = $db->pselectone(
+        $tgz_path = $db->pselectOne(
             "SELECT FilePath
             FROM physiological_annotation_archive
             WHERE PhysiologicalFileID=:PFID",
-            $params
+            ['PFID' => $physioFileID]
         );
 
         $tsv_path  = $dataDir.$tsv[0]['filePath'];
@@ -495,7 +490,6 @@ class Annotations extends \NDB_Page
             );
 
             foreach ($instances as $instance) {
-
                 //Add labels to list for parameter file
                 $labels[$instance['LabelName']] = $instance['LabelDescription'];
 
@@ -524,30 +518,30 @@ class Annotations extends \NDB_Page
 
             //Write to metadata (json) file
             //Get metadata from database (should only be 1 entry)
-            $json_desc   = $db->pselectone(
+            $json_desc   = $db->pselectOne(
                 "SELECT Description
                 FROM physiological_annotation_parameter
                 WHERE AnnotationFileID=:AFID",
                 ['AFID' => $json[0]['id']]
             );
-            $json_source = $db->pselectone(
+            $json_source = $db->pselectOne(
                 "SELECT Sources
                 FROM physiological_annotation_parameter
                 WHERE AnnotationFileID=:AFID",
                 ['AFID' => $json[0]['id']]
             );
-            $json_author = $db->pselectone(
+            $json_author = $db->pselectOne(
                 "SELECT Author
                 FROM physiological_annotation_parameter
                 WHERE AnnotationFileID=:AFID",
                 ['AFID' => $json[0]['id']]
             );
             //Get "IntendedFor" entry: physiological file path
-            $physioFilePath = $db->pselectone(
+            $physioFilePath = $db->pselectOne(
                 "SELECT FilePath
                 FROM physiological_file
                 WHERE PhysiologicalFileID=:PFID",
-                $params
+                ['PFID' => $physioFileID]
             );
 
             $input_json   = [
@@ -585,7 +579,7 @@ class Annotations extends \NDB_Page
      *
      * @return void
      */
-    static function updateAllDerivativeFiles() : void
+    static function updateAllFiles() : void
     {
         $db = \NDB_Factory::singleton()->database();
 
@@ -595,8 +589,9 @@ class Annotations extends \NDB_Page
             FROM physiological_annotation_file",
             []
         );
+
         foreach ($physioFileIDs as $id) {
-            self::updateDerivativeFiles(intval($id['PhysiologicalFileID']));
+            self::updateFiles(intval($id['PhysiologicalFileID']));
         }
     }
 }
