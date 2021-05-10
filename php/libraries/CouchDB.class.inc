@@ -204,7 +204,7 @@ class CouchDB
     public $SocketHandler;
 
     /**
-     * Private Constructor for CouchDB
+     * Constructor for CouchDB
      *
      * @param string $database The couchDB database name
      * @param string $host     The couchDB host name
@@ -212,7 +212,7 @@ class CouchDB
      * @param string $user     The couchDB user name
      * @param string $password The couchDB password
      */
-    private function __construct(
+    public function __construct(
         string $database = '',
         string $host = '',
         int    $port = 5984,
@@ -225,6 +225,7 @@ class CouchDB
         $this->_port     = $port;
         $this->_user     = $user;
         $this->_password = $password;
+        $this->SocketHandler = new SocketWrapper();
     }
 
     /**
@@ -313,7 +314,6 @@ class CouchDB
             }
 
             $db = new CouchDB($database, $host, $port, $user, $password);
-            $db->SocketHandler = new SocketWrapper();
 
             self::$_instances[$database] = $db;
         }

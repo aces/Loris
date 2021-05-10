@@ -55,23 +55,22 @@ class LorisInstance
     /**
      * Return a configured CouchDB object.
      *
-     * @return \Database
+     * @param ?string $dbname Database name
+     *
+     * @return \CouchDB
      */
-    public function getCouchDBConnection() : \CouchDB
+    public function getCouchDBConnection(string $dbname = null) : \CouchDB
     {
-        if (!isset($this->couchdb)) {
-            $setting = $this->config
-                ->getSetting("CouchDB");
+        $setting = $this->config
+            ->getSetting("CouchDB");
 
-            $this->couchdb = \NDB_Factory::couchDB(
-                $setting['dbName'],
-                $setting['hostname'],
-                intval($setting['port']),
-                $setting['admin'],
-                $setting['adminpass']
-            );
-        }
-        return $this->couchdb;
+        return new \CouchDB(
+            $dbname ?? $setting['dbName'],
+            $setting['hostname'],
+            intval($setting['port']),
+            $setting['admin'],
+            $setting['adminpass']
+        );
     }
 
     /**
