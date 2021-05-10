@@ -76,8 +76,8 @@ class Field extends Component {
     });
 
     return (
-      <div onClick={this.handleClick}>
-        <h5>{this.props.data.name}</h5>
+      <div>
+        <h5 onClick={this.handleClick}>{this.props.data.name}</h5>
         <span>{this.props.data.description}</span>
         <span>{this.props.data.datatype}</span>
         {visitsCheckboxes}

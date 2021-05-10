@@ -19,7 +19,7 @@ class DQT extends Component {
       queries: [],
       query: {
         fields: [],
-        filters: [],
+        filters: {},
       },
       queryResults: {
         culumns: [],
@@ -30,9 +30,9 @@ class DQT extends Component {
     this.getCategories = this.getCategories.bind(this);
     this.getCategoryFields = this.getCategoryFields.bind(this);
     this.toggleSelectedField = this.toggleSelectedField.bind(this);
+    this.postQuery = this.postQuery.bind(this);
     /*
     this.getQueries() = this.getQueries.bind(this);
-    this.postQuery = this.postQuery.bind(this);
     this.getResults = this.getResults.bind(this);
     */
   }
@@ -79,6 +79,33 @@ class DQT extends Component {
   }
 
   /**
+   * postQuery
+   *
+   * @return {object}
+   */
+  postQuery() {
+    const url = this.props.baseURL.concat('/dqt/query');
+    const opt = {
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify(this.state.query),
+    };
+    return fetch(url, opt)
+      .then((resp) => resp.json())
+      .then((json) => {
+        if ('error' in json) {
+          throw new Error(json.error);
+        }
+        return json;
+      })
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
+
+  /**
    * Add or remove a field from the query
    *
    * @param {string} category The field's category name
@@ -89,7 +116,7 @@ class DQT extends Component {
     // Remove that field from the previous state
     const query = this.state.query;
     const cleanedupfields = query.fields.filter((f) => {
-      return f.categoryname != category && f.fieldname != name;
+      return f.categoryname != category || f.fieldname != name;
     });
 
     // Create the new fields to add to the query
@@ -116,7 +143,12 @@ class DQT extends Component {
     return (
       <div>
         <h1>DQT</h1>
-        <QueryPanel />
+        <QueryPanel
+          toggleSelectedField={this.toggleSelectedField}
+          query={this.state.query}
+        >
+          <button onClick={this.postQuery}>Query</button>
+        </QueryPanel>
         <SelectFieldsTab
           getCategories={this.getCategories}
           getCategoryFields={this.getCategoryFields}

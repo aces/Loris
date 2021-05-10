@@ -23,7 +23,7 @@ namespace LORIS\dqt;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Dqt extends \NDB_Form
+class Dqt extends \NDB_Page
 {
     var $skipTemplate = true;
     /**
@@ -37,125 +37,6 @@ class Dqt extends \NDB_Form
     {
         // check user permissions
         return $user->hasPermission('dataquery_view');
-    }
-
-    /**
-     * Sets up the smarty template variables for the dataquery page.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-
-        $user        = \User::singleton();
-        $username    = $user->getUsername();
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $couchConfigValid = isset(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            $couchConfig['port'],
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
-        if (!$couchConfigValid) {
-            error_log(
-                'Data Query Tool cannot be loaded due to missing ' .
-                'configuration settings. Ensure that `dbName`, `hostname`, ' .
-                '`port`, `admin` and `adminpass` values are properly ' .
-                'configured in project/config.xml'
-            );
-            throw new \ConfigurationException(
-                'Missing CouchDB configuration settings. Cannot load ' .
-                'Data Query Tool.'
-            );
-        }
-        $couch = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
-
-        $update = $couch->queryView(
-            "DQG-2.0",
-            "runlog",
-            [
-                "reduce"     => "false",
-                "limit"      => "1",
-                "descending" => "true",
-            ]
-        );
-        $this->tpl_data['updatetime'] = $update[0]['key'];
-
-        $categories = $couch->queryView(
-            "DQG-2.0",
-            "datadictionary",
-            [
-                "reduce"      => "true",
-                "group_level" => "1",
-            ]
-        );
-
-        $cat_tpl = [];
-        foreach ($categories as $row) {
-            if ($row['value']) {
-                $cat_tpl[$row['key'][0]] = $row['value'];
-            } else {
-                $cat_tpl[$row['key'][0]] = -1;
-            }
-        }
-        $this->tpl_data['categories'] = $cat_tpl;
-
-        $usersaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"$username\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $globalsaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"global\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $IDMapCallback = function ($row) {
-            return $row['id'];
-        };
-
-        $usersavedNames   = array_map($IDMapCallback, $usersaved);
-        $globalsavedNames = array_map($IDMapCallback, $globalsaved);
-
-        $this->tpl_data['savedqueries'] = [
-            'user'   => $usersavedNames,
-            'shared' => $globalsavedNames,
-        ];
-        $sessionResults           = $couch->queryView(
-            "DQG-2.0",
-            "sessions",
-            [
-                "reduce" => "true",
-                "group"  => "true",
-            ]
-        );
-        $this->tpl_data['visits'] = \Utility::getVisitList();
-
-        $sessions = array_map(
-            function ($element) {
-                return $element['key'];
-            },
-            $sessionResults
-        );
-
-        $this->tpl_data['sessions'] = $sessions;
     }
 
     /**
@@ -173,24 +54,6 @@ class Dqt extends \NDB_Form
             $deps,
             [
                 $baseURL . "/dqt/js/dqt.js",
-            ]
-        );
-    }
-
-    /**
-     * Include additional CSS files:
-     *  1. dataquery.css
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
             ]
         );
     }
