@@ -160,15 +160,16 @@ function processFiles($pubID) : void
         if (file_exists($publicationPath . $fileName)) {
             throw new LorisException("File $fileName already exists!");
         }
-        $extension = pathinfo($fileName)['extension'];
-        $index     = preg_split('/_/', $name)[1];
 
-        if (!isset($extension)) {
+        if (!isset(pathinfo($fileName)['extension'])) {
             throw new LorisException(
                 "Please make sure your file has a valid extension: " .
                 $values['name']
             );
         }
+
+        $index = preg_split('/_/', $name)[1];
+
         $pubTypeID       = $_POST['publicationType_'.$index] ?? null;
         $pubCitation     = $_POST['publicationCitation_'.$index] ?? null;
         $pubVersion      = $_POST['publicationVersion_'.$index] ?? null;

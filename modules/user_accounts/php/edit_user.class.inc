@@ -249,6 +249,9 @@ class Edit_User extends \NDB_Form
             $supervisorEmails = $values['supervisorEmail'];
         }
         unset($values['supervisorEmail']);
+        if (empty($values['UserID'])) {
+            throw new \Exception("Bad request");
+        }
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
@@ -578,6 +581,7 @@ class Edit_User extends \NDB_Form
             $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
+            assert(isset($values['Password_hash']));
             $msg_data['password'] = $values['Password_hash'];
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
@@ -1176,7 +1180,7 @@ class Edit_User extends \NDB_Form
         }
 
         if (is_null($this->identifier)
-            && ($values['NA_Password'] != 'on')
+            && (!isset($values['NA_Password']) || $values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
             $errors['Password'] = 'Password is required';

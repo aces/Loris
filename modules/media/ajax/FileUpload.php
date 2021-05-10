@@ -132,11 +132,10 @@ function uploadFile()
 
     checkDateTaken($dateTaken);
 
-    $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
-    $fileType  = $_FILES["file"]["type"];
-    $extension = pathinfo($fileName)['extension'];
+    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileType = $_FILES["file"]["type"];
 
-    if (!isset($extension)) {
+    if (!isset(pathinfo($fileName)['extension'])) {
         showMediaError("Please make sure your file has a valid extension!", 400);
         return;
     }

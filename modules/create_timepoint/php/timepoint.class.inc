@@ -71,18 +71,22 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         // All subprojects from config file (error).
         if (empty($allSubprojects)) {
-            $conflict['subprojectID'] = 'No subprojects have been defined
-            for this study. If you are an administrator, please use the
-            Configuration module to add new subprojects.';
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'No subprojects have been defined ' .
+                'for this study. If you are an administrator, please use the ' .
+                'Configuration module to add new subprojects.'
+            );
         }
 
         // List of valid subprojects for a given project
         $subprojList = $candidate->getValidSubprojects();
         if (empty($subprojList)) {
-            $conflict['subprojectID'] = 'No subprojects have been
-            defined for the project this candidate is affiliated with.
-            If you are an administrator, please use the Configuration module to
-            add new subprojects and associate them with projects.';
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'No subprojects have been ' .
+                'defined for the project this candidate is affiliated with. ' .
+                'If you are an administrator, please use the Configuration ' .
+                'module to add new subprojects and associate them with projects.'
+            );
         }
         $values['subproject'] = array_intersect_key(
             \Utility::getSubprojectList(),
@@ -135,9 +139,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values['project'] = $projectOptions;
 
         if (!empty($conflict)) {
-            return new \LORIS\Http\Response\JSON\Conflict(
-                $conflict['subprojectID']
-            );
         }
         if (empty($values['psc'])) {
             unset($values['psc']);
