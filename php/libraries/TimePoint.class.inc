@@ -163,7 +163,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                 ? new ProjectID($row['ProjectID'])
                 : null,
             isset($row['CenterID'])
-                ? intval($row['CenterID'])
+                ? new \CenterID($row['CenterID'])
                 : null,
         );
 
