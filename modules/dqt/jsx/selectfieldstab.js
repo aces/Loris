@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import CategoryItem from './categoryitem';
+import Category from './category';
+import Field from './field';
 
 /**
  * DQT Select fields React Component
@@ -19,22 +20,34 @@ class SelectFieldsTab extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    // Generate a list of categories to display
     const categories = this.props.categories.map((c) => {
-      const selected = this.props.selectedCategory.name ?? '';
+      const selected = this.props.selectedCategory;
       let fields = null;
-      let visits = null;
-      if (c.name == selected) {
-          fields = this.props.selectedCategory.fields.map((x) => 'bob');
-          visits = this.props.selectedCategory.visits;
+
+      // Add fields for the selected category
+      if (selected.name == c.name) {
+        fields = selected.fields.map((f) => {
+           return (
+             <Field
+               data={f}
+               category={selected.name}
+               toggleSelected={this.props.toggleSelectedField}
+               visits={selected.visits}
+             />
+           );
+        });
       }
+
       return (
-        <CategoryItem
+        <Category
           name={c.name}
           link={c.link}
           onCategorySelected={this.props.getCategoryFields}
-          fields={fields}
-          visits={visits}
-        />
+          visits={selected.visits}
+        >
+        {fields}
+        </Category>
       );
     });
     return (
@@ -49,6 +62,7 @@ class SelectFieldsTab extends Component {
 SelectFieldsTab.PropTypes = {
   getCategories: PropTypes.func.isRequired,
   getCategoryFields: PropTypes.func.isRequired,
+  toggleSelectedField: PropTypes.func.isRequired,
   categories: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
@@ -66,6 +80,11 @@ SelectFieldsTab.PropTypes = {
 
 SelectFieldsTab.defaultProps = {
   categories: [],
+  selectedCategory: {
+    name: '',
+    visits: [],
+    fields: [],
+  },
 };
 
 export default SelectFieldsTab;
