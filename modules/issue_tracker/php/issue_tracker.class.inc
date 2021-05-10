@@ -141,7 +141,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         $modules = array_reduce(
-            \Module::getActiveModules($db),
+            $this->lorisinstance->getActiveModules(),
             function (
                 $result,
                 $module

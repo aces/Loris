@@ -40,33 +40,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         . "your project administrator and/or verify your LORIS configuration.";
     protected $name;
     protected $dir;
-    protected $lorisinstance;
 
-    /**
-     * Retrieve all active module descriptors from the given database
-     *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
-     *
-     * @return \Module[]
-     */
-    static public function getActiveModules(\Database $db): array
-    {
-        $mnames = $db->pselectCol(
-            "SELECT Name FROM modules WHERE Active='Y'",
-            []
-        );
-
-        $modules = [];
-        foreach ($mnames as $name) {
-            try {
-                $modules[] = self::factory($name);
-            } catch (\LorisModuleMissingException $e) {
-                error_log($e->getMessage() . " " . $e->getTraceAsString());
-            }
-        }
-        return $modules;
-    }
+    protected \LORIS\LorisInstance $lorisinstance;
 
     /**
      * Retrieve all active module descriptors from the given database, indexed
