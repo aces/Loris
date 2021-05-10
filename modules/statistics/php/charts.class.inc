@@ -288,11 +288,14 @@ class Charts extends \NDB_Page
         $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
+            if (!isset($recruitmentData['labels'])) {
+                continue;
+            }
             $recruitmentData['datasets'][] = [
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
-                    $recruitmentData['labels']
+                    $recruitmentData['labels'],
                 ),
             ];
         }
