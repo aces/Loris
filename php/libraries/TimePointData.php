@@ -34,7 +34,7 @@ class TimePointData
     /**
      * The TimePoint's CenterID
      *
-     * @var ?int
+     * @var ?\CenterID
      */
     protected $centerID;
 
@@ -50,12 +50,12 @@ class TimePointData
      *
      * @param ?SessionID $SessionID The SessionID for the TimePoint
      * @param ?ProjectID $ProjectID The ProjectID for the TimePoint
-     * @param ?int       $CenterID  The CenterID for the TimePoint
+     * @param ?\CenterID $CenterID  The CenterID for the TimePoint
      */
     public function __construct(
         ?SessionID $SessionID,
         ?ProjectID $ProjectID,
-        ?int $CenterID
+        ?\CenterID $CenterID
     ) {
         $this->sessionID = $SessionID;
         $this->projectID = $ProjectID;
@@ -94,9 +94,9 @@ class TimePointData
      * Return the CenterID for this TimePoint, or throw
      * an exception if unknown.
      *
-     * @return int
+     * @return \CenterID
      */
-    public function getCenterID() : int
+    public function getCenterID() : \CenterID
     {
         if ($this->centerID === null) {
             throw new \LogicException("No CenterID loaded into data model");
