@@ -86,20 +86,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         // instantiate new TimePoint object
         static $timePointList = [];
-        if (!isset($timePointList[(string) $sessionID])) {
+        if (!isset($timePointList["$sessionID"])) {
             try {
-                $timePointList[(string) $sessionID] = new TimePoint();
+                $timePointList["$sessionID"] = new TimePoint();
 
-                $timePointList[(string) $sessionID]->select($sessionID);
+                $timePointList["$sessionID"]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[(string) $sessionID]);
+                unset($timePointList["$sessionID"]);
                 throw $e;
             }
         }
 
-        return $timePointList[(string) $sessionID];
+        return $timePointList["$sessionID"];
     }
 
 
@@ -262,7 +262,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             'SubprojectID'    => $SubprojectID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
-            'CenterID'        => $psc->getCenterID(),
+            'CenterID'        => $psc->getCenterID()->__toString(),
             'ProjectID'       => $project->getId(),
             'Current_stage'   => 'Not Started',
             'Submitted'       => 'N',
@@ -437,15 +437,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the CenterID for this visit.
      *
-     * @return integer the ID representing the PSC for this visit
+     * @return \CenterID
      */
-    function getCenterID(): int
+    function getCenterID(): \CenterID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo['CenterID']);
+        return new \CenterID($this->_timePointInfo['CenterID']);
     }
 
     /**
@@ -1220,7 +1216,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $centers = $user->getCenterIDs();
 
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
     }
 }

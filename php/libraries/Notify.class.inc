@@ -26,17 +26,17 @@ class Notify
      * Spools a new notification message for sending, unless the exact
      * same message (including type) is already in the spool.
      *
-     * @param string   $type     The name of the notification type
-     * @param string   $message  The message itself
-     * @param int|null $centerID CenterID of the target recipients
-     *                           (if null, goes to all users)
+     * @param string    $type     The name of the notification type
+     * @param string    $message  The message itself
+     * @param ?CenterID $centerID CenterID of the target recipients
+     *                            (if null, goes to all users)
      *
      * @return void
      */
     static function spool(
         string $type,
         string $message,
-        ?int $centerID=null
+        ?CenterID $centerID=null
     ): void {
 
         $typeID = Notify::getTypeID($type);

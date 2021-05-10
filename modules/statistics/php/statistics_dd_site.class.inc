@@ -68,7 +68,7 @@ class Statistics_DD_Site extends statistics_site
     /**
      * CompleteCount function
      *
-     * @param int        $centerID   the value of centerID
+     * @param \CenterID  $centerID   the value of centerID
      * @param \ProjectID $projectID  the value of projectID
      * @param string     $instrument the value of instrument
      *
@@ -99,7 +99,7 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param int        $centerID   the value of centerID
+     * @param \CenterID  $centerID   the value of centerID
      * @param \ProjectID $projectID  the value of projectID
      * @param string     $instrument the value of instrument
      *

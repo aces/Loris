@@ -94,7 +94,7 @@ class User extends UserPermissions implements
         $user_cid            = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = intval($val['CenterID']);
+            $user_cid[$key] = new \CenterID($val['CenterID']);
         }
 
         $user_pid = $DB->pselectCol(
@@ -289,7 +289,7 @@ class User extends UserPermissions implements
     /**
      * Get the user's sites' ID numbers
      *
-     * @return array
+     * @return CenterID[]
      */
     function getCenterIDs(): array
     {
@@ -343,7 +343,8 @@ class User extends UserPermissions implements
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
-                $user_study_sites[$val] = $site[$key]->getCenterName();
+                $user_study_sites[$val->__toString()]
+                    = $site[$key]->getCenterName();
             }
         }
         natcasesort($user_study_sites);
@@ -398,23 +399,19 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(1, $this->userInfo['CenterIDs']));
+        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
     }
 
     /**
      * Determines if the user has a center
      *
-     * @param int $center_id The center id
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter(int $center_id) : bool
+    public function hasCenter(CenterID $center_id) : bool
     {
-        return in_array(
-            $center_id,
-            $this->getCenterIDs(),
-            true
-        );
+        return in_array($center_id, $this->getCenterIDs());
     }
 
     /**
@@ -436,12 +433,12 @@ class User extends UserPermissions implements
      * Determines if the user has a permission
      * for a center
      *
-     * @param string $code      The permission code
-     * @param int    $center_id The center id
+     * @param string   $code      The permission code
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, int $center_id): bool
+    public function hasCenterPermission(string $code, CenterID $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
