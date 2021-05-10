@@ -1,12 +1,9 @@
 #!/usr/bin/php
 <?php
 
-use LORIS\electrophysiology_browser\Annotations;
-
+use LORIS\electrophysiology_browser\Model\ElectrophysioAnnotations;
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-require_once "Archive/Tar.php";
-
 
 /**
  *  Testing Blake2bHash generator
@@ -134,15 +131,12 @@ function testAddDataToDB()
 }
 
 $physioFileID = 11;
-
 testFilepathGeneration();
 testAddDataToDB();
-Annotations::updateFiles($physioFileID);
 testHashGenerator();
 
 //Testing adding a new instance with new label/updating parameter table
 $values1 = [
-    'physioFileID' => $physioFileID,
     'parameter_id' => 5,
     'description'  => 'A New Description!',
     'sources'      => 'Source Source',
@@ -160,12 +154,11 @@ $values1 = [
 
 //Test updating an existing annotation
 $values2 = [
-    'physioFileID' => $physioFileID,
-    'instance_id'  => 1,
-    'description'  => '',
-    'sources'      => '',
-    'author'       => '',
-    'instance'     => [
+    'instance_id' => 1,
+    'description' => '',
+    'sources'     => '',
+    'author'      => '',
+    'instance'    => [
         'onset'       => 1.222,
         'duration'    => 3.444,
         'label_name'  => 'Fun Label',
@@ -179,11 +172,10 @@ $values2 = [
 //that doesn't have any annotation files
 //Note: empty all annotation DB tables before running with this array
 $values3 = [
-    'physioFileID' => 11,
-    'description'  => 'New Description New File!',
-    'sources'      => 'New File Source',
-    'author'       => 'Shakespeare Again',
-    'instance'     => [
+    'description' => 'New Description New File!',
+    'sources'     => 'New File Source',
+    'author'      => 'Shakespeare Again',
+    'instance'    => [
         'onset'             => 3.222,
         'duration'          => 5.000,
         'label_name'        => 'Another New Label',
@@ -194,8 +186,7 @@ $values3 = [
     ]
 ];
 
-Annotations::update(
-    $values1['physioFileID'],
+(new ElectrophysioAnnotations($physioFileID))->update(
     $values1['instance_data'],
     $values1['description'],
     $values1['sources'],
@@ -203,4 +194,10 @@ Annotations::update(
     $values1['instance_id'],
     $values1['parameter_id']
 );
+<<<<<<< 17b708655b62d3fdfb8e619bfdf71de94f5bdac1
 //Annotations::delete(2);
+=======
+
+//(new ElectrophysioAnnotations($physioFileID))->delete(2);
+//(new ElectrophysioAnnotations($physioFileID))->updateFiles();
+>>>>>>> Refactoring (model class)

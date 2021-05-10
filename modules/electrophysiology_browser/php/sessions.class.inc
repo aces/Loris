@@ -17,6 +17,8 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
+use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
+
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
