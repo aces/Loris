@@ -31,6 +31,8 @@ namespace LORIS\issue_tracker;
 class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     private array $allCenterIDs;
+    private $_siteList;
+    private \LORIS\LorisInstance $lorisinstance;
 
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
@@ -39,15 +41,13 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct(\LORIS\LorisInstance $loris)
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $this->allCenterIDs = array_map(
-            function ($center) {
-                return $center->getCenterID();
-            },
-            $loris->getAllSites()
-        );
-        $userID = $user->getUsername();
+        $factory         = \NDB_Factory::singleton();
+        $user            = $factory->user();
+        $this->_siteList = array_keys(\Utility::getSiteList(false));
+        $userID          = $user->getUsername();
+
+        $this->lorisinstance = $loris;
+
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
@@ -99,10 +99,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         static $modules = [];
 
         $mname  = $row['module'];
-        $module = new \NullModule();
+        $module = new \NullModule($this->lorisinstance);
         if (!empty($mname)) {
             if (!isset($modules[$mname])) {
-                $modules[$mname] = \Module::factory($mname);
+                $modules[$mname] = \Module::factory($this->lorisinstance, $mname);
             }
             $module = &$modules[$mname];
         }

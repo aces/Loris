@@ -47,13 +47,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Retrieve all active module descriptors from the given database, indexed
      * by their primary key in the database.
      *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the modules
      *
      * @return \Module[]
      */
-    static public function getActiveModulesIndexed(\Database $db): array
-    {
+    static public function getActiveModulesIndexed(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $db     = $loris->getDatabaseConnection();
         $mnames = $db->pselect(
             "SELECT ID, Name FROM modules WHERE Active='Y'",
             []
@@ -61,7 +62,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $rv = [];
         foreach ($mnames as $row) {
-            $rv[$row['ID']] = self::factory($row['Name']);
+            $rv[$row['ID']] = self::factory($loris, $row['Name']);
         }
         return $rv;
     }
@@ -75,7 +76,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * This also sets up PHP class autoloading for the module that is loaded,
      * such that files in the module/php directory can be autoloaded.
      *
-     * @param string $name The module name we'd like information about
+     * @param \Loris\LorisInstance $loris The LORIS instance containing the module
+     * @param string               $name  The module name we'd like information about
      *
      * @throws \LorisNoSuchModuleException
      * @throws \LorisModuleMissingException
@@ -83,8 +85,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @return \Module object
      */
-    static public function factory(string $name): \Module
-    {
+    static public function factory(
+        \Loris\LorisInstance $loris,
+        string $name
+    ) : \Module {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
         $base    = $config->getSetting("base");
@@ -132,22 +136,23 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        $cls       = new $className($name, $mpath);
+        $cls       = new $className($loris, $name, $mpath);
         return $cls;
     }
 
     /**
      * Creates a new module instance
      *
-     * @param string $name      The name of the module
-     * @param string $moduledir The directory on the filesystem containing the module
+     * @param \LORIS\LorisInstance $loris     The LORIS instance for the module
+     * @param string               $name      The name of the module
+     * @param string               $moduledir The directory on the filesystem
+     *                                        containing the module
      */
-    public function __construct(string $name, string $moduledir)
-    {
-        $config   = \NDB_Factory::singleton()->config();
-        $loglevel = $config->getLogSettings()->getRequestLogLevel();
-
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        string $name,
+        string $moduledir
+    ) {
         parent::__construct(
             new \ArrayIterator(
                 [
@@ -172,6 +177,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 ]
             )
         );
+
+        $this->lorisinstance = $loris;
+
         $this->name = $name;
         $this->dir  = $moduledir;
     }

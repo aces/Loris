@@ -54,7 +54,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      */
     function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new IssueRowProvisioner($this->loris);
+        $provisioner = new IssueRowProvisioner($this->lorisinstance);
 
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();

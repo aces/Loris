@@ -36,6 +36,7 @@ class UserPermissions
      */
     private $permissions = [];
 
+    private \LORIS\LorisInstance $lorisinstance;
 
     /**
      * Constructor
@@ -305,15 +306,10 @@ class UserPermissions
                 LEFT JOIN modules m ON p.moduleID=m.ID
             WHERE up.userID = :UID and m.Active='Y'
                 ORDER BY p.categoryID, m.Name, p.description";
-            $results = $DB->pselect($query, ['UID' => $this->userID]);
-        } else {
-            $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
-                ORDER BY p.categoryID, m.Name, p.description";
-            $results = $DB->pselect($query, []);
-
         }
-        $modules = \Module::getActiveModulesIndexed($DB);
+
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
+        $modules = \Module::getActiveModulesIndexed($this->lorisinstance);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description
         foreach ($results as $key=>$perm) {
