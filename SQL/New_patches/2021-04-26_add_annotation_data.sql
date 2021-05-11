@@ -20,6 +20,7 @@ CREATE TABLE `physiological_annotation_file` (
     `FileType`            VARCHAR(20)  NOT NULL,
     `FilePath`            VARCHAR(255),
     `LastUpdate`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `LastWritten`         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`AnnotationFileID`),
     CONSTRAINT `FK_phys_file_ID`
         FOREIGN KEY (`PhysiologicalFileID`)
@@ -127,6 +128,8 @@ INSERT INTO physiological_annotation_label
 UPDATE physiological_output_type SET OutputTypeName='derivative' WHERE PhysiologicalOutputTypeID=2;
 
 SET FOREIGN_KEY_CHECKS=0;
+
+UPDATE physiological_file SET PhysiologicalOutputTypeID=2 WHERE PhysiologicalFileID=11;
 
 INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (1, 11, 'tsv', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tsv', '2021-06-05 15:57:15');
 INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (2, 11, 'json', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.json', '2021-06-05 15:57:15');

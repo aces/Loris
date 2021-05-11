@@ -93,9 +93,28 @@ class Annotations extends \NDB_Page
                 ->delete($parameters['instance_id']);
 
             return (new \LORIS\Http\Response\JSON\OK());
+        case 'POST':
+            if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
+            ) {
+                return (new \LORIS\Http\Response\JSON\Unauthorized());
+            }
+
+            if (!isset($parameters['physioFileID'])) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+
+            $instance_data = $parameters['instance'];
+            $metadata      = $parameters['metadata'];
+            $instance_id   = $parameters['instance_id'] ?? null;
+            $parameter_id  = $parameters['parameter_id'] ?? null;
+
+            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
+                ->update($instance_data, $metadata, $instance_id, $parameter_id);
+
+            return (new \LORIS\Http\Response\JSON\OK());
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                ["GET", "DELETE"]
+                ["GET", "DELETE", "POST"]
             ));
         }
     }

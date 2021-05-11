@@ -16,8 +16,9 @@ $db = \NDB_Factory::singleton()->database();
 
 //Get all file IDs that must be updated
 $physioFileIDs = $db->pselect(
-    "SELECT DISTINCT PhysiologicalFileID
-    FROM physiological_annotation_file",
+    "SELECT DISTINCT paf.PhysiologicalFileID
+    FROM physiological_annotation_file AS paf
+    WHERE paf.LastWritten <= paf.LastUpdate",
     []
 );
 

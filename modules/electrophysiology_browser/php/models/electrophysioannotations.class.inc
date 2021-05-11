@@ -73,36 +73,25 @@ class ElectrophysioAnnotations
      * Will add new derivative files if none exist for the given instance.
      * Will either add new annotations or update existing ones.
      *
-     * @param array  $instance_data Instance data
-     * @param string $description   Description
-     * @param string $sources       Sources
-     * @param string $author        Author
-     * @param int    $instance_id   InstanceID
-     * @param int    $parameter_id  ParameterID
+     * @param array $instance_data Instance data
+     * @param array $metadata      Metadata
+     * @param int   $instance_id   InstanceID
+     * @param int   $parameter_id  ParameterID
      *
      * @return void
      */
     function update(
         array $instance_data,
-        string $description,
-        string $sources,
-        string $author,
+        array $metadata,
         int $instance_id,
         int $parameter_id
     ): void {
-        // TODO can pass fewer arguments?
 
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
 
         if ($user->hasPermission('electrophysiology_browser_edit_annotations')) {
-            $physioFilePath = $db->pselectOne(
-                'SELECT FilePath
-                    FROM physiological_file
-                    WHERE PhysiologicalFileID=:PFID',
-                ['PFID' => $this->_physioFileID]
-            );
 
             //If the label is new, add to annotation label table
             //and get label ID
@@ -136,9 +125,9 @@ class ElectrophysioAnnotations
 
             //Get data from POST request
             $metadata = [
-                'Description' => $description,
-                'Sources'     => $sources,
-                'Author'      => $author
+                'Description' => $metadata['description'],
+                'Sources'     => $metadata['sources'],
+                'Author'      => $metadata['author']
             ];
 
             $instance = [
@@ -152,68 +141,9 @@ class ElectrophysioAnnotations
 
             //Insert new files and data into DB
             if (empty($annotationFID)) {
-                //Create new filepaths
-                //Get data directory base path from Config
-                $dataDir = $db->pselectOne(
-                    'SELECT Value
-                    FROM Config AS config
-                    INNER JOIN ConfigSettings AS c
-                    ON c.Name=:name AND config.ConfigID=c.ID',
-                    ['name' => 'dataDirBasepath']
-                );
-                //Create path with correct structure
-                $subPath       = strstr($physioFilePath, "sub");
-                $pathWithDeriv = $dataDir
-                    . "bids_imports/derivatives/loris_annotations/"
-                    . $subPath;
-                //Create directories if they don't exist
-                $dirname = pathinfo($pathWithDeriv, PATHINFO_DIRNAME);
-                if (!file_exists($dirname)) {
-                    mkdir($dirname, 0777, true);
-                    echo "Derivative folder created\n";
-                }
 
-                //Replace file type with "annotations"
-                $pathWithoutEDF = substr(
-                    $pathWithDeriv,
-                    0,
-                    strrpos($pathWithDeriv, "_")
-                );
-
-                $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
-                $json_path = $pathWithoutEDF . "_annotations.json";
-                $tgz_path  = $pathWithoutEDF . "_annotations.tgz";
-
-                //Create files
-                $tsv_file  = fopen($tsv_path, 'a+');
-                $json_file = fopen($json_path, 'a+');
-                $tgz_file  = new \PharData($tgz_path);
-                $tgz_file->addFile($tsv_path, basename($tsv_path));
-                $tgz_file->addFile($json_path, basename($json_path));
-                fclose($tsv_file);
-                fclose($json_file);
-
-                $f    = file_get_contents($tgz_path);
-                $hash = sodium_crypto_generichash($f);
-
-                $params_tsv     = [
-                    'PhysiologicalFileID' => $this->_physioFileID,
-                    'FileType'            => 'tsv',
-                    'FilePath'            => str_replace($dataDir, '', $tsv_path)
-                ];
-                $params_json    = [
-                    'PhysiologicalFileID' => $this->_physioFileID,
-                    'FileType'            => 'json',
-                    'FilePath'            => str_replace($dataDir, '', $json_path),
-                ];
-                $params_archive = [
-                    'PhysiologicalFileID' => $this->_physioFileID,
-                    'FilePath'            => str_replace($dataDir, '', $tgz_path),
-                    'Blake2bHash'         => bin2hex($hash)
-                ];
-                $db->insert("physiological_annotation_file", $params_tsv);
-                $db->insert("physiological_annotation_file", $params_json);
-                $db->insert("physiological_annotation_archive", $params_archive);
+                //Create new annotation files
+                $this->_createFiles();
 
                 //Get new annotation file ID
                 $annotation_tsv_ID = $db->pselectOne(
@@ -231,7 +161,7 @@ class ElectrophysioAnnotations
                         AND FileType='json'",
                     ['PFID' => $this->_physioFileID]
                 );
-                echo $annotation_json_ID . "\n";
+
                 $metadata['AnnotationFileID'] = $annotation_json_ID;
                 $instance['AnnotationFileID'] = $annotation_tsv_ID;
 
@@ -275,7 +205,7 @@ class ElectrophysioAnnotations
                  * into instance table and get the parameter file ID
                  * from the parameter table
                  */
-                if (empty($instance_id)) {
+                if (is_null($instance_id)) {
                     $parameterID = $db->pselectOne(
                         "SELECT AnnotationParameterID
                             FROM physiological_annotation_parameter
@@ -293,7 +223,7 @@ class ElectrophysioAnnotations
                     );
                 }
                 //Update parameter table if parameter ID provided
-                if (!empty($parameter_id)) {
+                if (!is_null($parameter_id)) {
                     $db->update(
                         'physiological_annotation_parameter',
                         $metadata,
@@ -303,8 +233,6 @@ class ElectrophysioAnnotations
 
                 //In all cases where files are not new,
                 //set LastUpdate time for all related files
-
-                // TODO Last written
 
                 $db->update(
                     'physiological_annotation_file',
@@ -327,10 +255,21 @@ class ElectrophysioAnnotations
         // TODO : check that $annotationID belongs to physioFileID
         $db = \NDB_Factory::singleton()->database();
 
-        $db->delete(
-            "physiological_annotation_instance",
-            ['AnnotationInstanceID' => $annotationID]
+        $physioFileID = $db->pselectone(
+            'SELECT PhysiologicalFileID
+            FROM physiological_annotation_file AS f
+            INNER JOIN physiological_annotation_instance AS i
+            ON f.AnnotationFileID=i.AnnotationFileID
+            AND i.AnnotationInstanceID=:annotationID',
+            ['annotationID' => $annotationID]
         );
+
+        if ($this->_physioFileID == $physioFileID) {
+            $db->delete(
+                "physiological_annotation_instance",
+                ['AnnotationInstanceID' => $annotationID]
+            );
+        }
     }
 
     /**
@@ -361,7 +300,8 @@ class ElectrophysioAnnotations
             "SELECT
               AnnotationFileID AS id,
               FilePath         AS filePath,
-              LastUpdate       AS lastUpdate
+              LastUpdate       AS lastUpdate,
+              LastWritten      AS lastWritten
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:PFID
             AND FileType='tsv'",
@@ -372,7 +312,8 @@ class ElectrophysioAnnotations
             "SELECT
               AnnotationFileID AS id,
               FilePath         AS filePath,
-              LastUpdate       AS lastUpdate
+              LastUpdate       AS lastUpdate,
+              LastWritten      AS lastWritten
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:PFID
             AND FileType='json'",
@@ -390,12 +331,9 @@ class ElectrophysioAnnotations
         $json_path = $dataDir.$json[0]['filePath'];
         $tgz_path  = $dataDir.$tgz_path;
 
-        $tsv_timestamp  = filemtime($tsv_path);
-        $json_timestamp = filemtime($json_path);
-
         //Update files if files updated before database updated
-        if ($tsv_timestamp > $tsv[0]['lastUpdate']
-            || $json_timestamp > $json[0]['lastUpdate']
+        if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']
+            || $json[0]['lastWritten'] <= $json[0]['lastUpdate']
         ) {
             //Update the three files with the given paths
             $labels   = []; // Label Name => Label Description
@@ -504,6 +442,94 @@ class ElectrophysioAnnotations
                 ['Blake2bHash' => bin2hex($hash)],
                 ['PhysiologicalFileID' => $this->_physioFileID]
             );
+
+            //Update time that files were written to
+            $db->update(
+                'physiological_annotation_file',
+                ['LastWritten' => date("Y-m-d H:i:s")],
+                ['PhysiologicalFileID' => $this->_physioFileID]
+            );
         }
+    }
+
+    /**
+     * Creates new annotation files for the given physiological file
+     * and inserts their information into database
+     *
+     * @return void
+     * @throws SodiumException
+     */
+    function _createFiles()
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        $physioFilePath = $db->pselectOne(
+            'SELECT FilePath
+                    FROM physiological_file
+                    WHERE PhysiologicalFileID=:PFID',
+            ['PFID' => $this->_physioFileID]
+        );
+
+        //Create new filepaths
+        //Get data directory base path from Config
+        $dataDir = $db->pselectOne(
+            'SELECT Value
+                    FROM Config AS config
+                    INNER JOIN ConfigSettings AS c
+                    ON c.Name=:name AND config.ConfigID=c.ID',
+            ['name' => 'dataDirBasepath']
+        );
+        //Create path with correct structure
+        $subPath       = strstr($physioFilePath, "sub");
+        $pathWithDeriv = $dataDir
+            . "bids_imports/derivatives/loris_annotations/"
+            . $subPath;
+        //Create directories if they don't exist
+        $dirname = pathinfo($pathWithDeriv, PATHINFO_DIRNAME);
+        if (!file_exists($dirname)) {
+            mkdir($dirname, 0777, true);
+        }
+
+        //Replace file type with "annotations"
+        $pathWithoutEDF = substr(
+            $pathWithDeriv,
+            0,
+            strrpos($pathWithDeriv, "_")
+        );
+
+        $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
+        $json_path = $pathWithoutEDF . "_annotations.json";
+        $tgz_path  = $pathWithoutEDF . "_annotations.tgz";
+
+        //Create files
+        $tsv_file  = fopen($tsv_path, 'a+');
+        $json_file = fopen($json_path, 'a+');
+        $tgz_file  = new \PharData($tgz_path);
+        $tgz_file->addFile($tsv_path, basename($tsv_path));
+        $tgz_file->addFile($json_path, basename($json_path));
+        fclose($tsv_file);
+        fclose($json_file);
+
+        $f    = file_get_contents($tgz_path);
+        $hash = sodium_crypto_generichash($f);
+
+        $params_tsv     = [
+            'PhysiologicalFileID' => $this->_physioFileID,
+            'FileType'            => 'tsv',
+            'FilePath'            => str_replace($dataDir, '', $tsv_path)
+        ];
+        $params_json    = [
+            'PhysiologicalFileID' => $this->_physioFileID,
+            'FileType'            => 'json',
+            'FilePath'            => str_replace($dataDir, '', $json_path),
+        ];
+        $params_archive = [
+            'PhysiologicalFileID' => $this->_physioFileID,
+            'FilePath'            => str_replace($dataDir, '', $tgz_path),
+            'Blake2bHash'         => bin2hex($hash)
+        ];
+        $db->insert("physiological_annotation_file", $params_tsv);
+        $db->insert("physiological_annotation_file", $params_json);
+        $db->insert("physiological_annotation_archive", $params_archive);
     }
 }
