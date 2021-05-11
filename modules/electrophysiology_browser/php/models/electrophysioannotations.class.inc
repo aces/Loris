@@ -510,8 +510,8 @@ class ElectrophysioAnnotations
         fclose($tsv_file);
         fclose($json_file);
 
-        $f    = file_get_contents($tgz_path);
-        $hash = sodium_crypto_generichash($f);
+        $annotation_f    = file_get_contents($tgz_path);
+        $annotation_hash = sodium_crypto_generichash($annotation_f);
 
         $params_tsv     = [
             'PhysiologicalFileID' => $this->_physioFileID,
@@ -526,7 +526,7 @@ class ElectrophysioAnnotations
         $params_archive = [
             'PhysiologicalFileID' => $this->_physioFileID,
             'FilePath'            => str_replace($dataDir, '', $tgz_path),
-            'Blake2bHash'         => bin2hex($hash)
+            'Blake2bHash'         => bin2hex($annotation_hash)
         ];
         $db->insert("physiological_annotation_file", $params_tsv);
         $db->insert("physiological_annotation_file", $params_json);

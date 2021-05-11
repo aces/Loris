@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
+import swal from 'sweetalert2';
 
 /**
  * File Panel
@@ -22,6 +23,7 @@ class FilePanel extends Component {
       annotationsAction: loris.BaseURL
                          + '/electrophysiology_browser/annotations',
     };
+    this.showLoadingMessage = this.showLoadingMessage.bind(this);
   }
 
   /**
@@ -100,6 +102,28 @@ class FilePanel extends Component {
       </Panel>
     );
   }
+
+  /**
+   * Display a loading message when downloading files
+   */
+  showLoadingMessage() {
+      let type = 'success';
+      let title = 'We are currently working hard to download your files';
+      let text = 'Please be patient 😴';
+      let timer = 2000;
+      let confirmation = true;
+      let callback = function() {};
+
+      swal.fire({
+          title: title,
+          type: type,
+          text: text,
+          timer: timer,
+          allowOutsideClick: true,
+          allowEscapeKey: true,
+          showConfirmButton: confirmation,
+      }, callback.bind(this));
+    }
 }
 
 FilePanel.propTypes = {

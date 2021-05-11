@@ -194,10 +194,6 @@ $values3 = [
     $values1['instance_id'],
     $values1['parameter_id']
 );
-<<<<<<< 17b708655b62d3fdfb8e619bfdf71de94f5bdac1
-//Annotations::delete(2);
-=======
 
 //(new ElectrophysioAnnotations($physioFileID))->delete(2);
 //(new ElectrophysioAnnotations($physioFileID))->updateFiles();
->>>>>>> Refactoring (model class)
