@@ -37,7 +37,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance with the issues
+     * @param \LORIS\LorisInstance $loris the LORIS instance with the issues
      */
     function __construct(\LORIS\LorisInstance $loris)
     {
