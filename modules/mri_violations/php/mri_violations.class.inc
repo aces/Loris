@@ -24,10 +24,8 @@ namespace LORIS\mri_violations;
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Mri_Violations extends \NDB_Menu_Filter_Form
+class Mri_Violations extends \DataFrameworkMenu
 {
-    var $AjaxModule = true;
-
     /**
      * Check if user should be allowed to see this page.
      *
@@ -44,6 +42,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             ]
         );
     }
+
+
     /**
      * Process function
      *
@@ -51,6 +51,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      *
      * @return bool true if the user is permitted to see violated scans
      */
+     /*
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
@@ -154,6 +155,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
 
         $this->tpl_data['success'] = true;
     }
+    */
     /**
      * Set up the class and smarty variables to use for the menu filter to
      * generate the proper query for the menu filter
@@ -379,37 +381,61 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Gathers JS dependecies and merge them with the parent
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return ['violated_scans_view_allsites'];
+    }
+
+    /**
+     * We do not use the base project filter because since it's a violated
+     * scan, it's possible that the project will be null. Instead we add
+     * our own UserProjectMatchOrNull filter.
+     *
+     * @return bool false
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    protected function getFieldOptions() : array
+    {
+	    return [];
+    }
+
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return (new MRIViolationsProvisioner())
+            ->filter(new UserProjectMatchOrNull);
+    }
+
+   /**
+     * Include additional JS files
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             [
-                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+                $baseURL . "/mri_violations/js/mriViolationsIndex.js",
             ]
         );
     }
 
-    /**
-     * Include additional CSS files
-     *
-     * @return array of CSS to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/mri_violations/css/mri_violations.css"]
-        );
-    }
 }
 
