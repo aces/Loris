@@ -18,18 +18,23 @@ import {formatColumnResolved, resolvedFilters}
  * @return {ReactDOM}
  */
 function MRIViolationsIndex(props) {
+  const [fieldOptions, setFieldOptions] = useState({});
   const tabs = [
     {id: 'notresolved', label: 'Not Resolved'},
     {id: 'resolved', label: 'Resolved'},
   ];
+
+  const mapper = columnMapper(fieldOptions);
 
   return <Tabs tabs={tabs} defaultTab="notresolved" updateURL={true}>
       <TabPane TabId={tabs[0].id}>
         <ViolationsTable
           URL={props.unresolvedURL}
           name="notresolved"
-          formatter={formatColumnUnresolved}
-          fields={unresolvedFilters()}
+          mapper={mapper}
+          formatter={formatColumnUnresolved(mapper)}
+          fields={unresolvedFilters(fieldOptions)}
+          setFieldOptions={setFieldOptions}
         />
       </TabPane>
       <TabPane TabId={tabs[1].id}>
@@ -62,6 +67,9 @@ function ViolationsTable(props) {
         (result) => {
           setIsLoaded(true);
           setData(result.Data);
+          if (props.setFieldOptions) {
+              props.setFieldOptions(result.fieldOptions);
+          }
         },
         (error) => {
            setIsError(true);
@@ -81,7 +89,38 @@ function ViolationsTable(props) {
           data={data}
           fields={props.fields}
           getFormattedCell={props.formatter}
+          getMappedCell={props.mapper}
         />;
+}
+
+/**
+ * A helper to generate a column mapper callback which maps fieldOptions
+ * to values.
+ *
+ * @param {object} fieldOptions - the dynamic field options
+ *
+ * @return {callable}
+ */
+function columnMapper(fieldOptions) {
+    return (column, value) => {
+        switch (column) {
+        case 'Project':
+            if (fieldOptions.projects) {
+                return fieldOptions.projects[value];
+            }
+        case 'Subproject':
+            if (fieldOptions.subprojects) {
+                return fieldOptions.subprojects[value];
+            }
+        case 'Site':
+            if (fieldOptions.sites) {
+                return fieldOptions.sites[value];
+            }
+        case 'Type of Problem':
+            console.log(value);
+        }
+        return value;
+    };
 }
 
 window.addEventListener('load', () => {
@@ -95,3 +134,4 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   );
 });
+

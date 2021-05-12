@@ -43,256 +43,6 @@ class Mri_Violations extends \DataFrameworkMenu
         );
     }
 
-
-    /**
-     * Process function
-     *
-     * @param array $values the values being processed
-     *
-     * @return bool true if the user is permitted to see violated scans
-     */
-     /*
-    function _process($values)
-    {
-        if (!is_array($values) || count($values) ==0) {
-            return true;
-        }
-        $DB   = $this->loris->getDatabaseConnection();
-        $user = \User::singleton();
-        foreach ($values['resolvable'] AS $key=>$val) {
-            $hash = $key;
-            $row  = $DB->pselectRow(
-                "SELECT * FROM violations_resolved
-                    WHERE hash = :hash",
-                ['hash' => $hash]
-            );
-
-            //if row is found it means that resolve status was previously assigned,
-            // check the value and update if needed, else break.
-            if (!empty($row)) {
-                foreach ($row as $key2 => $val2) {
-                    //found matching
-                    if ($key2 == 'Resolved') {
-                        // user input matches DB content, so do nothing.
-                        if ($val==$val2) {
-                            break;
-                        } else {
-                            // user input doesn't match DB, so we update the DB
-                            $setArray   = [
-                                'Resolved'   => (string)$val,
-                                'ChangeDate' => date("Y-m-d H:i:s"),
-                            ];
-                            $whereArray = ['hash' => $hash];
-                            $DB->update(
-                                'violations_resolved',
-                                $setArray,
-                                $whereArray
-                            );
-                        }
-                    }
-                }
-            } else {
-                //if row is not found no resolve status was assigned,
-                // if selection<>0, then insert new row.
-                // no need to insert to DB for Unresolved value.
-                if ($val=='unresolved') {
-                    continue;
-                }
-                $newlyResolved         = [];
-                $newlyResolved['hash'] = $key;
-                $newlyResolved['Resolved']   = (string)$val;
-                $newlyResolved['User']       = $user->getUsername();
-                $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
-
-                // Table 1: mri_protocol_violated_scans
-                $ID_mri_protocol_violated_scans = $DB->pselectOne(
-                    "SELECT ID
-                    FROM mri_protocol_violated_scans
-                    WHERE (:hash = md5(concat_WS(
-                              ':',minc_location,PatientName,SeriesUID,time_run)
-                                   )
-                    )",
-                    ['hash' => $key]
-                );
-                if (!empty($ID_mri_protocol_violated_scans)) {
-                    $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
-                    $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
-                }
-                // Table 2: mri_violations_log
-                $ID_mri_violations_log = $DB->pselectOne(
-                    "SELECT LogID
-                    FROM mri_violations_log
-                    WHERE (:hash = md5(concat_WS(
-                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
-                                   )
-                    )",
-                    ['hash' => $key]
-                );
-
-                if (!empty($ID_mri_violations_log)) {
-                    $newlyResolved['TypeTable'] = 'mri_violations_log';
-                    $newlyResolved['ExtID']     = $ID_mri_violations_log;
-                }
-
-                // Table 3: MRICandidateErrors
-                $ID_MRICandidateErrors = $DB->pselectOne(
-                    "SELECT ID
-                    FROM MRICandidateErrors
-                    WHERE (:hash = md5(concat_WS(
-                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
-                                   )
-                    )",
-                    ['hash' => $key]
-                );
-
-                if (!empty($ID_MRICandidateErrors)) {
-                    $newlyResolved['TypeTable'] = 'MRICandidateErrors';
-                    $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
-                }
-                $DB->insert('violations_resolved', $newlyResolved);
-            }
-        }
-
-        $this->tpl_data['success'] = true;
-    }
-    */
-    /**
-     * Updates the array of query parameters (if needed) for a given field.
-     *
-     * @param array  $qparams      array of query parameters.
-     * @param string $field        field that appears in the query.
-     * @param string $prepared_key string to use as a placeholder in the query
-     *                             for the field.
-     * @param string $val          field value.
-     *
-     * @return void
-     *
-     * @override
-     */
-    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
-    {
-        // No parameter should be added for the prepared statement if
-        // 'Unknown' or 'AllKnown' were selected in the site drop-down
-        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
-            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
-        }
-    }
-
-    /**
-     * Adds filters
-     *
-     * @param string $prepared_key filter key
-     * @param string $field        filter field
-     * @param string $val          filter value
-     *
-     * @return string ($query)
-     *
-     * @override
-     */
-    function _addValidFilters($prepared_key, $field, $val)
-    {
-        // The added AND clause differs from the one returned by
-        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
-        // selected in the sites drop-down
-        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
-            return $val == 'Unknown'
-                ? ' AND v.Site IS NULL'
-                : ' AND v.Site IS NOT NULL';
-        }
-
-        // Standard behaviour for cases other than the above
-        return parent::_addValidFilters($prepared_key, $field, $val);
-    }
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-        // create user object
-        $user    =& \User::singleton();
-        $config  =& \NDB_Config::singleton();
-        $db      = $this->loris->getDatabaseConnection();
-        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
-        $maxYear = $config->getSetting('endYear');
-
-        $dateOptions = [
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => true,
-            'minYear'        => $minYear,
-            'maxYear'        => $maxYear,
-        ];
-
-        $problemOptions = ['' => 'Any'];
-
-        // Build a list of existing problem types based on data in db
-        $problemTypes = $db->pselect(
-            "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-            UNION
-            SELECT DISTINCT 'Could not identify scan type'
-            FROM mri_protocol_violated_scans
-            UNION
-            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-            []
-        );
-
-        // Searches for reasons containing newlines will fail so we strip
-        // those characters from all the entries in list
-        foreach ($problemTypes as $problem) {
-            $problemOptions[trim($problem['Reason'])] = trim($problem['Reason']);
-        }
-
-        $this->addBasicText('PatientName', 'Patient Name');
-        $this->addBasicText('Description', 'Series Description or Scan Type');
-        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
-        $this->addBasicText('Filename', 'MincFile');
-        $this->addBasicText('SeriesUID', 'Series UID');
-        $this->addSelect("ProblemType", "Type of problem", $problemOptions);
-
-        // project
-        $list_of_projects = ['' => 'Any'] + \Utility::getProjectList();
-        $this->addSelect(
-            'Project',
-            'Project',
-            $list_of_projects
-        );
-
-        // Cohort
-        $list_of_cohorts = ['' => 'Any'] +
-            \Utility::getCohortList();
-        $this->addSelect(
-            'Cohort',
-            'Cohort',
-            $list_of_cohorts
-        );
-
-        // Get sites
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites  = [
-                ''         => 'All (including unknown)',
-                'AllKnown' => 'All (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            ];
-            $sites += \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites  = [
-                ''         => 'All user sites (including unknown)',
-                'AllKnown' => 'All user sites (excluding unknown)',
-                'Unknown'  => 'Unknown'
-            ];
-            $sites +=  $user->getStudySites();
-        }
-        $this->addSelect('Site', 'Site', $sites);
-    }
-
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -323,7 +73,30 @@ class Mri_Violations extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-	    return [];
+        // Build a list of existing problem types based on data in db
+        $db = $this->lorisinstance->getDatabaseConnection();
+        $problemTypes = array_column(
+                $db->pselect(
+                    "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+                    UNION 
+                    SELECT DISTINCT 'Could not identify scan type' 
+                    FROM mri_protocol_violated_scans
+                    UNION
+                    SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+                    []
+                    ),
+                'Reason'
+                );
+        return [
+            'projects'    => \Utility::getProjectList(),
+            'subprojects' => \Utility::getSubprojectList(),
+            'sites' => [
+                ''         => 'All (including unknown)',
+            'AllKnown' => 'All (excluding unknown)',
+            'Unknown'  => 'Unknown'
+            ] + \Utility::getSiteList(),
+            'problemtypes' => $problemTypes,
+        ];
     }
 
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner

@@ -38,9 +38,9 @@ class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     {
         parent::__construct(
             "SELECT v.PatientName,
-                    pjct.Name as Project,
-                    subpjct.title as Subproject,
-                    site.Name as Site,
+                    v.Project,
+                    v.Subproject,
+                    v.Site,
                     v.TimeRun,
                     v.MincFile,
                     v.Series_Description as Series_Description_Or_Scan_Type,
@@ -51,8 +51,7 @@ class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     v.Resolved,
                     v.TarchiveID,
                     v.CandID,
-                    v.PSCID,
-                    pjct.ProjectID as ProjectID
+                    v.PSCID
             FROM (
                 SELECT PatientName    AS PatientName,
                        time_run       AS TimeRun,
@@ -139,10 +138,7 @@ class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     AND violations_resolved.TypeTable='MRICandidateErrors'
                   )
                   WHERE Resolved is NULL
-            ) AS v
-            LEFT JOIN psc site ON (site.CenterID = v.Site)
-            LEFT JOIN Project AS pjct ON (v.Project = pjct.ProjectID)
-            LEFT JOIN subproject AS subpjct ON (v.Subproject = subpjct.SubprojectID)",
+            ) AS v",
             []
         );
     }

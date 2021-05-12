@@ -70,9 +70,9 @@ class MRIViolation implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): ?\ProjectID
     {
-       if($this->DBRow['ProjectID'] === null) {
-        return null;
-       }
-        return new \ProjectID($this->DBRow['ProjectID']);
+        if($this->DBRow['Project'] === null) {
+            return null;
+        }
+        return new \ProjectID($this->DBRow['Project']);
     }
 }
