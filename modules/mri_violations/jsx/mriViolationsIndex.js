@@ -41,8 +41,9 @@ function MRIViolationsIndex(props) {
         <ViolationsTable
           URL={props.resolvedURL}
           name="resolved"
-          formatter={formatColumnResolved}
-          fields={resolvedFilters()}
+          formatter={formatColumnResolved(mapper)}
+          fields={resolvedFilters(fieldOptions)}
+          mapper={mapper}
         />
       </TabPane>
     </Tabs>;

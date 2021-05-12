@@ -1,29 +1,38 @@
 /**
  * Return a list of filter objects shared between tabs
  *
+ * @param {object} fieldoptions - the dynamic field options
+ *
  * @return {array}
  */
-export function resolvedFilters() {
+export function resolvedFilters(fieldoptions) {
   return [
     {
       label: 'Resolution Status', show: true, filter: {
         name: 'resolutionStatus',
         type: 'select',
-        values: {'fixme': 'fieldoption'},
+        options: {
+            'reran': 'Reran',
+            'emailed': 'emailed site/pending',
+            'inserted': 'Inserted',
+            'rejected': 'Rejected',
+            'inserted_flag': 'Inserted with flag',
+            'other': 'Other',
+        },
       },
     },
     {
       label: 'Project', show: true, filter: {
         name: 'project',
         type: 'select',
-        values: {'fixme': 'fieldoption'},
+        options: fieldoptions.projects,
      },
     },
     {
       label: 'Subproject', show: true, filter: {
         name: 'subproject',
         type: 'select',
-        values: {'fixme': 'fieldoption'},
+        options: fieldoptions.subprojects,
      },
     },
     {
@@ -36,7 +45,7 @@ export function resolvedFilters() {
       label: 'Site', show: true, filter: {
         name: 'site',
         type: 'select',
-        values: {'fixme': 'fieldoption'},
+        options: fieldoptions.sites,
      },
     },
     {
@@ -61,7 +70,11 @@ export function resolvedFilters() {
       label: 'Problem', show: true, filter: {
         name: 'problem',
         type: 'select',
-        values: {'fixme': 'test'},
+        options: {
+            'CandID and PSCID do not match database': 'Candidate Mismatch',
+            'Could not identify scan type': 'Could not identify scan type',
+            'Protocol Violation': 'MRI Protocol Check violation',
+        },
      },
     },
     {
@@ -78,61 +91,62 @@ export function resolvedFilters() {
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
- * @param {string} column - column name
- * @param {string} cell - cell content
- * @param {array} rowData - array of cell contents for a specific row
- * @param {array} rowHeaders - array of table headers (column names)
- * @return {*} a formated table cell for a given column
+ * @param {callback} mapper - A data mapper for dynamic columns
+ * @return {callback} a formated table cell formatter
  */
-export function formatColumnResolved(column, cell, rowData, rowHeaders) {
-  // Create the mapping between rowHeaders and rowData in a row object.
-  const fontColor = {color: '#FFFFFF'};
-  let resolutionStatusStyle;
-  let resolutionStatus;
+export function formatColumnResolved(mapper) {
+    const Mapper = (column, cell, rowData, rowHeaders) => {
+        cell = mapper(column, cell);
+        // Create the mapping between rowHeaders and rowData in a row object.
+        const fontColor = {color: '#FFFFFF'};
+        let resolutionStatusStyle;
+        let resolutionStatus;
 
-  if (column === 'Resolution Status') {
-      switch (rowData['Resolution Status']) {
-          case 'unresolved':
-              resolutionStatusStyle = 'label-danger';
-              resolutionStatus = 'Unresolved';
-              break;
+        if (column === 'Resolution Status') {
+            switch (rowData['Resolution Status']) {
+                case 'unresolved':
+                    resolutionStatusStyle = 'label-danger';
+                    resolutionStatus = 'Unresolved';
+                    break;
 
-          case 'reran':
-              resolutionStatusStyle = 'label-success';
-              resolutionStatus = 'Reran';
-              break;
+                case 'reran':
+                    resolutionStatusStyle = 'label-success';
+                    resolutionStatus = 'Reran';
+                    break;
 
-          case 'emailed':
-              resolutionStatusStyle = 'label-info';
-              resolutionStatus = 'Emailed site/pending';
-              break;
+                case 'emailed':
+                    resolutionStatusStyle = 'label-info';
+                    resolutionStatus = 'Emailed site/pending';
+                    break;
 
-          case 'rejected':
-              resolutionStatusStyle = 'label-danger';
-              resolutionStatus = 'Rejected';
-              break;
+                case 'rejected':
+                    resolutionStatusStyle = 'label-danger';
+                    resolutionStatus = 'Rejected';
+                    break;
 
-          case 'inserted':
-              resolutionStatusStyle = 'label-warning';
-              resolutionStatus = 'Inserted';
-              break;
+                case 'inserted':
+                    resolutionStatusStyle = 'label-warning';
+                    resolutionStatus = 'Inserted';
+                    break;
 
-          case 'other':
-              resolutionStatusStyle = 'label-primary';
-              resolutionStatus = 'Other';
-              break;
+                case 'other':
+                    resolutionStatusStyle = 'label-primary';
+                    resolutionStatus = 'Other';
+                    break;
 
-          case 'inserted_flag':
-              resolutionStatusStyle = 'label-default';
-              resolutionStatus = 'Inserted with flag';
-              break;
-      }
+                case 'inserted_flag':
+                    resolutionStatusStyle = 'label-default';
+                    resolutionStatus = 'Inserted with flag';
+                    break;
+            }
 
-      return (
-              <td className= {resolutionStatusStyle} style={fontColor}>
-              {resolutionStatus}
-              </td>
-             );
-  }
-  return <td>{cell}</td>;
+            return (
+                    <td className= {resolutionStatusStyle} style={fontColor}>
+                    {resolutionStatus}
+                    </td>
+                   );
+        }
+        return <td>{cell}</td>;
+    };
+    return Mapper;
 }
