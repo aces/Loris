@@ -63,29 +63,12 @@ class ElectrophysiologySessionView extends Component {
         {
           file: {
             name: '',
-            task: {
+            summary: {
               frequency: {
                 sampling: '',
                 powerline: '',
               },
-              channel: [
-                {
-                  name: '',
-                  value: '',
-                },
-                {
-                  name: '',
-                  value: '',
-                },
-                {
-                  name: '',
-                  value: '',
-                },
-                {
-                  name: '',
-                  value: '',
-                },
-              ],
+              channel_count: [],
               reference: '',
             },
             details: {
@@ -300,7 +283,7 @@ class ElectrophysiologySessionView extends Component {
             <FilePanel
               id={'filename_panel_' + i}
               title={this.state.database[i].file.name}
-              data={this.state.database[i].file}
+              data={this.state.database[i].file.details}
             >
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
@@ -312,15 +295,15 @@ class ElectrophysiologySessionView extends Component {
                   <div className='row'>
                     <div className='col-md-6 col-lg-4'>
                       <SummaryPanel
-                        data={this.state.database[i].file}
                         id={'filename_summary_' + i}
+                        data={this.state.database[i].file.summary}
                       />
                     </div>
                     <EEGMontage />
                     <div className='col-md-6 col-lg-4'>
                       <DownloadPanel
                         id={'file_download_' + i}
-                        data={this.state.database[i].file}
+                        downloads={this.state.database[i].file.downloads}
                       />
                     </div>
                   </div>

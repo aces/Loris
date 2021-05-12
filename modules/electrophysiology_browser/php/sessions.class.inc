@@ -263,101 +263,247 @@ class Sessions extends \NDB_Page
 
             $fileSummary['name'] = $fileName;
 
-            // get the task frequency information
+            // get the summary frequency information
 
             $sampling  = $physioFileObj->getParameter('SamplingFrequency');
             $powerline = $physioFileObj->getParameter('PowerLineFrequency');
 
-            $fileSummary['task']['frequency']['sampling']  = $sampling;
-            $fileSummary['task']['frequency']['powerline'] = $powerline;
+            $fileSummary['summary']['frequency']['sampling'] = [
+                'name'  => 'Sampling Frequency',
+                'value' => $sampling,
+            ];
 
-            // get the task channel information
+            $fileSummary['summary']['frequency']['powerline'] = [
+                'name'  => 'Powerline Frequency',
+                'value' => $powerline,
+            ];
+
+            // get the summary channel information
+
+            if ($physioFileObj->getParameter('Modality') == 'ieeg') {
+                $ecogChannelCount = $physioFileObj->getParameter('ECOGChannelCount');
+                $seegChannelCount = $physioFileObj->getParameter('SEEGChannelCount');
+
+                $fileSummary['summary']['channel_count'][] = [
+                    'name'  => 'ECOG Channel Count',
+                    'value' => $ecogChannelCount,
+                ];
+                $fileSummary['summary']['channel_count'][] = [
+                    'name'  => 'SEEG Channel Count',
+                    'value' => $seegChannelCount,
+                ];
+            }
 
             $eegChannelCount = $physioFileObj->getParameter('EEGChannelCount');
             $eogChannelCount = $physioFileObj->getParameter('EOGChannelCount');
             $ecgChannelCount = $physioFileObj->getParameter('ECGChannelCount');
             $emgChannelCount = $physioFileObj->getParameter('EMGChannelCount');
 
-            $fileSummary['task']['channel'][] = [
+            $fileSummary['summary']['channel_count'][] = [
                 'name'  => 'EEG Channel Count',
                 'value' => $eegChannelCount,
             ];
-            $fileSummary['task']['channel'][] = [
+            $fileSummary['summary']['channel_count'][] = [
                 'name'  => 'EOG Channel Count',
                 'value' => $eogChannelCount,
             ];
-            $fileSummary['task']['channel'][] = [
+            $fileSummary['summary']['channel_count'][] = [
                 'name'  => 'ECG Channel Count',
                 'value' => $ecgChannelCount,
             ];
-            $fileSummary['task']['channel'][] = [
+            $fileSummary['summary']['channel_count'][] = [
                 'name'  => 'EMG Channel Count',
                 'value' => $emgChannelCount,
             ];
 
-            // get the task reference
+            // get the summary reference
 
-            $reference = $physioFileObj->getParameter('EEGReference');
+            if ($physioFileObj->getParameter('Modality') == 'ieeg') {
+                $reference = $physioFileObj->getParameter('iEEGReference');
+            } else {
+                $reference = $physioFileObj->getParameter('EEGReference');
+            }
 
-            $fileSummary['task']['reference'] = $reference;
+            $fileSummary['summary']['reference'] = [
+                'name'  => 'Reference',
+                'value' => $reference,
+            ];
 
             // get the file's details
 
-            $taskDesc         = $physioFileObj->getParameter('TaskDescription');
-            $instructions     = $physioFileObj->getParameter('Instructions');
-            $placement        = $physioFileObj->getParameter('EEGPlacementScheme');
-            $triggerCount     = $physioFileObj->getParameter('TriggerChannelCount');
-            $recordingType    = $physioFileObj->getParameter('Recording_type');
-            $cogAtlasID       = $physioFileObj->getParameter('CogAtlasID');
-            $cogPoid          = $physioFileObj->getParameter('CogPOID');
-            $instituteName    = $physioFileObj->getParameter('InstitutionName');
-            $intituteAddress  = $physioFileObj->getParameter('InstitutionAddress');
-            $miscChannelCount = $physioFileObj->getParameter('MiscChannelCount');
-            $manufacturer     = $physioFileObj->getParameter('Manufacturer');
-            $modelName        = $physioFileObj->getParameter(
-                'ManufacturerModelName'
+            if ($physioFileObj->getParameter('Modality') == 'ieeg') {
+                $placement = $physioFileObj->getParameter('iEEGPlacementScheme');
+                $ground    = $physioFileObj->getParameter('iEEGGround');
+                $electrodeManufacturer           = [
+                    'name'  => 'Electrode Manufacturer',
+                    'value' => $physioFileObj->getParameter('ElectrodeManufacturer'),
+                ];
+                $electrodeManufacturersModelName = [
+                    'name'  => 'Electrode Manufacturer\'s Model Name',
+                    'value' => $physioFileObj->getParameter(
+                        'ElectrodeManufacturersModelName'
+                    ),
+                ];
+            } else {
+                $placement = $physioFileObj->getParameter('EEGPlacementScheme');
+                $ground    = $physioFileObj->getParameter('EEGGround');
+                $electrodeManufacturer           = [
+                    'name'  => 'Cap Manufacturer',
+                    'value' => $physioFileObj->getParameter('CapManufacturer'),
+                ];
+                $electrodeManufacturersModelName = [
+                    'name'  => 'Cap Manufacturer\'s Model Name',
+                    'value' => $physioFileObj->getParameter(
+                        'CapManufacturersModelName'
+                    ),
+                ];
+
+            }
+
+            $taskName          = $physioFileObj->getParameter('TaskName');
+            $taskDesc          = $physioFileObj->getParameter('TaskDescription');
+            $instructions      = $physioFileObj->getParameter('Instructions');
+            $headCircumference = $physioFileObj->getParameter('HeadCircumference');
+            $triggerCount      = $physioFileObj->getParameter('TriggerChannelCount');
+            $recordingType     = $physioFileObj->getParameter('Recording_type');
+            $cogAtlasID        = $physioFileObj->getParameter('CogAtlasID');
+            $cogPoid           = $physioFileObj->getParameter('CogPOID');
+            $instituteName     = $physioFileObj->getParameter('InstitutionName');
+            $intituteAddress   = $physioFileObj->getParameter('InstitutionAddress');
+            $miscChannelCount  = $physioFileObj->getParameter('MiscChannelCount');
+            $manufacturer      = $physioFileObj->getParameter('Manufacturer');
+            $modelName         = $physioFileObj->getParameter(
+                'ManufacturersModelName'
             );
-            $capManufacturer  = $physioFileObj->getParameter(
-                'ManufacturerCapModelName'
-            );
-            $capModelName     = $physioFileObj->getParameter(
-                'ManufacturerCapModelName'
-            );
-            $hardwareFilters  = $physioFileObj->getParameter('HardwareFilters');
-            $duration         = $physioFileObj->getParameter('RecordingDuration');
-            $epochLength      = $physioFileObj->getParameter('EpochLength');
-            $softwareVersion  = $physioFileObj->getParameter(
-                'DeviceSoftwareVersion'
-            );
-            $serialNumber     = $physioFileObj->getParameter('DeviceSerialNumber');
-            $artefactDesc     = $physioFileObj->getParameter(
+            $hardwareFilters   = $physioFileObj->getParameter('HardwareFilters');
+            $duration          = $physioFileObj->getParameter('RecordingDuration');
+            $epochLength       = $physioFileObj->getParameter('EpochLength');
+            $softwareVersions  = $physioFileObj->getParameter('SoftwareVersions');
+            $softwareFilters   = $physioFileObj->getParameter('SoftwareFilters');
+            $serialNumber      = $physioFileObj->getParameter('DeviceSerialNumber');
+            $artefactDesc      = $physioFileObj->getParameter(
                 'SubjectArtefactDescription'
             );
-            $chunksUrl        = $physioFileObj->getParameter(
+            $chunksUrl         = $physioFileObj->getParameter(
                 'electrophyiology_chunked_dataset_path'
             );
 
-            $fileSummary['details']['task']['description']     = $taskDesc;
-            $fileSummary['details']['instructions']            = $instructions;
-            $fileSummary['details']['eeg']['ground']           = '';
-            $fileSummary['details']['eeg']['placement_scheme'] = $placement;
-            $fileSummary['details']['trigger_count']           = $triggerCount;
-            $fileSummary['details']['record_type']            = $recordingType;
-            $fileSummary['details']['cog']['atlas_id']        = $cogAtlasID;
-            $fileSummary['details']['cog']['poid']            = $cogPoid;
-            $fileSummary['details']['institution']['name']    = $instituteName;
-            $fileSummary['details']['institution']['address'] = $intituteAddress;
-            $fileSummary['details']['misc']['channel_count']  = $miscChannelCount;
-            $fileSummary['details']['manufacturer']['name']   = $manufacturer;
-            $fileSummary['details']['manufacturer']['model_name'] = $modelName;
-            $fileSummary['details']['cap']['manufacturer']        = $capManufacturer;
-            $fileSummary['details']['cap']['model_name']          = $capModelName;
-            $fileSummary['details']['hardware_filters']           = $hardwareFilters;
-            $fileSummary['details']['recording_duration']         = $duration;
-            $fileSummary['details']['epoch_length']            = $epochLength;
-            $fileSummary['details']['device']['version']       = $softwareVersion;
-            $fileSummary['details']['device']['serial_number'] = $serialNumber;
-            $fileSummary['details']['subject_artefact_description'] = $artefactDesc;
+            $fileSummary['details'] = [
+                [
+                    'name'  => 'Task Name',
+                    'value' => $taskName,
+                ],
+                [
+                    'name'  => 'Task Description',
+                    'value' => $taskDesc,
+                ],
+                [
+                    'name'  => 'Instructions',
+                    'value' => $instructions,
+                ],
+                [
+                    'name'  => 'Recording Type',
+                    'value' => $recordingType,
+                ],
+                [
+                    'name'  => 'Recording Duration',
+                    'value' => $duration,
+                ],
+                [
+                    'name'  => 'Epoch Length',
+                    'value' => $epochLength,
+                ],
+                [
+                    'name'  => 'Subject Artefact Description',
+                    'value' => $artefactDesc,
+                ],
+                [
+                    'name'  => 'Head Circumference',
+                    'value' => $headCircumference,
+                ],
+                [
+                    'name'  => 'Placement Scheme',
+                    'value' => $placement,
+                ],
+                [
+                    'name'  => 'Ground',
+                    'value' => $ground,
+                ],
+                [
+                    'name'  => 'Trigger Channel Count',
+                    'value' => $triggerCount,
+                ],
+                [
+                    'name'  => 'Misc Channel Count',
+                    'value' => $miscChannelCount,
+                ],
+                [
+                    'name'  => 'CogAtlas ID',
+                    'value' => $cogAtlasID,
+                ],
+                [
+                    'name'  => 'CogPO ID',
+                    'value' => $cogPoid,
+                ],
+                [
+                    'name'  => 'Institution Name',
+                    'value' => $instituteName,
+                ],
+                [
+                    'name'  => 'Institution Address',
+                    'value' => $intituteAddress,
+                ],
+                [
+                    'name'  => 'Manufacturer',
+                    'value' => $manufacturer,
+                ],
+                [
+                    'name'  => 'Manufacturers Model Name',
+                    'value' => $modelName,
+                ],
+                $electrodeManufacturer,
+                $electrodeManufacturersModelName,
+                [
+                    'name'  => 'Device Serial Number',
+                    'value' => $serialNumber,
+                ],
+                [
+                    'name'  => 'Hardware Filters',
+                    'value' => $hardwareFilters,
+                ],
+                [
+                    'name'  => 'Software Versions',
+                    'value' => $softwareVersions,
+                ],
+                [
+                    'name'  => 'Software Filters',
+                    'value' => $softwareFilters,
+                ],
+            ];
+
+            if ($physioFileObj->getParameter('Modality') == 'ieeg') {
+                $fileSummary['details'][] = [
+                    'name'  => 'DC Offset Correction',
+                    'value' => $physioFileObj->getParameter('DCOffsetCorrection'),
+                ];
+
+                $fileSummary['details'][] = [
+                    'name'  => 'Electrode Groups',
+                    'value' => $physioFileObj->getParameter('ElectrodeGroups'),
+                ];
+
+                $fileSummary['details'][] = [
+                    'name'  => 'Electrical Stimulation',
+                    'value' => $physioFileObj->getParameter('ElectricalStimulation'),
+                ];
+
+                $fileSummary['details'][] = [
+                    'name'  => 'Electrical Stimulation Parameters',
+                    'value' => $physioFileObj->getParameter(
+                        'ElectricalStimulationParameters'
+                    ),
+                ];
+            }
 
             // get the links to the files for downloads
 
@@ -394,8 +540,9 @@ class Sessions extends \NDB_Page
         $params['PFID']  = $physioFileID;
         $downloadLinks   = [];
         $downloadLinks[] = [
-            'type' => 'physiological_file',
-            'file' => $physioFile,
+            'type'  => 'physiological_file',
+            'file'  => $physioFile,
+            'label' => 'EEG File',
         ];
 
         $queries = [
@@ -404,6 +551,14 @@ class Sessions extends \NDB_Page
             'physiological_task_event'         => 'physiological_task_event_file',
             'physiological_annotation_archive' => 'physiological_annotation_files',
             'physiological_archive'            => 'all_files',
+        ];
+
+        $labels = [
+            'physiological_electrode_file'   => 'Electrodes',
+            'physiological_channel_file'     => 'Channels',
+            'physiological_task_event_file'  => 'Events',
+            'physiological_annotation_files' => 'Annotations',
+            'all_files'                      => 'All Files',
         ];
 
         foreach ($queries as $query_key => $query_value) {
@@ -416,13 +571,15 @@ class Sessions extends \NDB_Page
             $query_statement = $db->pselectRow($query_statement, $params);
             if (isset($query_statement['FileType'])) {
                 $downloadLinks[] = [
-                    'type' => $query_statement['FileType'],
-                    'file' => $query_statement['FilePath'],
+                    'type'  => $query_statement['FileType'],
+                    'file'  => $query_statement['FilePath'],
+                    'label' => $labels[$query_statement['FileType']]
                 ];
             } else {
                 $downloadLinks[] = [
-                    'type' => $query_value,
-                    'file' => '',
+                    'type'  => $query_value,
+                    'file'  => '',
+                    'label' => $labels[$query_value],
                 ];
             }
         }
@@ -439,13 +596,15 @@ class Sessions extends \NDB_Page
         $queryFDT = $db->pselectRow($queryFDT, $params);
         if (isset($queryFDT['FileType'])) {
             $downloadLinks[] = [
-                'type' => $queryFDT['FileType'],
-                'file' => $queryFDT['FilePath'],
+                'type'  => $queryFDT['FileType'],
+                'file'  => $queryFDT['FilePath'],
+                'label' => '',
             ];
         } else {
             $downloadLinks[] = [
-                'type' => 'physiological_fdt_file',
-                'file' => '',
+                'type'  => 'physiological_fdt_file',
+                'file'  => '',
+                'label' => '',
             ];
         }
 
