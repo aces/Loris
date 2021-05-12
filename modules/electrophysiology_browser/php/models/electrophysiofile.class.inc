@@ -39,7 +39,7 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
 
         $query    = "SELECT 
                        PhysiologicalFileID,
-                       PhysiologicalModalityID,
+                       PhysiologicalModality as Modality,
                        PhysiologicalOutputTypeID,
                        SessionID,
                        InsertTime,
@@ -47,7 +47,9 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                        AcquisitionTime,
                        InsertedByUser,
                        FilePath  
-                     FROM physiological_file 
+                     FROM physiological_file
+                       LEFT JOIN physiological_modality as pm
+                       USING (PhysiologicalModalityID)
                      WHERE PhysiologicalFileID=:PFID";
         $params   = ['PFID' => $physiologicalFileID];
         $fileData = $db->pselectRow($query, $params);

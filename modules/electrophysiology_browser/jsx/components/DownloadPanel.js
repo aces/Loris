@@ -2,6 +2,7 @@
  * This file contains React component for Electrophysiology module.
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Panel from 'Panel';
 
 /**
@@ -17,16 +18,7 @@ class DownloadPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.data,
-      labels: {
-        physiological_file: 'EEG File',
-        physiological_electrode_file: 'Electrodes',
-        physiological_channel_file: 'Channels',
-        physiological_task_event_file: 'Events',
-        physiological_annotation_files: 'Annotations',
-        all_files: 'All Files',
-        physiological_fdt_file: '',
-      },
+      downloads: this.props.downloads,
     };
   }
 
@@ -49,7 +41,7 @@ class DownloadPanel extends Component {
           maxWidth: '250px',
           margin: '0 auto',
         }}>
-          {this.state.data.downloads
+          {this.state.downloads
             .filter((download) =>
               download.type != 'physiological_fdt_file'
             )
@@ -69,7 +61,7 @@ class DownloadPanel extends Component {
                       verticalAlign: 'middle',
                       paddingLeft: 0,
                     }}
-                  >{this.state.labels[download.type]}</div>
+                  >{download.label}</div>
                   {disabled
                     ? <a
                         className='btn disabled col-xs-5'
@@ -84,7 +76,7 @@ class DownloadPanel extends Component {
                         className='btn btn-primary download col-xs-5'
                         href={'/mri/jiv/get_file.php?file=' + download.file}
                         target='_blank'
-                        download={this.state.data.downloads[0].file}
+                        download={this.state.downloads[0].file}
                         style={{
                           margin: 0,
                         }}
@@ -99,5 +91,14 @@ class DownloadPanel extends Component {
     );
   }
 }
+
+
+DownloadPanel.propTypes = {
+  downloads: PropTypes.array,
+};
+
+DownloadPanel.defaultProps = {
+  downloads: [],
+};
 
 export {DownloadPanel};

@@ -7,7 +7,6 @@ import Panel from 'jsx/Panel';
  *
  * This file contains React component for Electrophysiology module.
  *
- * @author Alizée Wickenheiser.
  * @version 0.0.1
  */
 class SummaryPanel extends Component {
@@ -18,7 +17,12 @@ class SummaryPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.data,
+      data: [
+        this.props.data.frequency.sampling,
+        ...this.props.data.channel_count,
+        this.props.data.reference,
+        this.props.data.frequency.powerline,
+      ],
     };
   }
 
@@ -28,25 +32,6 @@ class SummaryPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const styles = {
-      table: {
-        header: {
-            color: '#074785',
-            padding: '5px 10px',
-            wordWrap: 'break-word',
-            width: '200px',
-        },
-        style: {
-            background: '#fff',
-            width: '100%',
-        },
-        data: {
-            padding: '5px 10px',
-            wordWrap: 'break-word',
-        },
-      },
-    };
-
     return (
       <div className="summary-panel">
         <Panel
@@ -59,66 +44,33 @@ class SummaryPanel extends Component {
             }}
           >
             <table
-              style={styles.table.style}
+              style={{
+                background: '#fff',
+                width: '100%',
+              }}
               className='table-bordered'
             >
               <tbody>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  Sampling Frequency
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.frequency.sampling}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  {this.state.data.task.channel[0].name}
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.channel[0].value}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  {this.state.data.task.channel[1].name}
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.channel[1].value}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  {this.state.data.task.channel[2].name}
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.channel[2].value}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  {this.state.data.task.channel[3].name}
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.channel[3].value}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  EEG Reference
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.reference}
-                  </td>
-                </tr>
-                <tr>
-                  <th scope='row' style={styles.table.header}>
-                  Powerline Frequency
-                  </th>
-                  <td style={styles.table.data}>
-                  {this.state.data.task.frequency.powerline}
-                  </td>
-                </tr>
+                {this.state.data.map((row, i) => {
+                  const {name, value} = row;
+                  return (
+                    <tr key={i}>
+                      <th
+                        scope='row'
+                        style={{
+                          color: '#074785',
+                          padding: '5px 10px',
+                          wordWrap: 'break-word',
+                          width: '200px',
+                        }}
+                      >{name}</th>
+                      <td style={{
+                        padding: '5px 10px',
+                        wordWrap: 'break-word',
+                      }}>{value}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
