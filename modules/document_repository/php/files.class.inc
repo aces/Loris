@@ -251,12 +251,10 @@ class Files extends \NDB_Page
     function parseCategory(array $value): array
     {
         $id           = $value['id'];
-        $depth        = 0;
         $DB           = \Database::singleton();
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth    += 1;
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " WHERE id=:parent_id";
@@ -299,7 +297,11 @@ class Files extends \NDB_Page
         }
 
         // Do some validation and fail early on bad inputs.
-        $body         = $request->getParsedBody();
+        $body = $request->getParsedBody();
+        if (!is_array($body)) {
+            throw new \LorisException("Expected parsed body to be an array");
+        }
+
         $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
         if (is_null($uploadedFile)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -332,9 +334,7 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        $fileSize = $uploadedFile->getSize();
-        $fileName = $uploadedFile->getClientFileName();
-        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+        $filename = $uploadedFile->getClientFileName();
         try{
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(

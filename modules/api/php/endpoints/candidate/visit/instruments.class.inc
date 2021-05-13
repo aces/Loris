@@ -69,8 +69,8 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -84,6 +84,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+        $loris     = $request->getAttribute("loris");
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -124,6 +125,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $instrument = \NDB_BVL_Instrument::factory(
+                $loris,
                 $instrumentname,
                 $commentid,
                 '',

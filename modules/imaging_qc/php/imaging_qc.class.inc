@@ -129,9 +129,9 @@ class Imaging_QC extends \NDB_Menu_Filter
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete'
-              OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              WHEN m.`".$scan_done."` IS NULL THEN ''
+              WHEN (m.`".$scan_done."` = 'Complete'
+              OR m.`".$scan_done."` = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
            CASE
@@ -195,7 +195,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
@@ -208,12 +208,12 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $projectList  = \Utility::getProjectList();
         $projectList2 = [];
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $projectList2[$value] = $value;
         }
         $subprojectList  = \Utility::getSubprojectList();
         $subprojectList2 = [];
-        foreach ($subprojectList as $key => $value) {
+        foreach (array_values($subprojectList) as $value) {
             $subprojectList2[$value] = $value;
         }
         //print_r($subprojectList2);
@@ -267,6 +267,18 @@ class Imaging_QC extends \NDB_Menu_Filter
         $scans_done = [];
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
+            // Only include scan types that appear in the MRI Parameter Form
+            $scanTypeInMRIPF = $db->columnExists(
+                'mri_parameter_form',
+                $scan_type .
+                "_Scan_done"
+            );
+
+            if (!$scanTypeInMRIPF) {
+                unset($scan_types[$scan_type]);
+                continue;
+            }
+
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",

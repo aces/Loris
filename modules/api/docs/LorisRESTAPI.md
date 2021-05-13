@@ -1,5 +1,4 @@
-# Loris API - v0.0.2
-
+# LORIS API - v0.0.3
 ## 1.0 Overview
 
 This document specifies the Loris REST API.
@@ -9,7 +8,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.2 and it
+document. This document specifies $APIVERSION v0.0.3 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -30,16 +29,16 @@ do not require ETags.
 
 DELETE is not supported on any resource defined in this API.
 
-# 1.1 Authentication
+### 1.1 Authentication
 
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
-no further authentication is required. Requests will be evaluated as requests from that user
-so that standard Loris modules are able to use the API.
+no further authentication is required. Requests will be evaluated as requests from that user,
+so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
 they can be authenticated using [JSON Web Tokens](https://jwt.io).
 
-The client should POST a request to /login with a payload of the form
+The client should POST a request to /login with a payload of the form:
 
 ```js
 {
@@ -49,7 +48,7 @@ The client should POST a request to /login with a payload of the form
 ```
 
 If the username and password are valid, the API will respond with a 200 OK and payload
-of the form
+of the form:
 
 ```js
 {
@@ -62,7 +61,7 @@ Otherwise, it will return a 401 Unauthorized response.
 If the token is returned, it should be included in an "Authorization: Bearer token" header
 for any future requests to authenciate the request.
 
-# 2.0 Project API
+## 2.0 Project API
 
 The Project API lives under the /projects portion of the API URL hierarchy. It is used to get
 project specific settings or data. PUT and PATCH are not currently supported for the part of
@@ -119,6 +118,8 @@ by the 3 letter site alias before attempting to pass this regex to a regular exp
 or it will result in false negatives.
 
 
+### 2.1 Single project 
+
 ```
 GET /projects/$ProjectName
 ```
@@ -139,11 +140,44 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 }
 ```
 
+#### 2.1.1 Single project images  
+```
+GET /projects/$ProjectName/images/
+```
+
+Will return a JSON object of the form:
+
+```js
+{
+  "Images" : [
+    {
+      "Candidate": "123456",
+      "PSCID": "MTL001",
+      "Visit": "V1",
+      "Visit_date": "2016-08-09", /* The date of the session. This will be null for phantoms and session that are not yet started */
+      "Site": "Montreal Neurological Institute",
+      "ScanType": "t2", /* Acquisition protocol */
+      "QC_status": "Pass|Fail|null",
+      "Selected": "true|false|null",
+      "Link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
+      "InsertTime": "2016-08-09T14:15:30-05:00" /* The inserted date ISO 8601 */
+    },
+    ...
+  ]
+}
+```
+It is possible to provide a GET parameter named `since` where the value need to be a date or datetime.
+```
+ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
+```
+We recommend using a format that includes timezone.
+
+#### 2.1.2 Single project instruments  
 ```
 GET /projects/$ProjectName/instruments/
 ```
 
-Will return a JSON object of the form
+Will return a JSON object of the form:
 
 ```js
 {
@@ -168,11 +202,12 @@ Will return a JSON object of the form
 
 Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
 
+#### 2.1.3 Single project visits  
 ```
 GET /projects/$ProjectName/visits/
 ```
 
-Will return a JSON object of the form
+Will return a JSON object of the form:
 
 ```js
 {
@@ -185,11 +220,12 @@ Will return a JSON object of the form
 
 Where V1, V2, ... are the visits that may exist for this project
 
+#### 2.1.4 Single project candidates  
 ```
 GET /projects/$ProjectName/candidates/
 ```
 
-will return a JSON object of the form
+will return a JSON object of the form:
 
 ```js
 {
@@ -202,7 +238,32 @@ will return a JSON object of the form
 
 where 123456, 342332, etc are the candidates that exist for this project.
 
-## 2.2 Instrument Forms
+#### 2.1.5 Single project electrophysiology recordings
+```
+GET /projects/$ProjectName/recordings
+```
+
+will return a JSON object of the form:
+```js
+{
+  "Recordings": [
+    {
+      "Candidate":"300167",
+      "PSCID":"OTT167",
+      "Visit":"V1",
+      "Visit_date":"2016-08-15",
+      "Site":"Ottawa",
+      "File":"bids_imports/Face13_BIDSVersion_1.1.0/sub-OTT167/ses-V1/eeg/sub-OTT167_ses-V1_task-faceO_eeg.edf",
+      "Modality":"eeg",
+      "InsertTime":"1970-01-01T00:33:39+00:00",
+      "Link":"/candidates/300167/V1/electrophysiology/sub-OTT167_ses-V1_task-faceO_eeg.edf"
+    },
+    ...
+  ]
+}
+```
+
+### 2.2 Instrument Forms
 
 ```
 GET /projects/$ProjectName/instruments/$InstrumentName
@@ -220,11 +281,11 @@ PUT and PATCH are not supported for instrument forms.
 
 Methods for getting/putting data into specific candidates are specified in section 3.
 
-# 3.0 Candidate API
+## 3.0 Candidate API
 
 The /candidate portion of the API is used for retrieving and modifying candidate data and
 data attached to a specific candidate or visit such as visits or instrument data. Portions
-of this reference a CandidateObject. A CandidateObject is a JSON object of the form
+of this reference a CandidateObject. A CandidateObject is a JSON object of the form:
 
 ```js
 {
@@ -234,7 +295,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "Site"    : Site,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female|Other"
+        "Sex"     : "Male|Female"
 }
 ```
 
@@ -244,7 +305,7 @@ representing a candidate in Loris.
 GET /candidates/
 ```
 
-will return a JSON object of the form
+will return a JSON object of the form:
 
 ```js
 {
@@ -265,7 +326,8 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female|Other"
+        "Sex"     : "Male|Female",
+        "Site"    : SiteName,
     }
 }
 ```
@@ -276,25 +338,18 @@ project settings.
 PSCID is only required if the generation type in the Loris config is set to
 "prompt".
 
-The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
-the PSCID already exists, and a 400 Bad Request if any data provided is invalid
-(PSCID format, date format, gender something other than Male|Female|Other, invalid project
-name, etc). A successful POST request will return the CandID for the newly
-created candidate in a JSON object of the form: 
-
-```js
-{
-    "Meta":{
-        "CandID":123456
-    }
-}
-```
+the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
+a site other than the list of sitenames the user is affiliated with, and a 400 
+Bad Request if any data provided is invalid (PSCID format, date format, sex
+something other than Male|Female, invalid project name, invalid sitename, etc). 
+A successful POST request will return a CandidateObject for the newly created 
+candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
 
-# 3.1 Specific Candidate
+### 3.1 Specific Candidate
 
 If a GET request for a candidate is issued such as
 
@@ -304,7 +359,7 @@ GET /candidates/$CandID
 
 A JSON object representing that candidate will be returned.
 
-The JSON object is of the form
+The JSON object is of the form:
 
 ```js
 {
@@ -325,7 +380,7 @@ true of all of the API hierarchy under /candidates/$CandID.
 
 ### 3.2 Getting Candidate visit data
 
-A GET request of the form
+A GET request of the form:
 
 ```
 GET /candidates/$CandID/$VisitLabel
@@ -340,7 +395,9 @@ The JSON object is of the form:
     "Meta" : {
         "CandID" : CandID,
         "Visit"  : VisitLabel,
-        "Battery" : "NameOfSubproject"
+        "Site"   : SiteName,
+        "Battery": "NameOfSubproject",
+        "Project" : ProjectName
     },
     "Stages" : {
         "Screening" :  {
@@ -376,7 +433,7 @@ Loris, or Approval has not occurred)
 GET /candidates/$CandID/$VisitLabel/instruments
 ```
 
-Will return a JSON object of the form.
+Will return a JSON object of the form:
 
 ```js
 {
@@ -394,7 +451,7 @@ SHOULD all be retrievable through the `project` portion of the API.
 
 PUT / PATCH / POST are not currently supported for candidate instruments.
 
-### 3.3 The Candidate Instrument Data
+#### 3.3.1 The Candidate Instrument Data
 
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
@@ -439,7 +496,7 @@ of PATCH requests SHOULD be used rather than a single PUT request for a client w
 
 A 200 OK will be returned on success, and a 404 Not Found if $InstrumentName is not a valid instrument installed in this Loris instance.
 
-### 3.3.1 Instrument flags
+#### 3.3.2 Instrument Flags
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
 PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
@@ -472,12 +529,12 @@ The format of the JSON object for these URLS is:
 }
 ```
 
-# 4.0 Imaging Data
+## 4.0 Imaging Data
 
 The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
 namespace, but is defined in a separate section of this document for clarity purposes.
 
-## 4.1 Candidate Images
+### 4.1 Candidate Images
 ```
 GET /candidates/$CandID/$Visit/images
 ```
@@ -500,7 +557,7 @@ the form:
 }
 ```
 
-## 4.2 Session Imaging QC
+### 4.2 Session Imaging QC
 ```
 GET /candidates/$CandID/$Visit/qc/imaging
 PUT /candidates/$CandID/$Visit/qc/imaging
@@ -508,7 +565,7 @@ PUT /candidates/$CandID/$Visit/qc/imaging
 
 To retrieve the session level imaging QC data for a visit, a request can
 be made `/candidates/$CandID/$Visit/qc/imaging`. It will return a JSON object
-of the form
+of the form:
 
 ```js
 {
@@ -523,7 +580,7 @@ of the form
 
 A PUT to the same location will update the QC information. 
 
-## 4.3 Image Level Data
+### 4.3 Image Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename
 ```
@@ -534,13 +591,13 @@ Returns raw file with the appropriate MimeType headers for each Filename retriev
 Only `GET` is currently supported, but future versions of this API may include `PUT`
 support to insert new (or processed) data into LORIS.
 
-## 4.3.1 Image Level QC Data
+#### 4.3.1 Image Level QC Data
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
 PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
 ```
 
-Returns file level QC information. It will return a JSON object of the form
+Returns file level QC information. It will return a JSON object of the form:
 
 ```js
 {
@@ -550,13 +607,29 @@ Returns file level QC information. It will return a JSON object of the form
         "File" : $Filename
     },
     "QC" : "Pass|Fail",
-    "Selected" : boolean
+    "Selected" : boolean,
+    "Caveats" : [
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        },
+        {
+            "Severity" : $severity,
+            "Header" : $header,
+            "Value" : $headerValue,
+            "ValidRange" : $headerValidRange,
+            "ValidRegex" : $headerValidRegex
+        }
+    ]
 }
 ```
 
 `PUT` requests to the same URL will update the QC information.
 
-## 4.4 Alternate formats
+### 4.4 Alternate formats
 
 There are occasions where you may want to retrieve a file in a different format
 than it is stored in LORIS. This can be achieved by adding `/format/$FormatType`
@@ -566,14 +639,14 @@ may be added in a future version of this API.
 An attempt to convert an image to an unsupported format may result in a
  `415 Unsupported Media Type` HTTP error.
 
-### 4.4.1 Raw Format
+#### 4.4.1 Raw Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/raw
 ```
 
 This will return the data in raw format (ie. the output of mnc2raw)
 
-### 4.4.2 BrainBrowser Format
+#### 4.4.2 BrainBrowser Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/brainbrowser
 ```
@@ -601,7 +674,7 @@ format that BrainBrowser can load. It will return a JSON object of the format
 }
 ```
 
-### 4.4.3 Thumbnail Format
+#### 4.4.3 Thumbnail Format
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/format/thumbnail
 ```
@@ -613,7 +686,7 @@ imaging acquisition statically (such as in the LORIS imaging browser.)
 The LORIS API allows you to extract headers from the images in a RESTful manner.
 The following methods are defined:
 
-### 4.5.1 Header Summary
+#### 4.5.1 Header Summary
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers
 ```
@@ -637,7 +710,7 @@ will return a JSON object of the form:
     "Description" : {
         "SeriesName" : "",
         "SeriesDescription"  : ""
-    }
+    },
     "Dimensions" : {
         "XSpace" : {
             "Length" : "",
@@ -655,6 +728,13 @@ will return a JSON object of the form:
             "Length" : "",
             "StepSize" : ""
         }
+    },
+    "ScannerInfo" : {
+      "Manufacturer" : $scannerManufacturer,
+      "Model" : $scannerModel,
+      "SoftwareVersion" : $scannerSoftwareVersion,
+      "SerialNumber" : $scannerSerialNumber,
+      "FieldStrength" : $scannerFieldStrength
     }
 }
 ```
@@ -662,7 +742,7 @@ will return a JSON object of the form:
 All of the dimensions are optional and may not exist for any given
 file (for instance, a 3D image will not have a time dimension.)
 
-### 4.5.2 Complete Headers
+#### 4.5.2 Complete Headers
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
 ```
@@ -685,7 +765,7 @@ The JSON will be of the form:
 }
 ```
 
-### 4.5.3 Specific Header
+#### 4.5.3 Specific Header
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/$HeaderName
 ```
@@ -704,3 +784,321 @@ The JSON object is of the form:
     "Value" : string
 }
 ```
+
+## 5.0 DICOM Data
+
+Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
+portion of the REST API namespace, but is defined in a separate section of this 
+document for clarity purposes.
+
+### 5.1 Candidate DICOMs
+```
+GET /candidates/$CandID/$Visit/dicoms
+```
+
+A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
+all the raw DICOM data which have been acquired for that visit. It will return an 
+object of the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+    },
+    "DicomTars" : 
+    [
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+            "SeriesInfo" :
+                [{
+                    "SeriesDescription" : "MPRAGE_ipat2",
+                    "SeriesNumber" : "2",
+                    "EchoTime" : "2.98",
+                    "RepetitionTime" : "2300",
+                    "InversionTime" : "900",
+                    "SliceThickness" : "1",
+                    "Modality" : "MR",
+                    "SeriesUID" : "1.2.3.4.1107",
+                    },
+                    {
+                    "SeriesDescription" : "BOLD Resting State",
+                    "SeriesNumber" : "5",
+                    "EchoTime" : "30",
+                    "RepetitionTime" : "2100",
+                    "InversionTime" : NULL,
+                    "SliceThickness" : "3.5",
+                    "Modality" : "MR",
+                    "SeriesUID" : "3.4.5.6.1507",
+                }]
+        },
+        {
+            "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+            "SeriesInfo" :
+                [{
+                "SeriesDescription" : "MPRAGE_ipat2",
+                "SeriesNumber" : "2",
+                "EchoTime" : "2.98",
+                "RepetitionTime" : "2300",
+                "InversionTime" : "900",
+                "SliceThickness" : "1",
+                "Modality" : "MR",
+                "SeriesUID" : "1.7.8.9.1296",
+                }]
+        }
+    ]    
+}
+```
+
+The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
+scans, respectively.
+
+### 5.2 Tar Level Data
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
+```
+
+Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text 
+files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
+scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
+
+Only `GET` is currently supported.
+
+## 6.0 Electrophysiology Recording Data
+
+The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the 
+REST API namespace, but is defined in a separate section of this document for 
+clarity purposes.  
+
+### 6.1 Candidate Electrophysiology Recordings
+
+```
+GET /candidates/$CandID/$Visit/recordings
+```
+
+A GET request to a `/candidates/$CandID/$Visit/recordings` will return a JSON object
+of all the recordings which have been acquired for that visit. It will return an
+object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel
+  },
+  "Files": [{
+      "OutputType": "raw",
+      "Filename": $Filename,
+      "AcquisitionModality": "eeg/meg/etc"
+  }, /* More files */]
+}
+```
+
+### 6.2 Electrophysiology Level Data
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename
+```
+
+Returns raw file with the appropriate MimeType headers for each Filename retrieved
+from `/candidates/$CandID/$Visit/recordings`.
+
+Only `GET` is currently supported, but future versions of this API may include `PUT`
+support to insert raw (or derivatives) data into LORIS.
+
+### 6.3 Electrophysiology Recording Metadata
+
+#### 6.3.1 Complete Metadata
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata
+```
+
+This will return a JSON object with all metadata associated with the recording. It 
+will return an object of the form:
+
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Data": {
+    "EEGReference": "CMS",
+    "SamplingFrequency": "256",
+    "ECGChannelCount": "0",
+    "HardwareFilters": "n/a",
+    /* more metadata ... */
+  }
+}
+```
+
+#### 6.3.2 Specific Metadata
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/metadata/$HeaderName
+```
+
+This will return a JSON object that extracts one specific metadata from $Filename.
+
+The JSON object is of the form:
+```js
+{
+  "Meta": {
+    "CandID": $CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename,
+    "Header": $HeaderName
+  },
+  "Value": string
+}
+```
+
+### 6.4 Electrophysiology Recording Channels Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/channels
+```
+
+This will return a JSON object with information about the channels used to produce
+the recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Channels":[
+    {
+      "ChannelName":"A3",
+      "ChannelDescription":"free form text description of the channel",
+      "ChannelType":"EEG",
+      "ChannelTypeDescription":"ElectoEncephaloGram: EEG sensors",
+      "ChannelStatus":"bad",
+      "StatusDescription":"artifact description as a free form text",
+      "SamplingFrequency":2400,
+      "LowCutoff":"n/a",
+      "HighCutoff":"n/a",
+      "ManualFlag":"n/a",
+      "Notch":"n/a",
+      "Reference":"A1",
+      "Unit":"microV",
+      "ChannelFilePath":"sub-OTT167_ses-V1_task-faceO_channels.tsv"
+    },
+    ...
+  ]
+}
+```
+
+### 6.5 Electrophysiology Recording Electrodes Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/electrodes
+```
+
+This will return a JSON object with information about the electrodes used to produce
+the recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "Electrodes":[
+    {
+      "ElectrodeName":"A1",
+      "ElectrodeType":"active/cap",
+      "ElectrodeMaterial":"Ag/AgCl",
+      "X":"-0.005000",
+      "Y":"0.001000",
+      "Z":"0.120000",
+      "Impedance":"n/a",
+      "ElectrodeFilePath":"sub-OTT167_ses-V1_task-faceO_electrodes.tsv"
+    },
+    ...
+  ]
+}
+
+```
+
+### 6.6 Electrophysiology Recording Events Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/events
+```
+
+This will return a JSON object with information about the task events used when
+recording. It will return an object of the form:
+
+```js
+{
+  "Meta":{
+    "CandID":$CandID,
+    "Visit": $VisitLabel,
+    "File": $Filename
+  },
+  "TaskEvents":[
+    {
+      "Onset":"11.734000",
+      "Duration":"0.000000",
+      "EventCode":"1",
+      "EventSample":"1",
+      "EventType":"face",
+      "TrialType":"checker-right",
+      "ResponseTime":"2000",
+      "EventFilePath":"sub-OTT167_ses-V1_task-faceO_events.tsv"
+    },
+    ...
+  ]
+}
+```
+
+### 6.7 Download BIDS Files Associated To The Recording
+
+#### 6.7.1 Download The BIDS File With Channels Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/channels
+```
+
+Returns raw file with the appropriate MimeType headers for the channels file 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
+
+Only `GET` is currently supported.  
+
+#### 6.7.2 Download The BIDS File With Electrodes Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/electrodes
+```
+
+Returns raw file with the appropriate MimeType headers for the electrodes file 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
+
+Only `GET` is currently supported.
+
+#### 6.7.3 Download The BIDS File With Task Events Information
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/events
+```
+
+Returns raw file with the appropriate MimeType headers for the task events file 
+retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
+
+Only `GET` is currently supported.
+
+#### 6.7.4 Download An Archive File With All Associated Files For The Recording
+
+```
+GET /candidates/$CandID/$VisitLabel/recordings/$Filename/bidsfiles/archive
+```
+
+Returns raw file with the appropriate MimeType headers for the archival file
+with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
+
+Only `GET` is currently supported.

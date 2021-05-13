@@ -24,6 +24,10 @@ namespace LORIS\dashboard;
  */
 class WidgetContent
 {
+    private string $_title;
+    private string $_body;
+    private string $_footer;
+
     /**
      * Construct a WidgetContent with the specified properties.
      *
@@ -36,9 +40,9 @@ class WidgetContent
         string $body,
         string $footer=""
     ) {
-        $this->title  = $title;
-        $this->body   = $body;
-        $this->footer = $footer;
+        $this->_title  = $title;
+        $this->_body   = $body;
+        $this->_footer = $footer;
     }
     /**
      * Return the content for the title of the widget.
@@ -47,7 +51,7 @@ class WidgetContent
      */
     public function getTitle() : string
     {
-        return $this->title;
+        return $this->_title;
     }
 
     /**
@@ -57,7 +61,7 @@ class WidgetContent
      */
     public function getBody() : string
     {
-        return $this->body;
+        return $this->_body;
     }
     /**
      * Return the content for the title of the widget.
@@ -66,6 +70,6 @@ class WidgetContent
      */
     public function getFooter() : string
     {
-        return $this->footer;
+        return $this->_footer;
     }
 }

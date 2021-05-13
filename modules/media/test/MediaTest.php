@@ -52,7 +52,10 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -68,7 +71,10 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -106,7 +112,7 @@ class MediaTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("TimePoint", $text);
+        $this->assertStringContainsString("TimePoint", $text);
 
         $this->safeGet($this->url . "/media/");
         // click the Edit link
@@ -117,16 +123,16 @@ class MediaTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("Edit Media File", $text);
+        $this->assertStringContainsString("Edit Media File", $text);
 
     }
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
+     * @param string  $element The input element loaction
+     * @param string  $table   The first row location in the table
+     * @param ?string $records The records number in the table
+     * @param string  $value   The test value
      *
      * @return void
      */
@@ -147,7 +153,7 @@ class MediaTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
@@ -162,7 +168,7 @@ class MediaTest extends LorisIntegrationTest
                 WebDriverBy::cssSelector($row)
             )->getText();
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
             $btn = self::$clearFilter;

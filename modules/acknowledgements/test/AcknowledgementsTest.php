@@ -65,7 +65,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -80,7 +80,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("acknowledgements", ['ID' => '999']);
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
@@ -186,7 +186,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
-        $this->assertContains("Success!", $bodyText);
+        $this->assertStringContainsString("Success!", $bodyText);
     }
 }
 

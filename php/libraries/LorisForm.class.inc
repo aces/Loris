@@ -203,7 +203,7 @@ class LorisForm
     {
         $el         =& $this->addBase(
             $name,
-            null,
+            '',
             array_merge(['value' => $value], $attribs)
         );
         $el['type'] = 'hidden';
@@ -350,10 +350,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param array  $url   The url label to set as href attrib
-     * @param array  $link  The value to display as the link
+     * @param string  $name  The element name.
+     * @param string  $label The label to attach to this element.
+     * @param ?string $url   The url label to set as href attrib
+     * @param ?string $link  The value to display as the link
      *
      * @return &array
      */
@@ -388,18 +388,18 @@ class LorisForm
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
      *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string       $type    The type of element to add.
+     * @param string       $name    The element name.
+     * @param string       $label   The label to attach to this element.
+     * @param array|string $options An array of other options that should
+     *                              be added. This generalls maps to the
+     *                              third option of the addX wrapper.
+     * @param array|string $attribs Other attributes to be added. This is
+     *                              mostly only used for the "select" type,
+     *                              where "options" has a different meaning
+     *                              and attribs takes the place of what "options"
+     *                              is for other types.
+     * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return void (but modifies this->form as a side-effect)
      */
@@ -467,6 +467,23 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
+            if (is_array($options)) {
+                if (empty($options)) {
+                    // The default was [], turn it into '' for addLink
+                    $options = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+            if (is_array($attribs)) {
+                if (empty($attribs)) {
+                    // The default was [], turn it into '' for addLink
+                    $attribs = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
@@ -516,7 +533,7 @@ class LorisForm
     function createSubmit($elname, $value, $attribs = [])
     {
         $attribs['value'] = $value;
-        $el         =& $this->createBase($elname, null, $attribs);
+        $el         =& $this->createBase($elname, '', $attribs);
         $el['type'] = 'submit';
         return $el;
     }
@@ -600,7 +617,7 @@ class LorisForm
                     $value = isset($_REQUEST[$fieldName][$fieldIdx])
                         ? $_REQUEST[$fieldName][$fieldIdx] : null;
 
-                    $rawValue = $value == 'on' ? 1 : 0;
+                    $rawValue = $value == 'on' ? '1' : '0';
                     return $this->_getFilteredValue($name, $rawValue);
                 }
 
@@ -858,7 +875,7 @@ class LorisForm
                 $format = 'month';
                 if ($value) {
                     $value = explode("-", $value);
-                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                    $value = sprintf("%s-%s", $value[0], $value[1]??null);
                 }
                 if (isset($elOptions['minYear'])) {
                     $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
@@ -1007,6 +1024,9 @@ class LorisForm
     {
         $attributes = '';
         foreach ($el as $key=>$value) {
+            if ($key=='label' && $value == '') {
+                continue;
+            }
             if ($key=='type') {
                 $value = $type;
             }
@@ -1330,7 +1350,8 @@ class LorisForm
         foreach ($this->formRules as $rule) {
             if (is_callable($rule)) {
                 $violations = call_user_func($rule, $values);
-                if (!empty($violations)) {
+
+                if (is_array($violations) && !empty($violations)) {
                     foreach ($violations as $element => $msg) {
                         $this->setElementError($element, $msg);
                         $errors[$element] = "custom fail";
@@ -1612,7 +1633,6 @@ class LorisForm
     {
         $val      = $this->getValue($el['name']);
         $checked  = '';
-        $value    = '';
         $disabled = '';
         $value    = $el["checkStates"];
         if ($val === $value[1]) {
@@ -1644,7 +1664,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if ($val===$el['value']) {
+        if ($val===($el['value'] ?? null)) {
             $checked = 'checked="checked"';
         }
 
@@ -1752,11 +1772,15 @@ class LorisForm
      * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
-     * @param string $element The element name to add the rule to.
-     *                        If this is a 'compare' rule, it will
-     *                        be an array of 2 element names.
-     * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
+     * @param string|array $element The element name to add the
+     *                              rule to.
+     *                              If this is a 'compare' rule,
+     *                              it will be an array of
+     *                              2 element names.
+     * @param string       $message The message to display if
+     *                              the rule is violated
+     * @param string       $type    The rule type.
+     *                              'compare','required' or 'numeric'
      *
      * @return void
      */
@@ -1835,11 +1859,13 @@ class LorisForm
      *
      * Adds a rule to a group.
      *
-     * @param string $group Form group name
-     * @param array  $arg1  Array for multiple elements or error
-     *                      message string for one element
-     * @param string $type  (optional)Rule type use getRegisteredRules()
-     *                      to get types
+     * @param string       $group Form group name
+     * @param array|string $arg1  Array for multiple elements
+     *                            or error message string for
+     *                            one element
+     * @param string       $type  (optional) Rule type use
+     *                            getRegisteredRules() to
+     *                            get types
      *
      * @return void
      */
@@ -1934,7 +1960,7 @@ class LorisForm
      *
      * @param string $name    The name to use for the new page (in the URL)
      * @param string $label   The label to show to the user for the new page
-     * @param string $attribs Extra attributes for this page.
+     * @param array  $attribs Extra attributes for this page.
      *
      * @return void
      */
@@ -1948,14 +1974,14 @@ class LorisForm
      *
      * Creates an element without adding it to the form.
      *
-     * @param string $type    The type of element to be created.
-     * @param string $elname  The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Element specific options to pass
-     *                        to create* wrappers
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
-     * @param array  $customs Only used in a certain mode of advcheckbox
+     * @param string       $type    The type of element to be created.
+     * @param string       $elname  The name of the element to be added
+     * @param string       $label   The label to attach to the element
+     * @param array|string $options Element specific options to pass
+     *                              to create* wrappers
+     * @param array        $attribs An array of extra HTML attributes to
+     *                              add to the element.
+     * @param array        $customs Only used in a certain mode of advcheckbox
      *
      * @return array of the form supported by $this->form
      */
@@ -2051,7 +2077,7 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -2083,7 +2109,7 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $value = $_REQUEST[$key];
+                    $value = $_REQUEST[$key] ?? null;
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
@@ -2113,8 +2139,6 @@ class LorisForm
             $bracketIdx = strpos($name, '[');
             if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $this->getValue($fieldName);
                 }
@@ -2128,7 +2152,7 @@ class LorisForm
             }
 
             if ($el['type'] === 'time') {
-                $value = $this->getValue($name);
+                $value = $this->getValue($name) ?? [];
                 if (($value['H'] || $value['H'] === '0')
                     && ($value['i'] || $value['i'] === '0')
                 ) {

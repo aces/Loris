@@ -27,8 +27,7 @@ set_include_path(
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-
-use LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * This script deletes the specified candidate information.
@@ -166,9 +165,10 @@ USAGE;
 function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 {
 
-    //Find candidate...
+    // Find candidate...
     $candidate = new Candidate();
-    $candidate->select($CandID); //find the candidate with the given CandID
+    // find the candidate with the given CandID
+    $candidate->select(new CandID($CandID));
 
     // Passing argument to delete session script
     $outputType ="";
@@ -220,6 +220,15 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     echo "----------------------------\n";
     $result = $DB->pselect(
         'SELECT * FROM participant_status_history WHERE CandID=:cid',
+        ['cid' => $CandID]
+    );
+    print_r($result);
+
+    // Print candidate_consent_rel
+    echo "\nCandidate Consent\n";
+    echo "-------------------\n";
+    $result = $DB->pselect(
+        'SELECT * FROM candidate_consent_rel WHERE CandidateID=:cid',
         ['cid' => $CandID]
     );
     print_r($result);
@@ -299,6 +308,9 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         //delete from the participant_status_history table
         $DB->delete("participant_status_history", ["CandID" => $CandID]);
 
+        //delete from the candidate_consent_rel table
+        $DB->delete("candidate_consent_rel", ["CandidateID" => $CandID]);
+
         //delete from parameter_candidate
         $DB->delete("parameter_candidate", ["CandID" => $CandID]);
 
@@ -344,6 +356,14 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             ["CandID" => $CandID],
             $output,
             $DB
+        );
+
+        //delete from the candidate_consent_rel table
+        _printResultsSQL(
+            "candidate_consent_rel",
+            ["CandidateID" => $CandID],
+            $output,
+            DB
         );
 
         //delete from parameter_candidate

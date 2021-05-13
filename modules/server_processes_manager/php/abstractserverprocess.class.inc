@@ -55,7 +55,7 @@ abstract class AbstractServerProcess
     /**
      * Unix process ID for that process
      *
-     * @var int
+     * @var ?int
      */
     private $_pid;
 
@@ -112,7 +112,7 @@ abstract class AbstractServerProcess
     /**
      * Time at which the process finished (in format PROCESS_TIME_FORMAT)
      *
-     * @var string
+     * @var ?string
      */
     private $_endTime;
 
@@ -173,7 +173,7 @@ abstract class AbstractServerProcess
     /**
      * Accessor for field $_pid.
      *
-     * @return int value of $_pid
+     * @return ?int
      */
     public function getPid()
     {

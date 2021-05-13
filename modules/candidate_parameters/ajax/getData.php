@@ -254,7 +254,7 @@ function getFamilyInfoFields()
     );
 
     $siblings = [];
-    foreach ($siblingsList as $key => $siblingArray) {
+    foreach (array_values($siblingsList) as $siblingArray) {
         foreach ($siblingArray as $ID) {
             array_push($siblings, $ID);
         }
@@ -469,7 +469,7 @@ function getConsentStatusFields()
 /**
  * Handles the fetching of Consent Status history
  *
- * @param int $pscid current candidate's PSCID
+ * @param string $pscid current candidate's PSCID
  *
  * @throws DatabaseException
  *
@@ -541,7 +541,10 @@ function getDODFields(): array
         'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
         ['candid' => $candID]
     );
-    $result        = [
+    if ($candidateData === null) {
+        throw new \LorisException("Invalid candidate");
+    }
+    $result = [
         'pscid'  => $candidateData['PSCID'],
         'candID' => $candID->__toString(),
         'dod'    => $candidateData['DoD'],

@@ -90,8 +90,9 @@ function editIssue()
         }
     }
 
-    $issueID = $_POST['issueID'];
-    $issueValues['lastUpdatedBy'] = $user->getData('UserID');
+    $issueID = intval($_POST['issueID']);
+
+    $issueValues['lastUpdatedBy'] = $user->getUsername();
 
     $validatedInput = validateInput($validateValues);
     if (array_key_exists('sessionID', $validatedInput)) {
@@ -108,10 +109,10 @@ function editIssue()
     if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
-        $issueValues['reporter']    = $user->getData('UserID');
+        $issueValues['reporter']    = $user->getUsername();
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
         $db->insert('issues', $issueValues);
-        $issueID = $db->getLastInsertId();
+        $issueID = intval($db->getLastInsertId());
     }
 
     updateHistory($historyValues, $issueID);
@@ -120,7 +121,7 @@ function editIssue()
     // Attachment for new issue.
     if (isset($_FILES['file'])) {
         $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $attachment->setupUploading(
+        $success    = $attachment->setupUploading(
             $user,
             $_FILES,
             [
@@ -128,6 +129,9 @@ function editIssue()
                 'issueID'         => $issueID,
             ]
         );
+        if (!$success) {
+            showError($attachment->errorMessage);
+        }
     }
 
     // Adding new assignee to watching
@@ -169,7 +173,7 @@ function editIssue()
     // Add editor to the watching table unless they don't want to be added.
     if (isset($_POST['watching']) &&  $_POST['watching'] == 'Yes') {
         $nowWatching = [
-            'userID'  => $user->getData('UserID'),
+            'userID'  => $user->getUsername(),
             'issueID' => $issueID,
         ];
         $db->replace('issues_watching', $nowWatching);
@@ -178,7 +182,7 @@ function editIssue()
             'issues_watching',
             [
                 'issueID' => $issueID,
-                'userID'  => $user->getData('UserID'),
+                'userID'  => $user->getUsername(),
             ]
         );
     }
@@ -310,8 +314,8 @@ function validateInput($values)
 /**
  * Iterates through submitted values and filters only values that have changed
  *
- * @param array  $issueValues new values
- * @param string $issueID     issue ID
+ * @param array $issueValues new values
+ * @param int   $issueID     issue ID
  *
  * @throws DatabaseException
  *
@@ -336,8 +340,8 @@ function getChangedValues($issueValues, $issueID)
 /**
  * Puts updated fields into the issues_history table.
  *
- * @param array  $values  the new values
- * @param string $issueID the issue ID
+ * @param array $values  the new values
+ * @param int   $issueID the issue ID
  *
  * @throws DatabaseException
  *
@@ -356,7 +360,7 @@ function updateHistory($values, $issueID)
                 'newValue'     => $value ?? '',
                 'fieldChanged' => $key,
                 'issueID'      => $issueID,
-                'addedBy'      => $user->getData('UserID'),
+                'addedBy'      => $user->getUsername(),
             ];
             $db->insert('issues_history', $changedValues);
         }
@@ -367,7 +371,7 @@ function updateHistory($values, $issueID)
  * Puts updated fields into the issues_comments table.
  *
  * @param string $comment new issue comment
- * @param string $issueID the issue ID
+ * @param int    $issueID the issue ID
  *
  * @throws DatabaseException
  *
@@ -382,7 +386,7 @@ function updateComments($comment, $issueID)
     if (isset($comment) && $comment != "null") {
         $commentValues = [
             'issueComment' => $comment,
-            'addedBy'      => $user->getData('UserID'),
+            'addedBy'      => $user->getUsername(),
             'issueID'      => $issueID,
         ];
         $db->insert('issues_comments', $commentValues);
@@ -408,7 +412,7 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
     $changedValue = [
         'issueCommentID' => $issueCommentID,
         'newValue'       => $newCommentValue,
-        'editedBy'       => $user->getData('UserID'),
+        'editedBy'       => $user->getUsername(),
     ];
 
     $db->insert('issues_comments_history', $changedValue);
@@ -491,7 +495,7 @@ function getComments($issueID)
             $comment['newValue'] = $modules[$mid]->getLongName();
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
-            $comment['newValue']     = getSiteName($comment['newValue']);
+            $comment['newValue']     = getSiteName(intval($comment['newValue']));
             $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
@@ -602,16 +606,22 @@ function getIssueFields()
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
-    $sites   = [];
 
     // get field options
     $sites = Issue_Tracker::getSites(false, true);
 
     //not yet ideal permissions
-    $assignees = [];
+    $assignees      = [];
+    $inactive_users = [];
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
             "SELECT Real_name, UserID FROM users",
+            []
+        );
+
+        $inactive_users_expanded = $db->pselect(
+            "SELECT Real_name, UserID FROM users
+              WHERE Active='N'",
             []
         );
     } else {
@@ -629,10 +639,22 @@ function getIssueFields()
                 'DCC'      => $DCCID,
             ]
         );
+
+        $inactive_users_expanded = $db->pselect(
+            "SELECT DISTINCT u.Real_name, u.UserID FROM users u
+             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
+             WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+             AND Active='N'",
+            []
+        );
     }
 
     foreach ($assignee_expanded as $a_row) {
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
+    }
+
+    foreach ($inactive_users_expanded as $u_row) {
+        $inactive_users[$u_row['UserID']] = $u_row['Real_name'];
     }
 
     $otherWatchers = [];
@@ -641,7 +663,7 @@ function getIssueFields()
         []
     );
     foreach ($potential_watchers_expanded as $w_row) {
-        if ($w_row['UserID'] != $user->getData('UserID')) {
+        if ($w_row['UserID'] != $user->getUsername()) {
             $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
         }
     }
@@ -698,7 +720,7 @@ function getIssueFields()
     if (!empty($_GET['issueID'])
         && $_GET['issueID'] != "new"
     ) { //if an existing issue
-        $issueID   = $_GET['issueID'];
+        $issueID   = intval($_GET['issueID']);
         $issueData = getIssueData($issueID);
 
         $desc = $db->pselect(
@@ -718,7 +740,7 @@ function getIssueFields()
             WHERE issueID=:issueID AND userID=:userID",
             [
                 'issueID' => $issueID,
-                'userID'  => $user->getData('UserID'),
+                'userID'  => $user->getUsername(),
             ]
         );
         if ($isWatching === null) {
@@ -743,7 +765,7 @@ function getIssueFields()
     }
     $issueData['comment'] = null;
 
-    if ($issueData['reporter'] == $user->getData('UserID')) {
+    if ($issueData['reporter'] == $user->getUsername()) {
         $isOwnIssue = true;
     } else {
         $isOwnIssue = false;
@@ -751,6 +773,7 @@ function getIssueFields()
 
     $result = [
         'assignees'         => $assignees,
+        'inactiveUsers'     => $inactive_users,
         'sites'             => $sites,
         'statuses'          => $statuses,
         'priorities'        => $priorities,
@@ -771,7 +794,7 @@ function getIssueFields()
  * If issueID is passed retrieves issue data from database,
  * otherwise return empty issue data object
  *
- * @param string $issueID the ID of the requested issue
+ * @param int $issueID the ID of the requested issue
  *
  * @return array
  */
@@ -792,9 +815,9 @@ function getIssueData($issueID=null)
     }
 
     return [
-        'reporter'      => $user->getData('UserID'),
+        'reporter'      => $user->getUsername(),
         'dateCreated'   => date('Y-m-d H:i:s'),
-        'centerID'      => $user->getData('CenterIDs'),
+        'centerID'      => $user->getCenterIDs(),
         'status'        => "new",
         'priority'      => "normal",
         'issueID'       => 0, //TODO: this is dumb

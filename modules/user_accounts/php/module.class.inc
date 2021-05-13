@@ -35,7 +35,8 @@ class Module extends \Module
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
-            $page = $this->loadPage("edit_user");
+            $loris = $request->getAttribute("loris");
+            $page  = $this->loadPage($loris, "edit_user");
             return $page->process($request, $page);
         }
         return parent::handle($request);
@@ -85,8 +86,7 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(DISTINCT users.UserID) FROM users
                         LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-                    WHERE users.Pending_approval='Y'
-                        AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
+                    WHERE users.Pending_approval='Y'",
                     'user_accounts_multisite',
                     'upr.CenterID',
                     $baseURL . "/user_accounts/?pendingApproval=Y",

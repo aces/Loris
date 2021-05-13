@@ -338,8 +338,9 @@ window.addEventListener('load', () => {
   );
   // Prevent tab switching
   const refresh = setInterval(function() {
-    if (document.getElementById('tab-ResolvedConflicts')) {
-      $('#tab-ResolvedConflicts').click(function(event) {
+    let resolvedTab = document.getElementById('tab-ResolvedConflicts');
+    if (resolvedTab) {
+      resolvedTab.addEventListener('click', function(event) {
         event.preventDefault();
         window.location.href = loris.BaseURL
                                + '/conflict_resolver/resolved_conflicts/';

@@ -95,7 +95,7 @@ foreach($instrumentNames as $instrumentName) {
         }
         foreach ($instrumentCIDs as $cid) {
             $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
-            $instrumentCandData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+            $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ
             $tableName = $instrumentInstance->table;

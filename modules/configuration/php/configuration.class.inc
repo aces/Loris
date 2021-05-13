@@ -91,9 +91,9 @@ class Configuration extends \NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $this->DB = \Database::singleton();
+        $DB = \Database::singleton();
 
-        $parentConfigItems = $this->DB->pselect(
+        $parentConfigItems = $DB->pselect(
             "SELECT Label, Name 
              FROM ConfigSettings 
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
@@ -113,10 +113,11 @@ class Configuration extends \NDB_Form
      */
     function _getConfigSettingTree()
     {
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = \Database::singleton();
 
         // Get the names and meta-information for the config settings in the database
-        $configs = $this->DB->pselect(
+        $configs = $DB->pselect(
             "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
             []
         );
@@ -144,7 +145,7 @@ class Configuration extends \NDB_Form
         // overridden in the config.xml
         foreach ($configs as &$setting) {
             if ($setting['Disabled'] == 'No') {
-                $value = $this->DB->pselect(
+                $value = $DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
                     ['ID' => $setting['ID']]
                 );

@@ -171,7 +171,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         // Project list, if applicable
         $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $list_of_projects[$value] = $value;
         }
         $this->addSelect('project', 'Project: ', $list_of_projects);
@@ -252,7 +252,16 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
         $unanonymized = parent::toArray();
         $data         = [];
 
+        $correctAnswerIndex = array_search(
+            'Correct Answer',
+            $unanonymized['Headers']
+        );
         foreach ($unanonymized['Data'] as &$row) {
+            $row[$correctAnswerIndex] = str_replace(
+                '{@}',
+                ', ',
+                $row[$correctAnswerIndex]
+            );
             $data[] = $row;
         }
         return [

@@ -118,6 +118,7 @@ class Next_Stage extends \NDB_Form
 
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
+            $this->loris,
             $timePoint->getSubprojectID(),
             $newStage,
             $timePoint->getVisitLabel(),
@@ -156,8 +157,8 @@ class Next_Stage extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
 
-        $this->addHidden('candID', $timePoint->getCandID());
-        $this->addHidden('sessionID', $timePoint->getSessionID());
+        $this->addHidden('candID', $timePoint->getCandID()->__toString());
+        $this->addHidden('sessionID', $timePoint->getSessionID()->__toString());
 
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;

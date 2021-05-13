@@ -29,40 +29,69 @@ class PasswordTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
-    private $_configInfo = array(0 => array('65' => 'false'));
+    /**
+     * Test double for Database object
+     *
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     */
+    private $_dbMock;
 
-    protected function setUp(): void {
+    /**
+     * NDB_Factory used in tests.
+     * Test doubles are injected to the factory object.
+     *
+     * @var NDB_Factory
+     */
+    private $_factory;
+
+    private $_configInfo = [0 => ['65' => 'false']];
+
+    /**
+     * Setup
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
     }
+
     /**
      * Tears down the fixture, for example, close a network connection.
      * This method is called after a test is executed.
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
     }
 
-    /*
-     * dataProviders for constructor invalid values
+    /**
+     * DataProviders for constructor invalid values
+     *
+     * @return []
      */
     public function invalidValues(): array
     {
-        return array(
+        return [
             // Should fail for not meeting length requirements
             [implode('', range(1, Password::getMinimumPasswordLength() - 1))],
             // Should fail for being an alphabet subset
@@ -75,21 +104,27 @@ class PasswordTest extends TestCase
             ['johnnyloris'],
             // Should fail for obvious reasons
             ['password'],
-            // Should fail for using a recent year
-            ['Spring2016!'],
             // Should fail for using just a few simple English words
             ['i am cool'],
             // Should fail for common L33T substitutions
             ['p@55w0rd1!']
-        );
+        ];
     }
 
+
     /**
+     * Test the CandID constructor with invalid values
+     *
+     * @param string $invalidValue An invalid value
+     *
      * @dataProvider invalidValues
+     *
      * @expectedException \InvalidArgumentException
+     * @return            void
      */
     public function testContructorInvalidValues($invalidValue): void
     {
+        $this->expectException("InvalidArgumentException");
         $this->_configMock->expects($this->any())
             ->method('getSetting')
             ->willReturn('false');
@@ -103,11 +138,12 @@ class PasswordTest extends TestCase
      *
      * @return void
      */
-    public function testWellFormedPassword(): void {
+    public function testWellFormedPassword(): void
+    {
         $this->assertInstanceOf('Password', new \Password(self::VALID_PASSWORD));
     }
 
-    /*
+    /**
      * Ensures the toString function of Password returns a password hash
      * that can be verified.
      *

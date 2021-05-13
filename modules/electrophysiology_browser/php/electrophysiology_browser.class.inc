@@ -74,7 +74,10 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     function getFieldOptions(): array
     {
         // create user object
-        $user          = \NDB_Factory::singleton()->user();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+
         $list_of_sites = [];
 
         // grep the sites available to the user
@@ -102,9 +105,19 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
             $list_of_projects[$project] = $project;
         }
 
+        $list_of_types = [];
+        $typeList      = $db->pselect(
+            "SELECT OutputTypeName FROM physiological_output_type",
+            []
+        );
+        foreach ($typeList as $row) {
+            $list_of_types[$row['OutputTypeName']] = ucfirst($row['OutputTypeName']);
+        }
+
         return [
             'sites'    => $list_of_sites,
             'projects' => $list_of_projects,
+            'types'    => $list_of_types
         ];
 
     }

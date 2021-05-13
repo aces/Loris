@@ -109,7 +109,6 @@ abstract class ProvisionerInstance implements Provisioner
      */
     public function execute(\User $user) : \Traversable
     {
-        $rows = new \EmptyIterator();
         if ($this->parent != null) {
             $rows = $this->parent->execute($user);
         } else {

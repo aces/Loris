@@ -40,7 +40,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
     }
     /**
      * Tests that, when loading the instrument_manager module with permission,
@@ -56,7 +56,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
         $this->resetPermissions();
 
         // Check write permission, 'instrument_manager_write'
@@ -65,7 +65,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Instrument Manager", $bodyText);
+        $this->assertStringContainsString("Instrument Manager", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -81,7 +81,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );

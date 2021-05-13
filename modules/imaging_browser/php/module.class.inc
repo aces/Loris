@@ -2,6 +2,10 @@
 namespace LORIS\imaging_browser;
 use \LORIS\candidate_profile\CandidateWidget;
 
+use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\Data\Scope;
+use \LORIS\Data\Cardinality;
+
 /**
  * {@inheritDoc}
  *
@@ -122,4 +126,43 @@ class Module extends \Module
         return [];
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\LorisInstance $loris The Loris instance from which the
+     *                                    data dictionary for this module
+     *                                    should be retrieved.
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        $scope  = new Scope(Scope::SESSION);
+        $images = new \LORIS\Data\Dictionary\Category(
+            "Images",
+            "Image Acquisitions",
+        );
+        $items  = [];
+
+        $scantypes = \Utility::getScanTypeList();
+        foreach ($scantypes as $ScanType) {
+            $items[] = new DictionaryItem(
+                $ScanType,
+                "$ScanType acquisition location",
+                $scope,
+                new \LORIS\Data\Types\URI(),
+                new Cardinality(Cardinality::MANY),
+            );
+            $items[] = new DictionaryItem(
+                $ScanType  . "_QCStatus",
+                "Quality Control status for $ScanType acquisition",
+                $scope,
+                new \LORIS\Data\Types\Enumeration("Pass", "Fail"),
+                new Cardinality(Cardinality::MANY),
+            );
+        }
+        $images = $images->withItems($items);
+
+        return [$images];
+    }
 }

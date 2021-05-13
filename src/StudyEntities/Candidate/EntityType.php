@@ -42,9 +42,9 @@ class EntityType
      */
     public function __construct(string $value)
     {
-        if (self::validate($value)) {
+        if (!self::validate($value)) {
             throw new \DomainException(
-                'The value is not valid. Must be one of: '
+                "The value '$value' is not valid. Must be one of: "
                 . implode(', ', self::VALID_VALUES)
             );
         }

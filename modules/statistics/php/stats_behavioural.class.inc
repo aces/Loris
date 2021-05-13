@@ -99,11 +99,11 @@ class Stats_Behavioural extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
         $projects['']   = 'All Projects';
-        $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
@@ -120,22 +120,19 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
+            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects["$currentProject"],
                 ];
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
-
-            $currentProject = '';
+            $currentProject = null;
             $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
                 $paramProjects[] = ":paramProjectID$key";
@@ -146,15 +143,14 @@ class Stats_Behavioural extends \NDB_Form
                                        (" . implode(',', $paramProjects) . ")
                                  )";
         } else {
-            $currentProject = '';
+            $currentProject = null;
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
         //
         //SUBPROJECTS
         $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+        if ($currentProject !== null) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
@@ -169,7 +165,6 @@ class Stats_Behavioural extends \NDB_Form
 
         //SITES
 
-        $Param_Centers = '';
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
@@ -245,7 +240,10 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            $c      =& $this->tpl_data['behaviour']['C' . $center];
+
+            $this->tpl_data['behaviour']['C' . $center][$vl]
+                = $this->tpl_data['behaviour']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['behaviour']['C' . $center];
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;
@@ -316,7 +314,10 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            $c      =& $this->tpl_data['dde']['C' . $center];
+
+            $this->tpl_data['dde']['C' . $center][$vl]
+                = $this->tpl_data['dde']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['dde']['C' . $center];
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;

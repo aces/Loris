@@ -63,8 +63,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -108,7 +108,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $visit = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))
             );
-        } catch (\LorisException | \TypeError $e) {
+        } catch (\LorisException | \TypeError | \DomainException $e) {
             $visit = null;
         }
 
