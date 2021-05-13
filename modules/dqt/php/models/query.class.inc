@@ -1,33 +1,29 @@
 <?php declare(strict_types=1);
 namespace LORIS\dqt\Models;
+use \LORIS\LorisInstance as Loris;
 
 class Query implements \JsonSerializable
 {
-    public function __construct(\User $user, QueryFields $fields, QueryFilters $filters)
+    public function __construct(QueryFields $fields, QueryFilters $filters)
     {
-        $this->_user    = $user;
         $this->_fields  = $fields;
         $this->_filters = $filters;
-        $this->_hash    = sha1(json_encode($this));
     }
 
-    public function execute(): \Traversable
+    public function execute(Loris $loris, \User $user): \Traversable
     {
         // Get the sessions that match the filters
-        $sessions = $this->_filters->getFilteredSessions($this->_user);
+        $sessions = $this->_filters->getFilteredSessions($loris, $user);
 
         // Get the fields values for the matching sessions
-        $results  = $this->_fields->getSelectedFields($this->_user, $sessions);
+        $results = $this->_fields->getSelectedFields($loris, $user, $sessions);
 
         return $results;
     }
 
-    public function hasSQLTableRow(): array
+    public function getId(): int
     {
-        return [
-            'creator_userid' => $this->_user->getId(),
-            'content' => json_encode($this)
-        ];
+        return 1;
     }
 
     public function jsonSerialize()
@@ -39,5 +35,5 @@ class Query implements \JsonSerializable
             'fields'            => $this->_fields,
             'filters'           => $this->_filters
         ];
-    } 
+    }
 }

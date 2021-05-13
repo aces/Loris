@@ -6,9 +6,9 @@ class CategoryFieldInstance implements \LORIS\Data\DataInstance
 {
     public function __construct(CouchDBResultRow $row)
     {
-        $this->_name = $row->getKey()[1];
+        $this->_name        = $row->getKey()[1];
         $this->_description = $row->getValue()->Description ?? 'N/A';
-        $this->_datatype = $row->getValue()->Type ?? 'N/A';
+        $this->_datatype    = $row->getValue()->Type ?? 'N/A';
     }
 
     public function getName(): string
@@ -29,9 +29,9 @@ class CategoryFieldInstance implements \LORIS\Data\DataInstance
     public function jsonSerialize()
     {
         return [
-            'name' => $this->_name,
+            'name'        => $this->_name,
             'description' => $this->_description,
-            'datatype' => $this->_datatype
+            'datatype'    => $this->_datatype
         ];
     }
 }

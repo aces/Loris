@@ -2,7 +2,7 @@
 
 namespace LORIS\Data;
 
-class CouchDBResultRow
+class CouchDBResultRow implements DataInstance
 {
     private $_id;
     private $_key;
@@ -12,7 +12,6 @@ class CouchDBResultRow
     public function __construct(string $textrow)
     {
         $obj = json_decode($textrow, false);
-        error_log(print_r($obj,true));
 
         $this->_id = $obj->id ?? null;
 
@@ -39,7 +38,7 @@ class CouchDBResultRow
         return $this->_key;
     }
 
-    public function getValue(): object
+    public function getValue(): array
     {
         return $this->_value;
     }
@@ -48,4 +47,15 @@ class CouchDBResultRow
     {
         return $this->_doc;
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'  => $this->_id,
+            'key' => $this->_key,
+            'value' => $this->_value,
+            'doc' => $this->_doc
+        ];
+    }
+
 }

@@ -101,7 +101,7 @@ abstract class CouchDBViewProvisioner extends ProvisionerInstance
                     $line = $handler->gets();
                 }
                 error_log(print_r(get_object_vars($this), true));
-                throw new \Error($line);
+                throw new \Error('The provisioner can\'t get the view results.');
             }
 
             if (preg_match('/^(\{.*}),*/', $line, $matches)) {
@@ -117,7 +117,7 @@ abstract class CouchDBViewProvisioner extends ProvisionerInstance
     public function withParams(array $params): CouchDBViewProvisioner
     {
         $new          = clone($this);
-        $new->_params = $params;
+        $new->_params = array_merge($params, $this->_params);
         return $new;
     }
 

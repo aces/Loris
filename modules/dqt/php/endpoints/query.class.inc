@@ -5,7 +5,8 @@ namespace LORIS\dqt\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
-use \LORIS\dqt\Factory\QueryFactory;
+use \LORIS\dqt\Factories\QueryFactory;
+use \LORIS\dqt\Models\Query as DQTQuery;
 
 class Query extends Endpoint
 {
@@ -78,13 +79,19 @@ class Query extends Endpoint
     
         $loris = $request->getAttribute('loris');
         $user  = $request->getAttribute('user');
-        $data  = json_decode((string) $request->getBody());
+        $data  = json_decode((string) $request->getBody(), true);
 
-        $fields = $data->fields ?? [];
-        $filters = $data->filters ?? null;
+        $fields = $data['fields'] ?? [];
+        $filters = $data['filters'] ?? [];
+
+        if (empty($fields)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'At least one field is expected.'
+            );
+        }
 
         try {
-            $query = QueryFactory::create($user, $fields, $filters);
+            $query = QueryFactory::create($fields, $filters);
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
@@ -92,21 +99,16 @@ class Query extends Endpoint
         }
 
         try {
-            // Save the query first to make it available in queries history
-            $db = $request->getAttribute('loris')->getDatabaseConnection();
-            $this->_saveQuery($db, $query);
+            // FIXME :: Maybe results should be generated on demand at /dqt/results/$id or execute just start a server_process
+            $results = iterator_to_array($query->execute($loris, $user);
+            $id = $query->getId();
 
-            // TODO :: Writing on disk takes a while. Increase max_execution_time in php.ini 
-            //         or use the serverprocessmanager to launch a process.
-            $this->_writeOutputs($query);
-
-        } catch (\LorisException $e) {
+        } catch (\LorisException|\Error $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
             );
         }
 
-        $id  = $query->getId();
         return new \LORIS\Http\Response\JSON\OK(
             [
                 'links' => [
@@ -115,5 +117,10 @@ class Query extends Endpoint
                 ]
             ]
         );
+    }
+
+    private function _saveQuery(\Database $db, DQTQuery $query): void
+    {
+        error_log('Endpoints\Query::_saveQuery');
     }
 }
