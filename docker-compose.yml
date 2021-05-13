@@ -1,5 +1,83 @@
-version: '2'
+version: '3'
+  
+networks:
+  Loris:
+
 services:
+  site:
+    build:
+      context: .
+      dockerfile: apache.dockerfile
+    container_name: apache
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - Loris
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: l8_1
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - Loris
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8089:80
+    networks:
+      - Loris
+
+  composer:
+    image: composer:latest
+    container_name: composer
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - Loris
+    entrypoint: ['composer', '--ignore-platform-reqs']
+
+  npm:
+    image: node:15.7.0-alpine3.10
+    container_name: npm
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - Loris
+    entrypoint: ['npm']
+
+
+
+
+
+
+
+
   db:
     build:
       context: .
@@ -25,8 +103,8 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
-      - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
-      - ./raisinbread/instruments:/app/project/instruments
+      - ./test/test_instrument:/app/project/instruments
+      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
