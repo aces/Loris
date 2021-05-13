@@ -16,7 +16,7 @@ use \LORIS\Data\Provisioners\CouchDBViewProvisioner;
 use \LORIS\Data\CouchDBViewQuery;
 use \LORIS\Data\CouchDBResultRow;
 use \LORIS\LorisInstance as Loris;
-use \LORIS\dqt\Models\CategoryVisitInstance;
+use \LORIS\dqt\Models\DataInstances\CategoryVisitInstance;
 /**
  * Data provisioner for a Category visit
  *

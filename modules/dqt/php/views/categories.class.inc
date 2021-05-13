@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\dqt\Views;
-use \LORIS\dqt\Models\CategoriesInstance;
+use \LORIS\dqt\Models\DataInstances\CategoriesInstance;
 
 class Categories
 {

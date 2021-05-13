@@ -1,5 +1,5 @@
 <?php
-namespace LORIS\dqt\Models;
+namespace LORIS\dqt\Models\DataInstances;
 use \LORIS\Data\CouchDBResultRow;
 
 class CategoryVisitInstance implements \LORIS\Data\DataInstance

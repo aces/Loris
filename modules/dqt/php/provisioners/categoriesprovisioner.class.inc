@@ -15,7 +15,7 @@ use \LORIS\Data\DataInstance;
 use \LORIS\Data\Provisioners\CouchDBViewProvisioner;
 use \LORIS\Data\CouchDBViewQuery;
 use \LORIS\LorisInstance as Loris;
-use \LORIS\dqt\Models\CategoriesInstance;
+use \LORIS\dqt\Models\DataInstances\CategoriesInstance;
 /**
  * Data provisioner for Categories
  *

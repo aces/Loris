@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\dqt\Models;
+namespace LORIS\dqt\Models\DataInstances;
 use \LORIS\Data\DataInstance;
 
-class CouchDBSessionRow implements DataInstance
+class SessionInstance implements DataInstance
 {
     private $_pscid;
     private $_visitlabel;

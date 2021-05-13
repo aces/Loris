@@ -1,5 +1,5 @@
 <?php
-namespace LORIS\dqt\Models;
+namespace LORIS\dqt\Models\DataInstances;
 
 class CategoriesInstance implements \LORIS\Data\DataInstance
 {

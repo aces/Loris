@@ -17,7 +17,7 @@ use \LORIS\Data\CouchDBViewQuery;
 use \LORIS\Data\CouchDBResultRow;
 use \LORIS\dqt\Models\QueryField;
 use \LORIS\dqt\Provisioners\CouchDBSortedViewProvisioner;
-use \LORIS\dqt\Models\CouchDBSessionRow;
+use \LORIS\dqt\Models\DataInstances\SessionInstance;
 
 /**
  * Data provisioner for a Category
@@ -33,14 +33,16 @@ use \LORIS\dqt\Models\CouchDBSessionRow;
 class FilteredSessionsProvisioner extends CouchDBSortedViewProvisioner
 {
     /**
-     * Create a RowProvisioner
+     * Create a provisioner that look for a specific field.
+     * If visit is null, it will get all visits by using empty string and 
+     * empty object in start_key and endkey respectively.
      */
     public function __construct(Loris $loris, QueryField $field)
     {
-        $cat = $field->getCategoryName();
-        $name = $field->getFieldname();
+        $cat        = $field->getCategoryName();
+        $name       = $field->getFieldname();
         $startvisit = $field->getVisitLabel() ?? '';
-        $endvisit = $field->getVisitLabel() ?? new \stdClass();
+        $endvisit   = $field->getVisitLabel() ?? new \stdClass();
         $query = new CouchDBViewQuery(
             'DQG-2.0',
             'search2',

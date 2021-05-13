@@ -4,7 +4,7 @@ namespace LORIS\dqt\Models\Mappers;
 use \LORIS\Data\Mapper;
 use \LORIS\Data\DataInstance;
 use \LORIS\Data\CouchDBResultRow;
-use \LORIS\dqt\Models\CouchDBSessionRow;
+use \LORIS\dqt\Models\DataInstances\SessionInstance;
 
 class SessionRowMapper implements Mapper
 {
@@ -22,6 +22,6 @@ class SessionRowMapper implements Mapper
         if (!$resource instanceof CouchDBResultRow) {
             throw new \InvalidArgumentException('TypeError: resource must be an instance of CouchDBResultRow.');
         }
-        return new CouchDBSessionRow($resource->getValue());
+        return new SessionInstance($resource->getValue());
     }
 }
