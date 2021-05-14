@@ -71,7 +71,8 @@ class Files extends \NDB_Page
             ));
         case "GET":
             $filename = urldecode(basename($request->getUri()->getPath()));
-            if (is_numeric($filename)) {
+            $route = explode( '/', $request->getUri()->getPath());
+            if ($route[2] == 'meta') {
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
                     ->withBody(
