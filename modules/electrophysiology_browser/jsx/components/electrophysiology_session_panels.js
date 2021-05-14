@@ -108,8 +108,8 @@ class FilePanel extends Component {
    */
   showLoadingMessage() {
       let type = 'success';
-      let title = 'We are currently working hard to download your files';
-      let text = 'Please be patient 😴';
+      let title = 'Your download will begin in a few moments';
+      let text = 'Thank you for your patience';
       let timer = 2000;
       let confirmation = true;
       let callback = function() {};
