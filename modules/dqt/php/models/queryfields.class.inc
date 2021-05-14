@@ -3,6 +3,7 @@
 namespace LORIS\dqt\Models;
 use \LORIS\LorisInstance as Loris;
 use \LORIS\dqt\Provisioners\InstrumentsProvisioner;
+use \LORIS\dqt\Models\DataInstances\QueryResultItem;
 
 class QueryFields implements \JsonSerializable
 {
@@ -82,13 +83,15 @@ class QueryFields implements \JsonSerializable
 
         // Limit the returned data to the selected fields.
         foreach ($prov->execute($user) as $obj) {
-            $key  = $obj->getKey() ?? [''];
-            $data = $obj->getDoc()->data ?? null;
+            list($category, $pscid, $visit) = $obj->getKey();
+            $data = $obj->getDoc()['data'] ?? [];
 
             $applicablefields = array_filter(
                 $this->_fields,
-                function ($f) use ($key) {
-                    return $f->getCategoryName() == $key[0] && $f->getVisitlabel() == $key[2];
+                function ($f) use ($category, $visit) {
+                    $c = $f->getCategoryName();
+                    $v = $f->getVisitlabel();
+                    return $c == $category && $v == $visit;
                 }
             );
 
@@ -96,20 +99,13 @@ class QueryFields implements \JsonSerializable
                 continue;
             }
 
-            $values = [];
             foreach ($applicablefields as $field) {
-                $fieldname          = $field->getFieldname();
-                $values[$fieldname] = $data->$fieldname ?? 'N/A';
+                $fieldname = $field->getFieldname();
+                yield new QueryResultItem(
+                    [$pscid, $visit, $category, $fieldname],
+                    $data[$fieldname] 
+                );
             }
-
-            $string = json_encode(
-                [
-                    'key'  => $key,
-                    'data' => $values
-                ]
-            );
-
-            yield $string;
         }
     }
 

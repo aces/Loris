@@ -8,7 +8,7 @@ use \LORIS\Http\Endpoint;
 use \LORIS\dqt\Factories\QueryFactory;
 use \LORIS\dqt\Models\Query as DQTQuery;
 
-class Query extends Endpoint
+class Queries extends Endpoint
 {
     /**
      * Returns true if the user has permission to access
@@ -33,6 +33,7 @@ class Query extends Endpoint
     private function _allowedMethods() : array
     {
         return [
+            'GET',
             'POST',
         ];
     }
@@ -47,6 +48,8 @@ class Query extends Endpoint
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+
+        // TODO :: Check for queryid param and delegate to /dqt/queries/query
 
         if (empty($pathparts)) {
             switch ($request->getMethod()) {
@@ -76,12 +79,12 @@ class Query extends Endpoint
      */
     private function _handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-    
+
         $loris = $request->getAttribute('loris');
         $user  = $request->getAttribute('user');
         $data  = json_decode((string) $request->getBody(), true);
 
-        $fields = $data['fields'] ?? [];
+        $fields  = $data['fields'] ?? [];
         $filters = $data['filters'] ?? [];
 
         if (empty($fields)) {
@@ -99,8 +102,12 @@ class Query extends Endpoint
         }
 
         try {
-            // FIXME :: Maybe results should be generated on demand at /dqt/results/$id or execute just start a server_process
-            $results = iterator_to_array($query->execute($loris, $user);
+            // FIXME :: Maybe results should be generated on demand 
+            // at /dqt/results/$id or execute just start a server_process
+            $results = $query->execute($loris, $user);
+            return new \LORIS\Http\Response\JSON\OK(
+                (new \LORIS\dqt\Views\Results($query, $results))->toArray()
+            );
             $id = $query->getId();
 
         } catch (\LorisException|\Error $e) {
@@ -117,10 +124,5 @@ class Query extends Endpoint
                 ]
             ]
         );
-    }
-
-    private function _saveQuery(\Database $db, DQTQuery $query): void
-    {
-        error_log('Endpoints\Query::_saveQuery');
     }
 }

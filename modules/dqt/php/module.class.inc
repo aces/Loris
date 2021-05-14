@@ -61,8 +61,8 @@ class Module extends \Module
         case 'categories':
             $handler = new Endpoints\Categories();
             break;
-        case 'query':
-            $handler = new Endpoints\Query();
+        case 'queries':
+            $handler = new Endpoints\Queries();
             break;
         default:
             return parent::handle($request);

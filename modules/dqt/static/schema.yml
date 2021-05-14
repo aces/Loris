@@ -43,25 +43,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Category'
   
-  '/dqt/query':
-    post:
-      tags:
-        - Querying
-      description: Execute the query
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Query'
-      responses:
-        '200':
-          description: Query and results url created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchResult'
-
   '/dqt/queries':
     get:
       tags:
@@ -85,10 +66,12 @@ paths:
             schema:
               $ref: '#/components/schemas/Query'
       responses:
-        '204':
-          description: The query has been added to the saved queries
-        '403':
-          description: The query can't be saved because of insuficient user permission or the query has already been saved.
+        '200':
+          description: Query and results url created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
           
   '/dqt/queries/{queryId}':
     get:
@@ -143,11 +126,11 @@ paths:
       responses:
         '204':
           description: Query removed
-          
-  '/dqt/queries/{queryId}/results':
+
+  '/dqt/results/{queryId}':
     get:
       tags:
-        - Queries
+        - Results
       description: Download the results
       parameters:
         - in: path
@@ -215,7 +198,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SavedQuerySummary'
-            
+
     Query:
       type: object
       required:
@@ -365,20 +348,17 @@ components:
           type: string
         field:
           type: string
+        visit:
+          type: string
         value:
           type: string
           
     ResultsJSON:
       type: object
+      description: An array of fields which order fits the 
       properties:
         query:
           $ref: '#/components/schemas/Query'
-        revision:
-          type: integer
-        columns:
-          type: array
-          items:
-            type: string
         data:
           type: array
           items:
@@ -388,11 +368,15 @@ components:
       type: object
       properties:
         key:
+          description: A [pscid,visitlabel] pair unique in the results
           type: array
           items:
             type: string
-        doc:
-          type: object
+        values:
+          description: An array of values which order fits the query selected fields order.
+          type: array
+          items:
+            type: string
     
     SearchResult:
       type: object

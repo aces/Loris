@@ -220,11 +220,11 @@ class CouchDB
         string $password = ''
     ) {
 
-        $this->_database = $database;
-        $this->_host     = $host;
-        $this->_port     = $port;
-        $this->_user     = $user;
-        $this->_password = $password;
+        $this->_database     = $database;
+        $this->_host         = $host;
+        $this->_port         = $port;
+        $this->_user         = $user;
+        $this->_password     = $password;
         $this->SocketHandler = new SocketWrapper();
     }
 

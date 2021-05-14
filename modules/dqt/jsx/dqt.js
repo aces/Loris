@@ -84,7 +84,7 @@ class DQT extends Component {
    * @return {object}
    */
   postQuery() {
-    const url = this.props.baseURL.concat('/dqt/query');
+    const url = this.props.baseURL.concat('/dqt/queries');
     const opt = {
       method: 'post',
       credentials: 'same-origin',
