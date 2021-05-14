@@ -1124,6 +1124,7 @@ class UserTest extends TestCase
             "modules",
             $this->_moduleInfo
         );
+        fwrite(STDERR, print_r($this->_user->getPermissionsVerbose(), true));
         $this->assertEquals(
             $this->_user->getPermissionsVerbose(),
             [
@@ -1150,6 +1151,14 @@ class UserTest extends TestCase
                     'action'      => "Edit",
                     'moduleID'    => 5,
                     'label'       => "Timepoint List: Edit description 2"
+                ],
+                3 => ['permID' => '4',
+                    'code'        => 'test_permission3',
+                    'description' => 'description 3',
+                    'type'        => null,
+                    'action'      => 'View/Create',
+                    'moduleID'    => 5,
+                    'label'       => 'Timepoint List: View/Create description 3'
                 ]
             ]
         );
