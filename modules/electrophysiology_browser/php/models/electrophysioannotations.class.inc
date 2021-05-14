@@ -320,16 +320,8 @@ class ElectrophysioAnnotations
             ['PFID' => $this->_physioFileID]
         );
 
-        $tgz_path = $db->pselectOne(
-            "SELECT FilePath
-            FROM physiological_annotation_archive
-            WHERE PhysiologicalFileID=:PFID",
-            ['PFID' => $this->_physioFileID]
-        );
-
         $tsv_path  = $dataDir.$tsv[0]['filePath'];
         $json_path = $dataDir.$json[0]['filePath'];
-        $tgz_path  = $dataDir.$tgz_path;
 
         //Update files if files updated before database updated
         if ($tsv[0]['lastWritten'] <= $tsv[0]['lastUpdate']
@@ -429,19 +421,8 @@ class ElectrophysioAnnotations
             fwrite($json_file, $input_encode);
             fclose($json_file);
 
-            //Make archive tgz and create new hash
-            $tgz_file = new \PharData($tgz_path);
-            $tgz_file->addFile($tsv_path, basename($tsv_path));
-            $tgz_file->addFile($json_path, basename($json_path));
-
-            $f    = file_get_contents($tgz_path);
-            $hash = sodium_crypto_generichash($f);
-            //Update database with hash
-            $db->update(
-                'physiological_annotation_archive',
-                ['Blake2bHash' => bin2hex($hash)],
-                ['PhysiologicalFileID' => $this->_physioFileID]
-            );
+            //Update archives and create new hash
+            $this->_updateArchives([$tsv_path, $json_path]);
 
             //Update time that files were written to
             $db->update(
@@ -459,7 +440,7 @@ class ElectrophysioAnnotations
      * @return void
      * @throws SodiumException
      */
-    function _createFiles()
+    function _createFiles() : void
     {
         $db = \NDB_Factory::singleton()->database();
 
@@ -504,7 +485,8 @@ class ElectrophysioAnnotations
         //Create files
         $tsv_file  = fopen($tsv_path, 'a+');
         $json_file = fopen($json_path, 'a+');
-        $tgz_file  = new \PharData($tgz_path);
+
+        $tgz_file = new \PharData($tgz_path);
         $tgz_file->addFile($tsv_path, basename($tsv_path));
         $tgz_file->addFile($json_path, basename($json_path));
         fclose($tsv_file);
@@ -531,5 +513,58 @@ class ElectrophysioAnnotations
         $db->insert("physiological_annotation_file", $params_tsv);
         $db->insert("physiological_annotation_file", $params_json);
         $db->insert("physiological_annotation_archive", $params_archive);
+    }
+
+    /**
+     * Updates the annotation and physiological archives for the given
+     * physiological file ID with the provided paths and updates
+     * database with new archive file hash
+     *
+     * @param array $paths Paths to files to be added to archive
+     *
+     * @return void
+     * @throws SodiumException
+     */
+    function _updateArchives(array $paths) : void
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        $dataDir = $db->pselectOne(
+            'SELECT Value
+        FROM Config AS config
+        INNER JOIN ConfigSettings AS c
+        ON c.Name=:name AND config.ConfigID=c.ID',
+            ['name' => 'dataDirBasepath']
+        );
+        $queries = [
+            'physiological_annotation_archive',
+            'physiological_archive'
+        ];
+
+        foreach ($queries as $query) {
+            $filepath = $db->pselectone(
+                "SELECT
+                DISTINCT(FilePath)
+                FROM $query
+                WHERE PhysiologicalFileID=:PFID",
+                ['PFID' => $this->_physioFileID]
+            );
+            $filepath = $dataDir.$filepath;
+
+            $arch_file = new \PharData($filepath);
+            foreach ($paths as $path) {
+                $arch_file->addFile($path, basename($path));
+            }
+
+            $f    = file_get_contents($filepath);
+            $hash = sodium_crypto_generichash($f);
+
+            //Update database with hash
+            $db->update(
+                $query,
+                ['Blake2bHash'         => bin2hex($hash)],
+                ['PhysiologicalFileID' => $this->_physioFileID]
+            );
+        }
     }
 }

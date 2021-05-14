@@ -108,11 +108,11 @@ function testAddDataToDB()
     $db->insert(
         'physiological_annotation_instance',
         [
-            'AnnotationFileID'      => '13',
-            'AnnotationParameterID' => '5',
+            'AnnotationFileID'      => '1',
+            'AnnotationParameterID' => '1',
             'AnnotationLabelID'     => '12',
-            'Channels'              => 'Fantastic Channel',
-            'Description'           => 'Fantastic Description'
+            'Channels'              => 'Test Channel',
+            'Description'           => 'Test Description'
         ]
     );
     $db->update(
@@ -121,13 +121,65 @@ function testAddDataToDB()
             'Sources' => 'Source 900',
             'Author'  => 'Hemingway'
         ],
-        ['AnnotationParameterID' => '5']
+        ['AnnotationParameterID' => '1']
     );
     $db->update(
         'physiological_annotation_file',
         ['LastUpdate' => date("Y-m-d H:i:s", mktime(0, 0, 0, 7, 1, 2022))],
         ['PhysiologicalFileID' => 11]
     );
+}
+
+/**
+ * Updates the annotation and physiological archives for the given
+ * physiological file ID with the provided paths and updates
+ * database with new archive file hash
+ *
+ * @param array $paths Paths to files to be added to archive
+ *
+ * @return void
+ * @throws SodiumException
+ */
+function _updateArchives(array $paths) : void
+{
+    $db = \NDB_Factory::singleton()->database();
+
+    $dataDir = $db->pselectOne(
+        'SELECT Value
+        FROM Config AS config
+        INNER JOIN ConfigSettings AS c
+        ON c.Name=:name AND config.ConfigID=c.ID',
+        ['name' => 'dataDirBasepath']
+    );
+    $queries = [
+        'physiological_annotation_archive',
+        'physiological_archive'
+    ];
+
+    foreach ($queries as $query) {
+        $filepath = $db->pselectone(
+            "SELECT
+            DISTINCT(FilePath)
+            FROM $query
+            WHERE PhysiologicalFileID=:PFID",
+            ['PFID' => 11]
+        );
+        $filepath = $dataDir.$filepath;
+
+        $arch_file = new \PharData($filepath);
+        foreach ($paths as $path) {
+            $arch_file->addFile($path, basename($path));
+        }
+
+        $f    = file_get_contents($filepath);
+        $hash = sodium_crypto_generichash($f);
+        //Update database with hash
+        $db->update(
+            $query,
+            ['Blake2bHash'         => bin2hex($hash)],
+            ['PhysiologicalFileID' => 11]
+        );
+    }
 }
 
 $physioFileID = 11;
@@ -195,5 +247,5 @@ $values3 = [
     $values1['parameter_id']
 );
 
-//(new ElectrophysioAnnotations($physioFileID))->delete(2);
-//(new ElectrophysioAnnotations($physioFileID))->updateFiles();
+(new ElectrophysioAnnotations($physioFileID))->delete(2);
+(new ElectrophysioAnnotations($physioFileID))->updateFiles();
