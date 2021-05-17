@@ -58,9 +58,9 @@ class ModuleManagerIndex extends Component {
       }
   }
 
-  toggleActive(name, value, id) {
+  toggleActive(name, value) {
       fetch(
-          this.props.BaseURL + '/module_manager/modules/' + id,
+          this.props.BaseURL + '/module_manager/modules/' + name,
           {
               method: 'PATCH',
               body: JSON.stringify({
@@ -72,13 +72,13 @@ class ModuleManagerIndex extends Component {
           }
       ).then((response) => {
           if (response.status != 205) {
-              swal.fire('Error!', 'Could not update ' + id + '.', 'error');
+              swal.fire('Error!', 'Could not update ' + name + '.', 'error');
           } else {
-              const success = this.setModuleDisplayStatus(id, value);
+              const success = this.setModuleDisplayStatus(name, value);
               if (success === true) {
                 swal.fire({
                   title: 'Success!',
-                  text: 'Updated ' + id + ' status! ' +
+                  text: 'Updated ' + name + ' status! ' +
                     'To apply changes the interface must be reloaded. Proceed?',
                   type: 'success',
                   showCancelButton: true,
@@ -92,7 +92,7 @@ class ModuleManagerIndex extends Component {
               } else {
                   // If we get here something went very wrong, because somehow
                   // a module was toggled that isn't in the table.
-                  swal.fire('Error!', 'Could not find module ' + id + '.', 'error');
+                  swal.fire('Error!', 'Could not find module ' + name + '.', 'error');
               }
           }
       });
@@ -126,7 +126,7 @@ class ModuleManagerIndex extends Component {
   formatColumn(column, cell, row) {
     if (column == 'Active' && this.props.hasEditPermission) {
         return <td><SelectElement
-              name='active'
+              name={row.Name}
               id={row.Name}
               label=''
               emptyOption={false}
