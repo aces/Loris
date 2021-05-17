@@ -76,25 +76,20 @@ class Mri_Violations extends \DataFrameworkMenu
         // Build a list of existing problem types based on data in db
         $db = $this->lorisinstance->getDatabaseConnection();
         $problemTypes = array_column(
-                $db->pselect(
-                    "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+                $db->pselect("
+                        SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
                     UNION 
-                    SELECT DISTINCT 'Could not identify scan type' 
-                    FROM mri_protocol_violated_scans
+                        SELECT DISTINCT 'Could not identify scan type' FROM mri_protocol_violated_scans
                     UNION
-                    SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+                        SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
                     []
                     ),
                 'Reason'
                 );
         return [
-            'projects'    => \Utility::getProjectList(),
-            'subprojects' => \Utility::getSubprojectList(),
-            'sites' => [
-                ''         => 'All (including unknown)',
-            'AllKnown' => 'All (excluding unknown)',
-            'Unknown'  => 'Unknown'
-            ] + \Utility::getSiteList(),
+            'projects'     => \Utility::getProjectList(),
+            'subprojects'  => \Utility::getSubprojectList(),
+            'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
         ];
     }
@@ -122,6 +117,5 @@ class Mri_Violations extends \DataFrameworkMenu
             ]
         );
     }
-
 }
 
