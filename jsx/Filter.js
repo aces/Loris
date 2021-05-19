@@ -38,7 +38,7 @@ function Filter(props) {
     const {fields} = JSON.parse(JSON.stringify(props));
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
-    const exactMatch = (!(type === 'text' || type === 'date' || type === 'multiselect'));
+    const exactMatch = (!(type === 'text' || type === 'date'));
 
     if (value === null || value === '' ||
         (value.constructor === Array && value.length === 0)) {
