@@ -317,7 +317,8 @@ class DataTable extends Component {
         searchKey = filterData[i].toLowerCase();
         searchString = data ? data.toString().toLowerCase() : '';
 
-        match = (searchString.indexOf(searchKey) > -1);
+        let searchArray = searchString.split(',');
+        match = (searchArray.includes(searchKey));
         if (match) {
           result = true;
         }
