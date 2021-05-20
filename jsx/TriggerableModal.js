@@ -5,7 +5,7 @@
  * @version 1.1.0
  *
  */
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
@@ -28,36 +28,31 @@ import Modal from 'Modal';
  * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window.
  * =================================================
  *
+ * @param {object} props
+ * @return {*} jsx
  */
-class TriggerableModal extends Component {
-  constructor() {
-    super();
-    this.state = {open: false};
-    this.close = this.close.bind(this);
-  }
+function TriggerableModal(props) {
+  const [open, setOpen] = useState(false);
+  const {label, onClose, onUserInput, TriggerTag = CTA} = props;
 
-  close() {
-    this.setState({open: false});
-    if (this.props.onClose instanceof Function) this.props.onClose();
-  }
+  const close = () => {
+    setOpen(false);
+    if (onClose instanceof Function) onClose();
+  };
 
-  render() {
-    const {label, onUserInput} = this.props;
+  const trigger = (
+    <TriggerTag label={label} onUserInput={() => {
+      if (onUserInput instanceof Function) onUserInput();
+      setOpen(true);
+    }}/>
+  );
 
-    const trigger = (
-      <CTA label={label} onUserInput={() => {
-        if (onUserInput instanceof Function) onUserInput();
-        this.setState({open: true});
-      }}/>
-    );
-
-    return (
-      <div>
-        {trigger}
-        <Modal {...this.props} show={this.state.open} onClose={this.close}/>
-      </div>
-    );
-  }
+  return (
+    <>
+      {trigger}
+      <Modal {...props} show={open} onClose={close}/>
+    </>
+  );
 }
 
 TriggerableModal.propTypes = {

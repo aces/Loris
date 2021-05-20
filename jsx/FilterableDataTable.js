@@ -58,7 +58,7 @@ class FilterableDataTable extends PureComponent {
       />
     );
 
-    const dataTable = this.props.loading < 100 || this.props.data.length == 0 ? (
+    const dataTable = !isNaN(this.props.loading) && this.props.loading < 100 ? (
       <LoadingBar progress={this.props.loading}/>
     ) : (
       <DataTable
@@ -66,6 +66,7 @@ class FilterableDataTable extends PureComponent {
         fields={this.props.fields}
         filter={this.state.filter}
         actions={this.props.actions}
+        forms={this.props.forms}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
         folder={this.props.folder}

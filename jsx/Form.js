@@ -23,7 +23,7 @@ CheckboxElement, ButtonElement, LorisElement
  *
  */
 
-import React, {Component} from 'react';
+import React, {useState, Component} from 'react';
 import PropTypes from 'prop-types';
 
 class FormElement extends Component {
@@ -39,23 +39,6 @@ class FormElement extends Component {
     const maxColumnSize = 12;
     const colSize = Math.floor(maxColumnSize / columns);
     const colClass = 'col-xs-12 col-sm-' + colSize + ' col-md-' + colSize;
-
-    // Render elements from JSON
-    const filter = this.props.formElements;
-
-    Object.keys(filter).forEach(function(objKey, index) {
-      const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
-      const value = filter[objKey].value ? filter[objKey].value : '';
-      formElementsHTML.push(
-        <div key={'el_' + index} className={colClass}>
-          <LorisElement
-            element={filter[objKey]}
-            onUserInput={userInput}
-            value={value}
-          />
-        </div>
-      );
-    }.bind(this));
 
     // Render elements from React
     React.Children.forEach(this.props.children, function(child, key) {
@@ -406,7 +389,8 @@ class SelectElement extends Component {
   }
 
   componentDidMount() {
-    const optionsArray = Object.keys(this.props.options);
+    const options = this.props.options || {};
+    const optionsArray = Object.keys(options);
     if (this.props.autoSelect && optionsArray.length === 1) {
       this.props.onUserInput(this.props.name, optionsArray[0]);
     }
@@ -437,6 +421,7 @@ class SelectElement extends Component {
         }
       }
     }
+    console.log(e.target);
 
     this.props.onUserInput(this.props.name, value, e.target.id, 'select');
   }
@@ -450,7 +435,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterisk
     if (required) {
@@ -465,7 +450,7 @@ class SelectElement extends Component {
     // Add error message
     if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage || 'The field is required!'}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'has-error';
     }
 
     let newOptions = {};
@@ -493,18 +478,16 @@ class SelectElement extends Component {
     const value = this.props.value || (multiple ? [] : '');
 
     const label = this.props.label && (
-      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+      <label className="control-label" htmlFor={this.props.id}>
         {this.props.label}
         {requiredHTML}
       </label>
     );
 
-    const columnSize = this.props.label ? 'col-sm-9' : 'col-sm-12';
-
     return (
       <div className={elementClass}>
         {label}
-        <div className={columnSize}>
+        <div>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -849,12 +832,12 @@ class TextareaElement extends Component {
     }
 
     return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+      <div>
+        <label className="control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+        <div>
           <textarea
             cols={this.props.cols}
             rows={this.props.rows}
@@ -923,7 +906,7 @@ class TextboxElement extends Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterix
     if (required) {
@@ -933,29 +916,28 @@ class TextboxElement extends Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'has-error';
     }
 
     const label = this.props.label && (
-      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+      <label className="control-label" htmlFor={this.props.id}>
         {this.props.label}
         {requiredHTML}
       </label>
     );
 
-    const columnSize = this.props.label ? 'col-sm-9' : 'col-sm-12';
 
     return (
       <div className={elementClass}>
         {label}
-        <div className={columnSize}>
+        <div>
           <input
             type="text"
             className="form-control"
             name={this.props.name}
             id={this.props.id}
             value={this.props.value || ''}
-            required={required}
+            datarequired={required}
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
@@ -1055,7 +1037,7 @@ class DateElement extends Component {
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterix
     if (required) {
@@ -1065,42 +1047,44 @@ class DateElement extends Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'has-error';
     }
+
+    const todayButton = this.props.today && (
+      <ButtonElement
+        label='Today'
+        type="button"
+        onUserInput={this.handleButton}
+      />
+    );
+
+    const label = this.props.label && (
+      <label className="control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
-          <div style={{display: 'flex'}}>
-            <div style={{flexGrow: 3}}>
-              <input
-                type="date"
-                className="form-control"
-                name={this.props.name}
-                id={this.props.id}
-                min={this.props.minYear}
-                max={this.props.maxYear}
-                onChange={this.handleChange}
-                value={this.props.value || ''}
-                required={required}
-                disabled={disabled}
-              />
-              {errorMessage}
-            </div>
-            <div style={{flexGrow: 1}}>
-              <button
-                type="button"
-                onClick={this.handleButton}
-                className= "btn btn-primary"
-              >
-                Today
-              </button>
-            </div>
-          </div>
+        {label}
+        <div>
+          <>
+            <input
+              type="date"
+              className="form-control"
+              name={this.props.name}
+              id={this.props.id}
+              min={this.props.minYear}
+              max={this.props.maxYear}
+              onChange={this.handleChange}
+              value={this.props.value || ''}
+              required={required}
+              disabled={disabled}
+            />
+            {errorMessage}
+          </>
+          {todayButton}
         </div>
       </div>
     );
@@ -1126,6 +1110,7 @@ DateElement.defaultProps = {
   id: null,
   maxYear: '9999-12-31',
   minYear: '1000-01-01',
+  today: true,
   disabled: false,
   required: false,
   onUserInput: function() {
@@ -1162,7 +1147,7 @@ class TimeElement extends Component {
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterix
     if (required) {
@@ -1172,20 +1157,18 @@ class TimeElement extends Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+        <label className="control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
-          <div
-            style={{display: 'flex'}}
-          >
-            <div style={{flexGrow: 3}}>
+        <div>
+          <InlineField weights={[3, 1]}>
+            <>
               <input
                 type="time"
                 className="form-control"
@@ -1199,17 +1182,13 @@ class TimeElement extends Component {
                 title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
               />
               {errorMessage}
-            </div>
-            <div style={{flexGrow: 1}}>
-              <button
-                type="button"
-                onClick={this.handleButton}
-                className= "btn btn-primary"
-              >
-                Now
-              </button>
-            </div>
-          </div>
+            </>
+            <ButtonElement
+              label="Now"
+              type="button"
+              onUserInput={this.handleButton}
+            />
+          </InlineField>
         </div>
       </div>
     );
@@ -1475,23 +1454,21 @@ FileElement.defaultProps = {
  *    label={note}
  * />
  * ```
+ *
+ * @param {object} props
+ * @return {jsx}
  */
-class StaticElement extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <p className="form-control-static">{this.props.text}</p>
-        </div>
+function StaticElement(props) {
+  return (
+    <div>
+      <label className="control-label">
+        {props.label}
+      </label>
+      <div>
+        <p className="form-control-static">{props.text}</p>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 StaticElement.propTypes = {
@@ -1564,7 +1541,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline col-sm-offset-3';
+    let elementClass = 'checkbox-inline';
     let label = null;
 
     // Add required asterix
@@ -1575,7 +1552,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline col-sm-offset-3 has-error';
+      elementClass = 'checkbox-inline has-error';
     }
 
     return (
@@ -1928,6 +1905,122 @@ RadioElement.defaultProps = {
   },
 };
 
+function FormHeader({level = 4, header = ''}) {
+  const Tag = 'h' + level;
+  return (
+    <>
+      <Tag>{header}</Tag>
+      <HorizontalRule/>
+    </>
+  );
+}
+
+function HorizontalRule() {
+  const lineStyle = {
+    borderTop: '1.5px solid #DDDDDD',
+    paddingTop: 15,
+    marginTop: 0,
+  };
+  return <div style={lineStyle}/>;
+}
+
+function InputList(props) {
+  const {items, setItems, errorMessage, options} = props;
+  const [item, setItem] = useState('');
+
+  const removeItem = (index) => setItems(items.filter((item, i) => index != i));
+  const addItem = () => {
+    const match = Object.keys(options).find((key) => options[key][props.name] == item);
+    // if entry is in list of options and does not already exist in the list.
+    if (match && !items.includes(match)) {
+      setItems([...items, match]);
+      setItem('');
+    }
+  };
+
+  const listStyle = {
+    border: '1px solid #DDD',
+    borderRadius: '10px',
+    minHeight: '85px',
+    padding: '5px',
+    marginBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const listItemStyle = {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  };
+
+  const itemsDisplay = items.map((item, i) => {
+    const style = {
+      color: '#DDDDDD',
+      marginLeft: 10,
+      cursor: 'pointer',
+    };
+    return (
+      <div key={i} style={listItemStyle}>
+        <div>{options[item][props.name]}</div>
+        <div
+          className='glyphicon glyphicon-remove'
+          onClick={() => removeItem(i)}
+          style={style}
+        />
+      </div>
+    );
+  });
+
+  return (
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={props.label + ' Input'}/>
+        <InlineField weights={[3, 1]}>
+          <TextboxElement
+            name={props.name}
+            onUserInput={(name, value) => setItem(value)}
+            value={item}
+            errorMessage={errorMessage}
+          />
+          <ButtonElement
+            label='Add'
+            onUserInput={addItem}
+          />
+        </InlineField>
+      </div>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={props.label + ' List'}/>
+        <div style={listStyle}>
+          {itemsDisplay}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InlineField({children, label = '', weights = []}) {
+  const fields = React.Children.map(children, (child, i) => {
+    return (
+      <div style={{flex: weights[i] || 1, minWidth: '90px'}}>
+        {React.cloneElement(child, {inputClass: 'col-lg-11'})}
+      </div>
+    );
+  });
+
+  const inlineStyle = {
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'spaceBetween',
+  };
+  return (
+    <div style={inlineStyle}>
+      {fields}
+    </div>
+  );
+}
 
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
@@ -1947,6 +2040,9 @@ window.ButtonElement = ButtonElement;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
 window.RadioElement = RadioElement;
+window.FormHeader = FormHeader;
+window.HorizontalRule = HorizontalRule;
+window.InputList = InputList;
 
 export default {
   FormElement,

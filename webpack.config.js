@@ -67,12 +67,18 @@ const config = [{
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: [
+          {
+            loader: 'babel-loader?cacheDirectory',
+          },
+          {
+            loader: 'eslint-loader',
+            options: {
+              cache: true,
+            },
+          },
+        ],
+        enforce: 'pre',
       },
       {
         test: /\.json$/,
