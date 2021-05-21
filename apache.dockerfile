@@ -2,9 +2,8 @@ FROM php:8.0.1-apache
 
 
 COPY ./docs/config/apache2-site /etc/apache2/sites-available/000-default.conf
-RUN sed 's#%LORISROOT%#/var/www/html#g' /etc/apache2/sites-available/000-default.conf
-RUN sed 's#%LORISROOT%#/var/www/html#g' /etc/apache2/sites-available/000-default.conf
-RUN sed 's#%LOGDIRECTORY%#./#g' /etc/apache2/sites-available/000-default.conf
+RUN sed -ri -e 's#%LORISROOT%#/var/www/html#g' /etc/apache2/sites-available/000-default.conf
+RUN sed -ri -e 's#%LOGDIRECTORY%#./#g' /etc/apache2/sites-available/000-default.conf
 
 RUN touch ./loris-error.log
 
