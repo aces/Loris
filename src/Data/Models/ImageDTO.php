@@ -39,7 +39,7 @@ class ImageDTO implements
 
     private $filetype;
 
-    private $centerid;
+    private \CenterID $centerid;
 
     private $entitytype;
 
@@ -52,7 +52,7 @@ class ImageDTO implements
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionprotocol The aquisition protocol
      * @param ?string $filetype            The file type
-     * @param ?int    $centerid            The image session's centerid
+     * @param \CenterID $centerid            The image session's centerid
      * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
@@ -62,7 +62,7 @@ class ImageDTO implements
         ?string $outputtype,
         ?string $acquisitionprotocol,
         ?string $filetype,
-        ?int $centerid,
+        \CenterID $centerid,
         ?string $entitytype
     ) {
         $this->fileid       = $fileid;
@@ -156,11 +156,11 @@ class ImageDTO implements
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return intval($this->centerid);
+        return $this->centerid;
     }
 
     /**

@@ -33,7 +33,7 @@ class Recording
 
     private $_filetype;
 
-    private $_centerid;
+    private \CenterID $_centerid;
 
     private $_entitytype;
 
@@ -111,7 +111,7 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];

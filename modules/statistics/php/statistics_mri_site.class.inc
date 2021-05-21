@@ -31,7 +31,7 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CheckCriteria function
      *
-     * @param int        $centerID  the value of centerID
+     * @param \CenterID  $centerID  the value of centerID
      * @param \ProjectID $projectID the value of projectID
      *
      * @return void
@@ -69,7 +69,7 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CompleteCount function
      *
-     * @param int        $centerID  the value of centerID
+     * @param \CenterID  $centerID  the value of centerID
      * @param \ProjectID $projectID the value of projectID
      * @param string     $issue     the value of issue
      *
@@ -83,7 +83,7 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * GetResults function
      *
-     * @param int        $centerID  the value of centerID
+     * @param \CenterID  $centerID  the value of centerID
      * @param \ProjectID $projectID the value of projectID
      * @param string     $issue     the value of issue
      *

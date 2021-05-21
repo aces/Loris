@@ -187,7 +187,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $usersites = $user->getSiteNames();
         if (!in_array($data['Candidate']['Site'], $usersites)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You are not affiliated with the candidate`s site'
+                "You are not affiliated with the candidate's site"
             );
         }
 
@@ -209,7 +209,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $candid = \Candidate::createNew(
-                $centerid,
+                new \CenterID("$centerid"),
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
                 $sex,

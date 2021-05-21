@@ -35,7 +35,7 @@ class Image
 
     private $_filetype;
 
-    private $_centerid;
+    private \CenterID $_centerid;
 
     private $_entitytype;
     /**
@@ -78,7 +78,7 @@ class Image
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionprotocol = $dbrow['acquisitionprotocol'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
 
         }

@@ -13,7 +13,7 @@ interface SiteHaver
      * Return true if the entity is accessible by the
      * user.
      *
-     * @return int
+     * @return \CenterID
      */
-    public function getCenterID() : int;
+    public function getCenterID() : \CenterID;
 }
