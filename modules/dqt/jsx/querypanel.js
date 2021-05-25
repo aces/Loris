@@ -23,7 +23,7 @@ class QueryPanel extends Component {
             <div id="querypanel">
               <h2>QueryPanel</h2>
               <div id="selectedfields">
-                <h3>Selected Filters</h3>
+                <h3>Selected Fields</h3>
                 <ul>
                   {fields}
                 </ul>

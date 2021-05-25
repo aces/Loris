@@ -92,7 +92,7 @@ class Queries extends Endpoint
                 'At least one field is expected.'
             );
         }
-
+print_memory_usage('Before query factory');
         try {
             $query = QueryFactory::create($fields, $filters);
         } catch (\LorisException $e) {
@@ -101,10 +101,12 @@ class Queries extends Endpoint
             );
         }
 
+print_memory_usage('After query factory');
         try {
             // FIXME :: Maybe results should be generated on demand 
             // at /dqt/results/$id or execute just start a server_process
             $results = $query->execute($loris, $user);
+print_memory_usage('After execute');
             return new \LORIS\Http\Response\JSON\OK(
                 (new \LORIS\dqt\Views\Results($query, $results))->toArray()
             );

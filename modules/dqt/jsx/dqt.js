@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import QueryPanel from './querypanel';
 import SelectFieldsTab from './selectfieldstab';
+import AddFiltersTab from './addfilterstab';
 
 /**
  * DQT React Component
@@ -30,6 +31,7 @@ class DQT extends Component {
     this.getCategories = this.getCategories.bind(this);
     this.getCategoryFields = this.getCategoryFields.bind(this);
     this.toggleSelectedField = this.toggleSelectedField.bind(this);
+    this.addFilter = this.addFilter.bind(this);
     this.postQuery = this.postQuery.bind(this);
     /*
     this.getQueries() = this.getQueries.bind(this);
@@ -135,6 +137,22 @@ class DQT extends Component {
   }
 
   /**
+   * Add a filter to the query
+   *
+   * @param {string} category The field's category name
+   * @param {string} name The field's name
+   * @param {array} visits A list of visitlabels
+   * @param {string} operator The filter operator
+   * @param {string} value The value to filter on
+   */
+  addFilter(category, name, visits, operator, value) {
+    console.info('category: '.concat(category));
+    console.info('name: '.concat(name));
+    console.info('visits: '.concat(visits));
+    console.info('operator: '.concat(operator));
+    console.info('value: '.concat(value));
+  }
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -153,6 +171,13 @@ class DQT extends Component {
           getCategories={this.getCategories}
           getCategoryFields={this.getCategoryFields}
           toggleSelectedField={this.toggleSelectedField}
+          categories={this.state.categories}
+          selectedCategory={this.state.selectedCategory}
+        />
+        <AddFiltersTab
+          getCategories={this.getCategories}
+          getCategoryFields={this.getCategoryFields}
+          addFilter={this.addFilter}
           categories={this.state.categories}
           selectedCategory={this.state.selectedCategory}
         />
