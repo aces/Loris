@@ -33,59 +33,89 @@ class DownloadPanel extends Component {
         id={this.props.id}
         title={'File Download'}
       >
-        <div style={{
-          minHeight: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          maxWidth: '250px',
-          margin: '0 auto',
-        }}>
-          {this.state.downloads
-            .filter((download) =>
-              download.type != 'physiological_fdt_file'
-            )
-            .map((download, i) => {
-              const disabled = (download.file === '');
-              return (
-                <div
-                  key={i}
-                  className={'form-group'}
-                >
-                  <div
-                    className='col-lg-offset-1 col-xs-5'
-                    style={{
-                      color: '#074785',
-                      fontWeight: 'bold',
-                      lineHeight: '30px',
-                      verticalAlign: 'middle',
-                      paddingLeft: 0,
-                    }}
-                  >{download.label}</div>
-                  {disabled
-                    ? <a
-                        className='btn disabled col-xs-5'
-                        style={{
-                          color: '#b3b3b3',
-                          cursor: 'not-allowed',
-                          border: '1px solid #b3b3b3',
-                          margin: 0,
-                        }}
-                      >Not Available</a>
-                    : <a
-                        className='btn btn-primary download col-xs-5'
-                        href={'/mri/jiv/get_file.php?file=' + download.file}
-                        target='_blank'
-                        download={this.state.downloads[0].file}
-                        style={{
-                          margin: 0,
-                        }}
-                      >Download</a>
+        <div
+          style={{minHeight: '300px'}}
+          id={this.props.id + '-group'}
+        >
+          {this.state.downloads.map((panel, i) => {
+            const panelName = panel.groupName;
+            const links = (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  maxWidth: '250px',
+                  margin: '0 auto',
+                }
+              }>
+                {panel.links.map((download, j) => {
+                  const disabled = (download.file === '');
+
+                  // Hide the download in this particular case
+                  // It does not make sense to display Not Available for FDT files
+                  if (disabled && download.type === 'physiological_fdt_file') {
+                    return null;
                   }
-                </div>
+
+                  return (
+                    <div
+                      key={j}
+                      className={'form-group'}
+                    >
+                      <div
+                        className='col-xs-6'
+                        style={{
+                          color: '#074785',
+                          fontWeight: 'bold',
+                          lineHeight: '30px',
+                          verticalAlign: 'middle',
+                          paddingLeft: 0,
+                        }}
+                      >{download.label}</div>
+                      {disabled
+                        ? <a
+                            className='btn disabled col-xs-6'
+                            style={{
+                              color: '#b3b3b3',
+                              cursor: 'not-allowed',
+                              border: '1px solid #b3b3b3',
+                              margin: 0,
+                            }}
+                          >Not Available</a>
+                        : <a
+                            className='btn btn-primary download col-xs-6'
+                            href={'/mri/jiv/get_file.php?file=' + download.file}
+                            target='_blank'
+                            download={this.state.downloads[0].file}
+                            style={{
+                              margin: 0,
+                            }}
+                          >Download</a>
+                      }
+                    </div>
+                  );
+                })}
+              </div>
+            );
+
+            if (this.state.downloads.length > 1) {
+              return (
+                <Panel
+                  id={this.props.id + '-' + i}
+                  title={panelName}
+                  initCollapsed={i === 0 ? false : true}
+                  key={i}
+                  parentId={this.props.id + '-group'}
+                >
+                  {links}
+                </Panel>
               );
-            })
-          }
+            } else {
+              return links;
+            }
+          })}
         </div>
       </Panel>
     );

@@ -19,7 +19,6 @@ import {setOffsetIndex} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
-import Panel from 'jsx/Panel';
 
 import {
   setAmplitudesScale,
@@ -177,10 +176,15 @@ const SeriesRenderer = ({
   };
 
   const EpochsLayer = () => {
+    const fEpochs = [...Array(epochs.length).keys()].filter((i) =>
+      epochs[i].onset + epochs[i].duration > interval[0]
+      && epochs[i].onset < interval[1]
+    );
+
     return (
       <Group>
-        {filteredEpochs.length < MAX_RENDERED_EPOCHS &&
-          filteredEpochs.map((index) => {
+        {fEpochs.length < MAX_RENDERED_EPOCHS &&
+          fEpochs.map((index) => {
             return (
               <Epoch
                 {...epochs[index]}
@@ -328,10 +332,7 @@ const SeriesRenderer = ({
   };
 
   return (
-    <Panel
-      id='channel-viewer'
-      title={'Signal Viewer'}
-    >
+    <>
       {channels.length > 0 ? (
         <div className='row'>
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
@@ -446,7 +447,7 @@ const SeriesRenderer = ({
                     }}
                   >
                     <small style={{marginRight: '10px'}}>
-                      Showing{' '}
+                      Showing channels{' '}
                       <input
                         type='number'
                         style={{width: '55px'}}
@@ -635,7 +636,7 @@ const SeriesRenderer = ({
           <h4>Loading...</h4>
         </div>
       )}
-    </Panel>
+    </>
   );
 };
 

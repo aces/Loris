@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import StaticDataTable from 'jsx/StaticDataTable';
+import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
 import {SummaryPanel} from './components/electrophysiology_session_summary';
 import {DownloadPanel} from './components/DownloadPanel';
@@ -141,9 +142,10 @@ class ElectrophysiologySessionView extends Component {
               },
             ],
           },
-          chunkDirectoryURL: null,
-          epochsTableURL: null,
-          electrodesTableUrls: null,
+          chunksURL: null,
+          epochsURL: null,
+          electrodesURL: null,
+          splitData: null,
         },
       ],
     };
@@ -194,21 +196,23 @@ class ElectrophysiologySessionView extends Component {
         const database = data.database.map((dbEntry) => ({
           ...dbEntry,
           // EEG Visualisation urls
-          chunkDirectoryURL:
+          chunksURLs:
             dbEntry
-            && dbEntry.file.chunks_url
-            && loris.BaseURL
-              + '/electrophysiology_browser/file_reader/?file='
-              + dbEntry.file.chunks_url,
-          epochsTableURL:
+            && dbEntry.file.chunks_urls.map(
+              (url) =>
+                loris.BaseURL
+                + '/electrophysiology_browser/file_reader/?file='
+                + url
+            ),
+          epochsURL:
             dbEntry
-            && dbEntry.file.downloads[3].file
+            && dbEntry.file.downloads[3]?.file
             && loris.BaseURL
               + '/electrophysiology_browser/file_reader/?file='
               + dbEntry.file.downloads[3].file,
-          electrodesTableUrls:
+          electrodesURL:
             dbEntry
-            && dbEntry.file.downloads[1].file
+            && dbEntry.file.downloads[1]?.file
             && loris.BaseURL
               + '/electrophysiology_browser/file_reader/?file='
               + dbEntry.file.downloads[1].file,
@@ -254,6 +258,40 @@ class ElectrophysiologySessionView extends Component {
   }
 
   /**
+   * Get split data for split index
+   *
+   * @param {int} physioFileID
+   * @param {int} fileIndex
+   * @param {int} splitIndex
+   */
+  getSplitData(physioFileID, fileIndex, splitIndex) {
+    const dataURL = loris.BaseURL
+                    + '/electrophysiology_browser/split_data';
+    const formData = new FormData();
+    formData.append('physioFileID', physioFileID);
+    formData.append('splitIndex', splitIndex);
+
+    fetch(
+      dataURL, {
+      method: 'POST',
+      body: formData,
+    }).then((resp) => {
+      if (!resp.ok) {
+        throw Error(resp.statusText);
+      }
+
+      resp.json().then((splitData) => {
+        const database = JSON.parse(JSON.stringify(this.state.database));
+        database[fileIndex].file.splitData = splitData;
+        this.setState({database});
+      });
+    }).catch((error) => {
+      this.setState({error: true});
+      console.error(error);
+    });
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -274,10 +312,24 @@ class ElectrophysiologySessionView extends Component {
       let database = [];
       for (let i = 0; i < this.state.database.length; i++) {
         const {
-          chunkDirectoryURL,
-          epochsTableURL,
-          electrodesTableUrls,
+          chunksURLs,
+          epochsURL,
+          electrodesURL,
         } = this.state.database[i];
+        const file = this.state.database[i].file;
+        const splitPagination = [];
+        for (const j of Array(file.splitData?.splitCount).keys()) {
+          splitPagination.push(
+            <a
+              key={j}
+              className={
+                'btn btn-xs btn-primary split-nav'
+                + (file.splitData?.splitIndex === j ? ' active' : '')
+              }
+              onClick={() => this.getSplitData(file.id, i, j)}
+            >{j+1}</a>
+          );
+        }
         database.push(
           <div key={i}>
             <FilePanel
@@ -287,11 +339,69 @@ class ElectrophysiologySessionView extends Component {
             >
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
-                  chunkDirectoryURLs={chunkDirectoryURL}
-                  epochsTableURLs={epochsTableURL}
-                  electrodesTableUrls={electrodesTableUrls}
+                  chunksURL={chunksURLs?.[file.splitData?.splitIndex]}
+                  epochsURL={epochsURL}
+                  electrodesURL={electrodesURL}
                 >
-                  <SeriesRenderer />
+                  <Panel
+                    id='channel-viewer'
+                    title={
+                      'Signal Viewer' + (file.splitData
+                        ? ' [split '+(file.splitData?.splitIndex+1)+']'
+                        : ''
+                      )
+                    }
+                  >
+                    {file.splitData &&
+                      <>
+                        <span
+                          style={{
+                            color: '#064785',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            paddingRight: '15px',
+                          }}
+                        >
+                          Viewing signal split file:
+                        </span>
+                        <a
+                          className={
+                            'btn btn-xs btn-default split-nav'
+                            + (file.splitData.splitIndex === 0
+                              ? ' disabled'
+                              : '')
+                          }
+                          onClick={() => this.getSplitData(
+                            file.id,
+                            i,
+                            file.splitData.splitIndex-1
+                          )}
+                        >
+                          {'<'}
+                        </a>
+                        {splitPagination}
+                        <a
+                          className={
+                            'btn btn-xs btn-default split-nav'
+                            + (file.splitData.splitIndex
+                                === (file.splitData.splitCount-1)
+                              ? ' disabled'
+                              : '')
+                          }
+                          onClick={
+                            () => this.getSplitData(
+                              file.id,
+                              i,
+                              file.splitData.splitIndex+1
+                            )
+                          }
+                        >
+                          {'>'}
+                        </a>
+                      </>
+                    }
+                    <SeriesRenderer />
+                  </Panel>
                   <div className='row'>
                     <div className='col-md-6 col-lg-4'>
                       <SummaryPanel

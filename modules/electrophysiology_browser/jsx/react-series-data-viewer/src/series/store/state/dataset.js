@@ -34,7 +34,7 @@ export type Action =
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
-        chunkDirectoryURL: string,
+        chunksURL: string,
         channelNames: string[],
         shapes: number[][],
         timeInterval: [number, number],
@@ -45,7 +45,7 @@ export type Action =
   | ChannelAction;
 
 export type State = {
-  chunkDirectoryURL: string,
+  chunksURL: string,
   channelMetadata: ChannelMetadata[],
   channels: Channel[],
   activeChannel: number | null,
@@ -60,7 +60,7 @@ export type State = {
 
 export const datasetReducer = (
   state: State = {
-    chunkDirectoryURL: '',
+    chunksURL: '',
     channelMetadata: [],
     channels: [],
     filteredChannels: [],

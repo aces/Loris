@@ -46,7 +46,7 @@ export const loadChunks = ({channelIndex, ...rest}: FetchedChunks) => {
 
 export const fetchChunkAt = R.memoizeWith(
   (baseURL, downsampling, channelIndex, traceIndex, chunkIndex) =>
-    `${channelIndex}-${traceIndex}-${chunkIndex}-${downsampling}`,
+    `${baseURL}-${channelIndex}-${traceIndex}-${chunkIndex}-${downsampling}`,
   (
     baseURL: string,
     downsampling: number,
@@ -73,9 +73,8 @@ export const createFetchChunksEpic = (fromState: any => State) => (
     Rx.map(([_, state]) => fromState(state)),
     Rx.debounceTime(UPDATE_DEBOUNCE_TIME),
     Rx.concatMap(({bounds, dataset}) => {
-      const {chunkDirectoryURL, shapes, timeInterval, channels} = dataset;
-
-      if (!chunkDirectoryURL) {
+      const {chunksURL, shapes, timeInterval, channels} = dataset;
+      if (!chunksURL) {
         return of();
       }
 
@@ -122,9 +121,8 @@ export const createFetchChunksEpic = (fromState: any => State) => (
               const chunkPromises = R.range(...max.interval).map(
                 (chunkIndex) => {
                   const numChunks = max.numChunks;
-
                   return fetchChunkAt(
-                    chunkDirectoryURL,
+                    chunksURL,
                     max.downsampling,
                     channel.index,
                     j,

@@ -1,7 +1,10 @@
 export const fetchBlob = (...args) =>
-  fetch(...args).then((response) =>
-    response.blob().then((data) => data)
-  );
+  fetch(...args).then((response) => {
+    if (!response.ok) {
+      return new Promise(() => {});
+    }
+    return response.blob().then((data) => data);
+  });
 
 export const fetchJSON = (...args) =>
   fetch(...args).then((response) => {
@@ -12,6 +15,9 @@ export const fetchJSON = (...args) =>
   });
 
 export const fetchText = (...args) =>
-  fetch(...args).then((response) =>
-    response.text().then((data) => data)
-  );
+  fetch(...args).then((response) => {
+    if (!response.ok) {
+      return new Promise(() => {});
+    }
+    return response.text().then((data) => data);
+  });
