@@ -1,9 +1,9 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import FilterGroup from './filtergroup';
+import FilterItem from './filteritem';
 
 /**
- * DQT Add fitlers React Component
+ * DQT Add filters React Component
  */
 class AddFiltersTab extends Component {
   /**
@@ -13,15 +13,26 @@ class AddFiltersTab extends Component {
   constructor(props) {
     super(props);
 
-    this.addFilter = this.addFilter.bind(this);
-    // this.addGroup = this.addGroup.bind(this);
+    this.setFilters = this.setFilters.bind(this);
+    this.deleteFilters = this.deleteFilters.bind(this);
   }
 
   /**
-   * Add a filter to the query
+   * Set the query filters
+   *
+   * @param {object} filters The new filters
    */
-  addFilter() {
-    console.info('addFilter');
+  setFilters(filters) {
+    console.info('AddFiltersTab::setFilters');
+    this.props.setFilters(filters);
+  }
+
+  /**
+   * Delete all the filters
+   */
+  deleteFilters() {
+    console.info('AddFiltersTab::deleteFilters');
+    this.props.setFilters({});
   }
 
   /**
@@ -30,11 +41,63 @@ class AddFiltersTab extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const query = {
+        filters: {
+          type: 'group',
+          operator: 'AND',
+          items: [
+            {
+              type: 'filter',
+              operator: 'equals',
+              category: 'demographics',
+              field: 'Sex',
+              value: 'Female',
+            },
+            {
+              type: 'group',
+              operator: 'OR',
+              items: [
+                {
+                  type: 'filter',
+                  operator: 'equals',
+                  category: 'demographics',
+                  field: 'DoB',
+                  value: '1936-09-15',
+                },
+                {
+                  type: 'filter',
+                  operator: 'equals',
+                  category: 'demographics',
+                  field: 'DoB',
+                  value: '1936-10-15',
+                },
+                {
+                  type: 'filter',
+                  operator: 'equals',
+                  category: 'demographics',
+                  field: 'DoB',
+                  value: '1936-11-15',
+                },
+              ],
+            },
+          ],
+        },
+    };
+
+    if (Object.keys(this.props.filters).length > 0) {
+      query.filters = this.props.filters;
+    }
+
     return (
       <div>
         <h2>AddFiltersTab</h2>
-        <button onClick={this.addFilter}>Add Filter</button>
-        <FilterGroup filters={this.props.query.filters}/>
+        <FilterItem
+          filters={query.filters}
+          index={0}
+          setFilter={this.setFilters}
+          deleteFilter={this.deleteFilters}
+          categories={this.props.categories}
+        />
       </div>
     );
   }

@@ -31,7 +31,7 @@ class DQT extends Component {
     this.getCategories = this.getCategories.bind(this);
     this.getCategoryFields = this.getCategoryFields.bind(this);
     this.toggleSelectedField = this.toggleSelectedField.bind(this);
-    this.addFilter = this.addFilter.bind(this);
+    this.setFilters = this.setFilters.bind(this);
     this.postQuery = this.postQuery.bind(this);
     /*
     this.getQueries() = this.getQueries.bind(this);
@@ -139,18 +139,13 @@ class DQT extends Component {
   /**
    * Add a filter to the query
    *
-   * @param {string} category The field's category name
-   * @param {string} name The field's name
-   * @param {array} visits A list of visitlabels
-   * @param {string} operator The filter operator
-   * @param {string} value The value to filter on
+   * @param {object} filters The new filter(s)
    */
-  addFilter(category, name, visits, operator, value) {
-    console.info('category: '.concat(category));
-    console.info('name: '.concat(name));
-    console.info('visits: '.concat(visits));
-    console.info('operator: '.concat(operator));
-    console.info('value: '.concat(value));
+  setFilters(filters) {
+    console.info('filters: '.concat(JSON.stringify(filters)));
+    const query = this.state.query;
+    query.filters = filters;
+    this.setState({query});
   }
   /**
    * Renders the React component.
@@ -175,9 +170,10 @@ class DQT extends Component {
           selectedCategory={this.state.selectedCategory}
         />
         <AddFiltersTab
+          filters={this.state.query.filters}
           getCategories={this.getCategories}
           getCategoryFields={this.getCategoryFields}
-          addFilter={this.addFilter}
+          setFilters={this.setFilters}
           categories={this.state.categories}
           selectedCategory={this.state.selectedCategory}
         />
