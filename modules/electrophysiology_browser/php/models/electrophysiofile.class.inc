@@ -24,8 +24,10 @@ namespace LORIS\electrophysiology_browser\Models;
  */
 class ElectrophysioFile implements \LORIS\Data\DataInstance
 {
-    private $_fileData   = [];
-    private $_parameters = [];
+    private $_fileData        = [];
+    private $_parameters      = [];
+    private $_chunksURLs      = [];
+    private $_splitFileIDs    = [];
 
     /**
      * Construct a BIDSFile
@@ -46,13 +48,12 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                        FileType,
                        AcquisitionTime,
                        InsertedByUser,
-                       FilePath  
+                       FilePath
                      FROM physiological_file
                        LEFT JOIN physiological_modality as pm
                        USING (PhysiologicalModalityID)
                      WHERE PhysiologicalFileID=:PFID";
-        $params   = ['PFID' => $physiologicalFileID];
-        $fileData = $db->pselectRow($query, $params);
+        $fileData = $db->pselectRow($query, ['PFID' => $physiologicalFileID]);
 
         foreach ($fileData AS $key=>$value) {
             $this->_fileData[$key] = $value;
@@ -64,11 +65,54 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                          FROM physiological_parameter_file as ppf
                            LEFT JOIN parameter_type as pt USING (ParameterTypeID)
                          WHERE 
-                          PhysiologicalFileID=:PFID";
-        $parameterRaw = $db->pselect($query, $params);
+                          PhysiologicalFileID=:PFID 
+                          AND pt.Name <> 'electrophyiology_chunked_dataset_path'";
+        $parameterRaw = $db->pselect($query, ['PFID' => $physiologicalFileID]);
 
         foreach ($parameterRaw AS $row) {
             $this->_parameters[$row['Name']] = $row['Value'];
+        }
+
+        /*
+         * Split files
+         *
+         * If the physiological file is the parent of a collection
+         * set or override a few parameters
+         */
+
+        $query               = "SELECT PhysiologicalFileID
+                                FROM `physiological_file`
+                                WHERE ParentID=:PFID
+                                ORDER BY `Index`";
+        $this->_splitFileIDs = $db->pselectCol($query, ['PFID' => $physiologicalFileID]);
+
+        if (count($this->_splitFileIDs) > 0) {
+            $this->_fileData['SplitCount'] = strval(count($this->_splitFileIDs));
+
+            // Overrides Recording Duration
+            $query = "SELECT SUM(ppf.Value)
+                    FROM physiological_parameter_file as ppf
+                      LEFT JOIN parameter_type as pt USING (ParameterTypeID)
+                    WHERE PhysiologicalFileID IN (" . join($this->_splitFileIDs, ',') . ")
+                      AND pt.Name = 'RecordingDuration'";
+            $this->_parameters['RecordingDuration'] = $db->pselectOne($query, []);
+
+            // Set chunk paths
+            $query = "SELECT ppf.Value
+                    FROM physiological_parameter_file as ppf
+                      LEFT JOIN parameter_type as pt USING (ParameterTypeID)
+                    WHERE PhysiologicalFileID IN (" . join($this->_splitFileIDs, ',') . ")
+                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+            $this->_chunksURLs = $db->pselectCol($query, []);
+        } else {
+          $this->_fileData['SplitCount'] = 'n/a';
+
+          $query = "SELECT ppf.Value
+                    FROM physiological_parameter_file as ppf
+                      LEFT JOIN parameter_type as pt USING (ParameterTypeID)
+                    WHERE PhysiologicalFileID=:PFID
+                      AND pt.Name = 'electrophyiology_chunked_dataset_path'";
+          $this->_chunksURLs = $db->pselectCol($query, ['PFID' => $physiologicalFileID]);
         }
     }
 
@@ -79,10 +123,38 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      *
      * @return string The value of the parameter
      */
-    function getParameter(string $parameterName): string
+    function getParameter(string $parameterName) : string
     {
         return $this->_fileData[$parameterName] ??
             ($this->_parameters[$parameterName] ?? '');
+    }
+
+    /**
+     * Gets the chunks URLs for this file
+     *
+     * @return array The list of URLs
+     */
+    function getChunksURLs() : array
+    {
+      return $this->_chunksURLs;
+    }
+
+    /**
+     * Gets the split data for this file
+     * 
+     * @param int $index The split index
+     *
+     * @return array The split data
+     */
+    function getSplitData(int $index) : ?array
+    {
+      if (count($this->_splitFileIDs) === 0) return null;
+
+      return [
+        'splitIndex'      => $index,
+        'splitCount'      => intval($this->_fileData['SplitCount']),
+        'splitPhysioFile' => new ElectrophysioFile(intval($this->_splitFileIDs[$index])),
+      ];
     }
 
     /**

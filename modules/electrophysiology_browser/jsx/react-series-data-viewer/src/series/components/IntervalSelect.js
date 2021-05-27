@@ -58,6 +58,7 @@ const IntervalSelect = ({
           fontWeight: 'bold',
           paddingLeft: '15px',
           marginBottom: '15px',
+          textAlign: 'center',
         }}
       >
         Timeline Range View

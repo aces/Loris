@@ -28,7 +28,7 @@ class FilePanel extends Component {
    */
   render() {
     const halfSize = this.state.data.length/2;
-    const splitData = [
+    const columns = [
       this.state.data.slice(0, halfSize),
       this.state.data.slice(halfSize),
     ];
@@ -41,12 +41,14 @@ class FilePanel extends Component {
           </div>
           <Panel
             id={this.props.id + '_details'}
-            title={'Acquisition Details for ' + this.props.title}
+            title={'Acquisition Details for Recording '
+              + this.props.title.split('.').slice(0, -1).join('.')
+            }
            >
             <div className={'container-fluid'}>
               <div className={'row no-gutters'}>
                 <div className={'no-gutters'}>
-                  {splitData.map((column, i) => (
+                  {columns.map((column, i) => (
                     <div
                       key={i}
                       className={'col-md-6'}
@@ -98,13 +100,13 @@ class FilePanel extends Component {
 FilePanel.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 FilePanel.defaultProps = {
   id: 'file_panel',
   title: 'FILENAME',
-  data: {},
+  data: [],
 };
 
 export {

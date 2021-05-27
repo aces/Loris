@@ -17,6 +17,13 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 
+type Props = {
+  chunksURL: string,
+  epochsURL: string,
+  electrodesURL: string,
+  limit: number,
+};
+
 /**
  * EEGLabSeriesProvider component
  */
@@ -34,47 +41,43 @@ class EEGLabSeriesProvider extends Component {
       applyMiddleware(thunk, epicMiddleware)
     );
 
+    this.state = {
+      channels: [],
+    };
+
+    this.store.subscribe(this.listener.bind(this));
+
     epicMiddleware.run(rootEpic);
 
     window.EEGLabSeriesProviderStore = this.store;
 
     const {
-      chunkDirectoryURLs,
-      epochsTableURLs,
-      electrodesTableUrls,
+      chunksURL,
+      epochsURL,
+      electrodesURL,
       limit,
     } = props;
 
-    const chunkUrls =
-      chunkDirectoryURLs instanceof Array
-        ? chunkDirectoryURLs
-        : [chunkDirectoryURLs];
+    const racers = (fetcher, url, route = '') => {
+      if (url) {
+        return [fetcher(`${url}${route}`)
+        .then((json) => ({json, url}))
+        // if request fails don't resolve
+        .catch((error) => {
+          console.error(error);
+          return new Promise((resolve) => {});
+        })];
+      } else {
+        return [new Promise((resolve) => {})];
+      }
+    };
 
-    const epochUrls =
-      epochsTableURLs instanceof Array ? epochsTableURLs : [epochsTableURLs];
-
-    const electrodeUrls =
-      electrodesTableUrls instanceof Array
-        ? electrodesTableUrls
-        : [electrodesTableUrls];
-
-    const racers = (fetcher, urls, route = '') =>
-      urls.map((url) =>
-        fetcher(`${url}${route}`)
-          .then((json) => ({json, url}))
-          // if request fails don't resolve
-          .catch((error) => {
-            console.error(error);
-            return new Promise((resolve) => {});
-          })
-      );
-
-    Promise.race(racers(fetchJSON, chunkUrls, '/index.json')).then(
+    Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         const {channelMetadata, shapes, timeInterval, seriesRange} = json;
         this.store.dispatch(
           setDatasetMetadata({
-            chunkDirectoryURL: url,
+            chunksURL: url,
             channelMetadata,
             shapes,
             timeInterval,
@@ -89,7 +92,7 @@ class EEGLabSeriesProvider extends Component {
         this.store.dispatch(setDomain(timeInterval));
         this.store.dispatch(setInterval(timeInterval));
       }
-    ).then(() => Promise.race(racers(fetchText, epochUrls)).then((text) => {
+    ).then(() => Promise.race(racers(fetchText, epochsURL)).then((text) => {
         if (!(typeof text.json === 'string'
           || text.json instanceof String)) return;
         this.store.dispatch(
@@ -109,7 +112,7 @@ class EEGLabSeriesProvider extends Component {
       })
     );
 
-    Promise.race(racers(fetchText, electrodeUrls))
+    Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {
         if (!(typeof text.json === 'string'
           || text.json instanceof String)) return;
@@ -129,12 +132,27 @@ class EEGLabSeriesProvider extends Component {
   }
 
   /**
+   * Store update listener
+   */
+  listener() {
+    this.setState({
+      channels: this.store.getState().dataset.channels,
+    });
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    return <Provider store={this.store}>{this.props.children}</Provider>;
+    const [signalViewer, ...rest] = this.props.children;
+    return (
+      <Provider store={this.store}>
+        {(this.state.channels.length > 0) && signalViewer}
+        {rest}
+      </Provider>
+    );
   }
 }
 

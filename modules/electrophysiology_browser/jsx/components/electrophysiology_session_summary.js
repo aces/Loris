@@ -17,12 +17,7 @@ class SummaryPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        this.props.data.frequency.sampling,
-        ...this.props.data.channel_count,
-        this.props.data.reference,
-        this.props.data.frequency.powerline,
-      ],
+      data: this.props.data,
     };
   }
 
@@ -81,11 +76,11 @@ class SummaryPanel extends Component {
 }
 
 SummaryPanel.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 };
 
 SummaryPanel.defaultProps = {
-  data: {},
+  data: [],
 };
 
 export {
