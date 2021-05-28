@@ -27,7 +27,7 @@ class RemoveFilterButton extends Component {
    */
   render() {
     return (
-      <div>
+      <div style={{display: 'inline'}}>
         <button
           type="button"
           className="btn btn-primary"

@@ -30,6 +30,7 @@ class QueryPanel extends Component {
               </div>
               <div>
                 <h3>Selected Filters</h3>
+                {JSON.stringify(this.props.query.filters)}
               </div>
               {this.props.children}
             </div>

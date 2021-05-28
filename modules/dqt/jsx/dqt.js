@@ -133,6 +133,7 @@ class DQT extends Component {
     query.fields = cleanedupfields.concat(newfields);
     this.setState({
       query: query,
+      selectedCategory: {},
     });
   }
 
@@ -145,8 +146,12 @@ class DQT extends Component {
     console.info('filters: '.concat(JSON.stringify(filters)));
     const query = this.state.query;
     query.filters = filters;
-    this.setState({query});
+    this.setState({
+      query: query,
+      selectedCategory: {},
+    });
   }
+
   /**
    * Renders the React component.
    *

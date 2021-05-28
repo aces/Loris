@@ -18,6 +18,13 @@ class AddFiltersTab extends Component {
   }
 
   /**
+   * Load categories when this gets mounted
+   */
+  componentDidMount() {
+    this.props.getCategories();
+  }
+
+  /**
    * Set the query filters
    *
    * @param {object} filters The new filters
@@ -97,6 +104,8 @@ class AddFiltersTab extends Component {
           setFilter={this.setFilters}
           deleteFilter={this.deleteFilters}
           categories={this.props.categories}
+          getCategoryFields={this.props.getCategoryFields}
+          selectedCategory={this.props.selectedCategory}
         />
       </div>
     );

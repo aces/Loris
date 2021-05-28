@@ -13,8 +13,44 @@ class FilterItem extends Component {
   constructor(props) {
     super(props);
 
+    this.addFilter = this.addFilter.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.deleteFilter = this.deleteFilter.bind(this);
+  }
+
+  /**
+   * Add a filter at a given index
+   *
+   * @param {object} filter The new filter
+   * @param {integer} index The index
+   */
+  addFilter(filter, index) {
+    console.info('FilterItem::addFilter');
+    console.info(JSON.stringify(filter));
+    console.info(JSON.stringify(index));
+    console.info(JSON.stringify(this.props.filters));
+
+    const filters = this.props.filters;
+
+    switch (filters.type) {
+      case 'filter':
+        let newFilters = {
+          type: 'group',
+          operator: 'AND',
+          items: [
+            filters,
+            filter,
+          ],
+        };
+        this.props.setFilter(newFilters, this.props.index);
+        break;
+      case 'group':
+        filters.items.push(filter);
+        this.props.setFilter(filters, this.props.index);
+        break;
+      default:
+        console.info('not implemented');
+    }
   }
 
   /**
@@ -56,6 +92,13 @@ class FilterItem extends Component {
         console.info('group');
         let tmp = this.props.filters;
         tmp.items.splice(index, 1);
+
+        if (tmp.items.length == 1) {
+          // When there is only one item remaining in a group, the group
+          // is replaced by that last item.
+          tmp = tmp.items.shift();
+        }
+
         this.props.setFilter(tmp, this.props.index);
       break;
       default:
@@ -82,7 +125,7 @@ class FilterItem extends Component {
                   setFilter={this.setFilter}
                   deleteFilter={this.deleteFilter}
                   categories={this.props.categories}
-                  getCategoryfields={this.props.getCategoryfields}
+                  getCategoryFields={this.props.getCategoryFields}
                   selectedCategory={this.props.selectedCategory}
                 />
               </li>
@@ -91,19 +134,18 @@ class FilterItem extends Component {
         return (
           <div>
             <fieldset>
-              <legend>group
-                <AddFilterButton
-                  setFilter={this.props.setFilter}
-                  index={this.props.index}
-                  categories={this.props.categories}
-                  getCategoryfields={this.props.getCategoryfields}
-                  selectedCategory={this.props.selectedCategory}
-                />
-                <RemoveFilterButton
-                  deleteFilter={this.deleteFilter}
-                  index={null}
-                />
-              </legend>
+              <legend>group</legend>
+              <AddFilterButton
+                addFilter={this.addFilter}
+                index={this.props.index}
+                categories={this.props.categories}
+                getCategoryFields={this.props.getCategoryFields}
+                selectedCategory={this.props.selectedCategory}
+              />
+              <RemoveFilterButton
+                deleteFilter={this.deleteFilter}
+                index={null}
+              />
               <span>operator: {this.props.filters.operator}</span>
               <ul>
                 {children}
@@ -115,25 +157,19 @@ class FilterItem extends Component {
         return (
           <div>
             <fieldset>
-              <legend>filter
-                <AddFilterButton
-                  setFilter={this.props.setFilter}
-                  index={this.props.index}
-                  categories={this.props.categories}
-                  getCategoryfields={this.props.getCategoryfields}
-                  selectedCategory={this.props.selectedCategory}
-                />
-                <RemoveFilterButton
-                  deleteFilter={this.deleteFilter}
-                  index={this.props.index}
-                />
-              </legend>
-              <ul>
-                <li>operator: {this.props.filters.operator}</li>
-                <li>category: {this.props.filters.category}</li>
-                <li>field: {this.props.filters.field}</li>
-                <li>value: {this.props.filters.value}</li>
-              </ul>
+              <legend>filter</legend>
+              <AddFilterButton
+                addFilter={this.addFilter}
+                index={this.props.index}
+                categories={this.props.categories}
+                getCategoryFields={this.props.getCategoryFields}
+                selectedCategory={this.props.selectedCategory}
+              />
+              <RemoveFilterButton
+                deleteFilter={this.deleteFilter}
+                index={this.props.index}
+              />
+              {JSON.stringify(this.props.filters)}
             </fieldset>
           </div>
         );
@@ -142,9 +178,10 @@ class FilterItem extends Component {
           <div>
             <h5>filteritem</h5>
             <AddFilterButton
-              setFilter={this.props.setFilter}
+              addFilter={this.addFilter}
+              index={this.props.index}
               categories={this.props.categories}
-              getCategoryfields={this.props.getCategoryfields}
+              getCategoryFields={this.props.getCategoryFields}
               selectedCategory={this.props.selectedCategory}
             />
           </div>

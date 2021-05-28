@@ -30,16 +30,11 @@ class AddFilterButton extends Component {
 
   /**
    * Add a filter to the query
+   *
+   * @param {object} filter The new filter
    */
-  addFilter() {
-    const filter = {
-      type: 'filter',
-      operator: 'equals',
-      category: 'demographics',
-      field: 'DoB',
-      value: '1939-05-15',
-    };
-    this.props.setFilter(filter, this.props.index ?? null);
+  addFilter(filter) {
+    this.props.addFilter(filter, this.props.index ?? null);
     this.setState(
       {showModal: false}
     );
@@ -56,15 +51,15 @@ class AddFilterButton extends Component {
       modal = (
         <AddFilterModal
           categories={this.props.categories}
-          getCategoryfields={this.props.getCategoryfields}
-          selectedCategory={this.state.selectedCategory}
+          getCategoryFields={this.props.getCategoryFields}
+          selectedCategory={this.props.selectedCategory}
           addFilter={this.addFilter}
           onClose={this.toggleModal}
         />
       );
     }
     return (
-      <div>
+      <div style={{display: 'inline'}}>
       <button
         type="button"
         className="btn btn-primary"
