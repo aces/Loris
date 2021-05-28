@@ -48,6 +48,7 @@ class AddFiltersTab extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    /*
     const query = {
         filters: {
           type: 'group',
@@ -90,16 +91,13 @@ class AddFiltersTab extends Component {
           ],
         },
     };
-
-    if (Object.keys(this.props.filters).length > 0) {
-      query.filters = this.props.filters;
-    }
+    */
 
     return (
       <div>
         <h2>AddFiltersTab</h2>
         <FilterItem
-          filters={query.filters}
+          filters={this.props.filters}
           index={0}
           setFilter={this.setFilters}
           deleteFilter={this.deleteFilters}

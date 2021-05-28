@@ -71,24 +71,43 @@ abstract class QueryFactory
                 'operator',
                 'category',
                 'field',
-                'visit'
+                'visits'
             ];
 
             $diff = array_diff($requiredfields, array_keys($queryfilter));
 
             if (!empty($diff)) {
                 throw new \LorisException(
-                    'Field(s) missing: ' . implode(', ', $diff)
+                    'Filter missing property(ies): ' . implode(', ', $diff)
                 );
             }
 
-            return new QueryFilter(
-                $queryfilter['operator'],
-                $queryfilter['category'],
-                $queryfilter['field'],
-                $queryfilter['visit'],
-                $queryfilter['value'] ?? null
+            // when then filter applie to all visits
+            if ($queryfilter['visits'] == 'all') {
+              return new QueryFilter(
+                    $queryfilter['operator'],
+                    $queryfilter['category'],
+                    $queryfilter['field'],
+                    null,
+                    $queryfilter['value'] ?? null
+                );
+            }
+
+print_errlog($queryfilter);
+            $items = array_map(
+                function (string $v) use ($queryfilter) {
+                    return new QueryFilter(
+                        $queryfilter['operator'],
+                        $queryfilter['category'],
+                        $queryfilter['field'],
+                        $v,
+                        $queryfilter['value'] ?? null
+                    );
+                },
+                $queryfilter['visits']
             );
+
+            return new QueryFilterGroup('AND', $items);
 
         default:
             throw new \LorisException(

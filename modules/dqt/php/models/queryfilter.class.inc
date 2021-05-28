@@ -52,7 +52,7 @@ class QueryFilter implements QueryFilters
 
         case 'isNull':
             $this->_value = null;
-        case 'equals':
+        case 'equal':
             $params["key"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_value.'"]';
             break;
 
@@ -96,7 +96,7 @@ class QueryFilter implements QueryFilters
             break;
 
         default:
-            throw new \LorisException('Unsuported QueryField operator');
+            throw new \LorisException('Unsupported QueryField operator');
         }
 
         // NOTE :: SessionRowMapper must be added after the filters because they use SessionResultRow objects.

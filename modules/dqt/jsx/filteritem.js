@@ -16,6 +16,7 @@ class FilterItem extends Component {
     this.addFilter = this.addFilter.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.deleteFilter = this.deleteFilter.bind(this);
+    this.toggleGroupOperator = this.toggleGroupOperator.bind(this);
   }
 
   /**
@@ -30,11 +31,11 @@ class FilterItem extends Component {
     console.info(JSON.stringify(index));
     console.info(JSON.stringify(this.props.filters));
 
-    const filters = this.props.filters;
+    let filters = this.props.filters;
 
     switch (filters.type) {
       case 'filter':
-        let newFilters = {
+        filters = {
           type: 'group',
           operator: 'AND',
           items: [
@@ -42,15 +43,16 @@ class FilterItem extends Component {
             filter,
           ],
         };
-        this.props.setFilter(newFilters, this.props.index);
+        this.props.setFilter(filters, this.props.index);
         break;
       case 'group':
         filters.items.push(filter);
-        this.props.setFilter(filters, this.props.index);
         break;
       default:
-        console.info('not implemented');
+        filters = filter;
     }
+
+    this.props.setFilter(filters, this.props.index);
   }
 
   /**
@@ -109,6 +111,17 @@ class FilterItem extends Component {
   }
 
   /**
+   * Toggle between AND/OR
+   */
+  toggleGroupOperator() {
+    console.info('FilterItem::toggleGroupOperator');
+    console.info(this.props.filters);
+    const filters = this.props.filters;
+    filters.operator = filters.operator == 'AND' ? 'OR' : 'AND';
+    this.props.setFilter(filters, this.props.index);
+  }
+
+  /**
    * Render
    *
    * @return {JSX} - React markup for the component
@@ -134,7 +147,14 @@ class FilterItem extends Component {
         return (
           <div>
             <fieldset>
-              <legend>group</legend>
+              <legend>
+                group&nbsp;
+                <span
+                  onClick={this.toggleGroupOperator}
+                >
+                  {this.props.filters.operator}
+                </span>
+              </legend>
               <AddFilterButton
                 addFilter={this.addFilter}
                 index={this.props.index}
@@ -146,7 +166,6 @@ class FilterItem extends Component {
                 deleteFilter={this.deleteFilter}
                 index={null}
               />
-              <span>operator: {this.props.filters.operator}</span>
               <ul>
                 {children}
               </ul>
@@ -176,7 +195,6 @@ class FilterItem extends Component {
       default:
         return (
           <div>
-            <h5>filteritem</h5>
             <AddFilterButton
               addFilter={this.addFilter}
               index={this.props.index}

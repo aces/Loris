@@ -59,7 +59,7 @@ class AddFilterModal extends Component {
 
     // Special case when all visits are selected
     if (visits.length == Object.keys(this.state.visits).length) {
-      visits = null;
+      visits = 'all';
     }
 
     const filter = {
