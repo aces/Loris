@@ -86,8 +86,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
                 'AppointmentTypeID'   =>$this->AppointmentTypeID,
                 'Day'                 => $this->Day,
                 'Time'                => $this->Time,
-                'earlyDate'           => $this->Day,
-                'lateDate'            => $this->Day,
                 'StartsAt'            =>$this->StartsAt,
                 'dataEntryStatus'     => $this->dataEntryStatus,
                 'SessionID'           =>$this->SessionID,

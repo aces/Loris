@@ -307,13 +307,11 @@ class DataTable extends Component {
     let result = false;
     let searchKey = null;
     let searchString = null;
-    let comparison = null;
 
-    if (this.props.filter[name]) {
-      filterData = this.props.filter[name].value;
-      exactMatch = this.props.filter[name].exactMatch;
-      opposite = this.props.filter[name].opposite;
-      comparison = this.props.filter[name].comparison;
+    if (this.props.filters[name]) {
+      filterData = this.props.filters[name].value;
+      exactMatch = this.props.filters[name].exactMatch;
+      opposite = this.props.filters[name].opposite;
     }
 
     // Handle null inputs
@@ -377,21 +375,6 @@ class DataTable extends Component {
           result = true;
         }
       }
-    }
-    switch (comparison) {
-      case 'greaterthan':
-        result = (searchString > searchKey);
-        break;
-      case 'smallerthan':
-        result = (searchString < searchKey);
-        break;
-      case 'greaterthanorequal':
-        result = (searchString >= searchKey);
-        break;
-      case 'smallerthanorequal':
-        result = (searchString <= searchKey);
-        break;
-      default:
     }
     return result;
   }

@@ -5,7 +5,7 @@ import Loader from 'Loader';
 import Modal from 'Modal';
 import swal from 'sweetalert2';
 import {Tabs, TabPane} from 'Tabs';
-import DataTable from 'jsx/DataTable';
+import FilterableDataTable from 'jsx/FilterableDataTable';
 import Filter from 'jsx/Filter';
 /**
  * Schedule Module
@@ -33,7 +33,7 @@ class ScheduleIndex extends Component {
         AppointmentType: {},
         SessionFieldOptions: {},
       },
-      filter: {},
+      filters: {},
       tabledatapast: {},
       tabledatanext: {},
       tabledatatoday: {},
@@ -461,16 +461,6 @@ class ScheduleIndex extends Component {
         name: 'Time',
         type: 'time',
       }},
-      {label: 'Earliest Date >=', show: false, filter: {
-        name: 'earlyDate',
-        type: 'date',
-        comparison: 'greaterthanorequal',
-      }},
-      {label: 'Latest Date <=', show: false, filter: {
-        name: 'lateDate',
-        type: 'date',
-        comparison: 'smallerthanorequal',
-      }},
       {label: 'Starts At', show: true},
       {label: 'Data Entry Status', show: true},
       {label: 'Edit', show: true,
@@ -507,55 +497,46 @@ class ScheduleIndex extends Component {
     return (
     <div>
       {this.renderScheduleForm()}
-      <Filter
-        name="schedule_module"
-        id="schedule_module"
-        filter={this.state.filter}
-        fields={fields}
-        updateFilter={this.updateFilter}
-        clearFilter={this.clearFilter}
-        columns="2"
-      />
       <div className="panel-body">
       <Tabs tabs={tabList} defaultTab="all">
          <TabPane TabId={tabList[0].id}>
-             <DataTable
+             <FilterableDataTable
                name="schedule_module"
                data={this.state.data.Data}
                fields={fields}
                getFormattedCell={this.formatColumn}
                actions={actions}
-               filter={this.state.filter}
+               filters={this.state.filters}
               />
          </TabPane>
          <TabPane TabId={tabList[1].id}>
-             <DataTable
+             <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatapast}
                 fields={fields}
                 getFormattedCell={this.formatColumn}
                 actions={actions}
-                filter={this.state.filter}
+                filters={this.state.filters}
               />
           </TabPane>
          <TabPane TabId={tabList[2].id}>
-             <DataTable
+             <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatanext}
                 fields={fields}
                 getFormattedCell={this.formatColumn}
                 actions={actions}
-                filter={this.state.filter}
+                filters={this.state.filters}
               />
           </TabPane>
           <TabPane TabId={tabList[3].id}>
-             <DataTable
+             <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatatoday}
                 fields={fields}
                 getFormattedCell={this.formatColumn}
                 actions={actions}
-                filter={this.state.filter}
+                filters={this.state.filters}
               />
           </TabPane>
        </Tabs>
