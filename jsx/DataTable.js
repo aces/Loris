@@ -376,6 +376,7 @@ class DataTable extends Component {
         }
       }
     }
+
     return result;
   }
 
