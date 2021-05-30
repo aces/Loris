@@ -6,7 +6,6 @@ import Modal from 'Modal';
 import swal from 'sweetalert2';
 import {Tabs, TabPane} from 'Tabs';
 import FilterableDataTable from 'jsx/FilterableDataTable';
-import Filter from 'jsx/Filter';
 /**
  * Schedule Module
  *
@@ -54,13 +53,11 @@ class ScheduleIndex extends Component {
     this.edit = this.edit.bind(this);
     this.renderScheduleFormButton = this.renderScheduleFormButton.bind(this);
     this.deleteid = this.deleteid.bind(this);
-    this.tabByid = this.tabByid.bind(this);
     this.deleteConfirm = this.deleteConfirm.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+    this.fetchData();
   }
 
   /**
@@ -68,14 +65,23 @@ class ScheduleIndex extends Component {
    *
    * @return {object}
    */
-  fetchData() {
+    fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) =>
-        this.setState({data}))
-      .then(()=>{
-         this.tabByid();
-       })
+      .then((resp) => {
+         if (resp.ok) {
+          resp.json().then((data) => {
+            this.setState({data});
+            const today = data.fieldOptions.today;
+            const next = data.fieldOptions.next30days;
+            const list = data.Data;
+            this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
+            this.setState({tabledatanext: list.filter((e)=>{
+            return e[7]>today && e[7]<=next;
+             })});
+            this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
+            this.setState({isLoaded: true});
+          });
+      }})
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -83,15 +89,19 @@ class ScheduleIndex extends Component {
   }
 
   fetchDataForm(type, value) {
-    return fetch(this.props.formURL+'/'+type+'/'+value, {credentials: 'same-origin'})
+    return fetch(this.props.formURL+'/'+type+'/'+value, {
+      method: 'GET',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      })
       .then((resp) => resp.json())
       .then((data) => {
        if (type === 'DCCID' ) {
-      this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
+         this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
       } else {
-      this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
+         this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
       }
-      this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
+         this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
       })
       .catch((error) => {
         this.setState({error: true});
@@ -113,20 +123,6 @@ class ScheduleIndex extends Component {
   clearFilter() {
     this.updateFilter({});
     history.replaceState({}, '', '?');
-  }
-  /**
-   * Sets table data of tab by id
-   *
-   */
-  tabByid() {
-    const today = this.state.data.fieldOptions.today;
-    const next = this.state.data.fieldOptions.next30days;
-    const list = this.state.data.Data;
-    this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
-    this.setState({tabledatanext: list.filter((e)=>{
-    return e[7]>today && e[7]<=next;
-    })});
-    this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
   }
   /**
    * Store the value of the element in this.state.formData
@@ -226,7 +222,7 @@ class ScheduleIndex extends Component {
       credentials: 'same-origin',
     })
     .then((resp) => {
-      if (resp.ok && resp.status === 200) {
+      if (resp.ok) {
             this.fetchData();
       } else {
         resp.text().then((message) => {
@@ -420,7 +416,7 @@ class ScheduleIndex extends Component {
     }
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'CandID', show: true, filter: {
+      {label: 'DCCID', show: true, filter: {
         name: 'CandID',
         type: 'text',
       }},
