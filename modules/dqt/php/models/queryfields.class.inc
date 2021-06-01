@@ -78,7 +78,7 @@ class QueryFields implements \JsonSerializable
     {
         $prov = new InstrumentsProvisioner($loris);
 
-        $prov = $prov->withParams(['keys' => $keys]);
+        $prov = $prov->withAddedParams(['keys' => $keys]);
         $keys = null;
 
         // Limit the returned data to the selected fields.

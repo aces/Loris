@@ -25,7 +25,10 @@ class QueryFilter implements QueryFilters
         $this->_category = $category;
         $this->_field    = $field;
         $this->_visit    = $visit;
-        $this->_value    = $value;
+        // Backward compatibility:: This should use the datadictonnary to match the datatype
+        // instead of guessing with is_numeric.
+        // It is thightly coupled with the "search" view creation function
+        $this->_value    = is_numeric($value) ? $value : '"'.$value.'"';
     }
 
     public function getFilteredSessions(Loris $loris, \User $user): \Traversable
@@ -43,42 +46,41 @@ class QueryFilter implements QueryFilters
 
         switch($this->_operator) {
         case 'contains':
+            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'"]';
+            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",{}]';
+
             $provisioner = $provisioner
                 ->filter(new ContainsFilter($this->_value));
-
-            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'"]';
-            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'",{}]';
             break;
 
         case 'isNull':
             $this->_value = null;
         case 'equal':
-            $params["key"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_value.'"]';
+            $params["key"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",'.$this->_value.']';
             break;
 
         case 'isNotNull':
             $this->_value = null;
         case 'notEqual':
+            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'"]';
+            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",{}]';
+
             $provisioner = $provisioner
                 ->filter(new NotEqualFilter($this->_value));
-
-            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'"]';
-            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'",{}]';
-
             break;
 
         case 'lessThanEqual':
             // Strict lessThan could be implementing using the 'inclusive_end' param.
-            $params["startkey"]      = '["'.$this->_category.'","'.$this->_field.'"]';
-            $params["endkey"]        = '["'.$this->_category.'","'.$this->_field.'","'.$this->_value.'"]';
+            $params["startkey"]      = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'"]';
+            $params["endkey"]        = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",'.$this->_value.']';
             $params["inclusive_end"] = "true";
             break;
 
         case 'greaterThanEqual':
             // Strict greaterThan could be implementing using the 'inclusive_end'
             // And descending order params.
-            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_value.'"]';
-            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'",{}]';
+            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",'.$this->_value.']';
+            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",{}]';
             break;
 
         case 'starstWith':
@@ -90,9 +92,9 @@ class QueryFilter implements QueryFilters
                 'UTF-8',
                 'HTML-ENTITIES'
             );
-
-            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_value.'"]';
-            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'","'.$nextvalue.'"]';
+            // TODO :: Test how this bahaves with a numeric value (e.g starts with 20 --> 20.1, 2000, 20e^-10 ??)
+            $params["startkey"] = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'",'.$this->_value.']';
+            $params["endkey"]   = '["'.$this->_category.'","'.$this->_field.'","'.$this->_visit.'","'.$nextvalue.'"]';
             break;
 
         default:

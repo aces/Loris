@@ -117,6 +117,13 @@ abstract class CouchDBViewProvisioner extends ProvisionerInstance
     public function withParams(array $params): CouchDBViewProvisioner
     {
         $new          = clone($this);
+        $new->_params = $params;
+        return $new;
+    }
+
+    public function withAddedParams(array $params): CouchDBViewProvisioner
+    {
+        $new          = clone($this);
         $new->_params = array_merge($params, $this->_params);
         return $new;
     }

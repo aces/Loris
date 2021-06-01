@@ -71,7 +71,7 @@ abstract class QueryFactory
                 'operator',
                 'category',
                 'field',
-                'visits'
+                'visit'
             ];
 
             $diff = array_diff($requiredfields, array_keys($queryfilter));
@@ -82,32 +82,13 @@ abstract class QueryFactory
                 );
             }
 
-            // when then filter applie to all visits
-            if ($queryfilter['visits'] == 'all') {
-              return new QueryFilter(
-                    $queryfilter['operator'],
-                    $queryfilter['category'],
-                    $queryfilter['field'],
-                    null,
-                    $queryfilter['value'] ?? null
-                );
-            }
-
-print_errlog($queryfilter);
-            $items = array_map(
-                function (string $v) use ($queryfilter) {
-                    return new QueryFilter(
-                        $queryfilter['operator'],
-                        $queryfilter['category'],
-                        $queryfilter['field'],
-                        $v,
-                        $queryfilter['value'] ?? null
-                    );
-                },
-                $queryfilter['visits']
+            return new QueryFilter(
+                $queryfilter['operator'],
+                $queryfilter['category'],
+                $queryfilter['field'],
+                $queryfilter['visit'],
+                $queryfilter['value'] ?? null
             );
-
-            return new QueryFilterGroup('AND', $items);
 
         default:
             throw new \LorisException(

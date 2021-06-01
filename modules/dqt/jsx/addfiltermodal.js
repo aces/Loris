@@ -53,23 +53,32 @@ class AddFilterModal extends Component {
    * Add a filter when button is clicked
    */
   addFilter() {
-    let visits = Object.keys(this.state.visits).filter(
-      (k) => this.state.visits[k]
-    );
+    let filter = null;
 
-    // Special case when all visits are selected
-    if (visits.length == Object.keys(this.state.visits).length) {
-      visits = 'all';
+    const filteritems = Object.keys(this.state.visits)
+      .filter((visitlabel) => this.state.visits[visitlabel])
+      .map((visitlabel) => {
+        return {
+          type: 'filter',
+          category: this.state.category,
+          field: this.state.field,
+          operator: this.state.operator,
+          value: this.state.value,
+          visit: visitlabel,
+        };
+      });
+
+    filter = {
+      type: 'group',
+      operator: 'AND',
+      items: filteritems,
+    };
+
+    if (filteritems.length == 1) {
+      // When a single visit is selected, add a filter instead of a group
+      filter = filteritems[0];
     }
 
-    const filter = {
-      type: 'filter',
-      category: this.state.category,
-      field: this.state.field,
-      operator: this.state.operator,
-      value: this.state.value,
-      visits: visits,
-    };
     this.props.addFilter(filter);
   }
 

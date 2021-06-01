@@ -20,7 +20,7 @@ class QueryFilterGroup implements QueryFilters
     {
         return array_reduce(
             $this->_items,
-            function ($carry, $item) use ($user) {
+            function ($carry, $item) use ($loris, $user) {
                 if ($carry === null) {
                     return $item->getFilteredSessions($loris, $user);
                 }
