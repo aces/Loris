@@ -28,20 +28,22 @@ class Split_Data extends \NDB_Page
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = \NDB_Factory::singleton()->user();
-        
+
         switch ($request->getMethod()) {
         case 'POST':
             if (!($user->hasPermission('electrophysiology_browser_view_allsites')
-            || ($user->hasPermission('electrophysiology_browser_view_site')
-                && $user->hasStudySite()))) {
+                || ($user->hasPermission('electrophysiology_browser_view_site')
+                && $user->hasStudySite()))
+            ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
             // Parse POST request body.
             $values = (array)$request->getParsedBody();
-            
+
             if (!isset($values['physioFileID'])
-               || !isset($values['splitIndex'])) {
+                || !isset($values['splitIndex'])
+            ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 

@@ -455,7 +455,7 @@ class Sessions extends \NDB_Page
 
         // get the links to the files for downloads
 
-        $fileSummary['downloads']  = $this->getDownloadLinks($physioFileObj);
+        $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
         $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
@@ -473,10 +473,9 @@ class Sessions extends \NDB_Page
      */
     function getDownloadlinks(ElectrophysioFile $physioFile): array
     {
-        $nSplit         = intval($physioFile->getParameter('SplitCount'));
-        $physioFileName = basename($physioFile->getParameter('FilePath'));
-        $downloadLinks  = [];
-            
+        $nSplit        = intval($physioFile->getParameter('SplitCount'));
+        $downloadLinks = [];
+
         if ($nSplit === 0) {
             $downloadLinks[] = [
                 'groupName' => '',
@@ -484,12 +483,18 @@ class Sessions extends \NDB_Page
             ];
         } else {
             foreach (range(0, $nSplit-1) as $i) {
-                $splitData       = $physioFile->getSplitData($i);
+                $splitData = $physioFile->getSplitData($i);
+                if (is_null($splitData)) {
+                    continue;
+                }
+
                 $splitPhysioFile = $splitData['splitPhysioFile'];
-                
+
                 $downloadLinks[] = [
                     'groupName' => 'Split '.($i+1),
-                    'links'     => $this->getPhysioFileDownloadlinks($splitPhysioFile),
+                    'links'     => $this->getPhysioFileDownloadlinks(
+                        $splitPhysioFile
+                    ),
                 ];
             }
         }
@@ -497,8 +502,8 @@ class Sessions extends \NDB_Page
     }
 
     /**
-     * Gets the download link for the files associated to a particular electrophysiology
-     * file (channels.tsv, electrodes.tsv, task events.tsv...)
+     * Gets the download link for the files associated to a particular
+     * electrophysiology file (channels.tsv, electrodes.tsv, task events.tsv...)
      *
      * @param ElectrophysioFile $physioFileObj ElectrophysiologyFile instance
      *
@@ -511,7 +516,7 @@ class Sessions extends \NDB_Page
         $physioFile    = $physioFileObj->getParameter('FilePath');
         $db            = \NDB_Factory::singleton()->database();
         $downloadLinks = [];
-        
+
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
@@ -541,7 +546,10 @@ class Sessions extends \NDB_Page
                             $query_key
                             WHERE
                             PhysiologicalFileID=:PFID";
-            $query_statement = $db->pselectRow($query_statement, ['PFID' => $physioFileID]);
+            $query_statement = $db->pselectRow(
+                $query_statement,
+                ['PFID' => $physioFileID]
+            );
             if (isset($query_statement['FileType'])) {
                 $downloadLinks[] = [
                     'type'  => $query_statement['FileType'],
