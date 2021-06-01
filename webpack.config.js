@@ -42,20 +42,19 @@ const resolve = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
   },
-  extensions: ['*', '.js', '.jsx', '.json'],
+  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
 };
 
 const mod = {
   rules: [
     {
-      test: /\.(js|jsx)$/,
+      test: /\.(jsx?|tsx?)$/,
       exclude: /node_modules/,
       use: [
         {
           loader: 'babel-loader?cacheDirectory',
         },
       ],
-      enforce: 'pre',
     },
     {
       test: /\.css$/,
@@ -63,6 +62,10 @@ const mod = {
         'style-loader',
         'css-loader',
       ],
+    },
+    {
+      test: /\.tsx?$/,
+      loader: 'ts-loader',
     },
   ],
 };

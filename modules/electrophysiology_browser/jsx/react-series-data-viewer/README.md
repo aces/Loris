@@ -13,7 +13,7 @@ A collection of expressive, low-level visualization primitives for React.
 RxJS is a library for composing asynchronous and event-based programs by using observable sequences. 
 It provides one core type, the Observable, satellite types (Observer, Schedulers, Subjects) and operators to allow handling asynchronous events as collections.
 
-### flow (https://flow.org)
+### TypeScript (https://www.typescriptlang.org)
 A static type checker for javascript.
 
 ### Protocol Buffers (https://developers.google.com/protocol-buffers)
