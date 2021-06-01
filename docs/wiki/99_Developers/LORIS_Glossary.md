@@ -1,6 +1,6 @@
 # LORIS Glossary
 
-Below is a list of terms used mostly in the context of the LORIS user-facing front-end used. For definition of Study variables used in configuring LORIS also see [here](https://acesloris.readthedocs.io/en/latest/docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.html).
+Below is a list of key terms used in LORIS. For a definition of study variables used in configuring LORIS, please see [here](../01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md).
 
 **Administration:** in an instrument form, can be marked “None”, “Partial”, or “All”. If an instrument was not administered, it is marked as “None.” This will remove the instrument from the database statistics calculation. If an instrument was partially administered (i.e. candidate did not answer some questions, parent did not provide some answers, tester did not ask some of the questions), it is marked as “Partial”. This field has to be set for Data Entry to be marked as “Complete”.
 
