@@ -2,9 +2,9 @@ import {Component} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * A modal window to add a filter
+ * A modal window to add a fields
  */
-class AddFilterModal extends Component {
+class SelectFieldsModal extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -16,16 +16,12 @@ class AddFilterModal extends Component {
       category: null,
       field: null,
       visits: {},
-      operator: null,
-      value: null,
     };
 
-    this.addFilter = this.addFilter.bind(this);
+    this.addFields = this.addFields.bind(this);
     this.onCategorySelected = this.onCategorySelected.bind(this);
     this.onFieldSelected = this.onFieldSelected.bind(this);
     this.onVisitChange = this.onVisitChange.bind(this);
-    this.onOperatorSelected = this.onOperatorSelected.bind(this);
-    this.onValueChange = this.onValueChange.bind(this);
   }
 
   /**
@@ -51,36 +47,20 @@ class AddFilterModal extends Component {
   }
 
   /**
-   * Add a filter when button is clicked
+   * Add a fields
    */
-  addFilter() {
-    let filter = null;
-
-    const filteritems = Object.keys(this.state.visits)
-      .filter((visitlabel) => this.state.visits[visitlabel])
-      .map((visitlabel) => {
+  addFields() {
+    console.info('SelectFieldsModal::addFields');
+    const newfields = Object.keys(this.state.visits)
+      .filter((key) => this.state.visits[key])
+      .map((key) => {
         return {
-          type: 'filter',
-          category: this.state.category,
-          field: this.state.field,
-          operator: this.state.operator,
-          value: this.state.value,
-          visit: visitlabel,
+          categoryname: this.state.category,
+          fieldname: this.state.field,
+          visitlabel: key,
         };
       });
-
-    filter = {
-      type: 'group',
-      operator: 'AND',
-      items: filteritems,
-    };
-
-    if (filteritems.length == 1) {
-      // When a single visit is selected, add a filter instead of a group
-      filter = filteritems[0];
-    }
-
-    this.props.addFilter(filter);
+    this.props.addFields(newfields);
   }
 
   /**
@@ -122,35 +102,15 @@ class AddFilterModal extends Component {
   }
 
   /**
-   * Sets the operator
-   *
-   * @param {object} e The event
-   */
-  onOperatorSelected(e) {
-    this.setState({operator: e.target.value});
-  }
-
-  /**
-   * Sets the filter value
-   *
-   * @param {object} e The event
-   */
-  onValueChange(e) {
-    this.setState({value: e.target.value});
-  }
-
-  /**
    * Render
    *
    * @return {JSX} - React markup for the component
    */
   render() {
+    console.info('SelectFieldsModal::render');
     let categoriesdropdown = null;
     let fieldsdropdown = null;
     let visitsdropdown = null;
-    let operatorsdropdown = null;
-    let valueinput = null;
-
     // Category input
     const categoriesOptions = this.props.categories.map((c) =>{
       return (
@@ -170,6 +130,8 @@ class AddFilterModal extends Component {
 
     if (this.state.category != null) {
       // Field input
+      console.info('render');
+      console.info(this.props.selectedCategory);
       const fieldsOptions = this.props.selectedCategory.fields.map((f) => {
         return (
           <option value={f.name}>{f.name}</option>
@@ -213,33 +175,6 @@ class AddFilterModal extends Component {
         </select>
         </>
       );
-
-      // Operator input
-      operatorsdropdown = (
-        <select
-          value={this.state.operator ?? ''}
-          onChange={this.onOperatorSelected}
-        >
-          <option isDisable={true} value={''}></option>
-          <option value="equal">Equal</option>
-          <option value="notEqual">Not Equal</option>
-          <option value="lessThanEqual">Lower Than or Equal</option>
-          <option value="greaterThanEqual">Greater Than or Equal</option>
-          <option value="startsWith">Starts With</option>
-          <option value="contains">Contains</option>
-          <option value="isNull">Is Null</option>
-          <option value="isNotNull">Is Not Null</option>
-        </select>
-      );
-
-      // Value input TODO
-      valueinput = (
-        <input
-          type="text"
-          value={this.state.value}
-          onChange={this.onValueChange}
-        />
-      );
     }
 
     return (
@@ -264,14 +199,12 @@ class AddFilterModal extends Component {
           >
             ×
           </button>
-          <h4 classiName="modal-title">Filters Selection</h4>
+          <h4 classiName="modal-title">Fields Selection</h4>
         </div>
         <div className="modal-body">
           <form>
             {categoriesdropdown}
             {fieldsdropdown}
-            {operatorsdropdown}
-            {valueinput}
             {visitsdropdown}
           </form>
         </div>
@@ -280,7 +213,7 @@ class AddFilterModal extends Component {
            type="button"
             className="btn btn-default"
             data-dismiss="modal"
-            onClick={this.addFilter}
+            onClick={this.addFields}
           >
             Add
           </button>
@@ -300,9 +233,7 @@ class AddFilterModal extends Component {
   }
 }
 
-AddFilterModal.PropTypes = {
-  addFilter: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
+SelectFieldsModal.PropTypes = {
   categories: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
@@ -317,5 +248,12 @@ AddFilterModal.PropTypes = {
       datatype: PropTypes.string.isRequired,
     })),
   }),
+  addFields: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
 };
-export default AddFilterModal;
+
+SelectFieldsModal.defaultProps = {
+  categories: [],
+};
+
+export default SelectFieldsModal;

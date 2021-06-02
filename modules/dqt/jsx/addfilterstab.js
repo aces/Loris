@@ -48,51 +48,6 @@ class AddFiltersTab extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    /*
-    const query = {
-        filters: {
-          type: 'group',
-          operator: 'AND',
-          items: [
-            {
-              type: 'filter',
-              operator: 'equals',
-              category: 'demographics',
-              field: 'Sex',
-              value: 'Female',
-            },
-            {
-              type: 'group',
-              operator: 'OR',
-              items: [
-                {
-                  type: 'filter',
-                  operator: 'equals',
-                  category: 'demographics',
-                  field: 'DoB',
-                  value: '1936-09-15',
-                },
-                {
-                  type: 'filter',
-                  operator: 'equals',
-                  category: 'demographics',
-                  field: 'DoB',
-                  value: '1936-10-15',
-                },
-                {
-                  type: 'filter',
-                  operator: 'equals',
-                  category: 'demographics',
-                  field: 'DoB',
-                  value: '1936-11-15',
-                },
-              ],
-            },
-          ],
-        },
-    };
-    */
-
     return (
       <div>
         <h2>AddFiltersTab</h2>

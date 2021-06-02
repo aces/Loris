@@ -1,17 +1,78 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import Category from './category';
-import Field from './field';
+import QueryField from './queryfield';
+import SelectFieldsModal from './selectfieldsmodal';
 
 /**
  * DQT Select fields React Component
  */
 class SelectFieldsTab extends Component {
   /**
-   * Load categories when this gets mounted
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showModal: false,
+    };
+
+    this.toggleModal = this.toggleModal.bind(this);
+    this.addFields = this.addFields.bind(this);
+    this.removeField = this.removeField.bind(this);
+  }
+
+  /**
+   * Ask the parent to populate the categories
    */
   componentDidMount() {
     this.props.getCategories();
+  }
+
+  /**
+   * Show or hide modal
+   */
+  toggleModal() {
+    console.info('SelectFieldsTab::toggleModal');
+    this.setState(
+      {showModal: !this.state.showModal}
+    );
+  }
+
+  /**
+   * Add fields to the query
+   *
+   * @param {array} fields The fields to add
+   */
+  addFields(fields) {
+    console.info('SelectFieldsTab::addFields');
+    console.info(fields);
+    const newfields = this.props.selectedFields.concat(fields);
+    this.setState({
+      showModal: false,
+    }, this.props.setQueryFields(newfields));
+  }
+
+  /**
+   * Remove a specific field
+   *
+   * @param {string} category The category name
+   * @param {string} field The field name
+   * @param {string} visit The visit label
+   */
+  removeField(category, field, visit) {
+    console.info(category);
+    console.info(field);
+    console.info(visit);
+    const newfields = this.props.selectedFields.filter((f, i, a) => {
+      return (
+        f.categoryname != category ||
+        f.fieldname != field ||
+        f.visitlabel != visit
+      );
+    });
+    this.props.setQueryFields(newfields);
   }
 
   /**
@@ -20,40 +81,51 @@ class SelectFieldsTab extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    // Generate a list of categories to display
-    const categories = this.props.categories.map((c) => {
-      const selected = this.props.selectedCategory;
-      let fields = null;
-
-      // Add fields for the selected category
-      if (selected.name == c.name) {
-        fields = selected.fields.map((f) => {
-           return (
-             <Field
-               data={f}
-               category={selected.name}
-               toggleSelected={this.props.toggleSelectedField}
-               visits={selected.visits}
-             />
-           );
-        });
-      }
-
+    const selectedFields = this.props.selectedFields.map((f) => {
       return (
-        <Category
-          name={c.name}
-          link={c.link}
-          onCategorySelected={this.props.getCategoryFields}
-          visits={selected.visits}
-        >
-        {fields}
-        </Category>
+        <>
+        <QueryField data={f}/>
+        <button onClick={() => {
+          this.removeField(
+            f.categoryname,
+            f.fieldname,
+            f.visitlabel
+          );
+        }}>
+          ×
+        </button>
+        </>
       );
     });
+
+    let modal = null;
+    if (this.state.showModal) {
+      modal = (
+        <SelectFieldsModal
+          categories={this.props.categories}
+          getCategoryFields={this.props.getCategoryFields}
+          selectedCategory={this.props.selectedCategory}
+          addFields={this.addFields}
+          onClose={this.toggleModal}
+        />
+      );
+    }
+
     return (
       <div>
-        <h2>Select fields tab</h2>
-        <ul>{categories}</ul>
+        <fieldset>
+          <legend>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.toggleModal}
+            >
+              Add Field(s)
+            </button>
+          </legend>
+          {selectedFields}
+        </fieldset>
+        {modal}
       </div>
     );
   }
@@ -61,12 +133,11 @@ class SelectFieldsTab extends Component {
 
 SelectFieldsTab.PropTypes = {
   getCategories: PropTypes.func.isRequired,
-  getCategoryFields: PropTypes.func.isRequired,
-  toggleSelectedField: PropTypes.func.isRequired,
   categories: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
   })),
+  getCategoryFields: PropTypes.func.isRequired,
   selectedCategory: PropTypes.shape({
     name: PropTypes.string.isRequired,
     visits: PropTypes.arrayOf(PropTypes.string),
@@ -76,15 +147,17 @@ SelectFieldsTab.PropTypes = {
       datatype: PropTypes.string.isRequired,
     })),
   }),
+  selectedFields: PropTypes.arrayOf(PropTypes.shape({
+  category: PropTypes.string.isRequired,
+  field: PropTypes.string.isRequired,
+  visit: PropTypes.string.isRequired,
+  })),
+  setQueryFields: PropTypes.func.isRequired,
 };
 
 SelectFieldsTab.defaultProps = {
   categories: [],
-  selectedCategory: {
-    name: '',
-    visits: [],
-    fields: [],
-  },
+  selectedFields: [],
 };
 
 export default SelectFieldsTab;

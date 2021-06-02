@@ -15,28 +15,26 @@ class DQT extends Component {
     super(props);
 
     this.state = {
+      queries: [],
       categories: [],
       selectedCategory: {},
-      queries: [],
       query: {
         fields: [],
         filters: {},
       },
       queryResults: {
-        culumns: [],
+        columns: [],
         data: [],
       },
     };
 
     this.getCategories = this.getCategories.bind(this);
     this.getCategoryFields = this.getCategoryFields.bind(this);
-    this.toggleSelectedField = this.toggleSelectedField.bind(this);
-    this.setFilters = this.setFilters.bind(this);
+    this.setQueryFields = this.setQueryFields.bind(this);
+    this.setQueryFilters = this.setQueryFilters.bind(this);
+    this.getQueries = this.getQueries.bind(this);
     this.postQuery = this.postQuery.bind(this);
-    /*
-    this.getQueries() = this.getQueries.bind(this);
     this.getResults = this.getResults.bind(this);
-    */
   }
 
   /**
@@ -81,11 +79,51 @@ class DQT extends Component {
   }
 
   /**
+   * Set the query fields
+   * @param {array} fields The list of fields
+   */
+  setQueryFields(fields) {
+    console.info('DQT::setQueryFields: '.concat(JSON.stringify(fields)));
+    const query = this.state.query;
+    query.fields = fields;
+    this.setState({
+      query: query,
+      selectedCategory: {},
+    });
+  }
+
+  /**
+   * Set the query filters
+   *
+   * @param {object} filters The new filter(s)
+   */
+  setQueryFilters(filters) {
+    console.info('DQT::setQueryFilters: '.concat(JSON.stringify(filters)));
+    const query = this.state.query;
+    query.filters = filters;
+    this.setState({
+      query: query,
+      selectedCategory: {},
+    });
+  }
+
+  /**
+   * getQueries
+   */
+  getQueries() {
+     console.info('DQT::getQueries');
+     this.setState({
+       queries: [1, 2, 3],
+     });
+  }
+
+  /**
    * postQuery
    *
    * @return {object}
    */
   postQuery() {
+    console.info('DQT::postQuery');
     const url = this.props.baseURL.concat('/dqt/queries');
     const opt = {
       method: 'post',
@@ -108,47 +146,15 @@ class DQT extends Component {
   }
 
   /**
-   * Add or remove a field from the query
-   *
-   * @param {string} category The field's category name
-   * @param {string} name The field's name
-   * @param {array} visits A list of visitlabels
+   * getResults
    */
-  toggleSelectedField(category, name, visits) {
-    // Remove that field from the previous state
-    const query = this.state.query;
-    const cleanedupfields = query.fields.filter((f) => {
-      return f.categoryname != category || f.fieldname != name;
-    });
-
-    // Create the new fields to add to the query
-    const newfields = visits.map((v) => {
-      return {
-        categoryname: category,
-        fieldname: name,
-        visitlabel: v,
-      };
-    });
-
-    query.fields = cleanedupfields.concat(newfields);
+  getResults() {
+    console.info('DQT::getResults');
     this.setState({
-      query: query,
-      selectedCategory: {},
-    });
-  }
-
-  /**
-   * Add a filter to the query
-   *
-   * @param {object} filters The new filter(s)
-   */
-  setFilters(filters) {
-    console.info('filters: '.concat(JSON.stringify(filters)));
-    const query = this.state.query;
-    query.filters = filters;
-    this.setState({
-      query: query,
-      selectedCategory: {},
+      queryResults: {
+        columns: [1, 2, 3],
+        data: [],
+      },
     });
   }
 
@@ -160,76 +166,28 @@ class DQT extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
-            <a className="navbar-brand" href="#">DQT</a>
-            <div className="collapse navbar-collapse">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <a
-                    className="nav-link disabled"
-                    href="#"
-                    tabindex="-1"
-                    aria-disabled="true"
-                  >
-                    Run
-                  </a>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Load query
-                  </a>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="navbarDropdown"
-                  >
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li>
-                      <a className="dropdown-item" href="#">Another action</a>
-                    </li>
-                    <li><hr className="dropdown-divider"/></li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Something else here
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-        <p>
-          Load an existing query of build your own.
-          Select at least one field and optionnaly add filters.
-        </p>
         <QueryPanel
-          toggleSelectedField={this.toggleSelectedField}
+          queries={this.state.queries}
           query={this.state.query}
-        >
-          <button onClick={this.postQuery}>Query</button>
-        </QueryPanel>
+          runQuery={this.getResults}
+          saveQuery={this.postQuery}
+          loadQueries={this.getQueries}
+        />
         <SelectFieldsTab
           getCategories={this.getCategories}
-          getCategoryFields={this.getCategoryFields}
-          toggleSelectedField={this.toggleSelectedField}
           categories={this.state.categories}
+          getCategoryFields={this.getCategoryFields}
           selectedCategory={this.state.selectedCategory}
+          selectedFields={this.state.query.fields}
+          setQueryFields={this.setQueryFields}
         />
         <AddFiltersTab
-          filters={this.state.query.filters}
           getCategories={this.getCategories}
-          getCategoryFields={this.getCategoryFields}
-          setFilters={this.setFilters}
           categories={this.state.categories}
+          getCategoryFields={this.getCategoryFields}
           selectedCategory={this.state.selectedCategory}
+          filters={this.state.query.filters}
+          setFilters={this.setQueryFilters}
         />
       </div>
     );
