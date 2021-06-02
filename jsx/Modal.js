@@ -111,7 +111,7 @@ function Modal({
     flexDirection: 'row',
     alignItems: 'center',
     height: '40px',
-    padding: '35px 35px 20px 35px',
+    padding: '35px',
     backgroundColor: success && '#e0ffec',
   };
 
@@ -130,6 +130,7 @@ function Modal({
           setLoading(false);
           setSuccess(true);
           await wait(2000);
+          setSuccess(false);
           onClose();
           onSuccess(data);
         } catch {
@@ -138,9 +139,9 @@ function Modal({
       };
       return (
         <div style={submitStyle}>
-          <ButtonElement
+          <Button
             label="Submit"
-            onUserInput={submit}
+            onClick={submit}
           />
         </div>
       );
@@ -151,7 +152,7 @@ function Modal({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    margin: '0px auto 15px auto',
+    margin: '0px auto',
     width: '90px',
   };
   const loader = loading && (

@@ -1051,10 +1051,10 @@ class DateElement extends Component {
     }
 
     const todayButton = this.props.today && (
-      <ButtonElement
+      <Button
         label='Today'
         type="button"
-        onUserInput={this.handleButton}
+        onClick={this.handleButton}
       />
     );
 
@@ -1068,7 +1068,7 @@ class DateElement extends Component {
     return (
       <div className={elementClass}>
         {label}
-        <div>
+        <InlineField weights={[1, 0]}>
           <>
             <input
               type="date"
@@ -1085,7 +1085,7 @@ class DateElement extends Component {
             {errorMessage}
           </>
           {todayButton}
-        </div>
+        </InlineField>
       </div>
     );
   }
@@ -1167,7 +1167,7 @@ class TimeElement extends Component {
           {requiredHTML}
         </label>
         <div>
-          <InlineField weights={[3, 1]}>
+          <InlineField weights={[1, 0]}>
             <>
               <input
                 type="time"
@@ -1183,10 +1183,10 @@ class TimeElement extends Component {
               />
               {errorMessage}
             </>
-            <ButtonElement
+            <Button
               label="Now"
               type="button"
-              onUserInput={this.handleButton}
+              onClick={this.handleButton}
             />
           </InlineField>
         </div>
@@ -1613,17 +1613,17 @@ class ButtonElement extends Component {
 
   render() {
     return (
-      <div className="row form-group">
-        <div className={this.props.columnSize}>
-          <button
+      <div>
+        <label className="control-label"></label>
+        <div>
+          <Button
             name={this.props.name}
+            label={this.props.label}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
             disabled={this.props.disabled}
-          >
-            {this.props.label}
-          </button>
+          />
         </div>
       </div>
     );
@@ -1646,6 +1646,17 @@ ButtonElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+function Button(props) {
+  return (
+    <button
+      className={'btn btn-primary'}
+      {...props}
+    >
+      {props.label}
+    </button>
+  );
+}
 
 /**
   * Call To Action (CTA) component
@@ -1924,13 +1935,19 @@ function HorizontalRule() {
   return <div style={lineStyle}/>;
 }
 
-function InputList(props) {
-  const {items, setItems, errorMessage, options} = props;
+function InputList({
+  name,
+  label,
+  items,
+  setItems,
+  errorMessage,
+  options,
+}) {
   const [item, setItem] = useState('');
 
   const removeItem = (index) => setItems(items.filter((item, i) => index != i));
   const addItem = () => {
-    const match = Object.keys(options).find((key) => options[key][props.name] == item);
+    const match = Object.keys(options).find((key) => options[key][name] == item);
     // if entry is in list of options and does not already exist in the list.
     if (match && !items.includes(match)) {
       setItems([...items, match]);
@@ -1964,7 +1981,7 @@ function InputList(props) {
     };
     return (
       <div key={i} style={listItemStyle}>
-        <div>{options[item][props.name]}</div>
+        <div>{options[item][name]}</div>
         <div
           className='glyphicon glyphicon-remove'
           onClick={() => removeItem(i)}
@@ -1974,25 +1991,26 @@ function InputList(props) {
     );
   });
 
+  const error = errorMessage instanceof Array ? errorMessage.join(' ') : errorMessage;
   return (
     <div style={{display: 'flex', justifyContent: 'space-between'}}>
       <div style={{flex: '0.47'}}>
-        <FormHeader header={props.label + ' Input'}/>
-        <InlineField weights={[3, 1]}>
+        <FormHeader header={label + ' Input'}/>
+        <InlineField weights={[1, 0]}>
           <TextboxElement
-            name={props.name}
+            name={name}
             onUserInput={(name, value) => setItem(value)}
             value={item}
-            errorMessage={errorMessage}
+            errorMessage={error}
           />
-          <ButtonElement
+          <Button
             label='Add'
-            onUserInput={addItem}
+            onClick={addItem}
           />
         </InlineField>
       </div>
       <div style={{flex: '0.47'}}>
-        <FormHeader header={props.label + ' List'}/>
+        <FormHeader header={label + ' List'}/>
         <div style={listStyle}>
           {itemsDisplay}
         </div>
@@ -2004,8 +2022,8 @@ function InputList(props) {
 function InlineField({children, label = '', weights = []}) {
   const fields = React.Children.map(children, (child, i) => {
     return (
-      <div style={{flex: weights[i] || 1, minWidth: '90px'}}>
-        {React.cloneElement(child, {inputClass: 'col-lg-11'})}
+      <div style={{flex: weights[i] || 0}}>
+        {child}
       </div>
     );
   });
@@ -2037,6 +2055,7 @@ window.StaticElement = StaticElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
+window.Button = Button;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
 window.RadioElement = RadioElement;

@@ -450,7 +450,8 @@ div.navbar div.container div.navbar-brand {
 
 .btn {
     font-size: 14px;
-    margin-right: 5px;
+    margin: 0 5px;
+    min-width: 70px;
 }
 
 .btn-default {
