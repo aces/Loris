@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\dqt\Factories;
+namespace LORIS\dqt\Controllers;
 use \LORIS\dqt\Models\Query;
 use \LORIS\dqt\Models\QueryFields;
 use \LORIS\dqt\Models\QueryFilters;
@@ -21,6 +21,9 @@ abstract class QueryFactory
     public static function create(array $fields, array $filters): Query
     {
         return new Query(
+            null,
+            null,
+            null,
             self::_createFields($fields),
             self::_createFilters($filters)
         );

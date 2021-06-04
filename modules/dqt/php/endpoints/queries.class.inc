@@ -5,7 +5,8 @@ namespace LORIS\dqt\Endpoints;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
-use \LORIS\dqt\Factories\QueryFactory;
+use \LORIS\dqt\Controllers\QueryFactory;
+use \LORIS\dqt\Controllers\QueryKeeper;
 use \LORIS\dqt\Models\Query as DQTQuery;
 
 class Queries extends Endpoint
@@ -92,28 +93,20 @@ class Queries extends Endpoint
                 'At least one field is expected.'
             );
         }
-print_memory_usage('Before query factory');
+
         try {
+/*
+            $query = (QueryFactory::create($fields, $filters))
+                ->withName($data['name'] ?? null)
+                ->withShared($data['shared'] ?? false);
+*/
             $query = QueryFactory::create($fields, $filters);
+
+            $id = (new QueryKeeper($loris, $user))
+                ->saveQuery($query);
+
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
-        }
-
-print_memory_usage('After query factory');
-        try {
-            // FIXME :: Maybe results should be generated on demand 
-            // at /dqt/results/$id or execute just start a server_process
-            $results = $query->execute($loris, $user);
-print_memory_usage('After execute');
-            return new \LORIS\Http\Response\JSON\OK(
-                (new \LORIS\dqt\Views\Results($query, $results))->toArray()
-            );
-            $id = $query->getId();
-
-        } catch (\LorisException|\Error $e) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
             );
         }

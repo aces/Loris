@@ -64,6 +64,9 @@ class Module extends \Module
         case 'queries':
             $handler = new Endpoints\Queries();
             break;
+        case 'results':
+            $handler = new Endpoints\Results();
+            break;
         default:
             return parent::handle($request);
         }

@@ -65,7 +65,7 @@ class QueryFields implements \JsonSerializable
             }
         }
 
-        if ($keys !== null) {
+        if (isset($keys)) {
             yield $keys;
             $keys = null;
         }

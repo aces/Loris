@@ -28,9 +28,9 @@ class QueryField implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'category' => $this->_categoryname,
-            'field'    => $this->_fieldname,
-            'visit'    => $this->_visitlabel
+            'categoryname' => $this->_categoryname,
+            'fieldname'    => $this->_fieldname,
+            'visitlabel'   => $this->_visitlabel
         ];
     }
 }

@@ -18,9 +18,9 @@ class Results
     {
         $columns = json_decode(json_encode($this->_query))->fields;
         $headers = array_map(function($c) {
-            $category = $c->category;
-            $field    = $c->field;
-            $visit    = $c->visit;
+            $category = $c->categoryname;
+            $field    = $c->fieldname;
+            $visit    = $c->visitlabel;
             return implode(',', [$visit, $category, $field]);
         }, $columns);
 
