@@ -85,7 +85,7 @@ class DQT extends Component {
   setQueryFields(fields) {
     console.info('DQT::setQueryFields: '.concat(JSON.stringify(fields)));
     const query = this.state.query;
-    query.fields = fields;
+    query.fields = fields ?? [];
     this.setState({
       query: query,
       selectedCategory: {},

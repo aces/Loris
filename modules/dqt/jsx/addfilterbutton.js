@@ -65,7 +65,7 @@ class AddFilterButton extends Component {
         className="btn btn-primary"
         onClick={this.toggleModal}
       >
-        Add
+        Add Filter(s)
       </button>
       {modal}
       </div>

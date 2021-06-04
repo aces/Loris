@@ -50,16 +50,17 @@ class AddFiltersTab extends Component {
   render() {
     return (
       <div>
-        <h2>AddFiltersTab</h2>
-        <FilterItem
-          filters={this.props.filters}
-          index={0}
-          setFilter={this.setFilters}
-          deleteFilter={this.deleteFilters}
-          categories={this.props.categories}
-          getCategoryFields={this.props.getCategoryFields}
-          selectedCategory={this.props.selectedCategory}
-        />
+        <fieldset>
+          <FilterItem
+            filters={this.props.filters}
+            index={0}
+            setFilter={this.setFilters}
+            deleteFilter={this.deleteFilters}
+            categories={this.props.categories}
+            getCategoryFields={this.props.getCategoryFields}
+            selectedCategory={this.props.selectedCategory}
+          />
+       </fieldset>
       </div>
     );
   }

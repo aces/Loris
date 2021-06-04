@@ -151,6 +151,7 @@ class FilterItem extends Component {
                 group&nbsp;
                 <span
                   onClick={this.toggleGroupOperator}
+                  title="Click to toggle operators"
                 >
                   {this.props.filters.operator}
                 </span>

@@ -48,10 +48,19 @@ class SelectFieldsTab extends Component {
   addFields(fields) {
     console.info('SelectFieldsTab::addFields');
     console.info(fields);
-    const newfields = this.props.selectedFields.concat(fields);
+
+    // Add the new fields and remove duplicates if any
+    const uniqueSet = this.props.selectedFields
+      .concat(fields)
+      .reduce((carry, item) => {
+        const key = Object.values(item).join(',');
+        carry[key] = item;
+        return carry;
+      }, []);
+
     this.setState({
       showModal: false,
-    }, this.props.setQueryFields(newfields));
+    }, this.props.setQueryFields(Object.values(uniqueSet)));
   }
 
   /**
@@ -62,9 +71,6 @@ class SelectFieldsTab extends Component {
    * @param {string} visit The visit label
    */
   removeField(category, field, visit) {
-    console.info(category);
-    console.info(field);
-    console.info(visit);
     const newfields = this.props.selectedFields.filter((f, i, a) => {
       return (
         f.categoryname != category ||

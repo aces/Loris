@@ -11,11 +11,9 @@ class QueryField extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const label = Object.values(this.props.data).join('::');
+    const label = Object.values(this.props.data).join(',');
     return (
-      <div>
-        <span>{label}</span>
-      </div>
+        <span className="badge badge-secondary">{label}</span>
     );
   }
 }
