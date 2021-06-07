@@ -327,9 +327,9 @@ class Edit_User extends \NDB_Form
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
-             WHERE e.full_name=:fn",
+             WHERE e.userID=:uid",
                 array(
-                    "fn" => $values['Real_name'],
+                    "uid" => $uid,
                 )
             );
 
@@ -353,8 +353,8 @@ class Edit_User extends \NDB_Form
                 $examinerID = $DB->pselectOne(
                     "SELECT examinerID
                             FROM examiners
-                            WHERE full_name=:fullName",
-                    array('fullName' => $values['Real_name'])
+                            WHERE uid=:uid",
+                    array('uid' => $uid)
                 );
             } elseif (!empty($examinerID)
                 && ((!empty($ex_radiologist)
@@ -370,10 +370,10 @@ class Edit_User extends \NDB_Form
                     'examiners',
                     array(
                         'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                        'full_name'   => $values['Real_name']
                     ),
                     array(
-                        "full_name" => $values['Real_name'],
+                        'userID' => $uid
                     )
                 );
                 $examinerID = $examinerID[0]['examinerID'];
