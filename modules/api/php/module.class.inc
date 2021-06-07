@@ -109,6 +109,9 @@ class Module extends \Module
         case 'projects':
             $handler = new \LORIS\api\Endpoints\Projects($this->loris);
             break;
+        case 'sites':
+            $handler = new \LORIS\api\Endpoints\Sites();
+            break;
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
