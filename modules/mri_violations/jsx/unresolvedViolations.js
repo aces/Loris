@@ -86,24 +86,27 @@ export function unresolvedFilters(fieldoptions) {
 /**
  * Returns a formatter to handle the unresolved violations
  * @param {callback} mapper - a data mapper to map from ID to display
+ * @param {callback} setPage - a callback to set the current page
 
- * @return {*} a formatter callback which uses mapper for data mapping
+ * @return {function} a formatter callback which uses mapper for data mapping
  */
-export function formatColumnUnresolved(mapper) {
+export function formatColumnUnresolved(mapper, setPage) {
     const Mapper = function(column, cell, rowData, rowHeaders) {
         cell = mapper(column, cell);
         // Create the mapping between rowHeaders and rowData in a row object.
         if (column === 'Type of Problem' && cell === 'Protocol Violation') {
             return (
                     <td>
-                    <a href= "#"
-                    onClick={loris.loadFilteredMenuClickHandler(
-                            'mri_violations/mri_protocol_check_violations',
-                            {PatientName: rowData['Patient Name'],
-SeriesUID: rowData['Series UID'],
-TarchiveID: rowData['TarchiveID'],
-CandID: rowData.CandId}
-)}>Protocol Violation</a>
+                    <a href="#" onClick={
+                        setPage(
+                          'mri_protocol_check_violations',
+                          {
+                              PatientName: rowData['Patient Name'],
+                              SeriesUID: rowData['Series UID'],
+                              TarchiveID: rowData['TarchiveID'],
+                              CandID: rowData.CandId,
+                          }
+                    )}>Protocol Violation</a>
                     </td>
                    );
         }
@@ -116,16 +119,17 @@ CandID: rowData.CandId}
             return (
                     <td>
                     <a href= "#"
-                    onClick={loris.loadFilteredMenuClickHandler(
-                            'mri_violations/mri_protocol_violations',
-                            {PatientName: rowData['Patient Name'],
-SeriesUID: rowData['Series UID'],
-TarchiveID: rowData['TarchiveId'],
-CandID: rowData.CandID,
-PSCID: rowData.PSCID,
-TimeRun: rowData['Time Run'],
-SeriesDescription: seriesDescription}
-)}>Could not identify scan type</a>
+                        onClick={setPage(
+                            'mri_protocol_violations',
+                            {
+                              PatientName: rowData['Patient Name'],
+                              SeriesUID: rowData['Series UID'],
+                              TarchiveID: rowData['TarchiveId'],
+                              CandID: rowData.CandID,
+                              PSCID: rowData.PSCID,
+                              TimeRun: rowData['Time Run'],
+                              SeriesDescription: seriesDescription,
+                            })}>Could not identify scan type</a>
                     </td>
                    );
         }

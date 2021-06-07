@@ -18,6 +18,27 @@ import {formatColumnResolved, resolvedFilters}
  * @return {ReactDOM}
  */
 function MRIViolationsIndex(props) {
+  const [currentPage, setCurrentPage] = useState('index');
+
+  const setPage 
+  switch (currentPage) {
+      case 'protocol_violations':
+        return protocolViolationsPage(props, setCurrentPage)
+      case 'index': // fallthrough
+      default: return defaultPage(props, setCurrentPage);
+  }
+}
+
+/**
+ * Returns the JSX for the main MRI violations table page
+ *
+ * @param {object} props - React component properties
+ * @param {callback} setPage - Callback to set the page to a different
+ *                             subpage
+ *
+ * @return {ReactDOM}
+ */
+function defaultPage(props, setPage) {
   const [fieldOptions, setFieldOptions] = useState({});
   const tabs = [
     {id: 'notresolved', label: 'Not Resolved'},
@@ -32,7 +53,7 @@ function MRIViolationsIndex(props) {
           URL={props.unresolvedURL}
           name="notresolved"
           mapper={mapper}
-          formatter={formatColumnUnresolved(mapper)}
+          formatter={formatColumnUnresolved(mapper, setPage)}
           fields={unresolvedFilters(fieldOptions)}
           setFieldOptions={setFieldOptions}
         />
@@ -118,7 +139,7 @@ function columnMapper(fieldOptions) {
                 return fieldOptions.sites[value];
             }
         case 'Type of Problem':
-            console.log(value);
+            // console.log(value);
         }
         return value;
     };
