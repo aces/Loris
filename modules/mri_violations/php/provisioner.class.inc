@@ -28,7 +28,7 @@ namespace LORIS\mri_violations;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create a MediaFileProvisioner, which gets files for the meida
@@ -52,8 +52,19 @@ class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     v.TarchiveID,
                     v.CandID,
                     v.PSCID
-            FROM (
-                SELECT PatientName    AS PatientName,
+              FROM " . self::getViolationsQueryTable(),
+            []
+        );
+    }
+
+    /**
+     * Get the "FROM" clause of the query for the MRI violations table, this
+     * is reused by both the dashboard widget and the provisioner.
+     *
+     * @return string
+     */
+    static public function getViolationsQueryTable() {
+        return "(SELECT PatientName    AS PatientName,
                        time_run       AS TimeRun,
                        s.ProjectID    AS Project,
                        s.SubprojectID AS Subproject,
@@ -138,9 +149,7 @@ class MRIViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     AND violations_resolved.TypeTable='MRICandidateErrors'
                   )
                   WHERE Resolved is NULL
-            ) AS v",
-            []
-        );
+            ) AS v";
     }
 
     /**

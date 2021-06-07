@@ -96,7 +96,7 @@ class Mri_Violations extends \DataFrameworkMenu
 
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return (new MRIViolationsProvisioner())
+        return (new Provisioner())
             ->filter(new UserProjectMatchOrNull);
     }
 

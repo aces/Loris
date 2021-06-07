@@ -80,7 +80,7 @@ class Module extends \Module
             $DB      = $factory->database();
             $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
             $number  = (int) $DB->pselectOne(
-                "SELECT count(*) " . $this->getMriViolatedScanQuery(),
+                "SELECT count(*) FROM " . Provisioner::getViolationsQueryTable(),
                 []
             );
             $label   = $number >  1 ? 'Violated scans' : 'Violated scan';
