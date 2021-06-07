@@ -35,7 +35,7 @@ SELECT 'Running: SQL/Archive/22.0/2019-07-04-remove_header_row_from_parameter_fi
 
 DELETE FROM parameter_file WHERE ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='header' AND SourceFrom='parameter_file');
 DELETE FROM parameter_type WHERE Name='header' AND SourceFrom='parameter_file';
-ALTER TABLE parameter_file MODIFY Value LONGTEXT;
+ALTER TABLE parameter_file MODIFY Value TEXT;
 
 SELECT 'Running: SQL/Archive/22.0/2019-07-10-subproject-session-FK.sql';
 
