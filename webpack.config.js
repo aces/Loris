@@ -316,12 +316,7 @@ const lorisModules = {
   ],
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
-  mri_violations: [
-    'mri_protocol_check_violations_columnFormatter',
-    'columnFormatter',
-    'columnFormatterUnresolved',
-    'mri_protocol_violations_columnFormatter',
-  ],
+  mri_violations: ['mriViolationsIndex']),
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
   help_editor: ['help_editor', 'help_editor_helper'],
