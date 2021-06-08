@@ -110,7 +110,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         foreach ($scan_id_types as $id => $type) {
             $pass[$id]          = $DB->escape($type);
             $qc[$id]            = $DB->quote($type);
-            $coalesce_desc[$id] = $DB->quote($pass[$id] . '.' . $qc[$id]);
+            $coalesce_desc[$id] = $DB->escape($type);
             $case_desc[$id]     = "
                 CASE
                     COALESCE($coalesce_desc[$id], '')
