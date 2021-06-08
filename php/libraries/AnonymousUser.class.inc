@@ -52,7 +52,7 @@ class AnonymousUser extends \User
      */
     function getFullname(): string
     {
-        return "";
+        return "AnonymousUser";
     }
 
     /**
@@ -73,16 +73,6 @@ class AnonymousUser extends \User
     function getProjectIDs(): array
     {
         return [];
-    }
-
-    /**
-     * An anonymous user's language preference
-     *
-     * @return int
-     */
-    function getLanguagePreference(): int
-    {
-        return -1;
     }
 
     /**

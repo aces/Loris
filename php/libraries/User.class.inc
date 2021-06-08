@@ -321,9 +321,9 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     /**
      * Get the user's language preference
      *
-     * @return int
+     * @return ?int
      */
-    function getLanguagePreference(): int
+    function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'];
     }
