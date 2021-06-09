@@ -5,3 +5,6 @@ This module displays scans that have been flagged for significant variance from 
 The table contains two tabs: **Not Resolved** and **Resolved**. When a scan is updated to any status other than *Unresolved*, it will move to the **Resolved** tab. You must manually update the status of each *Unresolved* scan, when relevant.
 
 You can click the link in the *MincFile* column to view the scan in BrainBrowser. Click **Protocol Violation** in the *Problem* column to view details of the protocol violations issue.
+
+If you click on the link for any scan of problem type "Could not identify scan type" or "Protocol violation" the module will
+display a popup with the details of any problems for that SeriesUID.
