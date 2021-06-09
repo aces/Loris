@@ -15,6 +15,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\mri_violations;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * Implement the menu filter for searching through all violated scans
  *
@@ -86,18 +89,54 @@ class Mri_Violations extends \DataFrameworkMenu
                     ),
                 'Reason'
                 );
+
+       $protocols = $db->pselect("SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
+                    s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+                    TI_max, slice_thickness_min, slice_thickness_max,
+                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
+                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
+                    zstep_min, zstep_max, time_min, time_max,series_description_regex
+             FROM mri_protocol as p
+             LEFT JOIN mri_protocol_group mpg
+                 ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
+             LEFT JOIN mri_scan_type as s
+                 ON p.Scan_type=s.ID
+             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+             []
+             );
         return [
             'projects'     => \Utility::getProjectList(),
             'subprojects'  => \Utility::getSubprojectList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
+            'protocols' => $protocols,
         ];
     }
 
+    /**
+     * Extract the appropriate provisioner to use for the JSON format
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface {
+        $params = $request->getQueryParams();
+        if (isset($params['seriesUID'])) {
+            $this->seriesUID = $params['seriesUID'];
+        }
+
+        $this->violationType = $params['violationtype'] ?? 'default';
+        return parent::handle($request);
+    }
+
+    private string $seriesUID;
+    private string $violationType = 'default';
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return (new Provisioner())
-            ->filter(new UserProjectMatchOrNull);
+        switch ($this->violationType) {
+        case 'protocolviolation':
+           return (new ProtocolViolationProvisioner($this->seriesUID));
+        default:
+           return (new Provisioner())
+              ->filter(new UserProjectMatchOrNull);
+        }
     }
 
    /**

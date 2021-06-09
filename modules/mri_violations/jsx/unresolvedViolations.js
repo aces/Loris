@@ -98,15 +98,13 @@ export function formatColumnUnresolved(mapper, setPage) {
             return (
                     <td>
                     <a href="#" onClick={
-                        setPage(
-                          'mri_protocol_check_violations',
-                          {
+                        () => setPage({
                               PatientName: rowData['Patient Name'],
                               SeriesUID: rowData['Series UID'],
                               TarchiveID: rowData['TarchiveID'],
                               CandID: rowData.CandId,
-                          }
-                    )}>Protocol Violation</a>
+                          })
+                    }>Protocol Violation</a>
                     </td>
                    );
         }
@@ -119,9 +117,7 @@ export function formatColumnUnresolved(mapper, setPage) {
             return (
                     <td>
                     <a href= "#"
-                        onClick={setPage(
-                            'mri_protocol_violations',
-                            {
+                        onClick={() => setPage({
                               PatientName: rowData['Patient Name'],
                               SeriesUID: rowData['Series UID'],
                               TarchiveID: rowData['TarchiveId'],

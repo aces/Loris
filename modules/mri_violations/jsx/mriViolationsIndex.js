@@ -9,6 +9,8 @@ import {formatColumnUnresolved, unresolvedFilters}
 import {formatColumnResolved, resolvedFilters}
     from './resolvedViolations.js';
 
+import ProtocolModal from './protocolModal.js';
+
 
 /**
  * Entry point for the MRI Violatons module.
@@ -18,28 +20,8 @@ import {formatColumnResolved, resolvedFilters}
  * @return {ReactDOM}
  */
 function MRIViolationsIndex(props) {
-  const [currentPage, setCurrentPage] = useState('index');
-
-  const setPage 
-  switch (currentPage) {
-      case 'protocol_violations':
-        return protocolViolationsPage(props, setCurrentPage)
-      case 'index': // fallthrough
-      default: return defaultPage(props, setCurrentPage);
-  }
-}
-
-/**
- * Returns the JSX for the main MRI violations table page
- *
- * @param {object} props - React component properties
- * @param {callback} setPage - Callback to set the page to a different
- *                             subpage
- *
- * @return {ReactDOM}
- */
-function defaultPage(props, setPage) {
   const [fieldOptions, setFieldOptions] = useState({});
+  const [violationModal, setViolationModal] = useState(false);
   const tabs = [
     {id: 'notresolved', label: 'Not Resolved'},
     {id: 'resolved', label: 'Resolved'},
@@ -47,13 +29,20 @@ function defaultPage(props, setPage) {
 
   const mapper = columnMapper(fieldOptions);
 
-  return <Tabs tabs={tabs} defaultTab="notresolved" updateURL={true}>
+  const violationsModal = (violationModal !== false) ?
+      <ProtocolModal onClose={() => setViolationModal(false)}
+        URL={props.ModuleURL}
+        SeriesUID={violationModal.SeriesUID} /> : null;
+
+  return <div>
+      {violationsModal}
+      <Tabs tabs={tabs} defaultTab="notresolved" updateURL={true}>
       <TabPane TabId={tabs[0].id}>
         <ViolationsTable
           URL={props.unresolvedURL}
           name="notresolved"
           mapper={mapper}
-          formatter={formatColumnUnresolved(mapper, setPage)}
+          formatter={formatColumnUnresolved(mapper, setViolationModal)}
           fields={unresolvedFilters(fieldOptions)}
           setFieldOptions={setFieldOptions}
         />
@@ -67,7 +56,7 @@ function defaultPage(props, setPage) {
           mapper={mapper}
         />
       </TabPane>
-    </Tabs>;
+    </Tabs></div>;
 }
 
 /**
@@ -148,6 +137,7 @@ function columnMapper(fieldOptions) {
 window.addEventListener('load', () => {
   ReactDOM.render(
     <MRIViolationsIndex
+      ModuleURL={`${loris.BaseURL}/mri_violations/`}
       unresolvedURL={`${loris.BaseURL}/mri_violations/?format=json`}
       resolvedURL={
         `${loris.BaseURL}/mri_violations/resolved_violations?format=json`
