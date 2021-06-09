@@ -345,27 +345,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that, when loading the Mri_violations module >
-     * mri_protocol_check_violations submodule, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testMriProtocolCheckViolationsDoesPageLoad()
-    {
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/mri_protocol_check_violations/"
-        );
-        sleep(1);
-        $value = "#bc2 > a:nth-child(3) > div";
-        $text  = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
-            $this->assertEquals("Mri Protocol Check Violations", $text);
-    }
-
-    /**
      * Tests loading the module with the permission
      * 'violated_scans_view_allsites'
      *
