@@ -133,6 +133,9 @@ class Mri_Violations extends \DataFrameworkMenu
         switch ($this->violationType) {
         case 'protocolviolation':
            return (new ProtocolViolationProvisioner($this->seriesUID));
+        case 'protocolcheck':
+           return (new ProtocolCheckViolationProvisioner($this->seriesUID))
+              ->filter(new UserCenterMatchOrNull);
         default:
            return (new Provisioner())
               ->filter(new UserProjectMatchOrNull);

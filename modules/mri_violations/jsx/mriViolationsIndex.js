@@ -32,7 +32,8 @@ function MRIViolationsIndex(props) {
   const violationsModal = (violationModal !== false) ?
       <ProtocolModal onClose={() => setViolationModal(false)}
         URL={props.ModuleURL}
-        SeriesUID={violationModal.SeriesUID} /> : null;
+        SeriesUID={violationModal.SeriesUID}
+        Type={violationModal.ViolationType} /> : null;
 
   return <div>
       {violationsModal}

@@ -1,17 +1,40 @@
 import Modal from 'Modal';
+import StaticDataTable from 'StaticDataTable';
+
 import React, {useEffect, useState} from 'react';
 
 
 /**
- * A Modal popup to display a MRI violations protocol violation
- * (ie the mri_protocol table check failed for a scan and the
- * scan type could not be identified.
+ * A Modal popup to display a protocol violation of any
+ * type.
  *
  * @param {object} props - React element props
  *
  * @return {ReactDOM}
  */
 function ProtocolModal(props) {
+    console.log(props);
+    switch (props.Type) {
+        case 'protocolviolation':
+          return <ProtocolViolationModal {...props} />;
+        case 'protocolcheck':
+          return <ProtocolCheckViolationModal {...props} />;
+        default: return <div />;
+    }
+}
+
+/**
+ * Return a modal window to display a MRI violations protocol
+ * violation.
+ *
+ * (ie the mri_protocol table check failed for a scan and the
+ * scan type could not be identified.)
+ *
+ * @param {object} props - React element props
+ *
+ * @return {ReactDOM}
+ */
+function ProtocolViolationModal(props) {
     const [data, setData] = useState([]);
     const [protocols, setMRIProtocols] = useState([]);
 
@@ -153,7 +176,6 @@ function ProtocolModal(props) {
     for (const protocol of protocols) {
       if (protocol['Protocol Group'] != curgroupname && curgroupname != '') {
         pushgroup(curgroupname, curgroup);
-        console.log('change ', curgroupname, curgroup);
         curgroup = [];
       }
       curgroupname = protocol['Protocol Group'];
@@ -194,18 +216,59 @@ function ProtocolModal(props) {
           );
       }
     }
-    console.log('done', curgroupname, curgroup);
     pushgroup(curgroupname, curgroup);
 
     return <Modal onClose={props.onClose}
-    show={true}
-    width="90%"
-        title={'Violations for SeriesUID ' + props.SeriesUID}>
-        <h2>Study Protocols</h2>
-        {protocolgroups}
-    <h2>Violations</h2>
-    {violations}
-    </Modal>;
+        show={true}
+        width="90%"
+            title={'Violations for SeriesUID ' + props.SeriesUID}>
+            <h2>Study Protocols</h2>
+            {protocolgroups}
+        <h2>Violations</h2>
+        {violations}
+        </Modal>;
 }
 
+/**
+ * Return a modal window to display a MRI violations protocol
+ * check violation.
+ *
+ * (ie the protocol type was identified, but it violates the
+ * protocol study's constraints.)
+ *
+ * @param {object} props - React element props
+ *
+ * @return {ReactDOM}
+ */
+function ProtocolCheckViolationModal(props) {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+            fetch(props.URL + '?format=json' +
+                  '&violationtype=protocolcheck' +
+                  '&seriesUID=' + props.SeriesUID)
+            .then((res) => res.json())
+            .then(
+              (result) => {
+                setData(result.Data);
+              },
+              (error) => {
+                console.error(error);
+              }
+            );
+    }, [props.SeriesUID]);
+
+    return <Modal onClose={props.onClose}
+        show={true}
+        width="90%"
+            title={'Violations for SeriesUID ' + props.SeriesUID}>
+            <h2>Scan Problems</h2>
+            <StaticDataTable Headers={
+                ['Patient Name', 'CandID', 'Visit', 'Scan Type',
+                 'Protocol Group', 'Severity', 'Header', 'Value',
+                 'Valid Values'] }
+                Hide={{rowsPerPage: true, defaultColumn: true}}
+                NoDynamicTable={true}
+                Data={data} />
+        </Modal>;
+}
 export default ProtocolModal;

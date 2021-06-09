@@ -99,6 +99,7 @@ export function formatColumnUnresolved(mapper, setPage) {
                     <td>
                     <a href="#" onClick={
                         () => setPage({
+                              ViolationType: 'protocolcheck',
                               PatientName: rowData['Patient Name'],
                               SeriesUID: rowData['Series UID'],
                               TarchiveID: rowData['TarchiveID'],
@@ -118,6 +119,7 @@ export function formatColumnUnresolved(mapper, setPage) {
                     <td>
                     <a href= "#"
                         onClick={() => setPage({
+                              ViolationType: 'protocolviolation',
                               PatientName: rowData['Patient Name'],
                               SeriesUID: rowData['Series UID'],
                               TarchiveID: rowData['TarchiveId'],
