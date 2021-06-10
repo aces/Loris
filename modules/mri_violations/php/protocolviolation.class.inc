@@ -1,36 +1,18 @@
 <?php
-/**
- * This class implements a data Instance which represents a single
- * file in the media menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * A Meida File represents a row in the Media menu table.
+ * A ProtocolViolation represents a violation of the mri_protocol
+ * table for the ProtocolViolationProvisioner.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class ProtocolViolation implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
     /**
-     * Create a new Media File Instance.
+     * Create a new ProtocolViolation instance.
      *
      * @param array $row The Media File Instance
      */
