@@ -1,38 +1,17 @@
 <?php declare(strict_types=1);
-/**
- * This file implements a data provisioner to get all possible files
- * for the media menu page.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * This class implements a data provisioner to get all possible files
- * for the media menu page.
+ * This class implements a data provisioner to get all violations.
+ * It is the base provisioner for the main page of the mri_violations
+ * module.
  *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a MediaFileProvisioner, which gets files for the meida
-     * menu table.
+     * Create a Provisioner for the module.
      */
     function __construct()
     {
@@ -59,7 +38,8 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
     /**
      * Get the "FROM" clause of the query for the MRI violations table, this
-     * is reused by both the dashboard widget and the provisioner.
+     * is reused by both the dashboard widget and the provisioner to ensure
+     * the same results are returned.
      *
      * @return string
      */
@@ -154,7 +134,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     }
 
     /**
-     * Returns an instance of a MediaFile object.
+     * Returns an instance of a MRIViolation object.
      *
      * @param array $row The database row from the LORIS Database class.
      *

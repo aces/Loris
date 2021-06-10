@@ -1,38 +1,16 @@
 <?php declare(strict_types=1);
-/**
- * This file implements a data provisioner to get all possible files
- * for the media menu page.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * This class implements a data provisioner to get all possible files
- * for the media menu page.
+ * A Provisioner to return all resolved violations for the
+ * resolved tab in the module.
  *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class ResolvedViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a MediaFileProvisioner, which gets files for the meida
-     * menu table.
+     * Create a ResolvedViolationsProvisioner.
      */
     function __construct()
     {
@@ -134,7 +112,7 @@ class ResolvedViolationsProvisioner extends \LORIS\Data\Provisioners\DBRowProvis
     }
 
     /**
-     * Returns an instance of a MediaFile object.
+     * Returns an instance of a ResolvedViolation object.
      *
      * @param array $row The database row from the LORIS Database class.
      *
