@@ -61,6 +61,7 @@ function uploadPublication() : void
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
+    $doi              = $_POST['doi'] ?? null;
     $link            = $_POST['link'] ?? null;
     $leadInvest      = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
@@ -70,7 +71,7 @@ function uploadPublication() : void
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Email = :e',
+        'WHERE Name = :n OR Email = :e',
         [
             'e' => $leadInvestEmail,
         ]
@@ -100,6 +101,7 @@ function uploadPublication() : void
         'publishingStatus'   => $publishingStatus,
         'datePublication'    => $datePublication,
         'journal'            => $journal,
+        'doi'                => $doi,
         'link'               => $link,
         'LeadInvestigatorID' => $leadInvID,
         'DateProposed'       => $today,
@@ -523,6 +525,7 @@ function editProject() : void
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
+    $doi              = $_POST['doi'] ?? null;
     $link = $_POST['link'] ?? null;
     $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
@@ -565,6 +568,9 @@ function editProject() : void
     }
     if ($pubData['journal'] !== $journal) {
         $toUpdate['journal'] = $journal;
+    }
+    if ($pubData['doi'] !== $doi) {
+        $toUpdate['doi'] = $doi;
     }
     if ($pubData['link'] !== $link) {
         $toUpdate['link'] = $link;

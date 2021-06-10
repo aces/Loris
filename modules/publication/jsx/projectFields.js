@@ -381,9 +381,9 @@ class ProjectFormFields extends React.Component {
       Imaging: 'Imaging',
     };
 
-    let publishingStatusOptions = {
-      inProgress: 'In progress',
-      published: 'Published',
+    const publishingStatusOptions = {
+      'In Progress': 'In progress',
+      'Published': 'Published',
     };
 
     const allVOIs = this.props.allVOIs;
@@ -397,8 +397,7 @@ class ProjectFormFields extends React.Component {
       voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
     }
 
-    let published = this.props.formData.publishingStatus==='published';
-    let publishInProgress = this.props.formData.publishingStatus==='inProgress';
+    const published = this.props.formData.publishingStatus==='Published';
 
     return (
       <div>
@@ -424,7 +423,7 @@ class ProjectFormFields extends React.Component {
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.datePublication}
-          disabled={publishInProgress}
+          disabled={!published}
         />
         <TextboxElement
           name="journal"
@@ -432,7 +431,15 @@ class ProjectFormFields extends React.Component {
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.journal}
-          disabled={publishInProgress}
+          disabled={!published}
+        />
+        <TextboxElement
+          name="doi"
+          label="DOI"
+          onUserInput={this.props.setFormData}
+          required={false}
+          value={this.props.formData.doi}
+          disabled={!published}
         />
         <TextboxElement
           name="link"
@@ -440,7 +447,7 @@ class ProjectFormFields extends React.Component {
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.link}
-          disabled={publishInProgress}
+          disabled={!published}
         />
         <TextboxElement
           name="leadInvestigator"
