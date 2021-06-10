@@ -1,31 +1,16 @@
 <?php
-/**
- * This page implements a front end which is used to unify all
- * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled
- * scan, etc) and link to the appropriate module to further investigate
- * why a scan was excluded by the imaging pipeline scripts.
- *
- * PHP Version 7
- *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 namespace LORIS\mri_violations;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Implement the menu filter for searching through all violated scans
+ * This page implements a front end which is used to unify all
+ * of the different MRI violation types (could not identify scan,
+ * header violation in the scan after identifying scan type, mislabeled
+ * scan, etc) to investigate why a scan was excluded by the imaging
+ * pipeline scripts.
  *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Mri_Violations extends \DataFrameworkMenu
 {

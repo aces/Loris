@@ -1,29 +1,10 @@
 <?php
-/**
- * This class implements a data Instance which represents a single
- * file in the media menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * A Meida File represents a row in the Media menu table.
+ * A MRIViolation represents a row in the MRI Violations table.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class MRIViolation implements \LORIS\Data\DataInstance,
     \LORIS\StudyEntities\SiteHaver
@@ -32,9 +13,9 @@ class MRIViolation implements \LORIS\Data\DataInstance,
     protected $CenterID;
 
     /**
-     * Create a new Media File Instance.
+     * Create a new MRIViolation Instance.
      *
-     * @param array $row The Media File Instance
+     * @param array $row The database values
      */
     public function __construct(array $row)
     {
@@ -44,7 +25,7 @@ class MRIViolation implements \LORIS\Data\DataInstance,
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return array which can be serialized by json_encode()
+     * @return array
      */
     public function jsonSerialize() : array
     {
