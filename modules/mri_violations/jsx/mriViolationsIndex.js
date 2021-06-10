@@ -43,7 +43,11 @@ function MRIViolationsIndex(props) {
           URL={props.unresolvedURL}
           name="notresolved"
           mapper={mapper}
-          formatter={formatColumnUnresolved(mapper, setViolationModal)}
+          formatter={formatColumnUnresolved(
+            mapper,
+            setViolationModal,
+            props.ModuleURL + '/resolve'
+         )}
           fields={unresolvedFilters(fieldOptions)}
           setFieldOptions={setFieldOptions}
         />
@@ -128,8 +132,6 @@ function columnMapper(fieldOptions) {
             if (fieldOptions.sites) {
                 return fieldOptions.sites[value];
             }
-        case 'Type of Problem':
-            // console.log(value);
         }
         return value;
     };

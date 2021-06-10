@@ -83,7 +83,7 @@ export function resolvedFilters(fieldoptions) {
         type: 'text',
       },
     },
-    {label: 'hash ', show: false},
+    {label: 'hash', show: false},
     {label: 'JoinID', show: false},
     {label: 'SiteID', show: false},
   ];

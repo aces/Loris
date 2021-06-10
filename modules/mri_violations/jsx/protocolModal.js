@@ -13,7 +13,6 @@ import React, {useEffect, useState} from 'react';
  * @return {ReactDOM}
  */
 function ProtocolModal(props) {
-    console.log(props);
     switch (props.Type) {
         case 'protocolviolation':
           return <ProtocolViolationModal {...props} />;

@@ -71,7 +71,7 @@ export function unresolvedFilters(fieldoptions) {
         type: 'text',
       },
     },
-    {label: 'hash ', show: false},
+    {label: 'hash', show: false},
     {label: 'JoinID', show: false},
     {label: 'Resolution Status', show: false},
     {label: 'TarchiveID', show: false},
@@ -87,10 +87,12 @@ export function unresolvedFilters(fieldoptions) {
  * Returns a formatter to handle the unresolved violations
  * @param {callback} mapper - a data mapper to map from ID to display
  * @param {callback} setPage - a callback to set the current page
+ * @param {string} resolvePostURL - the URL to send a post request to when
+                                    a resolution status is selected
 
  * @return {function} a formatter callback which uses mapper for data mapping
  */
-export function formatColumnUnresolved(mapper, setPage) {
+export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
     const Mapper = function(column, cell, rowData, rowHeaders) {
         cell = mapper(column, cell);
         // Create the mapping between rowHeaders and rowData in a row object.
@@ -132,21 +134,39 @@ export function formatColumnUnresolved(mapper, setPage) {
                    );
         }
         if (column === 'Resolution Status') {
-            const hashName = 'resolvable[' + rowData.hash + ']';
+            const hashName = rowData.hash;
             return (
                     <td>
                     <select
-                    name= {hashName}
-                    className="form-control input-sm"
-                    id="resolution-status"
-                    >
-                    <option value="unresolved" >Unresolved</option>
-                    <option value="reran" >Reran</option>
-                    <option value="emailed" >Emailed site/pending</option>
-                    <option value="inserted" >Inserted</option>
-                    <option value="rejected" >Rejected</option>
-                    <option value="inserted_flag" >Inserted with flag</option>
-                    <option value="other" >Other</option>
+                        name={hashName}
+                        className="form-control input-sm"
+                        id="resolution-status"
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value == 'Unresolved') {
+                              return;
+                            }
+
+                            fetch(resolvePostURL,
+                            {
+                                method: 'POST',
+                                mode: 'same-origin',
+                                cache: 'no-cache',
+                                body: JSON.stringify({
+                                    value: value,
+                                    hash: hashName,
+                                }),
+                            });
+                          }
+                        }
+                      >
+                      <option value="unresolved" >Unresolved</option>
+                      <option value="reran" >Reran</option>
+                      <option value="emailed" >Emailed site/pending</option>
+                      <option value="inserted" >Inserted</option>
+                      <option value="rejected" >Rejected</option>
+                      <option value="inserted_flag" >Inserted with flag</option>
+                      <option value="other" >Other</option>
                     </select>
                     </td>
                    );
