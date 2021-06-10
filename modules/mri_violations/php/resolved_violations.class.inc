@@ -42,14 +42,14 @@ class Resolved_Violations extends \DataFrameworkMenu
         );
     }
 
-   /**
+    /**
      * {@inheritDoc}
      *
      * @return array
      */
     protected function getFieldOptions() : array
     {
-       return [];
+        return [];
     }
     /**
      * Tells the base class that this page's provisioner can support the
@@ -74,6 +74,11 @@ class Resolved_Violations extends \DataFrameworkMenu
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Provisioner
+     */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
         return (new ResolvedViolationsProvisioner())

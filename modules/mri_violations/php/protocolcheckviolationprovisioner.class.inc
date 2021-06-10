@@ -1,40 +1,21 @@
 <?php declare(strict_types=1);
-/**
- * This file implements a data provisioner to get all possible files
- * for the media menu page.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * This class implements a data provisioner to get all possible files
- * for the media menu page.
+ * This class implements a data provisioner to get all ProtocolCheck violations
+ * for a single SeriesUID.
  *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class ProtocolCheckViolationProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class ProtocolCheckViolationProvisioner
+    extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create a MediaFileProvisioner, which gets files for the meida
-     * menu table.
+     * Create a ProtocolCheckViolationProvisioner
+     *
+     * @param string $seriesUID the SeriesUID with violations
      */
-    function __construct(private string $seriesUID)
+    function __construct(string $seriesUID)
     {
         parent::__construct(
             "SELECT 

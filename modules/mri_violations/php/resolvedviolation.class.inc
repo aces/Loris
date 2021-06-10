@@ -1,29 +1,11 @@
 <?php
-/**
- * This class implements a data Instance which represents a single
- * file in the media menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * A Meida File represents a row in the Media menu table.
+ * A ResolvedViolation represents a row in the resolved violations
+ * tab.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class ResolvedViolation implements \LORIS\Data\DataInstance,
     \LORIS\StudyEntities\SiteHaver
@@ -32,9 +14,9 @@ class ResolvedViolation implements \LORIS\Data\DataInstance,
     protected $CenterID;
 
     /**
-     * Create a new Media File Instance.
+     * Create a new ResolvedViolation
      *
-     * @param array $row The Media File Instance
+     * @param array $row The data from the database.
      */
     public function __construct(array $row)
     {
@@ -66,11 +48,11 @@ class ResolvedViolation implements \LORIS\Data\DataInstance,
      * Returns the ProjectID for this instance, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match against.
      *
-     * @return ?ProjectID
+     * @return ?\ProjectID
      */
     public function getProjectID(): ?\ProjectID
     {
-        if($this->DBRow['Project'] === null) {
+        if ($this->DBRow['Project'] === null) {
             return null;
         }
         return new \ProjectID($this->DBRow['Project']);

@@ -1,38 +1,20 @@
 <?php
-/**
- * This class implements a data Instance which represents a single
- * file in the media menu table.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
-
 namespace LORIS\mri_violations;
 
 /**
- * A Meida File represents a row in the Media menu table.
+ * A class which represents a single instance of a ProtocolCheck
+ * violation.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Imaging
- * @author     Henri Rabalais <henri.rabalais@mcin.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class ProtocolCheckViolation implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
     /**
-     * Create a new Media File Instance.
+     * Create a new ProtocolCheckViolation instance
      *
-     * @param array $row The Media File Instance
+     * @param array $row The data from the database
      */
     public function __construct(array $row)
     {
@@ -49,8 +31,14 @@ class ProtocolCheckViolation implements \LORIS\Data\DataInstance
         return $this->DBRow;
     }
 
-    public function getCenterID() : ?\CenterID {
-        if(($this->DBRow['CenterID'] ?? null) == null) {
+    /**
+     * Return the CenterID for this violation if known.
+     *
+     * @return ?\CenterID
+     */
+    public function getCenterID() : ?\CenterID
+    {
+        if (($this->DBRow['CenterID'] ?? null) == null) {
             return null;
         }
         return new \CenterID($this->DBRow['CenterID']);

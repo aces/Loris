@@ -63,7 +63,8 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      *
      * @return string
      */
-    static public function getViolationsQueryTable() {
+    static public function getViolationsQueryTable()
+    {
         return "(SELECT PatientName    AS PatientName,
                        time_run       AS TimeRun,
                        s.ProjectID    AS Project,

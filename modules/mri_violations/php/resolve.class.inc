@@ -1,31 +1,13 @@
 <?php
-/**
- * This page implements a front end which is used to unify all
- * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled
- * scan, etc) and link to the appropriate module to further investigate
- * why a scan was excluded by the imaging pipeline scripts.
- *
- * PHP Version 7
- *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 namespace LORIS\mri_violations;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * Implement the menu filter for searching through all violated scans
+ * Implement and endpoint to handle POST requests which resolve
+ * a given violation.
  *
- * @category MRI
- * @package  Main
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Resolve extends \NDB_Page
 {
@@ -47,21 +29,32 @@ class Resolve extends \NDB_Page
     }
 
     /**
-     * Extract the appropriate provisioner to use for the JSON format
+     * Handle an incoming request by inserting or updating the resolved violation
+     * status in the backend.
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $user = $request->getAttribute("user");
         if (!$this->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden("Access denied");
         }
 
         $requestdata = json_decode((string) $request->getBody(), true);
+        if (!is_array($requestdata)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Must submit data in JSON format"
+            );
+        }
 
-        $DB = $this->loris->getDatabaseConnection();
+        $DB   = $this->loris->getDatabaseConnection();
         $hash = $requestdata['hash'];
-        $val = $requestdata['value'];
+        $val  = $requestdata['value'];
 
-        $row  = $DB->pselectRow(
+        $row = $DB->pselectRow(
             "SELECT * FROM violations_resolved
                 WHERE hash = :hash",
             ['hash' => $hash]
@@ -74,12 +67,12 @@ class Resolve extends \NDB_Page
             if ($row['Resolved'] !== $val) {
                 // user input doesn't match DB, so we update the DB
                 $DB->update(
-                        'violations_resolved',
-                        [
-                            'Resolved'   => (string)$val,
-                            'ChangeDate' => date("Y-m-d H:i:s"),
-                        ],
-                        ['hash' => $hash],
+                    'violations_resolved',
+                    [
+                        'Resolved'   => (string)$val,
+                        'ChangeDate' => date("Y-m-d H:i:s"),
+                    ],
+                    ['hash' => $hash],
                 );
                 // Status: 200 OK
             } else {

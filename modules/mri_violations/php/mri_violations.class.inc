@@ -14,6 +14,9 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Mri_Violations extends \DataFrameworkMenu
 {
+    private string $seriesUID;
+    private string $violationType = 'default';
+
     /**
      * Check if user should be allowed to see this page.
      *
@@ -62,20 +65,22 @@ class Mri_Violations extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         // Build a list of existing problem types based on data in db
-        $db = $this->lorisinstance->getDatabaseConnection();
+        $db           = $this->lorisinstance->getDatabaseConnection();
         $problemTypes = array_column(
-                $db->pselect("
-                        SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            $db->pselect(
+                "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
                     UNION 
-                        SELECT DISTINCT 'Could not identify scan type' FROM mri_protocol_violated_scans
+                 SELECT DISTINCT 'Could not identify scan type'
+                      FROM mri_protocol_violated_scans
                     UNION
-                        SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-                    []
-                    ),
-                'Reason'
-                );
+                 SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+                []
+            ),
+            'Reason'
+        );
 
-       $protocols = $db->pselect("SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
+        $protocols = $db->pselect(
+            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
                     s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
@@ -87,21 +92,26 @@ class Mri_Violations extends \DataFrameworkMenu
              LEFT JOIN mri_scan_type as s
                  ON p.Scan_type=s.ID
              ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
-             []
-             );
+            []
+        );
         return [
             'projects'     => \Utility::getProjectList(),
             'subprojects'  => \Utility::getSubprojectList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
-            'protocols' => $protocols,
+            'protocols'    => $protocols,
         ];
     }
 
     /**
      * Extract the appropriate provisioner to use for the JSON format
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $params = $request->getQueryParams();
         if (isset($params['seriesUID'])) {
             $this->seriesUID = $params['seriesUID'];
@@ -111,23 +121,26 @@ class Mri_Violations extends \DataFrameworkMenu
         return parent::handle($request);
     }
 
-    private string $seriesUID;
-    private string $violationType = 'default';
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Provisioner
+     */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
         switch ($this->violationType) {
         case 'protocolviolation':
-           return (new ProtocolViolationProvisioner($this->seriesUID));
+            return (new ProtocolViolationProvisioner($this->seriesUID));
         case 'protocolcheck':
-           return (new ProtocolCheckViolationProvisioner($this->seriesUID))
+            return (new ProtocolCheckViolationProvisioner($this->seriesUID))
               ->filter(new UserCenterMatchOrNull);
         default:
-           return (new Provisioner())
+            return (new Provisioner())
               ->filter(new UserProjectMatchOrNull);
         }
     }
 
-   /**
+    /**
      * Include additional JS files
      *
      * @return array of javascript to be inserted

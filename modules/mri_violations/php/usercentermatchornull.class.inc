@@ -32,7 +32,7 @@ class UserCenterMatchOrNull implements \LORIS\Data\Filter
             $resourceCenter = $res->getCenterID();
             if (!is_null($resourceCenter)) {
                 return $user->hasCenter(
-                    new \CenterID(strval($resourceCenterID))
+                    new \CenterID(strval($resourceCenter))
                 );
             }
             return true;

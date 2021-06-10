@@ -47,11 +47,11 @@ class MRIViolation implements \LORIS\Data\DataInstance,
      * Returns the ProjectID for this instance, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match against.
      *
-     * @return ?ProjectID
+     * @return ?\ProjectID
      */
     public function getProjectID(): ?\ProjectID
     {
-        if($this->DBRow['Project'] === null) {
+        if ($this->DBRow['Project'] === null) {
             return null;
         }
         return new \ProjectID($this->DBRow['Project']);
