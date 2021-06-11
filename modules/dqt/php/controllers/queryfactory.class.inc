@@ -24,8 +24,10 @@ abstract class QueryFactory
             null,
             null,
             null,
+            null,
             self::_createFields($fields),
-            self::_createFilters($filters)
+            self::_createFilters($filters),
+            null
         );
     }
 

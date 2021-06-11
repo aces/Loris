@@ -120,15 +120,13 @@ class SelectFieldsTab extends Component {
     return (
       <div>
         <fieldset>
-          <legend>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={this.toggleModal}
-            >
-              Add Field(s)
-            </button>
-          </legend>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.toggleModal}
+          >
+            Add Field(s)
+          </button>
           {selectedFields}
         </fieldset>
         {modal}

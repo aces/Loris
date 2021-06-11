@@ -204,7 +204,9 @@ class SelectFieldsModal extends Component {
         <div className="modal-body">
           <form>
             {categoriesdropdown}
+            <br/>
             {fieldsdropdown}
+            <br/>
             {visitsdropdown}
           </form>
         </div>

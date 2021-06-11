@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import QueryPanel from './querypanel';
 import SelectFieldsTab from './selectfieldstab';
 import AddFiltersTab from './addfilterstab';
+import QueryResultsTab from './queryresultstab';
 
 /**
  * DQT React Component
@@ -23,7 +24,7 @@ class DQT extends Component {
         filters: {},
       },
       queryResults: {
-        columns: [],
+        headers: [],
         data: [],
       },
     };
@@ -33,6 +34,7 @@ class DQT extends Component {
     this.setQueryFields = this.setQueryFields.bind(this);
     this.setQueryFilters = this.setQueryFilters.bind(this);
     this.getQueries = this.getQueries.bind(this);
+    this.getQuery = this.getQuery.bind(this);
     this.postQuery = this.postQuery.bind(this);
     this.getResults = this.getResults.bind(this);
   }
@@ -109,12 +111,58 @@ class DQT extends Component {
 
   /**
    * getQueries
+   *
+   * @return {object}
    */
   getQueries() {
      console.info('DQT::getQueries');
-     this.setState({
-       queries: [1, 2, 3],
-     });
+     const url = this.props.baseURL.concat('/dqt/queries');
+     const opt = {
+      method: 'get',
+      credentials: 'same-origin',
+    };
+    return fetch(url, opt)
+      .then((resp) => resp.json())
+      .then((json) => {
+        if ('error' in json) {
+          throw new Error(json.error);
+        }
+        return json;
+      })
+      .then((data) => this.setState({queries: data.queries}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
+
+  /**
+   * getQuery
+   *
+   * @param {string} link The url path part of the query
+   *
+   * @return {object}
+   */
+  getQuery(link) {
+     console.info('DQT::getQuery');
+     const url = this.props.baseURL.concat(link);
+     const opt = {
+      method: 'get',
+      credentials: 'same-origin',
+    };
+    return fetch(url, opt)
+      .then((resp) => resp.json())
+      .then((json) => {
+        if ('error' in json) {
+          throw new Error(json.error);
+        }
+        return json;
+      })
+      .then((query) => this.setState({query}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   /**
@@ -138,7 +186,6 @@ class DQT extends Component {
         }
         return json;
       })
-      .then((data) => this.setState({data}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -146,16 +193,32 @@ class DQT extends Component {
   }
 
   /**
-   * getResults
+   * To run a query, it needs to be saved first so that results are made
+   * available.
    */
   getResults() {
     console.info('DQT::getResults');
-    this.setState({
-      queryResults: {
-        columns: [1, 2, 3],
-        data: [],
-      },
-    });
+    this.postQuery()
+      .then((json) => json.links.results)
+      .then((url) => {
+         const opt = {
+           method: 'get',
+           credentials: 'same-origin',
+        };
+        return fetch(url, opt)
+          .then((resp) => resp.json())
+          .then((json) => {
+            if ('error' in json) {
+              throw new Error(json.error);
+            }
+            return json;
+          })
+          .then((results) => this.setState({queryResults: results}))
+          .catch((error) => {
+            this.setState({error: true});
+            console.error(error);
+          });
+      });
   }
 
   /**
@@ -172,6 +235,9 @@ class DQT extends Component {
           runQuery={this.getResults}
           saveQuery={this.postQuery}
           loadQueries={this.getQueries}
+          loadQuery={this.getQuery}
+          setQueryFields={this.setQueryFields}
+          setFilters={this.setQueryFilters}
         />
         <SelectFieldsTab
           getCategories={this.getCategories}
@@ -188,6 +254,9 @@ class DQT extends Component {
           selectedCategory={this.state.selectedCategory}
           filters={this.state.query.filters}
           setFilters={this.setQueryFilters}
+        />
+        <QueryResultsTab
+          data={this.state.queryResults}
         />
       </div>
     );

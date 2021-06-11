@@ -6,10 +6,11 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint;
 use \LORIS\dqt\Controllers\QueryKeeper;
-use \LORIS\dqt\Models\Query as DQTQuery;
 
-class Results extends Endpoint
+class Results extends Endpoint 
 {
+    // TODO Add EtagCalculator
+
     /**
      * Returns true if the user has permission to access
      * the dqt categories
@@ -70,7 +71,6 @@ class Results extends Endpoint
      */
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
-
         $loris     = $request->getAttribute('loris');
         $user      = $request->getAttribute('user');
         $pathparts = $request->getAttribute('pathparts');
@@ -86,12 +86,14 @@ class Results extends Endpoint
             $results     = $querykeeper->getQueryResults($queryid);
 
         } catch (\NotFound $e) {
-            print_errlog($e);
             return new \LORIS\Http\Response\JSON\NotFound('Results not found');
         }
 
-        return new \LORIS\Http\Response\JSON\OK(
-            (new \LORIS\dqt\Views\Results($query, $results))->toArray()
+        $view = new \LORIS\dqt\Views\Results($query, $results);
+        $this->_cache = new \LORIS\Http\Response\JSON\OK(
+            $view->toArray()
         );
+
+        return $this->_cache;
     }
 }

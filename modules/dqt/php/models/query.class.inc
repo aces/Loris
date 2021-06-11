@@ -6,16 +6,20 @@ class Query implements \JsonSerializable
 {
     public function __construct(
         ?integer $query_id,
+        ?string $name,
         ?string $creatorusername,
         ?integer $creationtimestamp,
         QueryFields $fields,
-        QueryFilters $filters
+        QueryFilters $filters,
+        ?bool $shared
     ) {
         $this->_id        = $query_id;
+        $this->_name      = $name;
         $this->_creator   = $creatorusername;
         $this->_timestamp = $creationtimestamp;
         $this->_fields    = $fields;
         $this->_filters   = $filters;
+        $this->_shared    = $shared;
     }
 
     public function execute(Loris $loris, \User $user): \Traversable
@@ -41,6 +45,13 @@ class Query implements \JsonSerializable
         return $new;
     }
 
+    public function withName(?string $name): Query
+    {
+        $new = clone($this);
+        $new->_name = $name;
+        return $new;
+    }
+
     public function withCreator(string $username): Query
     {
         $new = clone($this);
@@ -55,14 +66,23 @@ class Query implements \JsonSerializable
         return $new;
     }
 
+    public function withShared(?bool $shared=false): Query
+    {
+        $new = clone($this);
+        $new->_shared = $shared;
+        return $new;
+    }
+
     public function jsonSerialize()
     {
         return [
             'id'                 => $this->_id,
+            'name'               => $this->_name,
             'creator'            => $this->_creator,
             'creation_timestamp' => $this->_timestamp,
             'fields'             => $this->_fields,
             'filters'            => $this->_filters,
+            'shared'             => $this->_shared
         ];
     }
 }
