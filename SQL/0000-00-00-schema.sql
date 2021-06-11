@@ -477,12 +477,12 @@ INSERT INTO `ImagingFileTypes` (type, description) VALUES
   ('txt',      'text file'),
   ('nii',      'NIfTI file'),
   ('nrrd',     'NRRD file format (used by DTIPrep)'),
-  ('grid_0',   'MNI BIC non-linear field for non-linear transformation')
-  ('json',   'JSON file'),
-  ('readme', 'README file'),
-  ('tsv',    'Tab separated values (TSV) file'),
-  ('bval',   'NIfTI DWI file with b-values'),
-  ('bvec',   'NIfTI DWI file with b-vectors');
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation'),
+  ('json',     'JSON file'),
+  ('readme',   'README file'),
+  ('tsv',      'Tab separated values (TSV) file'),
+  ('bval',     'NIfTI DWI file with b-values'),
+  ('bvec',     'NIfTI DWI file with b-vectors');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
