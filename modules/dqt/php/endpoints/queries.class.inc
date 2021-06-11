@@ -9,6 +9,7 @@ use \LORIS\Http\Endpoint;
 use \LORIS\dqt\Controllers\QueryFactory;
 use \LORIS\dqt\Controllers\QueryKeeper;
 use \LORIS\dqt\Endpoints\Queries\Query as QueryEndpoint;
+use \LORIS\dqt\Models\Filters\CreatorOrSharedFilter;
 
 class Queries extends Endpoint implements ETagCalculator
 {
@@ -102,7 +103,9 @@ class Queries extends Endpoint implements ETagCalculator
             return $this->_cache;
         }
 
-        $prov = new \LORIS\dqt\Provisioners\QueriesProvisioner();
+        $prov = (new \LORIS\dqt\Provisioners\QueriesProvisioner())
+            ->filter(new CreatorOrSharedFilter());
+        
         $user = $request->getAttribute('user');
 
         $queries = (new \LORIS\Data\Table())
@@ -140,12 +143,10 @@ class Queries extends Endpoint implements ETagCalculator
         }
 
         try {
-/*
             $query = (QueryFactory::create($fields, $filters))
                 ->withName($data['name'] ?? null)
                 ->withShared($data['shared'] ?? false);
-*/
-            $query = QueryFactory::create($fields, $filters);
+            //$query = QueryFactory::create($fields, $filters);
 
             $id = (new QueryKeeper($loris, $user))
                 ->saveQuery($query);

@@ -31,6 +31,7 @@ class DQT extends Component {
 
     this.getCategories = this.getCategories.bind(this);
     this.getCategoryFields = this.getCategoryFields.bind(this);
+    this.setQueryInfo = this.setQueryInfo.bind(this);
     this.setQueryFields = this.setQueryFields.bind(this);
     this.setQueryFilters = this.setQueryFilters.bind(this);
     this.getQueries = this.getQueries.bind(this);
@@ -78,6 +79,19 @@ class DQT extends Component {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Update the query in state with new values
+   * then saves it.
+   *
+   * @param {object} query The new query values
+   */
+  setQueryInfo(query) {
+    console.info('DQT::setQueryInfo');
+    this.setState({
+      query: query,
+    }, this.postQuery);
   }
 
   /**
@@ -233,7 +247,7 @@ class DQT extends Component {
           queries={this.state.queries}
           query={this.state.query}
           runQuery={this.getResults}
-          saveQuery={this.postQuery}
+          saveQuery={this.setQueryInfo}
           loadQueries={this.getQueries}
           loadQuery={this.getQuery}
           setQueryFields={this.setQueryFields}

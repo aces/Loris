@@ -116,23 +116,45 @@ class QueryKeeper
             ['v_hash' => $hash]
         );
 
-        if (!empty($query_id)) {
-            return $query_id;
+        
+        $db->beginTransaction();
+
+        if (empty($query_id)) {
+            $db->insert(
+                'dqt_queries',
+                [
+                    'hash'    => $hash,
+                    'content' => base64_encode($content),
+                    'creator' => $this->_user->getId(),
+                ]
+            );
+
+            $query_id = $db->pselectOne(
+                'SELECT id FROM dqt_queries WHERE hash = :v_hash',
+                ['v_hash' => $hash]
+            );
         }
 
-        $db->insert(
-            'dqt_queries',
-            [
-                'hash'    => $hash,
-                'content' => base64_encode($content),
-                'creator' => $this->_user->getId(),
-            ]
+
+        if (!empty($obj->name)) {
+            $db->insertOnDuplicateUpdate(
+                'dqt_saved_queries',
+                [
+                    'saved_id' => $query_id,
+                    'name'     => $obj->name
+                ]
+            );
+        }
+
+print_errlog($obj->shared);
+
+        $action = $obj->shared ? 'insertIgnore' : 'delete';
+        $db->$action(
+            'dqt_shared_queries',
+            ['shared_id' => $query_id]
         );
 
-        $query_id = $db->pselectOne(
-            'SELECT id FROM dqt_queries WHERE hash = :v_hash',
-            ['v_hash' => $hash]
-        );
+        $db->commit();
 
         return $query_id;
     }

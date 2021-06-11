@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import LoadQueryModal from './loadquerymodal';
+import SaveQueryModal from './savequerymodal';
 
 /**
  * DQT Query Panel React Component
@@ -19,6 +20,7 @@ class QueryPanel extends Component {
     };
 
     this.onLoadClick = this.onLoadClick.bind(this);
+    this.onSaveClick = this.onSaveClick.bind(this);
     this.clearQuery = this.clearQuery.bind(this);
     this.closeModals = this.closeModals.bind(this);
     this.loadQuery = this.loadQuery.bind(this);
@@ -91,6 +93,7 @@ class QueryPanel extends Component {
     let runbutton = null;
     let clearbutton = null;
     let loadquerymodal = null;
+    let savequerymodal = null;
 
     loadbutton = (
       <button
@@ -114,7 +117,7 @@ class QueryPanel extends Component {
         >
           <span
             className="glyphicon glyphicon-floppy-disk"
-            onClick={this.props.saveQuery}
+            onClick={this.onSaveClick}
           />
         </button>
       );
@@ -155,6 +158,17 @@ class QueryPanel extends Component {
         />
       );
     }
+
+    if (this.state.showSaveModal) {
+      savequerymodal = (
+        <SaveQueryModal
+          query={this.props.query}
+          saveQuery={this.props.saveQuery}
+          onClose={this.closeModals}
+        />
+      );
+    }
+
     return (
       <div id="querypanel">
         <p>
@@ -167,6 +181,7 @@ class QueryPanel extends Component {
         {clearbutton}
         {closebutton}
         {loadquerymodal}
+        {savequerymodal}
       </div>
     );
   }
@@ -178,7 +193,7 @@ QueryPanel.propTypes = {
   loadQueries: PropTypes.func.isRequired,
   loadQuery: PropTypes.func.isRequired,
   runQuery: PropTypes.func.isRequired,
-  savequery: PropTypes.func.isRequired,
+  saveQuery: PropTypes.func.isRequired,
   setQueryFields: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
 };

@@ -38,4 +38,14 @@ class QueryItem implements DataInstance
             'shared'            => !is_null($this->_shared_id),
         ];
     }
+
+    public function getCreator(): string
+    {
+        return $this->_creator_username;
+    }
+
+    public function isShared(): bool
+    {
+        return $this->_shared_id !== null;
+    }
 }

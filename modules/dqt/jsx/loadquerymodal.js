@@ -46,15 +46,30 @@ class LoadQueryModal extends Component {
     const loadbuttondisabled = this.state.selectedQuery == null;
 
     console.info(JSON.stringify(this.props.queries));
-    const queryrows = this.props.queries.map((query, index) => {
-      return (
-        <tr onClick={() => this.onQuerySelected(index)}>
-          <td>{query.name ?? 'Untitled'}</td>
-          <td>{query.creationTimestamp}</td>
-          <td>{query.creator}</td>
+    const history = [];
+    const saved = [];
+    const selected = this.state.selectedQuery ?? {};
+    this.props.queries.forEach((query, index) => {
+      const active = query.id === (selected.id ?? -1);
+      const row = (
+        <tr
+          onClick={() => this.onQuerySelected(index)}
+          className={active ? 'info' : ''}
+        >
+          <td>{query.name ?? query.creationTimestamp}</td>
+          <td>{query.creatorUsername}</td>
+          <td>{query.shared ? 'Yes' : 'No'}</td>
         </tr>
       );
+      if (query.name !== null) {
+        saved.push(row);
+      } else {
+        history.push(row);
+      }
     });
+
+    saved.sort();
+    history.sort();
 
     return (
       <div
@@ -82,7 +97,17 @@ class LoadQueryModal extends Component {
         </div>
         <div className="modal-body">
           <table className="table">
-          {queryrows}
+            <thead>
+              <tr>
+                <td>Name</td>
+                <td>Creator</td>
+                <td>Shared</td>
+              </tr>
+            </thead>
+            <tbody>
+              {saved}
+              {history}
+            </tbody>
           </table>
         </div>
         <div className="modal-footer">
