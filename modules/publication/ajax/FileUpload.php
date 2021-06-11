@@ -61,9 +61,9 @@ function uploadPublication() : void
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
-    $doi              = $_POST['doi'] ?? null;
-    $link            = $_POST['link'] ?? null;
-    $leadInvest      = $_POST['leadInvestigator'] ?? null;
+    $doi        = $_POST['doi'] ?? null;
+    $link       = $_POST['link'] ?? null;
+    $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
@@ -525,7 +525,7 @@ function editProject() : void
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
-    $doi              = $_POST['doi'] ?? null;
+    $doi  = $_POST['doi'] ?? null;
     $link = $_POST['link'] ?? null;
     $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
