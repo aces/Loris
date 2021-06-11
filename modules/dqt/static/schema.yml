@@ -1,0 +1,414 @@
+openapi: 3.0.1
+info:
+  title: LORIS - REST API endpoints for the Data Query Tool module
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 2.0.0
+servers:
+  - url: /
+paths:
+
+  '/dqt/categories':
+    get:
+      tags:
+        - Fields & filters
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categories'
+
+  '/dqt/categories/{category}':
+    get:
+      tags:
+        -  Fields & filters
+      parameters:
+        - in: path
+          name: category
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: List of fields in that category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  
+  '/dqt/queries':
+    get:
+      tags:
+        - Queries
+      description: List available queries
+      responses:
+        '200':
+          description: 'All the queries in 3 lists ; History, Saved, Shared'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queries'
+    post:
+      tags:
+        - Queries
+      description: Saves the current query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '200':
+          description: Query and results url created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+          
+  '/dqt/queries/{queryId}':
+    get:
+      tags:
+        - Queries
+      description: 'Get one query details'
+      parameters:
+        - in: path
+          name: queryId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: The Query details
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/QueryMetadata'
+                  - $ref: '#/components/schemas/Query'
+          
+    patch:
+      tags:
+        - Queries
+      description: 'Change the name of, or un/share a query'
+      parameters:
+        - in: path
+          name: queryId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+      responses:
+        '204':
+          description: Query updated
+    delete:
+      tags:
+        - Queries
+      description: Remove a query from the shared and saved queries.<br> *The query might still be showned in the query  history.*
+      parameters:
+        - in: path
+          name: queryId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '204':
+          description: Query removed
+
+  '/dqt/results/{queryId}':
+    get:
+      tags:
+        - Results
+      description: Download the results
+      parameters:
+        - in: path
+          name: queryId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: The results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultsJSON'
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+
+components:
+  schemas:
+
+    QueryMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+        creatorUsername:
+          type: string
+        creationTimestamp:
+          type: string
+
+    QuerySummary:
+      allOf:
+        - $ref: '#/components/schemas/QueryMetadata'
+        - type: object
+          properties:
+            link:
+              type: string
+              
+    SavedQuerySummary:
+      allOf:
+        - $ref: '#/components/schemas/QueryMetadata'
+        - type: object
+          properties:
+            name:
+              type: string
+            shared:
+              type: boolean
+            link:
+              type: string
+       
+    Queries:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuerySummary'
+        saved:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavedQuerySummary'
+        shared:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavedQuerySummary'
+
+    Query:
+      type: object
+      required:
+        - fields
+        - filters
+      properties:
+        fields:
+          $ref: '#/components/schemas/SelectedFields'
+        filters:
+          discriminator:
+            propertyName: type
+          oneOf:
+          - $ref: '#/components/schemas/Filter'
+          - $ref: '#/components/schemas/FilterGroup'
+          example:
+            type: group
+            operator: AND
+            items:
+              - type: filter
+                operator: equals
+                category: demographics
+                field: Sex
+                value: Female
+              - type: group
+                operator: OR
+                items:
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-09-15'
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-10-15'
+                  - type: filter
+                    operator: equals
+                    category: demographics
+                    field: DoB
+                    value: '1936-11-15' 
+                    
+    Categories:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              link:
+                type: string
+                format: url
+    
+    Category:
+      type: object
+      properties:
+        name: 
+          type: string
+        visits:
+          type: array
+          items:
+            type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Field'
+          
+    Field:
+      type: object
+      properties:
+        name:
+          type: string
+        descrption:
+          type: string
+        datatype:
+          type: string
+          
+    SelectedFields:
+      type: array
+      items:
+        $ref: '#/components/schemas/SelectedField'
+        
+    SelectedField:
+      type: object
+      required:
+        - categoryname
+        - fieldname
+        - visitlabel
+      properties:
+        categoryname:
+          type: string
+        fieldname:
+          type: string
+        visitlabel:
+          type: string
+      
+    FilterGroup:
+      type: object
+      required:
+        - type
+        - operator
+        - items
+      properties:
+        type:
+          type: string
+          enum:
+            - group
+        operator:
+          type: string
+          enum:
+            - AND
+            - OR
+        items:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/Filter'
+            - $ref: '#/components/schemas/FilterGroup'
+            
+    Filter:
+      type: object
+      required:
+        - type
+        - operator
+        - category
+        - field
+      properties:
+        type:
+          type: string
+          enum:
+            - filter
+        operator:
+          type: string
+          enum:
+            - equal
+            - notEqual
+            - lessThanEqual
+            - greaterThanEqual
+            - startsWith
+            - contains
+            - isNull
+            - isNotNull
+        category:
+          type: string
+        field:
+          type: string
+        visit:
+          type: string
+        value:
+          type: string
+          
+    ResultsJSON:
+      type: object
+      description: An array of fields which order fits the 
+      properties:
+        query:
+          $ref: '#/components/schemas/Query'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResultRow'
+            
+    ResultRow:
+      type: object
+      properties:
+        key:
+          description: A [pscid,visitlabel] pair unique in the results
+          type: array
+          items:
+            type: string
+        values:
+          description: An array of values which order fits the query selected fields order.
+          type: array
+          items:
+            type: string
+    
+    SearchResult:
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            query:
+              type: string
+            results:
+              type: string
+    
+    Error:
+      type: object
+      properties:
+        error:
+          description: The error message
+          type: string
+      required:
+        - error
+  responses:
+    InternalServerError:
+      description: 500 Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+  - ApiKeyAuth: []
+

@@ -30,4 +30,26 @@ namespace LORIS\Http\Response;
  */
 class JsonResponse extends \Laminas\Diactoros\Response\JsonResponse implements \Psr\Http\Message\ResponseInterface
 {
+    /**
+     * Overrides the constructor to change the default JSON encoding options.
+     *
+     * @param mixed $data Data to convert to JSON.
+     * @param int $status Integer status code for the response; 200 by default.
+     * @param array $headers Array of headers to use at initialization.
+     * @param int $encodingOptions JSON encoding options to use.
+     * @throws Exception\InvalidArgumentException if unable to encode the $data to JSON.
+     */
+    public function __construct(
+        $data,
+        int $status = 200,
+        array $headers = [],
+        int $encodingOptions = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+    ) {
+        parent::__construct(
+            $data,
+            $status,
+            $headers = [],
+            $encodingOptions
+        );
+    }
 }

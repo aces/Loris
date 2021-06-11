@@ -14,6 +14,9 @@
  */
 namespace LORIS\dqt;
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * Class module implements the basic LORIS module functionality
  *
@@ -39,6 +42,43 @@ class Module extends \Module
     }
 
     /**
+     * Handles requests to this endpoint by delegating to known paths or
+     * default to its superclass handle function.
+     *
+     * @param ServerRequestInterface $request The request to handle
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $path      = trim($request->getURI()->getPath(), "/");
+        $pathparts = explode('/', $path);
+
+        // Extract the first element of pathparts then delegate to subhandlers if
+        // it is a known path. Default to Module superclass behaviour.
+        $first = array_shift($pathparts);
+        switch ($first) {
+        case 'categories':
+            $handler = new Endpoints\Categories();
+            break;
+        case 'queries':
+            $handler = new Endpoints\Queries();
+            break;
+        case 'results':
+            $handler = new Endpoints\Results();
+            break;
+        default:
+            return parent::handle($request);
+        }
+
+        // Update the request with the shortened pathparts.
+        $newrequest = $request
+            ->withAttribute('pathparts', $pathparts);
+
+        return $handler->process($newrequest, $handler);
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @return string The menu category for this module
@@ -56,5 +96,15 @@ class Module extends \Module
     public function getLongName() : string
     {
         return "Data Query Tool (Beta)";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool Whether an api schema is available fro this module.
+     */
+    public function hasAPISpecification(): bool
+    {
+        return true;
     }
 }
