@@ -134,9 +134,13 @@ DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
 DROP TABLE IF EXISTS `bids_mri_scan_type_rel`;
+DROP TABLE IF EXISTS `bids_export_files`;
 DROP TABLE IF EXISTS `bids_category`;
 DROP TABLE IF EXISTS `bids_scan_type`;
 DROP TABLE IF EXISTS `bids_scan_type_subcategory`;
+DROP TABLE IF EXISTS `bids_phase_encoding_direction`;
+DROP TABLE IF EXISTS `bids_export_non_imaging_file_category`;
+DROP TABLE IF EXISTS `bids_export_file_level_category`;
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
