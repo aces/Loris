@@ -28,6 +28,7 @@ class ExaminerIndex extends Component {
       isLoaded: false,
       formData: {
         addName: null,
+        addEmail: null,
         addRadiologist: false,
         addSite: null,
       },
@@ -185,6 +186,13 @@ class ExaminerIndex extends Component {
             required={true}
             onUserInput={this.setFormData}
           />
+          <TextboxElement
+            name="addEmail"
+            label="Email"
+            value={this.state.formData.addEmail}
+            required={true}
+            onUserInput={this.setFormData}
+          />
           <SelectElement
             name="addSite"
             options={this.state.data.fieldOptions.sites}
@@ -235,6 +243,10 @@ class ExaminerIndex extends Component {
     const fields = [
       {label: 'Examiner', show: true, filter: {
         name: 'examiner',
+        type: 'text',
+      }},
+      {label: 'Email', show: true, filter: {
+        name: 'email',
         type: 'text',
       }},
       {label: 'ID', show: false},

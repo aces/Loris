@@ -72,6 +72,7 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                            LEFT JOIN users u ON u.ID=e.userID
                         WHERE 1=1 ";
         } else {
 
@@ -83,12 +84,14 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                            LEFT JOIN users u ON u.ID=e.userID
                         WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
         $this->columns      = array(
             'e.full_name as Examiner',
+            'u.Email',
             'e.examinerID as ID',
             'psc.Name as Site',
             'e.radiologist as Radiologist',
@@ -100,6 +103,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
             'Examiner',
+            'Email',
             'ID',
             'Site',
             'Radiologist',
@@ -113,6 +117,7 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         $this->formToFilter = array(
             'examiner'    => 'e.full_name',
+            'email'       => 'u.Email',
             'site'        => 'epr.centerID',
             'radiologist' => 'COALESCE(e.radiologist, 0)',
         );
@@ -204,6 +209,7 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         $fullName = $values['addName'];
         $siteName = $values['addSite'];
+        $email    = $values['addEmail'];
 
         //Get centerID
         $siteID = $this->getCenterID($siteName);
@@ -226,8 +232,11 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         //Check if examiner is already a loris user, if so add foreign key
         $isUser = $DB->pselectOne(
-            "SELECT ID FROM users WHERE Real_name=:fullName",
-            array('fullName' => $fullName)
+            "SELECT ID FROM users WHERE Real_name=:fullName AND Email=:email",
+            array(
+                'fullName' => $fullName,
+                'email'    => $email
+            )
         );
 
         $user_id = null;

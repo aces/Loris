@@ -1042,12 +1042,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 array('tst_name' => $this->testName)
             );
             $results = $db->pselect(
-                "SELECT c.examinerID, e.full_name
+                "SELECT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
                      JOIN examiners_psc_rel epr
                          ON (epr.examinerID=e.examinerID)
+                     JOIN users u ON u.ID=e.userID
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
@@ -1060,20 +1061,25 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $results = $db->pselect(
-                "SELECT e.examinerID, e.full_name
+                "SELECT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
+                     JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );
         }
-
+        $duplicateNames = array_diff($results, array_unique($results));
         $examiners = array('' => '');
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $row) {
-                $examiners[$row['examinerID']] = $row['full_name'];
+                if (in_array($row['full_name'], $duplicateNames)) {
+                    $examiners[$row['examinerID']] = $row['full_name'] . " " . $row['Email'];
+                } else {
+                    $examiners[$row['examinerID']] = $row['full_name'];
+                }
             }
         }
         return $examiners;
