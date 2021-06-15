@@ -1,10 +1,6 @@
 /**
  *  The following file handles importing CSV file of either PSCID or DCCID identifiers.
  *  Used for populating the filter of the DQT and to filter out the demographic from the identifiers.
- *
- *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
 import React, {Component} from 'react';
