@@ -112,7 +112,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             $sites = $user->getStudySites();
         }
 
-        // reporters
+        //reporters
         $reporters         = [];
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID,
@@ -127,7 +127,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         //assignees
-        $assignees    = [];
+        $assignees         = [];
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name
