@@ -1603,13 +1603,14 @@ class LorisForm
         }
         /// XXX: There seems to be a problem when using &nbsp; to separate the
         //  checkbox from the label. Both Firefox and Chrome will still put a
-        //  linebreak between the space and the checkbox. Instead, we wrap it
-        //  in a <nobr> tag which avoids the label from being separated from the
-        //  checkbox. We don't wrap the whole label in it because if it's a long label
-        //  it's still allowed to have linebreaks.
-        return "<nobr><input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+        //  linebreak between the space and the checkbox. Instead, we wrap use
+        //  CSS to wrap the tag which avoids the label from being separated from the
+        //  checkbox. We don't wrap the whole label in it because if it's a long
+        //  label it's still allowed to have linebreaks.
+        return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\"
+               type=\"checkbox\" $checked $value "
             . "$disabled/>"
-            . " </nobr>$el[label]";
+            . " </span>$el[label]";
     }
 
     /**
