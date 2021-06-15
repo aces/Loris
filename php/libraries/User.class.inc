@@ -67,13 +67,11 @@ class User extends UserPermissions implements
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "SELECT users.*,
-            GROUP_CONCAT(psc.Name ORDER BY psc.Name SEPARATOR ';') AS Sites
+        $query = "
+            SELECT users.*
             FROM users
-            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
-            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE users.UserID = :UID
-            GROUP BY users.ID";
+        ";
 
         $row = $DB->pselectRow($query, ['UID' => $username]);
 
@@ -87,15 +85,28 @@ class User extends UserPermissions implements
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
-            "SELECT CenterID FROM user_psc_rel upr
-                        WHERE upr.UserID= :UID",
+            "
+             SELECT
+               upr.CenterID,
+               psc.Name
+             FROM
+               user_psc_rel upr
+             LEFT JOIN 
+               psc
+               ON (psc.CenterID = upr.CenterID)
+             WHERE
+               upr.UserID= :UID",
             ['UID' => $row['ID']]
         );
-        $user_cid            = [];
+
+        $user_cid  = [];
+        $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
             $user_cid[$key] = new \CenterID($val['CenterID']);
+            $sitenames[]    = $val['Name'] ;
         }
+        $row['Sites'] = implode(',', $sitenames);
 
         $user_pid = $DB->pselectCol(
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
