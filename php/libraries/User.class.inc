@@ -106,7 +106,7 @@ class User extends UserPermissions implements
             $user_cid[$key] = new \CenterID($val['CenterID']);
             $sitenames[]    = $val['Name'] ;
         }
-        $row['Sites'] = implode(',', $sitenames);
+        $row['Sites'] = implode(';', $sitenames);
 
         $user_pid = $DB->pselectCol(
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
