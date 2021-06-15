@@ -42,14 +42,6 @@ class DataDictIndex extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.fetchData()
-      .then( () => this.setState({isLoaded: true}));
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
       // Load the field options. This comes from a separate request than the
       // table data stream. Once the fieldOptions are loaded, we set isLoaded
       // to true so that the page is displayed with the data that's been

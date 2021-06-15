@@ -74,9 +74,6 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $factory->setDatabase($mockdb);
         $factory->setConfig($mockconfig);
-        $mockdb->expects($this->any())
-               ->method('pselectOne')
-               ->willReturn('999');
 
         $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();

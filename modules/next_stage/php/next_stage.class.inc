@@ -157,7 +157,6 @@ class Next_Stage extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
 
-
         $this->addHidden('candID', $timePoint->getCandID()->__toString());
         $this->addHidden('sessionID', $timePoint->getSessionID()->__toString());
 
