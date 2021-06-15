@@ -1129,21 +1129,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     abstract function getSubtestList(): array;
 
     /**
-     * Marks an element in the lorisform object as being required (for
-     * use with the requiredIf rule)
-     *
-     * @param string $elementName the element to add to the required list
-     *
-     * @return void
-     */
-    function setRequired(string $elementName): void
-    {
-        if (!in_array($elementName, $this->form->_required)) {
-            $this->form->_required[] = $elementName;
-        }
-    }
-
-    /**
      * This runs the XIN rules on all the elements on the current page to ensure
      * that no rules were violated.
      *
