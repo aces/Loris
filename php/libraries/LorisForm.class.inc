@@ -1605,7 +1605,7 @@ class LorisForm
         //  checkbox from the label. Both Firefox and Chrome will still put a
         //  linebreak between the space and the checkbox. Instead, we wrap it
         //  in a <nobr> tag which avoids the label from being separated from the
-        //  label. We don't wrap the whole label in it because if it's a long label
+        //  checkbox. We don't wrap the whole label in it because if it's a long label
         //  it's still allowed to have linebreaks.
         return "<nobr><input name=\"$el[name]\" type=\"checkbox\" $checked $value "
             . "$disabled/>"
@@ -2394,4 +2394,3 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-
