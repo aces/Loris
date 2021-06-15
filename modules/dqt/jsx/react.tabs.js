@@ -10,6 +10,7 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
+import DataTable from './components/table';
 
 /**
  * Loading Component
@@ -487,7 +488,7 @@ class ViewDataTabPane extends Component {
     }
 
     const queryTable = this.state.runQueryClicked ? (
-      <StaticDataTable
+      <DataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
