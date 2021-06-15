@@ -302,7 +302,7 @@ class NDB_BVL_Battery
 
         // return an array of test names
         return $tests;
-    } // end getBattery()
+    }
 
     /**
      * Gets an associative array of instruments which are members of the current
