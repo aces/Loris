@@ -1,10 +1,11 @@
+<script type="text/javascript" src="{$baseurl}/vendor/js/mf-conditional-fields.js"></script>
 <script type="text/javascript" src="{$baseurl}/js/instrument_form_control.js"></script>
 <style type="text/css">
 	.table-instrument>tbody>tr>th{
 		color: black;
 	}
-	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  { 
-	     border-top: none; 
+	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  {
+	     border-top: none;
 	 }
 </style>
 
@@ -417,7 +418,7 @@
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
-							{$element.label}  
+							{$element.label}
 						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">
@@ -444,3 +445,15 @@
 	{/if}
 </div>
 </form>
+
+{if $displayRules !== null}
+    <script type="text/x-rules" id="rules-mf-conditional-fields">
+        {$displayRules|@json_encode}
+      </script>
+
+    {literal}
+        <script>
+            mfConditionalFields('#test_form', {rules: 'block'});
+        </script>
+    {/literal}
+{/if}

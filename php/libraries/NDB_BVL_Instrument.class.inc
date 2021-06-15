@@ -36,6 +36,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $XINRules;
     public $XINDebug;
 
+    protected $displayRules;
+
     /**
      * A flag determining whether the ControlPanel changed
      * the Data_entry flag status on this page load.
@@ -525,6 +527,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             $smarty->assign('form', $formArray);
             $smarty->assign($this->tpl_data);
+            $smarty->assign('displayRules', $this->displayRules);
             $html = $smarty->fetch("instrument_html.tpl");
         }
 
@@ -1443,6 +1446,32 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $is_required = false;
         }
         return $is_required;
+    }
+
+    /**
+     * Add display rules on an individual element
+     *
+     * @param string $field     The element we want to show/hide based on the rules
+     * @param array  $rules     Array of rules
+     *                          (see https://github.com/bomsn/mf-conditional-fields)
+     * @param string $container Container selector to show/hide the element block
+     * @param string $logic     Rules join operator
+     *
+     * @return void
+     */
+    function addDisplayRule(
+        string $field,
+        array  $rules,
+        string $container = '.form-group',
+        string $logic     = 'or'
+    ) {
+        $this->displayRules[] = [
+            'field'     => $field,
+            'container' => $container,
+            'action'    => 'show',
+            'logic'     => $logic,
+            'rules'     => $rules,
+        ];
     }
 
     /**
