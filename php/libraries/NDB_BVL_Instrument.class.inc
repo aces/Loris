@@ -1080,12 +1080,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 if (in_array($name, $examiners)) {
                     // If name already in examiners, set first case of name
                     // with email (if exists)
-                    $duplicateID = array_search($name, $examiners);
+                    $duplicateID    = array_search($name, $examiners);
                     $duplicateEmail = $results[$duplicateID]['Email'];
-                    $emailString = empty($duplicateEmail) ? "" : " ({$duplicateEmail})";
+                    $emailString    = empty($duplicateEmail) ? "" :
+                        " ({$duplicateEmail})";
                     $examiners[$duplicateID] = $name . $emailString;
                     // Set new case of name with email as well
-                    $emailString = empty($row['Email']) ? "" : " ({$row['Email']})";
+                    $emailString     = empty($row['Email']) ? "" :
+                        " ({$row['Email']})";
                     $examiners[$eid] = $name . $emailString;
                 } else {
                     $examiners[$eid] = $name;

@@ -275,7 +275,9 @@ class Examiner extends \NDB_Menu_Filter_Form
             "SELECT e.examinerID
              FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-             WHERE e.full_name=:fullName AND epr.centerID=:siteID AND e.userID IS NULL",
+             WHERE e.full_name=:fullName 
+             AND epr.centerID=:siteID 
+             AND e.userID IS NULL",
             array(
                 'fullName' => $fullName,
                 'siteID'   => $siteID,
