@@ -247,10 +247,12 @@ function getUploadFields()
 
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
-    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
-                      FROM candidate c
+    $sessionQuery = "SELECT
+                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                     FROM candidate c
                       LEFT JOIN session s USING (CandID)
-                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)
+                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -263,7 +265,7 @@ function getUploadFields()
         $qparam
     );
 
-    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
+    $instrumentsList = toSelect($sessionRecords, "Full_name", "Test_name");
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $visitList       = Utility::getVisitList();
     $languageList    = Utility::getLanguageList();
@@ -306,7 +308,7 @@ function getUploadFields()
             )
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
-                = $record["Test_name"];
+                = $record["Full_name"];
             if (!in_array(
                 $record["Test_name"],
                 $sessionData[$pscid]['instruments']['all'],
@@ -314,7 +316,7 @@ function getUploadFields()
             )
             ) {
                 $sessionData[$pscid]['instruments']['all'][$record["Test_name"]]
-                    = $record["Test_name"];
+                    = $record["Full_name"];
             }
 
         }
