@@ -2300,9 +2300,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config   = NDB_Config::singleton();
         $db       = Database::singleton();
         $dbconfig = $config->getSetting('database');
-        if ($this->jsonData) {
-            $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
-        } else {
+
+        if (!$this->jsonData) {
             $columns = $db->pselect(
                 "SELECT COLUMN_NAME FROM information_schema.columns
             WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
@@ -2327,6 +2326,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
+
+        // Clear data out of the flag table's Data column
+        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
