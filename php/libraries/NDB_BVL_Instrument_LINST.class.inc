@@ -579,11 +579,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'begintable':
                 case 'endtable':
                     error_log(
-                        "DEPRECATION MESSAGE: The use of `begintable` and ".
-                        "`endtable` elements of LINST instruments has is no longer ".
-                        "necessary. The $this->testName LINST instrument should ".
-                        "be modified to remove these elements as they will be ".
-                        "completely deprecated in a future version of LORIS"
+                        "DEPRECATION MESSAGE: `begintable` and `endtable` elements ".
+                        "are deprecated. $this->testName instrument should be ".
+                        "modified to remove these elements as they will be ".
+                        "completely removed in a future version of LORIS."
                     );
                     break;
                 case 'text':
