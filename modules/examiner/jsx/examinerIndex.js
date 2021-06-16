@@ -28,7 +28,6 @@ class ExaminerIndex extends Component {
       isLoaded: false,
       formData: {
         addName: null,
-        addEmail: null,
         addRadiologist: false,
         addSite: null,
       },
@@ -183,13 +182,6 @@ class ExaminerIndex extends Component {
             name="addName"
             label="Name"
             value={this.state.formData.addName}
-            required={true}
-            onUserInput={this.setFormData}
-          />
-          <TextboxElement
-            name="addEmail"
-            label="Email"
-            value={this.state.formData.addEmail}
             required={true}
             onUserInput={this.setFormData}
           />

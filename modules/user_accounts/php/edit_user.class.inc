@@ -301,8 +301,8 @@ class Edit_User extends \NDB_Form
         // END PROJECT UPDATE
 
         // SETUP EXAMINER VALUES
-        // THE EXAMINER WILL BE UPDATED AFTER USER IS CREATED
-        // SO THAT AN ID IS ENSURED TO EXIST FOR THE USER
+        // The examiner will be updated after user is created
+        // so as to ensure an ID exists if new user
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
             $ex_curr_sites  = array();

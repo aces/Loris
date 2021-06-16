@@ -1041,14 +1041,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "SELECT ID FROM test_names WHERE Test_name=:tst_name",
                 array('tst_name' => $this->testName)
             );
-            $results = $db->pselect(
+            $results = $db->pselectWithIndexKey(
                 "SELECT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
                      JOIN examiners_psc_rel epr
                          ON (epr.examinerID=e.examinerID)
-                     JOIN users u ON u.ID=e.userID
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
@@ -1057,28 +1057,38 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     'tid'     => $test_id,
                     'cert_id' => 'certified',
                     'cid'     => $centerID,
-                )
+                ),
+                'examinerID'
             );
         } else {
-            $results = $db->pselect(
+            $results = $db->pselectWithIndexKey(
                 "SELECT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
-                     JOIN users u ON u.ID=e.userID
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
                      ORDER BY full_name",
-                array('centID' => $centerID)
+                array('centID' => $centerID),
+                'examinerID'
             );
         }
-        $duplicateNames = array_diff($results, array_unique($results));
-        $examiners = array('' => '');
+        $examiners = [];
         if (is_array($results) && !empty($results)) {
-            foreach ($results AS $row) {
-                if (in_array($row['full_name'], $duplicateNames)) {
-                    $examiners[$row['examinerID']] = $row['full_name'] . " " . $row['Email'];
+            foreach ($results AS $eid => $row) {
+                $name = $row['full_name'];
+                if (in_array($name, $examiners)) {
+                    // If name already in examiners, set first case of name
+                    // with email (if exists)
+                    $duplicateID = array_search($name, $examiners);
+                    $duplicateEmail = $results[$duplicateID]['Email'];
+                    $emailString = empty($duplicateEmail) ? "" : " ({$duplicateEmail})";
+                    $examiners[$duplicateID] = $name . $emailString;
+                    // Set new case of name with email as well
+                    $emailString = empty($row['Email']) ? "" : " ({$row['Email']})";
+                    $examiners[$eid] = $name . $emailString;
                 } else {
-                    $examiners[$row['examinerID']] = $row['full_name'];
+                    $examiners[$eid] = $name;
                 }
             }
         }

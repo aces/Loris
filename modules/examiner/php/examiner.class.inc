@@ -117,7 +117,6 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         $this->formToFilter = array(
             'examiner'    => 'e.full_name',
-            'email'       => 'u.Email',
             'site'        => 'epr.centerID',
             'radiologist' => 'COALESCE(e.radiologist, 0)',
         );
@@ -209,7 +208,6 @@ class Examiner extends \NDB_Menu_Filter_Form
 
         $fullName = $values['addName'];
         $siteName = $values['addSite'];
-        $email    = $values['addEmail'];
 
         //Get centerID
         $siteID = $this->getCenterID($siteName);
@@ -222,34 +220,24 @@ class Examiner extends \NDB_Menu_Filter_Form
             $radiologist = 1;
         }
 
-        //Check if examiner is already in the database 'examiners', if not add them
+        // Check if examiner is already in the database 'examiners', if not add them
+        // Assumption made that only non-users are added to the table here
+        // Otherwise, would need more information to identify which loris user
+        // the name refers to
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
-             WHERE full_name=:fullName",
+             WHERE full_name=:fullName
+             AND userID IS NULL",
             array('fullName' => $fullName)
         );
 
-        //Check if examiner is already a loris user, if so add foreign key
-        $isUser = $DB->pselectOne(
-            "SELECT ID FROM users WHERE Real_name=:fullName AND Email=:email",
-            array(
-                'fullName' => $fullName,
-                'email'    => $email
-            )
-        );
-
-        $user_id = null;
-        if (!empty($isUser)) {
-            $user_id = $isUser;
-        }
         if (empty($examinerID)) {
             $DB->insert(
                 'examiners',
                 array(
                     'full_name'   => $fullName,
-                    'radiologist' => $radiologist,
-                    'userID'      => $user_id,
+                    'radiologist' => $radiologist
                 )
             );
         } else {
@@ -287,7 +275,7 @@ class Examiner extends \NDB_Menu_Filter_Form
             "SELECT e.examinerID
              FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-             WHERE e.full_name=:fullName AND epr.centerID=:siteID",
+             WHERE e.full_name=:fullName AND epr.centerID=:siteID AND e.userID IS NULL",
             array(
                 'fullName' => $fullName,
                 'siteID'   => $siteID,
@@ -314,7 +302,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
-             WHERE full_name=:fullName",
+             WHERE full_name=:fullName AND userID IS NULL",
             array('fullName' => $fullName)
         );
 
