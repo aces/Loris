@@ -585,14 +585,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $this->score();
-
-            // determine the data entry completion status, and store that in
-            // the database
-            $dataEntryCompletionStatus
-                = $this->_determineDataEntryCompletionStatus();
-            $this->_setDataEntryCompletionStatus(
-                $dataEntryCompletionStatus
-            );
+            $this->updateDataEntryCompletionStatus();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -629,6 +622,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         return true;
+    }
+
+    /**
+     * This checks the current status of and instrument's data entry and updates
+     * it accordingly in the database
+     *
+     * @return void
+     */
+    public function updateDataEntryCompletionStatus(): void
+    {
+        // determine the data entry completion status, and store that in
+        // the database
+        $dataEntryCompletionStatus
+            = $this->_determineDataEntryCompletionStatus();
+        $this->setDataEntryCompletionStatus(
+            $dataEntryCompletionStatus
+        );
     }
 
     /**
