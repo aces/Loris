@@ -67,7 +67,6 @@ function uploadPublication() : void
         'FROM publication_collaborator '.
         'WHERE Email = :e',
         array(
-            'n' => $leadInvest,
             'e' => $leadInvestEmail,
         )
     );
