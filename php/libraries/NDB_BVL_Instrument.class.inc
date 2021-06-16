@@ -2300,29 +2300,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config   = NDB_Config::singleton();
         $db       = Database::singleton();
         $dbconfig = $config->getSetting('database');
-        $columns  = $db->pselect(
-            "SELECT COLUMN_NAME FROM information_schema.columns
+        if ($this->jsonData) {
+            $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
+        } else {
+            $columns = $db->pselect(
+                "SELECT COLUMN_NAME FROM information_schema.columns
             WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
-            array(
-                'table' => $this->table,
-                'db'    => $dbconfig['database'],
-            )
-        );
+                array(
+                    'table' => $this->table,
+                    'db'    => $dbconfig['database'],
+                )
+            );
 
-        $values = array();
-        foreach ($columns as $row) {
-            switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue 2;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+            $values = array();
+            foreach ($columns as $row) {
+                switch ($row['COLUMN_NAME']) {
+                case 'CommentID':
+                case 'UserID':
+                    continue 2;
+                case 'Data_entry_completion_status':
+                    $values[$row['COLUMN_NAME']] = 'Incomplete';
+                    break;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
+                }
             }
+            $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
-        $db->update($this->table, $values, array('CommentID' => $this->commentID));
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
