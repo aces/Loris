@@ -630,7 +630,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    final public function updateDataEntryCompletionStatus(): void
+    public function updateDataEntryCompletionStatus(): void
     {
         // determine the data entry completion status, and store that in
         // the database
