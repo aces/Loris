@@ -67,11 +67,7 @@ class User extends UserPermissions implements
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "
-            SELECT users.*
-            FROM users
-            WHERE users.UserID = :UID
-        ";
+        $query = "SELECT * FROM users WHERE UserID = :UID";
 
         $row = $DB->pselectRow($query, ['UID' => $username]);
 
