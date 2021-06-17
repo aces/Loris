@@ -297,13 +297,26 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the user's projects' ID numbers
      *
      * @return ProjectID[]
      */
     function getProjectIDs(): array
     {
         return $this->userInfo['ProjectIDs'];
+    }
+
+    /**
+     * Get the user's projects
+     *
+     * @return Project[]
+     */
+    function getProjects(): array
+    {
+        return array_map(
+            fn($projectID) => \Project::getProjectFromID($projectID),
+            $this->getProjectIDs()
+        );
     }
 
     /**

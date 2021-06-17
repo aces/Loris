@@ -187,5 +187,96 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
         return new \LORIS\Http\DataIteratorBinaryStream($rows);
 
     }
+
+    /**
+     * Format the user's projects to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned projects keys
+     *                           should be numeric (ProjectID) or project name
+     *
+     * @return array - an associative array of the form (ID|mame => name)
+     */
+    public function getProjectOptions(
+        \User $user,
+        bool  $numericKeys = true
+    ): array {
+        $projects     = $user->getProjects();
+        $projectNames = array_map(
+            fn($project) => $project->getName(),
+            $projects
+        );
+
+        if ($numericKeys) {
+            $projectIDs = array_map(
+                fn($project) => strval($project->getId()),
+                $projects
+            );
+            return array_combine($projectIDs, $projectNames);
+        }
+
+        return array_combine($projectNames, $projectNames);
+    }
+
+    /**
+     * Format the user's subprojects to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned subprojects keys
+     *                           should be numeric (SubprojectID)
+     *                           or strings (subproject name)
+     *
+     * @return array - an associative array of the form (ID => name)
+     */
+    public function getSubprojectOptions(
+        \User $user,
+        bool $numericKeys = true
+    ): array {
+        $subprojectOptions = array_reduce(
+            $user->getProjects(),
+            fn($subprojects, $project) =>
+                $subprojects
+                + array_column($project->getSubprojects(), 'title', 'subprojectId'),
+            []
+        );
+
+        if (!$numericKeys) {
+            $subprojectNames = array_values($subprojectOptions);
+            return array_combine($subprojectNames, $subprojectNames);
+        }
+
+        return $subprojectOptions;
+    }
+
+    /**
+     * Format the user's sites to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned sites keys should be
+                                 numeric (CenterID) or strings (site name)
+     * @param bool  $studySite   If the returned sites should be study sites only
+     *
+     * @return array An associative array of the form (ID|name => name)
+     */
+    public function getSiteOptions(
+        \User $user,
+        bool $numericKeys = true,
+        bool $studySite = true
+    ): array {
+        // If the user has any of the All Site permissions,
+        // get the list of all study sites
+        if ($user->hasAnyPermission($this->allSitePermissionNames())) {
+            $siteOptions = \Utility::getSiteList($studySite);
+        } else {
+            $siteOptions = $user->getStudySites();
+        }
+
+        if (!$numericKeys) {
+            $siteNames = array_values($siteOptions);
+            return array_combine($siteNames, $siteNames);
+        }
+
+        return $siteOptions;
+    }
 }
 
