@@ -636,7 +636,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // the database
         $dataEntryCompletionStatus
             = $this->_determineDataEntryCompletionStatus();
-        $this->setDataEntryCompletionStatus(
+        $this->_setDataEntryCompletionStatus(
             $dataEntryCompletionStatus
         );
     }
