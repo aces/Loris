@@ -86,8 +86,8 @@ class EditCategory extends \NDB_Page
     {
         $DB          = \Database::singleton();
         $req         = $request->getParsedBody();
-        $category_id = $req['categoryID'];
-        $new_name    = $req['categoryNameChange'];
+        $category_id = isset($req['categoryID']) ? $req['categoryID'] : null;
+        $new_name    = isset($req['categoryNameChange']) ? $req['categoryNameChange'] : null;
         $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
 
         if ($new_parent != null) {
