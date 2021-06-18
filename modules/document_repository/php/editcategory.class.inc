@@ -36,7 +36,6 @@ class EditCategory extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        // ******************** CCNA OVERRIDE START ************** //
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
                 [
@@ -45,7 +44,6 @@ class EditCategory extends \NDB_Page
                 ]
             )
         );
-        // ******************** CCNA OVERRIDE END ************** //
     }
 
 
