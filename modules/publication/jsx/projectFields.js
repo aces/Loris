@@ -409,6 +409,15 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.description}
         />
         <SelectElement
+          name="project"
+          label="Project"
+          options={this.props.projectOptions}
+          onUserInput={this.props.setFormData}
+          required={true}
+          value={this.props.formData.project}
+          emptyOption={true}
+        />
+        <SelectElement
           name="publishingStatus"
           label="Publishing status"
           options={publishingStatusOptions}

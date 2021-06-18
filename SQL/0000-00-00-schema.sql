@@ -2161,6 +2161,8 @@ CREATE TABLE `publication` (
     `datePublication` date DEFAULT NULL,
     `link` varchar(255) DEFAULT NULL,
     `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `project` int(10) unsigned DEFAULT NULL,
+    CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),

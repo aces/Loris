@@ -65,6 +65,16 @@ function getData($db) : array
         []
     );
 
+    $rawProject = $db->pselect(
+        'SELECT ProjectID, Name FROM Project',
+        array()
+    );
+
+    $projectOptions = array();
+    foreach ($rawProject as $key => $dataProject) {
+        $projectOptions[$dataProject['ProjectID']] = $dataProject['Name'];
+    }
+
     // merge variables and test names into one array
     $bvlVOIs = array_merge(
         array_column($bvlVOIs, 'Name'),
@@ -112,6 +122,7 @@ function getData($db) : array
     );
     $collabs = array_combine($collabs, $collabs);
 
+    $data['projectOptions'] = $projectOptions;
     $data['users']          = $users;
     $data['uploadTypes']    = getUploadTypes();
     $data['existingTitles'] = $titles;
@@ -132,13 +143,15 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, datePublication, journal, '.
+    $query  = 'SELECT Title, Description, pr.Name as project, datePublication, journal, '.
         'link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
         'LEFT JOIN publication_collaborator pc '.
         'ON p.LeadInvestigatorID = pc.PublicationCollaboratorID '.
+        'LEFT JOIN Project pr '.
+        'ON p.project = pr.ProjectID '.
         'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
@@ -179,6 +192,7 @@ function getProjectData($db, $user, $id) : array
         $pubData = [
             'title'                 => $title,
             'description'           => $description,
+            'project'               => $result['project'],
             'datePublication'       => $datePublication,
             'journal'               => $journal,
             'link'                  => $link,

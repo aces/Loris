@@ -100,6 +100,7 @@ class ViewProject extends React.Component {
           let formData = {
             title: data.title,
             description: data.description,
+            project: data.project,
             publishingStatus: data.publishingStatus,
             datePublication: data.datePublication,
             journal: data.journal,
@@ -135,6 +136,7 @@ class ViewProject extends React.Component {
 
           this.setState({
             formData: formData,
+            projectOptions: data.projectOptions,
             users: data.users,
             statusOpts: data.statusOpts,
             userCanEdit: data.userCanEdit,
@@ -288,6 +290,11 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
         <StaticElement
+          name="project"
+          label="Project"
+          text={this.state.formData.project}
+        />
+        <StaticElement
           name="publishingStatus"
           label="Publishing status"
           text={this.state.formData.publishingStatus}
@@ -343,6 +350,7 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           toggleEmailNotify={this.toggleEmailNotify}
           uploadTypes={this.state.uploadTypes}
+          projectOptions={this.state.projectOptions}
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}

@@ -87,7 +87,9 @@ class Publication extends \NDB_Menu_Filter_Form
             "LEFT JOIN publication_users_edit_perm_rel puepr ".
             "ON puepr.PublicationID=p.PublicationID ".
             "LEFT JOIN users u ".
-            "ON u.ID=p.UserID ";
+            "ON u.ID=p.UserID ".
+            "LEFT JOIN Project pr ".
+            "ON p.project=pr.ProjectID ";
         $query .= " WHERE 1=1 ";
         // allow user access to module if they have edit
         // access to any project proposal
@@ -106,6 +108,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'pcli.Name as LeadInvestigator',
             'p.DateProposed',
             'ps.Label', // Status (Approved, Pending, Rejected, etc.)
+            'pr.Name as project',
             'p.journal',
             'p.link',
             'p.publishingStatus',
@@ -129,6 +132,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'Lead Investigator',
             'Date Proposed',
             'Approval Status',
+            'Project',
             'Journal',
             'Link',
             'Publishing Status',
@@ -180,6 +184,16 @@ class Publication extends \NDB_Menu_Filter_Form
             $statusOptions[$rs] = $rs;
         }
 
+        $rawProject = $db->pselect(
+            'SELECT ProjectID, Name FROM Project',
+            array()
+        );
+
+        $projectOptions = array();
+        foreach ($rawProject as $key => $data) {
+            $projectOptions[$data['Name']] = $data['Name'];
+        }
+
         $this->addBasicText(
             'title',
             'Title'
@@ -217,6 +231,12 @@ class Publication extends \NDB_Menu_Filter_Form
             'Journal'
         );
 
+        $this->addSelect(
+            'project',
+            'Project',
+            $projectOptions
+        );
+
         $this->addBasicText(
             'link',
             'Link'
@@ -226,8 +246,8 @@ class Publication extends \NDB_Menu_Filter_Form
             'publishingStatus',
             'Publishing Status',
             [
-                'published'  => 'Published',
-                'inProgress' => 'In Progress'
+                'Published'  => 'Published',
+                'In Progress' => 'In Progress'
             ]
         );
     }

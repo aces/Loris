@@ -58,6 +58,7 @@ function uploadPublication() : void
         showPublicationError('Submitted title already exists', 400);
     }
     $desc = $_POST['description'] ?? null;
+    $project          = $_POST['project'] ?? null;
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
@@ -74,6 +75,7 @@ function uploadPublication() : void
         'WHERE Name = :n OR Email = :e',
         [
             'e' => $leadInvestEmail,
+            'n' => $leadInvest,
         ]
     );
     if (empty($leadInvID)) {
@@ -98,6 +100,7 @@ function uploadPublication() : void
         'UserID'             => $uid,
         'Title'              => $title,
         'Description'        => $desc,
+        'project'            => $project,
         'publishingStatus'   => $publishingStatus,
         'datePublication'    => $datePublication,
         'journal'            => $journal,
@@ -522,6 +525,7 @@ function editProject() : void
     $statusID         = $_POST['status'] ?? null;
     $rejectedReason   = $_POST['rejectedReason'] ?? null;
     $description      = $_POST['description'] ?? null;
+    $project          = $_POST['project'] ?? null;
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
@@ -559,6 +563,9 @@ function editProject() : void
     }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
+    }
+    if($pubData['project'] !== $project) {
+        $toUpdate['project'] = $project;
     }
     if ($pubData['publishingStatus'] !== $publishingStatus) {
         $toUpdate['publishingStatus'] = $publishingStatus;
