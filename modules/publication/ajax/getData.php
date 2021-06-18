@@ -71,9 +71,7 @@ function getData($db) : array
     );
 
     $projectOptions = [];
-    foreach ($rawProject as $key => $dataProject) {
-        // I have to use the variable otherwise test suite doesnt pass
-        $key = $key;
+    foreach ($rawProject as $dataProject) {
         $projectOptions[$dataProject['ProjectID']] = $dataProject['Name'];
     }
 
