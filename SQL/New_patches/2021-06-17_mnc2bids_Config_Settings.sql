@@ -5,3 +5,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'bids_readme_text', 'README for the BIDS dataset', 1, 0, 'textarea', ID, 'BIDS Dataset README', 3 FROM ConfigSettings WHERE Name='minc2bids';
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'bids_validator_options_to_ignore', 'Options to ignore for BIDS validation', 1, 1, 'text', ID, 'BIDS Validation options to ignore', 4 FROM ConfigSettings WHERE Name='minc2bids';
 
+-- Default values for mnc2bids config settings
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_dataset_authors';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_acknowledgments_text';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_readme_text';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_validator_options_to_ignore';

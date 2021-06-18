@@ -268,3 +268,8 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 'false'  FROM ConfigSettings WHE
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'Y-m-d H:i:s'  FROM ConfigSettings WHERE Name="dateDisplayFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, '/data/issue_tracker/' FROM ConfigSettings WHERE Name="IssueTrackerDataPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, ''  FROM ConfigSettings WHERE Name="adminContactEmail";
+
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_dataset_authors';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_acknowledgments_text';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_readme_text';
+INSERT INTO Config (ConfigID, Value) SELECT ID, '' FROM ConfigSettings cs WHERE cs.Name='bids_validator_options_to_ignore';
