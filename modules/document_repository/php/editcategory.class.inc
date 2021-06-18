@@ -61,8 +61,8 @@ class EditCategory extends \NDB_Page
         if ($request->getMethod() == "POST") {
             $this->editDocCategory($request);
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
+                ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         json_encode("uploaded successfully")
@@ -70,8 +70,8 @@ class EditCategory extends \NDB_Page
                 );
         } else {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
+                ->withHeader("Content-Type", "text/plain")
                 ->withHeader("Allow", "POST");
         }
     }
