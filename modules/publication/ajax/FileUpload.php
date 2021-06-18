@@ -564,7 +564,7 @@ function editProject() : void
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
     }
-    if($pubData['project'] !== $project) {
+    if ($pubData['project'] !== $project) {
         $toUpdate['project'] = $project;
     }
     if ($pubData['publishingStatus'] !== $publishingStatus) {
