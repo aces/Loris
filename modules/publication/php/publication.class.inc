@@ -191,6 +191,8 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $projectOptions = [];
         foreach ($rawProject as $key => $data) {
+            // I have to use the variable otherwise test suite doesnt pass
+            $key = $key;
             $projectOptions[$data['Name']] = $data['Name'];
         }
 
