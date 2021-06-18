@@ -266,6 +266,7 @@ class PublicationUploadForm extends React.Component {
               removeListItem={this.removeListItem}
               toggleEmailNotify={this.toggleEmailNotify}
               uploadTypes={this.state.Data.uploadTypes}
+              projectOptions={this.state.Data.projectOptions}
               users={this.state.Data.users}
               allVOIs={this.state.Data.allVOIs}
               allKWs={this.state.Data.allKWs}
