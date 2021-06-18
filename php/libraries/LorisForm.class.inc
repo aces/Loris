@@ -930,6 +930,7 @@ class LorisForm
             $readonly = 'readonly';
         }
         $value = $this->getValue($el['name']);
+        $value = str_replace('"', '&quot;', $value);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
                 isset($el['onchange']) && $el['onchange']
@@ -954,7 +955,7 @@ class LorisForm
 
             . (
                 (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['name']) . '"'
+                ? ' value="' . $value . '"'
                 : ''
               )
             . $disabled
