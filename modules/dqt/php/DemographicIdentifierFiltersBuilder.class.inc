@@ -16,7 +16,8 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * The View class for requests.
+ * The DemographicIdentifierFiltersBuilder class for requests.
+ * Request returns data used for Define Filters.
  *
  * @category Loris
  * @package  DQT
@@ -24,7 +25,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class View extends \NDB_Page
+class DemographicIdentifierFiltersBuilder extends \NDB_Page
 {
     /**
      * This function will return a json response.
@@ -47,7 +48,8 @@ class View extends \NDB_Page
     }
 
     /**
-     * CSV Import data from user using the DataQueryTool.
+     * CSV Import data from user using the DataQueryTool's
+     * "Import Population from CSV" feature.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
