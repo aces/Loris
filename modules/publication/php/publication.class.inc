@@ -186,10 +186,10 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $rawProject = $db->pselect(
             'SELECT ProjectID, Name FROM Project',
-            array()
+            []
         );
 
-        $projectOptions = array();
+        $projectOptions = [];
         foreach ($rawProject as $key => $data) {
             $projectOptions[$data['Name']] = $data['Name'];
         }
@@ -246,7 +246,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'publishingStatus',
             'Publishing Status',
             [
-                'Published'  => 'Published',
+                'Published'   => 'Published',
                 'In Progress' => 'In Progress'
             ]
         );

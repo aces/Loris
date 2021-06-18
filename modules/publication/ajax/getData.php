@@ -67,10 +67,10 @@ function getData($db) : array
 
     $rawProject = $db->pselect(
         'SELECT ProjectID, Name FROM Project',
-        array()
+        []
     );
 
-    $projectOptions = array();
+    $projectOptions = [];
     foreach ($rawProject as $key => $dataProject) {
         $projectOptions[$dataProject['ProjectID']] = $dataProject['Name'];
     }

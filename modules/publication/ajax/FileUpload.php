@@ -57,8 +57,8 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc = $_POST['description'] ?? null;
-    $project          = $_POST['project'] ?? null;
+    $desc    = $_POST['description'] ?? null;
+    $project = $_POST['project'] ?? null;
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
