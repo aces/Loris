@@ -22,7 +22,7 @@ use \LORIS\Middleware\ETagCalculator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SnpBrowser extends \NDB_Page implements ETagCalculator
+class SnpBrowser extends \DataFrameworkMenu implements ETagCalculator
 {
     /**
      * This function will return a json response.
@@ -67,7 +67,7 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
             ->toArray($user);
         $body = [
             'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions(),
+            'fieldOptions' => $this->getFieldOptions(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
     }
@@ -75,13 +75,11 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
     /**
      * Provide the select inputs options
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
      * @return array Dynamic field options
      */
-    private function _getFieldOptions(ServerRequestInterface $request) : array
+    function getFieldOptions() : array
     {
-        $user = $request->getAttribute('user');
+        $user = \NDB_Factory::singleton()->user();
         $DB   = \Database::singleton();
         $platform_results
             = $DB->pselect(
@@ -152,4 +150,24 @@ class SnpBrowser extends \NDB_Page implements ETagCalculator
         return ['GET'];
     }
 
+    /**
+     * Gets the data source for this menu filter.
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        return new SnpProvisioner();
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter(): bool
+    {
+        return true;
+    }
 }

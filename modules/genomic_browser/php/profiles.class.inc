@@ -22,7 +22,7 @@ use \LORIS\Middleware\ETagCalculator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Profiles extends \NDB_Page implements ETagCalculator
+class Profiles extends \DataFrameworkMenu implements ETagCalculator
 {
 
     /**
@@ -68,7 +68,7 @@ class Profiles extends \NDB_Page implements ETagCalculator
             ->toArray($user);
         $body = [
             'data'         => $data,
-            'fieldOptions' => $this->_getFieldOptions($request),
+            'fieldOptions' => $this->getFieldOptions(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
     }
@@ -76,13 +76,11 @@ class Profiles extends \NDB_Page implements ETagCalculator
     /**
      * Provide the select inputs options
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
      * @return array Dynamic field options
      */
-    private function _getFieldOptions(ServerRequestInterface $request) : array
+    function getFieldOptions() : array
     {
-        $user = $request->getAttribute('user');
+        $user = \NDB_Factory::singleton()->user();
 
         return (new \LORIS\genomic_browser\Views\Profiles(
             $this->getSiteOptions($user, false),
@@ -142,4 +140,24 @@ class Profiles extends \NDB_Page implements ETagCalculator
         return ['GET'];
     }
 
+    /**
+     * Gets the data source for this menu filter.
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        return new ProfileProvisioner();
+    }
+
+    /**
+     * Tells the base class that this page's provisioner can support
+     * the UserProjectMatch filter.
+     *
+     * @return bool always true
+     */
+    public function useProjectFilter(): bool
+    {
+        return true;
+    }
 }
