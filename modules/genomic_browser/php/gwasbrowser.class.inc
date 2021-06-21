@@ -2,7 +2,6 @@
 
 namespace LORIS\genomic_browser;
 
-use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use LORIS\genomic_browser\Provisioners\GwasProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -53,10 +52,7 @@ class GwasBrowser extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['genomic_browser_view_allsites']
-        );
-        $provisioner = (new GwasProvisioner())->filter($filter);
+        $provisioner = new GwasProvisioner();
         $user        = $request->getAttribute('user');
 
         $data = (new \LORIS\Data\Table())

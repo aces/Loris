@@ -1,14 +1,5 @@
-<?php declare(strict_types=1);
-/**
- * PHP version 7
- *
- * @category Genomics
- * @package  Main
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
+<?php
+declare(strict_types=1);
 
 namespace LORIS\genomic_browser\provisioners;
 
@@ -22,7 +13,7 @@ namespace LORIS\genomic_browser\provisioners;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 class FilesProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {

@@ -54,7 +54,6 @@ class CNV extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
           };
           this.setState({
             data,
@@ -87,9 +86,6 @@ class CNV extends Component {
       case 'PSCID':
         const url = `${this.props.baseURL}/${rowData.DCCID}/`;
         reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      case 'Subproject':
-        reactElement = <td>{this.state.data.subprojects[parseInt(cell)]}</td>;
         break;
       default:
         reactElement = <td>{cell}</td>;
@@ -155,7 +151,7 @@ class CNV extends Component {
         filter: {
           name: 'Subproject',
           type: 'select',
-          options: options.Subproject,
+          options: options.Subprojects,
         },
       },
       {

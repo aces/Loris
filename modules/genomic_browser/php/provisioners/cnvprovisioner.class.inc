@@ -1,14 +1,5 @@
-<?php declare(strict_types=1);
-/**
- * PHP version 7
- *
- * @category Genomic_Browser
- * @package  Main
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
+<?php
+declare(strict_types=1);
 
 namespace LORIS\genomic_browser\provisioners;
 
@@ -22,23 +13,15 @@ namespace LORIS\genomic_browser\provisioners;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {
-    private $_and = '';
-
     /**
      * Create a RowProvisioner
      */
     function __construct()
     {
-        $user = \User::singleton();
-        if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $site_arr   = implode(",", $user->getCenterIDs());
-            $this->_and = " AND candidate.RegistrationCenterID IN ("
-                . $site_arr . ")";
-        }
         parent::__construct(
             "
             SELECT
@@ -49,6 +32,8 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 cohort.SubprojectID AS _Subproject,
                 DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _ExternalID,
+                candidate.RegistrationCenterID as _centerID,
+                candidate.RegistrationProjectID as _projectID,
                 CNV.Chromosome AS _Chromosome,
                 CNV.Strand AS _Strand,
                 CNV.StartLoc AS _StartLoc,
@@ -85,7 +70,6 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             WHERE
                 candidate.Entity_type = 'Human'
                 AND candidate.Active = 'Y'
-                $this->_and
             ",
             [],
             '\LORIS\genomic_browser\Models\CnvDTO'
