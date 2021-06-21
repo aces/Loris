@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * The DemographicIdentifierFiltersBuilder class for requests.
- * Request returns data used for Define Filters.
+ * returns data used for Define Filters.
  *
  * @category Loris
  * @package  DQT
