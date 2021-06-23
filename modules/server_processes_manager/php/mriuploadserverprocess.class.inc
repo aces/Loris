@@ -51,27 +51,6 @@ class MriUploadServerProcess extends AbstractServerProcess
     private $_sourceLocation;
 
     /**
-     * Root of the MRI files directory.
-     *
-     * @var string
-     */
-    private $_mriCodePath;
-
-    /**
-     * Path of the environment file (relative to $_mriCodePath).
-     *
-     * @var string
-     */
-    private $_environmentFile;
-
-    /**
-     * Path of the prod file (relative to $_mriCodePath/dicom-archive/.loris-mri).
-     *
-     * @var string
-     */
-    private $_prodFile;
-
-    /**
      * Builds a new MriUploadServerProcess
      *
      * @param ?int    $mriUploadId    MRI upload ID
@@ -139,14 +118,28 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function getShellCommand()
     {
+        $config = \NDB_Factory::singleton()->config();
+
+        $mriCodePath = $config->getSetting('MRICodePath');
+        // Check that paths exist before using.
+        if (!is_dir($mriCodePath)) {
+            throw new \ConfigurationException(
+                "Value for config setting 'MRICodePath' is not an existing directory"
+            );
+        }
+
+        $prodFile        = $config->getSetting('MriConfigFile');
+        $environmentFile = $config->getSetting('EnvironmentFile');
+
         // Sanitize variables before using in exec statement.
-        $env            = $this->_mriCodePath . '/' . $this->_environmentFile;
+        $env            = $mriCodePath . '/' . $environmentFile;
         $env            = escapeshellarg($env);
-        $uploadScript   = $this->_mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
+        $uploadScript   = $mriCodePath . '/' . self::IMAGING_UPLOAD_FILE_PATH;
         $uploadScript   = escapeshellarg($uploadScript);
         $uploadId       = escapeshellarg((string) $this->_mriUploadId);
         $sourceLocation = escapeshellarg($this->_sourceLocation);
-        $prodFile       = escapeshellarg($this->_prodFile);
+        $prodFile       = escapeshellarg($prodFile);
+
         return "source $env ;"
                . " $uploadScript"
                . " -upload_id $uploadId"

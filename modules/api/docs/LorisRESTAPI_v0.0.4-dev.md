@@ -856,7 +856,37 @@ object of the form:
 The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
 scans, respectively.
 
-### 5.2 Tar Level Data
+```
+POST /candidates/$CandID/$Visit/dicoms
+```
+
+In addition to the uploaded file, the body of the POST request should contain the
+following keys and values:
+
+```js
+{
+    'CandID': $CandID,
+    'PSCID': string,
+    'Visit': $Visit,
+    'IsPhantom': "true|false"
+}
+```
+
+An optionnal header 'LORIS-Overwrite' with the value 'overwrite' can be used to
+overwrite an existing file. 
+
+A successful request will be answered by a `303 See Other` response with its
+`Location` header pointing to the processes list of the new upload.  
+(See 5.3 Tar Level processes)  
+
+### 5.2 Tar Level Data  
+
+This section describe how to upload DICOM studies and how to start and monitor
+`mri_upload` processes.
+
+DICOM studies that have been successfully uploaded and processed can be downloaded with 
+the following `GET` request:
+
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
 ```
@@ -865,7 +895,84 @@ Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text
 files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
-Only `GET` is currently supported.
+To get a list of the processes and their status for a given DICOM study previously uploaded use the following:
+
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+The response contain all `mri_upload` attempts with the specified `$tarname`. And for
+ each of them, a list of processes status.
+
+
+Response shape:  
+
+```js
+{
+  "mri_uploads": [
+    {
+      "mri_upload_id": 123,
+      "processes": [
+        {
+          "END_TIME": "YYYY-MM-DD hh:mm:ss",
+          "EXIT_CODE": "0",
+          "ID": "1",
+          "PID": "24971",
+          "PROGRESS": "text"
+          "STATE": "SUCCESS|RUNNING|ERROR"
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+```
+
+** An empty `processes` array means that there has never been a process launched on
+that `mri_upload`.
+
+
+To start an `mri_upload` process on a previously uploaded DICOM study, a POST request
+containing the `mri_upload_id` in the request body should be sent.
+
+```
+POST /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes
+```
+
+The request body must contain:
+
+```js
+{
+  "ProcessType": "mri_upload",
+  "MRIUploadID": 123
+}
+```
+
+Expected response: 202 Accepted with `Location` header pointing to the new process. 
+
+
+To obtain a specific process state, use the following:
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname/processes/$processid
+```
+
+Response shape:
+
+```js
+{
+  "process_state": [
+    {
+      "END_TIME": "YYYY-MM-DD hh:mm:ss",
+      "EXIT_CODE": "0",
+      "ID": "1",
+      "PID": "24971",
+      "PROGRESS": "text"
+      "STATE": "SUCCESS|RUNNING|ERROR"
+    }
+  ]
+}
+```
 
 ## 6.0 Electrophysiology Recording Data
 
