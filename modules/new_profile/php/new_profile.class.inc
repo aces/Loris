@@ -29,7 +29,7 @@ class New_Profile extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(1)) {
+        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
             return $user->hasPermission('data_entry');
         }
 
@@ -57,6 +57,8 @@ class New_Profile extends \NDB_Form
         $centerIDs = \User::singleton()->getCenterIDs();
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
+        } else {
+            $values['site'] = new \CenterID($values['site']);
         }
         //TODO: add similar logic to projects when user-projects association is
         //incorporated.
@@ -73,7 +75,7 @@ class New_Profile extends \NDB_Form
             $edc = (new \DateTime($edc))->format('Y-m-d');
         }
         $candID = \Candidate::createNew(
-            (int)$values['site'],
+            $values['site'],
             $dob,
             $edc,
             new Sex($values['sex']),
@@ -254,7 +256,7 @@ class New_Profile extends \NDB_Form
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site = \Site::singleton((int) $values['site']);
+                $site = \Site::singleton(new \CenterID($values['site']));
             }
 
             $project = \Project::getProjectFromID(
@@ -280,7 +282,8 @@ class New_Profile extends \NDB_Form
         }
 
         // Validate site entered
-        $psc = isset($values['site']) ? (int)$values['site'] : '';
+        $psc = isset($values['site']) ? new \CenterID($values['site']) : null;
+
         $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {

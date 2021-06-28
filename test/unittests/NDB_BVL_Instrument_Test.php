@@ -476,7 +476,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ]
             ]
         );
-        $this->assertEquals($this->_instrument->monthYearFields[0], "Field1");
     }
 
     /**
@@ -1223,8 +1222,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that _setDefaultsArray changes the candidate age and sets
-     * the instrument's dateTimeFields value
+     * Test that _setDefaultsArray changes the candidate age
      *
      * @covers NDB_BVL_Instrument::_setDefaultsArray
      * @return void
@@ -1238,7 +1236,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $result   = $this->_instrument->_setDefaultsArray($defaults);
         $defaults['Candidate_Age'] = '2020-01-01 (Age out of range)';
         $this->assertEquals($defaults, $result);
-        $this->assertEquals(["Date_taken"], $this->_instrument->dateTimeFields);
     }
 
     /**

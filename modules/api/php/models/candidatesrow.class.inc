@@ -31,7 +31,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     private $_edc;
     private $_dob;
     private $_sex;
-    private $_centerid;
+    private \CenterID $_centerid;
 
     /**
      * Create a new CandidatesRow.
@@ -50,7 +50,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         $this->_edc      = $row['EDC'] ?? null;
         $this->_dob      = $row['DoB'] ?? null;
         $this->_sex      = $row['Sex'] ?? null;
-        $this->_centerid = $row['CenterID'] ?? null;
+        $this->_centerid = new \CenterID($row['CenterID']);
     }
 
     /**
@@ -78,14 +78,14 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
-     * @return integer The CenterID
+     * @return \CenterID The CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
         if ($this->_centerid === null) {
             throw new \Exception('CenterID is null');
         }
-        return intval($this->_centerid);
+        return $this->_centerid;
     }
 
     /**

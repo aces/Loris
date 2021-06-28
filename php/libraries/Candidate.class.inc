@@ -111,6 +111,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             case 'RegistrationProjectID':
                 $this->candidateInfo[$key] = new \ProjectID($value);
                 break;
+            case 'RegistrationCenterID':
+                $this->candidateInfo[$key] = new \CenterID($value);
+                break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
@@ -193,7 +196,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
+     * @param CenterID    $centerID              centerID of the site to which the
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
@@ -211,7 +214,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @static
      */
     static public function createNew(
-        int $centerID,
+        CenterID $centerID,
         ?string $dateOfBirth,
         ?string $edc,
         Sex $sex,
@@ -498,11 +501,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the ID of this candidate's site
      *
-     * @return integer The numeric ID of the candidate's site
+     * @return CenterID The numeric ID of the candidate's site
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
-        return intval($this->candidateInfo["RegistrationCenterID"]);
+        return $this->candidateInfo["RegistrationCenterID"];
     }
 
     /**
@@ -890,10 +893,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
-
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $centerMatch = $user->hasCenter($this->getCenterID());
 
         // The candidate is accessible based on its registration
         // project/center
@@ -909,6 +910,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $timepoint = \TimePoint::singleton(
                 new \SessionID(strval($sessionID))
             );
+
             if ($timepoint->isAccessibleBy($user)) {
                 // There's at least one, we don't need to check
                 // any more.

@@ -50,7 +50,7 @@ class IssueRow implements
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return int[] The CenterIDs
+     * @return \CenterID[] The CenterIDs
      */
     public function getCenterIDs() : iterable
     {

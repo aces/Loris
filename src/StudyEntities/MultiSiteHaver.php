@@ -13,7 +13,7 @@ interface MultiSiteHaver
      * Return true if the entity is accessible by the
      * user.
      *
-     * @return int[]
+     * @return \CenterID[]
      */
     public function getCenterIDs() : iterable;
 }

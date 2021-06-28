@@ -90,7 +90,7 @@ class Media extends \DataFrameworkMenu
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$val] = $site->getCenterName();
+                    $siteList["$val"] = $site->getCenterName();
                 }
             }
         }

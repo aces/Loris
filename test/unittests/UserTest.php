@@ -574,7 +574,7 @@ class UserTest extends TestCase
     public function testHasCenterWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertTrue($this->_user->hasCenter(4));
+        $this->assertTrue($this->_user->hasCenter(new CenterID("4")));
     }
 
     /**
@@ -586,7 +586,7 @@ class UserTest extends TestCase
     public function testHasCenterWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertFalse($this->_user->hasCenter(5));
+        $this->assertFalse($this->_user->hasCenter(new CenterID("5")));
     }
 
     /**
@@ -1166,7 +1166,12 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
+        $this->assertTrue(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1182,7 +1187,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1]);
-        $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
+        $this->assertTrue(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new \CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1198,7 +1208,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1, 3]);
-        $this->assertFalse($this->_user->hasCenterPermission("test_permission2", 1));
+        $this->assertFalse(
+            $this->_user->hasCenterPermission(
+                "test_permission2",
+                new \CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1214,7 +1229,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1]);
-        $this->assertFalse($this->_user->hasCenterPermission("test_permission", 2));
+        $this->assertFalse(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new \CenterID("2"),
+            )
+        );
     }
 
     /**
