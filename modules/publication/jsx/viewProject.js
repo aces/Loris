@@ -63,12 +63,18 @@ class ViewProject extends React.Component {
       method: 'POST',
       body: formObj,
     }).then((response) => {
-      if (response.status !== 200) {
+      if (!response.ok) {
         console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || 'Something went wrong!';
+          swal.fire('Edit failed!', message, 'error');
+        });
         return;
       }
+
       swal.fire('Edit Successful!', '', 'success');
     }).catch((error) => {
+      // Network error
       console.error(error);
       swal.fire('Edit failed!', 'Something went wrong!', 'error');
     });
@@ -81,8 +87,11 @@ class ViewProject extends React.Component {
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
-      if (response.status !== 200) {
+      if (!response.ok) {
         console.error(response.status);
+        this.setState({
+          error: 'An error occurred when loading the form!',
+        });
         return;
       }
 
@@ -134,6 +143,7 @@ class ViewProject extends React.Component {
           });
         });
     }).catch((error) => {
+      // Network error
       console.error(error);
       this.setState({
         error: 'An error occurred when loading the form!',

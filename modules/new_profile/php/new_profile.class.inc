@@ -29,7 +29,7 @@ class New_Profile extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(1)) {
+        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
             return $user->hasPermission('data_entry');
         }
 
@@ -54,9 +54,11 @@ class New_Profile extends \NDB_Form
         /* When a user has only one site and centerID has not been
          * passed, choose the first one in the User's centerID list.
          */
-        $centerIDs = \User::singleton()->getData('CenterIDs');
+        $centerIDs = \User::singleton()->getCenterIDs();
         if (count($centerIDs) <= 1 && !isset($values['site'])) {
             $values['site'] = $centerIDs[0];
+        } else {
+            $values['site'] = new \CenterID($values['site']);
         }
         //TODO: add similar logic to projects when user-projects association is
         //incorporated.
@@ -73,12 +75,12 @@ class New_Profile extends \NDB_Form
             $edc = (new \DateTime($edc))->format('Y-m-d');
         }
         $candID = \Candidate::createNew(
-            (int)$values['site'],
+            $values['site'],
             $dob,
             $edc,
             new Sex($values['sex']),
             $values['pscid'] ?? null,
-            intval($values['project'])
+            new \ProjectID($values['project'])
         );
 
         /* Update front-end data. Use passed PSCID when present, otherwise
@@ -149,7 +151,7 @@ class New_Profile extends \NDB_Form
         $maxYear   = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
 
         // Get sites for the select dropdown
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $user_list_of_sites = $user->getCenterIDs();
         $site = \Utility::getSiteNameListByIDs($user_list_of_sites);
 
         // Get projects for the select dropdown
@@ -248,16 +250,18 @@ class New_Profile extends \NDB_Form
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
             if (empty($values['site'])) { // user is in only one site
-                $centerIDs = $user->getData('CenterIDs');
+                $centerIDs = $user->getCenterIDs();
                 $centerID  = $centerIDs[0];
                 $site      = \Site::singleton($centerID);
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site = \Site::singleton((int) $values['site']);
+                $site = \Site::singleton(new \CenterID($values['site']));
             }
 
-            $project = \Project::getProjectFromID(intval($values['project']));
+            $project = \Project::getProjectFromID(
+                new \ProjectID($values['project'])
+            );
 
             if (empty($values['pscid'])) {
                 $errors['pscid'] = 'PSCID must be specified';
@@ -278,8 +282,9 @@ class New_Profile extends \NDB_Form
         }
 
         // Validate site entered
-        $psc = isset($values['site']) ? (int)$values['site'] : '';
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $psc = isset($values['site']) ? new \CenterID($values['site']) : null;
+
+        $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
             $errors['site'] = "Site must be selected from the available dropdown.";

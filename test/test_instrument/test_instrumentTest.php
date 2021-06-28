@@ -60,10 +60,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'flag',
             [
-                'ID'        => '999999',
-                'SessionID' => '999999',
-                'Test_name' => 'testtest',
-                'CommentID' => '11111111111111111',
+                'ID'         => '999999',
+                'SessionID'  => '999999',
+                'Data_entry' => 'In Progress',
+                'Test_name'  => 'testtest',
+                'CommentID'  => '11111111111111111',
             ]
         );
         // Set up database wrapper and config
@@ -143,7 +144,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testTextElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::Name("testText")
         )->sendKeys("Test Text successful");
         $this->webDriver->findElement(
@@ -164,7 +165,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testCheckBoxElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->webDriver->findElement(
             WebDriverBy::Name("testCheckbox")
         )->click();
         $this->webDriver->findElement(

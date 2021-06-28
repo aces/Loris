@@ -86,11 +86,11 @@ class Media extends \DataFrameworkMenu
             $siteList = \Utility::getSiteList(false);
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$val] = $site->getCenterName();
+                    $siteList["$val"] = $site->getCenterName();
                 }
             }
         }

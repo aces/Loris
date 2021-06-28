@@ -31,7 +31,8 @@ class PageDecorationMiddleware implements MiddlewareInterface
     {
         $baseURL = $request->getAttribute("baseurl");
         $config  = \NDB_Config::singleton();
-        $page    = $request->getAttribute("pageclass") ?? new \NDB_Page(new \NullModule(), "", "", "", "");
+        $loris   = $request->getAttribute("loris");
+        $page    = $request->getAttribute("pageclass") ?? new \NDB_Page($loris, new \NullModule(), "", "", "", "");
         if ($this->user instanceof \LORIS\AnonymousUser) {
             return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
                 $baseURL ?? "",

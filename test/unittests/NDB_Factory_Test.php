@@ -235,10 +235,17 @@ class NDB_Factory_Test extends TestCase
     function testCandidate()
     {
         $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $this->_factory->setDatabase($mockdb);
         $mockdb->expects($this->any())
             ->method('pselectRow')
-            ->willReturn(['DCCID'=>'300001']);
+            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => '1']);
+
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setDatabase($mockdb);
+
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setDatabase($mockdb);
 
         $candID = new CandID("300001");
         $this->assertEquals(
@@ -258,11 +265,22 @@ class NDB_Factory_Test extends TestCase
     {
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
-        $this->_factory->setConfig($mockconfig);
-        $this->_factory->setDatabase($mockdb);
+
         $mockdb->expects($this->any())
             ->method('pselectRow')
-            ->willReturn(['1']);
+            ->willReturn(['SessionID' => '1', 'ProjectID' => '1']);
+
+        '@phan-var \NDB_Config $mockconfig';
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
+
+        '@phan-var \NDB_Config $mockconfig';
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
 
         $sessionID = new \SessionID("1");
         $this->assertEquals(

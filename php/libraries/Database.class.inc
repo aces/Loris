@@ -221,9 +221,8 @@ class Database
      * Determines whether the database connection is alive
      *
      * @return bool
-     * @access public
      */
-    function isConnected(): bool
+    public function isConnected(): bool
     {
         try {
             if (!$this->_PDO) {
@@ -242,8 +241,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -259,8 +258,8 @@ class Database
      * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -275,8 +274,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -293,8 +292,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -311,8 +310,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated. HTML from any field in the row will *not* be automatically escaped.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -333,9 +332,9 @@ class Database
      *
      * This function alone does not guarantee safety.
      *
-     * @param array<string,string> $set The array to be inserted as a new row
+     * @param array<string,mixed> $set The array to be inserted as a new row
      *
-     * @return array<string,string> A copy of $set with the HTML characters escaped
+     * @return array<string,mixed> A copy of $set with the HTML characters escaped
      */
     private function _HTMLEscapeArray(array $set): array
     {
@@ -360,21 +359,21 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string               $table             the table into which to
-     *                                                insert the row
-     * @param array<string,string> $set               the values with which to
-     *                                                fill the new row
-     * @param bool                 $autoescape        determines whether the
-     *                                                values to be set
-     *                                                should automatically
-     *                                                have the html escaped
-     * @param bool                 $ignore            determines whether the insert
-     *                                                throws an
-     *                                                error or is discarded
-     *                                                when value exists in DB
-     * @param bool                 $onDuplicateUpdate determines whether the row
-     *                                                should be updated
-     *                                                upon unique key duplication
+     * @param string              $table             the table into which to
+     *                                               insert the row
+     * @param array<string,mixed> $set               the values with which to
+     *                                               fill the new row
+     * @param bool                $autoescape        determines whether the
+     *                                               values to be set
+     *                                               should automatically
+     *                                               have the html escaped
+     * @param bool                $ignore            determines whether the insert
+     *                                               throws an error or is
+     *                                               discarded when value exists
+     *                                               in DB
+     * @param bool                $onDuplicateUpdate determines whether the row
+     *                                               should be updated upon
+     *                                               unique key duplication
      *
      * @return bool
      */
@@ -455,8 +454,8 @@ class Database
      * Replaces into the table such if there already exists a row with
      * the same primary key it will be replaced by the new row
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      * @access public
@@ -487,10 +486,10 @@ class Database
      * Updates a single row in the specified table. This will automatically escape
      * any HTML in the data being inserted for security.
      *
-     * @param string               $table   the table into which to insert the row
-     * @param array<string,string> $set     the values with which to fill the new row
-     * @param array<string,string> $i_where the selection filter, joined as a
-     *                                      boolean and
+     * @param string              $table   the table into which to insert the row
+     * @param array<string,mixed> $set     the values with which to fill the new row
+     * @param array<string,mixed> $i_where the selection filter, joined as a
+     *                                     boolean and
      *
      * @return void
      */
@@ -506,11 +505,11 @@ class Database
      * escape and should be used with caution, only when you know you need to
      * insert HTML and know that you can trust it.
      *
-     * @param string               $table   the table into which to insert the row
-     * @param array<string,string> $set     the values with which to fill the
-     *                                      new row
-     * @param array<string,string> $i_where the selection filter, joined as
-     *                                      a boolean and
+     * @param string              $table   the table into which to insert the row
+     * @param array<string,mixed> $set     the values with which to fill the
+     *                                     new row
+     * @param array<string,mixed> $i_where the selection filter, joined as
+     *                                     a boolean and
      *
      * @return void
      */
@@ -528,15 +527,15 @@ class Database
      *
      * Updates a single row in the specified table
      *
-     * @param string               $table      the table into which to insert
-     *                                         the row
-     * @param array<string,string> $set        the values with which to fill
-     *                                         the new row
-     * @param array<string,string> $i_where    the selection filter, joined as
-     *                                         a boolean and
-     * @param bool                 $autoescape determines whether the values to
-     *                                         be set should
-     *                                         automatically have the html escaped
+     * @param string              $table      the table into which to insert
+     *                                        the row
+     * @param array<string,mixed> $set        the values with which to fill
+     *                                        the new row
+     * @param array<string,mixed> $i_where    the selection filter, joined as
+     *                                        a boolean and
+     * @param bool                $autoescape determines whether the values to
+     *                                        be set should
+     *                                        automatically have the html escaped
      *
      * @return bool Always true. An exception should be thrown if something goes
      *              wrong. FIXME This should probably be void.
@@ -605,9 +604,9 @@ class Database
      *
      * Deletes a single row in the specified table
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $where the selection filter, joined as
-     *                                    a boolean and
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $where the selection filter, joined as
+     *                                   a boolean and
      *
      * @return void
      * @access public
@@ -688,16 +687,15 @@ class Database
      * bindings given.
      *
      * @param PDOStatement         $prepared The prepared statement
-     * @param array<string,string> $params   The values to bind to the statement
+     * @param array<string,mixed>  $params   The values to bind to the statement
      *                                       while executing it
      * @param array<string,string> $options  A list of key=>value pairs.
      *                                       - nofetch : to prevent the
      *                                       fetchAll function to be
-     *                                       excuted. Useful for insert
-     *                                       or update prepared
-     *                                       statements.
+     *                                       executed. Useful for insert
+     *                                       or update prepared statements.
      *
-     * @return array<int,array<string,string>> An array of rows in the format
+     * @return array<int,array<string,mixed>> An array of rows in the format
      *                                  ColName => Value after
      *                                      executing the statement.
      */
@@ -713,7 +711,7 @@ class Database
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
 
-        if (!empty($options['nofetch']) && $options['nofetch'] == true) {
+        if (!empty($options['nofetch'])) {
             return [];
         }
 
@@ -730,9 +728,9 @@ class Database
     /**
      * Runs an SQL select statement as a prepared query
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to the
-     *                                     prepared statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to the
+     *                                    prepared statement
      *
      * @return array<int,array<string,string>> An array of arrays containing
      *                                          the data.
@@ -751,12 +749,12 @@ class Database
      * Runs an SQL select statement as a prepared query and re-indexes
      * the results using the given unique non-nullable key.
      *
-     * @param string               $query     The SQL SELECT query to be run
-     * @param array<string,string> $params    Values to use for binding to the
-     *                                        prepared statement
-     * @param string               $uniqueKey Key to use when re-indexing, this
-     *                                        key must be a single column and
-     *                                        must be unique
+     * @param string              $query     The SQL SELECT query to be run
+     * @param array<string,mixed> $params    Values to use for binding to the
+     *                                       prepared statement
+     * @param string              $uniqueKey Key to use when re-indexing, this
+     *                                       key must be a single column and
+     *                                       must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself
@@ -828,11 +826,11 @@ class Database
      * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to prepared
-     *                                     statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to prepared
+     *                                    statement
      *
-     * @return array<string,string>|null Associative array of form
+     * @return ?array<string,mixed> Associative array of form
      *                              ColumnName => Value for each column in the
      *                              first row of the query, or null.
      *
@@ -854,9 +852,9 @@ class Database
      * column given in the select statement. If multiple columns are given,
      * an error is thrown.
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to prepared
-     *                                     statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to prepared
+     *                                    statement
      *
      * @throws DatabaseException if the query selected more than one column
      *
@@ -889,12 +887,12 @@ class Database
      * the results using the given unique non-nullable key in the same
      * format as the pselectCol() function.
      *
-     * @param string               $query     The SQL SELECT query to be run
-     * @param array<string,string> $params    Values to use for binding to the
-     *                                        prepared statement
-     * @param string               $uniqueKey Key to use when re-indexing, this
-     *                                        key must be a single column and
-     *                                        must be unique
+     * @param string              $query     The SQL SELECT query to be run
+     * @param array<string,mixed> $params    Values to use for binding to the
+     *                                       prepared statement
+     * @param string              $uniqueKey Key to use when re-indexing, this
+     *                                       key must be a single column and
+     *                                       must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself or
@@ -972,9 +970,9 @@ class Database
      * value as a string. The calling code is responsible for doing the relevant
      * validation with respect to the type of the data returned.
      *
-     * @param string               $query  The SQL statement to run
-     * @param array<string,string> $params Values to use for binding in the
-     *                                     prepared statement
+     * @param string              $query  The SQL statement to run
+     * @param array<string,mixed> $params Values to use for binding in the
+     *                                    prepared statement
      *
      * @return ?string A single cell from the database.
      */
@@ -991,8 +989,9 @@ class Database
      * Helper function used to select a single cell from the database and convert
      * it to an integer.
      *
-     * @param string   $query  The SQL statement to run
-     * @param string[] $params Values to use for binding in the prepared statement
+     * @param string              $query  The SQL statement to run
+     * @param array<string,mixed> $params Values to use for binding in the
+     *                                    prepared statement
      *
      * @return ?int A cell from the database converted to an integer value. If
      * the query returns a value that cannot be validated as an integer, the
@@ -1276,8 +1275,8 @@ class Database
      * that test.
      *
      * @param string                $tableName The table name to fake
-     * @param array<string, string> $rowData   An array of data to be inserted into
-     *                                         the fake table.
+     * @param array<string,mixed>[] $rowData   An array of data to be inserted
+     *                                         into the fake table.
      *
      * @return void
      */

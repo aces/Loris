@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-use \LORIS\Installer\Database as Database;
+
 /**
  * Fake NDB_Config class
  *
@@ -61,7 +61,7 @@ class NDB_ConfigTest extends TestCase
     /**
      * Test double for Database object
      *
-     * @var Database | PHPUnit\Framework\MockObject\MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -95,11 +95,21 @@ class NDB_ConfigTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_config     = FakeConfig::singleton();
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
-        $this->_user       = $this->getMockBuilder('User')->getMock();
-        $this->_factory    = \NDB_Factory::singleton();
+        $this->_config = FakeConfig::singleton();
+
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        $user       = $this->getMockBuilder('User')->getMock();
+
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+        '@phan-var \User $user';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
+        $this->_user       = $user;
+
+        $this->_factory = \NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
         $this->_factory->setDatabase($this->_dbMock);
         $this->_factory->setUser($this->_user);

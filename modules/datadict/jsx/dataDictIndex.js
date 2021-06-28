@@ -94,7 +94,7 @@ class DataDictIndex extends Component {
             method: 'POST',
             body: formData,
           }).then((response) => {
-            if (response.status !== 200) {
+            if (!response.ok) {
               console.error(response.status);
               return;
             }

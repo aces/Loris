@@ -89,7 +89,6 @@ class File_Decompress
      */
     function tgzDecompres()
     {
-        $decompressed_folder = null;
         $p = new \PharData($this->file_name);
         $decompressed_folder = $p->decompress(); // creates /path/to/my.tar
         $p->extractTo(
@@ -107,8 +106,7 @@ class File_Decompress
      */
     function gzipDecompress()
     {
-        $return_value = false;
-        $decomp_file  = new \PharData($this->file_name);
+        $decomp_file = new \PharData($this->file_name);
         // creates /path/to/my.tar
         $return_value = $decomp_file->decompress();
         return $return_value;
@@ -122,7 +120,6 @@ class File_Decompress
      */
     function untar()
     {
-        $return_value = false;
         $p            = new \PharData($this->file_name);
         $return_value = $p->extractTo($this->dest_path);
            //could remove the folder later once completed...
@@ -140,7 +137,6 @@ class File_Decompress
      */
     function unzip()
     {
-        $result = false;
         $zip    = new \ZipArchive();
         $result = $zip->open($this->file_name);
         if ($result === true) {

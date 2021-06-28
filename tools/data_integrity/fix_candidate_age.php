@@ -19,7 +19,7 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$instruments = Utility::getAllInstruments();
+$instruments = \NDB_BVL_Instrument::getInstrumentsList();
 
 if (empty($argv[1])
     || (!empty($argv[1])
@@ -39,16 +39,11 @@ $incorrectAges  = [];
 $nullAges       = [];
 $verifiedTables = [];
 
-foreach ($instruments as $inst=>$fullName) {
+foreach ($instruments as $testName=>$instrument) {
 
+    $fullName = $instrument->getFullName();
     //Check what database table is associated with this instrument
-    echo "Instrument: $inst ($fullName)\n";
-    try {
-        $instrument = NDB_BVL_Instrument::factory($inst, "", "");
-    } catch (Exception $e) {
-        echo "\t$inst does not seem to be a valid instrument.\n";
-        continue;
-    }
+    echo "Instrument: $testName ($fullName)\n";
 
     $table = $instrument->table;
 
@@ -62,24 +57,27 @@ foreach ($instruments as $inst=>$fullName) {
     }
 
     if (!$DB->tableExists($table)) {
-        echo "\tTable $table for instrument $inst does not exist in the Database\n";
+        echo "\tTable $table for instrument $testName does not exist in the ".
+            "Database\n";
         continue;
-    } else if (strpos('_proband', $inst) !== false) {
-        echo "\t$inst is a Proband instrument and should be handled seperately.\n";
+    } else if (strpos('_proband', $testName) !== false) {
+        echo "\t$testName is a Proband instrument and should be handled ".
+            "separately.\n";
         continue;
     }
 
     // Skip if Date taken does not exist
-    if (!$DB->columnExists($inst, 'Date_taken')) {
+    if (!$DB->columnExists($table, 'Date_taken')) {
         echo "\t"
-        . "$inst does not use a `Date_taken` field and should be handled separately."
+        . "$testName does not use a `Date_taken` field and should be ".
+            "handled separately."
         . "\n";
         continue;
     }
     // Skip if Date taken does not exist
-    if (!$DB->columnExists($inst, 'Candidate_Age')) {
+    if (!$DB->columnExists($table, 'Candidate_Age')) {
         echo "\t"
-        . "$inst does not use a `Candidate_Age` field "
+        . "$testName does not use a `Candidate_Age` field "
         . "and should be handled separately.\n";
         continue;
     }
@@ -87,7 +85,7 @@ foreach ($instruments as $inst=>$fullName) {
     //Get instrument SQL table
     $DBInstTable = $DB->pselect(
         "SELECT i.CommentID, Date_taken, Candidate_Age
-         FROM $table i 
+         FROM $table i
             LEFT JOIN flag f ON (i.commentID=f.CommentID)
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
@@ -99,14 +97,14 @@ foreach ($instruments as $inst=>$fullName) {
         // Get Instrument Instance with commentID
         try {
             $instrument = NDB_BVL_Instrument::factory(
-                $inst,
+                $testName,
                 $row['CommentID'],
                 '',
                 false
             );
         } catch (Exception $e) {
-            echo "\t$inst instrument row with CommentID: ".$row['CommentID']." was ".
-                " Ignored for one of the following reasons:\n".
+            echo "\t$testName instrument row with CommentID: ".$row['CommentID'].
+                " was ignored for one of the following reasons:\n".
                 "  - The candidate is inactive.\n".
                 "  - The session is inactive.\n\n";
             continue;
@@ -115,7 +113,7 @@ foreach ($instruments as $inst=>$fullName) {
         if (!$instrument) {
             // instrument does not exist
             echo "\t"
-            . "$inst for CommentID:$row[CommentID] could not be instantiated."
+            . "$testName for CommentID:$row[CommentID] could not be instantiated."
             . "\n";
             continue;
         }
@@ -129,7 +127,7 @@ foreach ($instruments as $inst=>$fullName) {
             // Check if age is null OR if wrong age
             if (empty($row['Candidate_Age'])) {
                 // Null age
-                $nullAges[$inst][$commentID] = $row['CommentID'];
+                $nullAges[$testName][$commentID] = $row['CommentID'];
                 $trouble =true;
             } else {
                 // get Age from instrument class
@@ -142,7 +140,7 @@ foreach ($instruments as $inst=>$fullName) {
 
                 if ($calculatedAgeMonths != $DBAge) {
                     //$incorrectAges[] = $row;
-                    $incorrectAges[$inst][$commentID] = [
+                    $incorrectAges[$testName][$commentID] = [
                         'cal' => $calculatedAgeMonths,
                         'db'  => $DBAge,
                     ];
@@ -194,8 +192,8 @@ function showHelp()
     echo "Example: php fix_candidate_age.php check\n";
     echo "Example: php fix_candidate_age.php confirm\n\n";
 
-    echo "When the 'check' option is used, the script only detects and reports 
-    miscalculated and NULL ages. 
+    echo "When the 'check' option is used, the script only detects and reports
+    miscalculated and NULL ages.
     Using the 'confirm' option will apply the necessary corrections to the data."
     . "\n\n";
 

@@ -65,11 +65,15 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $factory->setDatabase($mockdb);
-        $factory->setConfig($mockconfig);
         $mockdb->expects($this->any())
             ->method('pselectOne')
             ->willReturn('999');
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $factory->setDatabase($mockdb);
+        $factory->setConfig($mockconfig);
 
         $this->Client = new \NDB_Client;
         $this->Client->makeCommandLine();
@@ -123,8 +127,9 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             // This can occur when no SessionID exists. It's not important
             // for this test.
         }
-        $json         = $this->i->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
@@ -153,8 +158,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "text{@}FieldName{@}Field Description\n";
         $instrument .= "select{@}texbox_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
-        $instrument .= "textarea{@}FieldName{@}"
-                       . "Field Description\n";
+        $instrument .= "textarea{@}FieldName{@}Field Description\n";
         $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
         $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}"
@@ -315,7 +319,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         }
         $json         = $this->i->toJSON();
         $outArray     = json_decode($json, true);
-        $ExpectedMeta = $instrumentJSON = [
+        $ExpectedMeta = [
             "Meta"     => [
                 'InstrumentVersion'       => "1l",
                 'InstrumentFormatVersion' => "v0.0.1a-dev",

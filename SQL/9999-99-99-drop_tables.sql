@@ -1,4 +1,10 @@
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `physiological_annotation_instance`;
+DROP TABLE IF EXISTS `physiological_annotation_parameter`;
+DROP TABLE IF EXISTS `physiological_annotation_archive`;
+DROP TABLE IF EXISTS `physiological_annotation_file`;
+DROP TABLE IF EXISTS `physiological_annotation_file_type`;
+DROP TABLE IF EXISTS `physiological_annotation_label`;
 DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_electrode`;
@@ -28,10 +34,10 @@ DROP TABLE IF EXISTS `issues_comments`;
 DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
--- 0000-00-02-Modules.sql
+-- 0000-00-01-Modules.sql
 DROP TABLE IF EXISTS `modules`;
 
--- 0000-00-01-Permission.sql
+-- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;

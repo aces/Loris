@@ -84,6 +84,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+        $loris     = $request->getAttribute("loris");
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -124,6 +125,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $instrument = \NDB_BVL_Instrument::factory(
+                $loris,
                 $instrumentname,
                 $commentid,
                 '',

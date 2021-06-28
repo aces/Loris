@@ -198,6 +198,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Project',
         ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
+
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
@@ -218,11 +219,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $sessionid = array_search(
-            $visitinfo['Visit'],
-            $this->_candidate->getListOfVisitLabels()
-        );
-
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 "You can't create or modify that candidate"
@@ -231,16 +227,27 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
-        if (!in_array($centerid, $user->getCenterIDs())) {
+        if ($centerid === false
+            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
+        ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create  or modify candidates visit for the site " .
+                "You can't create or modify candidates visit for the site " .
                 $centerid
             );
         }
 
+        // \Utility::getSiteList key was a string. Now that the
+        // validation is done, convert to an object.
+        $centerid = new \CenterID("$centerid");
+
         $subprojectid = array_search(
             $visitinfo['Battery'],
             \Utility::getSubprojectList()
+        );
+
+        $sessionid = array_search(
+            $visitinfo['Visit'],
+            $this->_candidate->getListOfVisitLabels()
         );
 
         if ($sessionid !== false) {

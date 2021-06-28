@@ -1,9 +1,27 @@
 # NEW
+2019-09-18_DocRepoEdit.sql
+2019-12-17-RemovePasswordExpiry.sql
+2020-02-10-AddConsentGrouping.sql
+2020-02-10_NewModulePermissions.sql
+2020-02-25_Add-Admin-Contact-Email.sql
 2020-03-09-SQL_patch_for_HRRT_PET_images_insertion.sql
+2020-03-26_add_account_request_date_to_users_table.sql
+2020-06-16-Add_Date_Format_to_ConfigSettings_DataType.sql
+2020-07-14_NewModuleDQT.sql
+2020-07-22_RenameBatteryManagerPermissions.sql
+2020-08-10_add_AcquisitionDate_to_files.sql
+2020-10-29-session-current-stage-default.sql
+2021-01-31-renaming_permissions.sql
 
 # CLEAN-UP
-2020-08-11-removeReliabilityPermissions.sql
+2020-02-06-NoMultipleSitesConf.sql
+2020-06-18-remove_violated_scans_edit_permission.sql
+2020-08-11-RemoveReliabilityPermissions.sql
+2020-09-09-RemoveHelpParentID.sql
+2021-01-31-deleting_permissions.sql
 
+
+____________________________________________________________________________________________________________________
 # 23.0
 2018-05-18-adding_physiological_all_sites_permissions.sql
 2018-07-23-battery_manager_permissions.sql

@@ -94,10 +94,11 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that some attribute of an element
      * is correct
      *
-     * @param string       $el          The element name
-     * @param string       $attribute   The attribute name to assert
-     *                                  (ie class, id, value, etc)
-     * @param string|array $attribValue The expected content of the attribute
+     * @param string               $el          The element name
+     * @param string               $attribute   The attribute name to assert
+     *                                          (ie class, id, value, etc)
+     * @param string|array|boolean $attribValue The expected content of the
+     *                                          attribute
      *
      * @return void but makes assertions
      */
@@ -108,7 +109,6 @@ class LorisForms_Test extends TestCase
             return;
         }
 
-        $msg = '';
         if (is_array($attribValue)) {
             $msg = "[";
             foreach ($attribValue as $i => $val) {
@@ -1762,18 +1762,6 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that addRule throws a LorisException if the element name is not a string
-     *
-     * @covers LorisForm::addRule
-     * @return void
-     */
-    function testAddRuleIfElementNameNotString()
-    {
-        $this->expectException('\LorisException');
-        $this->form->addRule(0, "Message", "required");
-    }
-
-    /**
      * Test that addRule throws a LorisException if the element
      * is not set in the form
      *
@@ -1878,9 +1866,10 @@ class LorisForms_Test extends TestCase
      */
     function testAddFormRule()
     {
-        $this->form->addFormRule($this->form->validate());
+        $callback = [$this->form, 'validate'];
+        $this->form->addFormRule($callback);
         $this->assertEquals(
-            $this->form->validate(),
+            $callback,
             $this->form->formRules[0]
         );
     }
@@ -1897,22 +1886,6 @@ class LorisForms_Test extends TestCase
         $this->form->addSelect("abc", "Hello", [], []);
         $this->assertEquals(
             new LorisFormElement(),
-            $this->form->getElement("abc")
-        );
-    }
-
-    /**
-     * Test that getElement returns a LorisFormFileElement() when
-     * the type of the element is 'file'
-     *
-     * @covers LorisForm::getElement
-     * @return void
-     */
-    function testGetElementFile()
-    {
-        $this->form->addFile("abc", "Hello", []);
-        $this->assertEquals(
-            new LorisFormFileElement($this->form->form['abc']),
             $this->form->getElement("abc")
         );
     }
@@ -2266,6 +2239,7 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $form->expects($this->once())
             ->method('submitHTML');
+        '@phan-var \LorisForm $form';
 
         $testSubmit = $form->createSubmit("abc", "Hello", []);
         $form->renderElement($testSubmit);
@@ -2305,6 +2279,7 @@ class LorisForms_Test extends TestCase
             ->getMock();
         $f->expects($this->once())
             ->method('timeHTML');
+        '@phan-var \LorisForm $f';
 
         $testTime = $f->createElement(
             "time",

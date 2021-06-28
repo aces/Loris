@@ -142,13 +142,13 @@ class ServerProcessesMonitor
         $savedProcesses       = [];
         foreach ($rows as $row) {
             $savedProcesses[$row['id']] = $serverProcessFactory->getServerProcess(
-                $row['id'],
-                $row['pid'],
+                intval($row['id']),
+                intval($row['pid']),
                 $row['type'],
                 $row['stdout_file'],
                 $row['stderr_file'],
                 $row['exit_code_file'],
-                $row['exit_code'],
+                intval($row['exit_code']),
                 $row['userid'],
                 $row['start_time'],
                 $row['end_time'],

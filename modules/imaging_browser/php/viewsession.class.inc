@@ -65,14 +65,14 @@ class ViewSession extends \NDB_Form
         $candid    = $session->getCandID();
         $candidate = \Candidate::singleton($candid);
 
-        if ($candidate->getData('Entity_type') == 'Scanner') {
+        if ($candidate->getEntityType() == 'Scanner') {
             return ($user->hasPermission('imaging_browser_phantom_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_phantom_ownsite',
                     $session->getCenterID()
                 ))
                 && ($user->hasProject($session->getProject()->getId()));
-        } elseif ($candidate->getData('Entity_type') == 'Human') {
+        } elseif ($candidate->getEntityType() == 'Human') {
             return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',
@@ -80,7 +80,6 @@ class ViewSession extends \NDB_Form
                 ))
                 && $user->hasProject($session->getProject()->getId());
         }
-
         return false;
     }
 
@@ -196,7 +195,7 @@ class ViewSession extends \NDB_Form
         );
         $this->tpl_data['files'] = [];
         foreach ($files as $fileRow) {
-            $FileObj = new \MRIFile($fileRow['FileID']);
+            $FileObj = new \MRIFile(intval($fileRow['FileID']));
             if (empty($scannerID)) {
                 $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
@@ -213,7 +212,7 @@ class ViewSession extends \NDB_Form
             $checkPicFilename = $FileObj->getParameter(
                 'check_pic_filename'
             ) ?? '';
-            $FileID           = $fileRow['FileID'];
+            $FileID           = intval($fileRow['FileID']);
             $Filename         = $JivFilename = basename($FullFilename);
             $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
             $JivAddress       = str_replace(
@@ -236,7 +235,6 @@ class ViewSession extends \NDB_Form
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
             $SeriesNumber        = $FileObj->getParameter('series_number');
-            $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
                 2
@@ -595,7 +593,7 @@ class ViewSession extends \NDB_Form
                     );
                 } elseif ($curCaveat === '0' && $caveatViolationsResolvedID) {
                     $quotedViolationsResolvedID
-                        = $this->_DB->quote($caveatViolationsResolvedID);
+                        = $this->_DB->quote("$caveatViolationsResolvedID");
                     $query = "
                         DELETE FROM mri_violations_log
                         WHERE LogID = (
@@ -779,8 +777,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets candidate's scans with the same acquisitionID.
      *
-     * @param string $initialFileID            the value of initialFileID
-     * @param string $initialFileAcquisitionID the value of initialFileAcquisitionID
+     * @param int $initialFileID            the value of initialFileID
+     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
      *
      * @return string of FileIDs, comma separated
      */
@@ -809,7 +807,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets Selected status from files_qcstatus for a given FileID
      *
-     * @param string $FileID the value of FileID
+     * @param int $FileID the value of FileID
      *
      * @return ?string
      */
@@ -893,7 +891,7 @@ class ViewSession extends \NDB_Form
         //Need to find the proper way to get the TarchiveID.
         //It should be per file, not per candidate. --Dave
         $params     = [];
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID = ":PPSCID";
             $params['PPSCID'] = $timePoint->getData('PSCID');
@@ -920,7 +918,9 @@ class ViewSession extends \NDB_Form
      */
     function getControlPanel()
     {
-        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
+        $controlPanel = new Imaging_Session_ControlPanel(
+            new \SessionID($_REQUEST['sessionID'])
+        );
         return $controlPanel->display();
     }
     /**

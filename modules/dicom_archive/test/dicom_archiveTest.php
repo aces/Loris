@@ -67,7 +67,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveViewDetailsDoespageLoad()
     {
-        $this->safeGet($this->url . "/dicom_archive/viewDetails/");
+        $this->safeGet($this->url . "/dicom_archive/viewDetails/?tarchiveID=27");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("View Details", $bodyText);
@@ -215,7 +215,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$location').click()"
         );
         sleep(1);
-        $text = $this->webDriver->getPageSource();
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );

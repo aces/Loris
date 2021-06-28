@@ -93,7 +93,7 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
-                     . $DB->quote($user->getData('UserID')),
+                     . $DB->quote($user->getUsername()),
                     '',
                     '',
                     $baseURL . "/issue_tracker/?$url",

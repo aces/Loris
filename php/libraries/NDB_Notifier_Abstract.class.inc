@@ -50,10 +50,8 @@ abstract class NDB_Notifier_Abstract
 {
     /**
      * Current logged in user issuing the notification.
-     *
-     * @var \User
      */
-    protected $notifier;
+    protected \User $notifier;
 
     /**
      * Boolean for notification being issue as administrator. Comes from DB
@@ -301,16 +299,8 @@ abstract class NDB_Notifier_Abstract
             ]
         );
 
-        $reqPerm  =[];
-        $userPerm =[];
-        //Build and compare arrays
-        foreach ($necessary as $k=>$row) {
-            $reqPerm[] =$row['perm_id'];
-        }
-
-        foreach ($current as $k=>$row) {
-            $userPerm[] =$row['permID'];
-        }
+        $reqPerm  = array_column($necessary, 'perm_id');
+        $userPerm = array_column($current, 'permID');
 
         $diff = array_diff($reqPerm, $userPerm);
 

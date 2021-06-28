@@ -310,8 +310,7 @@ class DisplayElements extends Component {
     if (element.tagName === 'tr') {
       return element;
     }
-
-    return $(element).closest('tr')[0];
+    return element.closest('tr');
   }
 
   /**
@@ -360,7 +359,9 @@ class DisplayElements extends Component {
     if (targetRow.className === 'placeholder') return;
     this.over = targetRow;
     // Inside the dragOver method
-    let relY = e.pageY - $(this.over).offset().top;
+    let relY = e.pageY -
+               (window.innerHeight - this.over.getBoundingClientRect().top);
+
     let height = this.over.offsetHeight / 2;
     let parent = targetRow.parentNode;
 

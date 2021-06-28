@@ -98,7 +98,7 @@ class Database_Test extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
 
         $this->factory->setDatabase($this->DB);
@@ -627,18 +627,18 @@ class Database_Test extends TestCase
         $this->DB->replace(
             "ConfigSettings",
             [
-                'ID'          => 99991,
+                'ID'          => '99991',
                 'Name'        => 'test 1',
-                'Visible'     => 1,
+                'Visible'     => '1',
                 'Description' => null
             ]
         );
         $this->DB->replace(
             "ConfigSettings",
             [
-                'ID'          => 99992,
+                'ID'          => '99992',
                 'Name'        => 'test 2',
-                'Visible'     =>  1,
+                'Visible'     =>  '1',
                 'Description' => null
             ]
         );
@@ -903,8 +903,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $PDO->expects($this->once())
             ->method("exec")->with($this->equalTo("SHOW TABLES"));
@@ -926,8 +925,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['prepare']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $PDO = $this->getMockBuilder('FakePDO')->getMock();
 
         $PDO->expects($this->once())
             ->method("prepare")
@@ -1013,7 +1011,7 @@ class Database_Test extends TestCase
         $allSetting = $this->DB->execute(
             $statement,
             [':id' => 99991, ':name' => 'new name'],
-            ['nofetch' => true]
+            ['nofetch' => "true"]
         );
         $check      = $this->DB->pselect(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
@@ -1188,7 +1186,7 @@ class Database_Test extends TestCase
         $this->DB->setFakeTableData("ConfigSettings", $data);
 
         $this->expectException("DomainException");
-        $allSetting = $this->DB->pselectRow(
+        $this->DB->pselectRow(
             "SELECT ID, Name, Description, Visible FROM ConfigSettings",
             []
         );

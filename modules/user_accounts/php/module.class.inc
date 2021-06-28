@@ -35,7 +35,8 @@ class Module extends \Module
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
-            $page = $this->loadPage("edit_user");
+            $loris = $request->getAttribute("loris");
+            $page  = $this->loadPage($loris, "edit_user");
             return $page->process($request, $page);
         }
         return parent::handle($request);

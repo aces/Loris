@@ -315,12 +315,12 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param string $siteName name of the site
      *
-     * @return ?string ID of the site
+     * @return ?int
      */
-    function getCenterID($siteName): ?string
+    function getCenterID($siteName): ?int
     {
         $DB = \NDB_Factory::singleton()->database();
-        return $DB->pselectOne(
+        return $DB->pselectOneInt(
             "SELECT CenterID
              FROM psc
              WHERE Name=:siteName",

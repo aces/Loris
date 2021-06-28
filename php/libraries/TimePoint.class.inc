@@ -23,7 +23,8 @@ use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class TimePoint implements \LORIS\StudyEntities\AccessibleResource
+class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     /* NOTE If these are private variables then they should probably be
      * declared and scoped as such. var is equivalent to public.
@@ -73,6 +74,22 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
 
 
     /**
+     * A DTO for TimePoint related data
+     */
+    protected ?TimePointData $data;
+
+    /**
+     * Construct a TimePoint object seeded with the data
+     * from the given DTO.
+     *
+     * @param ?TimePointData $data The Timepoint DTO
+     */
+    public function __construct(?TimePointData $data=null)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
      *
@@ -85,20 +102,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     {
         // instantiate new TimePoint object
         static $timePointList = [];
-        if (!isset($timePointList[(string) $sessionID])) {
+        if (!isset($timePointList["$sessionID"])) {
             try {
-                $timePointList[(string) $sessionID] = new TimePoint();
+                $timePointList["$sessionID"] = new TimePoint();
 
-                $timePointList[(string) $sessionID]->select($sessionID);
+                $timePointList["$sessionID"]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[(string) $sessionID]);
+                unset($timePointList["$sessionID"]);
                 throw $e;
             }
         }
 
-        return $timePointList[(string) $sessionID];
+        return $timePointList["$sessionID"];
     }
 
 
@@ -140,11 +157,21 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
             ['SID' => $sessionID]
         );
 
+        $this->data = new TimePointData(
+            $sessionID,
+            isset($row['ProjectID'])
+                ? new ProjectID($row['ProjectID'])
+                : null,
+            isset($row['CenterID'])
+                ? new \CenterID($row['CenterID'])
+                : null,
+        );
+
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
             $subprojectSettings   = $config->getSubprojectSettings(
-                intval($row['SubprojectID'])
+                intval($row['SubprojectID'] ?? null)
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;
@@ -255,7 +282,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
             'SubprojectID'    => $SubprojectID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
-            'CenterID'        => $psc->getCenterID(),
+            'CenterID'        => $psc->getCenterID()->__toString(),
             'ProjectID'       => $project->getId(),
             'Current_stage'   => 'Not Started',
             'Submitted'       => 'N',
@@ -414,7 +441,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
      */
     function getSessionID(): SessionID
     {
-        return (new SessionID($this->_timePointInfo["SessionID"]));
+        return $this->data->getSessionID();
     }
 
     /**
@@ -430,15 +457,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the CenterID for this visit.
      *
-     * @return integer the ID representing the PSC for this visit
+     * @return \CenterID
      */
-    function getCenterID(): int
+    function getCenterID(): \CenterID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo['CenterID']);
+        return $this->data->getCenterID();
     }
 
     /**
@@ -1022,7 +1045,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
      *
      * @param \User $user The requesting user
      *
-     * @return \LORIS\Data\Models\ImageDTO[] A traversable of RecordingDTO.php
+     * @return \LORIS\Data\Models\RecordingDTO[] A traversable of RecordingDTO.php
      */
     public function getRecordings(\User $user): array
     {
@@ -1193,11 +1216,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for this TimePoint
      *
-     * @return integer
+     * @return \ProjectID
      */
-    public function getProjectID() : int
+    public function getProjectID() : \ProjectID
     {
-        return intval($this->getData('ProjectID'));
+        return $this->data->getProjectID();
     }
 
     /**
@@ -1212,8 +1235,8 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource
     {
         $centers = $user->getCenterIDs();
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
+        $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
     }
 }

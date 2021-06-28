@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Instrument_List
  *
@@ -21,6 +23,8 @@ namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * Instrument_List
@@ -126,6 +130,29 @@ class Instrument_List extends \NDB_Menu_Filter
             // the candidate exists before getting here.
             throw new \LorisException("Timepoint list requires a timepoint.");
         }
+
+        // Check imaging_browser permission, used to control imaging_browser link
+        // on the instrument_list main page
+        $loris = $request->getAttribute("loris");
+        $perm  = false;
+        if (!is_null($loris) && $loris->hasModule('imaging_browser')) {
+            $user = $request->getAttribute("user");
+            if ($this->candidate->getData('Entity_type') == 'Scanner') {
+                $perm = $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_phantom_ownsite',
+                    $this->timePoint->getCenterID()
+                );
+            } elseif ($this->candidate->getData('Entity_type') == 'Human') {
+                $perm = $user->hasPermission('imaging_browser_view_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_view_site',
+                    $this->timePoint->getCenterID()
+                );
+            }
+        }
+        $this->tpl_data['imaging_browser_permission'] = $perm;
+
         return parent::process($request, $handler);
     }
 
@@ -137,6 +164,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
+            $this->loris,
             $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
@@ -166,7 +194,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $battery->selectBattery($this->timePoint->getSessionID());
 
         $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
-            $this->tpl_data['candID']
+            new CandID(strval($this->tpl_data['candID']))
         );
 
         // get the list of instruments
@@ -177,11 +205,11 @@ class Instrument_List extends \NDB_Menu_Filter
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
-            $username = $user->getData('UserID');
+            $username = $user->getUsername();
 
-            $feedback_select_inactive = null;
+            $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
-                $feedback_select_inactive = 'Y';
+                $feedback_select_inactive = true;
             }
 
             $x            = -1;
@@ -199,10 +227,10 @@ class Instrument_List extends \NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status = new \NDB_BVL_InstrumentStatus;
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['CommentID']);
 
-                $ddeStatus = new \NDB_BVL_InstrumentStatus;
+                $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
                 $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
@@ -281,12 +309,12 @@ class Instrument_List extends \NDB_Menu_Filter
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string      $candID    the value of candID
+     * @param CandID      $candID    the value of candID
      * @param ?\SessionID $sessionID the value of sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID): string
+    function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();

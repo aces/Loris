@@ -106,8 +106,8 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
           const downloadURL = loris.BaseURL
-            + '/data_release/ajax/GetFile.php?File='
-            + encodeURIComponent(row['File Name']);
+            + '/data_release/files/'
+            + encodeURIComponent(row['Data Release ID']);
           result = (
             <td>
               <a
@@ -161,6 +161,8 @@ class DataReleaseIndex extends Component {
         name: 'uploadDate',
         type: 'text',
       }},
+      {label: 'Data Release ID', show: false,
+      },
     ];
 
     // Upload File modal window
@@ -177,13 +179,9 @@ class DataReleaseIndex extends Component {
         <UploadFileForm
           DataURL={
             loris.BaseURL
-            + '/data_release/ajax/FileUpload.php?action=getData'
+            + '/data_release/files'
           }
-          action={
-            loris.BaseURL
-            + '/data_release/ajax/FileUpload.php?action=upload'
-          }
-          fetchData={this.fetchData}
+          action={loris.BaseURL + '/data_release/files'}
         />
       </Modal>
   );
@@ -206,7 +204,7 @@ class DataReleaseIndex extends Component {
           }
           action={
             loris.BaseURL
-            + '/data_release/ajax/AddPermission.php?action=addpermission'
+            + '/data_release/permissions?action=add'
           }
           fetchData={this.fetchData}
         />
@@ -219,11 +217,11 @@ class DataReleaseIndex extends Component {
         <ManagePermissionsForm
           DataURL={
             loris.BaseURL
-            + '/data_release/ajax/AddPermission.php?action=getPermissions'
+            + '/data_release/permissions'
           }
           action={
             loris.BaseURL
-            + '/data_release/ajax/AddPermission.php?action=managepermissions'
+            + '/data_release/permissions?action=manage'
           }
           options={this.state.data.fieldOptions}
           fetchData={this.fetchData}

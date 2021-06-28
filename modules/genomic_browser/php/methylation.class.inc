@@ -90,18 +90,6 @@ class Methylation extends \NDB_Page implements ETagCalculator
             : $user->getStudySites();
         $list_of_sites = array_combine($list_of_sites, $list_of_sites);
 
-        // Platform
-        $DB = \Database::singleton();
-        $platform_results = $DB->pselect(
-            "SELECT distinct Name FROM genotyping_platform",
-            []
-        );
-        $platform_options = [];
-        foreach ($platform_results as $row) {
-            $name = $row['Name'];
-            $platform_options[$name] = $name;
-        }
-
         return (new \LORIS\genomic_browser\Views\Methylation(
             $list_of_sites,
             \Utility::getSubprojectList()

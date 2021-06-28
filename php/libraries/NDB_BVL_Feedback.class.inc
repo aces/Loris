@@ -728,7 +728,7 @@ class NDB_BVL_Feedback
         $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
-        $feedbackID = $DB->getLastInsertId();
+        $feedbackID = intval($DB->getLastInsertId());
 
         // INSERT entry for the the thread into the feedback_bvl_thread
         $this->createEntry($feedbackID, $comment, $this->_username);
@@ -986,7 +986,7 @@ class NDB_BVL_Feedback
             SET Status = \'closed\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, ['nofetch' => true]);
+        $db->execute($stmt, $params, ['nofetch' => 'true']);
         return $stmt->rowCount();
     }
 
@@ -1015,7 +1015,7 @@ class NDB_BVL_Feedback
             SET Status = \'opened\', UserID = \'' . $this->_username . '\'
             WHERE ' . $whereStr
         );
-        $db->execute($stmt, $params, ['nofetch' => true]);
+        $db->execute($stmt, $params, ['nofetch' => 'true']);
         return $stmt->rowCount();
 
     }
@@ -1041,7 +1041,6 @@ class NDB_BVL_Feedback
         // new DB Object
         $db = Database::singleton();
 
-        $record =[];
         // StatusID is passed in as an integer, but the field in the database
         // is an enum, so we need to do WHERE Status+0= .. to convert it to
         // an int (of the index into the enum) so that this query works.

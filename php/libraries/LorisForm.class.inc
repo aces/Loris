@@ -348,10 +348,10 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addLink" API
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param string $url   The url label to set as href attrib
-     * @param string $link  The value to display as the link
+     * @param string  $name  The element name.
+     * @param string  $label The label to attach to this element.
+     * @param ?string $url   The url label to set as href attrib
+     * @param ?string $link  The value to display as the link
      *
      * @return &array
      */
@@ -392,7 +392,7 @@ class LorisForm
      * @param array|string $options An array of other options that should
      *                              be added. This generalls maps to the
      *                              third option of the addX wrapper.
-     * @param array        $attribs Other attributes to be added. This is
+     * @param array|string $attribs Other attributes to be added. This is
      *                              mostly only used for the "select" type,
      *                              where "options" has a different meaning
      *                              and attribs takes the place of what "options"
@@ -465,6 +465,23 @@ class LorisForm
             $el = $this->addHidden($name, $label, $attribs);
             break;
         case 'link':
+            if (is_array($options)) {
+                if (empty($options)) {
+                    // The default was [], turn it into '' for addLink
+                    $options = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+            if (is_array($attribs)) {
+                if (empty($attribs)) {
+                    // The default was [], turn it into '' for addLink
+                    $attribs = '';
+                } else {
+                    throw new \DomainException("Invalid argument type");
+                }
+            }
+
             $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
@@ -593,7 +610,7 @@ class LorisForm
                     $value = isset($_REQUEST[$fieldName][$fieldIdx])
                         ? $_REQUEST[$fieldName][$fieldIdx] : null;
 
-                    $rawValue = $value == 'on' ? 1 : 0;
+                    $rawValue = $value == 'on' ? '1' : '0';
                     return $this->_getFilteredValue($name, $rawValue);
                 }
 
@@ -851,7 +868,7 @@ class LorisForm
                 $format = 'month';
                 if ($value) {
                     $value = explode("-", $value);
-                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                    $value = sprintf("%s-%s", $value[0], $value[1]??null);
                 }
                 if (isset($elOptions['minYear'])) {
                     $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
@@ -1601,7 +1618,6 @@ class LorisForm
     {
         $val      = $this->getValue($el['name']);
         $checked  = '';
-        $value    = '';
         $disabled = '';
         $value    = $el["checkStates"];
         if ($val === $value[1]) {
@@ -1633,7 +1649,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if ($val===$el['value']) {
+        if ($val===($el['value'] ?? null)) {
             $checked = 'checked="checked"';
         }
 
@@ -2046,7 +2062,7 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -2078,7 +2094,7 @@ class LorisForm
                     null :
                     $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
-                    $value = $_REQUEST[$key];
+                    $value = $_REQUEST[$key] ?? null;
                     // If the value is coming from a React DateElement with input
                     // type='month' and is missing the dd part, convert month-year
                     // format to a valid SQL format (i.e. yyyy-mm-dd)
@@ -2108,8 +2124,6 @@ class LorisForm
             $bracketIdx = strpos($name, '[');
             if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $this->getValue($fieldName);
                 }
@@ -2123,7 +2137,7 @@ class LorisForm
             }
 
             if ($el['type'] === 'time') {
-                $value = $this->getValue($name);
+                $value = $this->getValue($name) ?? [];
                 if (($value['H'] || $value['H'] === '0')
                     && ($value['i'] || $value['i'] === '0')
                 ) {

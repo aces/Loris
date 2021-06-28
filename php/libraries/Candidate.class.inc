@@ -31,7 +31,8 @@ define('DOB_NOT_SPECIFIED', 6);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate implements \LORIS\StudyEntities\AccessibleResource
+class Candidate implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
     var $listOfTimePoints;
@@ -104,8 +105,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             case 'Sex':
                 $this->candidateInfo[$key] = new Sex($value);
                 break;
-            case 'EntityType':
+            case 'Entity_type':
                 $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            case 'RegistrationProjectID':
+                $this->candidateInfo[$key] = new \ProjectID($value);
+                break;
+            case 'RegistrationCenterID':
+                $this->candidateInfo[$key] = new \CenterID($value);
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -189,29 +196,30 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
+     * @param CenterID    $centerID              centerID of the site to which the
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
+     *                                           written as YYYY-MM-DD. Value
+     *                                           should be null unless the
+     *                                           useEDC setting is configured
+     *                                           to be true.
      * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param ?ProjectID  $registrationProjectID The project ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
     static public function createNew(
-        int $centerID,
+        CenterID $centerID,
         ?string $dateOfBirth,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        int $registrationProjectID = null
+        ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
 
@@ -298,7 +306,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID    = false;
         $attemptcount = 0;
         do {
             // Reset on each iteration
@@ -430,7 +437,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             'candidate',
             $newData,
             [
-                'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getCandID(),
             ]
         );
         return true;
@@ -440,11 +447,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for the current candidate
      *
-     * @return integer CandID of candidate
+     * @return \ProjectID RegistrationProjectID of candidate
      */
-    function getProjectID(): int
+    function getProjectID(): \ProjectID
     {
-        return intval($this->candidateInfo["RegistrationProjectID"]);
+        return $this->candidateInfo["RegistrationProjectID"];
     }
 
     /**
@@ -456,7 +463,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()] ?? '';
+        return $ProjectList[$this->getProjectID()->__toString()] ?? '';
     }
 
     /**
@@ -494,11 +501,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ID of this candidate's site
      *
-     * @return integer The numeric ID of the candidate's site
+     * @return CenterID The numeric ID of the candidate's site
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
-        return intval($this->candidateInfo["RegistrationCenterID"]);
+        return $this->candidateInfo["RegistrationCenterID"];
     }
 
     /**
@@ -539,7 +546,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getEntityType(): ?EntityType
     {
-        return $this->candidateInfo["EntityType"];
+        return $this->candidateInfo["Entity_type"];
     }
 
     /**
@@ -886,10 +893,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
-
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
+        $centerMatch = $user->hasCenter($this->getCenterID());
 
         // The candidate is accessible based on its registration
         // project/center
@@ -905,6 +910,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             $timepoint = \TimePoint::singleton(
                 new \SessionID(strval($sessionID))
             );
+
             if ($timepoint->isAccessibleBy($user)) {
                 // There's at least one, we don't need to check
                 // any more.

@@ -28,9 +28,10 @@ class Project implements \JsonSerializable
     /**
      * The id of the project in database.
      *
-     * @var int
+     * @var \ProjectID
      */
     private $_projectId;
+
     private $_projectName;
     private $_projectAlias;
     private $_recruitmentTarget;
@@ -80,7 +81,7 @@ class Project implements \JsonSerializable
 
             $project = new Project();
 
-            $project->_projectId         = (int) $projectData['projectId'];
+            $project->_projectId         = new ProjectID($projectData['projectId']);
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
@@ -95,13 +96,13 @@ class Project implements \JsonSerializable
      * Get a project object from the ID by mapping the ID to a name and using the
      * singleton function
      *
-     * @param int $projectID The ID of the project queried
+     * @param ProjectID $projectID The ID of the project queried
      *
      * @return Project
      *
      * @throws NotFound
      */
-    static function getProjectFromID(int $projectID) : \Project
+    static function getProjectFromID(ProjectID $projectID) : \Project
     {
         $factory = \NDB_Factory::singleton();
 
@@ -183,9 +184,9 @@ class Project implements \JsonSerializable
     /**
      * Get this project's id
      *
-     * @return integer This project's id
+     * @return ProjectID This project's id
      */
-    public function getId(): int
+    public function getId(): ProjectID
     {
         return $this->_projectId;
     }
@@ -193,11 +194,11 @@ class Project implements \JsonSerializable
     /**
      * Set this project's id
      *
-     * @param integer $projectId This project's id
+     * @param ProjectID $projectId This project's id
      *
      * @return void
      */
-    public function setId(int $projectId): void
+    public function setId(ProjectID $projectId): void
     {
         $this->_projectId = $projectId;
     }
@@ -379,18 +380,7 @@ class Project implements \JsonSerializable
             ['v_project_id' => $this->_projectId]
         );
 
-        return array_map(
-            function ($row) {
-                return (object) [
-                    'subprojectId'      => (int) $row['subprojectId'],
-                    'title'             => $row['title'],
-                    'useEDC'            => $row['useEDC'],
-                    'windowDifference'  => $row['windowDifference'],
-                    'recruitmentTarget' => $row['recruitmentTarget'],
-                ];
-            },
-            $subProjectData
-        );
+        return $subProjectData;
     }
 
     /**

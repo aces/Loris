@@ -27,14 +27,17 @@ class ConflictDetector
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
-     * @param string $instrumentName The instrument being checked
-     * @param string $commentId1     The first data entry CommentID
-     * @param string $commentId2     The second data entry CommentID
+     * @param \LORIS\LorisInstance $loris          The LORIS instance with the
+     *                                             comment IDs being compared
+     * @param string               $instrumentName The instrument being checked
+     * @param string               $commentId1     The first data entry CommentID
+     * @param string               $commentId2     The second data entry CommentID
      *
      * @return array An array of differences between the 2 data entry
      *               points.
      */
     static function detectConflictsForCommentIds(
+        \LORIS\LorisInstance $loris,
         string $instrumentName,
         string $commentId1,
         string $commentId2
@@ -42,14 +45,14 @@ class ConflictDetector
         $diffResult = [];
 
         // Get data entry status for $commentId1
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId1);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
 
         // Get data entry status for $commentId2
-        $status = new NDB_BVL_InstrumentStatus();
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentId2);
         if ($status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
@@ -57,6 +60,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId1
         $instance1 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId1,
             ''
@@ -64,6 +68,7 @@ class ConflictDetector
 
         // Create the instrument instance for $commentId2
         $instance2 = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentId2,
             ''

@@ -12,6 +12,8 @@
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Unit tests for Utility class.
  *
@@ -92,11 +94,11 @@ class UtilityTest extends TestCase
      *      by getStageUsingCandID method
      */
     private $_sessionInfo = [
-        ['CandID' => '1',
+        ['CandID' => '100001',
             'SubprojectID'  => '2',
             'Current_stage' => 'Not Started'
         ],
-        ['CandID' => '3',
+        ['CandID' => '100003',
             'SubprojectID'  => '4',
             'Current_stage' => 'Approval'
         ]
@@ -124,13 +126,13 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
+     * @var \NDB_Config&PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     * @var \Database&PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -168,12 +170,17 @@ class UtilityTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        $this->_configMock = $configMock;
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+
+        $mock = $this->_dbMock;
+        '@phan-var \Database $mock';
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
-        $this->_factory->setDatabase($this->_dbMock);
+        $this->_factory->setDatabase($mock);
     }
 
     /**
@@ -217,7 +224,7 @@ class UtilityTest extends TestCase
     public function testCalculateAgeFormat($first, $second)
     {
         $this->expectException('\LorisException');
-        $array = Utility::calculateAge($first, $second);
+        Utility::calculateAge($first, $second);
     }
 
     /**
@@ -328,7 +335,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectList(123)
+            Utility::getSubprojectList(new ProjectID("123"))
         );
     }
 
@@ -358,7 +365,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectsForProject(123)
+            Utility::getSubprojectsForProject(new \ProjectID("123"))
         );
     }
 
@@ -495,7 +502,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'Not Started',
-            Utility::getStageUsingCandID('1')
+            Utility::getStageUsingCandID(new CandID('100001'))
         );
     }
 
@@ -514,12 +521,12 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['Visit_label' => 'VL1',
-                        'CandID'      => '1',
+                        'CandID'      => '100001',
                         'CenterID'    => '2',
                         'Active'      => 'Y'
                     ],
                     ['Visit_label' => 'VL2',
-                        'CandID'      => '3',
+                        'CandID'      => '100003',
                         'CenterID'    => '4',
                         'Active'      => 'Y'
                     ]
@@ -566,7 +573,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['VL1' => 'VL1'],
-            Utility::getVisitList(1)
+            Utility::getVisitList(new \ProjectID("1"))
         );
     }
 
@@ -1141,6 +1148,8 @@ class UtilityTest extends TestCase
         $config->expects($this->any())
             ->method('getSetting')
             ->willReturn('Y-m-d H:i:s');
+        '@phan-var \NDB_Config $config';
+
         $this->_mockFactory->setConfig($config);
 
         $date = "2000-01-01";

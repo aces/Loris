@@ -40,6 +40,12 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     private $_factory;
     private $_mockConfig;
+
+    /**
+     * Mock for testing database calls
+     *
+     * @var \Database | \PHPUnit\Framework\MockObject\MockObject
+     */
     private $_mockDB;
 
     private $_factoryForDB;
@@ -77,16 +83,17 @@ class NDB_BVL_Instrument_Test extends TestCase
         date_default_timezone_set("UTC");
 
         $s = $this->getMockBuilder(\State::class)
-            ->addMethods(['getUsername','setProperty','getProperty','isLoggedIn'])
+            ->onlyMethods(['setUsername','getUsername','setProperty','getProperty'])
             ->getMock();
-        '@phan-var \State $s';
-        $this->session = $s;
 
         $spe = $this->getMockBuilder('SinglePointLogin')
             ->getMock();
 
-        $this->session->method("getProperty")
+        $s->method("getProperty")
             ->willReturn($spe);
+
+        '@phan-var \State $s';
+        $this->session = $s;
 
         '@phan-var \SinglePointLogin $spe';
         $this->mockSinglePointLogin = $spe;
@@ -97,8 +104,14 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_factory = \NDB_Factory::singleton();
 
-        $this->_mockDB     = $this->getMockBuilder("\Database")->getMock();
-        $this->_mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
+        $mockDB     = $this->getMockBuilder("\Database")->getMock();
+        $mockConfig = $this->getMockBuilder("\NDB_Config")->getMock();
+
+        '@phan-var \Database $mockDB';
+        '@phan-var \NDB_Config $mockConfig';
+
+        $this->_mockDB     = $mockDB;
+        $this->_mockConfig = $mockConfig;
 
         $this->_factory->setDatabase($this->_mockDB);
         $this->_factory->setConfig($this->_mockConfig);
@@ -107,9 +120,13 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
+
         $instrument->method('getFullName')->willReturn("Test Instrument");
         $instrument->method('getSubtestList')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $instrument';
         $instrument->form     = $this->quickForm;
@@ -141,8 +158,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testMetaData()
     {
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
+        $this->_setUpMockDB();
+
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
@@ -162,6 +182,8 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testSelectElement()
     {
+        $this->_setUpMockDB();
+
         $value        = ['value' => "Option"];
         $not_answered = ['value' => 'Option', 'not_answered' => 'Not Answered'];
         $this->_instrument->addSelect("FieldName", "Field Description", $value);
@@ -184,8 +206,10 @@ class NDB_BVL_Instrument_Test extends TestCase
             $not_answered,
             ['multiple' => "multiple"]
         );
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $selectElement  = $outArray['Elements'][0];
         $selectElement2 = $outArray['Elements'][1];
 
@@ -206,7 +230,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ],
             ]
         );
-
         $this->assertEquals(
             $selectElement2,
             [
@@ -215,9 +238,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Field Description 2",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option"
+                        "value"        => "Option",
+                        "not_answered" => "Not Answered",
                     ],
-                    "RequireResponse" => true
+                    "RequireResponse" => false
                 ],
             ]
         );
@@ -233,7 +257,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                         "value" => "Option"
                     ],
                     "RequireResponse" => false,
-                    "AllowMultiple"   => true,
                 ],
             ]
         );
@@ -246,10 +269,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                 "Description" => "Test Question",
                 "Options"     => [
                     "Values"          => [
-                        "value" => "Option"
+                        "value"        => "Option",
+                        "not_answered" => "Not Answered",
                     ],
-                    "RequireResponse" => true,
-                    "AllowMultiple"   => true,
+                    "RequireResponse" => false,
                 ],
             ]
         );
@@ -261,26 +284,22 @@ class NDB_BVL_Instrument_Test extends TestCase
      * the instrument
      *
      * @covers NDB_BVL_Instrument::addTextElement
-     * @covers NDB_BVL_Instrument::addTextAreaElement
      * @covers NDB_BVL_Instrument::toJSON
      * @return void
      */
     function testTextElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addTextElement(
             "FieldName",
             "Field Description for Text",
             ["value" => "Option"]
         );
-        $this->_instrument->addTextAreaElement(
-            "FieldName2",
-            "Field Description2 for Text",
-            ["value" => "Option"]
-        );
-        $json            = $this->_instrument->toJSON();
-        $outArray        = json_decode($json, true);
-        $textElement     = $outArray['Elements'][0];
-        $textareaElement = $outArray['Elements'][1];
+
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
+        $textElement = $outArray['Elements'][0];
 
         $this->assertEquals(
             $textElement,
@@ -295,35 +314,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
 
-        $this->assertEquals(
-            $textareaElement,
-            [
-                'Type'        => "text",
-                "Name"        => "FieldName2",
-                "Description" => "Field Description2 for Text",
-                "Options"     => [
-                    "Type"            => "large",
-                    "RequireResponse" => true
-                ]
-            ]
-        );
-
-        $textRules     = $this->_instrument->XINRules['FieldName'];
-        $textAreaRules = $this->_instrument->XINRules['FieldName2'];
+        $textRules = $this->_instrument->XINRules['FieldName'];
         $this->assertEquals(
             $textRules,
             [
                 'message' => 'This field is required.',
                 'group'   => 'FieldName_group',
                 'rules'   => ['FieldName_status{@}=={@}', 'Option']
-            ]
-        );
-        $this->assertEquals(
-            $textAreaRules,
-            [
-                'message' => 'This field is required.',
-                'group'   => 'FieldName2_group',
-                'rules'   => ['FieldName2_status{@}=={@}', 'Option']
             ]
         );
     }
@@ -336,6 +333,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddTextAreaElementRD()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addTextAreaElementRD(
             "FieldName1",
             "Field Description1",
@@ -343,6 +341,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -399,6 +398,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddHourMinElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addHourMinElement(
             "hourMinField",
             "hourMinLabel",
@@ -407,6 +407,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -455,94 +456,6 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that addBasicDate (from NDB_Page) and addDateElement
-     * adds the correct date to the instrument object
-     *
-     * @covers NDB_Page::addBasicDate
-     * @covers NDB_Page::addDateElement
-     * @covers NDB_Page::toJSON
-     * @return void
-     */
-    function testDateElement()
-    {
-        $this->_instrument->addBasicDate(
-            "FieldName",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->_instrument->addBasicDate(
-            "FieldName2",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-
-        $this->_instrument->addDateElement(
-            "FieldName3",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->_instrument->addDateElement(
-            "FieldName4",
-            "Field Description",
-            [
-                'format'         => 'YMd',
-                "minYear"        => "1990",
-                "maxYear"        => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
-        $dateElement  = $outArray['Elements'][0];
-        $dateElement2 = $outArray['Elements'][1];
-        $dateElement3 = $outArray['Elements'][2];
-        $dateElement4 = $outArray['Elements'][3];
-
-        // They were added with addBasicDate, so response is
-        // not required.
-        $expectedResult = [
-            'Type'        => "date",
-            "Name"        => "FieldName",
-            "Description" => "Field Description",
-            "Options"     => [
-                "MinDate"         => "1990-01-01",
-                "MaxDate"         => "2000-12-31",
-                "RequireResponse" => false
-            ]
-        ];
-
-        $this->assertEquals($dateElement, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName2';
-        $this->assertEquals($dateElement2, $expectedResult);
-
-        unset($expectedResult['Options']['RequireResponse']);
-
-        // The addDateElement wrappers add _date to the field name, the
-        // addBasicDate wrappers do not.
-        $expectedResult['Name'] = 'FieldName3_date';
-        $this->assertEquals($dateElement3, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName4_date';
-        $this->assertEquals($dateElement4, $expectedResult);
-    }
-
-    /**
      * Test that addMonthYear creates a date element with the correct data
      * and that it adds the element name to the monthYearFields array.
      *
@@ -563,7 +476,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ]
             ]
         );
-        $this->assertEquals($this->_instrument->monthYearFields[0], "Field1");
     }
 
     /**
@@ -575,6 +487,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddCustomDateElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addCustomDateElement(
             "CustomName",
             "Date Label",
@@ -582,6 +495,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => "Group", 'Error' => "Unimplemented"]
@@ -651,9 +565,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testNumericElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addNumericElement("TestElement", "Test Description");
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
 
         $this->assertEquals(
@@ -678,9 +594,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testNumericElementRD()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addNumericElementRD("TestElement", "Test Description");
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $numericElement = $outArray['Elements'][0];
         $this->assertEquals(
             $numericElement,
@@ -746,6 +664,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testScoreElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addScoreColumn(
             "FieldName",
             "Field Description",
@@ -755,8 +674,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "FieldName2",
             "",
         );
-        $json          = $this->_instrument->toJSON();
-        $outArray      = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $scoreElement  = $outArray['Elements'][0];
         $scoreElement2 = $outArray['Elements'][1];
 
@@ -793,6 +713,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         // to QuickForm's whims.
         // The first "section" has no elements, and the second one, to make sure
         // that the serialization won't die on a 0 element "section"
+        $this->_setUpMockDB();
         $this->_instrument->form->addElement(
             "header",
             '',
@@ -808,8 +729,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             "Field Description",
             "45"
         );
-        $json           = $this->_instrument->toJSON();
-        $outArray       = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $headerElement  = $outArray['Elements'][0];
         $headerElement2 = $outArray['Elements'][1];
 
@@ -847,9 +769,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testLabelElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addLabel("I am a label");
-        $json         = $this->_instrument->toJSON();
-        $outArray     = json_decode($json, true);
+        $json     = $this->_instrument->toJSON();
+        $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $labelElement = $outArray['Elements'][0];
 
         $this->assertEquals(
@@ -871,10 +795,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testPageGroup()
     {
+        $this->_setUpMockDB();
         $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
-                ["getFullName", "getSubtestList"]
+                ["getFullName", "getSubtestList", "getDataDictionary"]
             )->addMethods(['_setupForm'])->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
@@ -883,6 +808,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ['Name' => 'Page 2', 'Description' => 'The second page'],
             ]
         );
+        $i->method('getDataDictionary')->willReturn([]);
 
         '@phan-var \NDB_BVL_Instrument $i';
         $i->form     = $this->quickForm;
@@ -890,8 +816,9 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $json     = $i->toJSON();
         $outArray = json_decode($json, true);
-        $page1    = $outArray['Elements'][0];
-        $page2    = $outArray['Elements'][1];
+        assert(is_array($outArray));
+        $page1 = $outArray['Elements'][0];
+        $page2 = $outArray['Elements'][1];
         $this->assertEquals(
             $page1,
             [
@@ -965,19 +892,22 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddYesNoElement()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addYesNoElement("field1", "label1");
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => 'select',
                 'Name'        => 'field1',
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
-                    'yes' => 'Yes',
-                    'no'  => 'No'
+                    'yes'          => 'Yes',
+                    'no'           => 'No',
+                    'not_answered' => 'Not Answered',
                 ],
-                    'RequireResponse' => true
+                    'RequireResponse' => false
                 ]
             ]
         );
@@ -992,6 +922,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testAddYesNoElementWithRules()
     {
+        $this->_setUpMockDB();
         $this->_instrument->addYesNoElement(
             "field1",
             "label1",
@@ -1000,16 +931,18 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
+        assert(is_array($outArray));
         $this->assertEquals(
             $outArray['Elements'][0],
             ['Type' => 'select',
                 'Name'        => 'field1',
                 'Description' => 'label1',
                 'Options'     => ['Values' => ['' => '',
-                    'yes' => 'Yes',
-                    'no'  => 'No'
+                    'yes'          => 'Yes',
+                    'no'           => 'No',
+                    'not_answered' => 'Not Answered'
                 ],
-                    'RequireResponse' => true
+                    'RequireResponse' => false
                 ]
             ]
         );
@@ -1044,6 +977,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetSessionID()
     {
         $this->_instrument->commentID = 'commentID1';
+
         $this->_mockDB->expects($this->once())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
@@ -1089,7 +1023,9 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['SubprojectID' => 2, 'Visit_label' => 'V1', 'CandID' => '300123']
+                ['SubprojectID' => '2', 'ProjectID' => '1',
+                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
     }
@@ -1111,7 +1047,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['SubprojectID' => 2]);
+            ->willReturn(['SubprojectID' => '2','ProjectID' => '1']);
         $this->assertEquals(2, $this->_instrument->getSubprojectID());
     }
 
@@ -1286,8 +1222,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that _setDefaultsArray changes the candidate age and sets
-     * the instrument's dateTimeFields value
+     * Test that _setDefaultsArray changes the candidate age
      *
      * @covers NDB_BVL_Instrument::_setDefaultsArray
      * @return void
@@ -1301,7 +1236,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $result   = $this->_instrument->_setDefaultsArray($defaults);
         $defaults['Candidate_Age'] = '2020-01-01 (Age out of range)';
         $this->assertEquals($defaults, $result);
-        $this->assertEquals(["Date_taken"], $this->_instrument->dateTimeFields);
     }
 
     /**
@@ -1612,7 +1546,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->_nullScores(['Examiner' => 'Test Examiner1']);
+        $this->_instrument->_nullScores(['Examiner']);
         $data = $this->_instrument->getInstanceData();
         $this->assertEquals(null, $data['Examiner']);
     }
@@ -1633,9 +1567,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $otherInstrument = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(["getFullName", "getSubtestList"])->getMock();
+            ->onlyMethods(
+                ["getFullName", "getSubtestList", "getDataDictionary"]
+            )->getMock();
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
-
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1755,8 +1690,11 @@ class NDB_BVL_Instrument_Test extends TestCase
      */
     function testToJsonParseSmartyDateType()
     {
-        $el     = ['type' => 'date'];
+        $el     = ['type' => 'date',
+            'name' => 'test'
+        ];
         $result = ['type' => 'date',
+            'name'       => 'test',
             'options'    => ['mindate' => "1990-01-01",
                 'maxdate'         => "2000-12-31",
                 'RequireResponse' => false
@@ -1986,11 +1924,10 @@ class NDB_BVL_Instrument_Test extends TestCase
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
 
         $this->_factoryForDB->setDatabase($this->_DB);
         $this->_factoryForDB->setConfig($this->_config);
     }
 }
-
