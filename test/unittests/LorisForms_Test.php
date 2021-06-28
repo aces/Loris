@@ -26,6 +26,13 @@ use PHPUnit\Framework\TestCase;
  */
 class LorisForms_Test extends TestCase
 {
+    /**
+     * A LorisForm to test. This is a non-mocked form
+     * set up by the setup function. Tests using a mock
+     * use their own local variables.
+     *
+     * @var \LorisForm
+     */
     protected $form;
 
     /**
@@ -87,10 +94,11 @@ class LorisForms_Test extends TestCase
      * Custom assertion to assert that some attribute of an element
      * is correct
      *
-     * @param string       $el          The element name
-     * @param string       $attribute   The attribute name to assert
-     *                                  (ie class, id, value, etc)
-     * @param string|array $attribValue The expected content of the attribute
+     * @param string               $el          The element name
+     * @param string               $attribute   The attribute name to assert
+     *                                          (ie class, id, value, etc)
+     * @param string|array|boolean $attribValue The expected content of the
+     *                                          attribute
      *
      * @return void but makes assertions
      */
@@ -101,10 +109,26 @@ class LorisForms_Test extends TestCase
             return;
         }
 
+        if (is_array($attribValue)) {
+            $msg = "[";
+            foreach ($attribValue as $i => $val) {
+                if (isset($val['name'])) {
+                    $msg .= $val['name'];
+                } else {
+                    $msg .= $val;
+                }
+                if ($i != count($attribValue)-1) {
+                    $msg .= ', ';
+                }
+            }
+            $msg .= "]";
+        } else {
+            $msg = $attribValue;
+        }
         $this->assertEquals(
             $this->form->form[$el][$attribute],
             $attribValue,
-            "Element $el's $attribute did not match $attribValue"
+            "Element $el's $attribute did not match $msg"
         );
     }
 
@@ -156,7 +180,11 @@ class LorisForms_Test extends TestCase
         // first child of that is the rendered element
         $element = $html->documentElement->firstChild->firstChild;
 
+        // The DOMNode $element needs to be a DOMElement for
+        // hasAttribute to exist.
+        assert($element instanceof \DOMElement);
         $this->assertEquals($element->nodeName, "select");
+
         $this->assertTrue($element->hasAttribute("multiple"));
     }
 
@@ -403,12 +431,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementSelect()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addSelect', 'addDate'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addSelect');
-        $this->form->addElement("select", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("select", "abc", "Hello");
     }
 
     /**
@@ -420,12 +450,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementDate()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addDate'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addDate');
-        $this->form->addElement("date", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("date", "abc", "Hello");
     }
 
     /**
@@ -437,12 +469,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementText()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addText'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addText');
-        $this->form->addElement("text", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("text", "abc", "Hello");
     }
 
     /**
@@ -454,12 +488,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementFile()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addFile'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addFile');
-        $this->form->addElement("file", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("file", "abc", "Hello");
     }
 
     /**
@@ -471,12 +507,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementPassword()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addPassword'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addPassword');
-        $this->form->addElement("password", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("password", "abc", "Hello");
     }
 
     /**
@@ -488,12 +526,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementStatic()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addStatic'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addStatic');
-        $this->form->addElement("static", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("static", "abc", "Hello");
     }
 
     /**
@@ -505,12 +545,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementTextArea()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addTextArea'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addTextArea');
-        $this->form->addElement("textarea", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("textarea", "abc", "Hello");
     }
 
     /**
@@ -522,12 +564,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementHeader()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addHeader'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addHeader');
-        $this->form->addElement("header", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("header", "abc", "Hello");
     }
 
     /**
@@ -539,12 +583,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementRadio()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addRadio'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addRadio');
-        $this->form->addElement("radio", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("radio", "abc", "Hello");
     }
 
     /**
@@ -556,12 +602,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementHidden()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addHidden'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addHidden');
-        $this->form->addElement("hidden", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("hidden", "abc", "Hello");
     }
 
     /**
@@ -573,12 +621,14 @@ class LorisForms_Test extends TestCase
      */
     function testAddElementLink()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['addLink'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('addLink');
-        $this->form->addElement("link", "abc", "Hello");
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("link", "abc", "Hello");
     }
 
     /**
@@ -635,12 +685,14 @@ class LorisForms_Test extends TestCase
      */
     function testCreateElementText()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['createText'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('createText');
-        $this->form->createElement("text", "abc", "Hello", [], []);
+
+        '@phan-var \LorisForm $form';
+        $form->createElement("text", "abc", "Hello", [], []);
     }
 
     /**
@@ -652,12 +704,14 @@ class LorisForms_Test extends TestCase
      */
     function testCreateElementSelect()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['createSelect'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('createSelect');
-        $this->form->createElement("select", "abc", "Hello", [], []);
+
+        '@phan-var \LorisForm $form';
+        $form->createElement("select", "abc", "Hello", [], []);
     }
 
     /**
@@ -669,12 +723,14 @@ class LorisForms_Test extends TestCase
      */
     function testCreateElementSubmit()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['createSubmit'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('createSubmit');
-        $this->form->createElement("submit", "abc", "Hello", [], []);
+
+        '@phan-var \LorisForm $form';
+        $form->createElement("submit", "abc", "Hello", [], []);
     }
 
     /**
@@ -1000,16 +1056,19 @@ class LorisForms_Test extends TestCase
             'maxYear' => '2019',
             'format'  => 'y'
         ];
-        $this->form     = $this->getMockBuilder('LorisForm')
+
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['yearHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('yearHTML')
             ->willReturn('called yearHTML function');
-        $this->form->addDate("abc", "Hello", $testOptions, $testAttributes);
+
+        '@phan-var \LorisForm $form';
+        $form->addDate("abc", "Hello", $testOptions, $testAttributes);
         $this->assertEquals(
             "called yearHTML function",
-            $this->form->dateHTML($this->form->form["abc"])
+            $form->dateHTML($form->form["abc"])
         );
     }
 
@@ -1316,12 +1375,14 @@ class LorisForms_Test extends TestCase
             'off' => 'default_on'
         ];
 
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['advCheckboxHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('advCheckboxHTML');
-        $this->form->addElement(
+
+        '@phan-var \LorisForm $form';
+        $form->addElement(
             'advcheckbox',
             "abc",
             "Hello",
@@ -1329,10 +1390,10 @@ class LorisForms_Test extends TestCase
             $testAttributes,
             $testCheckStates
         );
-        $this->form->setDefaults(['abc' => 'default_on']);
+        $form->setDefaults(['abc' => 'default_on']);
         $this->assertEquals(
             null,
-            $this->form->checkboxHTML($this->form->form['abc'])
+            $form->checkboxHTML($form->form['abc'])
         );
     }
 
@@ -1701,18 +1762,6 @@ class LorisForms_Test extends TestCase
     }
 
     /**
-     * Test that addRule throws a LorisException if the element name is not a string
-     *
-     * @covers LorisForm::addRule
-     * @return void
-     */
-    function testAddRuleIfElementNameNotString()
-    {
-        $this->expectException('\LorisException');
-        $this->form->addRule(0, "Message", "required");
-    }
-
-    /**
      * Test that addRule throws a LorisException if the element
      * is not set in the form
      *
@@ -1817,9 +1866,10 @@ class LorisForms_Test extends TestCase
      */
     function testAddFormRule()
     {
-        $this->form->addFormRule($this->form->validate());
+        $callback = [$this->form, 'validate'];
+        $this->form->addFormRule($callback);
         $this->assertEquals(
-            $this->form->validate(),
+            $callback,
             $this->form->formRules[0]
         );
     }
@@ -1836,22 +1886,6 @@ class LorisForms_Test extends TestCase
         $this->form->addSelect("abc", "Hello", [], []);
         $this->assertEquals(
             new LorisFormElement(),
-            $this->form->getElement("abc")
-        );
-    }
-
-    /**
-     * Test that getElement returns a LorisFormFileElement() when
-     * the type of the element is 'file'
-     *
-     * @covers LorisForm::getElement
-     * @return void
-     */
-    function testGetElementFile()
-    {
-        $this->form->addFile("abc", "Hello", []);
-        $this->assertEquals(
-            new LorisFormFileElement($this->form->form['abc']),
             $this->form->getElement("abc")
         );
     }
@@ -1978,13 +2012,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementDate()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['dateHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('dateHTML');
-        $this->form->addElement("date", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("date", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -1996,13 +2032,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementSelect()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['selectHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('selectHTML');
-        $this->form->addElement("select", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("select", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2014,13 +2052,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementStatic()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['staticHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('staticHTML');
-        $this->form->addElement("static", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("static", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2032,13 +2072,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementTextArea()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['textareaHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('textareaHTML');
-        $this->form->addElement("textarea", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("textarea", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2050,13 +2092,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementFile()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['fileHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('fileHTML');
-        $this->form->addElement("file", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("file", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2068,13 +2112,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementPassword()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['textHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('textHTML');
-        $this->form->addElement("password", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("password", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2086,13 +2132,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementText()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['textHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('textHTML');
-        $this->form->addElement("text", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("text", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2104,13 +2152,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementCheckbox()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['checkboxHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('checkboxHTML');
-        $this->form->addElement("advcheckbox", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("advcheckbox", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2122,13 +2172,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementRadio()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['radioHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('radioHTML');
-        $this->form->addElement("radio", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $form->addElement("radio", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2140,14 +2192,16 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementGroup()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['groupHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('groupHTML');
-        $testText = $this->form->createText("text1", "textlabel", []);
-        $this->form->addGroup([$testText], "abc", "Hello", ", ", []);
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+        $testText = $form->createText("text1", "textlabel", []);
+        $form->addGroup([$testText], "abc", "Hello", ", ", []);
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2159,13 +2213,16 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementHeader()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['headerHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('headerHTML');
-        $this->form->addElement("header", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $form';
+
+        $form->addElement("header", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2177,13 +2234,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementSubmit()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['submitHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('submitHTML');
-        $testSubmit = $this->form->createSubmit("abc", "Hello", []);
-        $this->form->renderElement($testSubmit);
+        '@phan-var \LorisForm $form';
+
+        $testSubmit = $form->createSubmit("abc", "Hello", []);
+        $form->renderElement($testSubmit);
     }
 
     /**
@@ -2195,13 +2254,15 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementHidden()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $form = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['hiddenHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $form->expects($this->once())
             ->method('hiddenHTML');
-        $this->form->addElement("hidden", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+        '@phan-var \LorisForm $form';
+
+        $form->addElement("hidden", "abc", "Hello");
+        $form->renderElement($form->form['abc']);
     }
 
     /**
@@ -2213,19 +2274,22 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementTime()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $f = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['timeHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $f->expects($this->once())
             ->method('timeHTML');
-        $testTime = $this->form->createElement(
+        '@phan-var \LorisForm $f';
+
+        $testTime = $f->createElement(
             "time",
             "abc",
             "Hello",
             [],
             []
         );
-        $this->form->renderElement($testTime);
+
+        $f->renderElement($testTime);
     }
 
     /**
@@ -2237,13 +2301,16 @@ class LorisForms_Test extends TestCase
      */
     function testRenderElementLink()
     {
-        $this->form = $this->getMockBuilder('LorisForm')
+        $f = $this->getMockBuilder('LorisForm')
             ->onlyMethods(['linkHTML'])
             ->getMock();
-        $this->form->expects($this->once())
+        $f->expects($this->once())
             ->method('linkHTML');
-        $this->form->addElement("link", "abc", "Hello");
-        $this->form->renderElement($this->form->form['abc']);
+
+        '@phan-var \LorisForm $f';
+
+        $f->addElement("link", "abc", "Hello");
+        $f->renderElement($f->form['abc']);
     }
 
     /**

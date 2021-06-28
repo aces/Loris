@@ -39,7 +39,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     static $DCCIDHeader  = "#dynamictable > thead > tr > th:nth-child(4)";
     static $firstElement = "#dynamictable > tbody > tr:nth-child(1)";
 
-    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:nth-child(2)";
+    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:last-child";
     static $rawLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:nth-child(1)";
 
     static $prevLink       = "#nav_previous";
@@ -268,6 +268,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilters()
     {
+        $this->setupPermissions(['electrophysiology_browser_view_site']);
         $this->safeGet($this->url . "/electrophysiology_browser/");
         $this->_filterTest(
             self::$PSCID,
@@ -304,19 +305,22 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             'Data Coordinating Center',
             "1 rows"
         );
-        $this->_filterTest(
+        $this->_filterOptionsTest(
             self::$site,
-            self::$display,
-            self::$clearFilter,
             'Montreal',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$project,
             self::$display,
             self::$clearFilter,
+            'Pumpernickel',
+            "1 rows"
+        );
+        $this->_filterOptionsTest(
+            self::$project,
             'Challah',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$visitLabel,

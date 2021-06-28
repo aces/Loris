@@ -31,9 +31,16 @@ class ViewDetails extends \NDB_Form
     public $tarchiveID;
 
     /**
+     * A Database connection to a LORIS DB
+     *
+     * @var \Database
+     */
+    protected $DB;
+
+    /**
      * Keeps array of protocols from mri_protocol
      */
-    var $protocols;
+    public $protocols;
 
     /**
      * Determine whether the user has permission to view this page
@@ -58,7 +65,7 @@ class ViewDetails extends \NDB_Form
 
         $user = \User::singleton();
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
-            $this->tarchiveID          = $_REQUEST['tarchiveID'];
+            $this->tarchiveID          = intval($_REQUEST['tarchiveID']);
             $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $this->tarchiveID,
                 'tarchive',

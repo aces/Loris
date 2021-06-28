@@ -64,19 +64,22 @@ abstract class LorisIntegrationTest extends TestCase
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
+
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
@@ -199,7 +202,7 @@ abstract class LorisIntegrationTest extends TestCase
     public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
+            xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
         }
 
@@ -298,7 +301,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->DB->execute(
                 $prepare,
                 ["perm" => $value],
-                ['nofetch' => true]
+                ['nofetch' => "true"]
             );
         }
     }
@@ -502,7 +505,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url,$waitPeriod=15)
     {
-        $newWebDriver = null;
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -587,7 +589,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         if (!is_null($clickException)) {
             if (!$allowJavascriptClick) {
-                throw $e;
+                throw $clickException;
             }
 
             $this->webDriver->executeScript(
@@ -685,10 +687,11 @@ abstract class LorisIntegrationTest extends TestCase
             WebDriverBy::cssSelector("body")
         )->getText();
     }
+
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
-     * @param string $element        The input element loaction (css selector)
+     * @param string $element        The input element location (css selector)
      * @param string $row            React Table row number
      * @param string $btn            clear filter button
      * @param string $test_value     The test value
@@ -699,7 +702,6 @@ abstract class LorisIntegrationTest extends TestCase
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
     {
         // get element from the page
-
         if (strpos($element, "select") === false) {
             $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
             $el->sendKeys($test_value);
@@ -709,13 +711,39 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("$row")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertStringContainsString($expect_records, $bodyText);
-            //test clear filter
-            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$row")
+        )->getText();
+        // 4 means there are 4 records under this site.
+        $this->assertStringContainsString($expect_records, $bodyText);
+        //test clear filter
+        $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+    }
+
+    /**
+     * Testing filter function and clear button
+     *
+     * @param string  $element    The input element location (css selector)
+     * @param string  $test_value The test value
+     * @param boolean $contains   Test for presence/absence
+     *
+     * @return void
+     */
+    function _filterOptionsTest($element,$test_value,$contains=true): void
+    {
+        // get element from the page
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$element")
+        )->getText();
+
+        if (!$contains) {
+            $this->assertThat(
+                $bodyText,
+                $this->logicalNot($this->stringContains($test_value))
+            );
+        } else {
+            $this->assertStringContainsString($test_value, $bodyText);
+        }
     }
 
     /**

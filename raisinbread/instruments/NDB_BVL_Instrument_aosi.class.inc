@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $scores = array(
                    "total_score_1_18"                                 => "",
@@ -44,10 +45,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         $this->table    = 'aosi';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
-
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any LorisForm date elements must be listed here
-        $this->dateTimeFields =array("Date_taken");
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here

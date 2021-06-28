@@ -21,15 +21,17 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleResource
+class User extends UserPermissions implements
+    \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     /**
      * Stores user information
      *
-     * @var    array
-     * @access private
+     * @var array
      */
     protected $userInfo = [];
+
     /**
      * The date format used by MySQL.
      *
@@ -92,7 +94,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         $user_cid            = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = intval($val['CenterID']);
+            $user_cid[$key] = new \CenterID($val['CenterID']);
         }
 
         $user_pid = $DB->pselectCol(
@@ -100,7 +102,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
             ['uid' => $row['ID']]
         );
         foreach ($user_pid as $k=>$pid) {
-            $user_pid[$k] = intval($pid);
+            $user_pid[$k] = new ProjectID($pid);
         }
 
         // Get examiner information
@@ -284,24 +286,10 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         return explode(';', $this->userInfo['Sites']);
     }
 
-     /**
-      * Get the user's site's ID number
-      *
-      * @return array
-      */
-    function getCenterID()
-    {
-        throw new \LorisException(
-            "The function getCenterID
-                                   is deprecated and is replaced
-                                   with getCenterIDs"
-        );
-    }
-
     /**
      * Get the user's sites' ID numbers
      *
-     * @return array
+     * @return CenterID[]
      */
     function getCenterIDs(): array
     {
@@ -309,9 +297,9 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the user's projects' ID numbers
      *
-     * @return array
+     * @return ProjectID[]
      */
     function getProjectIDs(): array
     {
@@ -319,11 +307,24 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     }
 
     /**
+     * Get the user's projects
+     *
+     * @return Project[]
+     */
+    function getProjects(): array
+    {
+        return array_map(
+            fn($projectID) => \Project::getProjectFromID($projectID),
+            $this->getProjectIDs()
+        );
+    }
+
+    /**
      * Get the user's language preference
      *
-     * @return int
+     * @return ?int
      */
-    function getLanguagePreference(): int
+    function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'];
     }
@@ -338,7 +339,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
-        natcasesort($site_list);
+        ksort($site_list);
         return $site_list;
     }
 
@@ -355,7 +356,8 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
-                $user_study_sites[$val] = $site[$key]->getCenterName();
+                $user_study_sites[$val->__toString()]
+                    = $site[$key]->getCenterName();
             }
         }
         natcasesort($user_study_sites);
@@ -382,8 +384,7 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     /**
      * Checks that the user's email is valid
      *
-     * @return boolean
-     * @access public
+     * @return bool
      */
     public function isEmailValid(): bool
     {
@@ -394,6 +395,16 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     }
 
     /**
+     * Returns the user's email address
+     *
+     * @return string
+     */
+    public function getEmail() : string
+    {
+        return $this->userInfo['Email'];
+    }
+
+    /**
      * Check if user belongs to DCC
      *
      * @return boolean
@@ -401,38 +412,33 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(1, $this->userInfo['CenterIDs']));
+        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
     }
 
     /**
      * Determines if the user has a center
      *
-     * @param int $center_id The center id
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter(int $center_id) : bool
+    public function hasCenter(CenterID $center_id) : bool
     {
-        return in_array(
-            $center_id,
-            $this->getCenterIDs(),
-            true
-        );
+        return in_array($center_id, $this->getCenterIDs());
     }
 
     /**
      * Determines if the user has a project
      *
-     * @param int $projectID The project ID
+     * @param ProjectID $projectID The project ID
      *
      * @return bool
      */
-    public function hasProject(int $projectID) : bool
+    public function hasProject(ProjectID $projectID) : bool
     {
         return in_array(
             $projectID,
-            $this->getProjectIDs(),
-            true
+            $this->getProjectIDs()
         );
     }
 
@@ -440,12 +446,12 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
      * Determines if the user has a permission
      * for a center
      *
-     * @param string $code      The permission code
-     * @param int    $center_id The center id
+     * @param string   $code      The permission code
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, int $center_id): bool
+    public function hasCenterPermission(string $code, CenterID $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
@@ -494,6 +500,10 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
+            );
+        } else if (password_verify($this->userInfo['UserID'], (string) $password)) {
+            throw new \InvalidArgumentException(
+                'Password cannot be set to username'
             );
         }
 
@@ -575,5 +585,16 @@ class User extends UserPermissions implements \LORIS\StudyEntities\AccessibleRes
         );
 
         return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Returns whether the user's account is pending approval by
+     * an admin.
+     *
+     * @return bool
+     */
+    public function isPendingApproval() : bool
+    {
+        return $this->userInfo['Pending_approval'] == 'Y';
     }
 }

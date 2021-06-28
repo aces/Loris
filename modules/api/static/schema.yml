@@ -1,0 +1,2458 @@
+openapi: 3.0.1
+info:
+  title: LORIS - REST API endpoints
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 0.0.3
+servers:
+  - url: /api/v0.0.3
+security:
+  - ApiKeyAuth: []
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        '200':
+          description: The JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: List all projects
+      responses:
+        '200':
+          description: An object with projects as properties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+  '/projects/{project}':
+    get:
+      tags:
+        - Projects
+      summary: Get that project descriptor
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the project descriptor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+  '/projects/{project}/candidates':
+    get:
+      tags:
+        - Projects
+      summary: List all candidates of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of candidates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCandidates'
+  '/projects/{project}/images':
+    get:
+      tags:
+        - Projects
+      summary: List all images of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: A date
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of image descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectImages'
+  '/projects/{project}/instruments':
+    get:
+      tags:
+        - Projects
+      summary: List all instruments of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectInstruments'
+  '/projects/{project}/instruments/{instrument}':
+    get:
+      tags:
+        - Projects
+      summary: Get an instrument descriptor in that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An JSON representation of the instrument form
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectInstrument'
+  '/projects/{project}/visits':
+    get:
+      tags:
+        - Projects
+      summary: List all existing visit label of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectVisits'
+  '/projects/{project}/recordings':
+    get:
+      tags:
+        - Projects
+      summary: List all existing visit label of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectRecordings'
+  /candidates:
+    get:
+      tags:
+        - Candidates
+      summary: List all candidates in this LORIS instance
+      responses:
+        '200':
+          description: An object containing the list of instrument summary descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidates'
+    post:
+      tags:
+        - Candidates
+      summary: Create a candidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCandidate'
+      responses:
+        '201':
+          description: The new candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+  '/candidates/{candid}':
+    get:
+      tags:
+        - Candidates
+      summary: Get a JSON object representing that candidate
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The new candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+  '/candidates/{candid}/{visit}':
+    get:
+      tags:
+        - Visit
+      summary: Get a visit descriptor for that candidate
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The new candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+    put:
+      tags:
+        - Visit
+      summary: Add a timepoint to that candidate
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitMetaFields'
+      responses:
+        '201':
+          description: The visit was created successfully
+          headers:
+            Content-Location:
+              description: The URL of the new visit.
+              style: simple
+              explode: false
+              schema:
+                type: string
+        '204':
+          description: The visit was updated successfully.
+          headers:
+            Content-Location:
+              description: The URL of the new visit.
+              style: simple
+              explode: false
+              schema:
+                type: string
+        '409':
+          description: The visit is already started. It can't be updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_409'
+  '/candidates/{candid}/{visit}/instruments':
+    get:
+      tags:
+        - Instruments
+      summary: List all instruments of that timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The list of instrument short names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+  '/candidates/{candid}/{visit}/instruments/{instrument}':
+    get:
+      tags:
+        - Instruments
+      summary: Get an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: This instrument data values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+    put:
+      tags:
+        - Instruments
+      summary: Set an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+      responses:
+        '204':
+          description: This instrument data values have been saved
+    patch:
+      tags:
+        - Instruments
+      summary: Update some data values of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+      responses:
+        '204':
+          description: This instrument data values have been saved
+  '/candidates/{candid}/{visit}/instruments/{instrument}/flags':
+    get:
+      tags:
+        - Instruments
+      summary: Get an instrument flags values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentFlags'
+    put:
+      tags:
+        - Instruments
+      summary: Set an instrument flags values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentFlags'
+      responses:
+        '501':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Instruments
+      summary: Update some flags values of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentFlags'
+      responses:
+        '501':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/candidates/{candid}/{visit}/instruments/{instrument}/dde':
+    get:
+      tags:
+        - Instruments
+      summary: Get an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: This instrument data values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+    put:
+      tags:
+        - Instruments
+      summary: Set an instrument data values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+      responses:
+        '204':
+          description: This instrument data values have been saved
+    patch:
+      tags:
+        - Instruments
+      summary: Update some data values of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+      responses:
+        '204':
+          description: This instrument data values have been saved
+  '/candidates/{candid}/{visit}/instruments/{instrument}/dde/flags':
+    get:
+      tags:
+        - Instruments
+      summary: Get an instrument flags values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentFlags'
+    put:
+      tags:
+        - Instruments
+      summary: Set an instrument flags values
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentFlags'
+      responses:
+        '501':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Instruments
+      summary: Update some flags values of an instrument
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentFlags'
+      responses:
+        '501':
+          description: This instrument flags values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/candidates/{candid}/{visit}/images':
+    get:
+      tags:
+        - Images
+      summary: List all images of a timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Images'
+  '/candidates/{candid}/{visit}/images/{filename}':
+    get:
+      tags:
+        - Images
+      summary: Get an images of a timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The file content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/images/{filename}/qc':
+    get:
+      tags:
+        - Images
+      summary: Get the qc values of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images qc values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageQc'
+    put:
+      tags:
+        - Images
+      summary: Set the qc values of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageQc'
+      responses:
+        '204':
+          description: Qc value updated
+  '/candidates/{candid}/{visit}/images/{filename}/format/brainbrowser':
+    get:
+      tags:
+        - Images
+      summary: Get the brainbrowser format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormatBrainbrowser'
+  '/candidates/{candid}/{visit}/images/{filename}/format/raw':
+    get:
+      tags:
+        - Images
+      summary: Get the raw format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The the output of mnc2raw
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/images/{filename}/format/thumbnail':
+    get:
+      tags:
+        - Images
+      summary: Get the thumbnail format of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The thumbnail representation of this image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/images/{filename}/headers':
+    get:
+      tags:
+        - Images
+      summary: Get the summary headers of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images summary headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageSummaryHeaders'
+  '/candidates/{candid}/{visit}/images/{filename}/headers/full':
+    get:
+      tags:
+        - Images
+      summary: Get all headers of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images complete headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageHeaders'
+  '/candidates/{candid}/{visit}/images/{filename}/headers/{headername}':
+    get:
+      tags:
+        - Images
+      summary: Get a specific header of an image
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The image filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: headername
+          in: path
+          description: The requested header name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The header value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+  '/candidates/{candid}/{visit}/qc/imaging':
+    get:
+      tags:
+        - Visit
+      summary: Get the imaging qc values of a visit
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The images list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagingQc'
+    put:
+      tags:
+        - Visit
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImagingQc'
+      responses:
+        '204':
+          description: Qc value updated
+  '/candidates/{candid}/{visit}/dicoms':
+    get:
+      tags:
+        - Dicoms
+      summary: List all dicoms for that timepoint
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of dicoms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dicoms'
+
+  '/candidates/{candid}/{visit}/dicoms/{tarname}':
+    get:
+      tags:
+        - Dicoms
+      summary: Get the dicom file
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: tarname
+          in: path
+          description: The dicom filename
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The dicom file content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  '/candidates/{candid}/{visit}/recordings':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get the recording files for that visit
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recordings which have been acquired for that visit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recordings'
+  '/candidates/{candid}/{visit}/recordings/{filename}':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording file
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The recording file content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/recordings/{filename}/metadata':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording file metadata
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All metadata about that recording
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingMetadata'
+  '/candidates/{candid}/{visit}/recordings/{filename}/metadata/{headername}':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a specific metadata from a recording file 
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+        - name: headername
+          in: path
+          description: The metadata header name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The metadata header value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingMetadataSpecific'
+  '/candidates/{candid}/{visit}/recordings/{filename}/channels':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording file channels
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All metadata about that recording
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingChannels'
+  '/candidates/{candid}/{visit}/recordings/{filename}/electrodes':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording file electrodes
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All metadata about that recording
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingElectrodes'
+  '/candidates/{candid}/{visit}/recordings/{filename}/events':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording file events
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: All metadata about that recording
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingEvents'
+  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/archive':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording archive with all associated files 
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The recording archive
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/channels':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording channels in BIDS format 
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The recording channels in BIDS format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/electrodes':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording electrodes in BIDS format 
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The recording electrodes in BIDS format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/events':
+    get:  
+      tags:
+        - Electrophysiology
+      summary: Get a recording events in BIDS format 
+      parameters:
+        - name: candid
+          in: path
+          description: ID of the candidate
+          required: true
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: This timepoint visit label
+          required: true
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: The recording filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The recording events in BIDS format
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Project_Meta'
+        Visits:
+          type: array
+          items:
+            type: string
+        Instruments:
+          type: array
+          items:
+            type: string
+        Candidates:
+          type: array
+          items:
+            type: string
+    ProjectCandidates:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Project_Meta'
+        Candidates:
+          type: array
+          items:
+            type: string
+    ProjectImages:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Project_Meta'
+        Images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectImage'
+    ProjectImage:
+      type: object
+      properties:
+        Candidate:
+          type: string
+        PSCID:
+          type: string
+        Visit:
+          type: string
+        Visit_date:
+          type: string
+        Site:
+          type: string
+        ScanType:
+          type: string
+        QC_status:
+          type: string
+          enum:
+            - Pass
+            - Fail
+            - 'null'
+        Selected:
+          type: string
+          enum:
+            - 'true'
+            - 'false'
+            - 'null'
+        Link:
+          type: string
+        InsertTime:
+          type: string
+    ProjectInstruments:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Project_Meta'
+        Instruments:
+          type: object
+    ProjectInstrument:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ProjectInstrument_Meta'
+    LorisFormElement:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - advcheckbox
+            - date
+            - file
+            - group
+            - header
+            - hidden
+            - link
+            - page
+            - password
+            - radio
+            - select
+            - static
+            - submit
+            - text
+            - textarea
+            - time
+        Name:
+          type: string
+        Description:
+          type: string
+        Options:
+          $ref: '#/components/schemas/LorisFormElement_Options'
+        RequireResponse:
+          type: boolean
+    ProjectVisits:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Project_Meta'
+        Visits:
+          type: array
+          items:
+            type: string
+    ProjectRecordings:
+      type: object
+      properties:
+        Recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRecording'
+    ProjectRecording:
+      type: object
+      properties:
+        Candidate:
+          type: string
+        PSCID:
+          type: string
+        Visit:
+          type: string
+        Visit_date:
+          type: string
+        Site:
+          type: string
+        File:
+          type: string
+        Modality:
+          type: string
+        InsertTime:
+          type: string
+        Link:
+          type: string
+    Candidates:
+      type: object
+      properties:
+        Candidates:
+          $ref: '#/components/schemas/Candidate'
+    Candidate:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Project:
+          type: string
+        PSCID:
+          type: string
+        Site:
+          type: string
+        EDC:
+          type: string
+        DoB:
+          type: string
+        Sex:
+          type: string
+          enum:
+            - Female
+            - Male
+    NewCandidate:
+      type: object
+      properties:
+        Candidate:
+          $ref: '#/components/schemas/NewCandidate_Candidate'
+    VisitMeta:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/VisitMetaFields'
+    VisitMetaFields:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+        Site:
+          type: string
+        Battery:
+          type: string
+        Project:
+          type: string
+    VisitStages:
+      type: object
+      properties:
+        Stages:
+          type: object
+          anyOf:
+            - $ref: '#/components/schemas/InstrumentScreening'
+            - $ref: '#/components/schemas/InstrumentVisit'
+            - $ref: '#/components/schemas/InstrumentApproval'
+    VisitStage:
+      type: object
+      properties:
+        Date:
+          type: string
+        Status:
+          type: string
+          enum:
+            - Pass
+            - Failure
+            - Withdrawal
+            - In Progress
+    InstrumentScreening:
+      type: object
+      properties:
+        Screening:
+          $ref: '#/components/schemas/VisitStage'
+    InstrumentVisit:
+      type: object
+      properties:
+        Visit:
+          $ref: '#/components/schemas/VisitStage'
+    InstrumentApproval:
+      type: object
+      properties:
+        Approval:
+          $ref: '#/components/schemas/VisitStage'
+    TimepointMeta:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+    Instrument:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/InstrumentMeta'
+        $InstrumentShortName:
+          $ref: '#/components/schemas/InstrumentData'
+    InstrumentMeta:
+      type: object
+      properties:
+        Instrument:
+          type: string
+        Visit:
+          type: string
+        Candidate:
+          type: string
+        DDE:
+          type: boolean
+    InstrumentData:
+      type: object
+      additionalProperties:
+        type: string
+    InstrumentFlags:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/InstrumentMeta'
+        Flags:
+          $ref: '#/components/schemas/InstrumentFlags_Flags'
+    Images:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/TimepointMeta'
+        Files:
+          type: array
+          items:
+            $ref: '#/components/schemas/Images_Files'
+    ImagingQc:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/TimepointMeta'
+        SessionQC:
+          type: string
+          enum:
+            - Pass
+            - Fail
+        Pending:
+          type: boolean
+    ImageQc:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ImageMeta'
+        QC:
+          type: string
+          enum:
+            - Pass
+            - Fail
+        Selected:
+          type: boolean
+        Caveats:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageCaveat'
+    ImageCaveat:
+      type: object
+      properties:
+        Severity:
+          type: string
+        Header:
+          type: string
+        Value:
+          type: string
+        ValidRange:
+          type: string
+        ValidRegex:
+          type: string
+    ImageMeta:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+        File:
+          type: string
+    FormatBrainbrowser:
+      type: object
+      properties:
+        xspace:
+          $ref: '#/components/schemas/BrainbrowserSpace'
+        yspace:
+          $ref: '#/components/schemas/BrainbrowserSpace'
+        zspace:
+          $ref: '#/components/schemas/BrainbrowserSpace'
+        order:
+          type: string
+          enum:
+            - xspace
+            - zspace
+            - yspace
+    BrainbrowserSpace:
+      type: object
+      properties:
+        start:
+          type: string
+        space_length:
+          type: string
+        step:
+          type: string
+    ImageSummaryHeaders:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ImageMeta'
+        Physical:
+          $ref: '#/components/schemas/ImageSummaryHeaders_Physical'
+        Description:
+          $ref: '#/components/schemas/ImageSummaryHeaders_Description'
+        Dimensions:
+          $ref: '#/components/schemas/ImageSummaryHeaders_Dimensions'
+        ScannerInfo:
+          $ref: '#/components/schemas/ImageSummaryHeaders_ScannerInfo'
+    DimensionHeaders:
+      type: object
+      properties:
+        Lenght:
+          type: string
+        StepSize:
+          type: string
+    ImageHeaders:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ImageMeta'
+        Headers:
+          type: object
+          additionalProperties:
+            type: string
+    Dicoms:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/Dicoms_Meta'
+        DicomTars:
+          type: array
+          items:
+            $ref: '#/components/schemas/DicomTar'
+    DicomTar:
+      type: object
+      properties:
+        Tarname:
+          type: string
+        SeriesInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeriesInfo'
+    SeriesInfo:
+      type: object
+      properties:
+        SeriesDescription:
+          type: string
+        SeriesNumber:
+          type: string
+        EchoTime:
+          type: string
+        RepetitionTime:
+          type: string
+        InversionTime:
+          type: string
+        SliceThickness:
+          type: string
+        Modality:
+          type: string
+          enum:
+            - MR
+            - PT
+        SeriesUID:
+          type: string
+    Recordings:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/TimepointMeta'
+        Files:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recording'
+    Recording:
+      type: object
+      properties:
+        OutputType:
+          type: string
+        Filename:
+          type: string
+        AcquisitionModality:
+          type: string
+
+    Error:
+      required:
+        - error
+      type: object
+      properties:
+        error:
+          type: string
+          description: The error message
+    body:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        token:
+          type: string
+    inline_response_200_1:
+      type: object
+      properties:
+        Projects:
+          type: object
+    inline_response_200_2:
+      type: object
+      properties:
+        Candidate:
+          $ref: '#/components/schemas/Candidate'
+        Visits:
+          type: array
+          items:
+            type: string
+    inline_response_200_3:
+      allOf:
+        - $ref: '#/components/schemas/VisitMeta'
+        - $ref: '#/components/schemas/VisitStages'
+    inline_response_409:
+      type: object
+      properties:
+        error:
+          type: string
+    inline_response_200_4:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/TimepointMeta'
+        Instruments:
+          type: array
+          items:
+            type: string
+    inline_response_200_5:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/inline_response_200_5_Meta'
+        Value:
+          type: string
+ 
+    Project_Meta:
+      type: object
+      properties:
+        Project:
+          type: string
+    ProjectInstrument_Meta:
+      type: object
+      properties:
+        InstrumentVersion:
+          type: string
+        InstrumentFormatVersion:
+          type: string
+        ShortName:
+          type: string
+        LongName:
+          type: string
+        IncludeMetaDataFields:
+          type: string
+        Elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/LorisFormElement'
+    LorisFormElement_Options:
+      type: object
+      properties:
+        Values:
+          type: object
+          additionalProperties:
+            type: string
+    NewCandidate_Candidate:
+      type: object
+      properties:
+        Project:
+          type: string
+        PSCID:
+          type: string
+        Site:
+          type: string
+        EDC:
+          type: string
+        DoB:
+          type: string
+        Sex:
+          type: string
+          enum:
+            - Female
+            - Male
+    InstrumentFlags_Flags:
+      type: object
+      properties:
+        Data_entry:
+          type: string
+          enum:
+            - In Progress
+            - Complete
+        Administration:
+          type: string
+          enum:
+            - None
+            - Partial
+            - All
+        Validity:
+          type: string
+          enum:
+            - Questionable
+            - Invalid
+            - Valid
+    Images_Files:
+      type: object
+      properties:
+        OutputType:
+          type: string
+        Filename:
+          type: string
+        AcquisitionType:
+          type: string
+    ImageSummaryHeaders_Physical:
+      type: object
+      properties:
+        TE:
+          type: string
+        TR:
+          type: string
+        TI:
+          type: string
+        SliceThickness:
+          type: string
+    ImageSummaryHeaders_Description:
+      type: object
+      properties:
+        SeriesName:
+          type: string
+        SeriesDescription:
+          type: string
+    ImageSummaryHeaders_Dimensions:
+      type: object
+      properties:
+        XSpace:
+          $ref: '#/components/schemas/DimensionHeaders'
+        YSpace:
+          $ref: '#/components/schemas/DimensionHeaders'
+        ZSpace:
+          $ref: '#/components/schemas/DimensionHeaders'
+        TimeDimension:
+          $ref: '#/components/schemas/DimensionHeaders'
+    ImageSummaryHeaders_ScannerInfo:
+      type: object
+      properties:
+        Manufacturer:
+          type: string
+        Model:
+          type: string
+        SoftwareVersion:
+          type: string
+        SerialNumber:
+          type: string
+        FieldStrength:
+          type: string
+    Dicoms_Meta:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+    inline_response_200_5_Meta:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+        File:
+          type: string
+        Header:
+          type: string
+    RecordingMeta:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+        File:
+          type: string
+    RecordingMetadata:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/RecordingMeta'
+        Data:
+          type: object
+          additionalProperties:
+            type: string
+    RecordingMetadataSpecific:
+      type: object
+      properties:
+        Meta:
+          type: object
+          properties:
+            CandID:
+              type: string
+            Visit:
+              type: string
+            Filename:
+              type: string
+            Header:
+              type: string
+        Value:
+          type: string
+    RecordingChannels:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/RecordingMeta'
+        Channels:
+          $ref: '#/components/schemas/RecordingChannel'
+
+    RecordingChannel:
+      type: object
+      properties:
+        ChannelName:
+          type: string
+        ChannelDescription:
+          type: string
+        ChannelType:
+          type: string
+        ChannelTypeDescription:
+          type: string
+        ChannelStatus:
+          type: string
+        StatusDescription:
+          type: string
+        SamplingFrequency:
+          type: number
+        LowCutoff:
+          type: string
+        HighCutoff:
+          type: string
+        ManualFlag:
+          type: string
+        Notch:
+          type: string
+        Reference:
+          type: string
+        Unit:
+          type: string
+        ChannelFilePath:
+          type: string
+
+    RecordingElectrodes:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/RecordingMeta'
+        Electrodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingElectrode'
+            
+    RecordingElectrode:
+      type: object
+      properties:
+        ElectrodeName:
+          type: string
+        ElectrodeType:
+          type: string
+        ElectrodeMaterial:
+          type: string
+        X:
+          type: string
+        Y:
+          type: string
+        Z:
+          type: string
+        Impedance:
+          type: string
+        ElectrodeFilePath:
+          type: string
+          
+    RecordingEvents:
+      type: object
+      properties:
+        Meta:
+          $ref: '#/components/schemas/RecordingMeta'
+        TaskEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingTaskEvent'
+            
+    RecordingTaskEvent:
+      type: object
+      properties:
+        Onset:
+          type: string
+        Duration:
+          type: number
+        EventCode:
+          type: string
+        EventSample:
+          type: string
+        EventType:
+          type: string
+        TrialType:
+          type: string
+        ResponseTime:
+          type: string
+        EventFilePath:
+          type: string
+        
+  responses:
+    InternalServerError:
+      description: 500 Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+

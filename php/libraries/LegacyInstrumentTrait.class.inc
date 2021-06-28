@@ -29,6 +29,14 @@
 trait LegacyInstrumentTrait
 {
     /**
+     * The testName being accessed. Not that this is set in
+     * NDB_BVL_Instrument but needs to be redeclared here so
+     * that static analysis tools know that it exists within
+     * the scope of this trait.
+     */
+    public $testName;
+
+    /**
      * Return the full, human readable name for the
      * current instrument.
      *

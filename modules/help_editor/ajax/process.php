@@ -29,7 +29,7 @@ if (!empty($_POST['helpID'])
     && !empty($_POST['title'])
     && !empty($_POST['content'])
 ) {
-    $helpID    = $_POST['helpID'];
+    $helpID    = intval($_POST['helpID']);
     $help_file = HelpFile::factory($helpID);
     // update the help file
     $help_file->update(

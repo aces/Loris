@@ -45,9 +45,6 @@ class Edit_Help_Content extends \NDB_Form
       */
     function _getDefaults()
     {
-        //Get the default values
-        $defaults = [];
-
         // Sanitize user input
         $safeSection    = isset($_REQUEST['section']) ?
             htmlspecialchars($_REQUEST['section']) : '';

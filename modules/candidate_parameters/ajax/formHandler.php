@@ -355,7 +355,7 @@ function editParticipantStatusFields(\Database $db)
     $id = null;
     if (!(is_null($_SESSION['State']))) {
         $currentUser =& User::singleton($_SESSION['State']->getUsername());
-        $id          = $currentUser->getData("UserID");
+        $id          = $currentUser->getUsername();
     }
 
     $updateValues = [

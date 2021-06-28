@@ -26,6 +26,8 @@ namespace LORIS\dashboard;
 
 class Dashboard extends \NDB_Form
 {
+    private iterable $_smallwidgets;
+    private iterable $_mainwidgets;
 
     /**
      * Extra CSS URLs that are required for widgets.
@@ -44,20 +46,32 @@ class Dashboard extends \NDB_Form
     /**
      * Page constructor for the dashboard main page.
      *
-     * @param \Module $module     The test name being accessed
-     * @param string  $page       The subtest being accessed (may be an empty string)
-     * @param string  $identifier The identifier for the data to load on this page
-     * @param string  $commentID  The CommentID to load the data for
-     * @param string  $formname   The name to give this form
+     * @param \LORIS\LorisInstance $loris      The LORIS instance the page is being
+     *                                         constructed for
+     * @param \Module              $module     The test name being accessed
+     * @param string               $page       The subtest being accessed
+     *                                         (may be an empty string)
+     * @param string               $identifier The identifier for the data to
+     *                                         load on this page
+     * @param string               $commentID  The CommentID to load the data for
+     * @param string               $formname   The name to give this form
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID,
         string $formname
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct(
+            $loris,
+            $module,
+            $page,
+            $identifier,
+            $commentID,
+            $formname
+        );
 
         // This needs to be done before setup so that the widget specific CSS and
         // javascript are available for getCSSDependencies and getJSDependencies,
@@ -69,11 +83,11 @@ class Dashboard extends \NDB_Form
 
         // FIXME: This should use \LORIS\LorisInstance->getActiveModules(), but there
         // is no access to a LORISInstance object at this point in the code.
-        $this->modules = \Module::getActiveModules($DB);
+        $modules = \Module::getActiveModules($DB);
 
-        $this->smallwidgets = [];
-        $this->mainwidgets  = [];
-        foreach ($this->modules as $module) {
+        $this->_smallwidgets = [];
+        $this->_mainwidgets  = [];
+        foreach ($modules as $module) {
             if ($module->hasAccess($user)) {
                 $widgets = $module->getWidgets('dashboard', $user, []);
                 foreach ($widgets as $widget) {
@@ -82,10 +96,10 @@ class Dashboard extends \NDB_Form
                     }
                     switch ($widget->getSize()) {
                     case "small":
-                        $this->smallwidgets[] = $widget;
+                        $this->_smallwidgets[] = $widget;
                         break;
                     default:
-                        $this->mainwidgets[] = $widget;
+                        $this->_mainwidgets[] = $widget;
                         break;
                     }
                     $this->widgetcss = array_merge(
@@ -102,13 +116,13 @@ class Dashboard extends \NDB_Form
             }
         }
         usort(
-            $this->smallwidgets,
+            $this->_smallwidgets,
             function ($a, $b) {
                 return $a->getOrder() <=> $b->getOrder();
             }
         );
         usort(
-            $this->mainwidgets,
+            $this->_mainwidgets,
             function ($a, $b) {
                 return $a->getOrder() <=> $b->getOrder();
             }
@@ -123,8 +137,8 @@ class Dashboard extends \NDB_Form
     function setup()
     {
 
-        $this->tpl_data['smallwidgets'] = $this->smallwidgets;
-        $this->tpl_data['mainwidgets']  = $this->mainwidgets;
+        $this->tpl_data['smallwidgets'] = $this->_smallwidgets;
+        $this->tpl_data['mainwidgets']  = $this->_mainwidgets;
     }
 
     /**

@@ -29,6 +29,21 @@ use \Laminas\Diactoros\ServerRequest;
 class LoginTest extends TestCase
 {
     /**
+     * A PSR Request object representing the incoming request
+     * to test.
+     *
+     * @var \Psr\Http\Message\ServerRequestInterface
+     */
+    private $_request;
+
+    /**
+     * A SinglePointLogin instances used for authentication
+     *
+     * @var \SinglePointLogin
+     */
+    private $_authenticator;
+
+    /**
      * Provide an autoloader for the api module namespace.
      *
      * @return void
@@ -61,8 +76,11 @@ class LoginTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->_request       = new ServerRequest();
-        $this->_authenticator = $this->createMock('\SinglePointLogin');
+        $this->_request = new ServerRequest();
+
+        $authenticator = $this->createMock('\SinglePointLogin');
+        '@phan-var \SinglePointLogin $authenticator';
+        $this->_authenticator = $authenticator;
     }
 
     /**
@@ -73,7 +91,10 @@ class LoginTest extends TestCase
      */
     public function testLoginSuccess(): void
     {
-        $this->_authenticator->expects($this->once())
+        $authenticator = $this->_authenticator;
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $authenticator';
+
+        $authenticator->expects($this->once())
             ->method('passwordAuthenticate')
             ->with('test_username', 'test_password')
             ->willReturn(true);
@@ -84,11 +105,12 @@ class LoginTest extends TestCase
 
         $handler->expects($this->once())
             ->method('getLoginAuthenticator')
-            ->willReturn($this->_authenticator);
+            ->willReturn($authenticator);
 
         $handler->expects($this->once())
             ->method('getEncodedToken')
             ->willReturn('jwt_token');
+        '@phan-var \LORIS\api\Endpoints\Login $handler';
 
         $request = $this->_request
             ->withAttribute('pathparts', ['login'])

@@ -30,6 +30,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 ca.PSCID AS _pscID,
                 s.Visit_label AS _visit,
                 s.ProjectID AS _project,
+                s.SubprojectID AS _subproject,
                 psc.CenterID AS _site,
 	            fb.FeedbackID AS _feedbackID,
 	            fb.SessionID AS _sessionID,

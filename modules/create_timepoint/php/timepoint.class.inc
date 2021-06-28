@@ -130,7 +130,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $projectOptions        = [];
         foreach ($user_list_of_projects as $projectID) {
             $project = \Project::getProjectFromID($projectID);
-            $projectOptions[$projectID] = $project->getName();
+            $projectOptions["$projectID"] = $project->getName();
         }
         $values['project'] = $projectOptions;
 
@@ -159,6 +159,11 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
+        if (!is_array($values)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -178,7 +183,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if ($num_sites == 1) {
             $site = \Site::singleton($user_list_of_sites[0]);
         } else if ($num_sites > 1) {
-            $site = \Site::singleton(intval($values['psc']));
+            $site = \Site::singleton(new \CenterID(($values['psc'])));
         }
 
         // Project
@@ -188,7 +193,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             // if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
         } else if (count($user_list_of_projects) > 1) {
-            $project_id = intval($values['project']);
+            $project_id = new \ProjectID($values['project']);
             $project    = \Project::getProjectFromID($project_id);
         }
 
@@ -224,11 +229,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candidate = \Candidate::singleton(new CandID($identifier));
         return (
             $user->hasPermission('data_entry') &&
-            (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
+            $user->hasCenter($candidate->getCenterID())
         );
     }
 
@@ -254,8 +255,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             null : $values['psc'];
 
         // validate site entered
-        $site = (int) $values['psc'];
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $site = !empty($values['psc']) ? new \CenterID($values['psc']) : null;
+
+        $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         $conflict           = [];
         if ($num_sites == 0) {

@@ -3,7 +3,7 @@
 import MediaEditForm from './editForm';
 const args = QueryString.get(document.currentScript.src);
 
-$(function() {
+document.addEventListener('DOMContentLoaded', () => {
   const mediaEditForm = (
     <div className="page-edit-form">
       <div className="row">

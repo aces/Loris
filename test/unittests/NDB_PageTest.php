@@ -46,8 +46,15 @@ class NDB_PageTest extends TestCase
     {
         parent::setUp();
 
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
         $this->_module = new NullModule("test_module");
         $this->_page   = new NDB_Page(
+            new \LORIS\LorisInstance($mockdb, $mockconfig, []),
             $this->_module,
             "test_page",
             "515",
@@ -678,7 +685,8 @@ class NDB_PageTest extends TestCase
     {
         $this->markTestIncomplete("This test is incomplete!");
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
@@ -724,6 +732,7 @@ class NDB_PageTest extends TestCase
     public function testHasAccess()
     {
         $user = $this->getMockBuilder('\User')->getMock();
+        '@phan-var \User $user';
         $this->assertTrue($this->_page->_hasAccess($user));
     }
 
@@ -761,7 +770,6 @@ class NDB_PageTest extends TestCase
         $this->_page->name = "page_name";
         $this->_page->page = "page_name";
         $name = $this->_page->name;
-        $page = $this->_page->page;
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name")
@@ -779,7 +787,9 @@ class NDB_PageTest extends TestCase
     public function testGetJSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
@@ -812,7 +822,9 @@ class NDB_PageTest extends TestCase
     public function testGetCSSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [

@@ -173,7 +173,7 @@ class AddPermissionForm extends Component {
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
-        }, function() {
+        }).then(function() {
           window.location.assign('/data_release');
         });
         this.props.fetchData();

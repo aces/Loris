@@ -1,3 +1,4 @@
+const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
@@ -40,10 +41,10 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
-    Password: path.resolve(__dirname, './jsx/Password'),
   },
   extensions: ['*', '.js', '.jsx', '.json'],
 };
+
 const mod = {
   rules: [
     {
@@ -52,12 +53,6 @@ const mod = {
       use: [
         {
           loader: 'babel-loader?cacheDirectory',
-        },
-        {
-          loader: 'eslint-loader',
-          options: {
-            cache: true,
-          },
         },
       ],
       enforce: 'pre',
@@ -145,7 +140,6 @@ const config = [
       Form: './jsx/Form.js',
       Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
-      Password: './jsx/Password.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -162,6 +156,9 @@ const config = [
     },
     devtool: 'source-map',
     plugins: [
+      new ESLintPlugin({
+        cache: true,
+      }),
       new CopyPlugin({
         patterns: [
           {
@@ -210,6 +207,7 @@ const config = [
     'index',
     'CandidateIssuesWidget',
   ]),
+  lorisModule('login', ['loginIndex']),
   lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
   lorisModule('document_repository', ['docIndex', 'editFormIndex']),
   lorisModule('candidate_parameters', [
@@ -243,6 +241,7 @@ const config = [
     'react.sidebar',
     'react.tabs',
   ]),
+  lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [
     'components/expansionpanels',
     'components/searchabledropdown',
@@ -291,6 +290,7 @@ const config = [
   lorisModule('server_processes_manager', ['server_processes_managerIndex']),
   lorisModule('instruments', ['CandidateInstrumentList']),
   lorisModule('candidate_profile', ['CandidateInfo']),
+  lorisModule('api_docs', ['swagger-ui_custom']),
 ];
 
 // Support project overrides

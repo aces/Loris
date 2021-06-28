@@ -10,6 +10,7 @@
 class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
 {
     use \LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -33,8 +34,6 @@ class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
         // name of database table corresponding to instrument
         $this->table     = 'testtest';
         $this->commentID = $commentID; // data keyed by commentID
-
-        $config = NDB_Config::singleton();
 
         // setup the form
         $this->_setupForm();

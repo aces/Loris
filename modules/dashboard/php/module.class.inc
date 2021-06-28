@@ -100,7 +100,6 @@ class Module extends \Module
             );
         }
 
-        $logindatestring = "";
         if ($last_login === null) {
             $logindatestring = "...never. Welcome!";
         } else {
@@ -109,6 +108,7 @@ class Module extends \Module
             // a \DateTime object.
             $logindatestring = $last_login->format('Y-m-d H:i:s');
         }
+
         return new Widget(
             new WidgetContent(
                 "",

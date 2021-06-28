@@ -100,20 +100,25 @@ class NDB_BVL_Battery
      * on age AND SubprojectID, adds all appropriate instruments to the
      * battery
      *
-     * @param integer $SubprojectID The SubprojectID that we want the battery
-     *                              for
-     * @param string  $stage        Either 'visit' or 'screening'
-     * @param string  $visit_label  The visit label to create a battery for.
-     * @param integer $center_ID    The center of the candidate having a battery
-     *                              created
-     * @param boolean $firstVisit   Whether this is a first visit battery.
-     *                              true means ONLY first visit
-     *                              false means NOT first visit
-     *                              null can be any visit.
+     * @param \LORIS\LorisInstance $loris        The LORIS instance to add
+     *                                           instruments to
+     * @param integer              $SubprojectID The SubprojectID that we want
+     *                                           the battery for
+     * @param string               $stage        Either 'visit' or 'screening'
+     * @param string               $visit_label  The visit label to create a
+     *                                           battery for.
+     * @param \CenterID            $center_ID    The center of the candidate
+     *                                           having a battery created
+     * @param boolean              $firstVisit   Whether this is a first visit
+     *                                           battery.  true means ONLY
+     *                                           first visit, false means NOT
+     *                                           first visit, null can be any
+     *                                           visit.
      *
      * @return void
      */
     function createBattery(
+        \LORIS\LorisInstance $loris,
         $SubprojectID,
         $stage=null,
         $visit_label=null,
@@ -136,13 +141,6 @@ class NDB_BVL_Battery
             );
         }
 
-        // assert that the current battery is empty
-        if (count($currentTests) > 0) {
-            throw new Exception(
-                "Battery is not empty - will not clobber an existing battery."
-            );
-        }
-
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
             $this->age,
@@ -153,23 +151,46 @@ class NDB_BVL_Battery
             $firstVisit
         );
 
+        // assert that the current battery is empty
+        if (count($currentTests) > 0) {
+            $neededTests = $this->getBatteryDifference($currentTests, $neededTests);
+        }
+
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
-            $this->addInstrument($testName);
+            $this->addInstrument($loris, $testName);
         } // end looping over the list of instruments
     } // end createBattery()
+
+    /**
+     * Computes the difference between the existing battery and the
+     * theoretical battery and returns only the missing tests as an array
+     *
+     * @param array $currentBattery Existing battery at the specified timepoint
+     * @param array $lookupBattery  Theoretical battery from the test_battery table
+     *
+     * @return array
+     */
+    function getBatteryDifference(
+        array $currentBattery=[],
+        array $lookupBattery=[]
+    ) : array {
+        return array_unique(array_diff($lookupBattery, $currentBattery));
+    }
 
     /**
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
      *
-     * @param string $testName The test to be added to the currently
-     *                         selected battery.
+     * @param \LORIS\LorisInstance $loris    The LORIS instance to add the
+     *                                       instrument to
+     * @param string               $testName The test to be added to the
+     *                                       currently selected battery.
      *
      * @return string The generated CommentID
      */
-    function addInstrument($testName)
+    function addInstrument($loris, $testName)
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
@@ -198,7 +219,7 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // instantiate instrument object to get table name attribute
-        $obj = NDB_BVL_Instrument::factory($testName, '', '');
+        $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
 
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
@@ -397,28 +418,28 @@ class NDB_BVL_Battery
      * Looks up what the appropriate battery for the current visit should
      * be, based on age AND subproject
      *
-     * @param integer  $age          the age of the subject, in months
-     * @param integer  $SubprojectID The ID of the subproject that we want
-     *                               to look up the battery for.
-     * @param string   $stage        either 'visit' or 'screening' - determines
-     *                               whether to register only screening
-     *                               instruments or visit instruments
-     * @param string   $visit_label  (optional) The visit label to look up the
-     *                               battery for. If this is specified the
-     *                               battery will use this INSTEAD OF the age
-     *                               of candidate.
-     * @param integer  $center_ID    (optional) The center ID to look up the visit
-     *                               battery for. If this is specified the lookup
-     *                               will use it as an ADDITIONAL condition to
-     *                               $age/$visit_label.
-     * @param ?boolean $firstVisit   (optional) Whether or not we want the battery
-     *                               for the first visit of the candidate. If this
-     *                               is true, it will get instruments for the
-     *                               first visit. If false, it will only get
-     *                               instruments where it is NOT the first visit.
-     *                               If null, it will get all instruments matching
-     *                               criteria regardless of if it's the first
-     *                               visit or not.
+     * @param integer   $age          the age of the subject, in months
+     * @param integer   $SubprojectID The ID of the subproject that we want
+     *                                to look up the battery for.
+     * @param string    $stage        either 'visit' or 'screening' - determines
+     *                                whether to register only screening
+     *                                instruments or visit instruments
+     * @param string    $visit_label  (optional) The visit label to look up the
+     *                                battery for. If this is specified the
+     *                                battery will use this INSTEAD OF the age
+     *                                of candidate.
+     * @param ?CenterID $center_ID    (optional) The center ID to look up the visit
+     *                                battery for. If this is specified the lookup
+     *                                will use it as an ADDITIONAL condition to
+     *                                $age/$visit_label.
+     * @param ?boolean  $firstVisit   (optional) Whether or not we want the battery
+     *                                for the first visit of the candidate. If this
+     *                                is true, it will get instruments for the
+     *                                first visit. If false, it will only get
+     *                                instruments where it is NOT the first visit.
+     *                                If null, it will get all instruments matching
+     *                                criteria regardless of if it's the first
+     *                                visit or not.
      *
      * @return array  an array of instrument names
      */
@@ -560,8 +581,8 @@ class NDB_BVL_Battery
      * a Test name. This differs from createCommentID in that a battery does
      * not have to already be selected.
      *
-     * @param integer $SessionID The session ID to generate a CommentID for
-     * @param string  $Test_name The test name which the CommentID will be for.
+     * @param \SessionID $SessionID The session ID to generate a CommentID for
+     * @param string     $Test_name The test name which the CommentID will be for.
      *
      * @return ?string A Validly formatted CommentID or null if information
      *                  is missing in the database.
@@ -569,6 +590,8 @@ class NDB_BVL_Battery
     static function generateCommentID($SessionID, $Test_name)
     {
         $DB = Database::singleton();
+
+        $SessionID = $SessionID->__toString();
 
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",

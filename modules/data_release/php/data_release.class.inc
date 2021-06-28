@@ -63,6 +63,7 @@ class Data_Release extends \NDB_Menu_Filter
             'file_name AS fileName',
             'version',
             'upload_date AS uploadDate',
+            'dr.id as dataReleaseID',
         ];
         $this->query   = " FROM data_release dr";
 

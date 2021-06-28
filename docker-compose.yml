@@ -13,13 +13,11 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.141.59-zirconium
     volumes:
       - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
-    environment:
-      - SE_OPTS=-enablePassThrough false
 
   web:
     build:
@@ -27,8 +25,8 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
-      - ./test/test_instrument:/app/project/instruments
-      - ./raisinbread/test/data-raisinbread/:/data-raisinbread
+      - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
+      - ./raisinbread/instruments:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -66,7 +64,7 @@ services:
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.141.59-zirconium
     links:
       - web-debug:web
     ports:

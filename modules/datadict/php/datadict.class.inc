@@ -58,8 +58,38 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
+        $instruments     = \Utility::getAllInstruments();
+        $dictInstruments = [];
+        foreach ($instruments as $instrument => $name) {
+            // Since the testname does not always match the table name in the
+            // database we need to instantiate the object to get the table name
+            try {
+                $iObj = \NDB_BVL_Instrument::factory(
+                    $instrument,
+                    '',
+                    ''
+                );
+            } catch (\Exception $e) {
+                error_log(
+                    "There was a problem instantiating the instrument ".
+                    "'$instrument'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the data ".
+                    "dictionary."
+                );
+                continue;
+            }
+            // If the instrument saves data in the flag table, there is no table to
+            // use, use the test name.
+            $key = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
+            // Append other testnames if multiple tests use the same table
+            $otherNames = '';
+            if (isset($dictInstruments[$key])) {
+                $otherNames = $dictInstruments[$key] . " / ";
+            }
+            $dictInstruments[$key] = $otherNames . $name;
+        }
         return [
-            'sourceFrom' => \Utility::getAllInstruments(),
+            'sourceFrom' => $dictInstruments,
         ];
     }
 

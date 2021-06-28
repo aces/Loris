@@ -97,7 +97,7 @@ class Stats_Demographic extends \NDB_Form
     ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
-        $projectID = empty($projectID) ? null : $projectID;
+        $projectID = empty($projectID) ? null : new \ProjectID($projectID);
         $tpl_data  = [];
         $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
@@ -108,12 +108,14 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject(intval($projectID));
+        $tpl_var = \Utility::getSubprojectsForProject($projectID);
         $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
         $tpl_data['DropdownSelected'] = $dropdownSelected;
         $tpl_data['Centers']          = $centers ?? [];
+
+        $tpl_data['data'] = [];
 
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
@@ -223,9 +225,9 @@ class Stats_Demographic extends \NDB_Form
         $projects     = [];
         $projects[''] = 'All Projects';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         if ($user->hasPermission('access_all_profiles')) {
@@ -238,11 +240,11 @@ class Stats_Demographic extends \NDB_Form
         $paramProject       = '';
 
         if (!empty($demographicProject)) {
-            $demographicProject = htmlspecialchars($demographicProject);
+            $demographicProject = intval($demographicProject);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $demographicProject,
-                    'Name' => $projects[$demographicProject] ?? '',
+                    'Name' => $projects["$demographicProject"] ?? '',
                 ];
             $paramProject        ='AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
@@ -253,7 +255,9 @@ class Stats_Demographic extends \NDB_Form
         $subprojects     = \Utility::getSubprojectList();
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
+            $subprojects = \Utility::getSubprojectsForProject(
+                new \ProjectID($demographicProject)
+            );
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";

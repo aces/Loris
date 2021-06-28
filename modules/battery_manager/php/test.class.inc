@@ -25,7 +25,9 @@ namespace LORIS\battery_manager;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class Test implements \LORIS\Data\DataInstance
+class Test implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     public $row;
 

@@ -21,8 +21,6 @@ class My_Preferences extends \NDB_Form
      */
     function _getDefaults()
     {
-        $defaults = [];
-
         $user = \User::factory($this->identifier);
         // get the user defaults
         $defaults = $user->getData();
@@ -75,7 +73,7 @@ class My_Preferences extends \NDB_Form
         // Notification defaults
         // "notif_".$module."_".$operation."_".$service
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            $user->getId()
         );
         foreach ($curr_sub as $module=>$operations) {
             foreach ($operations as $operation => $services) {
@@ -113,7 +111,7 @@ class My_Preferences extends \NDB_Form
         // START NOTIFICATIONS UPDATE
         // get current notifications for user
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-            $user->getData("ID")
+            $user->getId()
         );
 
         // get notification details
@@ -138,7 +136,7 @@ class My_Preferences extends \NDB_Form
                                 [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
-                                    "user_id"    => $user->getData("ID"),
+                                    "user_id"    => $user->getId(),
                                 ]
                             );
                         }
@@ -149,7 +147,7 @@ class My_Preferences extends \NDB_Form
                                 [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
-                                    "user_id"    => $user->getData("ID"),
+                                    "user_id"    => $user->getId(),
                                 ]
                             );
                         }
@@ -276,7 +274,7 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Your email address must be less than 255 characters long',
             'maxlength',
-            255
+            "255"
         );
 
         // password

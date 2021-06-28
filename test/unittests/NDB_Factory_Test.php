@@ -35,26 +35,30 @@ class NDB_Factory_Test extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_factory = \NDB_Factory::singleton();
-        $this->_config  = \NDB_Config::singleton();
-        $database       = $this->_config->getSetting('database');
-        $this->_DB      = Database::singleton(
+        $this->_factory = NDB_Factory::singleton();
+        $this->_factory->reset();
+
+        $this->_config = $this->_factory->Config(CONFIG_XML);
+        $database      = $this->_config->getSetting('database');
+        $this->_DB     = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
             true
         );
+
+        $this->_factory->setDatabase($this->_DB);
+        $this->_factory->setConfig($this->_config);
     }
 
     /**
      * Test that the singleton function returns a new NDB_Factory object and
-     * that the reset and setTesting functions properly set the properties of
+     * that the reset function properly set the properties of
      * the object
      *
      * @covers NDB_Factory::singleton
      * @covers NDB_Factory::reset
-     * @covers NDB_Factory::setTesting
      * @return void
      */
     function testSetUp()
@@ -64,8 +68,6 @@ class NDB_Factory_Test extends TestCase
         $this->assertNull(\NDB_Factory::$testdb);
         $this->assertNull(\NDB_Factory::$db);
         $this->assertNull(\NDB_Factory::$config);
-        $this->_factory->setTesting(true);
-        $this->assertTrue($this->_factory->Testing);
     }
 
     /**
@@ -76,7 +78,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testConfig()
     {
-        $this->_factory->setTesting(false);
         $this->_factory->config();
         $this->assertEquals(
             NDB_Config::singleton('../project/config.xml'),
@@ -106,7 +107,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testUser()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals(
             \User::singleton(),
             $this->_factory->user()
@@ -136,7 +136,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testDatabase()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals($this->_DB, $this->_factory->database());
     }
 
@@ -176,7 +175,6 @@ class NDB_Factory_Test extends TestCase
      */
     function testCouchDB()
     {
-        $this->_factory->setTesting(false);
         $this->assertEquals(
             CouchDB::getInstance("db", "host", 1, "user", "pass"),
             $this->_factory->couchDB("db", "host", 1, "user", "pass")
@@ -236,6 +234,19 @@ class NDB_Factory_Test extends TestCase
      */
     function testCandidate()
     {
+        $mockdb = $this->getMockBuilder("\Database")->getMock();
+        $mockdb->expects($this->any())
+            ->method('pselectRow')
+            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => '1']);
+
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setDatabase($mockdb);
+
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setDatabase($mockdb);
+
         $candID = new CandID("300001");
         $this->assertEquals(
             Candidate::singleton($candID),
@@ -252,6 +263,25 @@ class NDB_Factory_Test extends TestCase
      */
     function testTimepoint()
     {
+        $mockdb     = $this->getMockBuilder("\Database")->getMock();
+        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
+
+        $mockdb->expects($this->any())
+            ->method('pselectRow')
+            ->willReturn(['SessionID' => '1', 'ProjectID' => '1']);
+
+        '@phan-var \NDB_Config $mockconfig';
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
+
+        '@phan-var \NDB_Config $mockconfig';
+        '@phan-var \Database $mockdb';
+
+        $this->_factory->setConfig($mockconfig);
+        $this->_factory->setDatabase($mockdb);
+
         $sessionID = new \SessionID("1");
         $this->assertEquals(
             \TimePoint::singleton($sessionID),

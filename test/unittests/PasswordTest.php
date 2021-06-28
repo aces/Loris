@@ -33,6 +33,21 @@ class PasswordTest extends TestCase
      */
     private $_configMock;
 
+    /**
+     * Test double for Database object
+     *
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     */
+    private $_dbMock;
+
+    /**
+     * NDB_Factory used in tests.
+     * Test doubles are injected to the factory object.
+     *
+     * @var NDB_Factory
+     */
+    private $_factory;
+
     private $_configInfo = [0 => ['65' => 'false']];
 
     /**
@@ -44,8 +59,13 @@ class PasswordTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $dbMock     = $this->getMockBuilder('Database')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        '@phan-var \Database $dbMock';
+
+        $this->_configMock = $configMock;
+        $this->_dbMock     = $dbMock;
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);

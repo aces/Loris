@@ -14,6 +14,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_Menu_Filter_Test extends TestCase
 {
+    protected $Session;
+
     /**
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
@@ -63,6 +65,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         // Reset calls
         $this->Session->expects($this->exactly(2))
@@ -91,6 +94,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->_setSearchKeyword('abc');
 
@@ -119,6 +123,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
+        '@phan-var \NDB_Menu_Filter $stub';
 
         $stub->form = new LorisForm();
         $stub->form->applyFilter('__ALL__', 'trim');
@@ -156,77 +161,6 @@ class NDB_Menu_Filter_Test extends TestCase
         );
     }
 
-    /**
-     * Tests _setFilterSortOrder($order) function. This test should ensure
-     * that:
-     *   1. If function is called with an array of the form:
-     *          [
-     *              'field'      => *Form* Field Name,
-     *              'fieldOrder' => 'ASC' OR 'DESC'
-     *          ]
-     *      then the filter is updated appropriately to be sorted by those
-     *      columns while the rest of the filter is unaffected.
-     *
-     * @return void
-     */
-    function testSetFilterSortOrder()
-    {
-        $method          = ['_setFilterSortOrder'];
-        $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub            = $this->getMockBuilder('NDB_Menu_Filter')
-            ->onlyMethods($allOtherMethods)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $stub->headers      = ['FakeField', "FakeField2"];
-        $stub->formToFilter = [
-            'FakeField'  => 'table.column',
-            'FakeField2' => 'table.column2'
-        ];
-        $stub->filter       = [
-            'table.column'  => 'I am a saved filter',
-            'table.column2' => 'I am a saved filter',
-        ];
-
-        $stub->_setFilterSortOrder(
-            [
-                'field'      => "FakeField",
-                "fieldOrder" => "DESC",
-            ]
-        );
-
-        $this->assertEquals(
-            $stub->filter,
-            [
-                'table.column'  => 'I am a saved filter',
-                'table.column2' => 'I am a saved filter',
-                'order'         => [
-                    'field'      => 'FakeField',
-                    'fieldOrder' => "DESC",
-                ]
-            ]
-        );
-
-        $stub->_setFilterSortOrder(
-            [
-                'field'      => "FakeField2",
-                "fieldOrder" => "ASC",
-            ]
-        );
-
-        $this->assertEquals(
-            $stub->filter,
-            [
-                'table.column'  => 'I am a saved filter',
-                'table.column2' => 'I am a saved filter',
-                'order'         => [
-                    'field'      => 'FakeField2',
-                    'fieldOrder' => "ASC",
-                ]
-            ]
-        );
-
-    }
     /**
      * TODO:
      * setupFilters

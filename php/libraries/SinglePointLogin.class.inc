@@ -48,6 +48,11 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
+     * Defines whether a user's password needs to be changed
+     */
+    var $_passwordChangeRequired = false;
+
+    /**
      * Dumps the password expiry form
      *
      * @return void
@@ -71,6 +76,17 @@ class SinglePointLogin
         header("HTTP/1.1 303 See Other");
         header("Location: /login/password-expiry/");
         exit(0);
+    }
+
+    /**
+     * Checks whether password change is required
+     *
+     * @return bool
+     * @access public
+     */
+    function passwordChangeRequired(): bool
+    {
+        return $this->_passwordChangeRequired;
     }
 
 
@@ -412,6 +428,8 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
+                $this->_passwordChangeRequired      = true;
+                $_SESSION['PasswordExpiredForUser'] = $username;
                 if ($redirect) {
                     $this->showPasswordExpiryScreen();
                 }

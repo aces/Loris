@@ -73,8 +73,8 @@ class ValidateIDs extends \NDB_Page
         // Ensure it's a GET request.
         if ($request->getMethod() != "GET") {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(405)
+                ->withHeader("Content-Type", "text/plain")
                 ->withHeader("Allow", "GET")
                 ->withBody(
                     new \LORIS\Http\StringStream(
@@ -87,8 +87,8 @@ class ValidateIDs extends \NDB_Page
         $gets = $request->getQueryParams();
         if (!isset($gets['CandID'], $gets['PSCID'])) {
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
                 ->withStatus(400)
+                ->withHeader("Content-Type", "text/plain")
                 ->withBody(
                     new \LORIS\Http\StringStream(
                         "Must provide PSCID and CandID to validate"
@@ -106,8 +106,8 @@ class ValidateIDs extends \NDB_Page
         ) ? "1" : "0";
 
         return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
             ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
             ->withBody(new \LORIS\Http\StringStream($exists));
     }
 }

@@ -45,12 +45,16 @@ class DirectDataEntryMainPage
      */
     var $Subtest;
 
+    public $CommentID;
+
     var $NumPages;
     var $NextPageNum;
     var $PrevPageNum;
 
     var $tpl_data;
     var $caller;
+
+    private $loris;
 
     /**
      * Initialize all of the class variables and things required from the
@@ -76,6 +80,12 @@ class DirectDataEntryMainPage
         $this->key = $_REQUEST['key'];
 
         $DB = Database::singleton();
+
+        $this->loris     = new \LORIS\LorisInstance(
+            $DB,
+            $config,
+            []
+        );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -139,7 +149,7 @@ class DirectDataEntryMainPage
     /**
      * Get the page which follows this page
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return int The page which preceeded this one
      */
@@ -169,7 +179,7 @@ class DirectDataEntryMainPage
     /**
      * Get the previous page number
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return string|null the previous page number or "top" if the user is on
      *         the top page
@@ -338,12 +348,13 @@ class DirectDataEntryMainPage
             // Comments is too comment of an instrument fieldname,
             // so just check if ease is set
             $this->updateComments(
-                $_POST['ease'],
+                intval($_POST['ease']),
                 $_POST['comments']
             );
         }
 
         $workspace = $this->caller->load(
+            $this->loris,
             $this->TestName,
             $this->Subtest ?? '',
             $this->CommentID,

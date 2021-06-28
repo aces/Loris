@@ -14,6 +14,7 @@ changes in the following format: PR #1234***
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
+- Login module adds toggle visibility for password field.
 
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
@@ -35,11 +36,16 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### API Documentation (**New Module**)
+- New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- Deprecation of `begintable` and `endtable` elements in LINST instruments
+- Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 ### Notes For Developers
 - *Add item here*
 

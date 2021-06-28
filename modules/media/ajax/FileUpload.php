@@ -41,8 +41,11 @@ function editFile()
     }
 
     // Read JSON from STDIN
-    $stdin       = file_get_contents('php://input');
-    $req         = json_decode($stdin, true);
+    $stdin = file_get_contents('php://input');
+    $req   = json_decode($stdin, true);
+    if (!is_array($req)) {
+        throw new Exception("Invalid JSON");
+    }
     $idMediaFile = $req['idMediaFile'] ?? '';
 
     if (!$idMediaFile) {
@@ -114,7 +117,15 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES, $pscid, $visit)) {
+    if (empty($_FILES)) {
+        showMediaError(
+            "File could not be uploaded successfully. 
+            Please contact the administrator.",
+            400
+        );
+    }
+
+    if (!isset($pscid, $visit)) {
         showMediaError("Please fill in all required fields!", 400);
         return;
     }
@@ -130,7 +141,7 @@ function uploadFile()
         return;
     }
 
-    $userID = $user->getData('UserID');
+    $userID = $user->getUsername();
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
@@ -258,8 +269,6 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
-    $visit           = '';
-    $pscid           = '';
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData = [];
@@ -289,11 +298,12 @@ function getUploadFields()
             $sessionData[$pscid]['instruments']['all'] = [];
         }
 
-        if ($record["Test_name"] !== null && !in_array(
-            $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit],
-            true
-        )
+        if ($record["Test_name"] !== null
+            && !in_array(
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments'][$visit] ?? [],
+                true
+            )
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
                 = $record["Test_name"];

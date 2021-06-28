@@ -196,6 +196,15 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
+        label: 'Subproject',
+        show: false,
+        filter: {
+          name: 'Subproject',
+          type: 'select',
+          options: options.subprojects,
+        },
+      },
+      {
         label: 'Site',
         show: false,
         filter: {

@@ -132,6 +132,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                     $TableName = $row['TableName'];
 
                     $Instrument = \NDB_BVL_Instrument::factory(
+                        $this->loris,
                         $TableName,
                         $row['CommentId1'],
                         '',
@@ -154,6 +155,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                     }
 
                     $Instrument = \NDB_BVL_Instrument::factory(
+                        $this->loris,
                         $TableName,
                         $row['CommentId2'],
                         '',
@@ -317,7 +319,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         // Project list, if applicable
         $list_of_projects = [];
         $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $list_of_projects[$value] = $value;
         }
         $this->addSelect('project', 'Project: ', $list_of_projects);
@@ -406,8 +408,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $unanonymized = parent::toArray();
         $data         = [];
 
+        $value1Index = array_search('Value1', $unanonymized['Headers']);
+        $value2Index = array_search('Value2', $unanonymized['Headers']);
         foreach ($unanonymized['Data'] as &$row) {
-            $data[] = $row;
+            $row[$value1Index] = str_replace('{@}', ', ', $row[$value1Index]);
+            $row[$value2Index] = str_replace('{@}', ', ', $row[$value2Index]);
+            $data[]            = $row;
         }
         return [
             'Headers' => $unanonymized['Headers'],
