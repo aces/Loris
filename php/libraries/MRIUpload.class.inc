@@ -63,7 +63,7 @@ class MRIUpload
              WHERE
                muspr.mri_upload_id = :v_mri_upload_id
             ',
-            array('v_mri_upload_id' => $this->_mriuploadid)
+            ['v_mri_upload_id' => $this->_mriuploadid]
         );
 
         if (empty($rows)) {
