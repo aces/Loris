@@ -35,6 +35,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         . "your project administrator and/or verify your LORIS configuration.";
     protected $name;
     protected $dir;
+    protected $lorisinstance;
 
     /**
      * Retrieve all active module descriptors from the given database
@@ -108,14 +109,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $config  = $factory->config();
         $base    = $config->getSetting("base");
 
-        $mpath = "";
         // TODO: Module search path should be a config option.
         if (is_dir($base . "project/modules/$name")) {
             $mpath = $base . "project/modules/$name";
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisNoSuchModuleException("No such module: $name");
+            throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -254,15 +254,19 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     /**
      * Loads a page within this module and calls all necessary setup.
      *
-     * @param string $page The name of the page within the module to load.
+     * @param \LORIS\LorisInstance $loris The LORIS instance that the module
+     *                                    is serving.
+     * @param string               $page  The name of the page within the
+     *                                    module to load.
      *
      * @return NDB_Page
      *         Returns NDB_Page (or subclass) representing this page.
      */
-    public function loadPage(string $page)
+    public function loadPage(\Loris\LORISInstance $loris, string $page)
     {
-        // Some URLs are things like "/login/request-account", but `-` isn't valid
-        // in a class name, so remove it while loading the module.
+        // Some URLs are things like "/login/request-account", but
+        // `-` isn't valid in a class name, so remove it while loading
+        // the module.
         $page = str_replace("-", "", $page);
 
         $className = "\LORIS\\" . $this->name . "\\$page";
@@ -272,7 +276,14 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
-        $cls        = new $className($this, $page, $identifier, $commentID, $page);
+        $cls        = new $className(
+            $loris,
+            $this,
+            $page,
+            $identifier,
+            $commentID,
+            $page,
+        );
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
@@ -330,16 +341,18 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             return $resp;
         }
 
-        $pagename = $this->getName();
-        $path     = trim($request->getURI()->getPath(), "/");
+        $this->lorisinstance = $request->getAttribute("loris");
+        $pagename            = $this->getName();
+        $path = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
             $pagename = explode("/", $path)[0];
         }
 
-        $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+        $user  = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+        $loris = $request->getAttribute("loris");
         try {
-            $page = $this->loadPage($pagename);
+            $page = $this->loadPage($loris, $pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
             if ($this->getName() === $pagename) {
@@ -348,6 +361,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 $_REQUEST['subtest'] = $pagename;
             }
 
+            $page->loadResources($user, $request);
             if ($page->_hasAccess($user) !== true) {
                 return (new \LORIS\Middleware\PageDecorationMiddleware(
                     $user
@@ -526,5 +540,31 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $renderer = new \Smarty_NeuroDB($this->getName());
         $renderer->assign($tpl_data);
         return $renderer->fetch($template);
+    }
+
+    /**
+     * Returns true if a schema.yml file exists under the satic directory of that
+     * module.
+     *
+     * @return bool
+     */
+    public function hasAPISpecification(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Return a data dictionary of data types managed by this module.
+     * DictionaryItems are grouped into categories and a module may
+     * provide 0 or more categories of dictionaryitems.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
+     *                                    dictionary should be retrieved.
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        return [];
     }
 }

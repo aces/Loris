@@ -1,3 +1,5 @@
+import swal from 'sweetalert2';
+
 $(document).ready(function(){
 $("input[name=preview]").click(function(e) {
     if($('div.help-content').length) {
@@ -49,7 +51,6 @@ $("#save-help").click(function(e) {
         content = $('textarea[name="content"]').val(),
         section = $("#section").val(),
         subsection = $("#subsection").val(),
-        parentID = $("#parentID").val(),
         helpID = $("#helpID").val(),
         returnString = $("#return").val();
 
@@ -61,11 +62,10 @@ $("#save-help").click(function(e) {
             content: content ? content : '',
             section: section ? section : '',
             subsection: subsection ? subsection : '',
-            parentID: parentID ? parentID : '',
             helpID: helpID ? helpID : '',
         },
         success: function() {
-            swal({
+            swal.fire({
                 title: "Content update successful!",
                 type: "success",
                 showCancelButton: true,
@@ -73,14 +73,13 @@ $("#save-help").click(function(e) {
                 cancelButtonText: "Close",
                 closeOnConfirm: false,
                 closeOnCancel: true,
-            },
-            function(){
+            }).then(function(){
                 location.href = document.referrer;
             });
         },
         error: function(xhr, errorCode, errorMsg) {
             console.error(xhr);
-            swal({
+            swal.fire({
                 title: "Content update unsuccessful.",
                 text: errorCode + ": " + xhr.status + " " + errorMsg,
                 type: "error",

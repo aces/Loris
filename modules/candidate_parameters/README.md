@@ -64,3 +64,5 @@ using the `CouchDB_Import_Demographics.php` tool script. Any modifications or ad
 to this module should be manually added to the script in order to be included 
 in the DQT Demographics table. Alternatively, these modifications or additions can be 
 added to a separate script that is then exported to the DQT.
+- The `candidate_parameters` module registers widgets in the `candidate_profile`
+  module

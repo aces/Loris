@@ -14,6 +14,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 /**
  * A DataFrameworkMenu is a type of menu (filterable data table)
  * where the data comes from the LORIS data framework, and the
@@ -41,30 +44,37 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
      * Constructor for a DataFrameworkMenu class. This signature must match
      * the base NDB_Page type in order for LORIS to be able to load the page.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS instance the page is serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be an
+     *                                         empty string)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     public function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID);
+        parent::__construct($loris, $module, $page, $identifier, $commentID);
 
         $this->AjaxModule   = true;
         $this->skipTemplate = true;
     }
 
     /**
-     * Determines whether the DataProvisioner should filter out rows which
-     * do not match the user's site.
+     * Determines which site permission(s) should be used to determine
+     * whether or not non-user sites are filtered out. If the user has
+     * any of the permissions, non-user sites are *NOT* filtered out.
+     * If the result is null, the page does not use site filters at all.
      *
-     * @return bool true if the data provisioner should filter non-matching sites.
+     * @return ?array
      */
-    abstract public function useSiteFilter() : bool;
+    abstract public function allSitePermissionNames() : ?array;
+
 
     /**
      * Determines whether the DataProvisioner should filter out rows which
@@ -101,16 +111,15 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     {
         $provisioner = $this->getBaseDataProvisioner();
 
-        $user = \NDB_Factory::singleton()->user();
-
         // UserSiteMatch throws an exception if used on a model without a getCenterID
         // or getCenterIDs function, so we only apply it on sub-classes that
         // specifically say they support it.
-        if ($this->useSiteFilter()
-            && $user->hasPermission("access_all_profiles") == false
-        ) {
+        $allSitePerms = $this->allSitePermissionNames();
+        if ($allSitePerms != null) {
             $provisioner = $provisioner->filter(
-                new \LORIS\Data\Filters\UserSiteMatch()
+                new \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch(
+                    $allSitePerms
+                )
             );
         }
 
@@ -136,7 +145,7 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
             function ($row) {
                 return array_values($row);
             },
-            json_decode($table->toJSON(\User::singleton()), true)
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
         );
 
         return json_encode(
@@ -145,6 +154,129 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
                 'fieldOptions' => $this->getFieldOptions(),
             ]
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if (($request->getQueryParams()['format'] ?? '') === 'binary') {
+            return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "application/octet-stream")
+                ->withBody($this->toBinaryStream());
+        }
+        return parent::handle($request);
+    }
+
+    /**
+     * Return a PSR7 StreamInterface which streams the data for this table
+     * as a binary stream
+     *
+     * @return StreamInterface Stream of the table data
+     */
+    public function toBinaryStream(): StreamInterface
+    {
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisionerWithFilters());
+        $rows  = $table->getRows(\NDB_Factory::singleton()->user());
+        return new \LORIS\Http\DataIteratorBinaryStream($rows);
+
+    }
+
+    /**
+     * Format the user's projects to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned projects keys
+     *                           should be numeric (ProjectID) or project name
+     *
+     * @return array - an associative array of the form (ID|mame => name)
+     */
+    public function getProjectOptions(
+        \User $user,
+        bool  $numericKeys = true
+    ): array {
+        $projects     = $user->getProjects();
+        $projectNames = array_map(
+            fn($project) => $project->getName(),
+            $projects
+        );
+
+        if ($numericKeys) {
+            $projectIDs = array_map(
+                fn($project) => strval($project->getId()),
+                $projects
+            );
+            return array_combine($projectIDs, $projectNames);
+        }
+
+        return array_combine($projectNames, $projectNames);
+    }
+
+    /**
+     * Format the user's subprojects to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned subprojects keys
+     *                           should be numeric (SubprojectID)
+     *                           or strings (subproject name)
+     *
+     * @return array - an associative array of the form (ID => name)
+     */
+    public function getSubprojectOptions(
+        \User $user,
+        bool $numericKeys = true
+    ): array {
+        $subprojectOptions = array_reduce(
+            $user->getProjects(),
+            fn($subprojects, $project) =>
+                $subprojects
+                + array_column($project->getSubprojects(), 'title', 'subprojectId'),
+            []
+        );
+
+        if (!$numericKeys) {
+            $subprojectNames = array_values($subprojectOptions);
+            return array_combine($subprojectNames, $subprojectNames);
+        }
+
+        return $subprojectOptions;
+    }
+
+    /**
+     * Format the user's sites to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned sites keys should be
+                                 numeric (CenterID) or strings (site name)
+     * @param bool  $studySite   If the returned sites should be study sites only
+     *
+     * @return array An associative array of the form (ID|name => name)
+     */
+    public function getSiteOptions(
+        \User $user,
+        bool $numericKeys = true,
+        bool $studySite = true
+    ): array {
+        // If the user has any of the All Site permissions,
+        // get the list of all study sites
+        if ($user->hasAnyPermission($this->allSitePermissionNames())) {
+            $siteOptions = \Utility::getSiteList($studySite);
+        } else {
+            $siteOptions = $user->getStudySites();
+        }
+
+        if (!$numericKeys) {
+            $siteNames = array_values($siteOptions);
+            return array_combine($siteNames, $siteNames);
+        }
+
+        return $siteOptions;
     }
 }
 

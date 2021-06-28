@@ -28,3 +28,8 @@
 8. Click on the pencil button and 'Add a thread entry'. Click on 'Send'. Click on the chevron next to the status. You should be able to see the original text box thread entry and the one you just entered.
 9. Click on 'opened' and choose a different status. Status should be updated.
 
+### Widget registration on the dashboard page
+
+10. Verify that if a user has the 'bvl_feedback' permission, the latest Behavioural Feedback Notifications are displayed (4 at most) in the Behavioural Feedback panel. Clicking on a feedback thread will take you to the proper page.
+11. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Behavioural Feedback panel.
+12. Check that a 'New' notification is not labeled 'New' anymore after login in again.

@@ -11,18 +11,6 @@
     border: 0;
 }
 
-td.sidenav {
-    border-right: 0;
-}
-
-.td-cpanel-fake {
-    border-right: solid #6183b3 2px;
-}
-
-.table-cpanel-fake {
-    width: 160px;
-}
-
 ul {
     margin: 0;
     padding-left: 12px;

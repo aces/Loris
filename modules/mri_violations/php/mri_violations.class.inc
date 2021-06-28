@@ -37,13 +37,11 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        $this->tpl_data['violated_scans_modifications']
-            = $user->hasPermission('violated_scans_edit');
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
-                'violated_scans_edit'
-            )
+                'violated_scans_view_ownsite'
+            ]
         );
     }
     /**
@@ -65,7 +63,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             $row  = $DB->pselectRow(
                 "SELECT * FROM violations_resolved
                     WHERE hash = :hash",
-                array('hash' => $hash)
+                ['hash' => $hash]
             );
 
             //if row is found it means that resolve status was previously assigned,
@@ -79,11 +77,11 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                             break;
                         } else {
                             // user input doesn't match DB, so we update the DB
-                            $setArray   = array(
+                            $setArray   = [
                                 'Resolved'   => (string)$val,
                                 'ChangeDate' => date("Y-m-d H:i:s"),
-                            );
-                            $whereArray = array('hash' => $hash);
+                            ];
+                            $whereArray = ['hash' => $hash];
                             $DB->update(
                                 'violations_resolved',
                                 $setArray,
@@ -99,7 +97,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 if ($val=='unresolved') {
                     continue;
                 }
-                $newlyResolved         = array();
+                $newlyResolved         = [];
                 $newlyResolved['hash'] = $key;
                 $newlyResolved['Resolved']   = (string)$val;
                 $newlyResolved['User']       = $user->getUsername();
@@ -113,7 +111,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                               ':',minc_location,PatientName,SeriesUID,time_run)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
@@ -127,7 +125,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                                     ':',MincFile,PatientName,SeriesUID,TimeRun)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
 
                 if (!empty($ID_mri_violations_log)) {
@@ -143,7 +141,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                                     ':',MincFile,PatientName,SeriesUID,TimeRun)
                                    )
                     )",
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
 
                 if (!empty($ID_MRICandidateErrors)) {
@@ -165,7 +163,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'v.PatientName',
             'pjct.Name as Project',
             'subpjct.title as Subproject',
@@ -178,9 +176,12 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.hash',
             'v.join_id',
             'v.Resolved',
-        );
+            'v.TarchiveID',
+            'v.CandID',
+            'v.PSCID'
+        ];
 
-        $this->headers = array(
+        $this->headers = [
             'PatientName',
             'Project',
             'Subproject',
@@ -193,117 +194,27 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'Hash',
             'JoinID',
             'Resolution_status',
-        );
+            'TarchiveID',
+            'CandID',
+            'PSCID'
+        ];
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
                 'SeriesUID',
                 'Hash',
                 'JoinID',
+                'TarchiveID',
+                'CandID',
+                'PSCID'
             ]
         );
 
-        // Recreating the path (MincFileViolated field) to the minc file
-        // for the table mri_violations_log is more complicated
-        // because of the 3 cases that can occur as we pull the data
-        // from the db.
-        //   1. if the Mincfile starts with "assembly" then we need to
-        //      add the directory path in front of it.
-        //   2. if the word "assembly" is there but not at the beginning,
-        //      then uses it as is, the path is correct.
-        //   3. if it is not in the assembly dir, then it is in the trashbin,
-        //      so we fix the path with that in mind.
-        $this->query    = " FROM (
-            SELECT PatientName as PatientName,
-                time_run as TimeRun,
-                s.ProjectID as Project,
-                s.SubprojectID as Subproject,
-                minc_location as MincFile,
-                series_description as Series_Description,
-                'Could not identify scan type' as Problem,
-                SeriesUID,
-                md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run))
-                  as hash,
-                mpvs.ID as join_id,
-                p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
-            FROM mri_protocol_violated_scans AS mpvs
-            LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mpvs.ID
-            AND violations_resolved.TypeTable='mri_protocol_violated_scans')
-            LEFT JOIN candidate c
-            ON (mpvs.CandID = c.CandID)
-            LEFT JOIN session s
-            ON (SUBSTRING_INDEX(mpvs.PatientName,'_',-1) = s.Visit_label 
-                AND mpvs.CandID = s.CandID
-            )
-            LEFT JOIN psc p
-            ON (p.CenterID = s.CenterID)
-            WHERE Resolved is NULL"
-            . " UNION " .
-            "SELECT PatientName,
-                TimeRun,
-                s.ProjectID as Project,
-                s.SubprojectID as Subproject,
-                MincFile,
-                mri_scan_type.Scan_type,
-                'Protocol Violation',
-                SeriesUID,
-                md5(concat_WS(':',
-                              MincFile,
-                              PatientName,
-                              SeriesUID,
-                              TimeRun
-                   )
-                ) as hash,
-                mrl.LogID as join_id,
-                p.CenterID as Site,
-                violations_resolved.Resolved as Resolved
-            FROM mri_violations_log AS mrl
-            LEFT JOIN mri_scan_type
-            ON (mri_scan_type.ID=mrl.Scan_type)
-            LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mrl.LogID 
-            AND violations_resolved.TypeTable='mri_violations_log')
-            LEFT JOIN candidate c
-            ON (mrl.CandID=c.CandID)
-            LEFT JOIN session s
-            ON (mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID)
-            LEFT JOIN psc p
-            ON (p.CenterID = s.CenterID)
-            WHERE Resolved is NULL"
-            . " UNION " .
-            "SELECT PatientName,
-                TimeRun,
-                null,
-                null,
-                MincFile,
-                null,
-                Reason,
-                SeriesUID,
-                md5(concat_WS(':',
-                              MincFile,
-                              PatientName,
-                              SeriesUID,
-                              TimeRun
-                   )
-                ) as hash,
-                MRICandidateErrors.ID as join_id,
-                null,
-                violations_resolved.Resolved as Resolved
-            FROM MRICandidateErrors
-            LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=MRICandidateErrors.ID 
-            AND violations_resolved.TypeTable='MRICandidateErrors')
-            WHERE Resolved is NULL)
-            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
-            LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
-            LEFT JOIN subproject as subpjct
-                ON (v.Subproject = subpjct.SubprojectID)
-            WHERE 1=1";
+        $this->query = \LORIS\mri_violations\Module::getMriViolatedScanQuery();
+
         $this->order_by = 'v.TimeRun DESC';
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'PatientName' => 'v.PatientName',
             'Project'     => 'v.Project',
             'Subproject'  => 'v.Subproject',
@@ -313,9 +224,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'Description' => 'v.Series_Description',
             'SeriesUID'   => 'v.SeriesUID',
             'Site'        => 'v.Site',
-        );
+        ];
 
-        $this->validFilters = array(
+        $this->validFilters = [
             'v.PatientName',
             'v.Project',
             'v.Subproject',
@@ -325,9 +236,57 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             'v.Series_Description',
             'v.SeriesUID',
             'v.Site',
-        );
+        ];
 
         $this->EqualityFilters[] = 'v.Site';
+    }
+
+    /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     *
+     * @override
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        // No parameter should be added for the prepared statement if
+        // 'Unknown' or 'AllKnown' were selected in the site drop-down
+        if ($field != 'v.Site' || ($val != 'Unknown' && $val != 'AllKnown')) {
+            parent::_addQueryParam($qparams, $field, $prepared_key, $val);
+        }
+    }
+
+    /**
+     * Adds filters
+     *
+     * @param string $prepared_key filter key
+     * @param string $field        filter field
+     * @param string $val          filter value
+     *
+     * @return string ($query)
+     *
+     * @override
+     */
+    function _addValidFilters($prepared_key, $field, $val)
+    {
+        // The added AND clause differs from the one returned by
+        // parent::__addValidFilter when 'Unknown' or 'AllKnown' are
+        // selected in the sites drop-down
+        if ($field == 'v.Site' && ($val == 'Unknown' || $val == 'AllKnown')) {
+            return $val == 'Unknown'
+                ? ' AND v.Site IS NULL'
+                : ' AND v.Site IS NOT NULL';
+        }
+
+        // Standard behaviour for cases other than the above
+        return parent::_addValidFilters($prepared_key, $field, $val);
     }
 
     /**
@@ -347,13 +306,13 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $minYear,
             'maxYear'        => $maxYear,
-        );
+        ];
 
         $problemOptions = ['' => 'Any'];
 
@@ -365,10 +324,13 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
-            array()
+            []
         );
+
+        // Searches for reasons containing newlines will fail so we strip
+        // those characters from all the entries in list
         foreach ($problemTypes as $problem) {
-            $problemOptions[$problem['Reason']] = $problem['Reason'];
+            $problemOptions[trim($problem['Reason'])] = trim($problem['Reason']);
         }
 
         $this->addBasicText('PatientName', 'Patient Name');
@@ -379,7 +341,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
         // project
-        $list_of_projects = array('' => 'Any') + \Utility::getProjectList();
+        $list_of_projects = ['' => 'Any'] + \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
@@ -387,7 +349,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         );
 
         // Subproject
-        $list_of_subprojects = array('' => 'Any') +
+        $list_of_subprojects = ['' => 'Any'] +
             \Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
@@ -398,18 +360,23 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
-            }
+            $sites  = [
+                ''         => 'All (including unknown)',
+                'AllKnown' => 'All (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            ];
+            $sites += \Utility::getSiteList();
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites  = [
+                ''         => 'All user sites (including unknown)',
+                'AllKnown' => 'All user sites (excluding unknown)',
+                'Unknown'  => 'Unknown'
+            ];
+            $sites +=  $user->getStudySites();
         }
         $this->addSelect('Site', 'Site', $sites);
     }
-
 
     /**
      * Gathers JS dependecies and merge them with the parent
@@ -423,9 +390,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-            )
+            ]
         );
     }
 
@@ -441,7 +408,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/mri_violations/css/mri_violations.css")
+            [$baseURL . "/mri_violations/css/mri_violations.css"]
         );
     }
 }

@@ -20,65 +20,85 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidatesRow implements \LORIS\Data\DataInstance
+class CandidatesRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     private $_candid;
     private $_projectname;
+    private $_projectid;
     private $_pscid;
     private $_sitename;
     private $_edc;
     private $_dob;
     private $_sex;
-    private $_centerid;
+    private \CenterID $_centerid;
 
     /**
      * Create a new CandidatesRow.
      *
-     * @param array $row An array of candidate's propeties
+     * @param array $row An array of candidate's properties
      */
     public function __construct(array $row)
     {
         $this->_candid      = $row['CandID'] ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
-        $this->_pscid       = $row['PSCID'] ?? null;
-        $this->_sitename    = $row['SiteName'] ?? null;
-        $this->_edc         = $row['EDC'] ?? null;
-        $this->_dob         = $row['DoB'] ?? null;
-        $this->_sex         = $row['Sex'] ?? null;
-        $this->_centerid    = $row['CenterID'] ?? null;
+        if ($row['ProjectID'] !== null) {
+            $this->_projectid = new \ProjectID($row['ProjectID']);
+        }
+        $this->_pscid    = $row['PSCID'] ?? null;
+        $this->_sitename = $row['SiteName'] ?? null;
+        $this->_edc      = $row['EDC'] ?? null;
+        $this->_dob      = $row['DoB'] ?? null;
+        $this->_sex      = $row['Sex'] ?? null;
+        $this->_centerid = new \CenterID($row['CenterID']);
     }
 
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        $obj = array(
-            'CandID'  => $this->_candid,
-            'Project' => $this->_projectname,
-            'PSCID'   => $this->_pscid,
-            'Site'    => $this->_sitename,
-            'EDC'     => $this->_edc,
-            'DoB'     => $this->_dob,
-            'Sex'     => $this->_sex,
-        );
+        $obj = [
+            'CandID'    => $this->_candid,
+            'Project'   => $this->_projectname,
+            'ProjectID' => $this->_projectid,
+            'PSCID'     => $this->_pscid,
+            'Site'      => $this->_sitename,
+            'EDC'       => $this->_edc,
+            'DoB'       => $this->_dob,
+            'Sex'       => $this->_sex,
+        ];
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
-     * @return integer The CenterID
+     * @return \CenterID The CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
         if ($this->_centerid === null) {
             throw new \Exception('CenterID is null');
         }
-        return intval($this->_centerid);
+        return $this->_centerid;
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match against.
+     *
+     * @return \ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        if ($this->_projectid === null) {
+            throw new \Exception('ProjectID is null');
+        }
+        return $this->_projectid;
     }
 }

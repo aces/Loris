@@ -21,16 +21,17 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Project
+class Project implements \JsonSerializable
 {
-    private static $_instances = array();
+    private static $_instances = [];
 
     /**
      * The id of the project in database.
      *
-     * @var int
+     * @var \ProjectID
      */
     private $_projectId;
+
     private $_projectName;
     private $_projectAlias;
     private $_recruitmentTarget;
@@ -71,7 +72,7 @@ class Project
                       Project
                     WHERE name = :v_project_name
                     ",
-                array('v_project_name' => $projectName)
+                ['v_project_name' => $projectName]
             );
 
             if (empty($projectData)) {
@@ -80,7 +81,7 @@ class Project
 
             $project = new Project();
 
-            $project->_projectId         = (int) $projectData['projectId'];
+            $project->_projectId         = new ProjectID($projectData['projectId']);
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
             $project->_recruitmentTarget = (integer) $projectData['recTarget'];
@@ -95,13 +96,13 @@ class Project
      * Get a project object from the ID by mapping the ID to a name and using the
      * singleton function
      *
-     * @param int $projectID The ID of the project queried
+     * @param ProjectID $projectID The ID of the project queried
      *
      * @return Project
      *
      * @throws NotFound
      */
-    static function getProjectFromID(int $projectID) : \Project
+    static function getProjectFromID(ProjectID $projectID) : \Project
     {
         $factory = \NDB_Factory::singleton();
 
@@ -113,7 +114,7 @@ class Project
                       Project
                     WHERE ProjectID = :pid
                     ",
-            array('pid' => $projectID)
+            ['pid' => $projectID]
         );
 
         if (empty($projectName)) {
@@ -160,7 +161,7 @@ class Project
             WHERE
               name = :v_project_name
             ",
-            array('v_project_name' => $projectName)
+            ['v_project_name' => $projectName]
         );
         if (!empty($projectId)) {
             throw new \LorisException("The project $projectName already exists");
@@ -168,11 +169,11 @@ class Project
 
         $factory->database()->insert(
             'Project',
-            array(
+            [
                 'Name'              => $projectName,
                 'Alias'             => $projectAlias,
                 'recruitmentTarget' => $recruitmentTarget,
-            )
+            ]
         );
 
         $project = $factory->project($projectName);
@@ -183,9 +184,9 @@ class Project
     /**
      * Get this project's id
      *
-     * @return integer This project's id
+     * @return ProjectID This project's id
      */
-    public function getId(): int
+    public function getId(): ProjectID
     {
         return $this->_projectId;
     }
@@ -193,11 +194,11 @@ class Project
     /**
      * Set this project's id
      *
-     * @param integer $projectId This project's id
+     * @param ProjectID $projectId This project's id
      *
      * @return void
      */
-    public function setId(int $projectId): void
+    public function setId(ProjectID $projectId): void
     {
         $this->_projectId = $projectId;
     }
@@ -348,8 +349,8 @@ class Project
         \NDB_Factory::singleton()->database()
             ->update(
                 "Project",
-                array($field => (string) $value),
-                array("ProjectID" => $this->_projectId)
+                [$field => (string) $value],
+                ["ProjectID" => $this->_projectId]
             );
     }
 
@@ -376,21 +377,10 @@ class Project
             WHERE
               psr.projectId = :v_project_id
             ",
-            array('v_project_id' => $this->_projectId)
+            ['v_project_id' => $this->_projectId]
         );
 
-        return array_map(
-            function ($row) {
-                return (object) array(
-                    'subprojectId'      => (int) $row['subprojectId'],
-                    'title'             => $row['title'],
-                    'useEDC'            => $row['useEDC'],
-                    'windowDifference'  => $row['windowDifference'],
-                    'recruitmentTarget' => $row['recruitmentTarget'],
-                );
-            },
-            $subProjectData
-        );
+        return $subProjectData;
     }
 
     /**
@@ -402,7 +392,7 @@ class Project
     {
         $factory = \NDB_Factory::singleton();
 
-        $p = array($this->_projectId);
+        $p = [$this->_projectId];
         $candidatesData = $factory->database()->pselect(
             "
             SELECT
@@ -413,7 +403,7 @@ class Project
               active = 'Y' AND
               FIND_IN_SET(IFNULL(RegistrationProjectID, '-1'), :v_project_id)
             ",
-            array('v_project_id' => implode(',', $p))
+            ['v_project_id' => implode(',', $p)]
         );
         return array_map(
             function ($row) {
@@ -437,10 +427,10 @@ class Project
         foreach ($ids as $id) {
             $db->insertIgnore(
                 'project_subproject_rel',
-                array(
+                [
                     'ProjectID'    => $this->_projectId,
                     'SubprojectID' => $id,
-                )
+                ]
             );
         }
     }
@@ -460,11 +450,24 @@ class Project
         foreach ($ids as $id) {
             $db->delete(
                 'project_subproject_rel',
-                array(
+                [
                     'ProjectID'    => $this->_projectId,
                     'SubprojectID' => $id,
-                )
+                ]
             );
         }
+    }
+
+    /**
+     * Specify data which should be serialized to JSON.
+     * Returns data which can be serialized by json_encode(), which is a value of
+     * any type other than a resource.
+     *
+     * @see    https://www.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->_projectName;
     }
 }

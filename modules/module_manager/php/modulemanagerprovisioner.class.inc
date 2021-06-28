@@ -38,7 +38,7 @@ class ModuleManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     {
         parent::__construct(
             "SELECT name, active FROM modules",
-            array()
+            []
         );
     }
 

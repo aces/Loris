@@ -48,24 +48,24 @@ class Projects
         $useEDC = $config->getSetting("useEDC");
         $PSCID  = $config->getSetting("PSCID");
 
-        $PSCIDFormat = \Utility::structureToPCRE($PSCID['structure'], "SITE");
+        $PSCIDFormat = \Candidate::structureToPCRE($PSCID['structure'], "SITE");
 
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
-        $settings = array(
+        $settings = [
             "useEDC" => $useEDC,
-            "PSCID"  => array(
+            "PSCID"  => [
                 "Type"  => $type,
                 "Regex" => $PSCIDFormat,
-            ),
-        );
+            ],
+        ];
 
-        $projects = array();
+        $projects = [];
         foreach ($this->_projects as $project) {
             // All projects have the same settings.
             $project_name            = $project->getName();
             $projects[$project_name] = $settings;
         }
-        return array('Projects' => $projects);
+        return ['Projects' => $projects];
     }
 }

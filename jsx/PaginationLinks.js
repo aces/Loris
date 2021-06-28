@@ -3,7 +3,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Pagination component
+ */
 class PaginationLinks extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -13,12 +20,24 @@ class PaginationLinks extends Component {
     this.changePage = this.changePage.bind(this);
   }
 
+  /**
+   * Called by React when the component is updated.
+   *
+   * @param {object} prevProps - Previous React Component properties
+   */
   componentDidUpdate(prevProps) {
     if (this.props.Total < prevProps.Total) {
       this.props.onChangePage(1);
     }
   }
 
+  /**
+   * Creates an onClick Event Handler
+   * execyting this.props.onChangePage(i)
+   *
+   * @param {int} i - Page index
+   * @return {function(event)} - onClick Event Handler
+   */
   changePage(i) {
     return function(evt) {
       // Don't jump to the top of the page
@@ -30,6 +49,11 @@ class PaginationLinks extends Component {
     }.bind(this);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let rowsPerPage = this.props.RowsPerPage;
     let pageLinks = [];
@@ -55,7 +79,11 @@ class PaginationLinks extends Component {
 
     if (startPage > 1) {
       pageLinks.push(
-        <li key={'table_page_beginning_' + startPage.toString()} onClick={this.changePage(1)}><a href='#'>&laquo;</a></li>
+        <li
+          key={'table_page_beginning_' + startPage.toString()}
+          onClick={this.changePage(1)}>
+          <a href='#'>&laquo;</a>
+        </li>
       );
     }
     if (startPage < 1) {
@@ -76,14 +104,21 @@ class PaginationLinks extends Component {
         classList = 'active';
       }
       pageLinks.push(
-        <li key={'table_page_' + i.toString()} onClick={this.changePage(i)} className={classList}>
+        <li
+          key={'table_page_' + i.toString()}
+          onClick={this.changePage(i)}
+          className={classList}
+        >
           <a href="#">{i}</a>
         </li>
       );
     }
     if (lastShownPage !== lastPage) {
       pageLinks.push(
-        <li key={'table_page_more_' + lastShownPage.toString()} onClick={this.changePage(lastPage)}>
+        <li
+          key={'table_page_more_' + lastShownPage.toString()}
+          onClick={this.changePage(lastPage)}
+        >
           <a href='#'>&raquo;</a>
         </li>
       );

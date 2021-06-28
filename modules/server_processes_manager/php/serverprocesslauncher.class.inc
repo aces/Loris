@@ -96,7 +96,7 @@ class ServerProcessLauncher
 
         $db->insert(
             'server_processes',
-            array(
+            [
                 'pid'            => $process->getPid(),
                 'type'           => $process->getType(),
                 'stdout_file'    => $process->getStdoutFile(),
@@ -104,22 +104,10 @@ class ServerProcessLauncher
                 'exit_code_file' => $process->getExitCodeFile(),
                 'userid'         => $process->getUserId(),
                 'start_time'     => $process->getStartTime(),
-            )
+            ]
         );
 
         return $db->lastInsertID;
-    }
-
-    /**
-     * Determines if a process should be allowed to be run or not.
-     *
-     * @param AbstractServerProcess $process process to consider.
-     *
-     * @return boolean true if the process is allowed to run, false otherwise.
-     */
-    private function _okToExecute(AbstractServerProcess $process)
-    {
-        return true;
     }
 
     /**
@@ -134,10 +122,6 @@ class ServerProcessLauncher
      */
     private function _launch(AbstractServerProcess $process)
     {
-        if (!$this->_okToExecute($process)) {
-            return null;
-        }
-
         $process->execute();
 
         // Wait one second before checking the exit code: if the command is invalid

@@ -28,6 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class NDB_Page implements RequestHandlerInterface
 {
+    protected $lorisinstance;
     /**
      * The name of the test_name being accessed
      */
@@ -36,14 +37,14 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The name of the page (subtest) being accessed
      */
-    var $page;
+    public $page;
 
     /**
      * Reference to the HTML QuickForm
      *
      * @var \LorisForm
      */
-    var $form;
+    public $form;
 
     /**
      * The identifier for the item to edit
@@ -55,7 +56,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Form defaults
      */
-    var $defaults = array();
+    var $defaults = [];
 
     /**
      * If true, the default display function will not try to load any template.
@@ -68,10 +69,17 @@ class NDB_Page implements RequestHandlerInterface
      * A list of arrays to be used as field options on
      * front-end forms and menu filters.
      */
-    var $fieldOptions = array();
+    var $fieldOptions = [];
 
     public $Module;
     public $template;
+
+    /**
+     * The LorisInstance that this page was created to serve.
+     *
+     * @var \LORIS\LorisInstance
+     */
+    protected $loris;
 
     /**
      * The format that the page content should be returned in. This is generally
@@ -89,24 +97,40 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @var array<mixed>
      */
-    protected $tpl_data = array();
+    protected $tpl_data = [];
+
+    /**
+     * The default dateOptions to send to LorisForm to render elements
+     * on this page. This is usually set by subclasses of NDB_Page which
+     * need to modify the options to show on a date (ie. min year, max year,
+     * etc.)
+     *
+     * @var array
+     */
+    public $dateOptions;
 
     /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS instance that the page is
+     *                                         serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be
+     *                                         an empty string)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
+        $this->loris  = $loris;
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
@@ -114,7 +138,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
-        $this->defaults   = array();
+        $this->defaults   = [];
 
         $this->template = $page;
     }
@@ -147,18 +171,19 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $name    The name of this file element
      * @param string $label   The label to attach to this element
-     * @param array  $options Options to pass to the form for this
+     * @param array  $attribs Attributes to pass to the form for this
      *                        file chooser.
      *
      * @return void
      */
-    function addFile($name, $label, $options=array())
+    function addFile($name, $label, $attribs=[])
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array_merge(array('class' => 'fileUpload'), $options)
+            [],
+            array_merge(['class' => 'fileUpload'], $attribs)
         );
     }
 
@@ -171,28 +196,32 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', null, $header);
+        $this->form->addElement('header', '', $header);
     }
 
     /**
      * Wrapper to create a select drop-down list
      *
-     * @param string $name     The field name of this select dropdown
-     * @param string $label    The label to attach to this dropdown
-     * @param array  $options  Options to pass to QuickForm for this
-     *                         select
-     * @param array  $optional Optional extra HTML attributes to add
-     *                         to the select
+     * @param string $name    The field name of this select dropdown
+     * @param string $label   The label to attach to this dropdown
+     * @param array  $options Options to pass to QuickForm for this
+     *                        select
+     * @param array  $attribs Optional extra HTML attributes to add
+     *                        to the select
      *
      * @return void
      */
-    function addSelect($name, $label, $options, $optional=array())
-    {
-        $optional = array_merge(
-            array('class' => 'form-control input-sm'),
-            $optional
+    function addSelect(
+        string $name,
+        string $label,
+        array $options,
+        array $attribs=[]
+    ) {
+        $attribs = array_merge(
+            ['class' => 'form-control input-sm'],
+            $attribs
         );
-        $this->form->addElement('select', $name, $label, $options, $optional);
+        $this->form->addElement('select', $name, $label, $options, $attribs);
     }
 
     /**
@@ -204,7 +233,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', null, $label);
+        $this->form->addElement('static', '', $label);
     }
 
     /**
@@ -228,35 +257,36 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field   The name of the text element to add
      * @param string $label   Label to attach to the text element
      * @param array  $options QuickForm options to pass to addElement
+     * @param array  $attribs QuickForm attributes to pass to addElement
      *
      * @return void
      */
-    function addBasicText($field, $label, $options=array())
+    function addBasicText($field, $label, $options=[], $attribs=[])
     {
-        $options = array_merge(array('class' => 'form-control input-sm'), $options);
-        $this->form->addElement('text', $field, $label, $options);
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
+        $this->form->addElement('text', $field, $label, $options, $attribs);
     }
 
     /**
      * Adds a text area to the current page with no accompanying not answered
      * option.
      *
-     * @param string $field          The name of the text area to add
-     * @param string $label          Label to attach to the text area field
-     * @param array  $specifications Extra HTML options to add to the textarea
+     * @param string $field   The name of the text area to add
+     * @param string $label   Label to attach to the text area field
+     * @param array  $attribs Extra HTML options to add to the textarea
      *
      * @return void
      */
     function addBasicTextArea(
         $field,
         $label,
-        $specifications=array()
+        $attribs=[]
     ) {
-        $specifications = array_merge(
-            array('class' => 'form-control input-sm'),
-            $specifications
+        $attribs = array_merge(
+            ['class' => 'form-control input-sm'],
+            $attribs
         );
-        $this->form->addElement('textarea', $field, $label, $specifications);
+        $this->form->addElement('textarea', $field, $label, [], $attribs);
     }
 
     /**
@@ -266,7 +296,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field   The name of the date field
      * @param string $label   Label to attach to the date field in the frontend
      * @param array  $options Options to pass to HTML_QuickForm
-     * @param array  $attr    Extra HTML attributes to add to the date group.
+     * @param array  $attribs Extra HTML attributes to add to the date group.
      *
      * @return void
      *
@@ -276,43 +306,35 @@ class NDB_Page implements RequestHandlerInterface
     function addBasicDate(
         $field,
         $label,
-        $options=array(),
-        $attr=array(
+        $options=[],
+        $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
-        )
+        ]
     ) {
-        if ($options === array() && !empty($this->dateOptions)) {
+        if ($options === [] && !empty($this->dateOptions)) {
             $options = $this->dateOptions;
         }
-        $this->form->addElement('date', $field, $label, $options, $attr);
+        $this->form->addElement('date', $field, $label, $options, $attribs);
     }
 
     /**
      * Wrapper to create a checkbox
      *
-     * @param string $name     The field name of this checkbox
-     * @param string $label    The label to attach to this checkbox
-     * @param array  $options  Options to pass to QuickForm for this
-     *                         checkbox
-     * @param array  $optional Optional extra HTML attributes to add
-     *                         to the checkbox
+     * @param string $name    The field name of this checkbox
+     * @param string $label   The label to attach to this checkbox
+     * @param array  $attribs Optional extra HTML attributes to add
+     *                        to the checkbox
      *
      * @return void
-     *
-     * @note The optional array is never actually put into the element
-     *       because LorisForm::addHeader does not take it as a parameter.
-     *       The 'class' attribute is now added to the $options array instead
-     *       whereas before it was in the $optional array.
-     *        - Alexandra Livadas
      */
-    function addCheckbox($name, $label, $options, $optional=array())
+    function addCheckbox($name, $label, $attribs=[])
     {
-        $options = array_merge(
-            array('class' => 'form-control input-sm'),
-            $options
+        $attribs = array_merge(
+            ['class' => 'form-control input-sm'],
+            $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
+        $this->form->addElement('advcheckbox', $name, $label, [], $attribs);
     }
 
     /**
@@ -331,39 +353,36 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return void
      */
-    function addRadio($name, $groupLabel, $radios, $options=array())
+    function addRadio($name, $groupLabel, $radios, $options=[])
     {
-        $radGroup = array();
+        $radGroup = [];
         foreach ($radios as $radElement) {
-            $tempOptions = array_merge(
-                array(
-                    'class' => 'form-control input-sm',
-                    'value' => $radElement['value'],
-                ),
-                $options
-            );
-            $radGroup[]  = $this->createRadio(
+            $radGroup[] = $this->createRadio(
                 $name,
                 $radElement['label'],
-                $tempOptions
+                $options,
+                [
+                    'class' => 'form-control input-sm',
+                    'value' => $radElement['value'],
+                ]
             );
         }
-        $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
+        $this->addGroup($radGroup, $name . '_group', $groupLabel, '');
     }
 
     /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string $name       The name of the hidden element to add
-     * @param array  $value      The value of the hidden element to add
-     * @param array  $attributes Additional html attributes for element
+     * @param string  $name    The name of the hidden element to add
+     * @param ?string $value   The value of the hidden element to add
+     * @param array   $attribs Additional html attributes for element
      *
      * @return void
      */
-    function addHidden($name, $value=null, $attributes=array())
+    function addHidden($name, $value=null, $attribs=[])
     {
-        $this->form->addElement('hidden', $name, $value, $attributes);
+        $this->form->addElement('hidden', $name, $value, [], $attribs);
     }
 
     /**
@@ -380,48 +399,49 @@ class NDB_Page implements RequestHandlerInterface
     function addTextAreaGroup(
         $field,
         $label,
-        $not_answered_options=array(
+        $not_answered_options=[
             ''             => '',
             'not_answered' => 'Not Answered',
-        )
+        ]
     ) {
-        $group   = array();
+        $group   = [];
         $group[] = $this->createTextArea($field, '');
         $group[] = $this->createSelect(
             $field . '_status',
             '',
             $not_answered_options,
-            array('class' => 'form-control input-sm not-answered')
+            ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, '');
 
     }
 
     /**
      * Creates a password element and adds it to the current form.
      *
-     * @param string $field The name of the password field to add
-     * @param string $label The label to attach to this element
-     * @param array  $attr  List of extra HTML attributes to add to the element
+     * @param string $field   The name of the password field to add
+     * @param string $label   The label to attach to this element
+     * @param array  $attribs List of extra HTML attributes to add to the element
      *
      * @return void
      */
     function addPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=[]
     ) {
-        $this->form->addElement('password', $field, $label, $attr);
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
+        $this->form->addElement('password', $field, $label, [], $attribs);
     }
 
     /**
      * Adds a QuickForm rule to an element on the page.
      *
-     * @param string $element The name of the element to have the rule
-     * @param string $message The message to show on failure
-     * @param string $type    The type of rule to add
-     * @param string $format  See QuickForm documentation.
+     * @param string|array $element The name of the element to have the rule
+     * @param string       $message The message to show on failure
+     * @param string       $type    The type of rule to add
+     * @param string       $format  See QuickForm documentation.
      *
      * @return void
      *
@@ -460,7 +480,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name      The name to give this group
      * @param string $label     A label to attach to the group
      * @param string $delimiter The separator to use between group elements
-     * @param string $options   An optional array to include prefix_wrapper and
+     * @param ?array $options   An optional array to include prefix_wrapper and
      *                          postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
@@ -481,7 +501,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field   The field name for this select
      * @param string $label   The label to attach to the element
      * @param array  $options Extra options to pass to QuickForm
-     * @param array  $attr    Extra HTML attributes to add to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return array representing select element
      */
@@ -489,30 +509,29 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $options=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=['class' => 'form-control input-sm']
     ) {
-        return $this->form->createElement("select", $field, $label, $options, $attr);
+        return $this->form->createElement(
+            "select",
+            $field,
+            $label,
+            $options,
+            $attribs
+        );
     }
 
     /**
      * Create a QuickForm label element but does not add it to the form
      *
-     * FIXME: LorisForm::createElement does not use the label parameter when
-     *        the element type is "static". Also, the $labelString paramter here
-     *        has been placed as the fourth parameter which is actually the $options
-     *        array in the createElement function! - Alexandra Livadas
-     *
      * @param string $labelString The label to attach to the element
      *
      * @return array representing label element
      */
-    function createLabel(
-        $labelString
-    ) {
+    function createLabel($labelString)
+    {
         return $this->form->createElement(
             "static",
-            null,
-            null,
+            '',
             $labelString
         );
     }
@@ -528,10 +547,10 @@ class NDB_Page implements RequestHandlerInterface
     function createText(
         $field,
         $label=null,
-        $attribs=array()
+        $attribs=[]
     ) {
-        $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
-        return $this->form->createElement("text", $field, $label, $attr);
+        $attr = array_merge(['class' => 'form-control input-sm'], $attribs);
+        return $this->form->createElement("text", $field, $label, [], $attr);
     }
 
     /**
@@ -548,7 +567,8 @@ class NDB_Page implements RequestHandlerInterface
             "textarea",
             $field,
             $label,
-            array('class' => 'form-control input-sm')
+            [],
+            ['class' => 'form-control input-sm']
         );
     }
 
@@ -558,7 +578,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field       The fieldname for this date field
      * @param string $label       The label to attach to this date
      * @param array  $dateOptions List of options to pass to QuickForm
-     * @param array  $attr        List of HTML attributes to add to the date
+     * @param array  $attribs     List of HTML attributes to add to the date
      *                            group.
      *
      * @return array representing date element
@@ -570,40 +590,37 @@ class NDB_Page implements RequestHandlerInterface
         $field,
         $label,
         $dateOptions=null,
-        $attr=array(
+        $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
-        )
+        ]
     ) {
         return $this->form->createElement(
             "date",
             $field,
             $label,
             $dateOptions,
-            $attr
+            $attribs
         );
     }
 
     /**
      * Creates an HTML checkbox but does not add it to the form.
      *
-     * FIXME: $closer is never used or explained. - Alexandra Livadas
-     *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $options Options to pass to HTML_QuickForm
-     * @param string $closer  ?????
+     * @param array  $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */
-    function createCheckbox($field, $label, $options=null, $closer='</label>')
+    function createCheckbox($field, $label, $attribs=null)
     {
         return $this->form->createElement(
             "advcheckbox",
             $field,
             $label,
-            $options,
-            array()
+            [],
+            $attribs
         );
     }
 
@@ -612,36 +629,44 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
+     * @param array  $attribs An array of extra HTML attributes to
+     *                        add to the element.
      *
      * @return array representing radio button
      */
-    function createRadio($field, $label, $options=null)
+    function createRadio($field, $label, $options=null, $attribs=null)
     {
         return $this->form->createElement(
             "radio",
             $field,
             $label,
             $options,
-            array()
+            $attribs
         );
     }
 
     /**
      * Creates a password form element but does not add it to the page
      *
-     * @param string $field The fieldname for the password box
-     * @param string $label The label to attach to the form element
-     * @param array  $attr  List of HTML attributes to add to the element
+     * @param string $field   The fieldname for the password box
+     * @param string $label   The label to attach to the form element
+     * @param array  $attribs List of HTML attributes to add to the element
      *
      * @return array representing form element
      */
     function createPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=['class' => 'form-control input-sm']
     ) {
-        return $this->form->createElement('password', $field, $label, $attr);
+        return $this->form->createElement(
+            'password',
+            $field,
+            $label,
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -673,6 +698,9 @@ class NDB_Page implements RequestHandlerInterface
                 )->withStatus(403);
         }
 
+        $loris = $request->getAttribute("loris");
+        $this->lorisinstance = $loris;
+
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
         // carried along with the request object. We use a pageclass attribute
@@ -687,14 +715,14 @@ class NDB_Page implements RequestHandlerInterface
         // Format should be deprecated and getting the page in different formats
         // should be a different endpoint or use HTTP content negotiation headers.
         $get = $request->getQueryParams();
-        if (isset($get['format'])) {
+        if (isset($get['format']) && $get['format'] === 'json') {
             $this->format = $get['format'];
             return $handler->handle($request)
                 ->withHeader("Content-Type", "application/json");
         }
+
         return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-            ->process($request, $handler)
-            ->withHeader("Content-Type", "text/html");
+            ->process($request, $handler);
     }
 
     /**
@@ -711,6 +739,20 @@ class NDB_Page implements RequestHandlerInterface
         $this->setup();
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+    /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param User                   $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
     }
 
     /**
@@ -741,7 +783,7 @@ class NDB_Page implements RequestHandlerInterface
         // get the defaults
         $localDefaults = $this->_getDefaults();
         if (!is_array($localDefaults)) {
-            $localDefaults = array();
+            $localDefaults = [];
         }
         // set the quickform object defaults
         $this->_setDefaults(array_merge($this->defaults, $localDefaults));
@@ -778,7 +820,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @return array The defaults
      */
-    function _setDefaults($defaults = array())
+    function _setDefaults($defaults = [])
     {
         $this->defaults = $defaults;
         $this->form->setDefaults($defaults);
@@ -804,7 +846,7 @@ class NDB_Page implements RequestHandlerInterface
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
 
-        $files = array(
+        $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
             $baseurl . '/js/helpHandler.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
@@ -828,7 +870,7 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Markdown.js',
-        );
+        ];
         return $files;
     }
 
@@ -845,12 +887,12 @@ class NDB_Page implements RequestHandlerInterface
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
 
-        $files = array(
+        $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
             $baseurl . "/js/jquery/datepicker/datepicker.css",
             $baseurl . '/vendor/sweetalert/sweetalert.css',
-        );
+        ];
         return $files;
     }
 
@@ -910,6 +952,6 @@ class NDB_Page implements RequestHandlerInterface
      */
     function toJSON(): string
     {
-        return json_encode(array('error' => 'Not implemented'));
+        return json_encode(['error' => 'Not implemented']);
     }
 }

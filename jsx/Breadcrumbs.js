@@ -18,6 +18,10 @@ import PropTypes from 'prop-types';
  * Used for navigation on all Loris pages.
  */
 class Breadcrumbs extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -28,22 +32,30 @@ class Breadcrumbs extends Component {
     this.checkScreenSize = this.checkScreenSize.bind(this);
   }
 
-  componentWillMount() {
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
     this.checkScreenSize();
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.checkScreenSize);
     }
   }
 
+  /**
+   * Invoked immediately before a component is unmounted and destroyed.
+   */
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.checkScreenSize);
     }
   }
 
+  /**
+   * Used to check to current window size and
+   * sets the number of breadcrumbs to show
+   */
   checkScreenSize() {
-    // Used to check to current window size and
-    // sets the number of breadcrumbs to show
     const windowWidth = window.innerWidth;
     let displayCount = 4;
 
@@ -64,6 +76,11 @@ class Breadcrumbs extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const baseURL = this.props.baseURL;
     const breadcrumbs = [];

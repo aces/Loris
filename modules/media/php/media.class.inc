@@ -39,22 +39,22 @@ class Media extends \DataFrameworkMenu
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'media_read',
                 'media_write',
-            )
+            ]
         );
     }
 
     /**
-     * Tells the base class that this page's provisioner can support
-     * the UserSiteMatch filter.
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool true
+     * @return ?array of site permissions or null
      */
-    public function useSiteFilter(): bool
+    public function allSitePermissionNames() : ?array
     {
-        return true;
+        return ['access_all_profiles'];
     }
 
     /**
@@ -78,7 +78,7 @@ class Media extends \DataFrameworkMenu
         $user = \User::singleton();
         $db   = \Database::singleton();
 
-        $siteList  = array();
+        $siteList  = [];
         $visitList = \Utility::getVisitList();
 
         // allow to view all sites data through filter
@@ -86,16 +86,16 @@ class Media extends \DataFrameworkMenu
             $siteList = \Utility::getSiteList(false);
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$val] = $site->getCenterName();
+                    $siteList["$val"] = $site->getCenterName();
                 }
             }
         }
 
-        $instrumentList   = array();
+        $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
@@ -104,7 +104,7 @@ class Media extends \DataFrameworkMenu
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = array();
+        $fileTypeList  = [];
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
@@ -112,20 +112,20 @@ class Media extends \DataFrameworkMenu
 
         //Language selector
         $languages    = \Utility::getLanguageList();
-        $languageList = array();
+        $languageList = [];
         foreach ($languages as $language) {
             $languageList[$language] = $language;
         }
 
-        $hiddenOptions = array();
+        $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
-            $hiddenOptions = array(
+            $hiddenOptions = [
                 0 => 'Visible only',
                 1 => 'Hidden only',
-            );
+            ];
         }
 
-        return array(
+        return [
             'fileTypes'     => $fileTypeList,
             'visits'        => $visitList,
             'sites'         => $siteList,
@@ -134,7 +134,7 @@ class Media extends \DataFrameworkMenu
             'languages'     => $languageList,
             'hidden'        => $hiddenOptions,
             'maxUploadSize' => \Utility::getMaxUploadSize(),
-        );
+        ];
     }
 
     /**
@@ -155,7 +155,11 @@ class Media extends \DataFrameworkMenu
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = parent::getDataProvisionerWithFilters();
-
+        $user        = \NDB_Factory::singleton()->user();
+        if ($user->hasPermission('superuser')) {
+            // We don't filter out hidden files.
+            return $provisioner;
+        }
         return $provisioner->filter(new HideFileFilter());
     }
 
@@ -188,9 +192,9 @@ class Media extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/media/js/mediaIndex.js",
-            )
+            ]
         );
     }
 }

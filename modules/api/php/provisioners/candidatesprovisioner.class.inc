@@ -41,6 +41,7 @@ class CandidatesProvisioner extends DBRowProvisioner
              SELECT 
                c.CandID as CandID,
                p.Name as ProjectName,
+               c.RegistrationProjectID as ProjectID,
                c.PSCID as PSCID,
                c.RegistrationCenterID as CenterID,
                s.Name as SiteName,
@@ -55,7 +56,7 @@ class CandidatesProvisioner extends DBRowProvisioner
                ON (c.RegistrationProjectID = p.ProjectID)
              WHERE c.Active=\'Y\'
             ',
-            array()
+            []
         );
     }
 

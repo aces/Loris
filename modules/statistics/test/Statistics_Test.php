@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -38,7 +39,7 @@ class StatisticsTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("General Description", $bodyText);
+        $this->assertStringContainsString("General Description", $bodyText);
 
     }
     /**
@@ -49,14 +50,14 @@ class StatisticsTest extends LorisIntegrationTest
      */
     function testLoadPageWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -71,12 +72,12 @@ class StatisticsTest extends LorisIntegrationTest
      */
     function testLoadPageWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/statistics/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -98,7 +99,7 @@ class StatisticsTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".statsH2")
         )->getText();
-        $this->assertContains("Data Entry Statistics", $bodyText);
+        $this->assertStringContainsString("Data Entry Statistics", $bodyText);
     }
     /**
      * Tests that, when loading the Demographic Statistics Tab
@@ -119,6 +120,9 @@ class StatisticsTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".statsH2")
         )->getText();
-        $this->assertContains("General Demographic Statistics", $bodyText);
+        $this->assertStringContainsString(
+            "General Demographic Statistics",
+            $bodyText
+        );
     }
 }

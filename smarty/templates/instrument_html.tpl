@@ -251,23 +251,44 @@
 				        <tr>
 				        {/if}
 							<td colspan="2">{$element.label}</td>
-							{foreach key=gkey item=gitem from=$element.elements}
-								{if $gitem.type == 'date'}
-									<td class="element form-inline">{$gitem.html}</td>
-								{elseif $gitem.type == 'checkbox'}
-									<td class="form-inline">{$gitem.html}</td>
-								{else}
-									<td class="element">{$gitem.html}</td>
-								{/if}
-							{/foreach}
+                            {assign var="itemError" value=""}
+                            {assign var="atLeastOneError" value=""}
+                            {foreach key=gkey item=gitem from=$element.elements}
+                                {if $gitem.error}
+                                    {assign var="itemError" value=" has-error"}
+                                    {assign var="atLeastOneError" value="1"}
+                                {else}
+                                    {assign var="itemError" value=""}
+                                {/if}
+                                {if $gitem.type == 'date'}
+                                    <td class="element form-inline{$itemError}">{$gitem.html}</td>
+                                {elseif $gitem.type == 'checkbox'}
+                                    <td class="form-inline{$itemError}">{$gitem.html}</td>
+                                {else}
+                                    <td class="element{$itemError}">{$gitem.html}</td>
+                                {/if}
+                            {/foreach}
 						</tr>
 						{if $element.error}
-							<tr>
-								<td colspan="2"></td>
-			                    <td colspan="{$element.elements|@count}" class="has-error">
-			                    	<font class="form-error">{$element.error}</font>
-			                    </td>
-			                </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="{$element.elements|@count}" class="has-error">
+                                <font class="form-error">{$element.error}</font>
+                            </td>
+                        </tr>
+                        {elseif $atLeastOneError}
+                        <tr>
+                            <td colspan="2"></td>
+                            {foreach key=gkey item=gitem from=$element.elements}
+                                {if $gitem.error}
+                                    <td class="has-error">
+                                        <font class="form-error">{$gitem.error}</font>
+                                    </td>
+                                {else}
+                                    <td/>
+                                {/if}
+                            {/foreach}
+                        </tr>
 						{/if}
 					{/if}
 				{/if}

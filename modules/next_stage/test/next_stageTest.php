@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
  "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -42,7 +43,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
     }
     /**
      * Tests that, page loads with data_entry permission
@@ -51,7 +52,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesPageLoadWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -59,7 +60,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
         $this->resetPermissions();
     }
 
@@ -70,7 +71,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -78,7 +79,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -98,7 +99,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->changeStudySite();
 
         // Check to make sure page doesn't load without permission
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -106,14 +107,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
         $this->resetPermissions();
 
         // Check to make sure page doesn't load with permission
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->webDriver->get(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
@@ -121,7 +122,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -167,7 +168,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Both Date fields must match.", $bodyText);
+        $this->assertStringContainsString("Both Date fields must match.", $bodyText);
     }
 
     /**
@@ -205,7 +206,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next stage started.", $bodyText);
+        $this->assertStringContainsString("Next stage started.", $bodyText);
     }
 }
 

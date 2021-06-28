@@ -6,9 +6,12 @@
 $(document).ready(function bindInvalidFormListeners() {
     // This will make sure that the flag indicating whether we scrolled
     // to an invalid element when the form is submitted is reset
-  document.getElementsByName('fire_away')[0].addEventListener('click', function() {
-    bindInvalidFormListeners.scrollingDone = false;
-  });
+  document.getElementsByName('fire_away')[0].addEventListener(
+    'click',
+    function() {
+      bindInvalidFormListeners.scrollingDone = false;
+    }
+  );
 
     // Override default event handler for invalid input elements
     // This will make sure that the invalid element appears at the top

@@ -28,6 +28,14 @@ namespace LORIS\imaging_browser;
 
 class ViewSession extends \NDB_Form
 {
+    private \Database $_DB;
+
+    /**
+     * The URL to assign to the form on the page rendered by
+     * PageDecorationMiddleware
+     */
+    public string $FormAction;
+
     /**
      * Var to store the scanner information.
      * Will be used from the last file.
@@ -51,23 +59,27 @@ class ViewSession extends \NDB_Form
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
          */
-        $candid    = \TimePoint::singleton($_REQUEST['sessionID'])->getCandID();
+        $session   = \TimePoint::singleton(
+            new \SessionID(strval($_REQUEST['sessionID']))
+        );
+        $candid    = $session->getCandID();
         $candidate = \Candidate::singleton($candid);
 
-        if ($candidate->getData('Entity_type') == 'Scanner') {
-            return $user->hasPermission('imaging_browser_phantom_allsites')
+        if ($candidate->getEntityType() == 'Scanner') {
+            return ($user->hasPermission('imaging_browser_phantom_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_phantom_ownsite',
-                    \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
-        } elseif ($candidate->getData('Entity_type') == 'Human') {
-            return $user->hasPermission('imaging_browser_view_allsites')
+                    $session->getCenterID()
+                ))
+                && ($user->hasProject($session->getProject()->getId()));
+        } elseif ($candidate->getEntityType() == 'Human') {
+            return ($user->hasPermission('imaging_browser_view_allsites')
                 || $user->hasCenterPermission(
                     'imaging_browser_view_site',
-                    \TimePoint::singleton($_REQUEST['sessionID'])->getCenterID()
-                );
+                    $session->getCenterID()
+                ))
+                && $user->hasProject($session->getProject()->getId());
         }
-
         return false;
     }
 
@@ -89,7 +101,7 @@ class ViewSession extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $this->DB = \Database::singleton();
+        $this->_DB = \Database::singleton();
 
         $this->sessionID = $_REQUEST['sessionID'];
 
@@ -106,27 +118,27 @@ class ViewSession extends \NDB_Form
 
             $this->tpl_data['showFloatJIV'] = true;
 
-            $file = $this->DB->pselectOne(
-                "SELECT File FROM files f 
-                JOIN session s 
-                ON (s.ID=f.SessionID) 
+            $file = $this->_DB->pselectOne(
+                "SELECT File FROM files f
+                JOIN session s
+                ON (s.ID=f.SessionID)
                 WHERE s.ID=:sid AND FileType='obj'",
-                array('sid' => $this->sessionID)
+                ['sid' => $this->sessionID]
             );
             if (!empty($file)) {
                 $this->tpl_data['show3DViewer'] = true;
             }
 
-            $this->tpl_data['status_options']    = array(
+            $this->tpl_data['status_options']    = [
                 ''     => '&nbsp;',
                 'Pass' => 'Pass',
                 'Fail' => 'Fail',
-            );
-            $this->tpl_data['caveat_options']    = array(
+            ];
+            $this->tpl_data['caveat_options']    = [
                 ''    => '&nbsp;',
                 true  => 'True',
                 false => 'False',
-            );
+            ];
             $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
@@ -150,7 +162,7 @@ class ViewSession extends \NDB_Form
         if (!empty($_REQUEST['selectedOnly'])) {
             $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
         }
-        $args = array('SID' => $this->sessionID);
+        $args = ['SID' => $this->sessionID];
         // To better support QC for CIVET output a couple of
         // additional conditions have been put in...
         if (!empty($_REQUEST['outputType'])) {
@@ -160,38 +172,38 @@ class ViewSession extends \NDB_Form
             } elseif ($outputType=="native") {
                 $extra_where_string .= " AND OutputType='native'";
             } elseif ($outputType=="skull_mask") {
-                $extra_where_string .= " AND (OutputType='skull_mask' 
+                $extra_where_string .= " AND (OutputType='skull_mask'
                     OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
             } else {
-                $extra_where_string .= " AND (OutputType=:outputType 
+                $extra_where_string .= " AND (OutputType=:outputType
                     OR OutputType='linreg')";
 
                 $args["outputType"] = $outputType;
             }
         }
-        $files = $this->DB->pselect(
-            "SELECT files.FileID, files.ScannerID FROM files 
-             LEFT JOIN files_qcstatus as sel 
-             on (files.FileID=sel.FileID) 
-            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
-            OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
-            $extra_where_string 
-            ORDER BY files.OutputType, 
-                     files.AcquisitionProtocolID, 
+        $files = $this->_DB->pselect(
+            "SELECT files.FileID, files.ScannerID FROM files
+             LEFT JOIN files_qcstatus as sel
+             on (files.FileID=sel.FileID)
+            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL
+            OR AcquisitionProtocolID not in (1, 2, 3, 52))
+            $extra_where_string
+            ORDER BY files.OutputType,
+                     files.AcquisitionProtocolID,
                      files.File",
             $args
         );
-        $this->tpl_data['files'] = array();
+        $this->tpl_data['files'] = [];
         foreach ($files as $fileRow) {
-            $FileObj = new \MRIFile($fileRow['FileID']);
+            $FileObj = new \MRIFile(intval($fileRow['FileID']));
             if (empty($scannerID)) {
                 $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
                     $query         = "SELECT CONCAT_WS(' ', Manufacturer, Model,".
                              " Serial_number) FROM mri_scanner WHERE ID=:ScanID";
-                    $this->scanner = $this->DB->pselectOne(
+                    $this->scanner = $this->_DB->pselectOne(
                         $query,
-                        array('ScanID' => $scannerID)
+                        ['ScanID' => $scannerID]
                     );
                 }
             }
@@ -200,7 +212,7 @@ class ViewSession extends \NDB_Form
             $checkPicFilename = $FileObj->getParameter(
                 'check_pic_filename'
             ) ?? '';
-            $FileID           = $fileRow['FileID'];
+            $FileID           = intval($fileRow['FileID']);
             $Filename         = $JivFilename = basename($FullFilename);
             $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
             $JivAddress       = str_replace(
@@ -215,10 +227,7 @@ class ViewSession extends \NDB_Form
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
             $Algorithm           = $FileObj->getParameter('Algorithm');
-            $AcquisitionDate     = $this->_getDate(
-                $FileObj,
-                'acquisition_date'
-            );
+            $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
             $ProcDate            = $this->_getDate(
                 $FileObj,
                 'processing:processing_date'
@@ -226,7 +235,6 @@ class ViewSession extends \NDB_Form
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
             $SeriesNumber        = $FileObj->getParameter('series_number');
-            $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
                 2
@@ -281,7 +289,6 @@ class ViewSession extends \NDB_Form
             );
             $QCStatus    = $FileObj->getParameter('QCStatus');
             $QCDate      = $FileObj->getParameter('QCLastChangeTime');
-            $Caveat      = $FileObj->getParameter('Caveat');
             $SNR         = $FileObj->getParameter('SNR');
             $SeriesUID   = $FileObj->getParameter('SeriesUID');
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
@@ -292,54 +299,87 @@ class ViewSession extends \NDB_Form
                 (int)$FileObj->getParameter('AcquisitionProtocolID')
             );
 
-            $file = array(
-                'FileID'                => $FileID,
-                'Filename'              => $Filename,
-                'CheckPic'              => $CheckPic,
-                'FullFilename'          => $FullFilename,
-                'JivFilename'           => $JivFilename,
-                'JivAddress'            => $JivAddress,
-                'New'                   => $New,
-                'Pipeline'              => $Pipeline,
-                'OutputType'            => $OutputType,
-                'AcquisitionProtocol'   => $AcquisitionProtocol,
-                'CoordinateSpace'       => $CoordinateSpace,
-                'Algorithm'             => $Algorithm,
-                'AcquisitionDate'       => $AcquisitionDate,
-                'ProcDate'              => $ProcDate,
-                'FileInsertDate'        => $FileInsertDate,
-                'SeriesDescription'     => $SeriesDescription,
-                'SeriesNumber'          => $SeriesNumber,
-                'SeriesUID'             => $SeriesUID,
-                'EchoTime'              => $EchoTime,
-                'RepetitionTime'        => $RepetitionTime,
-                'SliceThickness'        => $SliceThickness,
-                'Time'                  => $Time,
-                'Comment'               => $Comment,
-                'ProcessingPipeline'    => $ProcessingPipeline,
-                'TotalRejected'         => $TotalRejected,
-                'SourceFile'            => $SourceFile,
-                'Tool'                  => $Tool,
-                'SlicewiseRejected'     => $SlicewiseRejected,
-                'InterlaceRejected'     => $InterlaceRejected,
-                'IntergradientRejected' => $IntergradientRejected,
-                'Xstep'                 => $Xstep,
-                'Ystep'                 => $Ystep,
-                'Zstep'                 => $Zstep,
-                'Selected'              => $Selected,
-                'QCStatus'              => $QCStatus,
-                'QCDate'                => $QCDate,
-                'Caveat'                => $Caveat,
-                'SNR'                   => $SNR,
-                'SeriesUID'             => $SeriesUID,
-                'XMLreport'             => $XMLreport,
-                'XMLprotocol'           => $XMLprotocol,
-                'NrrdFile'              => $NrrdFile,
-                'OtherTimepoints'       => $OtherTimepoints,
-            );
+            $caveatViolationsResolvedID
+                = $this->_getManualCaveatViolationsResolvedID($FileID);
+            $caveat = $caveatViolationsResolvedID ? 1 : 0;
+            $file   = [
+                'FileID'                     => $FileID,
+                'Filename'                   => $Filename,
+                'CheckPic'                   => $CheckPic,
+                'FullFilename'               => $FullFilename,
+                'JivFilename'                => $JivFilename,
+                'JivAddress'                 => $JivAddress,
+                'New'                        => $New,
+                'Pipeline'                   => $Pipeline,
+                'OutputType'                 => $OutputType,
+                'AcquisitionProtocol'        => $AcquisitionProtocol,
+                'CoordinateSpace'            => $CoordinateSpace,
+                'Algorithm'                  => $Algorithm,
+                'AcquisitionDate'            => $AcquisitionDate,
+                'ProcDate'                   => $ProcDate,
+                'FileInsertDate'             => $FileInsertDate,
+                'SeriesDescription'          => $SeriesDescription,
+                'SeriesNumber'               => $SeriesNumber,
+                'SeriesUID'                  => $SeriesUID,
+                'EchoTime'                   => $EchoTime,
+                'RepetitionTime'             => $RepetitionTime,
+                'SliceThickness'             => $SliceThickness,
+                'Time'                       => $Time,
+                'Comment'                    => $Comment,
+                'ProcessingPipeline'         => $ProcessingPipeline,
+                'TotalRejected'              => $TotalRejected,
+                'SourceFile'                 => $SourceFile,
+                'Tool'                       => $Tool,
+                'SlicewiseRejected'          => $SlicewiseRejected,
+                'InterlaceRejected'          => $InterlaceRejected,
+                'IntergradientRejected'      => $IntergradientRejected,
+                'Xstep'                      => $Xstep,
+                'Ystep'                      => $Ystep,
+                'Zstep'                      => $Zstep,
+                'Selected'                   => $Selected,
+                'QCStatus'                   => $QCStatus,
+                'QCDate'                     => $QCDate,
+                'Caveat'                     => $caveat,
+                'SNR'                        => $SNR,
+                'SeriesUID'                  => $SeriesUID,
+                'XMLreport'                  => $XMLreport,
+                'XMLprotocol'                => $XMLprotocol,
+                'NrrdFile'                   => $NrrdFile,
+                'OtherTimepoints'            => $OtherTimepoints,
+                'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
+            ];
             $this->tpl_data['files'][] = $file;
         }
     }
+
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?int ID of the associated record in table violations_resolved or
+     *              null if there is none.
+     */
+    function _getManualCaveatViolationsResolvedID(int $fileID): ?int
+    {
+        $query = "
+            SELECT vr.ID
+            FROM files f
+            JOIN mri_violations_log mvl
+              ON (mvl.MincFile = f.File)
+            JOIN violations_resolved vr
+              ON (    vr.ExtID     = mvl.LogID
+                  AND vr.TypeTable = 'mri_violations_log'
+                  AND vr.Resolved  = 'inserted_flag'
+              )
+            WHERE f.FileID =:fileID
+            AND mvl.Header LIKE 'Manual Caveat Set by %';
+        ";
+
+        return $this->_DB->pselectOneInt($query, ['fileID' => $fileID]);
+    }
+
     /**
      * Gets a rejected parameter according to its type
      *
@@ -350,7 +390,7 @@ class ViewSession extends \NDB_Form
      */
     function _getRejected(\MRIFile $file, string $type): ?string
     {
-        $array     = array();
+        $array     = [];
         $parameter = 'processing:' . $type . '_rejected';
         if (preg_match(
             "/(Directions)([^\(]+)(\(\d+\))/",
@@ -377,7 +417,7 @@ class ViewSession extends \NDB_Form
      */
     function _getDate(\MRIFile $file, string $type)
     {
-        $array = array();
+        $array = [];
         if (preg_match(
             "/(\d{4})-?(\d{2})-?(\d{2})/",
             $file->getParameter($type) ?? '',
@@ -410,16 +450,16 @@ class ViewSession extends \NDB_Form
                 if ($curStatus == 'unrated') {
                     $curStatus ='';
                 }
-                $updateSet = array(
+                $updateSet = [
                     'QCStatus'         => $curStatus,
                     'QCLastChangeTime' => time(),
-                );
+                ];
 
                 // set first change time, if it's null only
-                $params          = array('FID' => $curFileID);
-                $firstChangeTime = $this->DB->pselectOne(
-                    "SELECT QCFirstChangeTime 
-                    FROM files_qcstatus 
+                $params          = ['FID' => $curFileID];
+                $firstChangeTime = $this->_DB->pselectOne(
+                    "SELECT QCFirstChangeTime
+                    FROM files_qcstatus
                     WHERE FileID=:FID",
                     $params
                 );
@@ -427,17 +467,17 @@ class ViewSession extends \NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists    = $this->DB->pselectOne(
-                    "SELECT 'x' 
-                    FROM files_qcstatus 
+                $QCExists    = $this->_DB->pselectOne(
+                    "SELECT 'x'
+                    FROM files_qcstatus
                     WHERE FileID=:FID",
                     $params
                 );
                 $updateSet   = \Utility::nullifyEmpty($updateSet, 'QCStatus');
-                $updateWhere = array();
+                $updateWhere = [];
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
-                    $this->DB->update(
+                    $this->_DB->update(
                         'files_qcstatus',
                         $updateSet,
                         $updateWhere
@@ -449,13 +489,15 @@ class ViewSession extends \NDB_Form
                     );
                     $updateSet['EchoTime']  = $file->getParameter('echo_time');
                     $updateSet['FileID']    = $curFileID;
-                    $this->DB->insert("files_qcstatus", $updateSet);
+                    $this->_DB->insert("files_qcstatus", $updateSet);
                 }
             }
         }
         if (is_array($values['caveat'])) {
             $user        = \User::singleton();
-            $timePoint   =& \TimePoint::singleton($this->sessionID);
+            $timePoint   =& \TimePoint::singleton(
+                new \SessionID(strval($this->sessionID))
+            );
             $candid      = $timePoint->getCandID();
             $visit_label = $timePoint->getData('Visit_label');
 
@@ -463,14 +505,24 @@ class ViewSession extends \NDB_Form
                 if ($curCaveat === '') {
                     $curCaveat = null;
                 }
-                $this->DB->update(
+                $this->_DB->update(
                     "files",
-                    array('Caveat' => $curCaveat),
-                    array('FileID' => $curFileID)
+                    ['Caveat' => $curCaveat],
+                    ['FileID' => $curFileID]
                 );
 
-                if ($curCaveat == true) {
-                    $insertSet = array();
+                $caveatViolationsResolvedID
+                    = $this->_getManualCaveatViolationsResolvedID($curFileID);
+                // If Caveat was set to true and there is not already a manual
+                // caveat for that scan, then the user wants to create one
+                if ($curCaveat === '1' && !$caveatViolationsResolvedID) {
+                    //----------------------------------------------------------//
+                    // Insert a record in mri_violations_log to indicate that   //
+                    // there is an MRI violation for that scan. The Header      //
+                    // (which is more the "type of violation" in this case...)  //
+                    // will be 'Manual Caveat Set by <user_setting_the_caveat>' //
+                    //----------------------------------------------------------//
+                    $insertSet = [];
                     $file      = new \MRIFile($curFileID);
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
@@ -490,8 +542,94 @@ class ViewSession extends \NDB_Form
                     $insertSet['Header']      = 'Manual Caveat Set by '
                         . $user->getUsername();
 
-                    $this->DB->insert("mri_violations_log", $insertSet);
+                    // The TimeRun column is really the time at which the
+                    // Caveat flag was modified
+                    $insertSet['TimeRun'] = date("Y-m-d H:i:s");
+                    $timeRun = $insertSet['TimeRun'];
+
+                    // We leave MriProtocolChecksGroupID to its default value (null)
+                    // since this violation is not tied to any protocol checks group
+
+                    $this->_DB->insert("mri_violations_log", $insertSet);
                     unset($insertSet);
+
+                    //--------------------------------------------------------//
+                    // Have MySQL compute the md5 hash for the violation that //
+                    // was just inserted                                      //
+                    //--------------------------------------------------------//
+                    $mriViolationsLogID = $this->_DB->getLastInsertID();
+                    $query = "
+                         SELECT md5(
+                             concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)
+                         ) AS Hash
+                         FROM  mri_violations_log
+                         WHERE LogID =:logID
+                    ";
+                    $hash  = $this->_DB->pselectOne(
+                        $query,
+                        ['logID' => $mriViolationsLogID]
+                    );
+
+                    //-----------------------------------------------------//
+                    // Insert a record in violations_resolved that marks   //
+                    // the last record inserted in mri_violations_log as   //
+                    // being resolved, with Resolve set to 'inserted_flag' //
+                    //-----------------------------------------------------//
+                    $this->_DB->insert(
+                        'violations_resolved',
+                        [
+                            'hash'       => $hash,
+                            'ExtID'      => $mriViolationsLogID,
+                            'TypeTable'  => 'mri_violations_log',
+                            'User'       => $user->getUsername(),
+                            'ChangeDate' => $timeRun,
+                            'Resolved'   => 'inserted_flag',
+                        ]
+                    );
+                    $this->_DB->update(
+                        'files',
+                        ['Caveat' => 1],
+                        ['FileID' => $curFileID],
+                    );
+                } elseif ($curCaveat === '0' && $caveatViolationsResolvedID) {
+                    $quotedViolationsResolvedID
+                        = $this->_DB->quote("$caveatViolationsResolvedID");
+                    $query = "
+                        DELETE FROM mri_violations_log
+                        WHERE LogID = (
+                            SELECT ExtID
+                            FROM violations_resolved
+                            WHERE ID = $quotedViolationsResolvedID
+                            AND TypeTable = 'mri_violations_log'
+                        )
+                    ";
+                    $this->_DB->run($query);
+
+                    $this->_DB->delete(
+                        'violations_resolved',
+                        ['ID' => $caveatViolationsResolvedID]
+                    );
+
+                    $quotedFileID = $this->_DB->quote($curFileID);
+                    $query        = "
+                        UPDATE files f
+                        SET f.Caveat = IF(
+                            EXISTS (
+                                SELECT 1
+                                FROM mri_violations_log mvl
+                                JOIN parameter_type pt ON (pt.Name=mvl.Header)
+                                JOIN parameter_file pf
+                                  ON (pf.ParameterTypeID=pt.ParameterTypeID)
+                                WHERE mvl.SeriesUID = f.SeriesUID
+                                AND pf.FileID=f.FileID
+                                AND pf.Value = mvl.Value
+                            ),
+                            1,
+                            0
+                        )
+                        WHERE f.FileID=$quotedFileID
+                    ";
+                    $this->_DB->run($query);
                 }
             }
         }
@@ -506,45 +644,45 @@ class ViewSession extends \NDB_Form
         // update selected's
         if (is_array($_POST['selectedvol'])) {
             foreach ($_POST['selectedvol'] AS $curFileID => $curSelected) {
-                $params      = array('FID' => $curFileID);
-                $updateWhere = array('FileID' => $curFileID);
+                $params      = ['FID' => $curFileID];
+                $updateWhere = ['FileID' => $curFileID];
 
                 if ($curSelected == 'Unselected') {
-                    if ($this->DB->pselectOne(
-                        "SELECT COUNT(*) 
-                        FROM files_qcstatus 
-                        WHERE FileID=:FID ",
-                        $params
-                    ) > 0
-                    ) {
-                        $this->DB->delete('files_qcstatus', $updateWhere);
-                    }
-                } else {
-                    if ($this->DB->pselectOne(
-                        "SELECT COUNT(*) 
+                    if ($this->_DB->pselectOne(
+                        "SELECT COUNT(*)
                         FROM files_qcstatus
                         WHERE FileID=:FID ",
                         $params
                     ) > 0
                     ) {
-                        $updateSet = array(
+                        $this->_DB->delete('files_qcstatus', $updateWhere);
+                    }
+                } else {
+                    if ($this->_DB->pselectOne(
+                        "SELECT COUNT(*)
+                        FROM files_qcstatus
+                        WHERE FileID=:FID ",
+                        $params
+                    ) > 0
+                    ) {
+                        $updateSet = [
                             'Selected'         => $curSelected,
                             'QCLastChangeTime' => time(),
-                        );
+                        ];
                         $updateSet = \Utility::nullifyEmpty($updateSet, 'Selected');
-                        $this->DB->update(
+                        $this->_DB->update(
                             'files_qcstatus',
                             $updateSet,
                             $updateWhere
                         );
                     } else {
-                        $insertSet = array(
+                        $insertSet = [
                             'FileID'            => $curFileID,
                             'Selected'          => $curSelected,
                             'QCFirstChangeTime' => time(),
-                        );
+                        ];
                         $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
-                        $this->DB->insert('files_qcstatus', $insertSet);
+                        $this->_DB->insert('files_qcstatus', $insertSet);
                     }
                 }
             }
@@ -558,35 +696,35 @@ class ViewSession extends \NDB_Form
     function _updateVisitStatus()
     {
         if (!empty($_POST['visit_status'])) {
-            $params           = array('SID' => $this->sessionID);
-            $old_visit_status = $this->DB->pselectOne(
-                "SELECT MRIQCStatus 
-                FROM session 
+            $params           = ['SID' => $this->sessionID];
+            $old_visit_status = $this->_DB->pselectOne(
+                "SELECT MRIQCStatus
+                FROM session
                 WHERE ID=:SID",
                 $params
             );
-            $old_pending_status = $this->DB->pselectOne(
-                "SELECT MRIQCPending 
-                FROM session 
+            $old_pending_status = $this->_DB->pselectOne(
+                "SELECT MRIQCPending
+                FROM session
                 WHERE ID=:SID",
                 $params
             );
-            $old_caveat_status  = $this->DB->pselectOne(
-                "SELECT MRICaveat 
-                FROM session 
+            $old_caveat_status  = $this->_DB->pselectOne(
+                "SELECT MRICaveat
+                FROM session
                 WHERE ID=:SID",
                 $params
             );
 
-            $updateSet       = array(
+            $updateSet       = [
                 'MRIQCPending'        => $_POST['visit_pending'],
                 'MRIQCStatus'         => $_POST['visit_status'],
                 'MRICaveat'           => $_POST['visit_caveat'],
                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
-            );
-            $firstChangeTime = $this->DB->pselectOne(
-                "SELECT MRIQCFirstChangeTime 
-                FROM session 
+            ];
+            $firstChangeTime = $this->_DB->pselectOne(
+                "SELECT MRIQCFirstChangeTime
+                FROM session
                 WHERE ID=:SID",
                 $params
             );
@@ -595,17 +733,19 @@ class ViewSession extends \NDB_Form
                     = $updateSet['MRIQCLastChangeTime'];
             }
             $updateSet = \Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
-            $this->DB->update(
+            $this->_DB->update(
                 'session',
                 $updateSet,
-                array('ID' => $this->sessionID)
+                ['ID' => $this->sessionID]
             );
             // spool a message to the mri qc status rss channel
             if (($_POST['visit_status'] != $old_visit_status)
                 || ($old_pending_status != $_POST['visit_pending'])
                 || ($old_caveat_status != $_POST['visit_caveat'])
             ) {
-                $timePoint   =& \TimePoint::singleton($this->sessionID);
+                $timePoint   =& \TimePoint::singleton(
+                    new \SessionID(strval($this->sessionID))
+                );
                 $candid      = $timePoint->getCandID();
                 $candidate   =& \Candidate::singleton($timePoint->getCandID());
                 $pscid       = $candidate->getPSCID();
@@ -613,7 +753,7 @@ class ViewSession extends \NDB_Form
                 $not_status  = ($_POST['visit_pending'] == 'Y' ? 'Pending ' : '')
                     . $_POST['visit_status']
                     . $_POST['visit_caveat'];
-                $message     = "$candid / $pscid $visit_label 
+                $message     = "$candid / $pscid $visit_label
                     - MRI QC status changed to $not_status";
                 $centerID    = $timePoint->getCenterID();
 
@@ -637,26 +777,26 @@ class ViewSession extends \NDB_Form
     /**
      * Gets candidate's scans with the same acquisitionID.
      *
-     * @param string $initialFileID            the value of initialFileID
-     * @param string $initialFileAcquisitionID the value of initialFileAcquisitionID
+     * @param int $initialFileID            the value of initialFileID
+     * @param int $initialFileAcquisitionID the value of initialFileAcquisitionID
      *
      * @return string of FileIDs, comma separated
      */
     function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID)
     {
 
-        $selectResults = $this->DB->pselect(
+        $selectResults = $this->_DB->pselect(
             "SELECT FileID FROM files ".
             "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
             "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
             "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
-            array(
+            [
                 'initialFileAcquisitionID' => $initialFileAcquisitionID,
                 'initialFileID'            => $initialFileID,
-            )
+            ]
         );
 
-        $fileIDS = array();
+        $fileIDS = [];
         foreach ($selectResults as $selectResult) {
             $fileIDS[] = $selectResult['FileID'];
         }
@@ -667,17 +807,17 @@ class ViewSession extends \NDB_Form
     /**
      * Gets Selected status from files_qcstatus for a given FileID
      *
-     * @param string $FileID the value of FileID
+     * @param int $FileID the value of FileID
      *
      * @return ?string
      */
     function _getSelected($FileID): ?string
     {
 
-        $selected = $this->DB->pselectOne(
+        $selected = $this->_DB->pselectOne(
             "SELECT Selected FROM files_qcstatus ".
             "WHERE FileID =:FileID",
-            array('FileID' => $FileID)
+            ['FileID' => $FileID]
         );
         return $selected;
     }
@@ -689,7 +829,7 @@ class ViewSession extends \NDB_Form
      */
     function getHeaderTable()
     {
-        $tpl_data            = array();
+        $tpl_data            = [];
         $tpl_data['subject'] = $this->getSubjectData();
 
         if (!empty($_REQUEST['outputType'])) {
@@ -713,19 +853,21 @@ class ViewSession extends \NDB_Form
      */
     function getSubjectData()
     {
-        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton(
+            new \SessionID(strval($_REQUEST['sessionID']))
+        );
 
-        $subjectData = array();
+        $subjectData = [];
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
         $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
         $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
         $subjectData['visitLabel']      = $timePoint->getVisitLabel();
         $subjectData['visitNo']         = $timePoint->getVisitNo();
         $subjectData['site']            = $timePoint->getPSC();
-        $qcstatus = $this->DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, MRICaveat 
+        $qcstatus = $this->_DB->pselectRow(
+            "SELECT MRIQCStatus, MRIQCPending, MRICaveat
             FROM session WHERE ID=:SID",
-            array('SID' => $_REQUEST['sessionID'])
+            ['SID' => $_REQUEST['sessionID']]
         );
         if (is_null($qcstatus)) {
             throw new \LorisException(
@@ -748,8 +890,8 @@ class ViewSession extends \NDB_Form
         // This doesn't work.
         //Need to find the proper way to get the TarchiveID.
         //It should be per file, not per candidate. --Dave
-        $params     = array();
-        $EntityType = $candidate->getData('Entity_type');
+        $params     = [];
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID = ":PPSCID";
             $params['PPSCID'] = $timePoint->getData('PSCID');
@@ -759,9 +901,9 @@ class ViewSession extends \NDB_Form
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        $tarchiveIDs = $this->DB->pselect(
-            "SELECT TarchiveID 
-            FROM tarchive 
+        $tarchiveIDs = $this->_DB->pselect(
+            "SELECT TarchiveID
+            FROM tarchive
             WHERE PatientName LIKE $ID",
             $params
         );
@@ -776,7 +918,9 @@ class ViewSession extends \NDB_Form
      */
     function getControlPanel()
     {
-        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
+        $controlPanel = new Imaging_Session_ControlPanel(
+            new \SessionID($_REQUEST['sessionID'])
+        );
         return $controlPanel->display();
     }
     /**
@@ -791,10 +935,10 @@ class ViewSession extends \NDB_Form
         $baseurl = $factory->settings()->getBaseURL();
         $depends = array_merge(
             $depends,
-            array(
+            [
                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
                 $baseurl . "/imaging_browser/js/ImagePanel.js",
-            )
+            ]
         );
         return $depends;
     }
@@ -833,4 +977,3 @@ class ViewSession extends \NDB_Form
     }
 
 }
-

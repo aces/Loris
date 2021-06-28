@@ -30,13 +30,17 @@ namespace LORIS\issue_tracker;
  */
 class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private $_siteList;
+
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
      */
     function __construct()
     {
-        $user   = \User::singleton();
-        $userID = $user->getUsername();
+        $factory         = \NDB_Factory::singleton();
+        $user            = $factory->user();
+        $this->_siteList = array_keys(\Utility::getSiteList(false));
+        $userID          = $user->getUsername();
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
@@ -58,7 +62,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM issues as i
             LEFT JOIN modules m
               ON (m.ID=i.module)
-            LEFT JOIN candidate c 
+            LEFT JOIN candidate c
               ON (i.candID=c.CandID)
             LEFT JOIN session s
               ON (i.sessionID = s.ID)
@@ -68,7 +72,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = ic.issueID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
-            array('username' => $userID)
+            ['username' => $userID]
         );
     }
 
@@ -96,8 +100,25 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             $module = &$modules[$mname];
         }
 
-        $cid = $row['centerId'];
+        if (isset($row['centerId'])) {
+            // convert the value from string to int array
+            $cids = [intval($row['centerId'])];
+
+            // convert the value from string to string array
+            $row['centerId'] = [$row['centerId']];
+        } else {
+            // set $cids to all centersID (int array)
+            $cids = $this->_siteList;
+
+            // set $row['centerId'] to all centersID
+            // Use getCenterIDs and convert values to string (string array)
+            $row['centerId'] = array_map(
+                "strval",
+                $this->_siteList
+            );
+        }
+
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
-        return new IssueRow($row, $cid, $module);
+        return new IssueRow($row, $cids, $module);
     }
 }

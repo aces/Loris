@@ -78,10 +78,11 @@ h3 {
     margin: 25px 0;
 }
 
-.history-item-label > span {
-  font-weight: bold;
-}
 
 .history-item-changes {
   margin-left: 2em;
+}
+
+.history-item-user {
+    font-weight: bold;
 }

@@ -31,14 +31,6 @@ namespace LORIS\dashboard;
 class TaskQueryWidget extends TaskWidget
 {
     /**
-     * The site label to display beside the widget for which site
-     * this task is for.
-     *
-     * @var string
-     */
-    protected $sitelabel;
-
-    /**
      * Construct a TaskQueryWidget
      *
      * @param \User     $user      The user whose tasks are being displayed
@@ -67,14 +59,14 @@ class TaskQueryWidget extends TaskWidget
         string $link,
         string $cssclass
     ) {
-        $queryparams     = [];
-        $this->sitelabel = "Site: All";
+        $queryparams = [];
+        $siteLabel   = 'Site: All';
         if ($allperm != '') {
             if (!$user->hasPermission($allperm)) {
                 $sites = $user->getCenterIDs();
                 $queryparams['SiteID'] = implode(',', $sites);
-                $dbquery        .= " AND FIND_IN_SET($sitefield, :SiteID)";
-                $this->sitelabel = "Site: All User Sites";
+                $dbquery  .= " AND FIND_IN_SET($sitefield, :SiteID)";
+                $siteLabel = 'Site: All User Sites';
             }
         }
 
@@ -83,17 +75,6 @@ class TaskQueryWidget extends TaskWidget
             $label .= "s";
         }
 
-        parent::__construct($label, $number, $link, $cssclass);
-    }
-
-    /**
-     * Provides a site label for this widget based on user permissions
-     * and whether the task is site restricted.
-     *
-     * @return string
-     */
-    public function siteLabel() : string
-    {
-        return $this->sitelabel;
+        parent::__construct($label, $number, $link, $cssclass, $siteLabel);
     }
 }

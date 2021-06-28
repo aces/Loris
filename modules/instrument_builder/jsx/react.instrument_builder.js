@@ -14,6 +14,10 @@ import {Tabs, TabPane} from 'Tabs';
  * made instrument.
  */
 class LoadPane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +33,11 @@ class LoadPane extends Component {
     this.loadFile = this.loadFile.bind(this);
   }
 
-  // Indicates to the state which file has been chosen
+  /**
+   * Choose file
+   * Indicates to the state which file has been chosen
+   * @param {object} e - Event object
+   */
   chooseFile(e) {
     let value = e.target.files[0];
     this.setState({
@@ -41,21 +49,31 @@ class LoadPane extends Component {
       this.setState({disabled: false});
     }
   }
-  // Sets the alert to the specified type.
+  /**
+  * Sets the alert to the specified type.
+  * @param {*} type
+  * @param {string} message
+  */
   setAlert(type, message) {
     this.setState({
       alert: type,
       alertMessage: message,
     });
   }
-  // Reset the alert to empty.
+
+  /**
+   * Reset the alert to empty.
+   */
   resetAlert() {
     this.setState({
       alert: '',
       alertMessage: '',
     });
   }
-  // Loads the specified file into builder tab.
+
+  /**
+   * Loads the specified file into builder tab.
+   */
   loadFile() {
     // Declare the success and error callbacks
     let callback = {
@@ -64,7 +82,12 @@ class LoadPane extends Component {
     };
     Instrument.load(this.state.file, callback);
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let alert = {
       message: '',
@@ -103,7 +126,11 @@ class LoadPane extends Component {
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
-          <div id='load_alert' style={{display: alert.display}} className={alert.class} role='alert'>
+          <div id='load_alert'
+               style={{display: alert.display}}
+               className={alert.class}
+               role='alert'
+          >
             <button type='button' className='close' onClick={this.resetAlert}>
               <span aria-hidden='true'>&times;</span>
             </button>
@@ -135,6 +162,10 @@ LoadPane.propTypes = {
  * This is the React class for saving the instrument
  */
 class SavePane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -146,29 +177,48 @@ class SavePane extends Component {
     this.onChangeInst = this.onChangeInst.bind(this);
   }
 
-  // Used to set the state when a file is loaded
-  // using the load tab.
+  /**
+   * Load state
+   * Used to set the state when a file is loaded
+   * using the load tab.
+   * @param {object} newState
+   */
   loadState(newState) {
     this.setState({
       fileName: newState.fileName,
       instrumentName: newState.instrumentName,
     });
   }
-  // Keep track of the file name, saving it in the state
+
+  /**
+   * On change file
+   * Keep track of the file name, saving it in the state
+   * @param {object} e - Event object
+   */
   onChangeFile(e) {
     let value = e.target.value;
     this.setState({
       fileName: value,
     });
   }
-  // Keep track of the instrument name, saving it in the state
+
+   /**
+   * On change instrument
+   * Keep track of the instrument name, saving it in the state
+   * @param {object} e - Event object
+   */
   onChangeInst(e) {
     let value = e.target.value;
     this.setState({
       instrumentName: value,
     });
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let value = this.state.fileName;
     return (
@@ -216,6 +266,10 @@ SavePane.propTypes = {
  * in the table.
  */
 class DisplayElements extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -227,7 +281,12 @@ class DisplayElements extends Component {
     this.dragOver = this.dragOver.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
   }
-  // Used for the drag and drop rows
+
+  /**
+   * Get placeholder
+   * Used for the drag and drop rows
+   * @return {object} - A <tr> DOM element
+   */
   getPlaceholder() {
     if (!this.placeholder) {
       let tr = document.createElement('tr');
@@ -240,22 +299,37 @@ class DisplayElements extends Component {
     }
     return this.placeholder;
   }
-  // Used for the drag and drop rows
+
+  /**
+   * Get table row
+   * Used for the drag and drop rows
+   * @param {object} element
+   * @return {object} - A <tr> DOM element
+   */
   getTableRow(element) {
     if (element.tagName === 'tr') {
       return element;
     }
-
-    return $(element).closest('tr')[0];
+    return element.closest('tr');
   }
-  // Used for the drag and drop rows
+
+  /**
+   * Drag start
+   * Used for the drag and drop rows
+   * @param {object} e - Event object
+   */
   dragStart(e) {
     this.dragged = this.getTableRow(e.currentTarget);
     e.dataTransfer.effectAllowed = 'move';
     // Firefox requires dataTransfer data to be set
     e.dataTransfer.setData('text/html', e.currentTarget);
   }
-  // Used for the drag and drop rows
+
+  /**
+   * Drag end
+   * Used for the drag and drop rows
+   * @param {object} e - Event object
+   */
   dragEnd(e) {
     this.dragged.style.display = 'table-row';
     this.dragged.parentNode.removeChild(this.getPlaceholder());
@@ -271,7 +345,12 @@ class DisplayElements extends Component {
       data: data,
     });
   }
-  // Used for the drag and drop rows
+
+  /**
+   * Drag over
+   * Used for the drag and drop rows
+   * @param {object} e - Event object
+   */
   dragOver(e) {
     e.preventDefault();
     let targetRow = this.getTableRow(e.target);
@@ -280,7 +359,9 @@ class DisplayElements extends Component {
     if (targetRow.className === 'placeholder') return;
     this.over = targetRow;
     // Inside the dragOver method
-    let relY = e.pageY - $(this.over).offset().top;
+    let relY = e.pageY -
+               (window.innerHeight - this.over.getBoundingClientRect().top);
+
     let height = this.over.offsetHeight / 2;
     let parent = targetRow.parentNode;
 
@@ -292,7 +373,11 @@ class DisplayElements extends Component {
       parent.insertBefore(this.getPlaceholder(), targetRow);
     }
   }
-  // Create table rows
+
+  /**
+   * Create table rows
+   * @return {JSX} - React markup for the component
+   */
   tableRows() {
     return this.props.elements.map(function(element, i) {
       let row;
@@ -329,10 +414,14 @@ class DisplayElements extends Component {
               <LorisElement element={element}/>
             </td>
             <td style={colStyles}>
-              <button onClick={this.props.editElement.bind(null, i)} className="button">
+              <button onClick={this.props.editElement.bind(null, i)}
+                      className="button"
+              >
                 Edit
               </button>
-              <button onClick={this.props.deleteElement.bind(null, i)} className="button">
+              <button onClick={this.props.deleteElement.bind(null, i)}
+                      className="button"
+              >
                 Delete
               </button>
             </td>
@@ -343,7 +432,11 @@ class DisplayElements extends Component {
     }.bind(this));
   }
 
-  // Render the HTML
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Set fixed layout to force column widths to be based on first row
     const tableStyles = {
@@ -379,6 +472,10 @@ DisplayElements.propTypes = {
  * This is the React class for building the instrument
  */
 class BuildPane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -408,8 +505,13 @@ class BuildPane extends Component {
     this.addPage = this.addPage.bind(this);
     this.selectPage = this.selectPage.bind(this);
   }
-  // Load in a group of elements, replacing any that
-  // were already present
+
+  /**
+   * Load elements
+   * Load in a group of elements, replacing any that
+   * were already present
+   * @param {object[]} elements
+   */
   loadElements(elements) {
     // Populate existing DB names
     let elContent = elements[this.state.currentPage].Elements;
@@ -423,9 +525,13 @@ class BuildPane extends Component {
       elementDBNames: elNames,
     });
   }
-  // Set the element editing flag to true to render the element
-  // as an AddQuestion object. Increase the number of editing to
-  // disable drag and drop
+
+  /**
+   * Set the element editing flag to true to render the element
+   * as an AddQuestion object. Increase the number of editing to
+   * disable drag and drop
+   * @param {Number} elementIndex
+   */
   editElement(elementIndex) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -443,7 +549,12 @@ class BuildPane extends Component {
       };
     });
   }
-  // Remove an element from the current page's elements.
+
+  /**
+   * Delete element
+   * Remove an element from the current page's elements.
+   * @param {Number} elementIndex
+   */
   deleteElement(elementIndex) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -458,7 +569,13 @@ class BuildPane extends Component {
       };
     });
   }
-  // Update an element. Returns true on success, false otherwise
+
+  /**
+   * Update an element.
+   * @param {object} element
+   * @param {number} index
+   * @return {boolean} - true on success, false otherwise
+   */
   updateElement(element, index) {
     if (element.Name && element.Name in this.state.elementDBNames) {
       // If the DB name already exists return false.
@@ -485,7 +602,11 @@ class BuildPane extends Component {
     });
     return true;
   }
-  // Add a new question to the page's elements
+  /**
+   * Add a new question to the page's elements
+   * @param {object} element
+   * @return {object}
+   */
   addQuestion(element) {
     if (element.Name && element.Name in this.state.elementDBNames) {
       // If the DB name already exists return false.
@@ -509,7 +630,11 @@ class BuildPane extends Component {
     });
     return true;
   }
-  // Add a new page
+
+  /**
+   * Add a new page
+   * @param {string} pageName
+   */
   addPage(pageName) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -530,13 +655,22 @@ class BuildPane extends Component {
       };
     });
   }
-  // Change to a page
+
+  /**
+   * Change to a page
+   * @param {Number} index
+   */
   selectPage(index) {
     this.setState({
       currentPage: index,
     });
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let draggable = this.state.amountEditing === 0;
     // List the pages
@@ -551,11 +685,19 @@ class BuildPane extends Component {
     return (
       <TabPane Title='Build Instrument' {...this.props}>
         <div className='form-group col-xs-12'>
-          <label htmlFor='selected-input' className='col-xs-2 col-sm-1 control-label'>Page:</label>
+          <label htmlFor='selected-input'
+                 className='col-xs-2 col-sm-1 control-label'
+          >Page:</label>
           <div className='col-sm-4'>
             <div className='btn-group'>
-              <button id='selected-input' type='button' className='btn btn-default dropdown-toggle' data-toggle='dropdown'>
-                <span id='search_concept'>{this.state.Elements[this.state.currentPage].Description}</span>
+              <button id='selected-input'
+                      type='button'
+                      className='btn btn-default dropdown-toggle'
+                      data-toggle='dropdown'
+              >
+                <span id='search_concept'>
+                  {this.state.Elements[this.state.currentPage].Description}
+                </span>
                 <span className='caret'/>
               </button>
               <ul className='dropdown-menu' role='menu'>
@@ -572,7 +714,10 @@ class BuildPane extends Component {
           draggable = {draggable}
         />
         <div className='row'>
-          <AddElement updateQuestions={this.addQuestion} addPage={this.addPage}/>
+          <AddElement
+            updateQuestions={this.addQuestion}
+            addPage={this.addPage}
+          />
         </div>
       </TabPane>
     );
@@ -585,6 +730,10 @@ BuildPane.propTypes = {
  * This is the React class for the instrument builder
  */
 class InstrumentBuilderApp extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -594,13 +743,23 @@ class InstrumentBuilderApp extends Component {
     this.loadCallback = this.loadCallback.bind(this);
   }
 
-  // Save the instrument
+  /**
+   * Save the instrument
+   */
   saveInstrument() {
     // Call to external function, passing it the save information and the elements
     // to save
-    Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
+    Instrument.save(
+      this.refs.savePane.state,
+      this.refs.buildPane.state.Elements
+    );
   }
-  // Load an instrument
+
+  /**
+   * Load an instrument
+   * @param {*} elements
+   * @param {*} info
+   */
   loadCallback(elements, info) {
     // Set the savePane state to that extracted from the file
     this.refs.savePane.loadState(info);
@@ -609,7 +768,12 @@ class InstrumentBuilderApp extends Component {
     // Set the alert state to success in the loadPane
     this.refs.loadPane.setAlert('success');
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let tabs = [];
     tabs.push(

@@ -53,7 +53,6 @@ class CandIDGenerator extends IdentifierGenerator
      */
     public function generate(): CandID
     {
-        $validID = false;
         do {
             $this->checkIDRangeFull();
             $id = new CandID(
@@ -66,7 +65,7 @@ class CandIDGenerator extends IdentifierGenerator
             $validID = \Database::singleton()
                 ->pselectOne(
                     "SELECT count(CandID) FROM candidate WHERE CandID=:id",
-                    array('id' => (string) $id)
+                    ['id' => (string) $id]
                 ) == 0;
         } while (! $validID);
 
@@ -84,7 +83,7 @@ class CandIDGenerator extends IdentifierGenerator
         // immediately.
         return \Database::singleton()->pselectCol(
             'SELECT CandID from candidate',
-            array()
+            []
         );
     }
 }

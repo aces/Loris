@@ -31,7 +31,7 @@ $projectAlias  = $_POST['Alias'] ?? '';
 $recTarget     = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
 $projectID     = $_POST['ProjectID'] ?? null;
-$subprojectIDs = $_POST['SubprojectIDs'] ?? array();
+$subprojectIDs = $_POST['SubprojectIDs'] ?? [];
 
 $project = null;
 
@@ -40,14 +40,14 @@ if ($projectID == 'new') {
     // Give Conflict response if this project already exists.
     if (in_array($_POST['Name'], $ProjectList, true)) {
         http_response_code(409);
-        echo json_encode(array('error' => 'Conflict'));
+        echo json_encode(['error' => 'Conflict']);
         exit;
     }
 
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
 } else {
     // Update Project fields
-    $project = \Project::getProjectFromID($projectID);
+    $project = \Project::getProjectFromID(new \ProjectID($projectID));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
@@ -57,7 +57,6 @@ if ($projectID == 'new') {
 // Subproject information isn't mandatory. If the array is empty, give an
 // OK response.
 if (!empty($subprojectIDs)) {
-
     // Update subprojectIDs if data submitted.
     // It's important not to delete and reinsert the values due to delete
     // cascades on tables referencing project_subproject_rel in the database.
@@ -65,11 +64,18 @@ if (!empty($subprojectIDs)) {
     $toAdd     = array_diff($subprojectIDs, $preValues);
     $toRemove  = array_diff($preValues, $subprojectIDs);
 
+    $toAdd = array_map(
+        function ($row) {
+            return intval($row);
+        },
+        $toAdd
+    );
+
     $project->insertSubprojectIDs($toAdd);
     $project->deleteSubprojectIDs($toRemove);
 }
 
 http_response_code(200);
-echo json_encode(array('ok' => 'Success'));
+echo json_encode(['ok' => 'Success']);
 exit;
 

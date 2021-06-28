@@ -62,7 +62,6 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
         if ($this->authenticator->authenticate($request) === true) {
             return $this->next->process($request, $handler);
         }
-
         return (new \LORIS\Middleware\PageDecorationMiddleware(
             $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
         ))->process(

@@ -11,7 +11,7 @@
   * Element names must be lowercase and fewer than 64 characters (e.g. `q07_mother_maiden_name`). Never use hyphens, as it is confused with the MySQL minus sign. Element names `*_status` are reserved for select boxes accompanying text fields.
   * Use `addDateElement` wrapper for dates. Modify `dateTimeFields` array to include all date elements for proper conversion to database date/timestamp format.
   * Any date elements used should be added to the `dateTimeFields` array (so that they will be converted between HTML_Quickform and MySQL formats automagically).
-  * Any multiple select elements should be added to the `_selectMultipleElements` array.  This way they will be transferred between the database and the QuickForm smoothly.
+  * Any multiple select elements should be added to the `selectMultipleElements` array.  This way they will be transferred between the database and the QuickForm smoothly.
   * For question **dependencies**, use [XIN Rules](https://github.com/aces/Loris/wiki/XIN-Rules).
   * For formatting questions into tables, see [[Instrument Groups]].
 6. To ensure instrument completeness for all pages, modify `_requiredElements()` array to include 'Examiner' field and first question of each page, e.g. `$this->_requiredElements=array('Examiner', 'q1', 'q19', 'q37', 'q55'));` These array items must be entered to mark instrument as 'Complete'

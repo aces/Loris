@@ -32,16 +32,16 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
     }
 
     if (!empty($query)) {
-        $image_file = $DB->pselectOne($query, array('LogID' => $id));
+        $image_file = $DB->pselectOne($query, ['LogID' => $id]);
         $image_path = getFileLocation() . $image_file;
     }
 } else {
     $query      = "select File from files where FileID = :FileID";
     $image_file = $DB->pselectOne(
         $query,
-        array(
+        [
             'FileID' => $_REQUEST['file_id'],
-        )
+        ]
     );
     $image_path = getFileLocation() . $image_file;
 }

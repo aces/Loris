@@ -71,7 +71,7 @@ class Modules extends \NDB_Page
             return $this->_handlePatch($request);
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                array('PATCH')
+                ['PATCH']
             );
         }
     }

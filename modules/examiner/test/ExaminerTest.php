@@ -11,7 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -37,21 +38,21 @@ class ExaminerTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Examiner'         => '#bc2 > a:nth-child(2) > div',
             'Selection Filter' => '#lorisworkspace > div.row > '.
                                   'div.col-sm-12.col-md-7 > div > div.panel-heading',
             'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
                                   'div > div:nth-child(1)',
             'Add'              => '#examiner > div:nth-child(3) > div > button',
-        );
+        ];
 
     /**
      * Insert testing data
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -60,16 +61,16 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "examiners",
-            array('full_name' => 'Test_Examiner')
+            ['full_name' => 'Test_Examiner']
         );
 
         $this->DB->delete(
             "psc",
-            array('Name' => 'TEST_Site')
+            ['Name' => 'TEST_Site']
         );
          parent::tearDown();
     }
@@ -81,16 +82,16 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testResultTableLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
         $tableText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Examiner", $tableText);
-        $this->assertContains("Site", $tableText);
-        $this->assertContains("Radiologist", $tableText);
+        $this->assertStringContainsString("Examiner", $tableText);
+        $this->assertStringContainsString("Site", $tableText);
+        $this->assertStringContainsString("Radiologist", $tableText);
 
         $this->resetPermissions();
     }
@@ -102,12 +103,15 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/examiner/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -118,12 +122,15 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesLoadWithoutSuperuser()
     {
-        $this->setupPermissions(array('superuser'));
+        $this->setupPermissions(['superuser']);
         $this->safeGet($this->url . "/examiner/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -187,7 +194,7 @@ class ExaminerTest extends LorisIntegrationTest
                 "('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a')".
                 ".textContent"
         );
-        $this->assertContains("Test_Examiner", $text);
+        $this->assertStringContainsString("Test_Examiner", $text);
     }
     /**
      * Testing UI elements when page loads
@@ -204,7 +211,7 @@ class ExaminerTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
 

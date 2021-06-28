@@ -17,11 +17,11 @@ namespace LORIS\Data\Models;
  * This class defines a DicomTarDTO which is an immutable representation of a
  * DicomTar object.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class DicomTarDTO implements \LORIS\Data\DataInstance
 {
@@ -100,9 +100,9 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
         $series = array_map(
             function ($item) {
@@ -111,13 +111,11 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
             $this->series
         );
 
-        return json_encode(
-            array(
-             'tarchiveid'  => $this->tarchiveid,
-             'tarname'     => $this->tarname,
-             'patientname' => $this->patientname,
-             'series'      => $series,
-            )
-        );
+        return [
+                'tarchiveid'  => $this->tarchiveid,
+                'tarname'     => $this->tarname,
+                'patientname' => $this->patientname,
+                'series'      => $series,
+               ];
     }
 }

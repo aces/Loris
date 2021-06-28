@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 require_once __DIR__ .
              "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -32,26 +33,26 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
-            'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
-            'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
-            'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
-            'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
-            'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
-        );
+            'Source From'        => '.col-xs-12:nth-child(3) .col-sm-3',
+            'Name'               => '.col-xs-12:nth-child(4) .col-sm-3',
+            'Source Field'       => '.col-xs-12:nth-child(5) .col-sm-3',
+            'Description'        => '.col-xs-12:nth-child(6) .col-sm-3',
+            'Description Status' => '.col-xs-12:nth-child(7) .col-sm-3',
+        ];
 
     /**
      * Inserting testing data
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
             "parameter_type",
-            array(
+            [
                 'Name'        => 'TestParameterNotRealMAGICNUMBER335',
                 'Type'        => 'varchar(255)',
                 'Description' => 'I am a fake description used only for testing'.
@@ -60,7 +61,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 'SourceField' => 'imaginary',
                 'Queryable'   => true,
                 'IsFile'      => 0,
-            )
+            ]
         );
     }
     /**
@@ -68,12 +69,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete(
             'parameter_type',
-            array('Name' => 'TestParameterNotRealMAGICNUMBER335')
+            ['Name' => 'TestParameterNotRealMAGICNUMBER335']
         );
     }
     /**
@@ -95,7 +96,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 $bodyText = $this->webDriver->findElement(
                     WebDriverBy::cssSelector("body")
                 )->getText();
-                $this->assertContains("Data Dictionary", $bodyText);
+                $this->assertStringContainsString("Data Dictionary", $bodyText);
     }
     /**
      * Testing UI elements when page loads
@@ -106,11 +107,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/datadict/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains($key, $text);
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($value)
+            )->getText();
+            $this->assertStringContainsString($key, $text);
         }
     }
 }
-

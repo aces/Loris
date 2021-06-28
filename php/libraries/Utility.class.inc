@@ -1,16 +1,5 @@
 <?php declare(strict_types=1);
-/**
- * This file contains any static helper functions used by Loris that don't
- * fit elsewhere or are used in many different modules.
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * A class for holding a set of (static) utility/helper functions in a
@@ -58,11 +47,11 @@ class Utility
                 "Argument 1 does not match expected date format (YYYY-MM-DD)"
             );
         }
-        $dob = array(
+        $dob = [
             'year' => $matches[1],
             'mon'  => $matches[2],
             'day'  => $matches[3],
-        );
+        ];
 
         if (!preg_match(
             "/([0-9]{4})-?([0-9]{1,2})-?([0-9]{1,2})/",
@@ -74,11 +63,11 @@ class Utility
                 "Argument 2 does not match expected date format (YYYY-MM-DD)"
             );
         }
-        $testdate = array(
+        $testdate = [
             'year' => $matches[1],
             'mon'  => $matches[2],
             'day'  => $matches[3],
-        );
+        ];
 
         if ($testdate['day'] < $dob['day']) {
             $testdate['day'] += 30;
@@ -89,32 +78,53 @@ class Utility
             $testdate['year']--;
         }
 
-        $age = array(
+        $age = [
             'year' => (int)$testdate['year'] - (int)$dob['year'],
             'mon'  => (int)$testdate['mon'] - (int)$dob['mon'],
             'day'  => (int)$testdate['day'] - (int)$dob['day'],
-        );
+        ];
 
         return $age;
     }
     /**
+     * Returns list of consent groups in the database
+     *
+     * @return array An associative array of consent grouping,
+     *               with their names and labels. The keys of
+     *               the arrays are the IDs of the groups.
+     */
+    static function getConsentGroups(): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $query = "SELECT ConsentGroupID, Name, Label FROM consent_group";
+        $key   = "ConsentGroupID";
+
+        $result = $DB->pselectWithIndexKey($query, [], $key);
+
+        return $result;
+    }
+    /**
      * Returns list of consents in the database
      *
-     * @return array An associative array of consents, with their names and labels.
-     *               The keys of the arrays are the IDs of the consents
+     * @return array An associative array of consents, with their names,
+     *               labels, and group ID. The keys of the arrays are the
+     *               IDs of the consents.
      */
     static function getConsentList(): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $query = "SELECT ConsentID, Name, Label FROM consent";
+        $query = "SELECT ConsentID, Name, Label, ConsentGroupID FROM consent";
         $key   = "ConsentID";
 
-        $result = $DB->pselectWithIndexKey($query, array(), $key);
+        $result = $DB->pselectWithIndexKey($query, [], $key);
 
         return $result;
     }
+
     /**
      * Returns a list of sites in the database
      *
@@ -132,24 +142,55 @@ class Utility
         $DB      = $factory->database();
 
         // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
+        $query         = "SELECT CenterID, Name FROM psc ";
+        $whereElements = [];
+
         if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
+                $whereElements[] = "Study_site='Y'";
         }
         if (!$DCC) {
-            $query .= " AND CenterID <> 1";
+                $whereElements[] = "CenterID <> 1";
         }
-
-        $result = $DB->pselect($query, array());
+        if (!empty($whereElements)) {
+            $query .= "WHERE ".implode(" AND ", $whereElements);
+        }
+        $result = $DB->pselect($query, []);
 
         // fix the array
-        $list = array();
+        $list = [];
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
         return $list;
     }
 
+    /**
+     * Returns a list of sites by site IDs from the database
+     *
+     * @param array $siteIDs a list of the study center IDs
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSiteNameListByIDs(array $siteIDs): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $params = [];
+        $values = [];
+        foreach ($siteIDs as $key => $siteID) {
+            $para          = "cid$key";
+            $params[]      = ":$para";
+            $values[$para] = $siteID;
+        }
+
+        return $DB->pselectColWithIndexKey(
+            "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
+            implode(', ', $params) . ")",
+            $values,
+            'ID'
+        );
+    }
 
     /**
      * Get the list of sites as an associative array
@@ -176,25 +217,41 @@ class Utility
     }
 
     /**
-     * Gets a list of visits used by the database as specified from
-     * the Visit_Windows table
+     * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @return array<string, string> of the form VisitLabel => Visit_label
+     * @param ?ProjectID $projectID Limit visit labels to labels used by this
+     *                              project.
+     *
+     * @return array of study visits in the format array('VL' => 'VL')
+     *         where VL is the visit label
      */
-    static function getVisitList() : array
+    static function getVisitList(?ProjectID $projectID = null) : array
     {
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $qparams = [];
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
-
-        $result = $DB->pselect($query, array());
-
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
+        if ($projectID != null) {
+            $ExtraProject_Criteria
+                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
+        } else {
+            $ExtraProject_Criteria ='';
         }
-        return $list;
+        $query  = "SELECT DISTINCT Visit_label FROM session s
+            JOIN candidate c ON (s.CandID = c.Candid)
+            JOIN psc ON (s.CenterID = psc.CenterID)
+            WHERE c.Active = 'Y'
+            AND s.Active = 'Y'
+            AND c.Entity_type != 'Scanner'
+            AND psc.CenterID!= '1'
+            $ExtraProject_Criteria ORDER BY Visit_label";
+        $result = $db->pselect($query, $qparams);
+        // The result has several columns; we only want the visit labels.
+        $visitLabels = array_column($result, 'Visit_label');
+
+        // Generates an array where the keys are equal to the values.
+        return array_combine($visitLabels, $visitLabels);
     }
 
     /**
@@ -210,21 +267,21 @@ class Utility
         // get the list of projects
         $projects = $DB->pselectColWithIndexKey(
             "SELECT ProjectID, Name FROM Project",
-            array(),
+            [],
             'ProjectID'
-        ) ?? array();
+        ) ?? [];
         return $projects;
     }
 
     /**
      * Returns a list of study Subprojects
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList(?int $projectID = null): array
+    static function getSubprojectList(?ProjectID $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -232,15 +289,15 @@ class Utility
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
                 "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID) 
+                JOIN project_subproject_rel USING (SubprojectID)
                 WHERE ProjectID=:pID",
-                array('pID' => $projectID)
+                ['pID' => $projectID]
             );
         } else {
-            $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+            $subprojects = $DB->pselect("SELECT * FROM subproject", []);
         }
 
-        $subprojs = array();
+        $subprojs = [];
         foreach ($subprojects as $row) {
             $subprojs[$row['SubprojectID']] = $row['title'];
         }
@@ -250,129 +307,17 @@ class Utility
     /**
      * Returns a list of study Subprojects associated with a project
      *
-     * @param integer|null $projectID The project for which you would like
-     *                                to get the subprojects
+     * @param ?ProjectID $projectID The project for which you would like
+     *                              to get the subprojects
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject(?int $projectID = null): array
+    static function getSubprojectsForProject(?ProjectID $projectID = null): array
     {
         if (is_null($projectID)) {
-            return array();
+            return [];
         }
         return self::getSubprojectList($projectID);
-    }
-
-    /**
-     * Returns the test name associated with a given commentID
-     *
-     * @param string $commentID A CommentID for which you would like
-     *                          to know the test_name
-     *
-     * @return  string The test name this commentID is a part of
-     * @note    This should be moved to whatever module uses it, or perhaps
-     *       NDB_BVL_Instrument
-     * @cleanup
-     */
-    static function getTestNameByCommentID(string $commentID): string
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $testName = $db->pselectOne($query, array('CID' => $commentID));
-
-        return $testName;
-    }
-
-    /**
-     * Transforms a config structure (such as in PSCID) into a
-     * Perl-compatible regex expression for validation
-     *
-     * @param array       $structure     the structure root
-     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
-     *                                   part of the PSCID
-     * @param string|null $projectAbbrev the project abbreviation
-     *
-     * @return string the regex pattern
-     *
-     * @note    This should probably be moved to the Candidate class, since it's
-     *       only used there to validate the PSCID
-     * @cleanup
-     */
-    static function structureToPCRE(
-        array $structure,
-        ?string $siteAbbrev = null,
-        ?string $projectAbbrev = null
-    ): string {
-        $seqs = $structure['seq'];
-        // handle the situation where there exists only one seq
-        if (isset($seqs['#'])) {
-            $seqs = array($seqs);
-        }
-        $regex = "";
-        foreach ($seqs AS $seq) {
-            $unit = "";
-
-            switch($seq['@']['type']) {
-            case 'alpha':
-                $unit .= '[a-z]';
-                break;
-
-            case 'alphanumeric':
-                $unit .= '[0-9a-z]';
-                break;
-
-            case 'numeric':
-                $unit .= '[0-9]';
-                break;
-
-            case 'static':
-                $unit .= '('.$seq['#'].')';
-                break;
-
-            case 'set':
-                if (strpos($seq['#'], '|') !== false) {
-                    $unit .= '('.$seq['#'].')';
-                } else {
-                    $unit .= '['.$seq['#'].']';
-                }
-                break;
-
-            case 'siteAbbrev':
-                $unit .= $siteAbbrev;
-                break;
-            case 'projectAbbrev':
-                $unit .= $projectAbbrev;
-                break;
-            } // end switch
-
-            $length = "";
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length .= $seq['@']['minLength'];
-            } else {
-                $length .= '1';
-            }
-
-            $length .= ',';
-
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['maxLength'])) {
-                $length .= $seq['@']['maxLength'];
-            } elseif (!isset($seq['@']['length'])
-                && !isset($seq['@']['minLength'])
-            ) {
-                $length .= '1';
-            }
-
-            $regex .= $unit.'{'.$length.'}';
-
-        } // end foreach seq
-
-        return '/^'.$regex.'$/i';
     }
 
     /**
@@ -396,7 +341,7 @@ class Utility
             WHERE t.Test_name=b.Test_name
             AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
-        $params = array('CandAge' => $age);
+        $params = ['CandAge' => $age];
 
         if (!is_null($stage)) {
             $query .= " AND b.Stage=:BatStage";
@@ -406,8 +351,7 @@ class Utility
         $query .= " GROUP BY Test_name ORDER BY Test_name";
 
         // get the list of instruments
-        $rows  = array();
-        $tests = array();
+        $tests = [];
         $rows  = $DB->pselect($query, $params);
 
         // repackage the array
@@ -432,7 +376,7 @@ class Utility
     static function associativeToNumericArray(array $associative_array): array
     {
         if (!array_key_exists(0, $associative_array)) {
-            return array($associative_array);
+            return [$associative_array];
         }
         return $associative_array;
     }
@@ -449,6 +393,8 @@ class Utility
      * @param mixed $var The variable to be converted to an array.
      *
      * @return array If $var is an array, var, otherwise an array containing $var
+     *
+     * @deprecated
      */
     static function toArray($var)
     {
@@ -471,7 +417,7 @@ class Utility
     static function asArray($var): array
     {
         if (!is_array($var)) {
-            return array($var);
+            return [$var];
         }
         return $var;
     }
@@ -511,13 +457,19 @@ class Utility
      */
     static function getAllInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
-            array()
+            []
         );
-        $instruments   = array();
+        $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
                 $instruments[$row['Test_name']] =$row['Full_name'];
@@ -534,18 +486,24 @@ class Utility
      */
     static function getAllDDEInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllDDEInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $config        = $Factory->config();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
-            array()
+            []
         );
         $doubleDataEntryInstruments = $config->getSetting(
             'DoubleDataEntryInstruments'
         );
 
-        $instruments = array();
+        $instruments = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
                 if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
@@ -566,14 +524,20 @@ class Utility
      */
     static function getDirectInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getDirectInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDirectEntryInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $instruments   = array();
+        $instruments   = [];
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
-            array()
+            []
         );
         foreach ($instruments_q as $key) {
             $instruments[$key['Test_name']] =$key['Full_name'];
@@ -601,7 +565,7 @@ class Utility
         $DB       =& \Database::singleton();
         $num_null = $DB->pselectOne(
             $query,
-            array()
+            []
         );
         if ($num_null > 0) {
             return true;
@@ -612,64 +576,20 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param string $Cand_id candidate ID
+     * @param CandID $Cand_id candidate ID
      *
      * @return string
      * @throws DatabaseException
      */
-    static function getStageUsingCandID(string $Cand_id): string
+    static function getStageUsingCandID(CandID $Cand_id): string
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
-        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage[0]['Current_stage'];
-    }
-
-    /**
-     * Looks up visit stage using candidate ID.
-     *
-     * @param string $Cand_id candidate ID
-     *
-     * @return int
-     * @throws DatabaseException
-     */
-    static function getSubprojectIDUsingCandID(string $Cand_id): int
-    {
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $Cand_id));
-        return intval($stage[0]['SubprojectID']);
-    }
-
-    /**
-     * Looks up the test_name for the current full name
-     *
-     * @param string $fullname Descriptive name to be looked up
-     *
-     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Behavioural Quality Control?)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getTestNameUsingFullName(string $fullname): string
-    {
-        $test_name  = '';
-        $factory    = NDB_Factory::singleton();
-        $db         = $factory->database();
-        $instrument = $db->pselect(
-            "SELECT Test_name FROM test_names WHERE Full_name =:fname",
-            array('fname' => $fullname)
-        );
-        if (is_array($instrument) && count($instrument)) {
-            list(,$test_name) = each($instrument[0]);
-        }
-        return $test_name;
     }
 
     /**
@@ -704,29 +624,29 @@ class Utility
         $DB      = $factory->database();
 
         //get sourcefield using instrument
-        $sourcefields = array();
+        $sourcefields = [];
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable='1' AND sourcefrom = :sf
                 ORDER BY Name",
-                array('sf' => $instrument)
+                ['sf' => $instrument]
             );
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
                 "SELECT Test_name FROM flag WHERE CommentID = :cid",
-                array('cid' => $commentID)
+                ['cid' => $commentID]
             );
             $sourcefields = $DB->pselect(
                 "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
-                array('instrument' => $instrument)
+                ['instrument' => $instrument]
             );
         } elseif (!is_null($name)) { //get all source fields
             $sourcefields = $DB->pselectRow(
                 "SELECT * FROM parameter_type WHERE Name = :pn",
-                array('pn' => $name)
+                ['pn' => $name]
             );
         }
         return $sourcefields;
@@ -739,45 +659,17 @@ class Utility
      * @param integer|null $projectID Limit visit labels to labels used by this
      *                                project.
      *
-     * @return array of study visits in the format array('VL' => 'VL')
+     * @return array<string,string> Study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
-     * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN
-     *             SQL STATEMENT.
-     *             IT IS VULNERABLE TO AN SQL INJECTION ATTACK.
-     * @note       Function comment written by Dave, not the author of this function.
-     * @vulnerable
-     * @cleanup
+     * @deprecated
      */
-    static function getExistingVisitLabels(int $projectID = null): array
+    static function getExistingVisitLabels(?int $projectID = null): array
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        $qparams = array();
-
-        if ($projectID != null) {
-            $ExtraProject_Criteria
-                = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
-            $qparams["ProjectID"]  = $projectID;
-        } else {
-            $ExtraProject_Criteria ='';
-        }
-        $query          = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE c.Active = 'Y'
-            AND s.Active = 'Y'
-            AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
-            $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels    = $db->pselect($query, $qparams);
-        $visits         = array();
-        $numVisitLabels = count($visitlabels);
-        for ($i = 0; $i < $numVisitLabels; $i++) {
-            $visits[$visitlabels[$i]['Visit_label']]
-                = ($visitlabels[$i]['Visit_label']);
-        }
-        return $visits;
+        throw new \DeprecatedException(
+            'This function is deprecated. Please use Utility::getVisitList() '
+            . 'instead.'
+        );
     }
 
     /**
@@ -807,7 +699,7 @@ class Utility
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
-                array('vl' => $visit_label)
+                ['vl' => $visit_label]
             );
         } else {
             $test_names = $DB->pselect(
@@ -819,7 +711,7 @@ class Utility
                 WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
-                array('vl' => $visit_label)
+                ['vl' => $visit_label]
             );
         }
 
@@ -835,7 +727,7 @@ class Utility
      */
     static function resolvePath(string $path): string
     {
-        $resolvedPath = array();
+        $resolvedPath = [];
         // do some normalization
         $path        = str_replace('//', '/', $path);
         $path_pieces = explode('/', $path);
@@ -912,9 +804,9 @@ class Utility
         $languagesDB = $DB->pselect(
             "SELECT language_id, language_label
              FROM language",
-            array()
+            []
         );
-        $languages   = array();
+        $languages   = [];
         foreach ($languagesDB as $language) {
             $languages[$language['language_id']] = $language['language_label'];
         }
@@ -965,8 +857,10 @@ class Utility
                 "Input must be a valid date/time string: $e"
             );
         }
+
+        $factory = \NDB_Factory::singleton();
         return $dt->format(
-            \NDB_Config::singleton()->getSetting('dateDisplayFormat')
+            $factory->config()->getSetting('dateDisplayFormat')
             ?? DateTime::ATOM
         );
     }
@@ -1003,16 +897,15 @@ class Utility
      */
     static function getScanTypeList(): array
     {
-        $DB = \Database::singleton();
 
-        $scan_types_DB = $DB->pselect(
-            "SELECT ID, Scan_type 
+        $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
+            "SELECT ID, Scan_type
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
+            []
         );
 
-        $scan_types = array();
+        $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
             $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
         }
@@ -1031,5 +924,32 @@ class Utility
     {
         return rtrim($path, '/\\') . '/';
     }
-}
 
+    /**
+     * Joins strings together to create a well-formed filepath.
+     *
+     * @param string ...$paths The path components to be joined.
+     *
+     * @return string Path components joined without any doubled forward-slashes.
+     */
+    public static function pathJoin(string ...$paths)
+    {
+        // This array stores the components of the final path.
+        $result = [];
+
+        $addSlash = (strpos($paths[0], '/') === 0);
+
+        foreach ($paths as $part) {
+            // Remove all leading forward-slashes from $part.
+            $part = ltrim($part, '/');
+            // Remove trailing forward-slashes from $part.
+            while (mb_substr($part, -1) === '/') {
+                $part = rtrim($part, '/');
+            }
+            $result[] = $part;
+        }
+
+        // If the first part began with a front-slash, add it back
+        return ($addSlash ? '/' : '') . implode('/', $result);
+    }
+}

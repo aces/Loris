@@ -51,15 +51,15 @@ if ($_REQUEST['OverwriteQuery'] === "false") {
     }
 }
 
-$baseDocument = array(
+$baseDocument = [
     '_id'        => $qid,
-    'Meta'       => array(
+    'Meta'       => [
         'DocType' => 'SavedQuery',
         'user'    => $user->getUserName(),
-    ),
-    'Fields'     => array(),
-    'Conditions' => array(),
-);
+    ],
+    'Fields'     => [],
+    'Conditions' => [],
+];
 if (isset($_REQUEST['QueryName'])) {
     $baseDocument['Meta']['name'] = $_REQUEST['QueryName'];
 }
@@ -74,7 +74,7 @@ $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
 
-$query = array();
+$query = [];
 if ($_REQUEST['OverwriteQuery'] === "true") {
     unset($baseDocument['_id']);
     $cdb->replaceDoc($qid, $baseDocument);

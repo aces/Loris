@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/".
     "LorisIntegrationTest.class.inc";
@@ -33,12 +33,9 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
     }
 
     /**
@@ -46,11 +43,11 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "subproject",
-            array('title' => 'Test Test Test')
+            ['title' => 'Test Test Test']
         );
         parent::tearDown();
     }
@@ -67,7 +64,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertRegexp(
+        $this->assertMatchesRegularExpression(
             "/Please enter the various configuration variables/",
             $bodyText
         );
@@ -79,12 +76,15 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigPermission()
     {
-         $this->setupPermissions(array("config"));
+         $this->setupPermissions(["config"]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -94,12 +94,15 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testConfigWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -113,7 +116,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("SubprojectID", $bodyText);
+         $this->assertStringContainsString("SubprojectID", $bodyText);
     }
     /**
      * Tests that subproject navigate back to config page
@@ -130,7 +133,7 @@ class ConfigurationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             "To configure study subprojects click here.",
             $bodyText
         );
@@ -171,7 +174,7 @@ class ConfigurationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".active")
         );
         $bodyText   = $webActives[1]->getText();
-        $this->assertContains($text, $bodyText);
+        $this->assertStringContainsString($text, $bodyText);
     }
 
     /**
@@ -203,7 +206,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "To configure study projects click here.",
             $bodyText
         );

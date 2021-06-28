@@ -25,7 +25,7 @@
 8. Returning to the behavioural statistics page, check that the `View Details` links work in the Double Data Entry Statistics table.
 9. After following this link, check that the candidates requiring double data entry are correct in comparison to the forms requiring double data entry in the database.
 10. On the incomplete double data entry page, check that the candidate links take you to the appropriate data entry page for that candidate.
-11. Returning to the behavioral statistics tab, check that the "Click here for breakdown per participant for" link below the Double Data Entry Statistics table works.
+11. Returning to the behavioural statistics tab, check that the "Click here for breakdown per participant for" link below the Double Data Entry Statistics table works.
 12. Verify that this link takes you to page with double data entry statistics for all sites.
 13. Returning to the behavioural statistics page, verify that if you do not have the `access_all_profiles` permission you should not be able to click through to forms for candidates from other sites.
 14. Check the breadcrumbs from Completion stats page back to BVL stats tab within Statistics appear and allow you to use the `Back` button to previous pages (future feature).
@@ -38,3 +38,28 @@
 5. Check that `Show/Hide` visit labels works.
 6. Check that changing the breakdown adjusts the table accurately.
 7. Verify site and grand totals.
+
+### Registration of widgets on the dashboard page
+1. Make sure there is no recruitment target set in the configuration module. Check that an incentive to define a
+   recruitment target is displayed in the recruitment panel of the dashboard page.
+   [Automate Test on Travis_CI]
+2. Put a target number of participants in the configuration module and check that the info in the recruitment panel
+   of the dashboard page is correct.
+   [Automate Test]
+3. Switch to site breakdown and check that info in recruitment panel of the dashboard page is correct.
+   [Automate Test]
+4. Create a candidate and assign it to any site. Inactivate it. Make sure it is NOT taken into account in the sex
+   breakdown view (recruitment panel/dashboard page).
+   [Automate Test]
+5. Check that site breakdown view (recruitment panel/dashboard page) is correct.
+   [Automate Test]
+6. Check that scans per site (study progression panel/dashboard page) view is correct (scan dates and scan numbers).
+   [Automate Test]
+7. Check that recruitment per site view is correct (study progression panel/dashboard page).
+   [Automate Test]
+8. When there are no candidates registered (i.e. first time install), the system should display a message indicating
+   that there are no candidates in the DB yet instead of showing the candidates chart (recruitment panel/dashboard page).
+   [Manual Test]
+9. When there are no scans done, the system should display a message indicating that no scans were made instead of
+   showing the scans chart (study progression panel/dashboard page).
+   [Manual Test]

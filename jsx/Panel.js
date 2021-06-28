@@ -15,9 +15,8 @@ import PropTypes from 'prop-types';
  */
 class Panel extends Component {
   /**
-   * Construct the React component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);
@@ -56,6 +55,12 @@ class Panel extends Component {
         'glyphicon pull-right glyphicon-chevron-up'
     );
 
+    const title = this.props.bold ? (
+      <h3 className={'panel-title'}>
+        {this.props.title}
+      </h3>
+    ) : this.props.title;
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
@@ -63,17 +68,26 @@ class Panel extends Component {
         onClick={this.toggleCollapsed}
         data-toggle="collapse"
         data-target={'#' + this.props.id}
-        style={{cursor: 'pointer'}}
+        style={this.props.collapsing ?
+          {cursor: 'pointer', height: '3em', fontWeight: 'bold'} :
+          {cursor: 'default', height: '3em', fontWeight: 'bold'}
+        }
       >
-        {this.props.title}
-        <span className={glyphClass}></span>
+        {title}
+        {this.props.collapsing ? <span className={glyphClass}/> : ''}
       </div>
     ) : '';
 
     return (
-      <div className="panel panel-primary">
+      <div className={'panel ' + this.props.class}
+           style={{height: this.props.panelSize}}
+      >
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel">
+        <div id={this.props.id}
+             className={this.panelClass}
+             role='tabpanel'
+             style={{height: 'calc(100% - 3em)'}}
+        >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
             {this.props.children}
@@ -85,14 +99,22 @@ class Panel extends Component {
 }
 
 Panel.propTypes = {
+  initCollapsed: PropTypes.bool,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
+  class: PropTypes.string,
+  collapsing: PropTypes.bool,
+  bold: PropTypes.bool,
 };
 Panel.defaultProps = {
   initCollapsed: false,
   id: 'default-panel',
   height: '100%',
+  class: 'panel-primary',
+  collapsing: true,
+  bold: false,
+  title: '',
 };
 
 export default Panel;

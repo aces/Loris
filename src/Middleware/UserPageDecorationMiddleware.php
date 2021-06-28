@@ -16,6 +16,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $BaseURL;
     protected $PageName;
 
+    protected \User $user;
+
     public function __construct(
         \User $user,
         string $baseurl,
@@ -136,13 +138,20 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
-        if (method_exists($page, 'getFeedbackPanel')
+
+        if ($page !== null
+            && method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
+            $sessionID = null;
+            if (isset($get['sessionID'])) {
+                $sessionID = new \SessionID($get['sessionID']);
+            }
+
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
                 $candID,
-                $get['sessionID'] ?? null
+                $sessionID
             );
 
             $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
@@ -181,7 +190,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr    = $this->user->getData('CenterIDs');
+        $site_arr    = $this->user->getCenterIDs();
         $site        = array();
         $isStudySite = array();
         foreach ($site_arr as $key => $val) {
@@ -190,14 +199,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
 
         $oneIsStudySite   = in_array("1", $isStudySite);
-        $tpl_data['user'] = $this->user->getData();
+        $tpl_data['user'] = [];
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);
         $tpl_data['user']['SitesTooltip'] = str_replace(
             ";",
             "<br/>",
-            $this->user->getData('Sites')
+            $this->user->getSiteNames()
         );
 
         $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
@@ -243,7 +252,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for updated data
         // on the controlPanel to be properly displayed.
-        if (method_exists($page, 'getControlPanel')) {
+
+        if ($page !== null
+            && method_exists($page, 'getControlPanel')
+        ) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
 

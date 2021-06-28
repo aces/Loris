@@ -4,7 +4,14 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * Survey Account React Component
+ */
 class SurveyAccountsIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -18,6 +25,9 @@ class SurveyAccountsIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -61,10 +71,14 @@ class SurveyAccountsIndex extends Component {
       break;
     }
 
-
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -91,10 +105,6 @@ class SurveyAccountsIndex extends Component {
         name: 'visit',
         type: 'select',
         options: options.visits,
-      }},
-      {label: 'Email', show: true, filter: {
-        name: 'email',
-        type: 'text',
       }},
       {label: 'Instrument', show: true, filter: {
         name: 'instrument',

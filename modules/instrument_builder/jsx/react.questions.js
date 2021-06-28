@@ -12,7 +12,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/*
+/**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
  *
  * This is the React class for a LORIS element. It takes
@@ -20,13 +20,20 @@ import PropTypes from 'prop-types';
  *
  */
 class LorisElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let element = this.props.element;
     let elementHtml = '';
@@ -36,6 +43,9 @@ class LorisElement extends Component {
         break;
       case 'label':
         elementHtml = <p>{element.Description}</p>;
+        break;
+      case 'line':
+        elementHtml = <div></div>;
         break;
       case 'score':
         elementHtml = <StaticElement text={0} label={element.Description} />;
@@ -63,8 +73,8 @@ class LorisElement extends Component {
       case 'date':
         elementHtml = <DateElement
           label={element.Description}
-          minYear={element.Options.MinDate}
-          maxYear={element.Options.MaxDate}
+          minYear={element.Options.MinYear}
+          maxYear={element.Options.MaxYear}
         />;
         break;
       case 'numeric':
@@ -83,10 +93,14 @@ class LorisElement extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the question text input
  */
 class QuestionText extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -94,22 +108,38 @@ class QuestionText extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-    // Keep track of the current input
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     this.props.updateState({Description: e.target.value});
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionText) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
+      errorMessage = (
+        <font className="form-error">
+          {this.props.element.error.questionText}
+        </font>
+      );
       errorClass += ' has-error';
     }
     return (
       <div className={errorClass}>
-        <label className="col-sm-2 control-label">{this.props.inputLabel}: </label>
+        <label className="col-sm-2 control-label">
+          {this.props.inputLabel}:
+        </label>
         <div className="col-sm-6">
           <input className="form-control col-xs-12"
             type="text" id="questionText"
@@ -130,10 +160,14 @@ QuestionText.defaultProps = {
   inputLabel: 'Question Text',
 };
 
-/*
+/**
  * This is the React class for the question name input
  */
 class BasicOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -141,19 +175,33 @@ class BasicOptions extends Component {
     };
     this.onChange = this.onChange.bind(this);
   }
-  // Keep track of the current input
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     // replace whitespaces with underscores
     let questionName = (e.target.value).trim().split(' ').join('_');
     this.props.updateState({Name: questionName});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionName) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionName}</font>);
+      errorMessage = (
+        <font className="form-error">
+          {this.props.element.error.questionName}
+        </font>
+      );
       errorClass += ' has-error';
     }
     return (
@@ -178,10 +226,14 @@ class BasicOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the Dropdown options
  */
 class DropdownOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -191,12 +243,21 @@ class DropdownOptions extends Component {
     this.addOption = this.addOption.bind(this);
     this.resetOptions = this.resetOptions.bind(this);
   }
+
+  /**
+   * On change
+   * Keep track of the current input
+   * @param {object} e - Event object
+   */
   onChange(e) {
     this.setState({
       option: e.target.value,
     });
   }
-  // Add an option to the element
+
+  /**
+   * Add an option to the element
+   */
   addOption() {
     let option = this.state.option.trim();
 
@@ -228,13 +289,21 @@ class DropdownOptions extends Component {
     // clear input field
     this.state.option = '';
   }
-  // Reset the dropdown options
+
+  /**
+   * Reset the dropdown options
+   */
   resetOptions() {
     let temp = Instrument.clone(this.props.element.Options);
     temp.Values = {};
     this.props.updateState({Options: temp});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let multi = '';
     let options = Instrument.clone(this.props.element.Options.Values);
@@ -290,7 +359,10 @@ class DropdownOptions extends Component {
         <div className="form-group">
           <label className="col-sm-2 control-label">Preview: </label>
           <div className="col-sm-2">
-            <select multiple={multi} id="selectOptions" className="form-control">
+            <select multiple={multi}
+                    id="selectOptions"
+                    className="form-control"
+            >
               {Object.keys(options).map(function(option, key) {
                 return (<option key={key}>{options[option]}</option>);
               })}
@@ -302,10 +374,14 @@ class DropdownOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the date options
  */
 class DateOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -318,26 +394,43 @@ class DateOptions extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
-    this.props.element.Options.dateFormat = '';
+    // Check if the date format is already set (editing elements)
+    // if not, set it to default value (new elements)
+    if (!this.props.element.Options.dateFormat) {
+      this.props.element.Options.dateFormat = 'Date';
+    }
   }
-    // Keep track of the inputed years
+
+  /**
+   * On change
+   * Keep track of the inputed years
+   * @param {object} e - Event object
+   */
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
-    if (e.target.id === 'datemin' && e.target.value.length > 0) {
-      options.MinDate = e.target.value + '-01-01';
-    } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
-      options.MaxDate = e.target.value + '-12-31';
+    if (e.target.id === 'yearmin') {
+      options.MinYear = e.target.value;
+    } else if (e.target.id === 'yearmax') {
+      options.MaxYear = e.target.value;
     } else if (e.target.id === 'dateFormat') {
       options.dateFormat = e.target.value;
     }
     this.props.updateState({Options: options});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
-    // Truncate off the month and day from the date to only have the year.
-    let minYear = this.props.element.Options.MinDate.split('-')[0];
-    let maxYear = this.props.element.Options.MaxDate.split('-')[0];
+    let minYear = this.props.element.Options.MinYear;
+    let maxYear = this.props.element.Options.MaxYear;
+    let dateFormat = this.props.element.Options.dateFormat;
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
@@ -347,7 +440,9 @@ class DateOptions extends Component {
     if (this.props.element.error && this.props.element.error.dateOption) {
       // If an error is present, display the error
       errorMessage = (
-        <span className="form-error">{this.props.element.error.dateOption}</span>
+        <span className="form-error">
+          {this.props.element.error.dateOption}
+        </span>
       );
       dateOptionsClass += ' has-error';
     }
@@ -364,7 +459,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemin"
+              id="yearmin"
               min="1900"
               max="2100"
               value={minYear}
@@ -377,7 +472,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemax"
+              id="yearmax"
               min="1900"
               max="2100"
               onChange={this.onChange}
@@ -391,7 +486,8 @@ class DateOptions extends Component {
             <select
               id="dateFormat"
               className="form-control"
-              onChange={this.onChange}>
+              onChange={this.onChange}
+              defaultValue={dateFormat}>
               {Object.keys(dateFormatOptions).map(function(option, key) {
                 return (
                   <option key={key} value={option}>
@@ -407,10 +503,14 @@ class DateOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the numeric options
  */
 class NumericOptions extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -419,8 +519,12 @@ class NumericOptions extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  // Keep track of the inputed numbers, casting them to
-  // interger values.
+  /**
+   * On change
+   * Keep track of the inputed numbers, casting them to
+   * integer values.
+   * @param {object} e - Event object
+   */
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
 
@@ -431,14 +535,23 @@ class NumericOptions extends Component {
     }
     this.props.updateState({Options: options});
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let errorMessage = '';
     let optionsClass = 'options form-group';
 
         // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
-      errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
+      errorMessage = (
+        <span className="form-error">
+          {this.props.element.error.numeric}
+        </span>
+      );
       optionsClass += 'options form-group has-error';
     }
 
@@ -478,11 +591,15 @@ class NumericOptions extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for the dropdown for the
  *  different question types.
  */
 class ListElements extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -490,7 +607,12 @@ class ListElements extends Component {
     };
     this.selectType = this.selectType.bind(this);
   }
-    // Set the desired question type
+
+  /**
+   * Set the desired question type
+   * @param {*} newId
+   * @param {*} newValue
+   */
   selectType(newId, newValue) {
     let newState = {
       selected: {
@@ -502,6 +624,11 @@ class ListElements extends Component {
     let textSize = 'small';
     // Set the options for the desired type
     switch (newId) {
+      case 'line':
+        newState.Options = {};
+        newState.Name = '';
+        newState.Description = '';
+        break;
       case 'textarea':
         textSize = 'large';
         // falls through
@@ -521,14 +648,14 @@ class ListElements extends Component {
         break;
       case 'date':
         newState.Options = {
-          MinDate: '',
-          MaxDate: '',
+          MinYear: '',
+          MaxYear: '',
         };
         break;
       case 'numeric':
         newState.Options = {
-          MinValue: 0,
-          MaxValue: 0,
+          MinValue: null,
+          MaxValue: null,
         };
         break;
       default:
@@ -536,61 +663,153 @@ class ListElements extends Component {
     }
     this.props.updateState(newState);
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
         <div className="form-group">
-            <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+            <label htmlFor="selected-input"
+                   className="col-sm-2 control-label"
+            >Question Type:</label>
             <div className="col-sm-4">
                 <div className="btn-group">
-                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button id="selected-input"
+                            type="button"
+                            className="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown"
+                    >
                         <span id="search_concept">{this.props.value} </span>
                         <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
                         <li>
-                            <div className="col-sm-12"><h5 className="">Information</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Information</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'header', 'Header')}>
-                            <a id="header" className="option" title="Centered, header information">Header</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'header',
+                          'Header'
+                        )}>
+                            <a id="header"
+                               className="option"
+                               title="Centered, header information"
+                            >Header</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'label', 'Label')}>
-                            <a id="label" className="option" title="Unemphasized display text">Label</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'label',
+                          'Label'
+                        )}>
+                            <a id="label"
+                               className="option"
+                               title="Unemphasized display text"
+                            >Label</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
-                            <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'score',
+                          'Scored Field'
+                        )}>
+                            <a id="scored"
+                               className="option"
+                               title="Column which stores calculated data"
+                            >Scored Field</a>
                         </li>
                         <li className="divider"></li>
                         <li>
-                            <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Data entry</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
-                            <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'textbox',
+                          'Textbox'
+                        )}>
+                            <a id="textbox"
+                               className="option"
+                               title="Text box for user data entry"
+                            >Textbox</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
-                            <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'textarea',
+                          'Textarea'
+                        )}>
+                            <a id="textarea"
+                               className="option"
+                               title="Larger text area for data entry"
+                            >Textarea</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
-                            <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'dropdown',
+                          'Dropdown'
+                        )}>
+                            <a id="dropdown"
+                               className="option"
+                               title={'Dropdown menu for users to select '
+                                     + 'data from'}
+                            >Dropdown</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
-                            <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'multiselect',
+                          'Multiselect'
+                        )}>
+                            <a id="multiselect"
+                               className="option"
+                               title={'Data entry where multiple options '
+                                     + 'may be selected'}
+                            >Multiselect</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'date', 'Date')}>
-                            <a id="date" className="option" title="User data entry of a date">Date</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'date',
+                          'Date'
+                        )}>
+                            <a id="date"
+                               className="option"
+                               title="User data entry of a date"
+                            >Date</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
-                            <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+                        <li onClick={
+                          this.selectType.bind(this, 'numeric', 'Numeric')
+                        }>
+                            <a id="numeric"
+                               className="option"
+                               title="User data entry of a number"
+                            >Numeric</a>
                         </li>
                         <li className="divider"></li>
                         <li>
-                            <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Formatting</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
-                            <a id="line" className="option" title="Empty line">Blank Line</a>
+                        <li onClick={
+                          this.selectType.bind(this, 'line', 'Blank Line')
+                        }>
+                            <a id="line"
+                               className="option"
+                               title="Empty line"
+                            >Blank Line</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
-                            <a id="page-break" className="option" title="Start a new page">Page Break</a>
+                        <li onClick={this.selectType.bind(
+                            this,
+                            'page-break',
+                            'Page Break'
+                        )}>
+                            <a id="page-break"
+                               className="option"
+                               title="Start a new page"
+                            >Page Break</a>
                         </li>
                     </ul>
                 </div>
@@ -600,20 +819,37 @@ class ListElements extends Component {
   }
 }
 
-/*
+/**
  * This is the React class for adding a new element or
  * editing an existing one
  */
 class AddElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
       this.state = {
-        Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
-        Description: Instrument.clone(this.props.element.Description),
-        Name: Instrument.clone(this.props.element.Name === undefined ? '' : this.props.element.Name),
-        selected: Instrument.clone(this.props.element.selected),
+        Options: Instrument.clone(this.props.element.Options === undefined ?
+          {} :
+          this.props.element.Options
+        ),
+        Description: Instrument.clone(
+          this.props.element.Description === undefined ?
+          {} :
+          this.props.element.Description
+        ),
+        Name: Instrument.clone(this.props.element.Name === undefined ?
+          '' :
+          this.props.element.Name
+        ),
+        selected: Instrument.clone(this.props.element.selected === undefined ?
+          {} :
+          this.props.element.selected
+        ),
       };
     } else {
       this.state = {
@@ -632,11 +868,17 @@ class AddElement extends Component {
     this.resetOptions = this.resetOptions.bind(this);
   }
 
-  // Update element state
+  /**
+   * Update element state
+   * @param {object} newState
+   */
   updateState(newState) {
     this.setState(newState);
   }
-  // Add a question to the buildPane
+
+  /**
+   * Add a question to the buildPane
+   */
   addQuestion() {
     let selected = this.state.selected.id;
     let questionText = this.state.Description;
@@ -655,8 +897,8 @@ class AddElement extends Component {
     }
 
     if (selected === 'date') {
-      let min = this.state.Options.MinDate;
-      let max = this.state.Options.MaxDate;
+      let min = this.state.Options.MinYear;
+      let max = this.state.Options.MaxYear;
       let minYear = parseInt(min, 10);
       let maxYear = parseInt(max, 10);
       let minDate = Date.parse(min);
@@ -680,10 +922,16 @@ class AddElement extends Component {
         });
         hasError = true;
       }
-      if (minYear > 9999 || minYear < 1000 || maxYear > 9999 || maxYear < 1000) {
+      if (minYear > 9999
+        || minYear < 1000
+        || maxYear > 9999
+        || maxYear < 1000
+      ) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.';
+        temp.dateOption = 'The year must have exactly 4 digits. '
+                          + 'Please choose an integer number '
+                          + 'between 1000 and 9999.';
         this.setState({
           error: temp,
         });
@@ -699,12 +947,12 @@ class AddElement extends Component {
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
       let min = this.state.Options.MinValue;
       let max = this.state.Options.MaxValue;
 
-      if (min >= max) {
+      if (min != null && max != null && min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
         temp.numeric = 'Max value must be larger than min value';
         this.setState({
@@ -713,7 +961,7 @@ class AddElement extends Component {
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
         let temp = this.state.error;
         delete temp.numeric;
@@ -773,6 +1021,8 @@ class AddElement extends Component {
 
     // Setup the desired element to be added
     switch (selected) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
         questionName = '';
@@ -826,54 +1076,98 @@ class AddElement extends Component {
       });
     }
   }
-    // Add an option to the options array
+
+  /**
+   * Add an option to the options array
+   * @param {boolean} multi
+   */
   addOption(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
     // setting any values
     this.setState(function(state) {
       let temp = state.options;
-      let option = multi ? $('#newmultiSelectOption').val() : $('#newSelectOption').val();
-      temp.push(option);
+      const newmultiSelectOption = document.getElementById(
+        'newmultiSelectOption'
+      );
+      const newSelectOption = document.getElementById(
+        'newSelectOption'
+      );
+
+      if (multi && newmultiSelectOption) {
+        temp.push(newmultiSelectOption.value);
+      } else if (newSelectOption) {
+        temp.push(newSelectOption.value);
+      }
+
       return {
         options: temp,
       };
     });
   }
-    // Reset the options array
+
+  /**
+   * Reset the options array
+   */
   resetOptions() {
     this.setState({
       options: [],
     });
   }
-    // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let questionInput;
     let header = '';
     let buttons;
         // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
-        questionInput = <QuestionText updateState={this.updateState} element={this.state}/>;
+        questionInput = <QuestionText
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'page-break':
-        questionInput = <QuestionText updateState={this.updateState} element={this.state} inputLabel={'Page Name'}/>;
+        questionInput = <QuestionText
+          updateState={this.updateState}
+          element={this.state}
+          inputLabel={'Page Name'}
+        />;
         break;
       case 'score':
       case 'textbox':
       case 'textarea':
-        questionInput = <BasicOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <BasicOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'multiselect':
       case 'dropdown':
-        questionInput = <DropdownOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <DropdownOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'date':
-        questionInput = <DateOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <DateOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'numeric':
-        questionInput = <NumericOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <NumericOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       default:
         break;

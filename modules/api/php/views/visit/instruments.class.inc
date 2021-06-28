@@ -43,14 +43,14 @@ class Instruments
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
-        return array(
+        return [
             'Meta'        => $meta,
             'Instruments' => $this->_timepoint->getInstrumentNames(),
-        );
+        ];
     }
 }

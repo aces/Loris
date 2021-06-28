@@ -1,1 +1,0 @@
-Mac specific instructions

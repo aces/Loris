@@ -22,14 +22,14 @@ try {
 } catch (\DomainException $e) {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
-    print json_encode(array('error' => 'invalid candID'));
+    print json_encode(['error' => 'invalid candID']);
     exit;
 }
 
 if (!isset($_POST['feedbackID'])) {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
-    print json_encode(array('error' => 'Missing FeedbackID'));
+    print json_encode(['error' => 'Missing FeedbackID']);
     exit;
 }
 
@@ -46,7 +46,7 @@ try {
     header("HTTP/1.1 404 Not Found");
     header("Content-Type: application/json");
     print json_encode(
-        array('error' => 'The requested feedback thread can`t be found')
+        ['error' => 'The requested feedback thread can`t be found']
     );
     exit;
 }
@@ -55,7 +55,7 @@ if ($closethreadcount === 0) {
     header("HTTP/1.1 500 Internal Server Error");
     header("Content-Type: application/json");
     print json_encode(
-        array('error' => 'No feedback thread updated')
+        ['error' => 'No feedback thread updated']
     );
     exit;
 }

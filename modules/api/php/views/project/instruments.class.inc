@@ -58,23 +58,26 @@ class Instruments
      */
     public function toArray(): array
     {
-        $meta = array('Project' => $this->_project->getName());
+        $meta = ['Project' => $this->_project->getName()];
 
-        $instruments = array();
+        $instruments = [];
 
         foreach ($this->_instruments as $instrument) {
             $shortname = $instrument->getShortname();
-            $item      = array(
+            $item      = [
                 'Fullname'               => $instrument->getFullname(),
                 'Subgroup'               => $instrument->getSubgroupname(),
                 'DoubleDataEntryEnabled' => $instrument->isDDE(),
-            );
-            $instruments[$shortname] = $item;
+            ];
+
+            if (!is_null($shortname)) {
+                $instruments[$shortname] = $item;
+            }
         }
 
-        return array(
+        return [
             'Meta'        => $meta,
             'Instruments' => $instruments,
-        );
+        ];
     }
 }

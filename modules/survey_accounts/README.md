@@ -21,7 +21,7 @@ LORIS `htdocs` directory.
 
 ## Permissions
 
-Accessing the survey accounts module requires the `user_accounts`
+Accessing the survey accounts module requires the `survey_accounts_view`
 LORIS permission.
 
 ## Configurations

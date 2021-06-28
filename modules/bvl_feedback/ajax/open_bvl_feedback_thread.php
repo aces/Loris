@@ -13,13 +13,13 @@
 ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
-$feedbackid = $_POST['feedbackID'] ?? '';
+$feedbackID = $_POST['feedbackID'] ?? '';
 
 if (! \Utility::valueIsPositiveInteger($feedbackID)) {
     header("HTTP/1.1 400 Bad Request");
     header("Content-Type: application/json");
     print json_encode(
-        array('error' => 'feedbackId missing or invalid')
+        ['error' => 'feedbackId missing or invalid']
     );
     exit;
 }
@@ -33,7 +33,7 @@ if ($openedthreadcount === 0) {
     header("HTTP/1.1 500 Internal Server Error");
     header("Content-Type: application/json");
     print json_encode(
-        array('error' => 'No feedback thread updated')
+        ['error' => 'No feedback thread updated']
     );
     exit;
 }

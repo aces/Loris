@@ -7,15 +7,30 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Image panel header component
+ */
 class ImagePanelHeader extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     $('.panel-title').tooltip();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let QCStatusLabel;
     if (this.props.QCStatus === 'Pass') {
@@ -31,11 +46,23 @@ class ImagePanelHeader extends Component {
     let arrow;
     if (this.props.Expanded) {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-up">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-up
+                    ">
               </span>;
     } else {
       arrow = <span onClick={this.props.onToggleBody}
-                    className="pull-right clickable glyphicon arrow glyphicon-chevron-down">
+                    className="
+                      pull-right
+                      clickable
+                      glyphicon
+                      arrow
+                      glyphicon-chevron-down
+                    ">
               </span>;
     }
     let headerButton = (
@@ -57,7 +84,10 @@ class ImagePanelHeader extends Component {
       <div className="panel-heading clearfix">
         <input type="checkbox" data-file-id={this.props.FileID}
                className="mripanel user-success"/>
-        <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+        <h3 className="panel-title"
+            data-toggle="tooltip"
+            title={this.props.Filename}
+        >
           {this.props.Filename}
         </h3>
         {QCStatusLabel}
@@ -77,15 +107,28 @@ ImagePanelHeader.propTypes = {
   Filename: PropTypes.string,
 };
 
+/**
+ * Image panel headers table component
+ */
 class ImagePanelHeadersTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     $(ReactDOM.findDOMNode(this)).DynamicTable();
   }
 
+  /**
+   * Invoked immediately before a component is unmounted and destroyed.
+   */
   componentWillUnmount() {
     // Remove wrapper nodes so React is able to remove component
     $(ReactDOM.findDOMNode(this)).DynamicTable({
@@ -93,10 +136,21 @@ class ImagePanelHeadersTable extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
-      <table className=
-               "table table-hover table-bordered header-info col-xs-12 dynamictable">
+      <table className="
+        table
+        table-hover
+        table-bordered
+        header-info
+        col-xs-12
+        dynamictable
+      ">
         <tbody>
         <tr>
           <th className="info col-xs-2">Voxel Size</th>
@@ -223,11 +277,24 @@ ImagePanelHeadersTable.propTypes = {
   HeaderInfo: PropTypes.object,
 };
 
+
+/**
+ * Image quality control dropdown component
+ */
 class ImageQCDropdown extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let label = <label>{this.props.Label}</label>;
     if (this.props.url) {
@@ -282,11 +349,24 @@ ImageQCDropdown.propTypes = {
   defaultValue: PropTypes.string,
 };
 
+
+/**
+ * Image quality control static component
+ */
 class ImageQCStatic extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let staticInfo;
     staticInfo = (
@@ -307,11 +387,25 @@ ImageQCStatic.propTypes = {
   Label: PropTypes.string,
 };
 
+
+/**
+ * Image panel quality control
+ * status selector component
+ */
 class ImagePanelQCStatusSelector extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
@@ -343,11 +437,25 @@ ImagePanelQCStatusSelector.propTypes = {
   QCStatus: PropTypes.string,
 };
 
+
+/**
+ * Image panel quality control
+ * selected selector component
+ */
 class ImagePanelQCSelectedSelector extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <ImageQCDropdown
@@ -367,18 +475,38 @@ ImagePanelQCSelectedSelector.propTypes = {
   Selected: PropTypes.string,
 };
 
+
+/**
+ * Image panel quality control
+ * caveat selector component
+ */
 class ImagePanelQCCaveatSelector extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
     if (this.props.SeriesUID && this.props.Caveat === '1') {
-      mriViolationsLink = '/mri_violations/?' +
-        'submenu=mri_protocol_check_violations&SeriesUID=' +
-        this.props.SeriesUID + '&filter=true';
+        // If there is a manual caveat that was set, the link
+        // will take you to it, even though there might also
+        // be a caveat that was set by the MRI piepline (i.e
+        // not manual). Note that manual caveat are always
+        // resolved
+        if (this.props.CaveatViolationsResolvedID) {
+            mriViolationsLink = '/mri_violations/resolved_violations/?' +
+              'SeriesUID=' + this.props.SeriesUID + '&filter=true';
+        }
     }
 
     return (
@@ -405,13 +533,27 @@ ImagePanelQCCaveatSelector.propTypes = {
   HasQCPerm: PropTypes.string,
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
+
+/**
+ * Image panel quality control SNR value component
+ */
 class ImagePanelQCSNRValue extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <ImageQCStatic
@@ -428,11 +570,24 @@ ImagePanelQCSNRValue.propTypes = {
   SNR: PropTypes.string,
 };
 
+
+/**
+ * Image panel quality control panel component
+ */
 class ImagePanelQCPanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="form-group">
@@ -452,6 +607,7 @@ class ImagePanelQCPanel extends Component {
           HasQCPerm={this.props.HasQCPerm}
           Caveat={this.props.Caveat}
           SeriesUID={this.props.SeriesUID}
+          CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
         />
         <ImagePanelQCSNRValue
           FileID={this.props.FileID}
@@ -470,13 +626,27 @@ ImagePanelQCPanel.propTypes = {
   Caveat: PropTypes.string,
   SeriesUID: PropTypes.string,
   SNR: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
+
+/**
+ * Download button component
+ */
 class DownloadButton extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.props.FileName || this.props.FileName === '') {
       return <span/>;
@@ -500,12 +670,24 @@ DownloadButton.propTypes = {
   Label: PropTypes.string,
 };
 
+
+/**
+ * Image quality control comments button component
+ */
 class ImageQCCommentsButton extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
   }
 
+  /**
+   * Open window handler
+   * @param {object} e - Event object
+   */
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
@@ -517,6 +699,11 @@ class ImageQCCommentsButton extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
@@ -539,12 +726,24 @@ DownloadButton.propTypes = {
   BaseURL: PropTypes.string,
 };
 
+
+/**
+ * Longitudinal view button component
+ */
 class LongitudinalViewButton extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
   }
 
+  /**
+   * Open window handler
+   * @param {object} e - Event object
+   */
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
@@ -555,6 +754,11 @@ class LongitudinalViewButton extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
@@ -578,11 +782,24 @@ LongitudinalViewButton.propTypes = {
   OtherTimepoints: PropTypes.string,
 };
 
+
+/**
+ * Image download buttons component
+ */
 class ImageDownloadButtons extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="row mri-second-row-panel col-xs-12">
@@ -623,13 +840,24 @@ ImageDownloadButtons.propTypes = {
   OtherTimepoints: PropTypes.string,
 };
 
+
+/**
+ * Image panel body component
+ */
 class ImagePanelBody extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
   }
 
-
+  /**
+   * Open window handler
+   * @param {object} e - Event object
+   */
   openWindowHandler(e) {
     e.preventDefault();
     window.open(this.props.BaseURL + '/brainbrowser/?minc_id=[' +
@@ -637,6 +865,11 @@ class ImagePanelBody extends Component {
       'location = 0,width = auto, height = auto, scrollbars=yes');
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="panel-body">
@@ -654,6 +887,7 @@ class ImagePanelBody extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
               SeriesUID={this.props.SeriesUID}
@@ -692,9 +926,18 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
+
+/**
+ * Image panel component
+ */
 class ImagePanel extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -705,18 +948,31 @@ class ImagePanel extends Component {
     this.toggleHeaders = this.toggleHeaders.bind(this);
   }
 
+  /**
+   * Toggle body
+   * @param {object} e - Event object
+   */
   toggleBody(e) {
     this.setState({
       BodyCollapsed: !this.state.BodyCollapsed,
     });
   }
 
+  /**
+   * Toggle headers
+   * @param {object} e - Event object
+   */
   toggleHeaders(e) {
     this.setState({
       HeadersCollapsed: !this.state.HeadersCollapsed,
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <div className="col-xs-12 col-md-6">
@@ -745,6 +1001,7 @@ class ImagePanel extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
 
@@ -778,6 +1035,7 @@ ImagePanel.propTypes = {
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);

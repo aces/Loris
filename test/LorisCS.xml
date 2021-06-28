@@ -10,6 +10,7 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
     </rule>
 
     <!-- Pieces of other standards to include... -->
@@ -70,4 +71,7 @@
      </rule>
      <!-- Do not allow PHP closing tags because they can cause problems -->
      <rule ref="PSR2.Files.ClosingTag"/>
+
+     <!-- Force short array syntax -->
+     <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
 </ruleset>

@@ -29,7 +29,7 @@ class AnonymousUserTest extends TestCase
      *
      * @var AnonymousUser object
      */
-    private $anonymousUser;
+    private $_anonymousUser;
 
     /**
      * This method is called before each test is executed.
@@ -40,7 +40,7 @@ class AnonymousUserTest extends TestCase
     {
         parent::setUp();
 
-        $this->anonymousUser = new AnonymousUser();
+        $this->_anonymousUser = new AnonymousUser();
 
     }
 
@@ -51,7 +51,7 @@ class AnonymousUserTest extends TestCase
      */
     public function testGetSiteNames(): void
     {
-      $this->assertEquals(array(),$this->anonymousUser->getSiteNames());
+        $this->assertEquals([], $this->_anonymousUser->getSiteNames());
     }
 }
 

@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 /**
  * Class NDB_BVL_FeedbackTest
  *
@@ -32,6 +31,8 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     private $_feedbackObj;
 
+    private $_sessionID;
+
 
     /**
      * Setup test
@@ -39,11 +40,18 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
+        $this->_sessionID = new \SessionID("11");
+
         $this->createLorisDBConnection();
-        $this->_feedbackObj = NDB_BVL_Feedback::singleton("karo_test", null, 11);
+        $this->_feedbackObj = NDB_BVL_Feedback::singleton(
+            "karo_test",
+            null,
+            $this->_sessionID
+        );
     }
 
     /**
@@ -55,7 +63,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      */
     public function testCreateFeedbackTypeWithInvalidName()
     {
-        $this->setExpectedException('LorisException');
+        $this->expectException('LorisException');
         $this->_feedbackObj->createFeedbackType("");
     }
 
@@ -102,7 +110,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
     public function testGetFeedbackTypeIdByNameForNoneExistingValue()
     {
         $this->assertEmpty(
-            $res = $this->_feedbackObj->getFeedbackTypeIdByName(
+            $this->_feedbackObj->getFeedbackTypeIdByName(
                 'None existing value'
             )
         );

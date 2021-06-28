@@ -78,26 +78,26 @@ $config         = NDB_Config::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 $dataDir        = "logs";
 $diff           = null;
-$commentids     = array();
+$commentids     = [];
 //Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
     $instruments = Utility::getAllInstruments();
 } else {
-    $instruments = array($instrument => $instrument);
+    $instruments = [$instrument => $instrument];
 }
 
 //get all candidates
-$candidates = $DB->pselect("SELECT CandID, PSCID FROM candidate", array());
+$candidates = $DB->pselect("SELECT CandID, PSCID FROM candidate", []);
 //get all subprojectids
 $subprojectids = $DB->pselect(
     "SELECT DISTINCT subprojectid FROM session",
-    array()
+    []
 );
 
 foreach ($instruments as $instrument => $full_name) {
     if ((isset($instrument)) && (hasData($instrument))) {
         print "instrument is $instrument \n";
-        $commentids = array();
+        $commentids = [];
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
             $pscid  = $candidate['PSCID'];
@@ -108,11 +108,11 @@ foreach ($instruments as $instrument => $full_name) {
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
                     s.subprojectid = :subid",
-                    array(
+                    [
                         'cid'   => $candid,
                         'fname' => $instrument,
                         'subid' => $subprojectid['subprojectid'],
-                    )
+                    ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
                     $sessionid   = $session_info['ID'];
@@ -167,8 +167,8 @@ function getCommentIDs(
 ) {
 
     $commentID  = $candid. $pscid. $sid . $subprojectid;
-    $commentids = array();
-    $flag_info  = array();
+    $commentids = [];
+    $flag_info  = [];
 
     if ($commentID !=null && $test_name!=null) {
         $query = " SELECT '$pscid' AS PSCID,'$visit_label' AS VisitLabel,
@@ -185,10 +185,10 @@ function getCommentIDs(
     ///include the flag_data_entry and in_flag
     if ($commentids !=null) {
         foreach ($commentids as $key => $commentid) {
-            $flag = array();
+            $flag = [];
             $flag = $GLOBALS['DB']->pselectRow(
                 "SELECT * FROM flag WHERE CommentID = :cid",
-                array('cid' => $commentid['CommentID'])
+                ['cid' => $commentid['CommentID']]
             );
             $flag_info['flag_data_entry'] = $flag['Data_entry'];
             $flag_info['in_flag']         = 'No';
@@ -249,7 +249,7 @@ function hasData($instrument)
 {
     $commentids = $GLOBALS['DB']->pselect(
         "SELECT COUNT(*) FROM $instrument",
-        array()
+        []
     );
     if ((count($commentids)) > 0) {
         return true;

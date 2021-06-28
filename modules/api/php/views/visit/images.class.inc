@@ -47,25 +47,25 @@ class Images
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
         $imagesdata = array_map(
             function ($image) {
-                return array(
+                return [
                     'OutputType'      => $image->getOutputType(),
                     'Filename'        => $image->getFilename(),
                     'AcquisitionType' => $image->getAcquisitionprotocol(),
-                );
+                ];
             },
             $this->_images
         );
 
-        return array(
+        return [
             'Meta'  => $meta,
             'Files' => $imagesdata,
-        );
+        ];
     }
 }

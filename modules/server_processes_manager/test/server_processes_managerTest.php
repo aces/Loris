@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -41,7 +41,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Server Processes Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
             'No.'                      => '#dynamictable > thead > tr',
@@ -54,7 +54,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
-        );
+        ];
     /**
      * Tests that the page does not load if config setting mriCodePath has
      * not been set.
@@ -64,12 +64,12 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     function testDoesNotLoadWithoutMRICodePath()
     {
         $this->setupConfigSetting('mriCodePath', null);
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains('Cannot continue', $bodyText);
+        $this->assertStringContainsString('Cannot continue', $bodyText);
         $this->resetPermissions();
     }
 
@@ -83,12 +83,15 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         // This function sets mriCodePath for all future functions
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -99,12 +102,15 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithPermission()
     {
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 
@@ -122,7 +128,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
     /**
@@ -168,7 +174,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             " > div > div:nth-child(2) > input').click()"
         );
 
-        $this->assertContains($expectDataRows, $text);
+        $this->assertStringContainsString($expectDataRows, $text);
     }
 }
 

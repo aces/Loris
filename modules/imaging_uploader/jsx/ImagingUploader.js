@@ -7,7 +7,14 @@ import Loader from 'Loader';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 
+/**
+ * Imaging uploader component
+ */
 class ImagingUploader extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     loris.hiddenHeaders = ['PatientName', 'SessionID'];
@@ -34,6 +41,9 @@ class ImagingUploader extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
@@ -170,9 +180,11 @@ class ImagingUploader extends Component {
              row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
 
         let patientName = row.PatientName;
-        violatedScans = <a onClick={this.openViolatedScans.bind(null, patientName)}>
+        violatedScans = <a
+          onClick={this.openViolatedScans.bind(null, patientName)}
+        >
            ({numViolatedScans} violated scans)
-         </a>;
+        </a>;
       }
 
       return (
@@ -199,6 +211,11 @@ class ImagingUploader extends Component {
     })(e);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -225,7 +242,11 @@ class ImagingUploader extends Component {
                 <TextboxElement {... this.state.data.form.candID} />
                 <TextboxElement {... this.state.data.form.pSCID} />
                 <SelectElement {... this.state.data.form.visitLabel} />
-                <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
+                <ButtonElement
+                  type='reset'
+                  label='Clear Filters'
+                  onUserInput={this.resetFilters}
+                />
               </FilterForm>
             </div>
             <div className='col-md-7'>
@@ -247,7 +268,9 @@ class ImagingUploader extends Component {
             form={this.state.data.form}
             mriList={this.state.data.mriList}
             maxUploadSize={this.state.data.maxUploadSize}
-            imagingUploaderAutoLaunch={this.state.data.imagingUploaderAutoLaunch}
+            imagingUploaderAutoLaunch={
+              this.state.data.imagingUploaderAutoLaunch
+            }
           />
         </TabPane>
       </Tabs>

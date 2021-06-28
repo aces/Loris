@@ -68,6 +68,10 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
             }
         }
 
+        // This assertion is always true because of the function signature
+        // but is required because of
+        // https://github.com/phan/phan/issues/2129
+        assert($handler instanceof RequestHandlerInterface);
         // It either doesn't match or the client didn't send an ETag. In either
         // case, we calculate one and add it to the response header after calling
         // the handler.
@@ -79,6 +83,10 @@ class ETag implements MiddlewareInterface, MiddlewareChainer
         }
 
         if (empty($response->getHeaderLine('Etag'))) {
+            // Re-assert precondition of function to work around
+            // https://github.com/phan/phan/issues/2129
+            assert($handler instanceof ETagCalculator);
+
             // If a sub-endpoint already added a Etag, do not calculate ETag
             $response = $response->withHeader(
                 "ETag",

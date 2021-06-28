@@ -74,7 +74,7 @@ foreach($compromised as $username => $details) {
     // password reset
     $DB->update(
         'users', 
-        array('Password_expiry' => '1990-01-01'), 
+        array('PasswordChangeRequired' => '1'), 
         array('UserID' => $username)
     );
 }

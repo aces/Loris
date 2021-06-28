@@ -52,7 +52,7 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
           LEFT JOIN subproject s USING (SubprojectID)
           LEFT JOIN psc p USING (CenterID)
         ORDER BY t.Test_name",
-            array()
+            []
         );
     }
 

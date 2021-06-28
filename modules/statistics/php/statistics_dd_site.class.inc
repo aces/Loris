@@ -27,27 +27,7 @@ class Statistics_DD_Site extends statistics_site
 {
 
     var $query_criteria = '';
-    var $query_vars     = array();
-
-    /**
-     * CheckCriteria function
-     *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     *
-     * @return void
-     */
-    function _checkCriteria($centerID, $projectID)
-    {
-        if (!empty($centerID)) {
-            $this->query_criteria   .= " AND s.CenterID =:cid ";
-            $this->query_vars['cid'] = $centerID;
-        }
-        if (!empty($projectID)) {
-            $this->query_criteria   .= " AND s.ProjectID =:pid ";
-            $this->query_vars['pid'] = $projectID;
-        }
-    }
+    var $query_vars     = [];
 
     /**
      * Notexcluded function
@@ -78,19 +58,19 @@ class Statistics_DD_Site extends statistics_site
 
         $this->instruments = array_filter(
             $this->instruments,
-            array(
+            [
                 &$this,
                 'notexcluded',
-            )
+            ]
         );
     }
 
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -119,9 +99,9 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */

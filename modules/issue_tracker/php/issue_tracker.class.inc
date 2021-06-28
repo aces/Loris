@@ -40,10 +40,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'issue_tracker_reporter',
                 'issue_tracker_developer',
-            )
+            ]
         );
     }
 
@@ -56,7 +56,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
         $provisioner = new IssueRowProvisioner();
 
-        $user = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
         if ($user->hasPermission('access_all_profiles') === false) {
             $provisioner = $provisioner->filter(
@@ -68,6 +69,30 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Returns a list of sites in the database with an additional All Sites option
+     *
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSites(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        $user = \User::singleton();
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList($study_site, $DCC);
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
+        return $sites;
+    }
+
+    /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
@@ -75,11 +100,11 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      */
     function toJSON(): string
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
 
         //sites
-        $sites = array();
         if ($user->hasPermission('access_all_profiles')) {
             $sites = \Utility::getSiteList();
         } else {
@@ -88,57 +113,69 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
 
         //reporters
-        $reporters         = array();
+        $reporters         = [];
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
                ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($reporter_expanded as $r_row) {
             $reporters[$r_row['UserID']] = $r_row['Real_name'];
         }
 
         //assignees
-        $assignees         = array();
+        $assignees         = [];
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
                ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($assignee_expanded as $a_row) {
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
         }
 
-        $modules = \Module::getActiveModules($db);
+        $modules = array_reduce(
+            \Module::getActiveModules($db),
+            function (
+                $result,
+                $module
+            ) {
+                $moduleName          = $module->getLongName();
+                $result[$moduleName] = $moduleName;
+                return $result;
+            },
+            []
+        );
 
-        $priorities = array(
+        $priorities = [
+            'low'       => 'Low',
             'normal'    => 'Normal',
             'high'      => 'High',
             'urgent'    => 'Urgent',
             'immediate' => 'Immediate',
-        );
+        ];
 
-        $statuses = array(
+        $statuses = [
             'new'          => 'New',
             'acknowledged' => 'Acknowledged',
             'feedback'     => 'Feedback',
             'assigned'     => 'Assigned',
             'resolved'     => 'Resolved',
             'closed'       => 'Closed',
-        );
+        ];
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
              FROM issues_categories",
             []
         );
-        $categories      = array();
+        $categories      = [];
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -169,6 +206,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             [
                 'data'         => $arr,
                 'fieldOptions' => $fieldOptions,
+                'centerIDs'    => \Utility::getSiteList()
             ]
         );
     }
@@ -185,7 +223,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/issueTrackerIndex.js")
+            [$baseurl . "/issue_tracker/js/issueTrackerIndex.js"]
         );
     }
 }

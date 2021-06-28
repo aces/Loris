@@ -40,15 +40,14 @@ class Datadict extends \DataFrameworkMenu
     }
 
     /**
-     * The data dictionary has no sites affiliated with it and as
-     * such can not add site filters without an exception being
-     * thrown
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
      *
-     * @return bool
+     * @return ?array of site permissions or null
      */
-    public function useSiteFilter() : bool
+    public function allSitePermissionNames() : ?array
     {
-        return false;
+        return null;
     }
 
     /**
@@ -59,9 +58,39 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        return array(
-            'sourceFrom' => \Utility::getAllInstruments(),
-        );
+        $instruments     = \Utility::getAllInstruments();
+        $dictInstruments = [];
+        foreach ($instruments as $instrument => $name) {
+            // Since the testname does not always match the table name in the
+            // database we need to instantiate the object to get the table name
+            try {
+                $iObj = \NDB_BVL_Instrument::factory(
+                    $instrument,
+                    '',
+                    ''
+                );
+            } catch (\Exception $e) {
+                error_log(
+                    "There was a problem instantiating the instrument ".
+                    "'$instrument'. Make sure the instrument is valid and ".
+                    "functional in order for it to be displayed in the data ".
+                    "dictionary."
+                );
+                continue;
+            }
+            // If the instrument saves data in the flag table, there is no table to
+            // use, use the test name.
+            $key = $iObj->usesJSONData() ? $iObj->testName:$iObj->table;
+            // Append other testnames if multiple tests use the same table
+            $otherNames = '';
+            if (isset($dictInstruments[$key])) {
+                $otherNames = $dictInstruments[$key] . " / ";
+            }
+            $dictInstruments[$key] = $otherNames . $name;
+        }
+        return [
+            'sourceFrom' => $dictInstruments,
+        ];
     }
 
     /**
@@ -87,9 +116,9 @@ class Datadict extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/datadict/js/dataDictIndex.js",
-            )
+            ]
         );
     }
 

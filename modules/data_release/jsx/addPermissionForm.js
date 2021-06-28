@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
+import swal from 'sweetalert2';
 
 /**
  * Add Permission Form
@@ -8,6 +9,10 @@ import Loader from 'jsx/Loader';
  * Module component rendering the add permission form modal window
  */
 class AddPermissionForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -33,22 +38,30 @@ class AddPermissionForm extends Component {
   fetchData() {
     return fetch(this.props.DataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
+      .then(
+        (data) => this.setState({
+          data: data.Data,
+          fieldOptions: data.fieldOptions,
+        })
+      )
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
       });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
   /**
-   * Render the form in the modal window
+   * Render the form in the modal window.
    *
-   * @return {boolean}
+   * @return {JSX} - React markup for the component
    */
   render() {
     // Data loading error
@@ -156,17 +169,19 @@ class AddPermissionForm extends Component {
       body: formObj,
     }).then( (response) => {
       if (response.ok) {
-        swal({
+        swal.fire({
           text: 'Permission Update Success!',
           title: '',
           type: 'success',
-        }, function() {
+        }).then(function() {
           window.location.assign('/data_release');
         });
         this.props.fetchData();
       } else {
-        let msg = response.statusText ? response.statusText : 'Submission Error!';
-        swal(msg, '', 'error');
+        let msg = response.statusText ?
+          response.statusText :
+          'Submission Error!';
+        swal.fire(msg, '', 'error');
         console.error(msg);
       }
     });

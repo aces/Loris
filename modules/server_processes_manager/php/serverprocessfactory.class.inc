@@ -54,7 +54,7 @@ class ServerProcessFactory
         if ($type == MriUploadServerProcess::PROCESS_TYPE) {
             return new MriUploadServerProcess(
                 null,
-                null,
+                '',
                 $id,
                 $pid,
                 $stdoutFile,

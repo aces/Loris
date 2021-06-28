@@ -1,4 +1,10 @@
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `physiological_annotation_instance`;
+DROP TABLE IF EXISTS `physiological_annotation_parameter`;
+DROP TABLE IF EXISTS `physiological_annotation_archive`;
+DROP TABLE IF EXISTS `physiological_annotation_file`;
+DROP TABLE IF EXISTS `physiological_annotation_file_type`;
+DROP TABLE IF EXISTS `physiological_annotation_label`;
 DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_electrode`;
@@ -19,10 +25,19 @@ DROP TABLE IF EXISTS `help`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
 
--- 0000-00-02-Modules.sql
+-- issues must be deleted before `modules` table
+DROP TABLE IF EXISTS `issues_attachments`;
+DROP TABLE IF EXISTS `issues_watching`;
+DROP TABLE IF EXISTS `issues_comments_history`;
+DROP TABLE IF EXISTS `issues_history`;
+DROP TABLE IF EXISTS `issues_comments`;
+DROP TABLE IF EXISTS `issues`;
+DROP TABLE IF EXISTS `issues_categories`;
+
+-- 0000-00-01-Modules.sql
 DROP TABLE IF EXISTS `modules`;
 
--- 0000-00-01-Permission.sql
+-- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
@@ -82,13 +97,6 @@ DROP TABLE IF EXISTS `parameter_type_category_rel`;
 DROP TABLE IF EXISTS `parameter_type_category`;
 DROP TABLE IF EXISTS `parameter_type`;
 
-DROP TABLE IF EXISTS `issues_watching`;
-DROP TABLE IF EXISTS `issues_comments_history`;
-DROP TABLE IF EXISTS `issues_history`;
-DROP TABLE IF EXISTS `issues_comments`;
-DROP TABLE IF EXISTS `issues`;
-DROP TABLE IF EXISTS `issues_categories`;
-
 DROP TABLE IF EXISTS `media`;
 DROP TABLE IF EXISTS `mri_upload_server_processes_rel`;
 DROP TABLE IF EXISTS `server_processes`;
@@ -132,11 +140,15 @@ DROP TABLE IF EXISTS `bids_scan_type`;
 DROP TABLE IF EXISTS `bids_scan_type_subcategory`;
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
+DROP TABLE IF EXISTS `mri_protocol_checks_group`;
 DROP TABLE IF EXISTS `mri_upload`;
+DROP TABLE IF EXISTS `mri_protocol_group_target`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 DROP TABLE IF EXISTS `mri_protocol`;
+DROP TABLE IF EXISTS `mri_protocol_group`;
 DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `files_intermediary`;
 DROP TABLE IF EXISTS `files`;
@@ -144,6 +156,7 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
+DROP TABLE IF EXISTS `mri_upload_rel`;
 
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
@@ -168,7 +181,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `visit_project_subproject_rel`;
 DROP TABLE IF EXISTS `visit`;
 DROP TABLE IF EXISTS `project_subproject_rel`;
+DROP TABLE IF EXISTS `consent_group`;
+DROP TABLE IF EXISTS `hrrt_archive_files`;
+DROP TABLE IF EXISTS `hrrt_archive`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;
-
-

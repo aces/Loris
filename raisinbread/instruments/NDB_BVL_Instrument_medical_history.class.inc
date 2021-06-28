@@ -24,6 +24,7 @@
 class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -48,13 +49,9 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         $this->table     = 'medical_history'; // database table
         $this->commentID = $commentID; // data keyed by commentID
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
-
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array('current_concussion_symptoms');
+        $this->selectMultipleElements = array('current_concussion_symptoms');
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
@@ -280,27 +277,9 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         );
 
         // Concussion table headers
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Incident"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Hospitalized?"
-        );
-
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Age"
-        );
+        $group[] = $this->createLabel('Incident');
+        $group[] = $this->createLabel('Hospitalized?');
+        $group[] = $this->createLabel('Age');
 
         $this->form->addGroup(
             $group,

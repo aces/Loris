@@ -36,7 +36,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasPermission('document_repository_view');
+            $user->hasAnyPermission(
+                [
+                    'document_repository_view',
+                    'document_repository_delete',
+                ]
+            );
     }
 
     /**
@@ -82,7 +87,7 @@ class Module extends \Module
             $docs         = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository
                  ORDER BY Date_uploaded DESC LIMIT 4",
-                array()
+                []
             );
             $numberOfDocs = sizeof($docs);
             for ($i=0; $i < $numberOfDocs; $i++) {

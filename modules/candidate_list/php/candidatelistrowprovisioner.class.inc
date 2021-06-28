@@ -36,7 +36,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct()
     {
-        $config   = \NDB_Config::singleton();
+        $factory  = \NDB_Factory::singleton();
+        $config   = $factory->config();
         $maybeEDC = '';
 
         if ($config->getSetting("useEDC") === "true") {
@@ -75,7 +76,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",
-            array()
+            []
         );
     }
 
@@ -94,8 +95,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int) $row['RegistrationCenterID'];
-        $pid = (int) $row['RegistrationProjectID'];
+        $cid = new \CenterID($row['RegistrationCenterID']);
+        $pid = new \ProjectID($row['RegistrationProjectID']);
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);

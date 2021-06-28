@@ -28,11 +28,18 @@ import swal from 'sweetalert2';
  *
  */
 class Modal extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
     this.handleClose = this.handleClose.bind(this);
   }
 
+  /**
+   * Display a warning message on close
+   */
   handleClose() {
     if (this.props.throwWarning) {
       swal.fire({
@@ -49,6 +56,11 @@ class Modal extends Component {
     }
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {show, children, onSubmit, title} = this.props;
 
@@ -70,13 +82,15 @@ class Modal extends Component {
 
     const bodyStyle = {
       padding: 15,
+      maxHeight: '75vh',
+      overflowY: 'scroll',
     };
 
     const modalContainer = {
       display: 'block',
       position: 'fixed',
       zIndex: 9999,
-      paddingTop: '100px',
+      paddingTop: '65px',
       left: 0,
       top: 0,
       width: '100%',
@@ -118,11 +132,13 @@ class Modal extends Component {
 
     const submitButton = () => {
       if (onSubmit) {
+        const submit = () => onSubmit().then(() => this.props.onClose())
+        .catch(() => {});
         return (
           <div style={submitStyle}>
             <ButtonElement
               label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
+              onUserInput={submit}
             />
           </div>
         );
@@ -155,7 +171,7 @@ class Modal extends Component {
 
 Modal.propTypes = {
   title: PropTypes.string,
-  onSubmit: PropTypes.object,
+  onSubmit: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,

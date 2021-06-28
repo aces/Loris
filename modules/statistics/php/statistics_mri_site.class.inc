@@ -26,13 +26,13 @@ namespace LORIS\statistics;
 class Statistics_Mri_Site extends Statistics_Site
 {
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param \CenterID  $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -69,9 +69,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * CompleteCount function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param \CenterID  $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return ?string
      */
@@ -83,9 +83,9 @@ class Statistics_Mri_Site extends Statistics_Site
     /**
      * GetResults function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
-     * @param string $issue     the value of issue
+     * @param \CenterID  $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
+     * @param string     $issue     the value of issue
      *
      * @return array
      */
@@ -94,11 +94,11 @@ class Statistics_Mri_Site extends Statistics_Site
         $this->_checkCriteria($centerID, $projectID);
         $DB =& \Database::singleton();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", array());
+        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", []);
         $where      = "WHERE (";
         $counter    = 1;
-        foreach ($scan_types as $index=>$scan) {
-            foreach ($scan as $type=>$label) {
+        foreach (array_values($scan_types) as $scan) {
+            foreach (array_values($scan) as $label) {
                 if ($counter < sizeof($scan_types)) {
                     $where .= "m.$label <> 'No' OR m.$label IS NULL OR ";
                 } else {
@@ -132,8 +132,8 @@ class Statistics_Mri_Site extends Statistics_Site
         case 'Files_Missing':
             $where   = "WHERE (";
             $counter = 1;
-            foreach ($scan_types as $index=>$scan) {
-                foreach ($scan as $type=>$label) {
+            foreach (array_values($scan_types) as $scan) {
+                foreach (array_values($scan) as $label) {
                     if ($counter < sizeof($scan_types)) {
                         $where .= "m.$label <> 'No' OR ";
                     } else {
@@ -191,16 +191,16 @@ class Statistics_Mri_Site extends Statistics_Site
      */
     function setup()
     {
-        $this->issues = array(
+        $this->issues = [
             "Tarchive_Missing",
             "Files_Missing",
             "PF_Missing",
-        );
+        ];
 
         $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
-        $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
+        $center = $DB->pselectRow($sqlRow, ['cid' => $_REQUEST['CenterID']]);
         if (is_null($center)) {
             throw new \LorisException('Invalid CenterID specified');
         }
@@ -210,10 +210,12 @@ class Statistics_Mri_Site extends Statistics_Site
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the
         // template
-        $visits    = array();
-        $projectID = $_REQUEST['ProjectID'] ?? '';
+        $visits    = [];
+        $projectID = isset($_REQUEST['ProjectID'])
+            ? new \ProjectID($_REQUEST['ProjectID'])
+            : null;
 
-        $data = array();
+        $data = [];
         foreach ($this->issues as $issue) {
             // FIXME The function _completeCount() seems to be unfinished and
             // always returns null.
@@ -223,22 +225,22 @@ class Statistics_Mri_Site extends Statistics_Site
 
             $test_url = $issue;
             foreach ($results as $row) {
-                if (!in_array($row['Visit_label'], $visits)) {
+                if (!in_array($row['Visit_label'] ?? [], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
-                $results[$row['Visit_label']][] = array(
+                $results[$row['Visit_label']][] = [
                     'test_url'  => $test_url,
                     'CandID'    => $row['CandID'],
                     'SessionID' => $row['SessionID'],
                     'CommentID' => $row['CommentID'],
                     'PSCID'     => $row['PSCID'],
-                );
+                ];
             }
-            $data[] = array(
+            $data[] = [
                 'name'        => $this->_getIssueName($issue),
                 'count'       => $complete_count,
                 'incompletes' => $results,
-            );
+            ];
         }
 
         $this->tpl_data["data"]     = $data;
@@ -260,7 +262,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

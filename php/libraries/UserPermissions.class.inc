@@ -25,18 +25,16 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    int
-     * @access private
+     * @var ?string
      */
     var $userID;
 
     /**
      * Stores the permissions
      *
-     * @var    array<string,bool>
-     * @access private
+     * @var array<string,bool>
      */
-    var $permissions = array();
+    private $permissions = [];
 
 
     /**
@@ -52,12 +50,13 @@ class UserPermissions
     {
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
-        $params = array('UName' => $username);
+        $params = ['UName' => $username];
 
-        $this->userID = \Database::singleton()->pselectOne($query, $params);
-        if (empty($this->userID)) {
+        $userID = \Database::singleton()->pselectOne($query, $params);
+        if ($userID === null) {
             return false;
         }
+        $this->userID = $userID;
 
         // load the user's permissions
         $this->setPermissions();
@@ -82,10 +81,10 @@ class UserPermissions
             LEFT JOIN user_perm_rel pr
             ON (p.permID=pr.permID AND pr.userID=:UID)";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         // reset the array
-        $this->permissions = array();
+        $this->permissions = [];
 
         // Fill the permissions array of this UserPermissions object with the
         // values extracted for this user from the database.
@@ -202,10 +201,10 @@ class UserPermissions
         foreach ($set as $value) {
             $DB->insert(
                 'user_perm_rel',
-                array(
+                [
                     'userID' => $this->userID,
                     'permID' => $value,
-                )
+                ]
             );
         }
 
@@ -230,17 +229,17 @@ class UserPermissions
             // remove all permissions
             $DB->delete(
                 'user_perm_rel',
-                array('userID' => $this->userID)
+                ['userID' => $this->userID]
             );
         } else {
             // remove the permissions
             foreach ($set as $value) {
                 $DB->delete(
                     'user_perm_rel',
-                    array(
+                    [
                         'userID' => $this->userID,
                         'permID' => $value,
-                    )
+                    ]
                 );
             }
         }
@@ -266,10 +265,10 @@ class UserPermissions
             FROM permissions, user_perm_rel
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         // isolate and return numeric permission values
-        $permIDs = array();
+        $permIDs = [];
         foreach ($results as $row) {
             foreach ($row as $v) {
                 $permIDs[] = $v;
@@ -290,14 +289,33 @@ class UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $query   = "SELECT p.permID, p.code, p.description, pc.Description as type
+        $query   = "SELECT
+                p.permID,
+                p.code,
+                p.description,
+                pc.Description as type,
+                p.action,
+                p.moduleID
             FROM permissions p
                 JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+                LEFT JOIN modules m ON (p.moduleID=m.ID)
             WHERE up.userID = :UID
-                ORDER BY p.categoryID, p.description";
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+                ORDER BY p.categoryID, m.Name, p.description";
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
+        $modules = \Module::getActiveModulesIndexed($DB);
+        // Build new meaningful description from combination of columns
+        // Module Long Name: action description
+        foreach ($results as $key=>$perm) {
+            $newDesc = '';
+            if (!empty($perm['moduleID'])) {
+                $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
+            }
+            $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
+            $newDesc .= $perm['description'];
 
+            $results[$key]['label'] = $newDesc;
+        }
         return $results;
     }
 
@@ -320,11 +338,11 @@ class UserPermissions
         //insert into the login_history
         $DB->insert(
             'user_account_history',
-            array(
+            [
                 'userID'     => $this->userID,
                 'PermID'     => $PermID,
                 'PermAction' => $permAction,
-            )
+            ]
         );
     }
 }

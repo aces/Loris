@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Instrument_List
  *
@@ -21,6 +23,8 @@ namespace LORIS\instrument_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * Instrument_List
@@ -92,16 +96,8 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         //These variable are only for checking the permissions.
-        return ($user->hasPermission('access_all_profiles')
-            || (in_array(
-                $candidate->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )) || (in_array(
-                $timePoint->getData('CenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
-        );
+        return $user->hasPermission('access_all_profiles')
+            || $this->timePoint->isAccessibleBy($user);
     }
 
     /**
@@ -134,6 +130,29 @@ class Instrument_List extends \NDB_Menu_Filter
             // the candidate exists before getting here.
             throw new \LorisException("Timepoint list requires a timepoint.");
         }
+
+        // Check imaging_browser permission, used to control imaging_browser link
+        // on the instrument_list main page
+        $loris = $request->getAttribute("loris");
+        $perm  = false;
+        if (!is_null($loris) && $loris->hasModule('imaging_browser')) {
+            $user = $request->getAttribute("user");
+            if ($this->candidate->getData('Entity_type') == 'Scanner') {
+                $perm = $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_phantom_ownsite',
+                    $this->timePoint->getCenterID()
+                );
+            } elseif ($this->candidate->getData('Entity_type') == 'Human') {
+                $perm = $user->hasPermission('imaging_browser_view_allsites')
+                || $user->hasCenterPermission(
+                    'imaging_browser_view_site',
+                    $this->timePoint->getCenterID()
+                );
+            }
+        }
+        $this->tpl_data['imaging_browser_permission'] = $perm;
+
         return parent::process($request, $handler);
     }
 
@@ -145,6 +164,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
+            $this->loris,
             $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
@@ -169,31 +189,27 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
 
-        // get behavioral battery for this visit (time point)
+        // get behavioural battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
 
-        $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
-            $this->tpl_data['candID']
-        );
-        $this->tpl_data['subprojectID'] = \Utility::getSubprojectIDUsingCandID(
-            $this->tpl_data['candID']
+        $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
+            new CandID(strval($this->tpl_data['candID']))
         );
 
         // get the list of instruments
         $listOfInstruments = $this->getBatteryInstrumentList(
-            $this->tpl_data['stage'],
-            $this->tpl_data['subprojectID']
+            $this->tpl_data['stage']
         );
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user     =& \User::singleton();
-            $username = $user->getData('UserID');
+            $username = $user->getUsername();
 
-            $feedback_select_inactive = null;
+            $feedback_select_inactive = false;
             if ($user->hasPermission('bvl_feedback')) {
-                $feedback_select_inactive = 'Y';
+                $feedback_select_inactive = true;
             }
 
             $x            = -1;
@@ -211,10 +227,10 @@ class Instrument_List extends \NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status = new \NDB_BVL_InstrumentStatus;
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['CommentID']);
 
-                $ddeStatus = new \NDB_BVL_InstrumentStatus;
+                $ddeStatus = new \NDB_BVL_InstrumentStatus($this->loris);
                 $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
@@ -293,12 +309,12 @@ class Instrument_List extends \NDB_Menu_Filter
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
-     * @param string $candID    the value of candID
-     * @param string $sessionID the value of sessionID
+     * @param CandID      $candID    the value of candID
+     * @param ?\SessionID $sessionID the value of sessionID
      *
      * @return string
      */
-    function getFeedbackPanel($candID, $sessionID): string
+    function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
@@ -309,15 +325,14 @@ class Instrument_List extends \NDB_Menu_Filter
      * Gets an associative array of instruments which are members of the current
      * battery for instrument list module
      *
-     * @param string  $stage        Either 'visit' or 'screening' - determines
-     *                              whether to register only screening instruments
-     *                              or visit instruments
-     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
+     * @param string $stage Either 'visit' or 'screening' - determines
+     *                      whether to register only screening instruments
+     *                      or visit instruments
      *
      * @return array an associative array containing Test_name,
      *         Full_name, Sub_group, CommentID
      */
-    function getBatteryInstrumentList($stage=null, $SubprojectID=null)
+    function getBatteryInstrumentList($stage=null)
     {
         $DB = \Database::singleton();
 
@@ -341,14 +356,14 @@ class Instrument_List extends \NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $this->timePoint->getSessionID());
+        $qparams = ['SID' => $this->timePoint->getSessionID()];
 
         if (!is_null($stage)) {
             $query .= "
-            	LEFT JOIN test_battery b 
-       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL) 
-      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL) 
-       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL) 
+            	LEFT JOIN test_battery b
+       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
+      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL)
+       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
        	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
         }
         $query .= " WHERE f.SessionID=:SID
@@ -385,9 +400,9 @@ class Instrument_List extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/instrument_list/js/instrument_list_helper.js",
-            )
+            ]
         );
     }
 

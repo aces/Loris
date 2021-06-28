@@ -48,18 +48,18 @@ class Qc
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
         $sessionqc = $this->_qc->getQC();
         $ispending = $this->_qc->getQCPending();
 
-        return array(
+        return [
             'Meta'      => $meta,
             'SessionQC' => $sessionqc,
             'Pending'   => $ispending === 'N' ? false : true,
-        );
+        ];
     }
 }

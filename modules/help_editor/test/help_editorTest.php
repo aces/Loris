@@ -10,9 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
 require_once __DIR__."/../../../test/integrationtest"
 ."s/LorisIntegrationTest.class.inc";
+use Facebook\WebDriver\WebDriverBy;
  /**
   * Help_editor automated integration tests
   *
@@ -31,22 +31,19 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window    = new WebDriverWindow($this->webDriver);
-        $window->maximize();
         $this->DB->insert(
             "help",
-            array(
-                'helpID'   => '999999',
-                'parentID' => '-1',
-                'hash'     => $md5String,
-                'topic'    => 'Test Topic',
-                'content'  => 'This is a test content.',
-                'created'  => '2013-04-05 00:00:00',
-            )
+            [
+                'helpID'  => '999999',
+                'hash'    => $md5String,
+                'topic'   => 'Test Topic',
+                'content' => 'This is a test content.',
+                'created' => '2013-04-05 00:00:00',
+            ]
         );
     }
     /**
@@ -54,10 +51,10 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("help", array('helpID' => '999999'));
+        $this->DB->delete("help", ['helpID' => '999999']);
     }
 
     /**
@@ -77,7 +74,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Help Editor", $bodyText);
+        $this->assertStringContainsString("Help Editor", $bodyText);
     }//end test_help_pageload()
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some
@@ -93,7 +90,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         )
             ->getText();
 
-        $this->assertContains("Edit Help Content", $assertText);
+        $this->assertStringContainsString("Edit Help Content", $assertText);
 
     }//end test_page_load()
 
@@ -104,12 +101,15 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorPermission()
     {
-         $this->setupPermissions(array("context_help"));
+         $this->setupPermissions(["context_help"]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -119,12 +119,15 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
          $this->resetPermissions();
     }
     /**
@@ -147,7 +150,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("Test Topic", $bodyText);
+         $this->assertStringContainsString("Test Topic", $bodyText);
     }
     /**
      * Tests that help editor does not load with the permission
@@ -169,7 +172,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         )->click();
          $this->safeGet($this->url . "/help_editor/?format=json");
          $bodyText = $this->webDriver->getPageSource();
-         $this->assertContains("test content", $bodyText);
+         $this->assertStringContainsString("test content", $bodyText);
     }
 
 }

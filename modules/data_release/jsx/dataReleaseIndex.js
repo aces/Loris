@@ -18,6 +18,10 @@ import ManagePermissionsForm from './managePermissionsForm';
  * @author Cécile Madjar
  */
 class DataReleaseIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -36,18 +40,31 @@ class DataReleaseIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Show
+   *
+   * @param {string} state
+   */
   show(state) {
     let show = this.state.show;
     show[state] = true;
     this.setState({show});
   }
 
+  /**
+   * Hide
+   *
+   * @param {string} state
+   */
   hide(state) {
     let show = this.state.show;
     show[state] = false;
     this.setState({show});
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -88,24 +105,33 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_view')
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
-          const downloadURL = loris.BaseURL + '/data_release/ajax/GetFile.php?File=' +
-            encodeURIComponent(row['File Name']);
+          const downloadURL = loris.BaseURL
+            + '/data_release/files/'
+            + encodeURIComponent(row['Data Release ID']);
           result = (
-            < td >
-            < a
-          href = {downloadURL}
-          target = "_blank"
-          download = {row['File Name']} >
-            {cell}
-            < /a>
-            < /td>
-        );
+            <td>
+              <a
+                href = {downloadURL}
+                target = "_blank"
+                download = {row['File Name']} >
+                {cell}
+              </a>
+            </td>
+          );
         }
+        break;
+      case 'Version':
+        result = <td>{cell || 'Unversioned'}</td>;
         break;
     }
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -122,7 +148,6 @@ class DataReleaseIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in media.class.inc
      */
-    // const options = this.state.fieldOptions;
     const fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
@@ -136,6 +161,8 @@ class DataReleaseIndex extends Component {
         name: 'uploadDate',
         type: 'text',
       }},
+      {label: 'Data Release ID', show: false,
+      },
     ];
 
     // Upload File modal window
@@ -150,9 +177,11 @@ class DataReleaseIndex extends Component {
         onClick={this.uploadFile}
       >
         <UploadFileForm
-          DataURL={`${loris.BaseURL}/data_release/ajax/FileUpload.php?action=getData`}
-          action={`${loris.BaseURL}/data_release/ajax/FileUpload.php?action=upload`}
-          fetchData={this.fetchData}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/files'
+          }
+          action={loris.BaseURL + '/data_release/files'}
         />
       </Modal>
   );
@@ -169,29 +198,36 @@ class DataReleaseIndex extends Component {
         onClick={this.addPermission}
       >
         <AddPermissionForm
-          DataURL={`${loris.BaseURL}/data_release/?format=json`}
-          action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=addpermission`}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/?format=json'
+          }
+          action={
+            loris.BaseURL
+            + '/data_release/permissions?action=add'
+          }
           fetchData={this.fetchData}
         />
       </Modal>
     );
 
     // Add Manage Permissions modal window
-    const managePermissionsForm = (
-      <Modal
-        title="Manage Permissions"
-        label="Manage Permissions"
-        show={this.state.show.managePermissionsForm}
-        onClose={() => {
-          this.hide('managePermissionsForm');
-        }}
-      >
+    const managePermissionsForm =
+      this.props.hasPermission('data_release_edit_file_access') && (
         <ManagePermissionsForm
-          DataURL={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=getPermissions`}
-          action={`${loris.BaseURL}/data_release/ajax/AddPermission.php?action=managepermissions`}
+          DataURL={
+            loris.BaseURL
+            + '/data_release/permissions'
+          }
+          action={
+            loris.BaseURL
+            + '/data_release/permissions?action=manage'
+          }
+          options={this.state.data.fieldOptions}
           fetchData={this.fetchData}
+          show={this.state.show.managePermissionsForm}
+          onClose={() => this.hide('managePermissionsForm')}
         />
-      </Modal>
     );
 
     const actions = [
@@ -240,8 +276,8 @@ DataReleaseIndex.propTypes = {
 window.addEventListener('load', () => {
   ReactDOM.render(
     <DataReleaseIndex
-    dataURL={`${loris.BaseURL}/data_release/?format=json`}
-    hasPermission={loris.userHasPermission}
+      dataURL={`${loris.BaseURL}/data_release/?format=json`}
+      hasPermission={loris.userHasPermission}
     />,
     document.getElementById('lorisworkspace')
   );

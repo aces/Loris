@@ -56,3 +56,5 @@ uploaded for it.
 
 Uploaded files are displayed in the browse tab. Each entry has a link to download 
 the file itself and a link to the timepoint the file was uploaded for.
+
+The media module registers a widget on the candidate dashboard.

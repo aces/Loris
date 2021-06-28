@@ -48,7 +48,7 @@ class ProjectInstrumentsRowProvisioner extends DBRowProvisioner
              LEFT JOIN test_subgroups sg
                ON (tn.Sub_group=sg.ID)
             ',
-            array()
+            []
         );
     }
 

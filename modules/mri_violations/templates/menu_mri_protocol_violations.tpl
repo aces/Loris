@@ -88,32 +88,32 @@
             <table id="mri-protocol" class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                 <thead>
                 <tr class="info">
-                    {assign var=count value=0}
                     {foreach from=$mri_protocol_header item=mp}
-                        <th id="header_{$count}">
-                            {$mp}
-                        </th>
-                        {assign var=count value=$count+1}
+                    <th id="header_{$mp}">
+                        {$mp}
+                    </th>
                     {/foreach}
                 </tr>
                 </thead>
                 <tbody>
-                {foreach from=$mri_protocol_data item=mp}
-                    {assign var=ccount value=0}
-
-                    <tr>
-                        {foreach from=$mp item=row}
-                            {if $violated_scans_modifications}
-                                <td id="row_{$mp.ID}_td_{$ccount}" class='description' contenteditable = "true">
-                                    {else}
-                                <td id="row_{$mp.ID}_td_{$ccount}" class='description'>
-                            {/if}
-                            {$row}
-                            {$k}
+                {assign var=firstProtocol value=1}
+                {foreach from=$mri_protocol_data item=mpgroup}
+                    {if $firstProtocol != 1}
+                        {assign var=rowBorder value='style="border-bottom: 1px solid #000;"'}
+                    {else}
+                        {assign var=rowBorder value=''}
+                    {/if}
+                    
+                    {foreach from=$mpgroup item=protocol}
+                        <tr>
+                        {foreach from=$protocol key=k item=v}   
+                            <td id="row_{$protocol.ID}_td_{$k}" class='description' nowrap {$rowBorder}>
+                                {$v}
                             </td>
-                            {assign var=ccount value=$ccount+1}
                         {/foreach}
-                    </tr>
+                        </tr>
+                        {assign var=rowBorder value=''}
+                    {/foreach}
                 {/foreach}
                 </tbody>
             </table>

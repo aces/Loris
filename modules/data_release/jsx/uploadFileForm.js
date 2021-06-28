@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
+import swal from 'sweetalert2';
 
 
 /**
@@ -9,6 +10,10 @@ import ProgressBar from 'ProgressBar';
  * Module component rendering the upload file form modal window
  */
 class UploadFileForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -27,17 +32,11 @@ class UploadFileForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
-  componentDidMount() {
-    let self = this;
-    fetch(this.props.DataURL, {credentials: 'same-origin'})
-      .then( (resp) => resp.json())
-      .then( (data) => self.setState({data: data, isLoaded: true}))
-      .catch( (error) => {
-        self.setState({error: 'An error occurred when loading the form!'});
-        console.error(error);
-      });
-  }
-
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error !== undefined) {
@@ -54,7 +53,12 @@ class UploadFileForm extends Component {
       <FormElement
         name='uploadfile'
         fileUpload={true}
-        onSubmit={this.validateAndSubmit}>
+        onSubmit={this.validateAndSubmit}
+      >
+        <StaticElement
+          label='Note'
+          text='Version names will be saved as lowercase.'
+        />
         <FileElement
           name='file'
           label='File to upload'
@@ -101,7 +105,6 @@ class UploadFileForm extends Component {
    * Validate and submit the upload
    */
   validateAndSubmit() {
-    let files = this.state.data.files ? this.state.data.files : [];
     let formData = this.state.formData;
 
     let errorMessage = {
@@ -125,10 +128,12 @@ class UploadFileForm extends Component {
     let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
     const maxSizeAllowed = this.state.data.maxUploadSize;
     if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
-      let msg = 'File size exceeds the maximum allowed (' + maxSizeAllowed + ')';
+      let msg = 'File size exceeds the maximum allowed ('
+                + maxSizeAllowed
+                + ')';
       errorMessage['Filesize'] = msg;
       hasError['Filesize'] = true;
-      swal({
+      swal.fire({
         title: 'Error',
         text: msg,
         type: 'error',
@@ -138,36 +143,15 @@ class UploadFileForm extends Component {
       return;
     }
 
-    // Grep the uploaded file name
-    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
-
-    // Check for duplicate file names
-    let isDuplicate = files.indexOf(fileName);
-    if (isDuplicate >= 0) {
-      swal({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!',
-        closeOnConfirm: false,
-      }, function(isConfirm) {
-        if (isConfirm) {
-          this.uploadFile();
-        } else {
-          swal('Cancelled', 'Your file is safe :)', 'error');
-        }
-      }.bind(this));
-    } else {
-      this.uploadFile();
-    }
+    this.uploadFile();
   }
 
   /**
    * Upload the file to the server
+   *
+   * @param {boolean} overwrite
    */
-  uploadFile() {
+  uploadFile(overwrite) {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -177,39 +161,54 @@ class UploadFileForm extends Component {
     }
 
     // fetch API to upload the file
-    fetch(this.props.action, {
+    const url = overwrite ? this.props.action + '?overwrite=true'
+      : this.props.action;
+    fetch(url, {
       method: 'post',
       body: formObj,
       cache: 'no-cache',
-    }).then( (response) => {
-      if (!response.ok) {
-        let msg = response.statusText ? response.statusText : 'Upload error!';
+    }).then(async (response) => {
+      if (response.status === 409) {
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'A file with this name already exists!\n '
+                  + 'Would you like to overwrite existing file?\n '
+                  + 'Note that the version associated with '
+                  + 'the file will also be overwritten.',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, I am sure!',
+            cancelButtonText: 'No, cancel it!',
+          }).then((isConfirm) => {
+            if (isConfirm && isConfirm.value) {
+              this.uploadFile(true);
+            }
+          });
+      } else if (!response.ok) {
+        console.log(response);
+        const body = await response.json();
+        let msg;
+        if (body && body.error) {
+            msg = body.error;
+        } else if (response.statusText) {
+            msg = response.statusText;
+        } else {
+            msg = 'Upload error!';
+        }
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-        // Add file to the list of existing files
-        let files = JSON.parse(JSON.stringify(this.state.data.files));
-        files.push(formData.file.name);
-        // Trigger an update event to update all observers (i.e. DataTable)
-        let event = new CustomEvent('update-datatable');
-        window.dispatchEvent(event);
-        this.setState({
-          files: files,
-          formData: {}, // reset form data after successful file upload
-          uploadProgress: -1,
-        });
-        swal({
-          text: 'Upload Successful!',
-          title: '',
-          type: 'success',
-        }, function() {
-          window.location.assign('/data_release');
-        });
-        this.props.fetchData();
+          swal.fire({
+            text: 'Upload Successful!',
+            title: '',
+            type: 'success',
+          }).then(function() {
+            window.location.assign('/data_release');
+          });
       }
     }).catch( (error) => {
       let msg = error.message ? error.message : 'Upload error!';
@@ -217,7 +216,7 @@ class UploadFileForm extends Component {
         errorMessage: msg,
         uploadProgress: -1,
       });
-      swal(msg, '', 'error');
+      swal.fire(msg, '', 'error');
       console.error(error);
     });
   }

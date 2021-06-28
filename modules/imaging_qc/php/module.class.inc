@@ -36,7 +36,7 @@ class Module extends \Module
         if (parent::hasAccess($user) == false) {
             return false;
         }
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('imaging_quality_control_view');
     }
 
     /**

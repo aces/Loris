@@ -33,6 +33,11 @@ class Database
     public $PDO;
 
     /**
+     * The last error that occured, to display to the user
+     */
+    public string $lastErr;
+
+    /**
      * Returns one and only one Database object.
      *
      * @return Database
@@ -87,14 +92,14 @@ class Database
     /**
      * Checks if the database exists
      *
-     * @param bool $database The database name
+     * @param string $database The database name
      *
      * @return bool Returns true if the database exists
      */
     public function databaseExists($database)
     {
         $stmt = $this->PDO->prepare("SHOW DATABASES LIKE :v_db");
-        $stmt->execute(array('v_db' => $database ));
+        $stmt->execute(['v_db' => $database ]);
         $exists = !empty($stmt->fetchAll());
 
         return $exists;

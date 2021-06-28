@@ -72,7 +72,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * @var    array
      * @access private
      */
-    var $validFilters = array();
+    var $validFilters = [];
 
     /**
      * Items selected from the GUI to filter, where the underlying
@@ -84,14 +84,23 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
      * Filters that the
      */
-    var $validHavingFilters = array();
+    var $validHavingFilters = [];
     /**
      * Associates the form element to the appropriate filter
      *
      * @var    array
      * @access private
      */
-    var $formToFilter = array();
+    var $formToFilter = [];
+
+    /**
+     * A list of filters which should be tested for strict
+     * equality instead of substring equality. Set by subclasses
+     * of NDB_Menu_Filter in their constructor or setup functions.
+     *
+     * @var string[]
+     */
+    protected iterable $EqualityFilters;
 
     /**
      * An array of all the table headers (optional)
@@ -101,7 +110,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * @var    array
      * @access private
      */
-    var $headers = array();
+    var $headers = [];
 
     /**
      * The list of candidates, users, etc
@@ -117,13 +126,13 @@ class NDB_Menu_Filter extends NDB_Menu
      * (Note that HTTP sends nothing if a checkbox is
      * unchecked.)
      */
-    var $CheckboxFilters = array();
+    var $CheckboxFilters = [];
 
     /**
      * A list of fields which are to be searched if the
      * search keyword is used.
      */
-    var $searchKey = array();
+    var $searchKey = [];
 
     /**
      * Calls other member functions to do all the work necessary to create the menu
@@ -164,7 +173,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * By default, trim all fields on the form before any processing/validation
-     * is done. Derived classes can override this behavior if needed.
+     * is done. Derived classes can override this behaviour if needed.
      *
      * @return void
      * @access public
@@ -223,8 +232,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $newFormFilters = array();
-
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
             if (isset($values[$formKey])) {
@@ -233,8 +240,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 $filteredValue = $values[$formKey];
                 if ($filteredValue !== '') {
                     if (in_array($dbField, $this->validFilters)) {
-                        $newFormFilters[$dbField] = $filteredValue;
-
                         if (in_array($dbField, $this->validHavingFilters)) {
                             $this->having[$dbField] = $filteredValue;
                         } else {
@@ -249,35 +254,6 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-     * Set the sort column for the current query page and saves
-     * it into the current filter.
-     *
-     * @param array $order An array of the form
-     *                     [
-     *                     'field' => Form Field Name
-     *                     'fieldOrder' => "ASC|DESC"
-     *                     ]
-     *
-     * @return void (modifies both $_SESSION and $this->filter as
-     *         a side-effect.)
-     */
-    function _setFilterSortOrder($order)
-    {
-        // Get the existing filter. It's already been saved into
-        // the session previously in $this->_setupFilters.
-        $savedFilters = $_SESSION['State']->getProperty('filter');
-        if (!is_array($savedFilters)) {
-            $savedFilters = array();
-        }
-        if (is_array($order) && in_array($order['field'], $this->headers)) {
-            $savedFilters['order'] = $order;
-            $this->filter['order'] = $order;
-        }
-
-        $_SESSION['State']->setProperty('filter', $savedFilters);
-    }
-
-    /**
      * Sets the class variables required for a search key to be used.
      * A search key is like a filter that searches through multiple
      * columns.
@@ -288,7 +264,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setSearchKeyword($keyword)
     {
-        $this->searchKey = array('keyword' => $keyword);
+        $this->searchKey = ['keyword' => $keyword];
     }
 
     /**
@@ -350,7 +326,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // 3. Set the search keyword (if applicable)
-        $key = null;
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
@@ -364,13 +339,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (!empty($key)) {
             $this->_setSearchKeyword($key);
 
-        }
-
-        // 4. If the user clicked on a sort column, set the order.
-        //    It's likely a GET request even though it modifies the data,
-        //    so just use $_REQUEST.
-        if (isset($_REQUEST['filter']['order'])) {
-            $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
     }
 
@@ -467,14 +435,13 @@ class NDB_Menu_Filter extends NDB_Menu
         // create DB object
         $DB =& Database::singleton();
 
-        $qparams = array();
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {
@@ -499,6 +466,24 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
+     * Updates the array of query parameters (if needed) for a given field.
+     *
+     * @param array  $qparams      array of query parameters.
+     * @param string $field        field that appears in the query.
+     * @param string $prepared_key string to use as a placeholder in the query
+     *                             for the field.
+     * @param string $val          field value.
+     *
+     * @return void
+     */
+    function _addQueryParam(&$qparams, $field, $prepared_key, $val)
+    {
+        if ($prepared_key != 'pending') {
+            $qparams["v_$prepared_key"] = $val;
+        }
+    }
+
+    /**
      * Constructs the base filter (WHERE clause) to use for this
      * menu.
      *
@@ -508,7 +493,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _getBaseFilter()
     {
-        $qparams     = array();
+        $qparams     = [];
         $WhereClause = '';
         // add filters to query
         if (is_array($this->filter) && count($this->filter) > 0) {
@@ -521,28 +506,9 @@ class NDB_Menu_Filter extends NDB_Menu
                     if (in_array($field, $this->CheckboxFilters)) {
                         continue;
                     }
-                    if ($prepared_key != 'pending') {
-                        $qparams["v_$prepared_key"] = $val;
-                    }
+                    $this->_addQueryParam($qparams, $field, $prepared_key, $val);
                 }
             }
-        }
-
-        if (isset($this->searchKeyword)
-            && is_array($this->searchKeyword)
-            && count($this->searchKeyword) > 0
-            && !empty($this->searchKey['keyword'])
-        ) {
-            $WhereClause .= " AND (";
-            $fields       = array();
-            foreach ($this->searchKeyword as $field) {
-                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-            }
-            $WhereClause .= join(" OR ", $fields);
-
-            $qparams['v_searchkey'] = $this->searchKey['keyword'];
-            $WhereClause           .= ")";
-
         }
 
         // add GROUP BY if applicable
@@ -571,10 +537,10 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        return array(
+        return [
             'clause' => $WhereClause,
             'params' => $qparams,
-        );
+        ];
     }
 
     /**
@@ -716,10 +682,10 @@ class NDB_Menu_Filter extends NDB_Menu
     function getCSVData()
     {
         return $this->arrayToCSV(
-            array(
+            [
                 'data'    => $this->_getFullList(),
                 'headers' => $this->headers,
-            )
+            ]
         );
 
     }
@@ -789,16 +755,16 @@ class NDB_Menu_Filter extends NDB_Menu
             $this->headers
         );
 
-        $MappedData = array();
+        $MappedData = [];
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
 
-        return array(
+        return [
             'Headers'      => $headers,
             'Data'         => $MappedData,
             'fieldOptions' => $this->fieldOptions,
-        );
+        ];
     }
 
     /**
@@ -823,14 +789,13 @@ class NDB_Menu_Filter extends NDB_Menu
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $qparams = array();
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {
@@ -838,10 +803,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-
-        if (!empty($this->limit)) {
-            $query .= " LIMIT $this->limit";
-        }
 
         // get the list
         $result = $DB->pselect($query, $qparams);
@@ -857,7 +818,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _getFilterValues()
     {
-        $FilterValues = array();
+        $FilterValues = [];
         foreach (array_keys($this->formToFilter) as $formName) {
             if (isset($_REQUEST[$formName])) {
                 $FilterValues[$formName] = $_REQUEST[$formName];
@@ -881,11 +842,11 @@ class NDB_Menu_Filter extends NDB_Menu
         $baseURL = $factory->settings()->getBaseURL();
         return array_merge(
             $depends,
-            array(
+            [
                 $baseURL . '/js/components/PaginationLinks.js',
                 $baseURL . '/js/components/StaticDataTable.js',
                 $baseURL . '/js/components/DynamicDataTable.js',
-            )
+            ]
         );
     }
 }

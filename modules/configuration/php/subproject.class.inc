@@ -50,7 +50,7 @@ class Subproject extends \NDB_Form
         $config  = $factory->config();
 
         $subprojectList = \Utility::getSubprojectList();
-        $subprojects    = array();
+        $subprojects    = [];
         foreach (array_keys($subprojectList) as $subprojectID) {
             $subprojects[$subprojectID]
                 = $config->getSubprojectSettings(intval($subprojectID));
@@ -58,15 +58,15 @@ class Subproject extends \NDB_Form
         $this->tpl_data['subprojects'] = $subprojects;
 
         $this->tpl_data['useEDCOptions']
-            = array(
+            = [
                 '1' => 'Yes',
                 '0' => 'No',
-            );
+            ];
 
         $this->tpl_data['WindowDifferenceOptions']
-            = array(
+            = [
                 'battery' => 'Closest Test Battery',
                 'optimal' => 'Optimal Visit Window for Visit Label',
-            );
+            ];
     }
 }

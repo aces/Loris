@@ -53,22 +53,9 @@ class NDB_Client
 
         $config = $factory->config($configFile);
 
-        // Load the database object with settings from config
-        // so that after this we can just call Database::singleton()
-        // with no parameters
-        $DBSettings = $config->getSetting("database");
-        if (!defined("UNIT_TESTING")) {
-            $DB = Database::singleton(
-                $DBSettings['database'],
-                $DBSettings['username'],
-                $DBSettings['password'],
-                $DBSettings['host'],
-                true
-            );
-        }
-
-        // Now make sure the factory reference is the same as the
-        // singleton reference
+        // The factory uses the Settings object to call Database::singleton().
+        // This is required so that further calls to Database::singleton()
+        // will work.
         $DB = $factory->database();
 
         // add extra include paths. This must be done
@@ -98,7 +85,7 @@ class NDB_Client
             FROM Config c
             JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
             WHERE cs.Name=:nm",
-            array("nm" => "CSPAdditionalHeaders")
+            ["nm" => "CSPAdditionalHeaders"]
         );
         if (empty($config_additions)) {
             $config_additions = "";
@@ -121,7 +108,7 @@ class NDB_Client
         //    See: https://github.com/jquery/jquery/issues/2012
         // 4. Allow data URLs for fonts, because our bootstrap theme
         //    seems to load a font that way.
-        // 5. Allow reCAPTCHA domains iff the CAPTCHA keys were set
+        // 5. Allow reCAPTCHA domains only if the CAPTCHA keys were set
         //    up by the project
         header(
             "Content-Security-Policy: "
@@ -132,13 +119,13 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        $sessionOptions = array('cookie_httponly' => true);
+        $sessionOptions = ['cookie_httponly' => true];
         $sessionOptions['cookie_samesite'] = true;
 
         // API Detect
         if (strpos(
             $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?? '',
-            '/api/v0.0.3-dev/'
+            '/api/v0.0.3/'
         ) !== false
         ) {
             session_cache_limiter('private');
@@ -201,7 +188,7 @@ class NDB_Client
     /**
      * Returns true if the user is logged in
      *
-     * @return true iff user is logged in
+     * @return true only if user is logged in
      */
     function isLoggedIn()
     {

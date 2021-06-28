@@ -4,15 +4,15 @@ import Loader from 'Loader';
 import {Tabs, TabPane} from 'Tabs';
 import FilterForm from 'jsx/FilterForm';
 import DynamicDataTable from 'jsx/DynamicDataTable';
-/**
- * This file contains the React classes for conflict resolver
- * module.
- */
 
 /**
- * This is the React class for Unresolved Conflicts
+ * Unresolved conflicts pane component
  */
 class UnresolvedConflictsPane extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -21,10 +21,24 @@ class UnresolvedConflictsPane extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Update filter state
+   * @param {*} filter
+   */
   updateFilterState(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Format column
+   *
+   * @param {string} column
+   * @param {*} cell
+   * @param {object} rowData
+   * @param {string[]} rowHeaders
+   *
+   * @return {JSX} - React markup for the component
+   */
   formatColumn(column, cell, rowData, rowHeaders) {
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
@@ -54,7 +68,12 @@ class UnresolvedConflictsPane extends Component {
     }
     return <td>{cell}</td>;
   }
-  // Render the HTML
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     return (
       <TabPane Title='' {...this.props}>
@@ -72,8 +91,16 @@ class UnresolvedConflictsPane extends Component {
           />
 
           <div className='pull-right'>
-            <input className='btn btn-sm btn-primary' name='fire_away' value='Save' type='submit'/>
-            <input className='btn btn-sm btn-primary' value='Reset' type='reset' style={{marginLeft: 3 + 'px'}}/>
+            <input className='btn btn-sm btn-primary'
+                   name='fire_away'
+                   value='Save'
+                   type='submit'
+            />
+            <input className='btn btn-sm btn-primary'
+                   value='Reset'
+                   type='reset'
+                   style={{marginLeft: 3 + 'px'}}
+            />
           </div>
 
         </form>
@@ -98,9 +125,13 @@ UnresolvedConflictsPane.defaultProps = {
 };
 
 /**
- * This is the React class for the conflict resolver
+ * Conflict resolver component
  */
 class ConflictResolverApp extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -132,6 +163,9 @@ class ConflictResolverApp extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
@@ -161,11 +195,18 @@ class ConflictResolverApp extends Component {
             Data: data,
             isLoaded: true,
           });
+          if (this.child !== undefined) {
+            this.child.updateFilterState(this.state.filter);
+          }
         }).catch((error) => {
           // console.log('error: ' + error);
     });
   }
 
+  /**
+   * Update filter
+   * @param {*} filter
+   */
   updateFilter(filter) {
     this.setState({filter});
     if (this.child !== undefined) {
@@ -173,15 +214,26 @@ class ConflictResolverApp extends Component {
     }
   }
 
+  /**
+   * Reset filters
+   */
   resetFilters() {
     this.filter.clearFilter();
   }
 
+  /**
+   * Handle submit
+   * @param {object} e - event object
+   */
   handleSubmit(e) {
     e.preventDefault();
   }
 
-  // Render the HTML
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
@@ -277,7 +329,8 @@ window.addEventListener('load', () => {
         base: loris.BaseURL,
         data: {
           unresolved: loris.BaseURL + '/conflict_resolver/?format=json',
-          resolved: loris.BaseURL + '/conflict_resolver/resolved_conflicts/?format=json',
+          resolved: loris.BaseURL
+                    + '/conflict_resolver/resolved_conflicts/?format=json',
         },
       }}
     />,
@@ -285,10 +338,12 @@ window.addEventListener('load', () => {
   );
   // Prevent tab switching
   const refresh = setInterval(function() {
-    if (document.getElementById('tab-ResolvedConflicts')) {
-      $('#tab-ResolvedConflicts').click(function(event) {
+    let resolvedTab = document.getElementById('tab-ResolvedConflicts');
+    if (resolvedTab) {
+      resolvedTab.addEventListener('click', function(event) {
         event.preventDefault();
-        window.location.href = loris.BaseURL + '/conflict_resolver/resolved_conflicts/';
+        window.location.href = loris.BaseURL
+                               + '/conflict_resolver/resolved_conflicts/';
         return false;
       });
       clearInterval(refresh);

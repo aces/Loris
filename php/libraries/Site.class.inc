@@ -1,63 +1,48 @@
 <?php declare(strict_types=1);
 /**
- * This file contains the class for the Site object
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Main
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-
-/**
  * A site object represents a site in the PSC table of
  * Loris.
  *
- * @category Main
- * @package  Main
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Site
+class Site implements \LORIS\StudyEntities\SiteHaver
 {
     var $_siteInfo;
 
     /**
      * Gets an instance of this Site
      *
-     * @param integer $centerID The ID of the site to load
+     * @param CenterID $centerID The ID of the site to load
      *
      * @return Site An object representing this site
      */
-    static function &singleton(int $centerID)
+    static function &singleton(CenterID $centerID)
     {
-        static $siteList = array();
-        if (!isset($siteList[$centerID])) {
+        static $siteList = [];
+        $cidS            = $centerID->__toString();
+        if (!isset($siteList[$cidS])) {
             try {
-                $siteList[$centerID] = new Site();
-                $siteList[$centerID]->select($centerID);
+                $siteList[$cidS] = new Site();
+                $siteList[$cidS]->select($centerID);
             } catch(Exception $e) {
                 $message = $e->getMessage();
-                unset($siteList[$centerID]);
+                unset($siteList[$cidS]);
                 throw new Exception("Could not select site ($message)", 0, $e);
 
             }
         }
 
-        return $siteList[$centerID];
+        return $siteList[$cidS];
     }
 
     /**
      * Select basic Site information and stores it into the object property
      *
-     * @param int $centerID The CenterID to load data for
+     * @param CenterID $centerID The CenterID to load data for
      *
      * @return void
      */
-    function select(int $centerID): void
+    function select(CenterID $centerID): void
     {
         $this->_siteInfo['CenterID'] = $centerID;
 
@@ -67,7 +52,7 @@ class Site
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc
                    WHERE CenterID = :CID";
-        $result = $db->pselectRow($query, array('CID' => $centerID));
+        $result = $db->pselectRow($query, ['CID' => $centerID]);
 
         //store site data in the object property
         if (is_array($result) && count($result) > 0) {
@@ -92,9 +77,9 @@ class Site
     /**
      * Gets the ID of this site
      *
-     * @return integer ID of this site
+     * @return CenterID
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
         return $this->_siteInfo['CenterID'];
     }

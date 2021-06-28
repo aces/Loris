@@ -28,6 +28,14 @@
     </select>
 {/function}
 
+{function name=createDateFormat}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$date_format key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 {function name=createLookUpCenterNameUsing}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$lookup_center key=name item=label}
@@ -72,7 +80,7 @@
 
 {function name=printForm}
     <div class="config-form-group" id="{$node['ID']}">
-    {foreach from=$node['Value'] key=k item=v}
+    {foreach from=$node['Value']|default key=k item=v}
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$k v=$v d=$node['Disabled']}
@@ -80,6 +88,8 @@
             {call createInstrument k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$k v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'date_format'}
+            {call createDateFormat k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
@@ -106,6 +116,8 @@
             {call createInstrument k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'scan_type'}
             {call createScanType k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'date_format'}
+            {call createDateFormat k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
@@ -128,8 +140,8 @@
 {/function}
 
 <p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
-<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.
-    To configure study projects <a href="{$baseurl}/configuration/project/">click here</a>.
+<p>To configure study subprojects <a href="{$baseurl|default}/configuration/subproject/">click here</a>.
+    To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
 </p>
 <br>
 

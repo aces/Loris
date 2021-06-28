@@ -60,7 +60,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -71,10 +71,10 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+        return [
+            'v0.0.3',
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -198,11 +198,11 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $image->getFileInfo();
 
-        $signature = array(
+        $signature = [
             'filename' => $this->_filename,
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

@@ -79,7 +79,7 @@ class CandID extends ValidatableIdentifier implements \JsonSerializable
     {
         return $this->value;
     }
-
+    
     /**
      * Specify data which should be serialized to JSON.
      * Returns data which can be serialized by json_encode(), which is a value of

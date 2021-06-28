@@ -54,7 +54,7 @@ class DicomTar
                       WHERE
                         TarchiveID = :v_tarchiveid
                     ',
-                    array('v_tarchiveid' => $tarchiveid)
+                    ['v_tarchiveid' => $tarchiveid]
                 );
             if (empty($dbrow)) {
                 throw new \NotFound('There is no tarchive with that id');
@@ -90,7 +90,7 @@ class DicomTar
     public function getSeries(): array
     {
         if ($this->_tarchiveid === null) {
-            return array();
+            return [];
         }
 
         $dbrow = \NDB_Factory::singleton()
@@ -112,7 +112,7 @@ class DicomTar
                  WHERE
                    TarchiveID = :v_tarchiveid
                 ',
-                array('v_tarchiveid' => $this->_tarchiveid)
+                ['v_tarchiveid' => $this->_tarchiveid]
             );
 
         return array_map(

@@ -57,7 +57,11 @@ const SidebarContent = (props) => {
         }>
           &#171; Previous
         </a>
-        <a id={'nav_next'} href={props.next} target={'_self'} style={styles.sidebarLink}>
+        <a id={'nav_next'}
+           href={props.next}
+           target={'_self'}
+           style={styles.sidebarLink}
+        >
           Next &#187;
         </a>
       </div>

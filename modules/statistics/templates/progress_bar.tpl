@@ -1,6 +1,6 @@
-  {if $project['recruitment_target'] neq ""}
+  {if $project['recruitment_target']|default neq ""}
     <h5>{$project['title']}</h5>
-    {if $project['surpassed_recruitment'] eq "true"}
+    {if $project['surpassed_recruitment']|default eq "true"}
         <p>The recruitment target ({$project['recruitment_target']}) has been passed.</p>
         <div class="progress">
             <div class="progress-bar progress-bar-female" role="progressbar" style="width: {$project['female_full_percent']}%" data-toggle="tooltip" data-placement="bottom" title="{$project['female_full_percent']}%">

@@ -24,7 +24,7 @@
  *
  * Note: This tool will NOT remove instruments that do exist in the
  * assigned battery but have been removed from the battery lookup table (or
- * set to Active=N).  This behavior is intended, instruments should NEVER be
+ * set to Active=N).  This behaviour is intended, instruments should NEVER be
  * removed.  Ever.
  *
  * PHP version 7
@@ -68,7 +68,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
         "SELECT DISTINCT Visit_label FROM session
         WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label
         NOT LIKE 'Vsup%' AND COALESCE(Submitted,'N')='N'  ",
-        array()
+        []
     );
 }
 
@@ -87,8 +87,9 @@ function populateVisitLabel($result, $visit_label)
     $battery = new NDB_BVL_Battery;
 
     // select a specific time point (sessionID) for the battery
-    $battery->selectBattery($result['ID']);
-    $timePoint = TimePoint::singleton($result['ID']);
+    $sessionID = new \SessionID(strval($result['ID']));
+    $battery->selectBattery($sessionID);
+    $timePoint = TimePoint::singleton($sessionID);
 
     $DB        = Database::singleton();
     $candidate = Candidate::singleton(new CandID($result['CandID']));
@@ -130,21 +131,21 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query ="SELECT s.ID, s.subprojectID, s.CandID from session 
-            s LEFT JOIN candidate c USING (CandID) 
+    $query ="SELECT s.ID, s.subprojectID, s.CandID from session
+            s LEFT JOIN candidate c USING (CandID)
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
-    $where = array('vl' => $argv[1]);
+    $where = ['vl' => $argv[1]];
 
     $results = $DB->pselect($query, $where);
     foreach ($results as $result) {
         populateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s 
-            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
+    $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s
+            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y'
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
-    $results = $DB->pselect($query, array());
+    $results = $DB->pselect($query, []);
     foreach ($results as $result) {
         populateVisitLabel($result, $result['Visit_label']);
     }

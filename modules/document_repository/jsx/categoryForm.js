@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import swal from 'sweetalert2';
+
 /**
  * Document Upload Form
  *
@@ -11,6 +13,10 @@ import Loader from 'Loader';
  *
  * */
 class DocCategoryForm extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -28,10 +34,17 @@ class DocCategoryForm extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -42,6 +55,11 @@ class DocCategoryForm extends React.Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error) {
@@ -89,10 +107,9 @@ class DocCategoryForm extends React.Component {
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
-
+  /** *******************************************************************************
+   *                      ******     Helper methods     *******
+   *********************************************************************************/
 
   /**
    * Handle form submission
@@ -102,7 +119,8 @@ class DocCategoryForm extends React.Component {
     e.preventDefault();
     this.uploadFile();
   }
-  /*
+
+  /**
    * Uploads the file to the server
    */
   uploadFile() {
@@ -114,14 +132,15 @@ class DocCategoryForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-   fetch(this.props.action, {
+
+    fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => resp.json())
-    .then(()=>{
+    .then((resp) => {
+      if (resp.ok) {
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
@@ -129,9 +148,22 @@ class DocCategoryForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal('Add Successful!', '', 'success');
+        swal.fire('Category Successfully Added!', '', 'success');
+      } else {
+        resp.json().then((data) => {
+          swal.fire('Could not add category!', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire(
+            'Unknown Error!',
+            'Please report the issue or contact your administrator.',
+            'error'
+          );
+        });
+      }
     });
   }
+
   /**
    * Set the form data based on state values of child elements/componenets
    *

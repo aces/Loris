@@ -9,13 +9,13 @@
  * delete both (and then the import script will reimport the correct one if run
  * in that order.)
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
 require_once __DIR__ . "/../vendor/autoload.php";
@@ -32,7 +32,7 @@ require_once 'Database.class.inc';
  * @package  Loris
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 class CouchDBIntegrityChecker
 {
@@ -72,7 +72,7 @@ class CouchDBIntegrityChecker
         $sessions = $this->CouchDB->queryView(
             "DQG-2.0",
             "sessions",
-            array("reduce" => "false")
+            ["reduce" => "false"]
         );
         print "Sessions:\n";
         $activeExists = $this->SQLDB->prepare(
@@ -88,10 +88,10 @@ class CouchDBIntegrityChecker
                 FROM candidate c
                 LEFT JOIN session s USING (CandID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
-                array(
+                [
                     "PID" => $pscid,
-                    "VL" => $vl
-                )
+                    "VL"  => $vl,
+                ]
             );
 
             if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
@@ -101,9 +101,11 @@ class CouchDBIntegrityChecker
                 $this->CouchDB->deleteDoc($row['id']);
             } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid,
-                    'VL' => $vl)
+                    $activeExists,
+                    [
+                        'PID' => $pscid,
+                        'VL'  => $vl,
+                    ]
                 );
 
                 if (!array_key_exists('count', $numActive[0])
@@ -128,7 +130,6 @@ class CouchDBIntegrityChecker
             } else {
                 print "Nothing wrong with $row[id]!\n";
             }
-
         }
     }
 }
@@ -138,4 +139,3 @@ if (!class_exists('UnitTestCase')) {
     $Runner = new CouchDBIntegrityChecker();
     $Runner->run();
 }
-?>

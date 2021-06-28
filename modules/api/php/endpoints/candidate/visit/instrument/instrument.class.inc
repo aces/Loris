@@ -60,11 +60,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'PUT',
             'PATCH',
-        );
+        ];
     }
 
     /**
@@ -75,10 +75,10 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
-            'v0.0.3-dev',
-        );
+        return [
+            'v0.0.3',
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -92,6 +92,13 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         $flags     = array_search('flags', $pathparts) !== false;
+        $user      = $request->getAttribute('user');
+
+        if (!$this->_instrument->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user can not update this instrument'
+            );
+        }
 
         if ($flags) {
             // Delegate to sub-endpoints
@@ -127,11 +134,9 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a GET request
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         $body = (new \LORIS\api\Views\Visit\Instrument(
             $this->_visit,
@@ -152,8 +157,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -161,6 +164,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -190,8 +198,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -199,6 +205,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(

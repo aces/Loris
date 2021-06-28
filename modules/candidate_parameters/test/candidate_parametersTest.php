@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+use Facebook\WebDriver\WebDriverBy;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 
@@ -41,7 +41,7 @@ class CandidateParametersTestIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Candidate Parameters", $bodyText);
+        $this->assertStringContainsString("Candidate Parameters", $bodyText);
     }
 
 }

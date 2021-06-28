@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Panel from 'jsx/Panel';
-import {Tabs, TabPane} from 'jsx/Tabs';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 
@@ -18,42 +17,135 @@ import Filter from 'jsx/Filter';
  * Deprecates Filter Form.
  */
 class FilterableDataTable extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
-      filter: {},
+      filters: {},
     };
-    this.updateFilter = this.updateFilter.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
+    this.updateFilters = this.updateFilters.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
+    this.validFilters = this.validFilters.bind(this);
+    this.addFilter = this.addFilter.bind(this);
+    this.removeFilter = this.removeFilter.bind(this);
   }
 
   /**
    * Updates filter state
    *
-   * @param {object} filter passed from FilterForm
+   * @param {object} filters
    */
-  updateFilter(filter) {
-    this.setState({filter});
+  updateFilters(filters) {
+    this.updateQueryParams(filters);
+    this.setState({filters});
+    if (this.props.updateFilterCallback) {
+      this.props.updateFilterCallback(filter);
+    }
+  }
+
+  /**
+   * Updates URL Query Params
+   *
+   * @param {object} filters
+   */
+  updateQueryParams(filters) {
+    const searchParams = new URLSearchParams();
+    Object.entries(filters).forEach(([name, filter]) => {
+      if (filter.value.constructor === Array) {
+        filter.value.forEach((v) => searchParams.append(name, v));
+      } else {
+        searchParams.set(name, filter.value);
+      }
+    });
+
+    history.replaceState({}, '', `?${searchParams.toString()}`);
+  }
+
+  /**
+   * Add new filter to the filter object
+   *
+   * @param {string} name
+   * @param {*}      value
+   * @param {bool}   exactMatch
+   */
+  addFilter(name, value, exactMatch) {
+    const filters = this.state.filters;
+    filters[name] = {value, exactMatch};
+    this.updateFilters(filters);
+  }
+
+  /**
+   * Remove filter from the filter object
+   *
+   * @param {string} name
+   */
+  removeFilter(name) {
+    const filters = this.state.filters;
+    delete filters[name];
+    this.updateFilters(filters);
   }
 
   /**
    * Sets Filter to empty object
    */
-  clearFilter() {
-    this.updateFilter({});
-    history.replaceState({}, '', '?');
+  clearFilters() {
+    this.updateFilters({});
   }
 
+  /**
+   * Returns the filter state, with filters that are
+   * set to an invalid option removed from the returned
+   * filters
+   *
+   * @return {object}
+   */
+  validFilters() {
+      let filters = {};
+      this.props.fields.forEach((field) => {
+        if (!field.filter) {
+            return;
+        }
+        const filtername = field.filter.name;
+        const filterval = this.state.filters[filtername];
+        if (!filterval) {
+            return;
+        }
+
+        if (field.filter.type !== 'select') {
+            filters[filtername] = filterval;
+            return;
+        }
+
+        if (!(filterval.value in field.filter.options)) {
+            return;
+        }
+        filters[filtername] = filterval;
+      });
+      return filters;
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
+    const filters = this.validFilters();
     const filter = (
       <Filter
         name={this.props.name + '_filter'}
         id={this.props.name + '_filter'}
         columns={this.props.columns}
-        filter={this.state.filter}
+        filters={filters}
+        filterPresets={this.props.filterPresets}
         fields={this.props.fields}
-        updateFilter={this.updateFilter}
-        clearFilter={this.clearFilter}
+        addFilter={this.addFilter}
+        updateFilters={this.updateFilters}
+        removeFilter={this.removeFilter}
+        clearFilters={this.clearFilters}
       />
     );
 
@@ -61,8 +153,9 @@ class FilterableDataTable extends Component {
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
-        filter={this.state.filter}
+        filters={filters}
         actions={this.props.actions}
+        loading={this.props.loading}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
         folder={this.props.folder}
@@ -70,33 +163,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const filterPresets = () => {
-      if (this.props.filterPresets) {
-        const tabPanes = this.props.filterPresets.map((preset) => {
-          return <TabPane TabId={preset.label} key={preset.label}/>;
-        });
-        const tabs = this.props.filterPresets.map((preset) => {
-          return {id: preset.label, label: preset.label};
-        });
-
-        return (
-          <Tabs tabs={tabs} updateURL={true} onTabChange={(tabId) => {
-            const active = this.props.filterPresets.find((preset) => {
-              return preset.label === tabId;
-            });
-            this.updateFilter(active.filter);
-          }}>
-            {tabPanes}
-          </Tabs>
-        );
-      };
-    };
-
     return (
       <Panel title={this.props.title}>
         {filter}
         {this.props.children}
-        {filterPresets()}
         {dataTable}
       </Panel>
     );
@@ -110,12 +180,13 @@ FilterableDataTable.defaultProps = {
 FilterableDataTable.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   filterPresets: PropTypes.object,
-  fields: PropTypes.object.isRequired,
+  fields: PropTypes.array.isRequired,
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
-  actions: PropTypes.object,
+  actions: PropTypes.array,
+  updateFilterCallback: PropTypes.func,
 };
 
 export default FilterableDataTable;
