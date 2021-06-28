@@ -139,11 +139,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         \Module::factory('server_processes_manager');
         $ids = [$processid];
         $serverProcessesMonitor = new ServerProcessesMonitor();
-        $processesState         = $serverProcessesMonitor->getProcessesState(
-            $ids,
-            null,
-            null
-        );
+        $processesState         = $serverProcessesMonitor->getProcessesState($ids);
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
             ['process_state' => $processesState]

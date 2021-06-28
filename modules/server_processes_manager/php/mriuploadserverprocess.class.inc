@@ -51,6 +51,26 @@ class MriUploadServerProcess extends AbstractServerProcess
     private $_sourceLocation;
 
     /**
+     * The value of MRICodePath config setting.
+     *
+     * @var string
+     */
+    private $_mriCodePath;
+
+    /**
+     * The value of MriConfigFile config setting.
+     *
+     * @var string
+     */
+    private $_prodFile;
+
+    /**
+     * The value of EnvironmentFile config setting.
+     *
+     * @var string
+     */
+    private $_environmentFile;
+    /**
      * Builds a new MriUploadServerProcess
      *
      * @param ?int    $mriUploadId    MRI upload ID

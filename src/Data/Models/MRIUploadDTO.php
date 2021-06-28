@@ -155,7 +155,7 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
      */
     public function getUploadedDate(): ?\DateTime
     {
-        return $this->_uploaded_date;
+        return $this->upload_date;
     }
 
     /**
@@ -178,5 +178,16 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
     public function toJSON(): string
     {
         return json_encode(get_object_vars($this));
+    }
+
+    /**
+     * Implement the JsonSerializable interface by
+     * converting to a string
+     *
+     * @return string
+     */
+    public function jsonSerialize() : string
+    {
+        return $this->toJSON();
     }
 }
