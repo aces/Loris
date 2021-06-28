@@ -1164,14 +1164,14 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         bool $isphantom
     ): int {
 
-        $values = array(
+        $values = [
             'UploadedBy'     => $user->getUsername(),
             'UploadDate'     => date('Y-m-d H:i:s'),
             'UploadLocation' => $file->getPathname(),
             'SessionID'      => $this->getSessionID(),
             'PatientName'    => $patientname,
             'IsPhantom'      => ($isphantom ? 'Y' : 'N'),
-        );
+        ];
 
         $db = \NDB_Factory::singleton()->database();
         $db->insert('mri_upload', $values);
@@ -1238,10 +1238,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                m.SessionID = :v_sessionid AND
                m.UploadID = :v_mriuploadid
             ',
-            array(
+            [
                 'v_sessionid'   => $this->getSessionID(),
                 'v_mriuploadid' => $mriuploadid,
-            )
+            ]
         );
         if (empty($row)) {
             throw new \NotFound('MRIUploadID not found.');

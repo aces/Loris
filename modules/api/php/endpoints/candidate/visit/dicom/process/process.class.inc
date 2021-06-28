@@ -64,7 +64,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -75,7 +75,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array('v0.0.3-dev');
+        return ['v0.0.3-dev'];
     }
 
     /**
@@ -137,7 +137,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // Instantiate the server process module to autoload
         // its namespace classes
         \Module::factory('server_processes_manager');
-        $ids = array($processid);
+        $ids = [$processid];
         $serverProcessesMonitor = new ServerProcessesMonitor();
         $processesState         = $serverProcessesMonitor->getProcessesState(
             $ids,
@@ -146,7 +146,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            array('process_state' => $processesState)
+            ['process_state' => $processesState]
         );
 
         return $this->_cache;

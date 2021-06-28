@@ -66,10 +66,10 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'POST',
-        );
+        ];
     }
 
     /**
@@ -80,7 +80,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array('v0.0.3-dev');
+        return ['v0.0.3-dev'];
     }
 
     /**
@@ -221,7 +221,7 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $ids = array($processid);
+        $ids = [$processid];
         $serverProcessesMonitor = new ServerProcessesMonitor();
         $processesState         = $serverProcessesMonitor->getProcessesState(
             $ids,
@@ -236,10 +236,10 @@ class Processes extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->withPath($newpath)
             ->withQuery('');
 
-        $body = array(
+        $body = [
             'link'          => (string) $processlocation,
             'process_state' => $processesState,
-        );
+        ];
 
         return new \LORIS\Http\Response\JSON\Accepted($body);
     }

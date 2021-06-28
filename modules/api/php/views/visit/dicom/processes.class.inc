@@ -42,12 +42,12 @@ class Processes
      */
     public function toArray(): array
     {
-        return array(
+        return [
             'mri_uploads' => array_map(
                 'self::_formatMRIUploads',
                 $this->_mriuploads
             ),
-        );
+        ];
     }
 
     /**
@@ -62,9 +62,9 @@ class Processes
         \LORIS\Data\Models\MRIUploadDTO $mriuploaddto
     ): array {
         $mriupload = new \LORIS\MRIUpload($mriuploaddto->getUploadID());
-        return array(
+        return [
             'mri_upload_id' => $mriuploaddto->getUploadID(),
             'processes'     => $mriupload->getProcesses(),
-        );
+        ];
     }
 }
