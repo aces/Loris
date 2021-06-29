@@ -155,7 +155,7 @@ var feedback = {$Bvl_Feedback|@json_encode};
 feedback = JSON.parse(feedback);
 
 var FeedbackTab = BehaviouralFeedbackTab({
-	title: "Behvarioural Feedback",
+	title: "Behavioural Feedback",
 	header:["DCCID", "PSCID", "Feedback Level", "Field Name"],
 	feedback: feedback,
     BaseURL : loris.BaseURL
