@@ -295,6 +295,8 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         string $visitLabel
     ): void {
 
+        error_log(strval($subprojectID));
+
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.

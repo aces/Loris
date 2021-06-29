@@ -72,7 +72,7 @@ class Project
         return [
             'Meta'       => $meta,
             'Candidates' => $this->_project->getCandidateIds(),
-        ];
+          ];
     }
 
     /**

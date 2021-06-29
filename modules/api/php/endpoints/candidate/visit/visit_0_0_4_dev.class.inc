@@ -99,12 +99,6 @@ class Visit_0_0_4_Dev extends Visit
             );
         }
 
-        if ($nextStageDate > date($date_format)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'The date specified must be not later than today'
-            );
-        }
-
         if ($this->_visit->getCurrentStage() !== 'Not Started') {
             return new \LORIS\Http\Response\JSON\Conflict(
                 'This visit is already started'

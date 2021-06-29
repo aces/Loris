@@ -211,12 +211,12 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $candid = \Candidate::createNew(
                 new \CenterID("$centerid"),
                 $data['Candidate']['DoB'],
-                $data['Candidate']['EDC'],
+                $data['Candidate']['EDC'] ?? null,
                 $sex,
                 $pscid,
                 $project->getId()
             );
-        } catch (\LorisException $e) {
+        } catch (\LorisException | \InvalidArgumentException | Exception $e) {
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
