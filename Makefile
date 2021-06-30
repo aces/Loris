@@ -19,7 +19,7 @@ dev: VERSION phpdev javascript
 clean:
 	rm -f smarty/templates_c/*
 	rm -f VERSION
-	rm -f vendor
+	rm -rf vendor
 
 # Perform static analysis checks
 checkstatic: phpdev

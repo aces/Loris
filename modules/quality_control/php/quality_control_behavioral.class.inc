@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_Menu_Filter_media class
+ * This file contains the Quality_Control_Behavioral class.
  *
  * PHP Version 7
  *
@@ -8,13 +8,12 @@
  * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\quality_control;
 
 /**
- * Main class for quality control module corresponding to /quality_control/ URL
- * Tools section of the LorisMenu.
+ * Quality_Control_Behavioral class.
  *
  * PHP Version 7
  *
@@ -22,12 +21,11 @@ namespace LORIS\quality_control;
  * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris
  */
 class Quality_Control_Behavioral extends \NDB_Menu_Filter
 {
-    public $hasWritePermission = false;
-    public $AjaxModule         = true;
+    public $AjaxModule = true;
     public $fieldOptions;
 
     /**
@@ -40,7 +38,7 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        //create user object
+        // FIXME This module should have its own permission
         return $user->hasPermission('data_team_helper');
     }
 

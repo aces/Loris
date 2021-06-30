@@ -221,11 +221,11 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
-                (int)$FileObj->getParameter('echo_time')*1000,
+                (float)$FileObj->getParameter('echo_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
-                (int)$FileObj->getParameter('repetition_time') * 1000,
+                (float)$FileObj->getParameter('repetition_time') * 1000,
                 2
             );
             $SliceThickness      = number_format(
@@ -257,9 +257,18 @@ class ViewSession extends \NDB_Form
                 $FileObj,
                 'intergradient'
             );
-            $Xstep       = number_format(intval($FileObj->getParameter('xstep')), 2);
-            $Ystep       = number_format(intval($FileObj->getParameter('ystep')), 2);
-            $Zstep       = number_format(intval($FileObj->getParameter('zstep')), 2);
+            $Xstep       = number_format(
+                (float)($FileObj->getParameter('xstep')),
+                2
+            );
+            $Ystep       = number_format(
+                (float)($FileObj->getParameter('ystep')),
+                2
+            );
+            $Zstep       = number_format(
+                (float)($FileObj->getParameter('zstep')),
+                2
+            );
             $Selected    = $this->_getSelected(
                 (int) $FileObj->getParameter('FileID')
             );

@@ -173,7 +173,7 @@ class DataQueryApp extends Component {
       for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
         let curRequest;
         curRequest = Promise.resolve(
-          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + this.state.queryIDs[key][i]), {
+          $.ajax(loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=' + encodeURIComponent(this.state.queryIDs[key][i])), {
             data: {
               DocID: this.state.queryIDs[key][i]
             },
@@ -472,7 +472,7 @@ class DataQueryApp extends Component {
     } else {
       // Query was saved in the new format
       filterState = criteria;
-      selectedFields = fields;
+      selectedFields = fields ? fields : {};
       for (let instrument in fields) {
         for (let field in fields[instrument]) {
           if (field !== 'allVisits') {
