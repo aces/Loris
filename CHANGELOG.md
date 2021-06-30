@@ -26,7 +26,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 #### Bug Fixes
-- The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0. This means that if a protocl is valid on all the study's scanners, then ScannerID=NULL (PR #XXX)
+- The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
