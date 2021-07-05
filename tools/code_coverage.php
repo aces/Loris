@@ -107,8 +107,8 @@ foreach ($files as $filename) {
     //For the dashboard page: Adding the date to the header
     if (strpos($filename, "dashboard.html") !== false) {
         $dashboardHtml = "<h2>Classes <p>Calculated on: "
-            ."<script>document.write(new Date(document.lastModified).toLocaleDateString());"
-            ."</script></p></h2>";
+            ."<script>document.write(new Date(document.lastModified)"
+            .".toLocaleDateString());</script></p></h2>";
         $header        = $xPath->query($dashboardPath)->item(0);
         $pHeader       = $header->parentNode;
 
@@ -141,7 +141,8 @@ foreach ($files as $filename) {
                 $text    = trim($element->nodeValue);
                 $element->parentNode
                     ->insertBefore(
-                        $dom->createElement('strong', $text), $element
+                        $dom->createElement('strong', $text),
+                        $element
                     );
                 $element->nodeValue = "";
             }
@@ -151,7 +152,8 @@ foreach ($files as $filename) {
                 $text    = trim($element->nodeValue);
                 $element->parentNode
                     ->insertBefore(
-                        $dom->createElement('strong', $text), $element
+                        $dom->createElement('strong', $text),
+                        $element
                     );
                 $element->nodeValue = "";
             }
@@ -169,7 +171,8 @@ rename(
 );
 $status3 = rename(
     "../htdocs/log/codeCoverage/.js",
-    "../htdocs/log/codeCoverage/$date/.js");
+    "../htdocs/log/codeCoverage/$date/.js"
+);
 if ($status3 == 0) {
     echo "Rename didn't work".PHP_EOL;
 }
