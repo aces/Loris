@@ -1124,7 +1124,6 @@ class UserTest extends TestCase
             "modules",
             $this->_moduleInfo
         );
-        fwrite(STDERR, print_r($this->_user->getPermissionsVerbose(), true));
         $this->assertEquals(
             $this->_user->getPermissionsVerbose(),
             [
