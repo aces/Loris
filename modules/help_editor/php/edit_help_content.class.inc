@@ -73,10 +73,10 @@ class Edit_Help_Content extends \NDB_Form
             && $_REQUEST['subsection'] != 'undefined'
         ) {
             try {
-                $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+                $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
                 $parentID = HelpFile::hashToID(md5($_GET['section']));
             } catch (\NotFound $e) {
-                $helpID = '';
+                $helpID   = '';
                 $parentID = '';
             }
         }
