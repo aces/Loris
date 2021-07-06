@@ -305,11 +305,13 @@ class UserPermissions
                 LEFT JOIN modules m ON (p.moduleID=m.ID)
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, m.Name, p.description";
+            $results = $DB->pselect($query, ['UID' => $this->userID]);
         } else {
             $query .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID=m.ID)";
+            $results = $DB->pselect($query, []);
+
         }
-        $results = $DB->pselect($query, ['UID' => $this->userID]);
         $modules = \Module::getActiveModulesIndexed($DB);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description
