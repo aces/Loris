@@ -852,7 +852,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //
         // json_encode ensures that this is safe. If we use the safe wrapper,
         // HTML encoding the quotation marks will make it invalid JSON.
-        $db->update(
+        $db->unsafeUpdate(
             "flag",
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
