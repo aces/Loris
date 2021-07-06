@@ -38,7 +38,6 @@ try {
             );
             $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
             $data      = $help_file->toArray();
-
         } catch (\NotFound $e) {
             // Send data with empty strings so that the content can be edited
             $data = [
