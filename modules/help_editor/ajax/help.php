@@ -47,14 +47,15 @@ try {
                 'updated' => '-'
             ];
         }
-        
+
         $data['content'] = trim($data['content']);
 
         if (empty($data['updated'])) {
-            $data['updated'] = "-";
             // if document was never updated should display date created
-            if (!empty($data['created'])) {
+            if (!empty($data['created']) && isset($data['created'])) {
                 $data['updated'] = $data['created'];
+            } else {
+                $data['updated'] = "-";
             }
         }
     }
