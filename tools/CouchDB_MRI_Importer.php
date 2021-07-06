@@ -120,27 +120,27 @@ class CouchDBMRIImporter
             $scantype = $scan['ScanType'];
 
             //--------------------------------------------------------------------//
-            // Add to the query a subselect that will compute the selected file 
-            // for the given session/modality. If more than one selected file 
-            // exists, the subquery will return 'Multiple Selected files'. 
-            // If no selected file exists, the subselect will return 'No selected 
-            // file'. Otherwise the file path of the selected file is returned 
+            // Add to the query a subselect that will compute the selected file
+            // for the given session/modality. If more than one selected file
+            // exists, the subquery will return 'Multiple Selected files'.
+            // If no selected file exists, the subselect will return 'No selected
+            // file'. Otherwise the file path of the selected file is returned
             // by the subselect.
             //-------------------------------------------------------------------//
             $Query .= ', '
                     . '('
-                    . ' CASE ('. 
+                    . ' CASE ('.
                         $this->_getQueryForSelectedFiles(
-                            'count(*)', 
+                            'count(*)',
                             $scantype
-                        ) 
+                        )
                     . ') '
                     . '  WHEN 1 '
-                    . '    THEN (' . 
+                    . '    THEN (' .
                         $this->_getQueryForSelectedFiles(
-                            'f.File', 
+                            'f.File',
                             $scantype
-                        ) 
+                        )
                     . ') '
                     . '  WHEN 0 '
                     . '    THEN "No selected file" '
@@ -150,28 +150,28 @@ class CouchDBMRIImporter
 
             //----------------------------------------------------------------------//
             // Add to the query a subselect that will compute the Qc status of the
-            // selected file for the given session/modality. If more than one 
-            // selected file exists, the subquery will return 'Unknown: 
-            // multiple Selected files'. If no selected file exists, the subselect 
-            // will return 'No selected file'. Otherwise the subselect will return 
-            // the Qc status of the selected file (or 'No Qc on selected file' 
+            // selected file for the given session/modality. If more than one
+            // selected file exists, the subquery will return 'Unknown:
+            // multiple Selected files'. If no selected file exists, the subselect
+            // will return 'No selected file'. Otherwise the subselect will return
+            // the Qc status of the selected file (or 'No Qc on selected file'
             // if the file has not been Qced)
             //---------------------------------------------------------------------//
-            $Query  .= ', '
+            $Query .= ', '
                     . '('
-                    . ' CASE (' . 
+                    . ' CASE (' .
                             $this->_getQueryForSelectedFiles(
-                                'count(*)', 
+                                'count(*)',
                                 $scantype
-                            ) 
+                            )
                     . ') '
                     . '  WHEN 1 '
                     . '    THEN ('
                     .        $this->_getQueryForSelectedFiles(
-                                'COALESCE(fqs.QCStatus, "No Qc on selected file")',
-                                $scantype,
-                                's.ID'
-                            )
+                        'COALESCE(fqs.QCStatus, "No Qc on selected file")',
+                        $scantype,
+                        's.ID'
+                    )
                     .     ') '
                     . '  WHEN 0 '
                     . '    THEN "No selected file" '
