@@ -154,7 +154,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clear,
             'Data Coordinating Center',
-            '6 rows'
+            '7 rows'
         );
 
         $this->_filterTest(
