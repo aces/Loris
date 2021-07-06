@@ -33,7 +33,7 @@ For each of these fields:
    that the data saved
    - try deleting a field with the 'X' button. A dialog box should ask for confirmation.
    Try canceling and accepting the delete action.
-   Refresh the page and check that the field was in fact deleted
+   Refresh the page and check that the field was in fact deleted if the action was confirmed.
    Check that if the field is not saved yet, the dialog is not displayed:
    for this click in the "Add field" button as in step 1 and before saving the new field
    click in the corresponding 'X' button.
