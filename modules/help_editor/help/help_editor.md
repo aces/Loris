@@ -1,6 +1,6 @@
 # Help Editor
 
-This module displays existing help content for LORIS instrument pages
+This module displays existing help content for LORIS instrument pages.
 
 Use the *Selection Filter* section to search by Topic or Content keywords.
 
