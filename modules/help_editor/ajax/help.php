@@ -33,11 +33,11 @@ try {
 
     if (!empty($moduleName)) {
         try {
-            $helpID          = \LORIS\help_editor\HelpFile::hashToID(
+            $helpID    = \LORIS\help_editor\HelpFile::hashToID(
                 md5($subpageName ?? $moduleName)
             );
-            $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
-            $data            = $help_file->toArray();
+            $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
+            $data      = $help_file->toArray();
 
         } catch (\NotFound $e) {
             // Send data with empty strings so that the content can be edited
