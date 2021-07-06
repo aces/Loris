@@ -44,7 +44,7 @@
 </div>
 <br>
 
-{if $scan_done_exists}
+{if $render_table}
   <table id="bigtable" class="data table table-primary table-bordered dynamictable">
     <thead>
     <tr>
@@ -245,7 +245,8 @@
     </tr>
     </tbody>
   </table>
-{else}
+{elseif $Subsection=="mri"}
+  {*The rendertable was set to false, which means there is a problem preventing the table from rendering. In the case of MRI, the problem is the ScanDone column not existing in the database*}
   <br><br>
   <h2>Oops</h2>
   <p> It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database.<br>

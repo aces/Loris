@@ -32,12 +32,12 @@ class SiteIDGenerator extends IdentifierGenerator
      * Creates a new instance of a SiteIDGenerator to create either PSCIDs or
      * ExternalIDs. Relevant properties are extracted from the config.xml file.
      *
-     * @param ?string $prefix To be appended to the ID value. Usually an
+     * @param ?string $siteAbbrevPrefix To be appended to the ID value. Usually an
      *                       abbreviation for the name of a site.
      *
      * @return void
      */
-    public function __construct(?string $prefix = null)
+    public function __construct(?string $siteAbbrevPrefix = null)
     {
         // Read config settings from project/config.xml to retrieve the
         // alphabet, length, and generation method (sequential or random) used
@@ -48,14 +48,15 @@ class SiteIDGenerator extends IdentifierGenerator
         // Initialize minimum and maximum allowed values for IDs. Set the values
         // to the lowest/highest character in $alphabet repeated $length times
         // if the min or max is not configured in project/config.xml
-        $this->minValue = $this->_getIDSetting('min') ??
+        $this->minValue   = $this->_getIDSetting('min') ??
             str_repeat(strval($this->alphabet[0]), $this->length);
-        $this->maxValue = $this->_getIDSetting('max') ??
+        $this->maxValue   = $this->_getIDSetting('max') ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 $this->length
             );
-        $this->prefix   = $prefix ?? $this->_getIDSetting('prefix');
+        $this->siteAbbrev = $siteAbbrevPrefix;
+        $this->prefix     = $this->_getIDSetting('prefix');
         $this->validate();
     }
 
@@ -210,9 +211,8 @@ class SiteIDGenerator extends IdentifierGenerator
                 }
             } else {
                 // The other option, 'siteAbbrev', indicates that the calling
-                // code should prepend a Site Alias to the ID. Since the config
-                // file does not know what this will be, return null.
-                return null;
+                // code should prepend a Site Alias to the ID.
+                return $this->siteAbbrev;
             }
         }
         // Min, max, and length values should be returned as integers or as
