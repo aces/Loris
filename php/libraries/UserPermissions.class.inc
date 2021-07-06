@@ -300,14 +300,14 @@ class UserPermissions
 
         //If not superuser, get the permissions that the user has
         if (intval($this->permissions['superuser']) != 1) {
-            $query .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
+            $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID=m.ID)
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, m.Name, p.description";
             $results = $DB->pselect($query, ['UID' => $this->userID]);
         } else {
-            $query .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+            $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID=m.ID)";
             $results = $DB->pselect($query, []);
 
