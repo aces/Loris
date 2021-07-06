@@ -297,7 +297,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the user's projects' ID numbers
      *
      * @return ProjectID[]
      */
@@ -307,11 +307,24 @@ class User extends UserPermissions implements
     }
 
     /**
+     * Get the user's projects
+     *
+     * @return Project[]
+     */
+    function getProjects(): array
+    {
+        return array_map(
+            fn($projectID) => \Project::getProjectFromID($projectID),
+            $this->getProjectIDs()
+        );
+    }
+
+    /**
      * Get the user's language preference
      *
-     * @return int
+     * @return ?int
      */
-    function getLanguagePreference(): int
+    function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'];
     }

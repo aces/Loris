@@ -46,6 +46,9 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
 - After script `Set_Required_elements_completed_flag.php` is run, projects will need to go through existing instruments 
 and delete the `Data_entry_completion_status` column.
+- Deprecation of `begintable` and `endtable` elements in LINST instruments
+- Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 ### Notes For Developers
 - *Add item here*
 
