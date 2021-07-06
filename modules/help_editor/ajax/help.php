@@ -38,15 +38,7 @@ try {
             );
             $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
             $data            = $help_file->toArray();
-            $data['content'] = trim($data['content']);
 
-            if (empty($data['updated'])) {
-                $data['updated'] = "-";
-                // if document was never updated should display date created
-                if (!empty($data['created'])) {
-                    $data['updated'] = $data['created'];
-                }
-            }
         } catch (\NotFound $e) {
             // Send data with empty strings so that the content can be edited
             $data = [
@@ -54,6 +46,16 @@ try {
                 'topic'   => '',
                 'updated' => '-'
             ];
+        }
+        
+        $data['content'] = trim($data['content']);
+
+        if (empty($data['updated'])) {
+            $data['updated'] = "-";
+            // if document was never updated should display date created
+            if (!empty($data['created'])) {
+                $data['updated'] = $data['created'];
+            }
         }
     }
     print json_encode($data);
