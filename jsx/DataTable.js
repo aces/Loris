@@ -653,6 +653,13 @@ DataTable.propTypes = {
   actions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
+  getMappedCell: PropTypes.func,
+  fields: PropTypes.array,
+  RowNameMap: PropTypes.array,
+  filters: PropTypes.object,
+  freezeColumn: PropTypes.string,
+  loading: PropTypes.element,
+  folder: PropTypes.element,
 };
 DataTable.defaultProps = {
   headers: [],

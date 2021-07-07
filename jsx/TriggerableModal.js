@@ -76,6 +76,7 @@ class TriggerableModal extends Component {
 TriggerableModal.propTypes = {
   label: PropTypes.string.isRequired,
   onClose: PropTypes.func,
+  onUserInput: PropTypes.func,
 };
 
 export default TriggerableModal;

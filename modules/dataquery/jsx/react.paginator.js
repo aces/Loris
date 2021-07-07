@@ -91,6 +91,9 @@ class PaginationLinks extends Component {
 }
 PaginationLinks.propTypes = {
   onChangePage: PropTypes.func,
+  RowsPerPage: PropTypes.number,
+  Total: PropTypes.number,
+  Active: PropTypes.number,
 };
 
 window.PaginationLinks = PaginationLinks;

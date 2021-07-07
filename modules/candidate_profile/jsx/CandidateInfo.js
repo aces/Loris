@@ -212,4 +212,5 @@ CandidateInfo.propTypes = {
   Candidate: PropTypes.object.isRequired,
   Visits: PropTypes.array.isRequired,
   VisitMap: PropTypes.object.isRequired,
+  ExtraCandidateInfo: PropTypes.array,
 };

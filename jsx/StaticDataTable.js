@@ -646,6 +646,9 @@ StaticDataTable.propTypes = {
   onSort: PropTypes.func,
   Hide: PropTypes.object,
   hiddenHeaders: PropTypes.array,
+  freezeColumn: PropTypes.bool,
+  RowNameMap: PropTypes.string,
+  Filter: PropTypes.object,
 };
 StaticDataTable.defaultProps = {
   Headers: [],

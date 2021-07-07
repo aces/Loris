@@ -1,5 +1,6 @@
 /* exported RSubprojectRelations */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Subproject Relations React Component
@@ -40,6 +41,9 @@ class SubprojectRelations extends Component {
         );
   }
 }
+SubprojectRelations.propTypes = {
+  Relations: PropTypes.array,
+};
 
 let RSubprojectRelations = React.createFactory(SubprojectRelations);
 

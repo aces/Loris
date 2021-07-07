@@ -175,6 +175,7 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
+  children: PropTypes.element,
 };
 
 Modal.defaultProps = {

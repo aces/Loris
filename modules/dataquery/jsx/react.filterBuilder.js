@@ -7,6 +7,7 @@
  */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Logic Operator component
@@ -66,6 +67,10 @@ class LogicOperator extends Component {
     );
   }
 }
+LogicOperator.propTypes = {
+  updateGroupOperator: PropTypes.func,
+  logicOperator: PropTypes.number,
+};
 
 /**
  * Filter Rule component
@@ -439,6 +444,15 @@ class FilterRule extends Component {
     );
   }
 }
+FilterRule.propTypes = {
+  rule: PropTypes.object,
+  updateRule: PropTypes.func,
+  index: PropTypes.number,
+  updateSessions: PropTypes.func,
+  Visits: PropTypes.object,
+  items: PropTypes.array,
+  deleteRule: PropTypes.func,
+};
 
 /**
  * Filter Group component
@@ -661,6 +675,16 @@ class FilterGroup extends Component {
     );
   }
 }
+FilterGroup.propTypes = {
+  group: PropTypes.object,
+  index: PropTypes.number,
+  updateGroup: PropTypes.func,
+  updateFilter: PropTypes.func,
+  updateSessions: PropTypes.func,
+  items: PropTypes.array,
+  Visits: PropTypes.object,
+  deleteGroup: PropTypes.func,
+};
 
 /**
  * Filter Builder component
@@ -697,6 +721,12 @@ class FilterBuilder extends Component {
     );
   }
 }
+FilterBuilder.propTypes = {
+  filter: PropTypes.object,
+  items: PropTypes.array,
+  updateFilter: PropTypes.func,
+  Visits: PropTypes.object,
+};
 
 window.LogicOperator = LogicOperator;
 window.FilterRule = FilterRule;

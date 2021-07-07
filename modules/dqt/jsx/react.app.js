@@ -1305,6 +1305,9 @@ class DataQueryApp extends Component {
 DataQueryApp.propTypes = {
   SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 
 DataQueryApp.defaultProps = {

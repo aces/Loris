@@ -566,6 +566,7 @@ IssueForm.propTypes = {
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
   whoami: PropTypes.string.isRequired,
+  userHasPermission: PropTypes.bool,
 };
 
 export default IssueForm;

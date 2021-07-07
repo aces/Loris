@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * React component used to display a button and a collapsible list
@@ -104,5 +105,8 @@ class CommentList extends Component {
     );
   }
 }
+CommentList.propTypes = {
+  commentHistory: PropTypes.array,
+};
 
 export default CommentList;

@@ -1,6 +1,7 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -74,6 +75,11 @@ function CandidateConflictsWidget(props) {
         </ul>
     </div>;
 }
+CandidateConflictsWidget.propTypes = {
+  Conflicts: PropTypes.array,
+  BaseURL: PropTypes.string,
+  Candidate: PropTypes.object,
+};
 
 /**
  * Get a list of unique visits in the data passed.

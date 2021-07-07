@@ -7,6 +7,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 /**
  * Doc index component
@@ -394,6 +395,10 @@ class DocIndex extends React.Component {
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
   ReactDOM.render(

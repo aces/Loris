@@ -87,7 +87,13 @@ class TabPane extends Component {
     );
   }
 }
-
+TabPane.propTypes = {
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  TabId: PropTypes.string,
+  Title: PropTypes.string,
+  children: PropTypes.element,
+};
 
 /**
  * InfoTabPane component
@@ -139,7 +145,12 @@ class InfoTabPane extends Component {
     );
   }
 }
-
+InfoTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  UpdatedTime: PropTypes.string,
+};
 
 /**
  * FieldSelectTabPane component
@@ -179,7 +190,16 @@ class FieldSelectTabPane extends Component {
     );
   }
 }
-
+FieldSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  categories: PropTypes.array,
+  onFieldChange: PropTypes.func,
+  selectedFields: PropTypes.array,
+  Visits: PropTypes.array,
+  fieldVisitSelect: PropTypes.array,
+};
 
 /**
  * FilterSelectTabPane component
@@ -213,7 +233,15 @@ class FilterSelectTabPane extends Component {
     );
   }
 }
-
+FilterSelectTabPane.propTypes = {
+  TabId: PropTypes.string,
+  Active: PropTypes.bool,
+  Loading: PropTypes.bool,
+  categories: PropTypes.array,
+  updateFilter: PropTypes.func,
+  filter: PropTypes.object,
+  Visits: PropTypes.array,
+};
 
 /**
  * ViewDataTabPane component
@@ -516,6 +544,17 @@ class ViewDataTabPane extends Component {
 ViewDataTabPane.propTypes = {
   Data: PropTypes.array,
   runQuery: PropTypes.func.isRequired,
+  Fields: PropTypes.array,
+  Sessions: PropTypes.array,
+  changeDataDisplay: PropTypes.func,
+  FileData: PropTypes.array,
+  Criteria: PropTypes.object,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
+  RowHeaders: PropTypes.array,
+  RowInfo: PropTypes.array,
+  displayType: PropTypes.string,
 };
 ViewDataTabPane.defaultProps = {
   Data: [],
@@ -758,7 +797,10 @@ class ScatterplotGraph extends Component {
     );
   }
 }
-
+ScatterplotGraph.propTypes = {
+  Data: PropTypes.array,
+  Fields: PropTypes.array,
+};
 
 /**
  * StatsVisualizationTabPane component
@@ -870,6 +912,10 @@ class StatsVisualizationTabPane extends Component {
 }
 StatsVisualizationTabPane.propTypes = {
   Data: PropTypes.array,
+  Fields: PropTypes.array,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
+  Active: PropTypes.bool,
 };
 StatsVisualizationTabPane.defaultProps = {
   Data: [],
@@ -1000,7 +1046,10 @@ class SaveQueryDialog extends Component {
     );
   }
 }
-
+SaveQueryDialog.propTypes = {
+  onSaveClicked: PropTypes.func,
+  onDismissClicked: PropTypes.func,
+};
 
 /**
  * ManageSavedQueryFilter component
@@ -1080,7 +1129,9 @@ class ManageSavedQueryFilter extends Component {
     );
   }
 }
-
+ManageSavedQueryFilter.propTypes = {
+  filterItem: PropTypes.object,
+};
 
 /**
  * ManageSavedQueryRow component
@@ -1316,6 +1367,9 @@ ManageSavedQueriesTabPane.propTypes = {
   globalQueries: PropTypes.array,
   queriesLoaded: PropTypes.bool,
   queryDetails: PropTypes.object,
+  onSaveQuery: PropTypes.func,
+  TabId: PropTypes.string,
+  Loading: PropTypes.bool,
 };
 ManageSavedQueriesTabPane.defaultProps = {
   userQueries: [],

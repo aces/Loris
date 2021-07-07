@@ -235,6 +235,7 @@ class AddPermissionForm extends Component {
 AddPermissionForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  fetchData: PropTypes.func,
 };
 
 export default AddPermissionForm;

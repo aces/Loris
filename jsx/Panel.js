@@ -106,6 +106,9 @@ Panel.propTypes = {
   class: PropTypes.string,
   collapsing: PropTypes.bool,
   bold: PropTypes.bool,
+  panelSize: PropTypes.string,
+  style: PropTypes.object,
+  children: PropTypes.array,
 };
 Panel.defaultProps = {
   initCollapsed: false,

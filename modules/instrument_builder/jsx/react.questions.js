@@ -92,6 +92,9 @@ class LorisElement extends Component {
     );
   }
 }
+LorisElement.propTypes = {
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the question text input
@@ -155,6 +158,8 @@ class QuestionText extends Component {
 }
 QuestionText.propTypes = {
   inputLabel: PropTypes.string,
+  updateState: PropTypes.func,
+  element: PropTypes.object,
 };
 QuestionText.defaultProps = {
   inputLabel: 'Question Text',
@@ -225,6 +230,10 @@ class BasicOptions extends Component {
     );
   }
 }
+BasicOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the Dropdown options
@@ -373,6 +382,10 @@ class DropdownOptions extends Component {
     );
   }
 }
+DropdownOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the date options
@@ -502,6 +515,10 @@ class DateOptions extends Component {
     );
   }
 }
+DateOptions.propTypes = {
+  element: PropTypes.object,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for the numeric options
@@ -590,6 +607,10 @@ class NumericOptions extends Component {
     );
   }
 }
+NumericOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the dropdown for the
@@ -818,6 +839,10 @@ class ListElements extends Component {
     );
   }
 }
+ListElements.propTypes = {
+  value: PropTypes.string,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for adding a new element or
@@ -1213,6 +1238,12 @@ class AddElement extends Component {
     );
   }
 }
+AddElement.propTypes = {
+  element: PropTypes.object,
+  updateQuestions: PropTypes.func,
+  addPage: PropTypes.func,
+  index: PropTypes.number,
+};
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;

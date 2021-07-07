@@ -399,6 +399,8 @@ class CandidateListIndex extends Component {
 CandidateListIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  betaProfileLink: PropTypes.string,
+  baseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {

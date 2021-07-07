@@ -134,6 +134,8 @@ class PaginationLinks extends Component {
 PaginationLinks.propTypes = {
   onChangePage: PropTypes.func,
   Total: PropTypes.number.isRequired,
+  RowsPerPage: PropTypes.number,
+  Active: PropTypes.number,
 };
 PaginationLinks.defaultProps = {
   RowsPerPage: 10,

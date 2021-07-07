@@ -125,6 +125,9 @@ class SavedQueriesList extends Component {
 SavedQueriesList.propTypes = {
   queryDetails: PropTypes.object,
   queriesLoaded: PropTypes.bool,
+  onSelectQuery: PropTypes.func,
+  userQueries: PropTypes.array,
+  globalQueries: PropTypes.array,
 };
 SavedQueriesList.defaultProps = {
   queryDetails: {},
@@ -1293,6 +1296,9 @@ class DataQueryApp extends Component {
 DataQueryApp.propTypes = {
   SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
+  Visits: PropTypes.object,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 
 DataQueryApp.defaultProps = {

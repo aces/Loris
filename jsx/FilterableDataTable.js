@@ -187,6 +187,11 @@ FilterableDataTable.propTypes = {
   getFormattedCell: PropTypes.func,
   actions: PropTypes.array,
   updateFilterCallback: PropTypes.func,
+  loading: PropTypes.element,
+  getMappedCell: PropTypes.array,
+  folder: PropTypes.element,
+  nullTableShow: PropTypes.element,
+  children: PropTypes.element,
 };
 
 export default FilterableDataTable;

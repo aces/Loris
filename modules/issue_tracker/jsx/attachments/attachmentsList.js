@@ -244,6 +244,7 @@ AttachmentsList.propTypes = {
   issue: PropTypes.string.isRequired,
   baseURL: PropTypes.string.isRequired,
   attachments: PropTypes.array,
+  userHasPermission: PropTypes.bool,
 };
 AttachmentsList.defaultProps = {
   attachments: [],

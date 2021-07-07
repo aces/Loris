@@ -1,5 +1,6 @@
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 /**
  * New Profile Form
@@ -285,6 +286,11 @@ class NewProfileIndex extends React.Component {
     );
   }
 }
+NewProfileIndex.propTypes = {
+  dataURL: PropTypes.string,
+  submitURL: PropTypes.string,
+};
+
 window.addEventListener('load', () => {
   ReactDOM.render(
     <NewProfileIndex

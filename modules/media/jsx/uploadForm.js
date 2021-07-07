@@ -418,6 +418,7 @@ MediaUploadForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   insertRow: PropTypes.func.isRequired,
+  maxUploadSize: PropTypes.string,
 };
 
 export default MediaUploadForm;
