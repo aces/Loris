@@ -112,10 +112,18 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $visit = null;
         }
 
-        $handler = new Visit\Visit(
-            $this->_candidate,
-            $visit
-        );
+        $version = $request->getAttribute("LORIS-API-Version");
+        if ($version === 'v0.0.3') {
+            $handler = new Visit\Visit(
+                $this->_candidate,
+                $visit
+            );
+        } else {
+            $handler = new Visit\Visit_0_0_4_Dev(
+                $this->_candidate,
+                $visit
+            );
+        }
 
         return $handler->process(
             $newrequest,

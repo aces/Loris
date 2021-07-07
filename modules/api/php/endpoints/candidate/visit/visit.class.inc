@@ -33,14 +33,28 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \Candidate
      */
-    private $_candidate;
+    protected $_candidate;
 
     /**
      * The requested Visit
      *
      * @var ?\Timepoint
      */
-    private $_visit;
+    protected $_visit;
+
+    /**
+     * The visit centerID
+     *
+     * @var ?\CenterID
+     */
+    protected $_centerID;
+
+    /**
+     * The visit Project
+     *
+     * @var ?\Project
+     */
+    protected $_project;
 
     /**
      * Contructor
@@ -76,8 +90,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
          return [
-             'v0.0.3',
-             'v0.0.4-dev',
+             'v0.0.3'
          ];
     }
 
@@ -95,23 +108,19 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             if (!$this->_visit->isAccessibleBy($user)) {
                 return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
             }
-
         }
 
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
-            switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET();
+            $method = $request->getMethod();
 
-            case 'PUT':
-                return $this->_handlePUT($request);
-
-            case 'OPTIONS':
+            if (in_array($method, $this->allowedMethods())) {
+                $handle = 'handle'.$method;
+                return $this->$handle($request);
+            } else if ($method === 'OPTIONS') {
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
-
-            default:
+            } else {
                 return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
@@ -159,7 +168,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(): ResponseInterface
+    protected function handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
             return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
@@ -172,7 +181,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a PUT request that creates or replace a candidate visit
+     * Validate a PUT request
      *
      * TODO: There is no way to validate the the visit_label in the url
      *       fits the json data of the request because it is removed from the
@@ -182,13 +191,13 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return ?ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePUT(ServerRequestInterface $request): ResponseInterface
-    {
-        $user      = $request->getAttribute('user');
-        $data      = json_decode((string) $request->getBody(), true);
-        $visitinfo = $data ?? [];
+    protected function validatePUT(
+        ServerRequestInterface $request
+    ): ?ResponseInterface {
+        $user = $request->getAttribute('user');
+        $data = json_decode((string) $request->getBody(), true) ?? [];
 
         $requiredfields = [
             'CandID',
@@ -197,7 +206,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Battery',
             'Project',
         ];
-        $diff           = array_diff($requiredfields, array_keys($visitinfo));
+        $diff           = array_diff($requiredfields, array_keys($data));
 
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -206,39 +215,61 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $project = \NDB_Factory::singleton()->project($visitinfo['Project']);
+            $this->_project = \NDB_Factory::singleton()->project($data['Project']);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
             );
         }
 
-        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
+        if (strval($data['CandID']) !== strval($this->_candidate->getCandID())) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID do not match this candidate'
+                'The CandID field does not match this candidate'
             );
         }
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify that candidate"
+                "You can't modify that candidate"
             );
         }
 
-        $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
+        $centerID = array_search($data['Site'], \Utility::getSiteList());
 
-        if ($centerid === false
-            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
+        if ($centerID === false || !in_array(
+            new \CenterID(strval($centerID)),
+            $user->getCenterIDs()
+        )
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 "You can't create or modify candidates visit for the site " .
-                $centerid
+                $centerID
             );
         }
 
-        // \Utility::getSiteList key was a string. Now that the
-        // validation is done, convert to an object.
-        $centerid = new \CenterID("$centerid");
+        // Now that the validation is done, convert to an object.
+        $this->_centerID = new \CenterID(strval($centerID));
+
+        return null;
+    }
+
+    /**
+     * Handles a PUT request that creates or replace a candidate visit
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    protected function handlePUT(ServerRequestInterface $request): ResponseInterface
+    {
+        $user      = $request->getAttribute('user');
+        $data      = json_decode((string) $request->getBody(), true);
+        $visitinfo = $data ?? [];
+
+        $response = $this->validatePUT($request);
+        if ($response !== null) {
+            return $response;
+        }
 
         $subprojectid = array_search(
             $visitinfo['Battery'],
@@ -255,6 +286,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $timepoint = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))
             );
+
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     'This visit is already started'
@@ -266,7 +298,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
             $timepoint->setData(
                 [
-                    'CenterID'        => $centerid,
+                    'CenterID'        => $this->_centerID,
                     'Visit_label'     => $visitinfo['Visit'],
                     'SubprojectID'    => $subprojectid,
                     'Active'          => 'Y',
@@ -275,7 +307,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'UserID'          => $username,
                     'Date_registered' => $today,
                     'Testdate'        => $today,
-                    'ProjectID'       => $project->getId(),
+                    'ProjectID'       => $this->_project->getId(),
                 ]
             );
 
@@ -301,8 +333,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate,
             $subprojectid,
             $visitinfo['Visit'],
-            \Site::singleton($centerid),
-            $project
+            \Site::singleton($this->_centerID),
+            $this->_project
         );
 
         $link = '/' . $request->getUri()->getPath();

@@ -416,10 +416,10 @@ The JSON object is of the form:
 }
 ```
 
-A PUT of the same format but with only the Meta fields will create the VisitLabel
+A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
-PATCH is not supported for Visit Labels.
+A PATCH request with the Meta fields and a date NextStageDate will start the next stage, if the stage is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
