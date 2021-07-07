@@ -718,7 +718,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
                 // compute subject age for the current stage
                 $ageArray = Utility::calculateAge($dateBirth, $dateOfStage);
                 $age      = ($ageArray['year'] * 12 + $ageArray['mon']) * 30
-                            + $ageArray['day'];
+                    + $ageArray['day'];
                 if ($age < 0) {
                     $age = 0;
                 }
@@ -733,7 +733,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
             $success = $battery->selectBattery(new \SessionID(strval($sessionID)));
 
             // get the existing battery for the stage
-            $existingTests = $battery->getBattery($stage);
+            $existingTests = $battery->getBattery();
 
             // determine the correct list of instruments
             $neededTests = Utility::lookupBattery($age, $stage);
