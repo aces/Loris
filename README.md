@@ -115,12 +115,6 @@ We are very happy to get code contributions and features from the global LORIS c
 
 If you would like to contribute to LORIS development, please consult our [Contributing Guide](./CONTRIBUTING.md).
 
-Code is merged after a given pull request is reviewed using our code review checklist, has been approved by 2 reviewers, and is tagged [PassedManualTests](https://github.com/aces/Loris/labels/Passed%20Manual%20Tests). The [new Pull Request template](https://github.com/aces/Loris/blob/main/.github/PULL_REQUEST_TEMPLATE.md) has guidelines for how to submit a contribution.
-
-If there are any issues with your pull request, please address them and assign it back to the original reviewer.
-
-Please also visit [the contributing guide](https://github.com/aces/Loris/blob/main/CONTRIBUTING.md) for more details.
-
 ## Powered by MCIN
 
 LORIS is made by staff developers at the [McGill Centre for Integrative Neuroscience](http://www.mcin.ca), led by Alan Evans and Samir Das at The Neuro (Montreal Neurological Institute-Hospital).
