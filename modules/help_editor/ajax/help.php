@@ -43,7 +43,7 @@ try {
             $data = [
                 'content' => '',
                 'topic'   => '',
-                'updated' => '-'
+                'updated' => ''
             ];
         }
 
