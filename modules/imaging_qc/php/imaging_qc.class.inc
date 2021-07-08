@@ -85,8 +85,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         return $scan_types;
     }
 
-
-
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
@@ -181,42 +179,10 @@ class Imaging_QC extends \NDB_Menu_Filter
     {
 
         $this->skipTemplate = true;
-        $user      = \User::singleton();
-        $db        = \Database::singleton();
-        $siteList  = [];
-        $visitList = \Utility::getVisitList();
-        // allow to view all sites data through filter
-        if ($user->hasPermission('imaging_browser_qc')) {
-            $siteList = \Utility::getSiteList();
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getCenterIDs();
-            foreach ($siteIDs as $val) {
-                $site = \Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
-                }
-            }
-        }
-
+        $db         = \Database::singleton();
+        $visitList  = \Utility::getVisitList();
         $scan_types = $this->_getScanTypes();
 
-        $projectList  = \Utility::getProjectList();
-        $projectList2 = [];
-        foreach (array_values($projectList) as $value) {
-            $projectList2[$value] = $value;
-        }
-        $subprojectList  = \Utility::getSubprojectList();
-        $subprojectList2 = [];
-        foreach (array_values($subprojectList) as $value) {
-            $subprojectList2[$value] = $value;
-        }
-        //print_r($subprojectList2);
         $uploaderList = [];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -232,36 +198,36 @@ class Imaging_QC extends \NDB_Menu_Filter
             "Missing"               => "Missing",
         ];
 
-        $this->fieldOptions
-            = [
-                'site'             => $siteList,
-                'project'          => $projectList2,
-                'subproject'       => $subprojectList2,
-                'scanType'         => $scan_types,
-                'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
-                ],
-                'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
-                ],
-                'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
-                ],
-                'scanLocation'     => $scan_location,
-                'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
-                ],
-                'uploadedBy'       => $uploaderList,
-                'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
-                ],
-                'visitLabel'       => $visitList,
-            ];
+        $this->fieldOptions = [
+
+            'site'             => $this->getSiteOptions(false, []),
+            'project'          => $this->getProjectOptions(false),
+            'subproject'       => $this->getSubprojectOptions(false),
+            'scanType'         => $scan_types,
+            'mRIParameterForm' => [
+                "Incomplete" => "Incomplete",
+                "Complete"   => "Complete",
+            ],
+            'scanDoneInMRIPF'  => [
+                "Yes" => "Yes",
+                "No"  => "No",
+            ],
+            'tarchive'         => [
+                "In DICOM" => "In DICOM Archives",
+                "Missing"  => "Missing",
+            ],
+            'scanLocation'     => $scan_location,
+            'qCStatus'         => [
+                "Pass" => "Pass",
+                "Fail" => "Fail",
+            ],
+            'uploadedBy'       => $uploaderList,
+            'selected'         => [
+                "True"  => "True",
+                "False" => "False",
+            ],
+            'visitLabel'       => $visitList,
+        ];
 
         $scan_types = $this->_getScanTypes();
         $scans_done = [];
@@ -312,6 +278,11 @@ class Imaging_QC extends \NDB_Menu_Filter
         );
 
         $this->query = " FROM ( " . $query . " ) as tmp";
+
+        $user = \User::singleton();
+        // allow only to view own site data
+        $site_arr     = "'" . implode("', '", $user->getStudySites()) . "'";
+        $this->query .= " WHERE site IN ($site_arr) ";
 
         $this->columns = [
             'PSCID',
