@@ -275,6 +275,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Set page name to testName
+        $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 

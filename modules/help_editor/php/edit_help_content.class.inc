@@ -63,13 +63,22 @@ class Edit_Help_Content extends \NDB_Form
             $parentID = htmlspecialchars($_GET['parentID']);
         }
         if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            try {
+                $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            } catch (\NotFound $e) {
+                $helpID = '';
+            }
         }
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-            $parentID = HelpFile::hashToID(md5($_GET['section']));
+            try {
+                $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
+                $parentID = HelpFile::hashToID(md5($_GET['section']));
+            } catch (\NotFound $e) {
+                $helpID   = '';
+                $parentID = '';
+            }
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
@@ -128,11 +137,10 @@ class Edit_Help_Content extends \NDB_Form
         $this->addBasicTextArea(
             'content',
             'Content',
-            [],
-            array(
+            [
                 'cols' => 140,
                 'rows' => 30,
-            )
+            ]
         );
 
     }

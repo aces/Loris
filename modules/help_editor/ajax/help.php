@@ -32,20 +32,30 @@ try {
     include_once "helpfile.class.inc";
 
     if (!empty($moduleName)) {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(
-            md5($subpageName ?? $moduleName)
-        );
-    }
+        try {
+            $helpID    = \LORIS\help_editor\HelpFile::hashToID(
+                md5($subpageName ?? $moduleName)
+            );
+            $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
+            $data      = $help_file->toArray();
+        } catch (\NotFound $e) {
+            // Send data with empty strings so that the content can be edited
+            $data = [
+                'content' => '',
+                'topic'   => '',
+                'updated' => ''
+            ];
+        }
 
-    $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
-    $data            = $help_file->toArray();
-    $data['content'] = trim($data['content']);
+        $data['content'] = trim($data['content']);
 
-    if (empty($data['updated'])) {
-        $data['updated'] = "-";
-        // if document was never updated should display date created
-        if (!empty($data['created'])) {
-            $data['updated'] = $data['created'];
+        if (empty($data['updated'])) {
+            // if document was never updated should display date created
+            if (!empty($data['created']) && isset($data['created'])) {
+                $data['updated'] = $data['created'];
+            } else {
+                $data['updated'] = "-";
+            }
         }
     }
     print json_encode($data);
