@@ -257,7 +257,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                                 = $this->instrument
                                 ->getRequiredElementsCompletedFlag();
 
-                            $showLink = $CompStatus == 'Y';
+                            $showLink = $CompStatus === 'Y';
 
                             if (!$showLink) {
                                 $this->tpl_data['data_entry'][$i]['tooltip']
