@@ -48,11 +48,15 @@ foreach ($flagData as $cmid => $data) {
     $dataArray = $instrument->getInstanceData();
     $desc = $data['Data_entry_completion_status'];
 
+<<<<<<< HEAD
     // change value from complete / incomplete to Y / N
     if ($decs === 'Complete') {
         $dataToUpdate['Required_elements_completed'] = 'Y';
     } 
 
+// $instrument->save() is not used here in order to explicitly REMOVE the 
+// Data_entry_completion_status field from the JSON string saved in the Data 
+// column in flag.
     if (isset($dataArray['Data_entry_completion_status'])) {
         unset($dataArray['Data_entry_completion_status']);
         $dataToUpdate['Data'] = json_encode($dataArray);

@@ -29,11 +29,41 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public $form;
 
+    /**
+     * Variable defining the type of form in use
+     *
+     * Note: this seems to always be defined as 'XIN'
+     *
+     * @var string
+     */
     public $formType;
 
+    /**
+     * Array holding the date format
+     *
+     * @var array
+     */
     public $dateOptions;
+
+    /**
+     * Type of instrument. Can be 'normal' or 'DirectEntry'
+     *
+     * @var string
+     */
     public $DataEntryType;
+
+    /**
+     * Array holding XIN rules
+     *
+     * @var array
+     */
     public $XINRules;
+
+    /**
+     * Boolean enabling/disabling debugging statements for XIN rules
+     *
+     * @var boolean
+     */
     public $XINDebug;
 
     /**
@@ -102,21 +132,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     var $_requiredElements = [];
 
-    /**
-     * Array of date fields to be processed into QuickForm dates
-     * NOTE: When abstracting the _saveValues() method in the child <instrument>
-     * class, add only the dates from the current page to the array using the
-     * instruments switch($page) otherwise you'll end up overwriting (NULLing)
-     * all other dates in the table that appear on other pages (if they are
-     * listed in the array of date fields) - note by @dariovins
-     */
-    public $dateTimeFields = [];
-
-    /**
-     * Array of date fields that contain only month year fields in frontend with
-     * a static value for the date
-     */
-    public $monthYearFields = [];
     /**
      * Array of column names to be ignored by the double data entry conflict
      * detector.
@@ -288,11 +303,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.linst"
         );
         // Add rules only if they exist.
-        if (file_exists($base."project/instruments/$instrument.rules")) {
-            $obj->loadInstrumentRules(
-                $base . "project/instruments/$instrument.rules"
-            );
-        }
+        $obj->loadInstrumentRules(
+            $base . "project/instruments/$instrument.rules"
+        );
 
         $user   = \User::singleton();
         $access = $obj->_hasAccess($user);
@@ -373,7 +386,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Sets up basic data, such as the HTML_Quickform object, and so on.
+     * Sets up basic data.
      *
      * @param string|null $commentID The CommentID identifying the data to load
      * @param string|null $page      If a multipage form, the page to show
@@ -532,22 +545,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Accepts an array usable as input to HTML_Quickform::setDefaults()
-     * and does any necessary preprocessing on that array.
+     * Accepts an array of existing values and sets them as defaults on the
+     * instrument
      *
-     * @param array $defaults the array to be passed on to
-     *                        HTML_Quickform::setDefaults()
+     * @param array $defaults the array of default values
      *
      * @return array the processed array ready for setDefaults()
      * @access private
      */
     function _setDefaultsArray(array $defaults): array
     {
-        //Convert date/time fields into lorisform date/timestamps
-        if (empty($this->dateTimeFields)) {
-            $this->dateTimeFields = ["Date_taken"];
-        }
-
         if (isset($defaults['Window_Difference'])
             && $defaults['Window_Difference'] != 0
         ) {
@@ -618,7 +625,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * This handles the saving of the Candidate_Age and Window_Difference columns
      * to the database when the save function is called with a Date_taken.
      *
-     * @param array $values A reference to the values saved from QuickForm that
+     * @param array $values A reference to the values saved from the form that
      *                      will be passed to update. This will be modified to
      *                      have Candidate_Age and Window_Difference if the
      *                      Date_taken field is included.
@@ -754,11 +761,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _saveValues(array $values): void
     {
-        //Convet date/timestamps into database format
-        if (empty($this->dateTimeFields)) {
-            $this->dateTimeFields = ["Date_taken"];
-        }
-
         if (strrpos($this->testName, "_proband") === false) {
             $this->_saveCandidateAge($values);
         }
@@ -850,7 +852,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //
         // json_encode ensures that this is safe. If we use the safe wrapper,
         // HTML encoding the quotation marks will make it invalid JSON.
-        $db->update(
+        $db->unsafeUpdate(
             "flag",
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
@@ -1110,12 +1112,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDateOfAdministration()
     {
-        $db  = \Database::singleton();
-        $doa = $db->pselectOne(
-            "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
-        );
-        $this->dateOfAdministration = $doa;
+        $this->dateOfAdministration = $this->getFieldValue('Date_taken');
 
         return $this->dateOfAdministration;
     }
@@ -1130,82 +1127,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return array
      */
     abstract function getSubtestList(): array;
-
-    /**
-     * Convert a lorisform date or timestamp into a database acceptable
-     * (and storable) date or time
-     *
-     * @param array $formDateValue the lorisform date/timestamp array
-     *
-     * @return string the date or timestamp from the database
-     * @access private
-     */
-    function _getDatabaseDate(array $formDateValue): string
-    {
-        $databaseValue = "";
-        if (!empty($formDateValue)) {
-            if (array_key_exists("Y", $formDateValue)
-                || array_key_exists("M", $formDateValue)
-                || array_key_exists("d", $formDateValue)
-            ) {
-
-                if (array_key_exists("Y", $formDateValue)) {
-                    $yearString = $formDateValue['Y'];
-                } else {
-                    $yearString = "0001";
-                }
-
-                if (array_key_exists("M", $formDateValue)) {
-                    $monthString = $formDateValue['M'];
-                } else {
-                    $monthString = "01";
-                }
-
-                if (array_key_exists("d", $formDateValue)) {
-                    $dayString = $formDateValue['d'];
-                } else {
-                    $dayString = "01";
-                }
-
-                $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
-
-            } elseif (array_key_exists("H", $formDateValue)
-                || array_key_exists("i", $formDateValue)
-            ) {
-                if (array_key_exists("H", $formDateValue)) {
-                    $hourString = $formDateValue['H'];
-                } else {
-                    $hourString = "01";
-                }
-                if (array_key_exists("i", $formDateValue)) {
-                    $minuteString = $formDateValue['i'];
-                } else {
-                    $minuteString = "01";
-                }
-
-                $databaseValue = $hourString . ":" . $minuteString;
-
-            }
-        }
-        return $databaseValue;
-    }
-
-
-    /**
-     * Convert a database date or timestamp into a QuickForm acceptable date or time
-     *
-     * @param string $databaseValue the date or timestamp from the database
-     *
-     * @return array the lorisform date/timestamp array
-     */
-    function _getQuickformDate(string $databaseValue)
-    {
-        throw new Exception(
-            "The function _getQuickformDate has been deprecated.
-            Please contact LORIS developer mail list for support."
-        );
-    }
-
 
     /**
      * This runs the XIN rules on all the elements on the current page to ensure
@@ -1589,13 +1510,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
         );
-        if ($status === 'Y' || $status === 'N') {
-            return $status;
-        } else {
+        if ($status !== 'Y' && $status !== 'N') {
             throw new LorisException(
                 "Invalid Data entry completion status encountered"
             );
         }
+        return $status;
     }
 
 
@@ -1609,7 +1529,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _setRequiredElementsCompletedFlag(string $status): void
     {
-        if (!in_array($status, ['Y', 'N'])) {
+        if (!in_array($status, ['Y', 'N'],true)) {
             throw new InvalidArgumentException(
                 "Invalid status passed to _setRequiredElementsCompleted - "
                 . "'$status' should have been either "
@@ -1801,7 +1721,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
      *
-     * @param string      $field        Name given to the HTML QuickForm Element
+     * @param string      $field        Name given to the HTML form Element
      *                                  being created
      * @param string      $label        The question text to display
      * @param array       $rules        Additional rules to apply to the element
@@ -1854,7 +1774,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Note: $this->dateOptions must be defined by the subclass calling this
      * wrapper function
      *
-     * @param string $name    Name prepended to the HTMLQuickform element
+     * @param string $name    Name prepended to the form element
      * @param string $label   Element label
      * @param array  $options optional override of class's dateOptions
      *
@@ -1881,9 +1801,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
         $this->WrapperDateWithStatusElements[$name . "_date"] = $group[0];
-        if (!in_array($name . "_date", $this->dateTimeFields)) {
-            $this->dateTimeFields[] = $name . "_date";
-        }
 
         $group[] = $this->createSelect(
             $name . "_date_status",
@@ -1930,7 +1847,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $options['format'] = 'YM';
         }
         $this->form->addElement('date', $field, $label, $options);
-        $this->monthYearFields[] = $field;
     }
 
 
@@ -1939,7 +1855,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $name      The database name to add to the form
      * @param string $label     The question text
-     * @param array  $dateArray QuickForm date options to use
+     * @param array  $dateArray Date options to use
      *
      * @return void
      * @note   This was only ever used by the EARLI instrument and should be
@@ -1953,7 +1869,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group   = [];
         $group[] = $this->createDate($name . "_date", '', $dateArray);
         //add to array of dates and times.
-        $this->dateTimeFields[] = $name . "_date";
         $group[] = $this->createSelect(
             $name . "_date_status",
             '',
@@ -2601,7 +2516,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _toJSONParseSmarty(array &$element): array
     {
         /* Hacks to get data that QuickForm_Renderer_Array doesn't provide
-         * an easy way to get */
+         * an easy way to get
+         *
+         * TODO: are these hacks still valid ?
+         * */
         if ($element['type'] === 'select') {
             // Parse the HTML to get the options from the select
             $html = new DOMDocument();
@@ -2704,12 +2622,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         if (isset($el['elements'][0]['label'])) {
                             $el['label'] = $el['elements'][0]['label'];
                         }
-                        //unset($el['elements']);
-                        //unset($el['delimiter']);
-                        //$label = $el['label'];
-                        //$el = $this->_toJSONParseSmarty($el['elements'][0]);
-                        //$el['label'] = $label;
-                        //$el = $this->_toJSONParseSmarty($el);
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
