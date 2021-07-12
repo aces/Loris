@@ -171,7 +171,7 @@ class CandidateDOB extends Component {
             type: 'success',
             confrimButtonText: 'OK',
           });
-          if (result.value) {
+          if (resp.value) {
               this.fetchData();
           }
         } else {

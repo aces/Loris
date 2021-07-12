@@ -10,6 +10,8 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
+import jStat from 'jstat';
+import JSZip from 'jszip';
 
 /**
  * Loading Component
@@ -284,26 +286,36 @@ class ViewDataTabPane extends Component {
   downloadData() {
     // Download the downloadable fields into a ZIP folder
     // Makes use of a web worker to format and download the data
+    // eslint-disable-next-line no-unused-vars
+    let zip = new JSZip();
     let FileList = this.props.FileData;
     let saveworker;
     let dataURLs = [];
-    let downloadLink = document.getElementById('DownloadLink');
-    let dv = new DataView(buffer);
-    let blb = new Blob([dv], {type: 'application/zip'});
+    // eslint-disable-next-line no-unused-vars
+    let multiLinkHandler = (buffer) => {
+      return ((ce) => {
+        let downloadLink = document.getElementById('DownloadLink');
+        let dv = new DataView(buffer);
+        let blb;
 
-    downloadLink.href = window.URL.createObjectURL(blb);
-    downloadLink.download = this.download;
-    downloadLink.type = 'application/zip';
-    downloadLink.click();
+        ce.preventDefault();
+        blb = new Blob([dv], {type: 'application/zip'});
 
-    window.URL.revokeObjectURL(downloadLink.href);
+        downloadLink.href = window.URL.createObjectURL(blb);
+        downloadLink.download = this.download;
+        downloadLink.type = 'application/zip';
+        downloadLink.click();
+
+        window.URL.revokeObjectURL(downloadLink.href);
+      });
+    };
 
     // Does this work if we hold a global reference instead of a closure
     // to the object URL?
     window.dataBlobs = [];
 
     if (FileList.length === 0) {
-      alert('No Imaging Files to download');
+      alert('No files to download');
     }
 
     if (FileList.length < 100

@@ -92,7 +92,8 @@ class CategoryList extends Component {
    */
   render() {
     let items = [];
-    for (i = 0; i < this.props.items.length; i += 1) {
+    let i = 0;
+    for (i; i < this.props.items.length; i += 1) {
       let selected = false;
       if (this.props.items[i].category == this.state.selectedCategory) {
         selected = true;

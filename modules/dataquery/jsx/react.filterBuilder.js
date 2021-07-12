@@ -7,6 +7,7 @@
  */
 
 import React, {Component} from 'react';
+import {enumToArray, getSessions} from '../js/arrayintersect';
 
 /**
  * Logic Operator component

@@ -10,6 +10,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {getSessions} from '../js/arrayintersect';
 
 /**
  * Saved Queries List component

@@ -16,6 +16,7 @@ import {StepperPanel} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
+import {getSessions} from '../js/arrayintersect';
 
 /**
  * DataQueryApp component

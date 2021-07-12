@@ -201,6 +201,7 @@ class MediaEditForm extends Component {
     xhr.upload.addEventListener('progress', (evt) => {
       if (evt.lengthComputable) {
         let percent = Math.round((evt.loaded / evt.total) * 100);
+        // eslint-disable-next-line no-undef
         progressbar.attr('aria-valuenow', percent);
       }
     }, false);
