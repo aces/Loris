@@ -890,7 +890,7 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_mri_checks_group_1` 
+  CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2235,6 +2235,7 @@ CREATE TABLE `publication_upload` (
 CREATE TABLE `publication_users_edit_perm_rel` (
   `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
+  CONSTRAINT `PK_publication_users_edit_perm_rel` PRIMARY KEY(`PublicationID`, `UserID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
