@@ -52,10 +52,7 @@ foreach ($instruments as $instrument) {
                 `Examiner` varchar(255) default NULL,
                 `Testdate` timestamp "
                     . "DEFAULT CURRENT_TIMESTAMP "
-                    . "ON UPDATE CURRENT_TIMESTAMP,
-                `Data_entry_completion_status` "
-                    . "enum('Incomplete', 'Complete') "
-                    . "NOT NULL default 'Incomplete',\n";
+                    . "ON UPDATE CURRENT_TIMESTAMP,\n";
             break;
 
         case "page":

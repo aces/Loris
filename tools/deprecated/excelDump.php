@@ -188,7 +188,7 @@ function getNameFromNumber($num)
  */
 function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	//    $metaCols = array("PSCID", "CandID", "Visit_label", "Examiner_name", "Data_entry_completion_status", "Date_taken"); //metadata columns
-	$junkCols = array("CommentID", "UserID", "Examiner", "Testdate", "Data_entry_completion_status"); //columns to be removed
+	$junkCols = array("CommentID", "UserID", "Examiner", "Testdate"); //columns to be removed
 
 	// create empty Excel file to fill up
     // Create a new PHPExcel Object

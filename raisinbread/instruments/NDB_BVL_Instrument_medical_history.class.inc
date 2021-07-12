@@ -67,7 +67,6 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
                                                     'Testdate',
                                                     'Window_Difference',
                                                     'Candidate_Age',
-                                                    'Data_entry_completion_status',
                                                     'pulmonary_issues_specific',
                                                     'concussion_1_description',
                                                     'concussion_2_description',
