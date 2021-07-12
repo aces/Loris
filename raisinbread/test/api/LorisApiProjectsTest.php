@@ -512,6 +512,172 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     }
 
     /**
+     * Tests the HTTP GET request for the endpoint /projects/{project}/instruments
+     *
+     * @return void
+     */
+    public function testGetProjectsProjectDicoms(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/dicoms",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsDicomsArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']),
+            'array'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Candidate']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['PSCID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Entity_type']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Visit']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Visit_date']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['CenterID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Site']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['date_acquired']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['date_first_archived']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['date_last_archived']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['tarchiveid']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['DicomArchiveID']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Archive']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['Source']),
+            'string'
+        );
+        $this->assertSame(
+            gettype($projectsDicomsArray['Dicoms']['0']['FileName']),
+            'string'
+        );
+
+        $this->assertArrayHasKey(
+            'Dicoms',
+            $projectsDicomsArray
+        );
+        $this->assertArrayHasKey(
+            '0',
+            $projectsDicomsArray['Dicoms']
+        );
+        $this->assertArrayHasKey(
+            'Candidate',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Entity_type',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Visit_date',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'CenterID',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Site',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'date_acquired',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'date_first_archived',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'date_last_archived',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'tarchiveid',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'DicomArchiveID',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Archive',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'Source',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+        $this->assertArrayHasKey(
+            'FileName',
+            $projectsDicomsArray['Dicoms']['0']
+        );
+
+    }
+
+    /**
      * Tests the HTTP GET request for the
      * endpoint /projects/{project}/instruments/{instrument}
      *
