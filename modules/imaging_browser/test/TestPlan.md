@@ -6,7 +6,8 @@
 2. User can see other sites Imaging datasets if and only if has permission `imaging_browser_view_allsites`. User can see only own site Imaging datasets if and only if has permission `imaging_browser_view_site`. User can see phantom data only from across all sites with the `imaging_browser_phantom_allsites`, and from own sites with `imaging_browser_phantom_ownsite`. 
  [Partial Automation Testing]
 3. Test that all filters work. When the Site filter is empty, all sites with which the user is associated should be displayed. Every site should be displayed if the user has the `imaging_browser_view_allsites` permission.
-4. Test Clear Filters button.
+[Automation Testing]
+4. Test Clear Filters button. [Automation Testing]
 5. Test column table is sortable by headers.
 6. Ensure that the hyperlinks in the Links column are active and load the correct dataset.
 7. Add more modalities (from the Scan_type column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)

@@ -28,6 +28,20 @@ require_once __DIR__
 class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 {
 
+    //Filter locations
+    static $site          = 'select[name="site"]';
+    static $pscid         = 'input[name="PSCID"]';
+    static $dccid         = 'input[name="DCCID"]';
+    static $project       = 'select[name="project"]';
+    static $visitLabel    = 'input[name="visitLabel"]';
+    static $visitQCStatus = 'select[name="visitQCStatus"]';
+    static $sequenceType  = 'select[name="sequenceType"]';
+    static $pendingNew    = 'select[name="pendingNew"]';
+
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -465,68 +479,129 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     /**
      * Step 3a & 4 combined
-     * Tests that Filters (tested for PSCID here)
+     * Tests that all filters and the clear
+     * filter button work
      * and that Show Data and Clear Form work
      *
      * @return void
     */
     function testImagingBrowserFiltersAndShowClearButtons()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
-        // Testing for PSCID
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
+        $this->safeGet($this->url . "/imaging_browser/");
+
+        $this->_filterTest(
+            self::$pscid,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            '0 rows'
         );
-
-        $PSCIDOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("pscid")
+        $this->_filterTest(
+            self::$pscid,
+            self::$display,
+            self::$clearFilter,
+            'AOL0002',
+            '1 rows'
         );
-        $PSCIDOptions ->sendKeys("AOL");
-
-        $ShowData = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(3) > input:nth-child(1)"
-            )
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            'Data Coordinating Center',
+            '15 rows'
         );
-        $ShowData->click();
-
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertStringContainsString("1 subject timepoint(s) selected", $ControlPanelText);
-
-        // Now reset using clear button and confirm site
-        // set back to all and 2 subjects found
-        $ClearForm = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(4) > input:nth-child(1)"
-            )
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            'Montreal',
+            '5 rows'
         );
-        $ClearForm->click();
-
-        $PSCIDCleared = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.row:nth-child(1) > div:nth-child(1) > " .
-                "div:nth-child(2) > input:nth-child(1)"
-            )
-        )->getText();
-        $this->assertEquals("", $PSCIDCleared);
-
-        $ShowData = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-2:nth-child(3) > input:nth-child(1)"
-            )
+        $this->_filterTest(
+            self::$dccid,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            '0 rows'
         );
-        $ShowData->click();
-
-        $ControlPanelText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
-        )->getText();
-        $this->assertStringContainsString("2 subject timepoint(s) selected", $ControlPanelText);
+        $this->_filterTest(
+            self::$dccid,
+            self::$display,
+            self::$clearFilter,
+            '300001',
+            '0 rows'
+        );
+        $this->_filterTest(
+            self::$project,
+            self::$display,
+            self::$clearFilter,
+            'DCP',
+            '0 rows'
+        );
+        $this->_filterTest(
+            self::$project,
+            self::$display,
+            self::$clearFilter,
+            'Pumpernickel',
+            '20 rows'
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V1',
+            '12 rows'
+        );
+        $this->_filterTest(
+            self::$visitLabel,
+            self::$display,
+            self::$clearFilter,
+            'V1000',
+            '0 rows'
+        );
+        $this->_filterTest(
+            self::$visitQCStatus,
+            self::$display,
+            self::$clearFilter,
+            'Fail',
+            '2 rows'
+        );
+        $this->_filterTest(
+            self::$visitQCStatus,
+            self::$display,
+            self::$clearFilter,
+            'Pass',
+            '6 rows'
+        );
+        $this->_filterTest(
+            self::$sequenceType,
+            self::$display,
+            self::$clearFilter,
+            'dwi65',
+            '0 rows'
+        );
+        $this->_filterTest(
+            self::$sequenceType,
+            self::$display,
+            self::$clearFilter,
+            'dwi25',
+            '0 rows'
+        );
+        $this->_filterTest(
+            self::$pendingNew,
+            self::$display,
+            self::$clearFilter,
+            'New',
+            '7 rows'
+        );
+        $this->_filterTest(
+            self::$pendingNew,
+            self::$display,
+            self::$clearFilter,
+            'Pending',
+            '0 rows'
+        );
     }
 
     /**
