@@ -1510,13 +1510,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
         );
-        if ($status === 'Y' || $status === 'N') {
-            return $status;
-        } else {
+        if ($status !== 'Y' && $status !== 'N') {
             throw new LorisException(
                 "Invalid Data entry completion status encountered"
             );
         }
+        return $status;
     }
 
 
