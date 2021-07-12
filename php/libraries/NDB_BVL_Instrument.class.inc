@@ -1528,7 +1528,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _setRequiredElementsCompletedFlag(string $status): void
     {
-        if (!in_array($status, ['Y', 'N'],true)) {
+        if (!in_array($status, ['Y', 'N'], true)) {
             throw new InvalidArgumentException(
                 "Invalid status passed to _setRequiredElementsCompleted - "
                 . "'$status' should have been either "
