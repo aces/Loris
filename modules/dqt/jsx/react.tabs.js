@@ -459,8 +459,10 @@ class ViewDataTabPane extends Component {
       </>
     );
     let criteria = [];
-    for (let el in this.props.Criteria) {
-      if (!this.props.Criteria.hasOwnProperty(el)) {
+    console.log('this.props.Criteria is ');
+    console.log(typeof this.props.Criteria);
+    for (const [el] of Object.entries(this.props.Criteria)) {
+      if (this.props.Criteria[el] === undefined) {
         continue;
       }
       let item = this.props.Criteria[el];
@@ -630,7 +632,6 @@ class ScatterplotGraph extends Component {
       let plotY = (x) => {
         return [x, start + (slope * x)];
       };
-      let dataset;
 
     for (i = 0; i < data.length; i += 1) {
       points.push([data[i][xaxis], data[i][yaxis]]);
@@ -670,30 +671,30 @@ class ScatterplotGraph extends Component {
       max = minmax[1];
       i = 0;
 
-      for (dataset in groupedPoints) {
-        if (groupedPoints.hasOwnProperty(dataset)) {
-          // let label = document.getElementById(
-          //   'scatter-group'
-          // ).selectedOptions.item(0).textContent
-          //   + ' = ' + dataset;
-          plots.push({
-            color: i,
-            label: dataset,
-            data: groupedPoints[dataset],
-            points: {show: true},
-          });
-          LS = this.lsFit(groupedPoints[dataset]);
-          // LS = lsFit(groupedPoints[dataset].convertNumbers());
-          slope = LS[1];
-          start = LS[0];
-          plots.push({
-            color: i,
-            // label: "LS Fit for " + dataset,
-            data: jStat.seq(min, max, 3, plotY),
-            lines: {show: true},
-          });
-          i += 1;
-        }
+      console.log('groupedPoints is ');
+      console.log(typeof groupedPoints);
+      for (const [dataset] of Object.entries(groupedPoints)) {
+        // let label = document.getElementById(
+        //   'scatter-group'
+        // ).selectedOptions.item(0).textContent
+        //   + ' = ' + dataset;
+        plots.push({
+          color: i,
+          label: dataset,
+          data: groupedPoints[dataset],
+          points: {show: true},
+        });
+        LS = this.lsFit(groupedPoints[dataset]);
+        // LS = lsFit(groupedPoints[dataset].convertNumbers());
+        slope = LS[1];
+        start = LS[0];
+        plots.push({
+          color: i,
+          // label: "LS Fit for " + dataset,
+          data: jStat.seq(min, max, 3, plotY),
+          lines: {show: true},
+        });
+        i += 1;
       }
       $.plot('#scatterplotdiv', plots, {});
     }
@@ -1083,16 +1084,19 @@ class ManageSavedQueryRow extends Component {
         fields.push(<li key={i}>{this.props.Query.Fields[i]}</li>);
       }
     } else if (this.props.Query.Fields) {
-      for (let instrument in this.props.Query.Fields) {
-        if (this.props.Query.Fields.hasOwnProperty(instrument)) {
-          for (let field in this.props.Query.Fields[instrument]) {
-            if (this.props.Query.Fields[instrument].hasOwnProperty(field)
-              && field !== 'allVisits'
-            ) {
-              fields.push(
-                <li key={instrument + field}>{instrument},{field}</li>
-              );
-            }
+      console.log('this.props.Query.Fields is ');
+      console.log(typeof this.props.Query.Fields);
+      for (const [instrument] of Object.entries(this.props.Query.Fields)) {
+        console.log('this.props.Query.Fields[instrument] is ');
+        console.log(typeof this.props.Query.Fields[instrument]);
+        for (
+          const [field] of Object.entries(this.props.Query.Fields[instrument])
+          ) {
+          if (field !== 'allVisits'
+          ) {
+            fields.push(
+              <li key={instrument + field}>{instrument},{field}</li>
+            );
           }
         }
       }

@@ -190,19 +190,14 @@ class StaticDataTable extends Component {
     });
 
     const correctReactLinks = (csvData) => {
-      for (const index in csvData) {
-        if (csvData.hasOwnProperty(index)) {
-          for (const indexChild in csvData[index]) {
-            if (csvData[index].hasOwnProperty(indexChild)
-              || indexChild == null) {
-              if (csvData[index][indexChild] == null) {
-                csvData[index][indexChild] = [''];
-              } else if (csvData[index][indexChild].type === 'a') {
-                csvData[index][indexChild] = [
-                  csvData[index][indexChild].props['href'],
-                ];
-              }
-            }
+      for (const [index] of Object.entries(csvData)) {
+        for (const [indexChild] of Object.entries(csvData[index])) {
+          if (csvData[index][indexChild] == null) {
+            csvData[index][indexChild] = [''];
+          } else if (csvData[index][indexChild].type === 'a') {
+            csvData[index][indexChild] = [
+              csvData[index][indexChild].props['href'],
+            ];
           }
         }
       }

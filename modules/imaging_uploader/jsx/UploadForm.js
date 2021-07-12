@@ -268,11 +268,9 @@ class UploadForm extends Component {
       success: (data) => {
         let errorMessage = this.state.errorMessage;
         let hasError = this.state.hasError;
-        for (let i in errorMessage) {
-          if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = '';
-            hasError[i] = false;
-          }
+        for (const [i] of Object.entries(errorMessage)) {
+          errorMessage[i] = '';
+          hasError[i] = false;
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
         let text = '';
@@ -319,15 +317,13 @@ class UploadForm extends Component {
             ],
           };
         }
-        for (let i in errorMessage) {
-          if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = errorMessage[i].toString();
-            if (errorMessage[i].length) {
-              hasError[i] = true;
-              messageToPrint += errorMessage[i] + '\n';
-            } else {
-              hasError[i] = false;
-            }
+        for (const [i] of Object.entries(errorMessage)) {
+          errorMessage[i] = errorMessage[i].toString();
+          if (errorMessage[i].length) {
+            hasError[i] = true;
+            messageToPrint += errorMessage[i] + '\n';
+          } else {
+            hasError[i] = false;
           }
         }
         swal.fire({

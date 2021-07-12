@@ -126,7 +126,7 @@ class CreateTimepoint extends React.Component {
         response.json().then((data) => {
           const state = Object.assign({}, this.state);
           // Populate the select options for subproject.
-          if (data.hasOwnProperty('subproject')) {
+          if (data.subproject) {
             state.form.options.subproject = data.subproject;
             state.form.display.subproject = true;
           }

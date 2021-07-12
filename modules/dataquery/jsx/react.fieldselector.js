@@ -399,26 +399,24 @@ class FieldSelector extends Component {
    */
   addAll() {
     let i; let isFile; let fieldName; let category;
-    for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      if (this.state.categoryFields[this.state.selectedCategory]
-          .hasOwnProperty(i)
+    for ([i] of Object.entries(
+      this.state.categoryFields[this.state.selectedCategory]
+    )) {
+      fieldName = this.state.categoryFields[
+        this.state.selectedCategory
+      ][i].key[1];
+      category = this.state.categoryFields[
+        this.state.selectedCategory
+      ][i].key[0];
+      if (this.props.selectedFields[category]
+          && this.props.selectedFields[category][fieldName]
       ) {
-        fieldName = this.state.categoryFields[
-          this.state.selectedCategory
-        ][i].key[1];
-        category = this.state.categoryFields[
-          this.state.selectedCategory
-        ][i].key[0];
-        if (this.props.selectedFields[category]
-            && this.props.selectedFields[category][fieldName]
-        ) {
-          // Do nothing, already added
-        } else {
-          isFile = (this.state.categoryFields[category][i].value.isFile) ?
-            true :
-            false;
-          this.props.onFieldChange(fieldName, category, isFile);
-        }
+        // Do nothing, already added
+      } else {
+        isFile = (this.state.categoryFields[category][i].value.isFile) ?
+          true :
+          false;
+        this.props.onFieldChange(fieldName, category, isFile);
       }
     }
   }
@@ -428,24 +426,22 @@ class FieldSelector extends Component {
    */
   deleteAll() {
     let i; let fieldName; let category; let isFile;
-    for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      if (this.state.categoryFields[this.state.selectedCategory]
-          .hasOwnProperty(i)
+    for ([i] of Object.entries(
+      this.state.categoryFields[this.state.selectedCategory]
+    )) {
+      fieldName = this.state.categoryFields[
+        this.state.selectedCategory
+      ][i].key[1];
+      category = this.state.categoryFields[
+        this.state.selectedCategory
+      ][i].key[0];
+      if (this.props.selectedFields[category]
+          && this.props.selectedFields[category][fieldName]
       ) {
-        fieldName = this.state.categoryFields[
-          this.state.selectedCategory
-        ][i].key[1];
-        category = this.state.categoryFields[
-          this.state.selectedCategory
-        ][i].key[0];
-        if (this.props.selectedFields[category]
-            && this.props.selectedFields[category][fieldName]
-        ) {
-          isFile = (this.state.categoryFields[category][i].value.isFile) ?
-            true :
-            false;
-          this.props.onFieldChange(fieldName, category, isFile);
-        }
+        isFile = (this.state.categoryFields[category][i].value.isFile) ?
+          true :
+          false;
+        this.props.onFieldChange(fieldName, category, isFile);
       }
     }
   }

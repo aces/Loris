@@ -229,30 +229,28 @@ class DataQueryApp extends Component {
 
     // Load the save queries' details
     let promises = [];
-    for (let key in this.state.queryIDs) {
-      if (this.state.queryIDs.hasOwnProperty(key)) {
-        for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
-          let curRequest;
-          curRequest = Promise.resolve(
-            $.ajax(
-              loris.BaseURL
-              + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i])
-            ),
-            {
-              data: {
-                DocID: this.state.queryIDs[key][i],
-              },
-              dataType: 'json',
-            }
-          ).then((value) => {
-            let queries = this.state.savedQueries;
+    for (const [key] of Object.entries(this.state.queryIDs)) {
+      for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
+        let curRequest;
+        curRequest = Promise.resolve(
+          $.ajax(
+            loris.BaseURL
+            + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+            + encodeURIComponent(this.state.queryIDs[key][i])
+          ),
+          {
+            data: {
+              DocID: this.state.queryIDs[key][i],
+            },
+            dataType: 'json',
+          }
+        ).then((value) => {
+          let queries = this.state.savedQueries;
 
-            queries[value._id] = value;
-            this.setState({savedQueries: queries});
-          });
-          promises.push(curRequest);
-        }
+          queries[value._id] = value;
+          this.setState({savedQueries: queries});
+        });
+        promises.push(curRequest);
       }
     }
 
@@ -566,19 +564,15 @@ class DataQueryApp extends Component {
           selectedFields[fieldSplit[0]] = {};
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           selectedFields[fieldSplit[0]].allVisits = {};
-          for (let key in this.props.Visits) {
-            if (this.props.Visits.hasOwnProperty(key)) {
-              selectedFields[fieldSplit[0]].allVisits[key] = 1;
-              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
-            }
+          for (const [key] of Object.entries(this.props.Visits)) {
+            selectedFields[fieldSplit[0]].allVisits[key] = 1;
+            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
           }
         } else {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
-          for (let key in this.props.Visits) {
-            if (this.props.Visits.hasOwnProperty(key)) {
-              selectedFields[fieldSplit[0]].allVisits[key]++;
-              selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
-            }
+          for (const [key] of Object.entries(this.props.Visits)) {
+            selectedFields[fieldSplit[0]].allVisits[key]++;
+            selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
           }
         }
       }
@@ -586,12 +580,10 @@ class DataQueryApp extends Component {
       // Query was saved in the new format
       filterState = criteria;
       selectedFields = fields ? fields : {};
-      for (let instrument in fields) {
-        if (fields.hasOwnProperty(instrument)) {
-          for (let field in fields[instrument]) {
-            if (field !== 'allVisits') {
-              fieldsList.push(instrument + ',' + field);
-            }
+      for (const [instrument] of Object.entries(fields)) {
+        for (let field in fields[instrument]) {
+          if (field !== 'allVisits') {
+            fieldsList.push(instrument + ',' + field);
           }
         }
       }
@@ -688,10 +680,8 @@ class DataQueryApp extends Component {
         );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
-        for (let key in this.props.Visits) {
-          if (this.props.Visits.hasOwnProperty(key)) {
-            selectedFields[category].allVisits[key] = 1;
-          }
+        for (const [key] of Object.entries(this.props.Visits)) {
+          selectedFields[category].allVisits[key] = 1;
         }
 
         // Add field to the field list
@@ -812,17 +802,14 @@ class DataQueryApp extends Component {
               sessionInfo.push(this.state.filter.session[j]);
             }
           } else {
-            for (let key in this.state.selectedFields[category].allVisits) {
-              if (this.state.selectedFields[
-                category
-                ].allVisits.hasOwnProperty(key)
-              ) {
-                let temp = [];
-                temp.push(this.state.filter.session[j]);
-                // Add the visit to the temp variable then add to the sessions to be queried
-                temp.push(key);
-                sessionInfo.push(temp);
-              }
+            for (const [key] of Object.entries(
+              this.state.selectedFields[category].allVisits
+            )) {
+              let temp = [];
+              temp.push(this.state.filter.session[j]);
+              // Add the visit to the temp variable then add to the sessions to be queried
+              temp.push(key);
+              sessionInfo.push(temp);
             }
           }
         }
@@ -861,7 +848,7 @@ class DataQueryApp extends Component {
                  */
                 row = rows[i];
                 identifier = row.value;
-                if (!sessiondata.hasOwnProperty(identifier)) {
+                if (sessiondata[identifier] === undefined) {
                   sessiondata[identifier] = {};
                 }
 
@@ -903,40 +890,38 @@ class DataQueryApp extends Component {
       }
 
       // Build the table rows, using the session data as the row identifier
-      for (let session in sessiondata) {
-        if (sessiondata.hasOwnProperty(session)) {
-          currow = [];
-          for (i = 0; fields && i < fields.length; i += 1) {
-            let fieldSplit = fields[i].split(',');
-            currow[i] = '.';
-            let sd = sessiondata[session];
-            if (sd[fieldSplit[0]]
-                && sd[fieldSplit[0]].data[fieldSplit[1]]
-                && downloadableFields[fields[i]]
-            ) {
-              // If the current field has data and is downloadable, create a download link
-              href = loris.BaseURL
-                    + '/mri/jiv/get_file.php?file='
-                    + sd[fieldSplit[0]].data[fieldSplit[1]];
-              currow[i] = (
-                <a href={href}>
-                  {sd[fieldSplit[0]].data[fieldSplit[1]]}
-                </a>
+      for (const [session] of Object.entries(sessiondata)) {
+        currow = [];
+        for (i = 0; fields && i < fields.length; i += 1) {
+          let fieldSplit = fields[i].split(',');
+          currow[i] = '.';
+          let sd = sessiondata[session];
+          if (sd[fieldSplit[0]]
+              && sd[fieldSplit[0]].data[fieldSplit[1]]
+              && downloadableFields[fields[i]]
+          ) {
+            // If the current field has data and is downloadable, create a download link
+            href = loris.BaseURL
+                  + '/mri/jiv/get_file.php?file='
+                  + sd[fieldSplit[0]].data[fieldSplit[1]];
+            currow[i] = (
+              <a href={href}>
+                {sd[fieldSplit[0]].data[fieldSplit[1]]}
+              </a>
+            );
+            fileData.push(
+              'file/'
+              + sd[fieldSplit[0]]._id
+              + '/' + encodeURIComponent(
+                sd[fieldSplit[0]].data[fieldSplit[1]])
               );
-              fileData.push(
-                'file/'
-                + sd[fieldSplit[0]]._id
-                + '/' + encodeURIComponent(
-                  sd[fieldSplit[0]].data[fieldSplit[1]])
-                );
-            } else if (sd[fieldSplit[0]]) {
-              // else if field is not null add data and string
-              currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
-            }
+          } else if (sd[fieldSplit[0]]) {
+            // else if field is not null add data and string
+            currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
           }
-          rowdata.push(currow);
-          Identifiers.push(session);
         }
+        rowdata.push(currow);
+        Identifiers.push(session);
       }
     } else {
       // Displaying the data in the longitudinal way
@@ -951,77 +936,69 @@ class DataQueryApp extends Component {
       let fieldSplit;
 
       // Loop trough session data building the row identifiers and desired visits
-      for (let session in sessiondata) {
-        if (sessiondata.hasOwnProperty(session)) {
-          temp = session.split(',');
-          visit = temp[1];
-          if (!Visits[visit]) {
-            Visits[visit] = true;
-          }
-          identifier = temp[0];
-          if (Identifiers.indexOf(identifier) === -1) {
-            Identifiers.push(identifier);
-          }
+      for (const [session] of Object.entries(sessiondata)) {
+        temp = session.split(',');
+        visit = temp[1];
+        if (!Visits[visit]) {
+          Visits[visit] = true;
+        }
+        identifier = temp[0];
+        if (Identifiers.indexOf(identifier) === -1) {
+          Identifiers.push(identifier);
         }
       }
 
       // Loop through the desired fields, adding a row header for each visit if it
       // has been selected in the build phase
       for (i = 0; fields && i < fields.length; i += 1) {
-        for (visit in Visits) {
-          if (Visits.hasOwnProperty(visit)) {
-            temp = fields[i].split(',');
-            instrument = this.state.selectedFields[temp[0]];
-            if (instrument
-                && instrument[temp[1]]
-                && instrument[temp[1]][visit]
-            ) {
-              RowHeaders.push(visit + ' ' + fields[i]);
-            }
+        for ([visit] of Object.entries(Visits)) {
+          temp = fields[i].split(',');
+          instrument = this.state.selectedFields[temp[0]];
+          if (instrument
+              && instrument[temp[1]]
+              && instrument[temp[1]][visit]
+          ) {
+            RowHeaders.push(visit + ' ' + fields[i]);
           }
         }
       }
 
       // Build the row data for the giving identifiers and headers
-      for (identifier in Identifiers) {
-        if (Identifiers.hasOwnProperty(identifier)) {
-          currow = [];
-          for (colHeader in RowHeaders) {
-            if (RowHeaders.hasOwnProperty(colHeader)) {
-              temp = Identifiers[identifier]
-                    + ','
-                    + RowHeaders[colHeader].split(' ')[0];
-              index = sessiondata[temp];
-              if (!index) {
-                currow.push('.');
+      for ([identifier] of Object.entries(Identifiers)) {
+        currow = [];
+        for (colHeader of RowHeaders) {
+          temp = Identifiers[identifier]
+                + ','
+                + RowHeaders[colHeader].split(' ')[0];
+          index = sessiondata[temp];
+          if (!index) {
+            currow.push('.');
+          } else {
+            temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
+            fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
+            if (temp) {
+              if (temp.data[RowHeaders[colHeader].split(',')[1]]
+                  && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]
+              ) {
+                // Add a downloadable link if the field is set and downloadable
+                href = loris.BaseURL
+                      + '/mri/jiv/get_file.php?file='
+                      + temp.data[RowHeaders[colHeader].split(',')[1]];
+                temp = (
+                  <a href={href}>
+                    {temp.data[RowHeaders[colHeader].split(',')[1]]}
+                  </a>
+                );
               } else {
-                temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
-                fieldSplit = RowHeaders[colHeader].split(' ')[1].split(',');
-                if (temp) {
-                  if (temp.data[RowHeaders[colHeader].split(',')[1]]
-                      && downloadableFields[fieldSplit[0] + ',' + fieldSplit[1]]
-                  ) {
-                    // Add a downloadable link if the field is set and downloadable
-                    href = loris.BaseURL
-                          + '/mri/jiv/get_file.php?file='
-                          + temp.data[RowHeaders[colHeader].split(',')[1]];
-                    temp = (
-                      <a href={href}>
-                        {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                      </a>
-                    );
-                  } else {
-                    temp = temp.data[RowHeaders[colHeader].split(',')[1]];
-                  }
-                } else {
-                  temp = '.';
-                }
-                currow.push(temp);
+                temp = temp.data[RowHeaders[colHeader].split(',')[1]];
               }
+            } else {
+              temp = '.';
             }
+            currow.push(temp);
           }
-          rowdata.push(currow);
         }
+        rowdata.push(currow);
       }
     }
     return {

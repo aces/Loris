@@ -442,8 +442,8 @@ class ViewDataTabPane extends Component {
       </div>
     );
     let criteria = [];
-    for (let el in this.props.Criteria) {
-      if (!this.props.Criteria.hasOwnProperty(el)) {
+    for (const [el] of Object.entries(this.props.Criteria)) {
+      if (this.props.Criteria[el] === undefined) {
         continue;
       }
       let item = this.props.Criteria[el];
@@ -657,26 +657,24 @@ class ScatterplotGraph extends Component {
       max = minmax[1];
       i = 0;
 
-      for (dataset in groupedPoints) {
-        if (groupedPoints.hasOwnProperty(dataset)) {
-          plots.push({
-            color: i,
-            label: dataset,
-            data: groupedPoints[dataset],
-            points: {show: true},
-          });
-          LS = this.lsFit(groupedPoints[dataset]);
-          // LS = lsFit(groupedPoints[dataset].convertNumbers());
-          slope = LS[1];
-          start = LS[0];
-          plots.push({
-            color: i,
-            // label: "LS Fit for " + dataset,
-            data: jStat.seq(min, max, 3, plotY),
-            lines: {show: true},
-          });
-          i += 1;
-        }
+      for (dataset of groupedPoints) {
+        plots.push({
+          color: i,
+          label: dataset,
+          data: groupedPoints[dataset],
+          points: {show: true},
+        });
+        LS = this.lsFit(groupedPoints[dataset]);
+        // LS = lsFit(groupedPoints[dataset].convertNumbers());
+        slope = LS[1];
+        start = LS[0];
+        plots.push({
+          color: i,
+          // label: "LS Fit for " + dataset,
+          data: jStat.seq(min, max, 3, plotY),
+          lines: {show: true},
+        });
+        i += 1;
       }
       $.plot('#scatterplotdiv', plots, {});
     }
@@ -1112,14 +1110,13 @@ class ManageSavedQueryRow extends Component {
         fields.push(<li key={index++}>{this.props.Query.Fields[i]}</li>);
       }
     } else if (this.props.Query.Fields) {
-      for (let instrument in this.props.Query.Fields) {
-        if (this.props.Query.Fields.hasOwnProperty(instrument)) {
-          for (let field in this.props.Query.Fields[instrument]) {
-            if (this.props.Query.Fields[instrument].hasOwnProperty(field)
-              && field !== 'allVisits'
-            ) {
-              fields.push(<li key={index++}>{instrument},{field}</li>);
-            }
+      for (const [instrument] of Object.entries(this.props.Query.Fields)) {
+        for (const [field] of Object.entries(
+          this.props.Query.Fields[instrument]
+        )) {
+          if (field !== 'allVisits'
+          ) {
+            fields.push(<li key={index++}>{instrument},{field}</li>);
           }
         }
       }
