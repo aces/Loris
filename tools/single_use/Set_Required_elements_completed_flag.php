@@ -30,6 +30,7 @@ to generate a DROP COLUMN patch to remove the old column from instrument tables.
 \n";
 $DB = \Database::singleton();
 
+// Get all data from flag to back-populate
 $flagData = $DB->pselectWithIndexKey(
     "SELECT Data, CommentID, Test_name 
                 FROM flag",
@@ -38,30 +39,38 @@ $flagData = $DB->pselectWithIndexKey(
 );
 
 foreach ($flagData as $cmid => $data) {
-    print_r($cmid."\n");
+    print_r("Migrating Data_entry_completion_status for {$cmid}.\n");
 
-    $instrument = NDB_BVL_Instrument::factory(
-        $data['Test_name'],
-        $cmid,
-        ''
-    );
+    // instantiate instrument
+    try {
+        $instrument = NDB_BVL_Instrument::factory(
+            $data['Test_name'],
+            $cmid,
+            ''
+        );
+    } catch (Exception $e) {
+        echo "Could not instantiate {$data['Test_name']} for {$cmid}.\n";
+        continue;
+    }
+
     $dataArray = $instrument->getInstanceData();
     $desc = $data['Data_entry_completion_status'];
 
-<<<<<<< HEAD
     // change value from complete / incomplete to Y / N
     if ($decs === 'Complete') {
         $dataToUpdate['Required_elements_completed'] = 'Y';
     } 
 
-// $instrument->save() is not used here in order to explicitly REMOVE the 
-// Data_entry_completion_status field from the JSON string saved in the Data 
-// column in flag.
+    // Unset Data_entry_completion_status so that it is not
+    // saved to data column
     if (isset($dataArray['Data_entry_completion_status'])) {
         unset($dataArray['Data_entry_completion_status']);
         $dataToUpdate['Data'] = json_encode($dataArray);
     }
 
+    // $instrument->save() is not used here in order to explicitly REMOVE the 
+    // Data_entry_completion_status field from the JSON string saved in the Data 
+    // column in flag.
     if (!empty($dataToUpdate)) {
         $DB->update(
             'flag',

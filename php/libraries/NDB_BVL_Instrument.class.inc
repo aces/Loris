@@ -145,7 +145,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Testdate',
             'Window_Difference',
             'Candidate_Age',
-            'Required_elements_completed',
         ];
 
     /**
