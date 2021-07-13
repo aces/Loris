@@ -1335,7 +1335,8 @@ class LorisForms_Test extends TestCase
     {
         $this->form->addCheckbox("abc", "Hello", []);
         $this->assertEquals(
-            "<input name=\"abc\" type=\"checkbox\"   /> Hello",
+            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
+            "type=\"checkbox\"   /> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }
@@ -1355,8 +1356,9 @@ class LorisForms_Test extends TestCase
         $this->form->addCheckbox("abc", "Hello", $testAttributes);
         $this->form->setDefaults(['abc' => 'abc_default']);
         $this->assertEquals(
-            "<input name=\"abc\" type=\"checkbox\" checked=\"checked\"".
-                " value=\"value1\" disabled/> Hello",
+            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
+            "type=\"checkbox\" checked=\"checked\"" .
+            " value=\"value1\" disabled/> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }
