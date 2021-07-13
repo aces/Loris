@@ -32,12 +32,13 @@ class NullModule extends Module
      * directory to pass (such as unit tests) and as such
      * only takes an (optional) name as an argument.
      *
-     * @param string $name An optional name to use for this module.
+     * @param \LORIS\LorisInstance $loris The LORIS instance for this module.
+     * @param string               $name  An optional name to use for this module.
      */
-    public function __construct(string $name='')
+    public function __construct(\LORIS\LorisInstance $loris, string $name='')
     {
         $this->longname = $name;
-        parent::__construct($name, "");
+        parent::__construct($loris, $name, "");
     }
 
     /**

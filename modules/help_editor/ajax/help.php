@@ -13,9 +13,19 @@
  */
 
 try {
+    $factory = \NDB_Factory::singleton();
+    $loris   = new \LORIS\LorisInstance(
+        $factory->database(),
+        $factory->config(),
+        [
+            __DIR__ . "/../../",
+            __DIR__ . "/../../../project/modules"
+        ],
+    );
+
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
-    $m           = Module::factory($moduleName);
+    $m           = Module::factory($loris, $moduleName);
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
@@ -24,7 +34,9 @@ try {
         'format'  => 'markdown',
     ];
     print json_encode($help);
-    ob_end_flush();
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
     exit;
 } catch (Exception $e) {
 

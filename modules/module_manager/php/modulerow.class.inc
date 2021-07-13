@@ -35,16 +35,19 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $Module;
     protected $DBRow;
     protected $Active;
+    protected $lorisinstance;
 
     /**
      * Create a new ModuleRow Instance.
      *
-     * @param array $row The ModuleRow Instance
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the module
+     * @param array                $row   The ModuleRow Instance
      */
-    public function __construct(array $row)
+    public function __construct(\LORIS\LorisInstance $loris, array $row)
     {
-        $this->Module = \Module::factory($row['name']);
-        $this->Active = $row['active'];
+        $this->lorisinstance = $loris;
+        $this->Module        = \Module::factory($loris, $row['name']);
+        $this->Active        = $row['active'];
     }
 
     /**

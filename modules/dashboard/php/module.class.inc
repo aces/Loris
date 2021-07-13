@@ -136,8 +136,7 @@ class Module extends \Module
     private function _getTasksWidget()
     {
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-        $modules = \Module::getActiveModules($DB);
+        $modules = $this->lorisinstance->getActiveModules();
         $user    = $factory->user();
 
         $widgets = [];

@@ -36,7 +36,6 @@ class UserPermissions
      */
     private $permissions = [];
 
-
     /**
      * Constructor
      *
@@ -281,13 +280,15 @@ class UserPermissions
     /**
      * Returns an array with all permissions information for the user
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get
+     *                                    permissions from.
+     *
      * @return array
-     * @access public
      */
-    function getPermissionsVerbose(): array
+    function getPermissionsVerbose(\LORIS\LorisInstance $loris): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $loris->getDatabaseConnection();
 
         $query   = "SELECT
                 p.permID,
@@ -303,7 +304,7 @@ class UserPermissions
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, m.Name, p.description";
         $results = $DB->pselect($query, ['UID' => $this->userID]);
-        $modules = \Module::getActiveModulesIndexed($DB);
+        $modules = \Module::getActiveModulesIndexed($loris);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description
         foreach ($results as $key=>$perm) {

@@ -302,7 +302,17 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
-    \Module::factory('candidate_parameters');
+    // All we care about is the namespace loading, so we just need to ensure
+    // that the directory path has this module in it
+    $loris = new \LORIS\LorisInstance(
+        new Database(),
+        new NDB_Config(),
+        [
+            __DIR__ . '../'
+        ]
+    );
+
+    \Module::factory($loris, 'candidate_parameters');
     $candID = new CandID($_GET['candID']);
 
     $db = \Database::singleton();

@@ -904,7 +904,7 @@ class Edit_User extends \NDB_Form
                 ORDER BY p.categoryID, p.description";
             $perms = $factory->database()->pselect($query, []);
         } else {
-            $perms = $editor->getPermissionsVerbose();
+            $perms = $editor->getPermissionsVerbose($this->lorisinstance);
         }
 
         $lastRole = '';

@@ -487,8 +487,11 @@ function getComments($issueID)
         ['issueID' => $issueID]
     );
 
+    // getActiveModules only uses the database connection, so just
+    // fake it until we port this to a real page class.
+    $loris   = new \LORIS\LorisInstance($db, new \NDB_Config(), []);
+    $modules = \Module::getActiveModulesIndexed($loris);
     //looping by reference so can edit in place
-    $modules = \Module::getActiveModulesIndexed($db);
     foreach ($unformattedComments as &$comment) {
         if ($comment['fieldChanged'] === 'module') {
             $mid = $comment['newValue'];
@@ -708,7 +711,8 @@ function getIssueFields()
         }
     }
 
-    $allmodules = \Module::getActiveModulesIndexed($db);
+    $loris      = new \LORIS\LorisInstance($db, new \NDB_Config(), []);
+    $allmodules = \Module::getActiveModulesIndexed($loris);
 
     $modules = [];
     foreach ($allmodules as $key => $m) {
