@@ -3,7 +3,7 @@
 ## Creating the Database
 MySQL or MariaDB must be installed and a `root` or admin-level user 
 credential must be created before continuing. (This is not the same as a unix 
-        `root` credential.) 
+        `root` credential.)
 
 After running the install script, you will be prompted to visit the 
 `installdb.php` page at the canonical domain of your LORIS instance.

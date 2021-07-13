@@ -1,1 +1,2 @@
-General help with modules, instruments, install... resources, contacts, FAQ ...
+# Help and Troubleshooting
+
