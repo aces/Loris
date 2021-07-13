@@ -61,5 +61,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (67,'survey_accounts_view','Candidate Surveys',36,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (68,'imaging_quality_control_view','Flagged Imaging Entries',21,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Flagged Behavioural Entries',3,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'schedule_module','Schedule Module: edit and delete appointment',44,'View/Create/Edit',2);
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

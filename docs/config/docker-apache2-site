@@ -1,0 +1,31 @@
+# NameVirtualHost *
+<VirtualHost *:80>  # change from 80 to 443 if you enable SSL
+        ServerAdmin webmaster@localhost
+
+        DocumentRoot /var/www/html/htdocs/
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride All
+        </Directory>
+        <Directory /var/www/html/htdocs/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        php_value include_path .:/usr/share/php:/var/www/html/project/libraries:/var/www/html/php/libraries
+
+        #DirectoryIndex main.php index.html
+
+        #ErrorLog /etc/logs/apache2/loris-error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        #CustomLog /etc/logs/apache2/loris-access.log combined
+        ServerSignature Off
+
+
+</VirtualHost>

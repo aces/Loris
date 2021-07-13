@@ -32,6 +32,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
