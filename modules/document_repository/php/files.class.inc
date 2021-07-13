@@ -37,6 +37,7 @@ class Files extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
+                'document_repository_upload_edit'
             ]
         );
     }
@@ -114,11 +115,12 @@ class Files extends \NDB_Page
         }
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
-            'instrument' => $req['instrument'] ?? null,
-            'comments'   => $req['comments'] ?? null,
-            'version'    => $req['version'] ?? null,
-            'visitLabel' => $req['visitLabel'] ?? null,
-            'pscid'      => $req['pscid'] ?? null,
+            'hidden_file' => $req['hiddenFile'] ?? null,
+            'instrument'  => $req['instrument'] ?? null,
+            'comments'    => $req['comments'] ?? null,
+            'version'     => $req['version'] ?? null,
+            'visitLabel'  => $req['visitLabel'] ?? null,
+            'pscid'       => $req['pscid'] ?? null,
         ];
         $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
@@ -233,6 +235,7 @@ class Files extends \NDB_Page
                 "Instrument as instrument, " .
                 "For_site as forSite, " .
                 "comments, " .
+                "hidden_file as hiddenFile," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -245,6 +248,7 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
+            'hiddenFile'  => ['yes' => "Yes", 'no' => "No"],
         ];
 
         return $result;
@@ -379,6 +383,7 @@ class Files extends \NDB_Page
         $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
         $comments   = !empty($body['comments'])   ? $body['comments']   : null;
         $version    = !empty($body['version'])    ? $body['version']    : null;
+        $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : null;
 
         $fileSize = $uploadedFile->getSize();
         $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -391,6 +396,7 @@ class Files extends \NDB_Page
                 'For_site'      => $site,
                 'comments'      => $comments,
                 'version'       => $version,
+                'hidden_file'   => $hidden,
                 'File_name'     => $filename,
                 'File_size'     => $fileSize,
                 'Data_dir'      => "$name/$filename",
