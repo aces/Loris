@@ -54,18 +54,22 @@ class ImagingUploader extends Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) => {
         this.setState({
           data: data,
           isLoaded: true,
         });
-      },
-      error: function(error) {
-        console.error(error);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 

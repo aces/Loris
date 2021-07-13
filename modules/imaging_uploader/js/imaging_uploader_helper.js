@@ -158,25 +158,23 @@ function UploadProgress() {
      */
     this.setProgressFromServer = function(progressFromServer) {
         if(progressFromServer != null) {
-            var newProgressFromServer = $.parseJSON(progressFromServer);
-
             // If the number of notifications changed since last POST request, reset the
             // dots and animated char
             if(this._progressFromServer != null
               && this._progressFromServer.notifications != null
-              && newProgressFromServer.notifications != null
-              && this._progressFromServer.notifications.length != newProgressFromServer.notifications.length) {
+              && progressFromServer.notifications != null
+              && this._progressFromServer.notifications.length != progressFromServer.notifications.length) {
                 this._dots = '';
                 this._animatedCharIndex = 0;
             } else {
                 // If the pipeline is not running anymore, reset dots and animated char
-                if(newProgressFromServer.inserting != 1) {
+                if(progressFromServer.inserting != 1) {
                     this._dots ='';
                     this._animatedCharIndex = 0;
                 }
             }
 
-            this._progressFromServer = newProgressFromServer;
+            this._progressFromServer = progressFromServer;
         } else {
             this._progressFromServer = null;
             this._dots = '';
