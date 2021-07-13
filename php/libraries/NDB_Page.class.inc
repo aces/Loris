@@ -866,7 +866,6 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Markdown.js',
@@ -890,8 +889,7 @@ class NDB_Page implements RequestHandlerInterface
         $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
-            $baseurl . "/js/jquery/datepicker/datepicker.css",
-            $baseurl . '/vendor/sweetalert/sweetalert.css',
+            $baseurl . "/js/jquery/datepicker/datepicker.css"
         ];
         return $files;
     }

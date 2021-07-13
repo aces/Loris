@@ -280,7 +280,7 @@ const config = [
   ]),
   lorisModule('user_accounts', ['userAccountsIndex']),
   lorisModule('examiner', ['examinerIndex']),
-  lorisModule('help_editor', ['help_editor']),
+  lorisModule('help_editor', ['help_editor', 'help_editor_helper']),
   lorisModule('brainbrowser', ['Brainbrowser']),
   lorisModule('imaging_uploader', ['index']),
   lorisModule('acknowledgements', ['acknowledgementsIndex']),
@@ -288,7 +288,10 @@ const config = [
   lorisModule('module_manager', ['modulemanager']),
   lorisModule('imaging_qc', ['imagingQCIndex']),
   lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-  lorisModule('instruments', ['CandidateInstrumentList']),
+  lorisModule('instruments', [
+    'CandidateInstrumentList',
+    'ControlpanelDeleteInstrumentData',
+  ]),
   lorisModule('candidate_profile', ['CandidateInfo']),
   lorisModule('api_docs', ['swagger-ui_custom']),
 ];
