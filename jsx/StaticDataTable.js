@@ -47,7 +47,7 @@ class StaticDataTable extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    if (jQuery.fn.DynamicTable) {
+    if (jQuery.fn.DynamicTable && !this.props.NoDynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
           freezeColumn: this.props.freezeColumn,
@@ -91,7 +91,7 @@ class StaticDataTable extends Component {
    * @param {object} prevState - Previous React Component state
    */
   componentDidUpdate(prevProps, prevState) {
-    if (jQuery.fn.DynamicTable) {
+    if (jQuery.fn.DynamicTable && !this.props.NoDynamicTable) {
       if (this.props.freezeColumn) {
         $('#dynamictable').DynamicTable({
           freezeColumn: this.props.freezeColumn,
@@ -536,9 +536,12 @@ class StaticDataTable extends Component {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
+          const rowCell = this.state.Hide.defaultColumn !== true ?
+              <td>{rowIndex}</td> : null;
+
           rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-              <td>{rowIndex}</td>
+              {rowCell}
               {curRow}
             </tr>
           );

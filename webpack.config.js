@@ -272,12 +272,7 @@ const config = [
   ]),
   lorisModule('instrument_manager', ['instrumentManagerIndex']),
   lorisModule('survey_accounts', ['surveyAccountsIndex']),
-  lorisModule('mri_violations', [
-    'mri_protocol_check_violations_columnFormatter',
-    'columnFormatter',
-    'columnFormatterUnresolved',
-    'mri_protocol_violations_columnFormatter',
-  ]),
+  lorisModule('mri_violations', ['mriViolationsIndex']),
   lorisModule('user_accounts', ['userAccountsIndex']),
   lorisModule('examiner', ['examinerIndex']),
   lorisModule('help_editor', ['help_editor']),
