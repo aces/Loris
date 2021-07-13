@@ -295,7 +295,7 @@ class FieldList extends Component {
                              selectedVisits={selectedFields}
                              fieldVisitSelect={this.props.fieldVisitSelect}
       />);
-      if (fields.length > rowsPerPage) {
+      if (fields.length >= rowsPerPage) {
         break;
       }
     }
