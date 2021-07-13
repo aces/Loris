@@ -19,13 +19,19 @@ require_once "bvl_panel_ajax.php";
 //Creating a new array to pass the set values into the DB.
 $newThreadValues = [];
 
+// With formData, null is passed as a string
+foreach ($_POST as $key => $val) {
+    if ($_POST[$key] === 'null') {
+        $_POST[$key] = null;
+    }
+}
+
 //For profile level feedback
 if (isset($_POST['comment']) && isset($_POST['candID'])
     && (!isset($_POST['sessionID']) || empty($_POST['sessionID'])
     && !isset($_POST['commentID']))
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
-
 
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
