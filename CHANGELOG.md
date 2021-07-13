@@ -28,6 +28,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 ### Modules
+#### DQT
+- The dataquery module has been completely redesigned. (PR #6908)
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
@@ -73,6 +75,7 @@ database (PR #5260)
 - Fix special character double escaping in instruments (PR #6223)
 
 ### Modules 
+
 #### Candidate Profile
 - New module created to provide dashboard of a single candidate's data across all
   modules. (Various PRs)
