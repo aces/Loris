@@ -39,31 +39,44 @@ $(function () {
 
         e.preventDefault();
 
-        var id = $(this).attr('name');
-        var button = this;
-        
-        $.ajax({
-            type: 'post',
-            url: loris.BaseURL + '/configuration/ajax/process.php',
-            data: {remove: id},
-            success: function () {
-                if ($(button).parent().parent().parent().children().length > 1) {
-                    $(button).parent().parent().remove();
-                }
-                else {
-                    var parent_id = $(button).parent().parent().parent().attr('id');
-                    var name      = 'add-' + parent_id;
+        var options        = $(this).parent().parent().children().prop('options');
+        var selectedIndex  = $(this).parent().parent().children().prop('selectedIndex');
+        var selectedOption = options[selectedIndex].text;
+        var fieldName      = $(this).parent().parent().parent().parent().parent().children().attr('data-original-title');
 
-                    resetForm($(button).parent().parent());
-                    $(button).parent().parent().children('.form-control').attr('name', name);
-                    $(button).addClass('remove-new').removeClass('btn-remove');
+        if(
+            window.confirm(
+                'Please confirm you want to delete the option "' + selectedOption
+                + '" of the field "' + fieldName + '".'
+            )
+        ){
+
+            var id = $(this).attr('name');
+            var button = this;
+        
+            $.ajax({
+                type: 'post',
+                url: loris.BaseURL + '/configuration/ajax/process.php',
+                data: {remove: id},
+                success: function () {
+                    if ($(button).parent().parent().parent().children().length > 1) {
+                        $(button).parent().parent().remove();
+                    }
+                    else {
+                        var parent_id = $(button).parent().parent().parent().attr('id');
+                        var name      = 'add-' + parent_id;
+
+                        resetForm($(button).parent().parent());
+                        $(button).parent().parent().children('.form-control').attr('name', name);
+                        $(button).addClass('remove-new').removeClass('btn-remove');
+                    }
+                },
+                error: function(xhr, desc, err) {
+                    console.log(xhr);
+                    console.log("Details: " + desc + "\nError:" + err);
                 }
-            },
-            error: function(xhr, desc, err) {
-                console.log(xhr);
-                console.log("Details: " + desc + "\nError:" + err);
-            }
-        });  
+            });
+        }
     });
 
     // On form submit, process the changes through an AJAX call
