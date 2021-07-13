@@ -1,11 +1,12 @@
--- SQL tables for BIDS derivative file structure
+--SQL patch to create and populate physiological annotation tables
+
 DROP TABLE IF EXISTS `physiological_annotation_instance`;
 DROP TABLE IF EXISTS `physiological_annotation_parameter`;
 DROP TABLE IF EXISTS `physiological_annotation_archive`;
 DROP TABLE IF EXISTS `physiological_annotation_file`;
 DROP TABLE IF EXISTS `physiological_annotation_file_type`;
 DROP TABLE IF EXISTS `physiological_annotation_label`;
--- Create physiological_annotation_file_type table
+
 CREATE TABLE `physiological_annotation_file_type` (
     `FileType`        VARCHAR(20)   NOT NULL UNIQUE,
     `Description` VARCHAR(255),
@@ -126,3 +127,20 @@ INSERT INTO physiological_annotation_label
 
 UPDATE physiological_output_type SET OutputTypeName='derivative' WHERE PhysiologicalOutputTypeID=2;
 
+SET FOREIGN_KEY_CHECKS=0;
+
+UPDATE physiological_file SET PhysiologicalOutputTypeID=2 WHERE PhysiologicalFileID=11;
+
+INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (1, 11, 'tsv', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tsv', '2021-06-05 15:57:15');
+INSERT INTO `physiological_annotation_file` (`AnnotationFileID`, `PhysiologicalFileID`, `FileType`, `FilePath`, `LastUpdate`) VALUES (2, 11, 'json', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.json', '2021-06-05 15:57:15');
+
+INSERT INTO `physiological_annotation_archive` (`AnnotationArchiveID`, `PhysiologicalFileID`, `Blake2bHash`, `FilePath`) VALUES (1, 11, '3a61e50c57cf4bc3a43900fcf4e3dbfb16f69ce9 ', 'bids_imports/derivatives/loris_annotations/sub-DCC0001/ses-V01/ieeg/sub-DCC0001_ses-V01_task-test_acq-seeg_annotations.tgz');
+
+INSERT INTO `physiological_annotation_parameter` (`AnnotationParameterID`, `AnnotationFileID`, `Description`, `Sources`, `Author`) VALUES (1, 2, 'Annotations for BIDS Derivatives', NULL, 'Alexandra Livadas');
+
+INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (1, 1, 1, 0.488, 0.996, 2, NULL, NULL, 'Left hand flinch');
+INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (2, 1, 1, 3.224, 0.566, 2, NULL, '2009-06-15T13:45:30', 'Head turned left');
+INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (3, 1, 1, 5.446, 0.231, 3, NULL, NULL, NULL);
+INSERT INTO `physiological_annotation_instance` (`AnnotationInstanceID`, `AnnotationFileID`, `AnnotationParameterID`, `Onset`, `Duration`, `AnnotationLabelID`, `Channels`, `AbsoluteTime`, `Description`) VALUES (4, 1, 1, 8.923, 0.000, 13, NULL, '2009-06-15T13:45:35', NULL);
+
+SET FOREIGN_KEY_CHECKS=1;

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
+import swal from 'sweetalert2';
 
 /**
  * This file contains React component for Electrophysiology module.
@@ -18,7 +19,11 @@ class FilePanel extends Component {
     super(props);
     this.state = {
       data: this.props.data,
+      physiologicalFileID: this.props.physiologicalFileID,
+      annotationsAction: loris.BaseURL
+                         + '/electrophysiology_browser/annotations',
     };
+    this.showLoadingMessage = this.showLoadingMessage.bind(this);
   }
 
   /**
@@ -165,6 +170,8 @@ class FilePanel extends Component {
       },
     };
 
+    console.log(this.state.data.downloads);
+
     return (
       <Panel id={this.props.id} title={this.props.title}>
         <div className={'container-fluid'}>
@@ -241,10 +248,12 @@ class FilePanel extends Component {
                 >All Files</div>
                 <div className={'col-xs-2'}>
                   <a id='download_all_files'
-                     href={'/mri/jiv/get_file.php?file='
-                          + this.state.data.downloads[5].file}
-                     target='_blank'
-                     download={this.state.data.downloads[0].file}
+                    href={this.state.annotationsAction
+                      + '?physioFileID=' + this.state.physiologicalFileID
+                      + '&filePath=' + this.state.data.downloads[5].file}
+                    target='_blank'
+                    download={this.state.data.downloads[0].file}
+                    onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_all_files'
                             style={stylesFile.button.download}
@@ -262,6 +271,7 @@ class FilePanel extends Component {
                           + this.state.data.downloads[0].file}
                      target='_blank'
                      download={this.state.data.downloads[0].file}
+                     onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_eeg_file'
                             style={stylesFile.button.download}
@@ -279,6 +289,7 @@ class FilePanel extends Component {
                           + this.state.data.downloads[1].file}
                      target='_blank'
                      download={this.state.data.downloads[0].file}
+                     onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_electrode_info'
                             style={stylesFile.button.download}
@@ -296,6 +307,7 @@ class FilePanel extends Component {
                           + this.state.data.downloads[2].file}
                      target='_blank'
                      download={this.state.data.downloads[0].file}
+                     onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_channels_info'
                             style={stylesFile.button.download}
@@ -313,6 +325,7 @@ class FilePanel extends Component {
                           + this.state.data.downloads[3].file}
                      target='_blank'
                      download={this.state.data.downloads[0].file}
+                     onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_events'
                             style={stylesFile.button.download}
@@ -325,11 +338,14 @@ class FilePanel extends Component {
                      style={stylesFile.div.element.download_title}
                 >Annotations</div>
                 <div className={'col-xs-2'}>
-                  <a id='download_annotations'
-                     href={'/mri/jiv/get_file.php?file='
-                          + this.state.data.downloads[4].file}
-                     target='_blank'
-                     download={this.state.data.downloads[0].file}
+                  <a
+                    id='download_annotations'
+                    href={this.state.annotationsAction
+                      + '?physioFileID=' + this.state.physiologicalFileID
+                      + '&filePath=' + this.state.data.downloads[4].file}
+                    target='_blank'
+                    download={this.state.data.downloads[0].file}
+                    onClick={this.showLoadingMessage}
                   >
                     <button id='btn_download_annotations'
                             style={stylesFile.button.download}
@@ -548,19 +564,43 @@ class FilePanel extends Component {
                   </table>
                 </div>
               </div>
-
             </div>
           </div>
         </Panel>
       </Panel>
     );
   }
+
+  /**
+   * Display a loading message when downloading files
+   */
+  showLoadingMessage() {
+      let type = 'success';
+      let title = 'Your download will begin in a few moments';
+      let text = 'Thank you for your patience';
+      let timer = 2000;
+      let confirmation = true;
+      let callback = function() {};
+
+      swal.fire({
+          title: title,
+          type: type,
+          text: text,
+          timer: timer,
+          allowOutsideClick: true,
+          allowEscapeKey: true,
+          showConfirmButton: confirmation,
+      }, callback.bind(this));
+    }
 }
+
 FilePanel.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
   data: PropTypes.object,
+  physiologicalFileID: PropTypes.string,
 };
+
 FilePanel.defaultProps = {
   id: 'file_panel',
   title: 'FILENAME',

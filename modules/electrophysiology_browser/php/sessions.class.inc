@@ -17,6 +17,7 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
+use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 
 
 /**
@@ -263,6 +264,10 @@ class Sessions extends \NDB_Page
 
             $fileSummary['name'] = $fileName;
 
+            // get the file ID
+
+            $fileSummary['id'] = $physiologicalFileID;
+
             // get the task frequency information
 
             $sampling  = $physioFileObj->getParameter('SamplingFrequency');
@@ -364,6 +369,23 @@ class Sessions extends \NDB_Page
             );
 
             $fileSummary['downloads'] = $links;
+
+            $fileOutput = $db->pselectone(
+                'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+                ['PFID' => $physiologicalFileID]
+            );
+
+            //Get the annotation data if the output type is derivative
+            if (strcmp($fileOutput, 'derivative') == 0) {
+                $annotations = new ElectrophysioAnnotations(
+                    intval($physiologicalFileID)
+                );
+                $fileSummary['annotations'] = $annotations->getData();
+            }
 
             $fileCollection[]['file'] = $fileSummary;
         }
@@ -486,5 +508,4 @@ class Sessions extends \NDB_Page
             )
         );
     }
-
 }

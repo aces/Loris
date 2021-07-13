@@ -213,7 +213,9 @@ CREATE TABLE `physiological_annotation_file` (
     `AnnotationFileID`    INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `PhysiologicalFileID` INT(10)      UNSIGNED NOT NULL,
     `FileType`            VARCHAR(20)  NOT NULL,
-    `FilePath`            VARCHAR(255) NOT NULL,
+    `FilePath`            VARCHAR(255),
+    `LastUpdate`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `LastWritten`         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`AnnotationFileID`),
     CONSTRAINT `FK_phys_file_ID`
         FOREIGN KEY (`PhysiologicalFileID`)
@@ -242,6 +244,7 @@ CREATE TABLE `physiological_annotation_archive` (
 CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
+    `Description`           TEXT         NOT NULL,
     `Sources`               VARCHAR(255),
     `Author`                VARCHAR(50),
     PRIMARY KEY (`AnnotationParameterID`),

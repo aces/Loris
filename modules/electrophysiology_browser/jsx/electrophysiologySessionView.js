@@ -55,6 +55,7 @@ class ElectrophysiologySessionView extends Component {
         {
           file: {
             name: '',
+            id: '',
             task: {
               frequency: {
                 sampling: '',
@@ -262,6 +263,7 @@ class ElectrophysiologySessionView extends Component {
               id={'filename_panel_' + i}
               title={this.state.database[i].file.name}
               data={this.state.database[i].file}
+              physiologicalFileID={this.state.database[i].file.id}
             />
           </div>
         );
