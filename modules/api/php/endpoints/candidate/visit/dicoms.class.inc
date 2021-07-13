@@ -57,7 +57,10 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return ['GET'];
+        return [
+            'GET',
+            'POST',
+        ];
     }
 
     /**
@@ -89,6 +92,9 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             case 'GET':
                 return $this->_handleGET($request);
 
+            case 'POST':
+                return $this->_handlePOST($request);
+
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
@@ -101,14 +107,26 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $tarname    = array_shift($pathparts);
+        $tarname     = array_shift($pathparts);
+        $subendpoint = array_shift($pathparts);
+        switch($subendpoint) {
+        case 'processes':
+            $handler = new Dicom\Processes(
+                $this->_visit,
+                $tarname
+            );
+            break;
+
+        default:
+            $handler = new Dicom\Dicom(
+                $this->_visit,
+                $tarname
+            );
+            break;
+        }
+
         $newrequest = $request
             ->withAttribute('pathparts', $pathparts);
-
-        $handler = new Dicom\Dicom(
-            $this->_visit,
-            $tarname
-        );
 
         return $handler->process(
             $newrequest,
@@ -117,7 +135,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Create an array representation of this endpoint's reponse body.
+     * Create an array representation of this endpoint's response body.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -150,6 +168,141 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_cache = new \LORIS\Http\Response\JsonResponse($view);
 
         return $this->_cache;
+    }
+
+    /**
+     * Upload the DICOM study file and add it to the timepoint's MRIUploads
+     * A successful upload should return a 303 response toward this DICOM
+     * processes.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePOST(ServerRequestInterface $request): ResponseInterface
+    {
+        // *************************
+        // *** Permission checks ***
+        // *************************
+        $user = $request->getAttribute('user');
+        if (!$user->hasPermission('imaging_uploader')) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
+        // *************************
+        // *** Input Validation ****
+        // *************************
+        $files = $request->getUploadedFiles();
+        if (count($files) !== 1) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'There should be 1 and only 1 file uploaded per POST request.'
+            );
+        }
+        if (!isset($files['mriFile'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'The input key for the uploaded file should be mriFile.'
+            );
+        }
+        $uploadedfile = $files['mriFile'];
+
+        $data = $request->getParsedBody();
+
+        $inputcandid = $data['CandID'] ?? '';
+        $visitcandid = $this->_visit->getCandID();
+        if ($inputcandid != (string) $visitcandid) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandID in POST data do not match URL.'
+            );
+        }
+
+        $pscid = $data['PSCID'] ?? '';
+        if (!\Candidate::candidateExists($visitcandid, $pscid)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'PSCID and CandID in POST data do not refer to the same candidate.'
+            );
+        }
+
+        $visitlabel = $data['Visit'] ?? null;
+        if ($visitlabel !== $this->_visit->getVisitLabel()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Visit label in URL and POST data do not match.'
+            );
+        }
+
+        $isphantom = $data['IsPhantom'] ?? null;
+        if (!in_array($isphantom, ['true', 'false'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'IsPhantom must be a the string "true" or "false".'
+            );
+        }
+
+        $filename    = $uploadedfile->getClientFilename();
+        $patientname = $pscid. "_" . $inputcandid . "_" . $visitlabel;
+        if (!preg_match("/^${patientname}/", $filename) && $isphantom !== 'true') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Filename must start with $patientname."
+            );
+        }
+
+        // *************************
+        // *** Upload file *********
+        // *************************
+        $incomingpath = \NDB_factory::singleton()
+            ->config()
+            ->getSetting('MRIUploadIncomingPath');
+
+        $incomingdir = new \SplFileInfo($incomingpath);
+
+        $uploader = (new \LORIS\FilesUploadHandler($incomingdir))
+            ->withPermittedMIMETypes(
+                'application/gzip',
+                'application/tar',
+                'application/tar+gzip',
+                'application/x-tar'
+            );
+
+        if ($request->getHeaderLine('LORIS-Overwrite') == 'overwrite') {
+            $uploader = $uploader->withOverwrite(true);
+        }
+
+        $uploadresponse = $uploader->handle($request);
+        if ($uploadresponse->getStatusCode() !== 201) {
+            return $uploadresponse;
+        }
+
+        // *************************
+        // *** Update Database *****
+        // *************************
+        $filepath = $incomingdir->getPathname() . '/' . $filename;
+        $fileinfo = new \SplFileInfo($filepath);
+        if (!$fileinfo->isFile()) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Upload failed (see error_log.)'
+            );
+        }
+
+        try {
+            $this->_visit->addMRIUpload(
+                $user,
+                $fileinfo,
+                $patientname,
+                ($isphantom === 'true')
+            );
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Database insertion failed (see error_log.)'
+            );
+        }
+
+        $lorispath = $request->getQueryParams()['lorispath'] ?? '';
+        $newpath   = $lorispath . $filename . '/processes' ;
+
+        $processeslocation = $request->getUri()
+            ->withPath($newpath)
+            ->withQuery('');
+
+        return new \LORIS\Http\Response\JSON\SeeOther($processeslocation);
     }
 
     /**
