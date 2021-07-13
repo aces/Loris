@@ -16,7 +16,6 @@ require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
 require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
 use \LORIS\Visit;
-//use \LORIS\VisitController;
 use \PHPUnit\Framework\TestCase;
 
 /**
@@ -117,8 +116,8 @@ class VisitTest extends TestCase
     /**
      * Test that Visit::getName returns the correct name of the visit
      *
+     * @covers \LORIS\Visit::getName
      * @return void
-     * @covers Visit::getName
      */
     function testVisit()
     {
@@ -136,7 +135,7 @@ class VisitTest extends TestCase
      * visits in the database
      *
      * @return void
-     * @covers VisitController::getAllVisits
+     * @covers \LORIS\VisitController::getAllVisits
      */
     function testAllVisit()
     {
@@ -153,7 +152,7 @@ class VisitTest extends TestCase
      * project-subproject relation for the visits in the database
      *
      * @return void
-     * @covers VisitController::getVisitsProjectSubproject
+     * @covers \LORIS\VisitController::getVisitsProjectSubproject
      */
     function testVisitsProjects()
     {
@@ -170,7 +169,7 @@ class VisitTest extends TestCase
      * visit objects from the database with the given name
      *
      * @return void
-     * @covers VisitController::getVisitsByName
+     * @covers \LORIS\VisitController::getVisitsByName
      */
     function testGetVisitsByName()
     {

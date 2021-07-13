@@ -1121,7 +1121,7 @@ class LorisForms_Test extends TestCase
      * Test that textHTML returns the proper HTML string
      * when the options array is set
      *
-     * @covers Utility::textHTML
+     * @covers LorisForm::textHTML
      * @return void
      */
     function testTextHTMLWithOptionsSet()

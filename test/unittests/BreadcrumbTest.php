@@ -68,7 +68,7 @@ class BreadcrumbTest extends TestCase
      *
      * TODO: Add potential edge cases (such as white space)
      *
-     * @covers Breadcrumb::__toString
+     * @covers \LORIS\Breadcrumb::__toString
      * @return void
      */
     public function testToString()
