@@ -53,8 +53,17 @@
 {/function}
 
 {function name=createText}
-    <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
+     <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
 {/function}
+
+{function name=createLogDropdown}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$log_levels key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 
 {function name=printConfigItem}
 <div class="form-group">
@@ -103,6 +112,8 @@
             {call createTextArea k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}
             {call createLookUpCenterNameUsing k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'log_level'}
+            {call createLogDropdown k=$id v=$v d=$node['Disabled']}
         {else}
             {call createText k=$id v=$v d=$node['Disabled']}
         {/if}

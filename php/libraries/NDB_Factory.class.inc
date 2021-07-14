@@ -174,6 +174,12 @@ class NDB_Factory
         );
 
         self::$db = $db_ref;
+
+        $config   = \NDB_Config::singleton();
+        $loglevel = $config->getLogSettings()->getDatabaseLogLevel();
+        if ($loglevel !== "none") {
+            $db_ref->setLogger(new \LORIS\Log\ErrorLogLogger($loglevel));
+        }
         return $db_ref;
     }
 
