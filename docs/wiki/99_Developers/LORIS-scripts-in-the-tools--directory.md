@@ -1,33 +1,11 @@
-**[[HOME|Home]]** > **[[SETUP|Setup]]** > **[[LORIS SCRIPTS IN THE TOOLS/ DIRECTORY|LORIS scripts in the tools  directory]]**
-
-***
-
-- [assign_missing_instruments.php](#assign_missing_instrumentsphp)
-- [config_to_db.php [DEPRECATED]](#config_to_dbphp-deprecated)
-- [delete_candidate.php](#delete_candidatephp)
-- [detect_conflicts.php](#detect_conflictsphp)
-- [fix_timepoint_date_problems.php](#fix_timepoint_date_problemsphp)
-- [generate_tables_sql.php](#generate_tables_sqlphp)
-- [populate_visit_windows.php](#populate_visit_windowsphp)
-- [quickform_parser.php](#quickform_parserphp)
-- [score_instrument.php](#score_instrumentphp)
-
-***
-
-This section is under construction.
-
+# Scripts in Tools/ directory
 > Note: scripts may generate PHP Notice messages, which is normal and should not affect output.
 
 **See Also**:  CouchDB* loading scripts -> [Loading the Data Querying Tool](https://github.com/aces/Loris/wiki/Data-Querying-Tool#loading-the-data-query-tool)
 
-
 ### assign_missing_instruments.php
 
 Adds instruments to test battery for candidates after timepoints have already been started and populated. By default this script will only print (but not add) instruments detected missing from candidate timepoints according to the current test battery definitions. Add the command-line argument “confirm” to populate these missing instruments in the database.
-
-### config_to_db.php [DEPRECATED]
-
-This script was introduced in a previous version of LORIS ([14.10](https://github.com/aces/Loris/releases/tag/loris-14.10)) as we migrated much of the LORIS configuration from the config.xml file to the MySQL database. This script can be used by projects who are running an old version of LORIS and who have not yet updated to the new configuration module. See the [readme](https://github.com/aces/Loris/blob/master/modules/configuration/readme.md) in the configuration module for more information.
 
 ### delete_candidate.php
 
@@ -36,9 +14,7 @@ This script deletes all DB table entries for one candidate.
 To run:
 
 ```php
-// substitute DCCID and PSCID with the IDs of the candidate you wish to delete
-
-php delete_candidate DCCID PSCID
+php delete_candidate.php delete_candidate CandID PSCID [confirm] [tosql]
 ```
 
 ### detect_conflicts.php
@@ -47,15 +23,15 @@ php delete_candidate DCCID PSCID
 
 **Usage:**
 - Detect conflicts for a specific instrument:
-<BR>`php detect_conflicts.php -i InstrumentName`
+`php detect_conflicts.php -i [instrument]`
 - Detect conflicts for a specific instrument and visit/timepoint:
-<BR>`php detect_conflicts.php -i InstrumentName -t Timepoint`
+`php detect_conflicts.php -i [instrument] -t [timepoint]`
 - Detect conflicts for a all instrument:
-<BR>`php detect_conflicts.php -i all`
+`php detect_conflicts.php -r [instrument/all] [-y to confirm]`
 - Detect and insert conflicts into conflicts_unresovled table: use flag -c
-<BR>`php detect_conflicts.php -c -i InstrumentName`
+`php detect_conflicts.php -c -i [instrument]`
 - To update (remove and re-insert) conflicts into conflicts_unresovled table: use flag -m
-<BR>`php detect_conflicts.php -m -i InstrumentName`
+`php detect_conflicts.php -m -i [instrument]`
 
 ### fix_timepoint_date_problems.php
 
@@ -82,7 +58,8 @@ This script takes the ip_output.txt file generated from quickform_parser.php and
 To run:
 
 ```php
-php generate_tables_sql.php
+php generate_tables_sql.php [-D]
+// [-D]: Adds DROP TABLE statement to output query
 ```
 
 ### populate_visit_windows.php
