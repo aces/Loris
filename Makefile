@@ -45,3 +45,12 @@ check: checkstatic unittests
 
 testdata:
 	php tools/raisinbread_refresh.php
+
+docker-install:
+	if [ ! -d "smarty/templates_c" ]; then mkdir smarty/templates_c; fi
+	if [ ! -d "uploadedfiles" ]; then mkdir uploadedfiles; fi
+	chmod 770 smarty/templates_c
+	chmod 770 uploadedfiles
+	docker-compose run --rm composer install --no-dev
+	docker-compose run --rm npm install
+	docker-compose run --rm npm run compile
