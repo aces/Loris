@@ -1,14 +1,14 @@
-/* eslint new-cap: ["error", {capIsNewExceptions: ["RMarkdown"]}]*/
+/* eslint new-cap: ['error', {capIsNewExceptions: ['RMarkdown']}]*/
 import swal from 'sweetalert2';
 
-$(document).ready(function() {
-    $('input[name=preview]').click(function(e) {
+document.addEventListener('DOMContentLoaded', () => {
+    $('input[name=preview]').on('click', function(e) {
         if ($('div.help-content').length) {
             $('div.help-content').remove();
             e.preventDefault();
         }
-        let title = $('input[name="title"]').val();
-        let content = $('textarea[name="content"]').val();
+        let title = document.getElementsByName('title')[0].value;
+        let content = document.getElementsByName('content')[0].value;
         let div = document.createElement('div');
         let btn = document.createElement('BUTTON');
         let button = document.createTextNode('Close');
@@ -36,49 +36,48 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    $('#save-help').click(function(e) {
+    $('#save-help').on('click', function(e) {
         e.preventDefault();
-        let title = $('input[name="title"]').val();
-        let content = $('textarea[name="content"]').val();
-        let section = $('#section').val();
-        let subsection = $('#subsection').val();
-        let parentID = $('#parentID').val();
-        let helpID = $('#helpID').val();
-        let returnString = $('#return').val();
+        let title = document.getElementsByName('title')[0].value;
+        let content = document.getElementsByName('content')[0].value;
+        let section = document.getElementById('section').value;
+        let subsection = document.getElementById('subsection').value;
+        let helpID = document.getElementById('helpID').value;
+        let returnString = document.getElementById('return').value;
 
-        $.ajax({
-            type: 'POST',
-            url: loris.BaseURL + '/help_editor/ajax/process.php',
-            data: {
+        fetch(loris.BaseURL + '/help_editor/ajax/process.php', {
+            method: 'POST',
+            body: {
                 title: title ? title : '',
                 content: content ? content : '',
                 section: section ? section : '',
                 subsection: subsection ? subsection : '',
-                parentID: parentID ? parentID : '',
                 helpID: helpID ? helpID : '',
             },
-            success: function() {
-                swal.fire({
-                    title: 'Content update successful!',
-                    type: 'success',
-                    showCancelButton: true,
-                    confirmButtonText: returnString,
-                    cancelButtonText: 'Close',
-                }).then((result) => {
-                    if (result.value) {
-                        location.href = document.referrer;
-                    }
-                });
-            },
-            error: function(xhr, errorCode, errorMsg) {
-                console.error(xhr);
-                swal.fire({
-                    title: 'Content update unsuccessful.',
-                    text: errorCode + ': ' + xhr.status + ' ' + errorMsg,
-                    type: 'error',
-                    confirmButtonText: 'Try again',
-                });
-            },
+        }).then((response) => {
+            if (response.status !== 200) {
+                console.error(response.status);
+                return;
+            }
+            swal.fire({
+                title: 'Content update successful!',
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonText: returnString,
+                cancelButtonText: 'Close',
+            }).then((result) => {
+                if (result.value) {
+                    location.href = document.referrer;
+                }
+            });
+        }).catch((error) => {
+            console.error(error);
+            swal.fire({
+                title: 'Content update unsuccessful.',
+                text: 'Something went wrong',
+                type: 'error',
+                confirmButtonText: 'Try again',
+            });
         });
     });
 });
