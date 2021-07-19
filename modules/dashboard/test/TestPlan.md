@@ -20,7 +20,3 @@
 3. Ensure that the recruitment widget displays the overall recruitment information by default and can switch to display site breakdown and project breakdown via drop-down list on the top right corner of the widget.
 
 4. Ensure that the Study Progression widget displays the scans per site graph by default and can switch to display recruitment per site graph via drop-down list on the top right corner of the widget.
-
-5. Ensure that the Document Repository Notifications widget displays links to most recent documents and a link to the document repository.
-
-6. Ensure that the Behavioural Feedback Notifications widget displays links to most recent behavioural feedbacks.
