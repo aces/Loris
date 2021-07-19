@@ -144,7 +144,7 @@ class CouchDBMRIImporter
                     . ') '
                     . '  WHEN 0 '
                     . '    THEN "No selected file" '
-                    . '  ELSE "Multiple Selected files"'
+                    . '  ELSE "Multiple selected files"'
                     . ' END'
                     . ") as `Selected_$scantype`";
 
@@ -168,14 +168,14 @@ class CouchDBMRIImporter
                     . '  WHEN 1 '
                     . '    THEN ('
                     .        $this->_getQueryForSelectedFiles(
-                        'COALESCE(fqs.QCStatus, "No Qc on selected file")',
+                        'COALESCE(fqs.QCStatus, "No QC on selected file")',
                         $scantype,
                         's.ID'
                     )
                     .     ') '
                     . '  WHEN 0 '
                     . '    THEN "No selected file" '
-                    . '  ELSE "Unknown: multiple Selected files"'
+                    . '  ELSE "Unknown: multiple selected files"'
                     . ' END'
                     . ") as `{$scantype}_QCStatus`";
         }
@@ -206,7 +206,7 @@ class CouchDBMRIImporter
         return "SELECT $whatToSelect "
              . 'FROM files f '
              . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
-             . 'LEFT JOIN files_qcstatus fqs USING (fileid) '
+             . 'LEFT JOIN files_qcstatus fqs USING (FileID) '
              . 'WHERE f.SessionID=s.ID '
              . "AND msc.Scan_type='$scanType' "
              . 'AND fqs.selected=\'true\'';
