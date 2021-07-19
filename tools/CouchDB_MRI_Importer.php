@@ -185,7 +185,8 @@ class CouchDBMRIImporter
                 . " LEFT JOIN feedback_mri_comments fmric"
                 . " ON (fmric.SessionID=s.ID)"
                 . " LEFT JOIN feedback_mri_comment_types fmct"
-                . " ON (fmric.CommentTypeID=fmct.CommentTypeID AND fmct.CommentType='visit')"
+                . " ON (fmric.CommentTypeID=fmct.CommentTypeID"
+                . " AND fmct.CommentType='visit')"
                 . " WHERE c.Entity_type != 'Scanner'"
                 . " AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
 
@@ -489,25 +490,28 @@ class CouchDBMRIImporter
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_' . $scan_type])) {
-                    $fileID  = $this->SQLDB->pselectOne(
+                    $fileID = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE BINARY File=:fname",
                         ['fname' => $row['Selected_' . $scan_type]]
                     );
                     if (!empty($fileID)) {
-                        $FileObj = new MRIFile($fileID);
+                        $FileObj            = new MRIFile($fileID);
                         $mri_header_results = $this->_addMRIHeaderInfo(
                             $FileObj,
                             $scan_type
                         );
-                    
+
                         $row = array_merge(
                             $row,
                             $mri_header_results
                         );
-                    
+
                         // instantiate feedback mri object
 
-                        $mri_feedback     = new FeedbackMRI($fileID, new \SessionID($row['SessionID']));
+                        $mri_feedback     = new FeedbackMRI(
+                            $fileID,
+                            new \SessionID($row['SessionID'])
+                        );
                         $current_feedback = $mri_feedback->getComments();
                         $mri_qc_results   = $this->_addMRIFeedback(
                             $current_feedback,
