@@ -90,16 +90,25 @@ class EditCategory extends \NDB_Page
         $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
 
         if ($new_parent != null) {
-            $DB->run(
-                "UPDATE document_repository_categories
-                    SET category_name=\"$new_name\", parent_id=$new_parent
-                    WHERE id=$category_id"
+            $DB->update(
+                "document_repository_categories",
+                [
+                    "category_name" => $new_name,
+                    "parent_id"     => $new_parent,
+                ],
+                [
+                    "id" => $category_id,
+                ]
             );
         } else {
             $DB->run(
-                "UPDATE document_repository_categories
-                    SET category_name=\"$new_name\"
-                    WHERE id=$category_id"
+                "document_repository_categories",
+                [
+                    "category_name" => $new_name,
+                ],
+                [
+                    "id" => $category_id,
+                ]
             );
         }
     }

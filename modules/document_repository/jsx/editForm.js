@@ -131,7 +131,7 @@ class DocEditForm extends React.Component {
               value={this.state.docData.comments}
             />
             {
-              loris.userHasPermission('document_repository_hidden') ?
+              loris.userHasPermission('document_repository_hidden') &&
                 (<SelectElement
                   name="hiddenFile"
                   label="Restrict access to the file?"
@@ -139,8 +139,7 @@ class DocEditForm extends React.Component {
                   sortByValue={false}
                   onUserInput={this.setFormData}
                   value={this.state.docData.hiddenFile}
-                />) :
-                null
+                />)
             }
             <TextboxElement
               name="version"
