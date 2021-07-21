@@ -414,7 +414,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $candid     = $this->candidate->getCandID();
         $pscid      = $this->candidate->getPSCID();
         $sessionid  = $this->timePoint->getSessionID();
-        $vis = $this->timePoint->getVisitLabel();
+        $visitlabel = $this->timePoint->getVisitLabel();
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -444,7 +444,7 @@ class Instrument_List extends \NDB_Menu_Filter
     public function loadResources(
         \User $user, ServerRequestInterface $request
     ) : void {
-        $gets = $request->getQueryParams();
+        $gets      = $request->getQueryParams();
         $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
             $candidate = \Candidate::singleton(new CandID($attribute));
@@ -454,7 +454,9 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $attribute = $request->getAttribute("timePoint");
         if ($attribute === null) {
-            $timePoint = \TimePoint::singleton(new \SessionID($gets['sessionID']));
+            $timePoint       = \TimePoint::singleton(
+                new \SessionID($gets['sessionID'])
+            );
             $this->timePoint = $timePoint;
         } else {
             $this->timePoint = $attribute;

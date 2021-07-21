@@ -366,7 +366,12 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $user  = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
         $loris = $request->getAttribute("loris");
 
-        $page = $this->loadPage($loris, $pagename);
+        try {
+            $page = $this->loadPage($loris, $pagename);
+        } catch(\NotFound $e) {
+            $this->logger->debug("Page $pagename not found");
+            return $resp->withStatus(404);
+        }
         // FIXME: Hack required for breadcrumbs. This should be removed,
         // but some tests depend on it.
         if ($this->getName() === $pagename) {
