@@ -55,9 +55,10 @@ class Database implements LoggerAwareInterface
     private $_databaseName = '';
 
     /**
-     * Private constructor to ensure the usage of singleton() class.
+     * Constructor must be public for unit tests to pass, but this should not
+     * be used directly. Should only be called by singleton method.
      */
-    private function __construct()
+    public function __construct()
     {
         // Begins with a PSR NullLogger because we don't know the appropriate
         // level until after the database connection is established for NDB_Config,
