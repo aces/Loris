@@ -11,8 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverExpectedCondition;
-
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -340,14 +338,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
-
-        // Wait for the redirect to happen by looking for the breadcrumb
-        // element with a link containing the CandID
-        $this->webDriver->wait(120, 2000)->until(
-            WebDriverExpectedCondition::visibilityOfelementLocated(
-                WebDriverBy::cssSelector('a.btn.btn-primary[href*="300001"]')
-            )
-        );
+        sleep(2);
         $URL =  $this->webDriver->executeScript("return window.location.href;");
         $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
