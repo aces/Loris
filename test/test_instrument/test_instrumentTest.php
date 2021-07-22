@@ -191,6 +191,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("select[name='consent']")
         );
         $element = new WebDriverSelect($select);
+        sleep(1);
         $element->selectByVisibleText("Yes");
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
@@ -207,6 +208,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("select[name='consent']")
         );
         $element = new WebDriverSelect($select);
+        sleep(1);
         $element->selectByVisibleText("No");
 
         $this->webDriver->findElement(
