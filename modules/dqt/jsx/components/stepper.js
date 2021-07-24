@@ -143,21 +143,9 @@ Step.propTypes = {
  * @return {JSX} - React markup for the component
  */
 const Stepper = (props) => {
-  const styles = {
-    root: {
-      padding: 0,
-      minHeight: 0,
-      width: '100%',
-    },
-    stepper: {
-      width: '100%',
-      margin: '0 auto',
-      display: 'table',
-    },
-  };
-  return (
-    <div style={styles.root}>
-      <div style={styles.stepper}>
+  return props.visible ? (
+    <div className={'stepperContainer'}>
+      <div className={'stepper'}>
         { props.steps.map((step, index) => (
           <Step
             key={index}
@@ -173,16 +161,18 @@ const Stepper = (props) => {
         ))}
       </div>
     </div>
-  );
+  ) : null;
 };
 Stepper.defaultProps = {
   activeStep: 0,
   highlightSteps: false,
+  visible: true,
 };
 Stepper.propTypes = {
   steps: PropTypes.array,
   activeStep: PropTypes.number,
   highlightSteps: PropTypes.bool,
+  visible: PropTypes.bool,
 };
 
 const StepperPanel = (props) => {
@@ -194,7 +184,55 @@ const StepperPanel = (props) => {
   );
 };
 
+/**
+ * ProgressBar component.
+ *
+ * @description ProgressBar used for DQT loading status
+ * and showing or hiding the Stepper component.
+ *
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
+ */
+const ProgressBar = (props) => {
+  const styles = {
+    root: {
+      padding: '39px 0 30px 0',
+      minHeight: 0,
+      width: '100%',
+    },
+    stepper: {
+      width: '100%',
+      margin: '0 auto',
+      display: 'table',
+      textAlign: 'center',
+    },
+  };
+  return props.visible ? (
+    <div style={styles.root}>
+      <div style={styles.stepper}>
+        <label className={'progress-bar-loading-text'}>
+          {props.message}
+        </label>
+        <progress id='progressbar' value={props.percentage} max='100'>
+          {props.percentage}%
+        </progress>
+      </div>
+    </div>
+  ) : null;
+};
+ProgressBar.defaultProps = {
+  visible: true,
+  percentage: 0,
+  message: '',
+};
+ProgressBar.propTypes = {
+  message: PropTypes.string,
+  visible: PropTypes.bool,
+  percentage: PropTypes.number,
+};
+
 export {
   Stepper,
   StepperPanel,
+  ProgressBar,
 };

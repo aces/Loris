@@ -12,7 +12,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {NavigationStepper, NavigationWithSave} from './react.navigationStepper';
-import {StepperPanel} from './components/stepper';
+import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
@@ -33,14 +33,16 @@ class DataQueryApp extends Component {
    */
   constructor(props) {
     super(props);
-
     this.state = {
       displayType: 'Cross-sectional',
       fields: [],
       criteria: {},
       sessiondata: {},
       grouplevel: 1,
-      queryIDs: this.props.SavedQueries,
+      queryIDs: {
+        user: [],
+        shared: [],
+      },
       savedQueries: {},
       queriesLoaded: false,
       alertLoaded: false,
@@ -58,11 +60,16 @@ class DataQueryApp extends Component {
             type: 'rule',
           },
         ],
-        session: this.props.AllSessions,
+        session: [],
       },
       selectedFields: {},
       downloadableFields: {},
       loading: false,
+      progressbar: {
+        hidden: false,
+        percentage: 0,
+        message: 'LORIS is retrieving data...',
+      },
       savePrompt: false,
       dataRequestPrompt: false,
       navigation: {
@@ -73,6 +80,15 @@ class DataQueryApp extends Component {
         },
         index: 0,
       },
+      // preload
+      categories: [],
+      UpdatedTime: 'Fetching when data was last updated information...',
+      SavedQueries: {
+        User: [],
+        Shared: [],
+      },
+      AllSessions: [],
+      Visits: [],
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
     this.saveFilterGroup = this.saveFilterGroup.bind(this);
@@ -94,6 +110,7 @@ class DataQueryApp extends Component {
     this.navigationClicked = this.navigationClicked.bind(this);
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
+    this.loadSavedQueries = this.loadSavedQueries.bind(this);
   }
 
   /**
@@ -107,27 +124,9 @@ class DataQueryApp extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
+   * Load Saved Queries
    */
-  componentDidMount() {
-    // Before the dataquery is loaded into the window, this function is called to gather
-    // any data that was not passed in the initial load.
-
-    // The left and right menu items are part of the same menu, but bootstrap considers
-    // them two separate ones, so we need to make sure that only one is selected by removing
-    // "active" from all the tab classes and only adding it to the really active one
-    let domNode = this;
-    $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
-      $(domNode).find('li').removeClass('active');
-      if (e.target) {
-        e.target.classList.add('active');
-        // Both the <li> tag and the <a> tag should be active
-        if (e.target.parentNode) {
-          e.target.parentNode.classList.add('active');
-        }
-      }
-    });
-
+  loadSavedQueries() {
     // Load the save queries' details
     let promises = [];
     for (let key in this.state.queryIDs) {
@@ -143,24 +142,96 @@ class DataQueryApp extends Component {
               },
               dataType: 'json',
             }).then((value) => {
-            let queries = this.state.savedQueries;
-
-            queries[value._id] = value;
-            this.setState({savedQueries: queries});
+              let queries = this.state.savedQueries;
+              queries[value._id] = value;
+              this.setState({savedQueries: queries});
           });
           promises.push(curRequest);
         }
       }
     }
-
     Promise.all(promises).then((value) => {
       this.setState({'queriesLoaded': true});
     });
-    $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
-      this.setState({
-        ActiveTab: e.target.getAttribute('href').substr(1),
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  async componentDidMount() {
+    const response = await fetch(
+      `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
+      {credentials: 'same-origin', method: 'GET'}
+    );
+    const reader = await response.body.getReader();
+    const contentLength = await response.headers.get('Content-Length');
+    // Step 3: read the data
+    let receivedLength = 0; // received that many bytes at the moment
+    let chunks = ''; // array of received binary chunks (comprises the body)
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) {
+        this.setState((prevState) => {
+          return {
+            ...prevState,
+            progressbar: {
+              message: 'Data Query Tool is configuring data!',
+              hidden: prevState.progressbar.hidden,
+              percentage: 100,
+            },
+          };
+        });
+        reader.closed.then(() => {
+          let data = JSON.parse(chunks);
+          let categories = [];
+          for (const [key, value] of Object.entries(data.categories)) {
+            categories.push({
+              category: key,
+              numFields: value,
+            });
+          }
+          data.categories = categories;
+          setTimeout(() => {
+            this.setState((prevState) => {
+              return {
+                ...prevState,
+                progressbar: {
+                  message: prevState.progressbar.message,
+                  hidden: true,
+                  percentage: prevState.progressbar.percentage,
+                },
+                queryIDs: data.savedqueries,
+                filter: {
+                  ...prevState.filter,
+                  session: data.sessions,
+                },
+                categories: data.categories,
+                UpdatedTime: `Data was last updated on ${data.updatetime}`,
+                SavedQueries: data.savedqueries,
+                AllSessions: data.sessions,
+                Visits: data.visits,
+              };
+            });
+            this.loadSavedQueries();
+          }, 2000); // wait 2 seconds
+        });
+        break;
+      }
+      const decode = new TextDecoder('utf-8').decode(value);
+      chunks += decode;
+      receivedLength += value.length;
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          progressbar: {
+            hidden: prevState.progressbar.hidden,
+            percentage: Math.round((receivedLength/contentLength) * 100),
+            message: prevState.progressbar.message,
+          },
+        };
       });
-    });
+      // console.log(Math.round((receivedLength/contentLength) * 100));
+    }
   }
 
   /**
@@ -459,16 +530,16 @@ class DataQueryApp extends Component {
           selectedFields[fieldSplit[0]] = {};
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
           selectedFields[fieldSplit[0]].allVisits = {};
-          for (let key in this.props.Visits) {
-            if (this.props.Visits.hasOwnProperty(key)) {
+          for (let key in this.state.Visits) {
+            if (this.state.Visits.hasOwnProperty(key)) {
               selectedFields[fieldSplit[0]].allVisits[key] = 1;
               selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
             }
           }
         } else {
           selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
-          for (let key in this.props.Visits) {
-            if (this.props.Visits.hasOwnProperty(key)) {
+          for (let key in this.state.Visits) {
+            if (this.state.Visits.hasOwnProperty(key)) {
               selectedFields[fieldSplit[0]].allVisits[key]++;
               selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
             }
@@ -497,7 +568,7 @@ class DataQueryApp extends Component {
           type: 'rule',
         },
       ];
-      filterState.session = this.props.AllSessions;
+      filterState.session = this.state.AllSessions;
     }
     this.setState({
       fields: fieldsList,
@@ -573,12 +644,12 @@ class DataQueryApp extends Component {
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
         selectedFields[category][fieldName] = JSON.parse(
-          JSON.stringify(this.props.Visits)
+          JSON.stringify(this.state.Visits)
         );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
-        for (let key in this.props.Visits) {
-          if (this.props.Visits.hasOwnProperty(key)) {
+        for (let key in this.state.Visits) {
+          if (this.state.Visits.hasOwnProperty(key)) {
             selectedFields[category].allVisits[key] = 1;
           }
         }
@@ -657,7 +728,7 @@ class DataQueryApp extends Component {
       return this.state.filter.session;
     } else {
       // Else return all sessions
-      return this.props.AllSessions;
+      return this.state.AllSessions;
     }
   }
 
@@ -982,7 +1053,7 @@ class DataQueryApp extends Component {
    */
   updateFilter(filter) {
     if (filter.children.length === 0) {
-      filter.session = this.props.AllSessions;
+      filter.session = this.state.AllSessions;
     }
     this.setState({filter});
   }
@@ -1103,7 +1174,7 @@ class DataQueryApp extends Component {
               Welcome to the ABCD Repository (Data Query Tool)
             </h1>
             <p style={{textAlign: 'center', margin: '10px 0 20px 0'}}>
-              Data was last updated on {this.props.UpdatedTime}.
+              {this.state.UpdatedTime}.
             </p>
             {/* <StatisticsReport*/}
             {/*  loris={loris}*/}
@@ -1148,8 +1219,8 @@ class DataQueryApp extends Component {
                       <ManageSavedQueriesTabPane
                         key='SavedQueriesTab'
                         TabId='SavedQueriesTab'
-                        userQueries={this.state.queryIDs.User}
-                        globalQueries={this.state.queryIDs.Shared}
+                        userQueries={this.state.queryIDs.user}
+                        globalQueries={this.state.queryIDs.shared}
                         onSaveQuery={this.saveCurrentQuery}
                         queryDetails={this.state.savedQueries}
                         onSelectQuery={this.loadSavedQuery}
@@ -1158,8 +1229,8 @@ class DataQueryApp extends Component {
                         savePrompt={this.state.savePrompt}
                       />
                       <SavedQueriesList
-                        userQueries={this.state.queryIDs.User}
-                        globalQueries={this.state.queryIDs.Shared}
+                        userQueries={this.state.queryIDs.user}
+                        globalQueries={this.state.queryIDs.shared}
                         queryDetails={this.state.savedQueries}
                         queriesLoaded={this.state.queriesLoaded}
                         onSelectQuery={this.loadSavedQuery}
@@ -1210,10 +1281,10 @@ class DataQueryApp extends Component {
           <FieldSelectTabPane
             key='DefineFields'
             TabId='DefineFields'
-            categories={this.props.categories}
+            categories={this.state.categories}
             onFieldChange={this.fieldChange}
             selectedFields={this.state.selectedFields}
-            Visits={this.props.Visits}
+            Visits={this.state.Visits}
             fieldVisitSelect={this.fieldVisitSelect}
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFields'}
@@ -1231,10 +1302,10 @@ class DataQueryApp extends Component {
           <FilterSelectTabPane
             key='DefineFilters'
             TabId='DefineFilters'
-            categories={this.props.categories}
+            categories={this.state.categories}
             filter={this.state.filter}
             updateFilter={this.updateFilter}
-            Visits={this.props.Visits}
+            Visits={this.state.Visits}
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFilters'}
           />
@@ -1316,14 +1387,21 @@ class DataQueryApp extends Component {
 
     return (
       <>
+        <ProgressBar
+          message={this.state.progressbar.message}
+          visible={!this.state.progressbar.hidden}
+          percentage={this.state.progressbar.percentage}
+        />
         <NavigationWithSave
           index={this.state.navigation.index}
           disable={this.state.navigation.disable}
           onClickHandler={this.navigationClicked}
+          visible={this.state.progressbar.hidden}
         />
         <NavigationStepper
           setIndex={this.state.ActiveTab}
           stepperClicked={this.stepperClicked}
+          visible={this.state.progressbar.hidden}
         />
         <NoticeMessage
           dismissAlert={this.dismissAlert}
@@ -1345,17 +1423,34 @@ class DataQueryApp extends Component {
 }
 
 DataQueryApp.propTypes = {
+  baseURL: PropTypes.string,
+  title: PropTypes.string,
   SavedQueries: PropTypes.object,
   AllSessions: PropTypes.array,
+  categories: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
 };
-
 DataQueryApp.defaultProps = {
-  SavedQueries: {},
+  title: 'Fields',
+  SavedQueries: {
+    User: [],
+    Shared: [],
+  },
   AllSessions: [],
+  categories: [],
+  Visits: [],
+  UpdatedTime: 'Fetching when data was last updated information...',
 };
 
-window.SavedQueriesList = SavedQueriesList;
-window.DataQueryApp = DataQueryApp;
-window.RDataQueryApp = React.createFactory(DataQueryApp);
-
-export default DataQueryApp;
+/**
+ * Render DataQueryApp on page load.
+ */
+window.addEventListener('load', () => {
+  ReactDOM.render(
+    <DataQueryApp
+      baseURL={loris.BaseURL}
+    />,
+    document.getElementById('lorisworkspace')
+  );
+});

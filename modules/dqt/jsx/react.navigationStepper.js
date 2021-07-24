@@ -40,8 +40,15 @@ const NavigationStepper = (props) => {
       steps={steps}
       activeStep={mySteps.indexOf(props.setIndex)}
       highlightSteps={true}
+      visible={props.visible}
     />
   );
+};
+NavigationStepper.defaultProps = {
+  visible: true,
+};
+NavigationStepper.propTypes = {
+  visible: PropTypes.bool,
 };
 
 const NavigationWithSave = (props) => {
@@ -88,11 +95,8 @@ const NavigationWithSave = (props) => {
     return '';
   };
 
-  return (
-    <div style={{
-      textAlign: 'right',
-      marginBottom: '30px',
-    }}>
+  return props.visible ? (
+    <div className={'navigationStepper'}>
       <button onClick={() => props.onClickHandler('previous')}
               className={props.disable.previous
                 ? 'navigation-button disabled'
@@ -124,7 +128,7 @@ const NavigationWithSave = (props) => {
         <span className='glyphicon glyphicon-chevron-right'/>
       </button>
     </div>
-  );
+  ) : null;
 };
 NavigationWithSave.defaultProps = {
   disable: {
@@ -132,10 +136,12 @@ NavigationWithSave.defaultProps = {
     save: false,
     next: false,
   },
+  visible: true,
 };
 NavigationWithSave.propTypes = {
   onClickHandler: PropTypes.func,
   disable: PropTypes.object,
+  visible: PropTypes.bool,
 };
 
 export {

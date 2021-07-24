@@ -347,16 +347,11 @@ class FieldSelector extends Component {
    */
   constructor(props) {
     super(props);
-    let instruments = {};
-    for (let i = 0; i < this.props.items.length; i++) {
-      instruments[this.props.items[i].category] = this.props.items[i].category;
-    }
     this.state = {
       filter: '',
       filteredFields: [],
       selectedCategory: '',
       categoryFields: {},
-      instruments: instruments,
       PageNumber: 1,
     };
     this.onFieldSelect = this.onFieldSelect.bind(this);
@@ -571,6 +566,14 @@ class FieldSelector extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    let instruments = {};
+    if (this.props.items) {
+      for (let i = 0; i < this.props.items.length; i++) {
+        instruments[
+          this.props.items[i].category
+        ] = this.props.items[i].category;
+      }
+    }
     let categoryVisits = {};
     let selectedFieldsCount;
     if (this.state.selectedCategory != '') {
@@ -608,7 +611,7 @@ class FieldSelector extends Component {
             id={'fieldsDropdown'}
             name='fieldsDropdown'
             resetFilter={this.resetFilter}
-            options={this.state.instruments}
+            options={instruments}
             onUserInput={this.onCategorySelect}
             placeHolder='Select a Category or Instrument'
           />

@@ -396,17 +396,26 @@ class FilterRule extends Component {
       );
     } else {
       // Else display dropdown for instrument select
-      let options = this.props.items.map((item, index) => {
-        return (
-          <option key={index} value={item.category}>{item.category}</option>
+      if (Array.isArray(this.props.items)) {
+        let options = this.props.items.map((item, index) => {
+          return (
+            <option key={index} value={item.category}>{item.category}</option>
+          );
+        });
+        rule = (
+          <select onChange={this.selectInstrument}
+                  className="input-sm col-xs-10">
+            <option value=''/>
+            {options}
+          </select>
         );
-      });
-      rule = (
-        <select onChange={this.selectInstrument} className="input-sm col-xs-10">
-          <option value=''/>
-          {options}
-        </select>
-      );
+      } else {
+        rule = (
+          <select className="input-sm col-xs-10">
+            <option value=''/>
+          </select>
+        );
+      }
     }
     return (
       <div className='panel panel-default'>

@@ -183,40 +183,6 @@ h4.modal-title {
   outline: 0;
 }
 
-.navigation-button {
-  margin: 0;
-  border: 0;
-  color: #fff;
-  min-width: 120px;
-  padding: 0 20px;
-  height: 45px;
-  display: flex;
-  cursor: pointer;
-  font-size: 12pt;
-  user-select: none;
-  border-radius: 30px;
-  align-items: center;
-  vertical-align: top;
-  text-decoration: none;
-  justify-content: center;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: #3f79d6;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
-  0 2px 10px 0 rgba(0, 0, 0, 0.19);
-  margin: 10px 0;
-}
-.navigation-button:focus {
-  outline: 0;
-}
-.navigation-button .glyphicon {
-  top: 0;
-}
-.navigation-button.disabled {
-  cursor: not-allowed;
-  background-color: #dddddd;
-}
-
 .action-button .glyphicon {
   top: 0;
   font-size: 20px;
@@ -573,4 +539,96 @@ tr.statsReport:nth-child(even) {
     overflow-x: scroll;
     max-width: 200px;
     min-height: 100px;
+}
+.btn-breadcrumb {
+  background-color: transparent;
+  z-index: 10;
+}
+/* ProgressBar CSS */
+.progress-bar-loading-text {
+  margin: 0;
+  height: 5px;
+  color: #0b3570;
+  display: block;
+  font-size: 8pt;
+}
+progress {
+  width: 100%;
+  height: 2px;
+  border: none;
+  max-width: 600px;
+  -webkit-appearance: none;
+}
+progress::-moz-progress-bar {
+  background: #0b4681;
+}
+progress::-webkit-progress-value {
+  background: #0b4681;
+}
+progress::-webkit-progress-bar {
+  background: #d4d4d4;
+}
+/* Navigation Stepper CSS */
+.navigationStepper {
+  right: 35px;
+  z-index: 15;
+  text-align: right;
+  margin-top: -70px;
+  position: absolute;
+}
+.stepperContainer {
+  width: 100%;
+  min-height: 0;
+  padding: 30px 0 0 0;
+}
+.stepper {
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+}
+@media only screen and (max-width: 615px) {
+  .navigationStepper {}
+  .stepperContainer {
+    margin-top: 70px;
+  }
+}
+@media screen and ( device-width: 616px ) {
+  .navigationStepper {
+    margin-top: -70px;
+  }
+  .stepperContainer {
+    margin-top: 0;
+  }
+}
+.navigation-button {
+  border: 0;
+  color: #fff;
+  min-width: 120px;
+  padding: 0 20px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 12pt;
+  user-select: none;
+  border-radius: 30px;
+  align-items: center;
+  vertical-align: top;
+  text-decoration: none;
+  justify-content: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #3f79d6;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
+              0 2px 10px 0 rgba(0, 0, 0, 0.19);
+  margin: 10px 0;
+}
+.navigation-button:focus {
+  outline: 0;
+}
+.navigation-button .glyphicon {
+  top: 0;
+}
+.navigation-button.disabled {
+  cursor: not-allowed;
+  background-color: #dddddd;
 }
