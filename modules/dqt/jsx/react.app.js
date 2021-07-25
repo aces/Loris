@@ -256,7 +256,7 @@ class DataQueryApp extends Component {
       if (success) {
         this.loadSavedQueries();
       } else {
-        console.error('Error inside handleProgressBarSetup process');
+        console.error('Error inside handleProgressBarSetup');
       }
     });
   }

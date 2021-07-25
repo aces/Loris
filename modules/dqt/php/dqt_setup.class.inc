@@ -18,7 +18,10 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * A class for handling the /dqt/dqtsetup/ endpoint.
+ * A class for handling the /dqt/dqt_setup/ endpoint.
+ * The initial DQT setup process calls this API for the
+ * ProgressBar's stream "reader" to get the needed setup data
+ * from couchDB.
  *
  * PHP Version 7.4
  *
@@ -58,7 +61,7 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
     }
 
     /**
-     * process
+     * process - process the ServerRequestInterface
      * @param ServerRequestInterface  $request The PSR7 request.
      * @param RequestHandlerInterface $handler The request handler.
      *
@@ -72,7 +75,9 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
     }
 
     /**
-     * Handles Endpoint requests
+     * Handles Endpoint request for the initial DQT setup that needs
+     * the ProgressBar's stream "reader" to get the needed setup data
+     * from couchDB.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -83,7 +88,7 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
         ini_set('memory_limit', '-1');
         $user     = $request->getAttribute('user');
 
-        $data = []; // sent to user.
+        $data = []; // we will send as stream to client on completion.
 
         $username    = $user->getUsername();
         $config      = \NDB_Config::singleton();
@@ -191,6 +196,7 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
             $sessionResults
         );
         $data['sessions'] = $sessions;
+        // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
                     ->withStatus(200)
