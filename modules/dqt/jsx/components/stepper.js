@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -143,8 +143,11 @@ Step.propTypes = {
  * @return {JSX} - React markup for the component
  */
 const Stepper = (props) => {
-  return props.visible ? (
-    <div className={'stepperContainer'}>
+  return (
+    <div className={'stepperContainer'} style={(props.visible
+           ? null
+           : {opacity: 0, position: 'absolute', right: '9999px'}
+         )}>
       <div className={'stepper'}>
         { props.steps.map((step, index) => (
           <Step
@@ -161,7 +164,7 @@ const Stepper = (props) => {
         ))}
       </div>
     </div>
-  ) : null;
+  );
 };
 Stepper.defaultProps = {
   activeStep: 0,
@@ -194,26 +197,13 @@ const StepperPanel = (props) => {
  * @return {JSX} - React markup for the component
  */
 const ProgressBar = (props) => {
-  const styles = {
-    root: {
-      padding: '39px 0 30px 0',
-      minHeight: 0,
-      width: '100%',
-    },
-    stepper: {
-      width: '100%',
-      margin: '0 auto',
-      display: 'table',
-      textAlign: 'center',
-    },
-  };
   return props.visible ? (
-    <div style={styles.root}>
-      <div style={styles.stepper}>
+    <div className={'progressBar'}>
+      <div className={'progressBarContainer'}>
         <label className={'progress-bar-loading-text'}>
           {props.message}
         </label>
-        <progress id='progressbar' value={props.percentage} max='100'>
+        <progress value={props.percentage} max='100'>
           {props.percentage}%
         </progress>
       </div>

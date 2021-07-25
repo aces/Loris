@@ -95,8 +95,12 @@ const NavigationWithSave = (props) => {
     return '';
   };
 
-  return props.visible ? (
-    <div className={'navigationStepper'}>
+  return (
+    <div className={'navigationStepper'}
+         style={(props.visible
+           ? null
+           : {opacity: 0, position: 'absolute', right: '9999px'}
+         )}>
       <button onClick={() => props.onClickHandler('previous')}
               className={props.disable.previous
                 ? 'navigation-button disabled'
@@ -128,7 +132,7 @@ const NavigationWithSave = (props) => {
         <span className='glyphicon glyphicon-chevron-right'/>
       </button>
     </div>
-  ) : null;
+  );
 };
 NavigationWithSave.defaultProps = {
   disable: {

@@ -545,6 +545,17 @@ tr.statsReport:nth-child(even) {
   z-index: 10;
 }
 /* ProgressBar CSS */
+.progressBar {
+  width: 100%;
+  min-height: 0;
+  padding: 39px 0 32px 0;
+}
+.progressBarContainer {
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+  text-align: center;
+}
 .progress-bar-loading-text {
   margin: 0;
   height: 5px;
@@ -570,16 +581,20 @@ progress::-webkit-progress-bar {
 }
 /* Navigation Stepper CSS */
 .navigationStepper {
-  right: 35px;
-  z-index: 15;
+  position: absolute;
   text-align: right;
   margin-top: -70px;
-  position: absolute;
+  z-index: 15;
+  right: 35px;
+  opacity: 1;
+  transition: opacity 3s;
 }
 .stepperContainer {
-  width: 100%;
-  min-height: 0;
   padding: 30px 0 0 0;
+  min-height: 0;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 1s;
 }
 .stepper {
   width: 100%;

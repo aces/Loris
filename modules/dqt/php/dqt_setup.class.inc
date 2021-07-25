@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This implement the dqt setup endpoint class for the DQT Module.
+ * The DQT_Setup 'endpoint' class for the DQT Module.
  *
  * PHP Version 7.4
  *
@@ -20,8 +20,8 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * A class for handling the /dqt/dqt_setup/ endpoint.
  * The initial DQT setup process calls this API for the
- * ProgressBar's stream "reader" to get the needed setup data
- * from couchDB.
+ * ProgressBar's stream "reader" to get the needed
+ * setup data from couchDB.
  *
  * PHP Version 7.4
  *
