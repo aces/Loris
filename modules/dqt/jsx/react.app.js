@@ -111,6 +111,7 @@ class DataQueryApp extends Component {
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
     this.loadSavedQueries = this.loadSavedQueries.bind(this);
+    this.handleProgressBarSetup = this.handleProgressBarSetup.bind(this);
   }
 
   /**
@@ -156,21 +157,22 @@ class DataQueryApp extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
+   * Handle ProgressBar Setup
+   * @param {function} callback
    */
-  async componentDidMount() {
+  async handleProgressBarSetup(callback) {
     const response = await fetch(
       `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
       {credentials: 'same-origin', method: 'GET'}
     );
     const reader = await response.body.getReader();
     const contentLength = await response.headers.get('Content-Length');
-    // Step 3: read the data
     let receivedLength = 0; // received that many bytes at the moment
     let chunks = ''; // array of received binary chunks (comprises the body)
-    while (true) {
+    for (;;) {
       const {done, value} = await reader.read();
       if (done) {
+        // finished reading chunks from stream reader.
         this.setState((prevState) => {
           return {
             ...prevState,
@@ -182,7 +184,12 @@ class DataQueryApp extends Component {
           };
         });
         reader.closed.then(() => {
-          let data = JSON.parse(chunks);
+          let data;
+          try {
+            data = JSON.parse(chunks);
+          } catch (exception) {
+            return callback(false);
+          }
           let categories = [];
           for (const [key, value] of Object.entries(data.categories)) {
             categories.push({
@@ -191,8 +198,8 @@ class DataQueryApp extends Component {
             });
           }
           data.categories = categories;
-          setTimeout(() => {
-            this.setState((prevState) => {
+          setTimeout(async () => {
+            await this.setState((prevState) => {
               return {
                 ...prevState,
                 progressbar: {
@@ -211,27 +218,47 @@ class DataQueryApp extends Component {
                 AllSessions: data.sessions,
                 Visits: data.visits,
               };
+            }, () => {
+              return callback(true);
             });
-            this.loadSavedQueries();
           }, 2000); // wait 2 seconds
+        }).catch((error) => {
+          if (error) {
+            return callback(false);
+          }
         });
         break;
+      } else {
+        // Continue reading chunks from stream reader.
+        const decode = new TextDecoder('utf-8').decode(value);
+        chunks += decode;
+        receivedLength += value.length;
+        this.setState((prevState) => {
+          return {
+            ...prevState,
+            progressbar: {
+              hidden: prevState.progressbar.hidden,
+              percentage: Math.round((receivedLength / contentLength) * 100),
+              message: prevState.progressbar.message,
+            },
+          };
+        });
       }
-      const decode = new TextDecoder('utf-8').decode(value);
-      chunks += decode;
-      receivedLength += value.length;
-      this.setState((prevState) => {
-        return {
-          ...prevState,
-          progressbar: {
-            hidden: prevState.progressbar.hidden,
-            percentage: Math.round((receivedLength/contentLength) * 100),
-            message: prevState.progressbar.message,
-          },
-        };
-      });
-      // console.log(Math.round((receivedLength/contentLength) * 100));
     }
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  async componentDidMount() {
+    // Handle Progress Bar Setup
+    await this.handleProgressBarSetup((success) => {
+      if (success) {
+        this.loadSavedQueries();
+      } else {
+        console.error('Error inside handleProgressBarSetup process');
+      }
+    });
   }
 
   /**
