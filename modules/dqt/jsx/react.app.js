@@ -221,7 +221,7 @@ class DataQueryApp extends Component {
             }, () => {
               return callback(true);
             });
-          }, 2000); // wait 2 seconds
+          }, 1200); // wait 1.2 seconds
         }).catch((error) => {
           if (error) {
             return callback(false);
