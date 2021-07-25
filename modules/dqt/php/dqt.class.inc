@@ -4,8 +4,9 @@
  *
  * PHP Version 7
  *
- * @category Data_Querying_Module
+ * @category Module
  * @package  Loris
+ * @subpackage DQT
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -17,8 +18,9 @@ namespace LORIS\dqt;
  *
  * PHP Version 7
  *
- * @category Data_Querying_Module
+ * @category Module
  * @package  Loris
+ * @subpackage DQT
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
@@ -38,16 +40,6 @@ class Dqt extends \NDB_Form
     {
         // check user permissions
         return $user->hasPermission('dataquery_view');
-    }
-
-    /**
-     * Sets up the smarty template variables for the dataquery page.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
     }
 
     /**
