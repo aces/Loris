@@ -54,7 +54,7 @@ foreach ($flagData as $cmid => $data) {
     }
 
     $dataArray = $instrument->getInstanceData();
-    $desc      = $data['Data_entry_completion_status'];
+    $decs      = $data['Data_entry_completion_status'];
 
     // change value from complete / incomplete to Y / N
     if ($decs === 'Complete') {
