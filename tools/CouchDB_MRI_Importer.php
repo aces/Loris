@@ -63,6 +63,10 @@ class CouchDBMRIImporter
     function run()
     {
         $ScanTypes = $this->getScanTypes();
+        if (empty($scanTypes)) {
+            fwrite(STDERR, "No scan types found to import.\n");
+            exit(1);
+        }
         $this->updateDataDict($ScanTypes);
 
         $CandidateData = $this->getCandidateData($ScanTypes);
