@@ -72,3 +72,26 @@ project_cohort_rel table in the database.
   [Manual Test]
 5. Test the breadcrumb to see if you can navigate back to the main config page.
   [Automation Test]
+6. Go back to the project configuration page. Click on the cohort link at the top of the page and
+confirm that it brings you to the cohort configuration page.
+  [Manual Test]
+
+## Diagnosis Evolution 
+
+1. Click on the diagnosis evolution link at the top of the page and confirm that it brings you to
+the diagnosis trajectory configuration page.
+  [Manual Test]
+2. Click the 'New Diagnosis Trajectory' tab in the left column navigation. Try to add a new trajectory.
+  [Manual Test]
+3. Test that you cannot add a diagnosis trajectory for any source field or instrument that does not exist in the selected visit. Also test that you can add multiple source fields.
+  [Manual Test]
+4. Validate that you cannot create duplicate trajectory names.
+  [Manual Test]
+5. Validate that you cannot duplicate an order number within the same project.
+  [Manual Test]
+6. Test editing a currently existing trajectory. Test resetting the form as well with 
+the reset button.
+  [Manual Test]
+7. Test deleting a currently existing trajectory. 
+8. Test the breadcrumb to see if you can navigate back to the main config page.
+  [Automation Test]
