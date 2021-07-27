@@ -421,7 +421,7 @@ class ViewDataTabPane extends Component {
           title: 'Proceed with export?',
           html: 'Please provide your NeuroHub API token.<br><br>' +
             'You can generate a new token in the `My account` page of NeuroHub' +
-            'using the `Generate new API token` button in the ' +
+            ' using the `Generate new API token` button in the ' +
             '<a target="_blank" href="https://portal.cbrain.mcgill.ca/">CBRAIN`s user interface</a>.<br>' +
             'A CBRAIN file list will be created in your default dataprovider.',
           width: '60%',
