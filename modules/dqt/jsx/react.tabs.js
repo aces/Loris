@@ -470,14 +470,36 @@ class ViewDataTabPane extends Component {
       </>
     ) : null;
 
+    const sessionsEmpty = this.props.filter.session.length === 0;
+    let disabledMessage = this.props.Fields === undefined ||
+                      this.props.Fields.length === 0 ?
+      'Define Field or load an existing query before query can run' : null;
+    if (!disabledMessage && sessionsEmpty) {
+      disabledMessage =
+        'Data Query Tool is retrieving sessions before query can run';
+    }
+
     let buttons = (
       <>
         <div className='flex-row-container'>
           <div className='flex-row-item'>
+            {sessionsEmpty ||
+            this.props.Fields === undefined ||
+            this.props.Fields.length === 0 ? (
+              <div style={{
+                color: '#0b4681',
+                textAlign: 'center',
+                fontWeight: 'bolder',
+              }}>
+                {disabledMessage}
+              </div>
+            ) : null}
             <button className='action-btn run-query'
                     onClick={this.runQuery}
-                    disabled={(this.props.Fields === undefined
-                      || this.props.Fields.length === 0) ?? true}
+                    disabled={(sessionsEmpty ||
+                      this.props.Fields === undefined ||
+                      this.props.Fields.length === 0
+                    )}
             >
               <span className='glyphicon glyphicon-play'/>
               &nbsp;Run Query
@@ -485,7 +507,7 @@ class ViewDataTabPane extends Component {
           </div>
           {otherButtons}
         </div>
-      <div className='row'>
+        <div className='row'>
           <div id='progress' className='col-xs-12'/>
           <div id='downloadlinks' className='col-xs-12'>
             <ul id='downloadlinksUL'/>

@@ -18,6 +18,7 @@ import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
 // import StatisticsReport from './components/statisticsreport';
 import DataRequest from './components/datarequest';
+// let dqtWorker;
 
 /**
  * DataQueryApp component
@@ -112,6 +113,7 @@ class DataQueryApp extends Component {
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
     this.loadSavedQueries = this.loadSavedQueries.bind(this);
     this.handleProgressBarSetup = this.handleProgressBarSetup.bind(this);
+    this.requestSessions = this.requestSessions.bind(this);
   }
 
   /**
@@ -208,14 +210,9 @@ class DataQueryApp extends Component {
                   percentage: prevState.progressbar.percentage,
                 },
                 queryIDs: data.savedqueries,
-                filter: {
-                  ...prevState.filter,
-                  session: data.sessions,
-                },
                 categories: data.categories,
                 UpdatedTime: `Data was last updated on ${data.updatetime}`,
                 SavedQueries: data.savedqueries,
-                AllSessions: data.sessions,
                 Visits: data.visits,
               };
             }, () => {
@@ -248,15 +245,77 @@ class DataQueryApp extends Component {
   }
 
   /**
+   * getSessions - takes awhile if large couchdb instance.
+   * @param {function} callback
+   */
+  async requestSessions(callback) {
+    const response = await fetch(
+      `${loris.BaseURL}/dqt/sessions/?format=json`,
+      {credentials: 'same-origin', method: 'GET'}
+    );
+    const reader = await response.body.getReader();
+    let chunks = ''; // array of received binary chunks (comprises the body)
+    for (;;) {
+      const {done, value} = await reader.read();
+      if (done) {
+        // finished reading chunks from stream reader.
+        reader.closed.then(async () => {
+          let data;
+          try {
+            data = JSON.parse(chunks);
+          } catch (exception) {
+            return callback(false);
+          }
+          await this.setState((prevState) => {
+            return {
+              ...prevState,
+              filter: {
+                ...prevState.filter,
+                session: data.sessions,
+              },
+              AllSessions: data.sessions,
+            };
+          }, () => {
+            return callback(true);
+          });
+        }).catch((error) => {
+          if (error) {
+            return callback(false);
+          }
+        });
+        break;
+      } else {
+        // Continue reading chunks from stream reader.
+        const decode = new TextDecoder('utf-8').decode(value);
+        chunks += decode;
+      }
+    }
+  }
+
+  /**
    * Called by React when the component has been rendered on the page.
    */
   async componentDidMount() {
+    // dqtWorker = new Worker(`${loris.BaseURL}/dqt/js/workers/dqt.worker.js`);
+    // dqtWorker.onmessage = (event) => {
+    //   if (event && event.data) {
+    //     console.log('event is ');
+    //     console.log(event);
+    //   }
+    // };
+    // dqtWorker.postMessage({msg: 'setupCouchDB'});
+    // dqtWorker.postMessage({msg: 'test', lastUpdate: 'todo'});
     // Handle Progress Bar Setup
     await this.handleProgressBarSetup((success) => {
       if (success) {
         this.loadSavedQueries();
+        this.requestSessions((success) => {
+          if (success) {} else {
+            console.error('requestSessions failed');
+          }
+        });
       } else {
-        console.error('Error inside handleProgressBarSetup');
+        console.error('handleProgressBarSetup failed');
       }
     });
   }
@@ -1358,6 +1417,8 @@ class DataQueryApp extends Component {
             Active={this.state.ActiveTab === 'ViewData'}
             Fields={this.state.fields}
             Criteria={this.state.criteria}
+            AllSessions={this.state.AllSessions}
+            filter={this.state.filter}
             Sessions={this.getSessions()}
             Data={this.state.rowData.rowdata}
             RowInfo={this.state.rowData.Identifiers}

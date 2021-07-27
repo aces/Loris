@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * The DQT_Setup 'endpoint' class for the DQT Module.
+ * The Sessions 'endpoint' class for the DQT Module.
  *
  * PHP Version 7.4
  *
@@ -18,10 +18,10 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
- * A class for handling the /dqt/dqt_setup/ endpoint.
- * The initial DQT setup process calls this API for the
- * ProgressBar's stream "reader" to get the needed
- * setup data from couchDB.
+ * A class for handling the /dqt/sessions/ endpoint.
+ * The initial DQT setup process calls this API in
+ * the background for the stream "reader" to retrieve
+ * the needed sessions from couchDB.
  *
  * PHP Version 7.4
  *
@@ -32,7 +32,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Lors/
  */
-class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
+class Sessions extends \NDB_Form implements RequestHandlerInterface
 {
     public $skipTemplate = true;
 
@@ -119,67 +119,21 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );
-
-        $update = $couch->queryView(
+        $sessionResults           = $couch->queryView(
             "DQG-2.0",
-            "runlog",
+            "sessions",
             [
-                "reduce"     => "false",
-                "limit"      => "1",
-                "descending" => "true",
+                "reduce" => "true",
+                "group"  => "true",
             ]
         );
-        $data['updatetime'] = $update[0]['key'];
-
-        $categories = $couch->queryView(
-            "DQG-2.0",
-            "datadictionary",
-            [
-                "reduce"      => "true",
-                "group_level" => "1",
-            ]
+        $sessions = array_map(
+            function ($element) {
+                return $element['key'];
+            },
+            $sessionResults
         );
-
-        $cat_tpl = [];
-        foreach ($categories as $row) {
-            if ($row['value']) {
-                $cat_tpl[$row['key'][0]] = $row['value'];
-            } else {
-                $cat_tpl[$row['key'][0]] = -1;
-            }
-        }
-        $data['categories'] = $cat_tpl;
-
-        $usersaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"$username\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $globalsaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"global\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $IDMapCallback = function ($row) {
-            return $row['id'];
-        };
-
-        $usersavedNames   = array_map($IDMapCallback, $usersaved);
-        $globalsavedNames = array_map($IDMapCallback, $globalsaved);
-
-        $data['savedqueries'] = [
-            'user'   => $usersavedNames,
-            'shared' => $globalsavedNames,
-        ];
-        $data['visits'] = \Utility::getVisitList();
+        $data['sessions'] = $sessions;
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")

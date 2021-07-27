@@ -70,6 +70,7 @@ class Dqt extends \NDB_Form
                 $baseURL . '/js/components/PaginationLinks.js',
                 $baseURL . "/js/jszip/jszip.min.js",
                 $baseURL . "/js/components/MultiSelectDropdown.js",
+                $baseURL . "/dqt/js/workers/dqt.worker.js",
             ]
         );
     }
