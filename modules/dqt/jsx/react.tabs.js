@@ -595,6 +595,13 @@ class ViewDataTabPane extends Component {
       disabledMessage =
         'Data Query Tool is retrieving sessions before query can run';
     }
+    let animationloading = disabledMessage ? (
+      <div className='spinner' style={{margin: '10px auto 0'}}>
+        <div className='bounce1'/>
+        <div className='bounce2'/>
+        <div className='bounce3'/>
+      </div>
+    ) : null;
 
     let buttons = (
       <>
@@ -608,7 +615,7 @@ class ViewDataTabPane extends Component {
                 textAlign: 'center',
                 fontWeight: 'bolder',
               }}>
-                {disabledMessage}
+                {animationloading}{disabledMessage}
               </div>
             ) : null}
             <button className='action-btn run-query'
