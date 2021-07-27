@@ -111,6 +111,7 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
+      console.log('test 4');
       $.get(loris.BaseURL
         + '/dqt/ajax/datadictionary.php',
         {category: rule.instrument}, (data) => {
