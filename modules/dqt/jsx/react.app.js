@@ -444,7 +444,6 @@ class DataQueryApp extends Component {
 
     // Get given fields of the instrument for the rule.
     // This call is made synchronously
-    console.log('test 1');
     $.ajax({
       url: loris.BaseURL
         + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
@@ -666,7 +665,6 @@ class DataQueryApp extends Component {
       loading: false,
     });
     for (let i = 0; i < fieldsList.length; i++) {
-      console.log('test 2');
       $.ajax({
         url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {

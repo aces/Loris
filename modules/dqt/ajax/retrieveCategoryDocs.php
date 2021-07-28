@@ -39,6 +39,7 @@ $keys        = array_map(
     },
     $sessions
 );
+// todo filter out the incorrect keys
 $results     = $cdb->queryView(
     "DQG-2.0",
     "instruments",
