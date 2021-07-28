@@ -613,16 +613,16 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['name1' => 'display1',
-                        'TestName'          => 'name1',
-                        'Visit_label'       => 'V1'
+                        'TestName'    => 'name1',
+                        'Visit_label' => 'V1'
                     ]
                 ]
             );
 
         $this->assertEquals(
             ['name1' => 'display1',
-                'TestName'          => 'name1',
-                'Visit_label'       => 'V1'
+                'TestName'    => 'name1',
+                'Visit_label' => 'V1'
             ],
             Utility::getVisitInstruments('V1')
         );
