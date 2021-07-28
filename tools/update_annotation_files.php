@@ -12,8 +12,6 @@ require_once "generic_includes.php";
 
 $db = \NDB_Factory::singleton()->database();
 
-// TODO : update the query to use LastWritten
-
 //Get all file IDs that must be updated
 $physioFileIDs = $db->pselect(
     "SELECT DISTINCT paf.PhysiologicalFileID
