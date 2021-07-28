@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 let special = {
-      // CandID: 'example',
+      demographics: 'test example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',
@@ -396,11 +396,11 @@ class FieldsSidebar extends Component {
             <h4 className='list-group-item-heading col-xs-12'
                 style={{color: '#fff'}}
             >
-               {fieldInfo[0]}
+              {special[fieldInfo[0]] ? special[fieldInfo[0]] : fieldInfo[0]}
+              {/* {fieldInfo[0]} */}
             </h4>
             <span className='col-xs-12'>
-              {special[fieldInfo[1]] ? special[fieldInfo[1]] : fieldInfo[1]}
-              {/* {fieldInfo[1]} */}
+              {fieldInfo[1]}
             </span>
           </div>
         );

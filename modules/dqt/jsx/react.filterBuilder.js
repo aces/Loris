@@ -10,7 +10,7 @@
 import React, {Component} from 'react';
 
 let special = {
-      // CandID: 'example',
+      demographics: 'test example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',
@@ -40,7 +40,7 @@ let special = {
       abcd_drsidp301: 'dMRI RSI Destrieux Parcellation Part 3',
       abcd_dti_p101: 'dMRI DTI Part 1',
       abcd_dti_p201: 'dMRI DTI Part 2',
-      abcd_earsraw01: 'Mobil Tech from EARS Raw Data',
+      abcd_earsraw01: 'Mobil Tech from EARS Raw TData',
       abcd_eatqp01: 'Early Adolescent Temperament Questionnaire Parent',
       abcd_ehis01: 'Youth Edinburgh Handedness Inventory Short Form (EHIS)',
       abcd_esttlb01: 'Emotional Stroop Task Trial Level Behavior',
@@ -578,8 +578,7 @@ class FilterRule extends Component {
         }
         return (
           <option key={index} value={index}>
-            {special[field.key[1]] ?? field.key[1]}
-            {/* {field.key[1]} */}
+            {field.key[1]}
           </option>
         );
       });
@@ -675,7 +674,7 @@ class FilterRule extends Component {
         <div>
           <div className='col-xs-12'>
             <label className='instrumentLabel'>
-              {this.props.rule.instrument}
+              {special[this.props.rule.instrument] ?? this.props.rule.instrument}
             </label>
           </div>
           <div className='col-xs-10'>
@@ -695,8 +694,9 @@ class FilterRule extends Component {
       // Else display dropdown for instrument select
       if (Array.isArray(this.props.items)) {
         let options = this.props.items.map((item, index) => {
+          const temp = special[item.category] ?? item.category;
           return (
-            <option key={index} value={item.category}>{item.category}</option>
+            <option key={index} value={item.category}>{temp}</option>
           );
         });
         rule = (

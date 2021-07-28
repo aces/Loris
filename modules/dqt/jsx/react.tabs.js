@@ -15,7 +15,7 @@ import DataTable from './components/table';
 import swal from 'sweetalert2';
 
 let special = {
-      // CandID: 'example',
+      demographics: 'test example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',
@@ -750,7 +750,6 @@ class ViewDataTabPane extends Component {
           },
           allowOutsideClick: false,
         }).then((result) => {
-          console.log(result);
           swal.fire({
             title: 'Export Successful!',
             html: '<a href="' + result.value.images_location +
@@ -964,12 +963,11 @@ class ViewDataTabPane extends Component {
       : 0;
     for (let i=0; i<numberLength; i++) {
       let myTemp = this.props.RowHeaders[i];
-      const lastIndex = myTemp.lastIndexOf(',');
-      const stringAfterComma = myTemp.substring(lastIndex + 1);
-      const stringBeforeComma = myTemp.substring(0, lastIndex);
-      myTemp = special[stringAfterComma]
-        ? `${stringBeforeComma}, ${special[stringAfterComma]}`
-        : myTemp;
+      for (const [key, value] of Object.entries(special)) {
+        if (myTemp.includes(key)) {
+          myTemp = myTemp.replace(key, value);
+        }
+      }
       rowHeaders.push(myTemp);
     }
 
