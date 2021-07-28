@@ -1,0 +1,13 @@
+authors: 
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: MacFarlane
+    given-names: David
+  -
+    family-names: Here
+    given-names: "Add yourself"
+cff-version: "1.1.0"
+license: "GPL-3.0"
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/aces/Loris"
+title: "LORIS (Longitudinal Online Research and Imaging System)"
