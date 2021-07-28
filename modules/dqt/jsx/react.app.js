@@ -21,7 +21,6 @@ import DataRequest from './components/datarequest';
 // let dqtWorker;
 
 let special = {
-      demographics: 'example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',

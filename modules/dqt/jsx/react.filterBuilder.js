@@ -10,7 +10,6 @@
 import React, {Component} from 'react';
 
 let special = {
-      demographics: 'test example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',

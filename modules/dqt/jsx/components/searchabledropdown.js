@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 let special = {
-      demographics: 'test example',
       abcd_abcls01: 'ABCL Scores',
       abcd_adbc01: 'Adult Behavior Checklist',
       abcd_ant01: 'Youth Anthropometrics Modified From PhenX (ANT)',
@@ -295,7 +294,6 @@ let special = {
       yalcs01: 'Youth Alcohol Screen',
     };
 let specialSwap = {
-  'test example': 'demographics',
   'ABCL Scores': 'abcd_abcls01',
   'Adult Behavior Checklist': 'abcd_adbc01',
   'Youth Anthropometrics Modified From PhenX (ANT)': 'abcd_ant01',
