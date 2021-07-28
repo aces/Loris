@@ -611,7 +611,9 @@ class UtilityTest extends TestCase
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
-                ['name1' => 'display1']
+                [
+                    ['name1' => 'display1']
+                ]
             );
 
         $this->assertEquals(
