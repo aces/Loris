@@ -27,6 +27,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
+- The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, `mri_violations_log`, and `mri_protocol_violated_scans`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (#PR7515).
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
