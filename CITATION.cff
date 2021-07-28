@@ -7,6 +7,10 @@ authors:
     family-names: Here
     given-names: "Add yourself"
 cff-version: "1.1.0"
+identifiers:
+  -
+    type: url
+    value: "https://www.loris.ca"
 license: "GPL-3.0"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/aces/Loris"
