@@ -1,0 +1,31 @@
+.investigator {
+  padding: 6px 0;
+}
+
+.data-request small.label {
+  margin-top: -16px;
+  position: absolute;
+  color: #ccc;
+}
+
+.top-label label.control-label {
+  margin-top: -24px;
+  position: absolute;
+  color: #ccc;
+  font-size: 10px;
+  left: 0;
+  text-align:left;
+}
+
+.data-request .alert .close {
+  color: black;
+}
+
+.data-request .alert .glyphicon {
+  padding-right: 10px;
+}
+
+.data-request .form-group.checkboxes {
+  padding-left: 20px;
+}
+
