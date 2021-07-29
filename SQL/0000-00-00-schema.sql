@@ -929,7 +929,6 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   `image_type` varchar(255) default NULL,
-  `EchoTime` double DEFAULT NULL,
   `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
