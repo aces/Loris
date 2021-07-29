@@ -16,16 +16,16 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * PHP Version 7
  *
- * @package  Loris
- * @author   Laetitia Fesselier
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
+ * @package Loris
+ * @author  Laetitia Fesselier <laetitia.fesselier@mcin.ca>
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link    https://github.com/aces/Loris
  */
 class Data_Request extends \NDB_Form
 {
     private $_error;
     public $skipTemplate = true;
-    private $_sendEmail = true;
+    private $_sendEmail  = true;
     private $_approvalLetter;
     private $_emailRecipient = 'cbig.mni@mcgill.ca';
 
@@ -39,10 +39,10 @@ class Data_Request extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user      = \User::singleton();
+        $user = \User::singleton();
         $this->fieldOptions = [
-            'email'   => $user->getData('Email'),
-            'userID'  => $user->getID(),
+            'email'  => $user->getData('Email'),
+            'userID' => $user->getID(),
         ];
     }
 
@@ -69,7 +69,7 @@ class Data_Request extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($request->getMethod() === "POST") {
-            $this->form->addFormRule(array(&$this, '_validateNewDataRequest'));
+            $this->form->addFormRule([&$this, '_validateNewDataRequest']);
             $this->save();
             if (!empty($this->_error)) {
                 return (new \LORIS\Http\Response())
@@ -82,7 +82,7 @@ class Data_Request extends \NDB_Form
                     );
             }
 
-            $result = array();
+            $result = [];
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
@@ -108,7 +108,7 @@ class Data_Request extends \NDB_Form
     function _validateNewDataRequest($values): array
     {
         $this->_error = null;
-        $errors       = array();
+        $errors       = [];
 
         if (empty($values['email'])) {
             $errors['email'] = 'Email field is required.';
@@ -124,13 +124,18 @@ class Data_Request extends \NDB_Form
 
         if (isset($values['coinvestigators'])) {
             $coinvestigators = json_decode($values['coinvestigators']);
-            foreach($coinvestigators as $coinvestigator) {
-                if (empty($coinvestigator->name) || empty($coinvestigator->institution) || empty($coinvestigator->email)) {
-                    $errors['coinvestigator'] = 'All co-investigator fields must be filled.';
+            foreach ($coinvestigators as $coinvestigator) {
+                if (empty($coinvestigator->name)
+                    || empty($coinvestigator->institution)
+                    || empty($coinvestigator->email)
+                ) {
+                    $errors['coinvestigator']
+                        = 'All co-investigator fields must be filled.';
                 }
 
                 if (!filter_var($coinvestigator->email, FILTER_VALIDATE_EMAIL) ) {
-                    $errors['coinvestigator'] = 'One of the co-investigator email address is not valid.';
+                    $errors['coinvestigator']
+                        = 'One of the co-investigator email address is not valid.';
                 }
             }
         }
@@ -139,20 +144,30 @@ class Data_Request extends \NDB_Form
             $errors['researchTitle'] = 'Research Title field is required.';
         }
 
-        if (!isset($values['materialsRequested']) || empty($values['materialsRequested'])) {
+        if (!isset($values['materialsRequested'])
+            || empty($values['materialsRequested'])
+        ) {
             $errors['materialsRequested'] = 'Materials requested field is required.';
         }
 
         if (isset($_FILES['approvalLetter'])) {
             $approvalLetter = $_FILES['approvalLetter'];
 
-            if (!isset($approvalLetter['tmp_name']) || empty($approvalLetter['tmp_name'])) {
-                $errors['approvalLetter'] = 'The server is not configured to receive a file this large.';
+            if (!isset($approvalLetter['tmp_name'])
+                || empty($approvalLetter['tmp_name'])
+            ) {
+                $errors['approvalLetter']
+                    = 'The server is not configured to receive a file this large.';
             }
 
-            $allowedExtensions = array('pdf');
-            $extension = strtolower(pathinfo($approvalLetter['name'], PATHINFO_EXTENSION));
-            if(!in_array($extension, $allowedExtensions)) {
+            $allowedExtensions = ['pdf'];
+            $extension         = strtolower(
+                pathinfo(
+                    $approvalLetter['name'],
+                    PATHINFO_EXTENSION
+                )
+            );
+            if (!in_array($extension, $allowedExtensions)) {
                 $errors['approvalLetter'] = 'That extension is not allowed!';
             }
 
@@ -187,16 +202,18 @@ class Data_Request extends \NDB_Form
         /* Create the data request.
          * Use form values when present, otherwise default to null.
          */
-        $db = \NDB_Factory::singleton()->database();
+        $db    = \NDB_Factory::singleton()->database();
         $entry = [
-            'institution' => $values['institution'],
-            'research_title' => $values['researchTitle'],
-            'research_summary' => $values['researchSummary'],
-            'requires_ethics_approval' => $values['requiresEthicsApproval'] ?? 'false',
-            'reb_name' => $values['rebName'],
-            'reb_location' => $values['rebLocation'],
-            'ethics_approval_received' => $values['ethicsApprovalReceived'] ?? 'false',
-            'materials_requested' => $values['materialsRequested']
+            'institution'              => $values['institution'],
+            'research_title'           => $values['researchTitle'],
+            'research_summary'         => $values['researchSummary'],
+            'requires_ethics_approval' => $values['requiresEthicsApproval'] ??
+                'false',
+            'reb_name'                 => $values['rebName'],
+            'reb_location'             => $values['rebLocation'],
+            'ethics_approval_received' => $values['ethicsApprovalReceived'] ??
+                'false',
+            'materials_requested'      => $values['materialsRequested']
         ];
 
         if (isset($values['userID']) && $values['userID'] !== null) {
@@ -210,7 +227,8 @@ class Data_Request extends \NDB_Form
             $path = $this->getDownloadPath($this->_approvalLetter['tmp_name']);
             $file = join($path) . '/' . $this->_approvalLetter['name'];
             if (move_uploaded_file($this->_approvalLetter['tmp_name'], $file)) {
-                $entry['approval_letter'] = $path['path'] . $this->_approvalLetter['name'];;
+                $entry['approval_letter']
+                    = $path['path'] . $this->_approvalLetter['name'];;
             }
         }
 
@@ -238,10 +256,11 @@ class Data_Request extends \NDB_Form
 
                 $template = "../../../project/templates/dqt_data_request.tpl";
 
-                $tpl_data = $entry;
-                $tpl_data['email'] = $email;
-                $tpl_data['message'] = 'A new specimen request has been issued on CBIGR:';
-                if(isset($tpl_data['approval_letter'])) {
+                $tpl_data            = $entry;
+                $tpl_data['email']   = $email;
+                $tpl_data['message']
+                    = 'A new specimen request has been issued on CBIGR:';
+                if (isset($tpl_data['approval_letter'])) {
                     $path = explode('/', $tpl_data['approval_letter']);
                     $path = array_map(urlencode, $path);
                     $tpl_data['approval_letter'] = join('/', $path);
@@ -279,7 +298,7 @@ class Data_Request extends \NDB_Form
      */
     function getDownloadPath(string $filePath): array
     {
-        $config = \NDB_Factory::singleton()->config();
+        $config       = \NDB_Factory::singleton()->config();
         $download_dir = trim(
             rtrim(
                 $config->getSetting('DataRequestPath'),
@@ -292,7 +311,7 @@ class Data_Request extends \NDB_Form
         }
 
         if (is_writable($download_dir)) {
-            $path = '/data_request_' . hash_file('sha256', $filePath) . '/';
+            $path      = '/data_request_' . hash_file('sha256', $filePath) . '/';
             $full_path = $download_dir . $path;
             if (!is_dir($full_path)) {
                 mkdir($full_path, 0770, true);

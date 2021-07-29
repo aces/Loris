@@ -61,7 +61,8 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
     }
 
     /**
-     * process - process the ServerRequestInterface
+     * Process the ServerRequestInterface
+     *
      * @param ServerRequestInterface  $request The PSR7 request.
      * @param RequestHandlerInterface $handler The request handler.
      *
@@ -86,13 +87,13 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         ini_set('memory_limit', '-1');
-        $user     = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
 
         $data = []; // we will send as stream to client on completion.
 
-        $username    = $user->getUsername();
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
+        $username         = $user->getUsername();
+        $config           = \NDB_Config::singleton();
+        $couchConfig      = $config->getSetting('CouchDB');
         $couchConfigValid = isset(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -179,15 +180,15 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
             'user'   => $usersavedNames,
             'shared' => $globalsavedNames,
         ];
-        $data['visits'] = \Utility::getVisitList();
+        $data['visits']       = \Utility::getVisitList();
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "text/plain")
-                    ->withStatus(200)
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode($data)
-                        )
-                    );
+            ->withHeader("Content-Type", "text/plain")
+            ->withStatus(200)
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode($data)
+                )
+            );
     }
 }

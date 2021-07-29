@@ -4,12 +4,12 @@
  *
  * PHP Version 7
  *
- * @category Module
- * @package  Loris
+ * @category   Module
+ * @package    Loris
  * @subpackage DQT
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @author     Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\dqt;
 
@@ -18,12 +18,12 @@ namespace LORIS\dqt;
  *
  * PHP Version 7
  *
- * @category Module
- * @package  Loris
+ * @category   Module
+ * @package    Loris
  * @subpackage DQT
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @author     Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 class Dqt extends \NDB_Form
 {

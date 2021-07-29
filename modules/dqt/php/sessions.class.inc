@@ -61,7 +61,8 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
     }
 
     /**
-     * process - process the ServerRequestInterface
+     * Process the ServerRequestInterface
+     *
      * @param ServerRequestInterface  $request The PSR7 request.
      * @param RequestHandlerInterface $handler The request handler.
      *
@@ -86,13 +87,13 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         ini_set('memory_limit', '-1');
-        $user     = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
 
         $data = []; // we will send as stream to client on completion.
 
-        $username    = $user->getUsername();
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
+        $username         = $user->getUsername();
+        $config           = \NDB_Config::singleton();
+        $couchConfig      = $config->getSetting('CouchDB');
         $couchConfigValid = isset(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -112,14 +113,14 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
                 'Data Query Tool.'
             );
         }
-        $couch = \NDB_Factory::singleton()->couchDB(
+        $couch            = \NDB_Factory::singleton()->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
             intval($couchConfig['port']),
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );
-        $sessionResults           = $couch->queryView(
+        $sessionResults   = $couch->queryView(
             "DQG-2.0",
             "sessions",
             [
@@ -127,7 +128,7 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
                 "group"  => "true",
             ]
         );
-        $sessions = array_map(
+        $sessions         = array_map(
             function ($element) {
                 return $element['key'];
             },
@@ -136,12 +137,12 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
         $data['sessions'] = $sessions;
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "text/plain")
-                    ->withStatus(200)
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode($data)
-                        )
-                    );
+            ->withHeader("Content-Type", "text/plain")
+            ->withStatus(200)
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode($data)
+                )
+            );
     }
 }
