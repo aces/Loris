@@ -56,7 +56,7 @@ CREATE TABLE `physiological_parameter_file` (
   `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-  `Value`                        VARCHAR(255),
+  `Value`                        TEXT,
   PRIMARY KEY (`PhysiologicalParameterFileID`),
   CONSTRAINT `FK_phys_file_FileID`
     FOREIGN KEY (`PhysiologicalFileID`)
