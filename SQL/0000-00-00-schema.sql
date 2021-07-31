@@ -655,7 +655,7 @@ CREATE TABLE `mri_protocol` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
    (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
    (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
