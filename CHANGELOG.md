@@ -62,7 +62,6 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 - Heroku postdeploy script cleanup (PR #5275)
 - Vagrantfile Deprecation (PR #5319)
 - The `data_integrity_flag` module was removed. (PR #5824)
-- 
 
 ### Notes For Existing Projects
 - PHP should be upgraded to 7.3 to before upgrading LORIS.
