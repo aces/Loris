@@ -7,7 +7,6 @@ declare(strict_types = 1);
 
 namespace LORIS\dqt;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -262,7 +261,7 @@ class Data_Request extends \NDB_Form
                     = 'A new specimen request has been issued on CBIGR:';
                 if (isset($tpl_data['approval_letter'])) {
                     $path = explode('/', $tpl_data['approval_letter']);
-                    $path = array_map(urlencode, $path);
+                    $path = array_map(urlencode(), $path);
                     $tpl_data['approval_letter'] = join('/', $path);
                 }
 
