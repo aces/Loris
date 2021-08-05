@@ -67,6 +67,7 @@ class Module extends \Module
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
+        $this->logger->debug("Loading $instrumentName $page");
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {

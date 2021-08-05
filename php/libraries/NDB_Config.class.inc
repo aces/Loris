@@ -526,5 +526,17 @@ class NDB_Config
         return $mapped;
     }
 
+    /**
+     * Get an object denoting the active log level settings for the
+     * current LORISInstance.
+     *
+     * @return LogSettings
+     */
+    public function getLogSettings() : LogSettings
+    {
+        $settings = $this->getSetting("logs");
+        return new LogSettings($settings);
+
+    }
 }
 

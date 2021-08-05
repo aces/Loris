@@ -75,8 +75,20 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['date_format']     = $date_format;
-        $this->tpl_data['lookup_center']   = [
+        $this->tpl_data['log_levels']      = [
+            'none'      => 'None',
+            'debug'     => 'Debug',
+            'info'      => 'Info',
+            'notice'    => 'Notice',
+            'warning'   => 'Warning',
+            'error'     => 'Error',
+            'critical'  => 'Critical',
+            'alert'     => 'Alert',
+            'emergency' => 'Emergency',
+        ];
+
+        $this->tpl_data['date_format']   = $date_format;
+        $this->tpl_data['lookup_center'] = [
             ''            => '',
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
