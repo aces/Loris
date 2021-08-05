@@ -568,13 +568,12 @@ class LorisForm
                     // This is more for consistency since it would be odd to apply a
                     // filter to a checkbox value
                     $filteredValues[$k]
-                        = $this->_getFilteredValue("{$name}[$k]", $rawValue);
+                        = htmlspecialchars($this->_getFilteredValue("{$name}[$k]", $rawValue));
                 }
-
                 return $filteredValues;
             } else {
                 // if submitted value is not an array, filter it
-                return $this->_getFilteredValue($name, $_REQUEST[$name]);
+                return htmlspecialchars($this->_getFilteredValue($name, $_REQUEST[$name]));
             }
         }
 
@@ -596,7 +595,6 @@ class LorisForm
                     $rawValue = $value == 'on' ? 1 : 0;
                     return $this->_getFilteredValue($name, $rawValue);
                 }
-
                 return $this->_getFilteredValue(
                     $name,
                     $_REQUEST[$fieldName][$fieldIdx]
@@ -930,7 +928,6 @@ class LorisForm
             $readonly = 'readonly';
         }
         $value = $this->getValue($el['name']);
-        $value = str_replace('"', '&quot;', $value);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
                 isset($el['onchange']) && $el['onchange']

@@ -781,6 +781,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _saveValues(array $values): void
     {
+        foreach($values AS $key => $val) {
+            if(!is_array($val)){
+                $values[$key] = htmlspecialchars_decode($val);
+            } else {
+                $value = [];
+                foreach ($val as $v) {
+                    $value[] = htmlspecialchars_decode($v);
+                }
+                $values[$key] = $value;
+            }
+        }
         //Convet date/timestamps into database format
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
