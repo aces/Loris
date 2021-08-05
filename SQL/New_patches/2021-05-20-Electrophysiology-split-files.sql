@@ -1,8 +1,5 @@
 INSERT INTO `ImagingFileTypes` VALUE ('archive', 'Archive file');
 
-  `Index`     INT(5)           NOT NULL,
-  `ArchiveID` INT(10) UNSIGNED NOT NULL,
-
 ALTER TABLE `physiological_file`
     ADD COLUMN `Index` INT(5) DEFAULT NULL,
     ADD COLUMN `ParentID` INT(10) unsigned DEFAULT NULL,
