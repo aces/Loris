@@ -97,7 +97,7 @@ class Subprojects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to subproject specific endpoint.
-        $subproject_name = $pathparts[1] ?? '';
+        $subproject_name =  urldecode($pathparts[1] ?? '');
         if (!in_array(
             $subproject_name,
             array_values(\Utility::getSubprojectList())
