@@ -98,5 +98,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (105,104,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (106,105,'Y-m-d H:i:s');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (107,106,'/data/issue_tracker/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,107,'');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (113,112,'warning');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (114,113,'warning');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'none');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
