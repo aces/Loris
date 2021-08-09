@@ -609,7 +609,7 @@ class UtilityTest extends TestCase
     {
 
         $this->_dbMock->expects($this->any())
-            ->method('pselect')
+            ->method('pselectColWithIndexKey')
             ->willReturn(
                 [
                     ['name1' => 'display1',
