@@ -719,7 +719,6 @@ class DataQueryApp extends Component {
    */
   fieldChange(fieldName, category, downloadable) {
     // Used to add and remove fields from the current query being built
-
     this.setState((state) => {
       let selectedFields = state.selectedFields;
       let fields = state.fields.slice(0);
@@ -727,14 +726,19 @@ class DataQueryApp extends Component {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        selectedFields[category][fieldName] = JSON.parse(
-          JSON.stringify(this.state.Visits)
-        );
+        let first = Object.keys(this.state.Visits)[0];
+        selectedFields[category][fieldName] = JSON.parse(JSON.stringify({
+          [first]: first,
+        }));
+        // selectedFields[category][fieldName] = JSON.parse(
+        //   JSON.stringify(this.state.Visits)
+        // );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.state.Visits) {
           if (this.state.Visits.hasOwnProperty(key)) {
             selectedFields[category].allVisits[key] = 1;
+            break; // todo remove
           }
         }
 

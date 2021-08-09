@@ -172,7 +172,7 @@ class FieldItem extends Component {
       classList += ' active';
       visitsVisible = true;
 
-      multiselect = Object.keys(this.props.Visits).map((visit) => {
+      multiselect = Object.keys(this.props.Visits).map((visit, index) => {
         let checked = false;
         if (this.props.selectedVisits[visit]) {
           checked = true;
