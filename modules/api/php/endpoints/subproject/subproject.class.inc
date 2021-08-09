@@ -16,7 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 
 /**
- * A class for handling the /projects/$projectname endpoint.
+ * A class for handling the /subprojects/$subprojectname endpoint.
  *
  * @category API
  * @package  Loris
@@ -27,20 +27,20 @@ use \LORIS\api\Endpoint;
 class Subproject extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
     /**
-     * A cache of the results of the projects/$projectname endpoint, so that
+     * A cache of the results of the subprojects/$subprojectname endpoint, so that
      * it doesn't need to be recalculated for the ETag and handler
      */
     private $_cache;
 
     /**
-     * The requested project
+     * The requested subproject
      */
     private $_subproject;
 
     /**
      * Contructor
      *
-     * @param string $subproject The requested project
+     * @param string $subproject The requested subproject
      */
     public function __construct(string $subproject)
     {
@@ -71,7 +71,7 @@ class Subproject extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a request that starts with /projects/$projectname
+     * Handles a request that starts with /subprojects/$subprojectname
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -99,7 +99,7 @@ class Subproject extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Generates a JSON representation of this project following the API
+     * Generates a JSON representation of this subproject following the API
      * specification.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request @unused-param
