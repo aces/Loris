@@ -730,15 +730,12 @@ class DataQueryApp extends Component {
         selectedFields[category][fieldName] = JSON.parse(JSON.stringify({
           [first]: first,
         }));
-        // selectedFields[category][fieldName] = JSON.parse(
-        //   JSON.stringify(this.state.Visits)
-        // );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.state.Visits) {
           if (this.state.Visits.hasOwnProperty(key)) {
             selectedFields[category].allVisits[key] = 1;
-            break; // todo remove
+            break;
           }
         }
 
