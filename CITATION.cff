@@ -4,6 +4,10 @@ authors:
     family-names: MacFarlane
     given-names: David
   -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Rogers
+    given-names: Christine
+  -
     family-names: Here
     given-names: "Add yourself"
 cff-version: "1.1.0"
@@ -11,6 +15,7 @@ identifiers:
   -
     type: url
     value: "https://www.loris.ca"
+doi: 10.5281/zenodo.5177111
 license: "GPL-3.0"
 message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/aces/Loris"
