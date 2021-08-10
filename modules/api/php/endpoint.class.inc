@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 /**
- * An API endpoint is an endpoint which abstracts away common element
+ * An endpoint is a HTTP request handler which abstracts away common element
  * of different LORIS API endpoints.
  *
  * PHP Version 7
  *
  * @category Main
  * @package  Loris
- * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\Api;
+namespace LORIS\api;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
@@ -23,19 +23,12 @@ use \Psr\Http\Message\ResponseInterface;
  *
  * @category Main
  * @package  Loris
- * @author   Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-abstract class Endpoint implements RequestHandlerInterface
+abstract class Endpoint extends \LORIS\Router\Endpoint
 {
-    /**
-     * Return an array of valid HTTP methods for this endpoint
-     *
-     * @return string[] Valid versions
-     */
-    abstract protected function allowedMethods() : array;
-
     /**
      * Return a list of LORIS API versions which this endpoint
      * supports.
@@ -45,11 +38,8 @@ abstract class Endpoint implements RequestHandlerInterface
     abstract protected function supportedVersions() : array;
 
     /**
-     * An API endpoint overrides the default LORIS middleware to remove the
-     * PageDecorationMiddleware, since the API only deals with JSON.
-     *
-     * It also acts as its own middleware by validating that an endpoint supports
-     * both the version of the API passed, and the HTTP method request type.
+     * An API endpoint overrides the default LORIS Endpoint to add validation
+     * on the supported version of the API passed.
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 request handler
@@ -66,13 +56,6 @@ abstract class Endpoint implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\BadRequest('Unsupported version');
         }
 
-        // Hack so that phan doesn't forget it's a RequestHandler inside
-        // the if statement when passed as an argument to process
-        $h = $handler;
-        if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
-            return (new \LORIS\Middleware\ETag())->process($request, $h);
-        }
-
-        return $handler->handle($request);
+        return parent::process($request, $handler);
     }
 }

@@ -22,6 +22,9 @@ Quality Control, and Behavioural Quality Control. (PR #6041)
 - Addition of a new `account_request_date` in `users` table that will be used when
 requesting a new account and will be displayed in the User Accounts module (PR #6191)
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
+- In Conflict resolver, changes are now saved automatically, one by one. Once a conflict 
+is resolved the cell that contains the input field will glow green for 5 seconds.  It is possible to change
+ the resolved conflicts to a new value until the page is refreshed. [(PR #6862)](https://github.com/aces/Loris/pull/6862)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
