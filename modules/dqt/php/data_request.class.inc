@@ -1,12 +1,9 @@
 <?php
-declare(strict_types = 1);
-
 /**
  * This file features the code for adding a new data request
  */
 
 namespace LORIS\dqt;
-
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -72,8 +69,8 @@ class Data_Request extends \NDB_Form
             $this->save();
             if (!empty($this->_error)) {
                 return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "application/json")
                     ->withStatus(400)
+                    ->withHeader("Content-Type", "application/json")
                     ->withBody(
                         new \LORIS\Http\StringStream(
                             json_encode($this->_error)
@@ -83,8 +80,8 @@ class Data_Request extends \NDB_Form
 
             $result = [];
             return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "application/json")
                 ->withStatus(201)
+                ->withHeader("Content-Type", "application/json")
                 ->withHeader("Allow", "POST")
                 ->withBody(
                     new \LORIS\Http\StringStream(

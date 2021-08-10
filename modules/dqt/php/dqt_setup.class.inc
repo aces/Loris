@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * The DQT_Setup 'endpoint' class for the DQT Module.
  *
@@ -12,7 +12,6 @@
  * @link       http://www.github.com/aces/Loris/
  */
 namespace LORIS\dqt;
-
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;

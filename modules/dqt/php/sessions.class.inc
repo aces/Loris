@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * The Sessions 'endpoint' class for the DQT Module.
  *
@@ -12,7 +12,6 @@
  * @link       http://www.github.com/aces/Loris/
  */
 namespace LORIS\dqt;
-
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -87,11 +86,9 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         ini_set('memory_limit', '-1');
-        $user = $request->getAttribute('user');
 
         $data = []; // we will send as stream to client on completion.
 
-        $username         = $user->getUsername();
         $config           = \NDB_Config::singleton();
         $couchConfig      = $config->getSetting('CouchDB');
         $couchConfigValid = isset(
@@ -137,8 +134,8 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
         $data['sessions'] = $sessions;
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
             ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
             ->withBody(
                 new \LORIS\Http\StringStream(
                     json_encode($data)
