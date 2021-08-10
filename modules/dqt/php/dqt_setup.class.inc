@@ -182,8 +182,8 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
         $data['visits']       = \Utility::getVisitList();
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
-            ->withHeader("Content-Type", "text/plain")
             ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
             ->withBody(
                 new \LORIS\Http\StringStream(
                     json_encode($data)
