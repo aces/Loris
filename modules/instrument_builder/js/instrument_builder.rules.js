@@ -1,7 +1,7 @@
 var Rules = {
-    render: function () {
-        var content = '',
-            rules = document.getElementById("rules_workspace"),
+    render: function (rules) {
+        var content = rules.join("\n"),
+            workspace = document.getElementById("rules_workspace"),
             Rule,
             row,
             fs,
@@ -9,30 +9,46 @@ var Rules = {
             value,
             i;
 
-         for(i=1; i < rules.rows.length; i++) {
-            row = rules.rows[i]
-            Rule = new Array();
-            Rule.push(row.firstChild.innerText); // Question
-            Rule.push(row.firstChild.nextSibling.nextSibling.nextSibling.innerText)
+            if (workspace) {
+          for(i=1; i < workspace.rows.length; i++) {
+              row = workspace.rows[i]
+              Rule = new Array();
+              Rule.push(row.firstChild.innerText); // Question
+              Rule.push(row.firstChild.nextSibling.nextSibling.nextSibling.innerText)
 
-            value = row.firstChild.nextSibling.nextSibling.innerText;
-            operator = "{@}=={@}";
+              value = row.firstChild.nextSibling.nextSibling.innerText;
+              operator = "{@}=={@}";
 
-            // Check if it's a regex
-            if(value.substring(0, 3) === '=~ ') {
-                value = value.substring(3);
-                operator = '{@}=~{@}';
-            }
-            Rule.push(row.firstChild.nextSibling.innerText + operator + value);
-            content += Rule.join("{-}")
-            content += "\n";
+              // Check if it's a regex
+              if(value.substring(0, 3) === '=~ ') {
+                  value = value.substring(3);
+                  operator = '{@}=~{@}';
+              }
+              Rule.push(row.firstChild.nextSibling.innerText + operator + value);
+              content += Rule.join("{-}")
+              content += "\n";
+          }
         }
-         return content;
+        return content;
     },
-    save: function () {
-        var name = document.getElementById("filename").value || "instrument";
+    save: function (saveInfo) {
+      if (saveInfo.rules.length != 0) {
+        var name = saveInfo.fileName || "instrument",
+            content = this.render(saveInfo.rules),
+            element = document.createElement("a"),
+            blob = new Blob([content], { type: 'text/plain;base64' }),
+            url = URL.createObjectURL(blob);
 
-        fs = saveAs(this.render().getBlob("text/plain;charset=utf-8"), name + ".rules");
+            element.href = url;
+            element.download = name + ".rules";
+            element.style.display = "none";
+            // add element to the document so that it can be clicked
+            // this is need to download in firefox
+            document.body.appendChild(element);
+            element.click();
+            // remove the element once it has been clicked
+            document.body.removeChild(element);
+      }
     },
 
     addNew: function () {

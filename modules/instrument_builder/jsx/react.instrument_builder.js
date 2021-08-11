@@ -126,6 +126,15 @@ class LoadPane extends Component {
     return (
       <TabPane Title='Load Instrument' {...this.props}>
         <div className='col-sm-6 col-xs-12'>
+          <i>
+            Note: You may load either a LORIS .linst format or a REDCap
+            .csv format.
+          </i><br></br>
+          <i>
+            If loading a .csv format, make sure the file contains the data
+            dictionary of only one instrument.
+          </i><br></br>
+          <br></br>
           <div id='load_alert'
                style={{display: alert.display}}
                className={alert.class}
@@ -171,6 +180,7 @@ class SavePane extends Component {
     this.state = {
       fileName: '',
       instrumentName: '',
+      rules: [],
     };
     this.loadState = this.loadState.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
@@ -187,6 +197,7 @@ class SavePane extends Component {
     this.setState({
       fileName: newState.fileName,
       instrumentName: newState.instrumentName,
+      rules: newState.rules,
     });
   }
 
@@ -753,6 +764,7 @@ class InstrumentBuilderApp extends Component {
       this.refs.savePane.state,
       this.refs.buildPane.state.Elements
     );
+    Rules.save(this.refs.savePane.state);
   }
 
   /**
