@@ -299,7 +299,7 @@ class UserPermissions
             FROM permissions p ";
 
         //If not superuser, get the permissions that the user has
-        if (intval($this->permissions['superuser']) != 1) {
+        if ($this->hasPermission('superuser')) {
             $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID=m.ID)
