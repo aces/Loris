@@ -214,7 +214,7 @@ const config = [
     'CandidateParameters',
     'ConsentWidget',
   ]),
-  lorisModule('configuration', ['SubprojectRelations']),
+  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
   lorisModule('conflict_resolver', [
     'CandidateConflictsWidget',
     'conflictResolverIndex',
