@@ -84,7 +84,7 @@ class Methylation extends \DataFrameworkMenu implements ETagCalculator
         $user = \NDB_Factory::singleton()->user();
 
         return (new \LORIS\genomic_browser\Views\Methylation(
-            $this->getSiteOptions($user, false),
+            $this->getSiteOptions($user, false, $this->allSitePermissionNames()),
             $this->getSubprojectOptions($user),
         ))->toArray();
     }

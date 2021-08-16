@@ -96,7 +96,7 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
 
         return (new \LORIS\genomic_browser\Views\CNV(
             $platform_options,
-            $this->getSiteOptions($user, false),
+            $this->getSiteOptions($user, false, $this->allSitePermissionNames()),
             $this->getSubprojectOptions($user),
         ))->toArray();
     }

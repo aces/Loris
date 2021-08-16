@@ -92,7 +92,7 @@ class SnpBrowser extends \DataFrameworkMenu implements ETagCalculator
             $platform_options[$name] = $name;
         }
         return (new \LORIS\genomic_browser\Views\SNP(
-            $this->getSiteOptions($user, false),
+            $this->getSiteOptions($user, false, $this->allSitePermissionNames()),
             $this->getSubprojectOptions($user, false),
             $platform_options,
         ))->toArray();
