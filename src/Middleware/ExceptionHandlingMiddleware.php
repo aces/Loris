@@ -6,6 +6,8 @@ use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 
+use \Psr\Log\LoggerAwareInterface;
+
 /**
  * ExceptionHandlingMiddleware is a type of Middleware which safely handles
  * exceptions that are not caught earlier by other code. It makes sure that
@@ -14,8 +16,10 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class ExceptionHandlingMiddleware implements MiddlewareInterface
+class ExceptionHandlingMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
+    use \PSR\Log\LoggerAwareTrait;
+
     /**
      * Attempts a request and catches stray exceptions. When an exception occurs
      * hand this off to another Middleware to decoreate the page.
@@ -33,11 +37,24 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface
         try {
             $status = 200;
             return $handler->handle($request);
+            /* The order of these catch statements matter and should go from
+             * most to least specific. Otherwise all Exceptions will be caught
+             * as their more generic parent class which reduces precision.
+             */
         } catch (\NotFound $e) {
-            error_log($e->getMessage() . $e->getTraceAsString());
+            $this->logger->notice($e->getMessage() . $e->getTraceAsString());
             $status = 404;
+        } catch (\DatabaseException $e) {
+            $this->logger->critical($e->getMessage() . $e->getTraceAsString());
+            $status = 500;
+        } catch (\ConfigurationException $e) {
+            $this->logger->critical($e->getMessage() . $e->getTraceAsString());
+            $status = 500;
+        } catch (\LorisException $e) {
+            $this->logger->error($e->getMessage() . $e->getTraceAsString());
+            $status = 500;
         } catch (\Exception $e) {
-            error_log($e->getMessage() . $e->getTraceAsString());
+            $this->logger->error($e->getMessage() . $e->getTraceAsString());
             $status = 500;
         }
 

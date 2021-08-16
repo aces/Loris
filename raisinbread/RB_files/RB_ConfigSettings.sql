@@ -102,5 +102,9 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (105,'dateDisplayFormat','The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent.',1,0,'text',1,'Date display format',27);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (106,'IssueTrackerDataPath','Path to Issue Tracker data files',1,0,'web_path',26,'Issue Tracker Data Path',8);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (107,'adminContactEmail','An email address that users can write to in order to report issues or ask question',1,0,'text',1,'Administrator Email',28);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (111,'logs','Settings related to logging',1,0,NULL,NULL,'Log Settings',12);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (112,'database_log_level','Verbosity of database logging',1,0,'log_level',111,'Database Log Level',3);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (113,'request_log_level','Verbosity of HTTP request logs',1,0,'log_level',111,'HTTP Request Log Level',3);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (114,'exception_log_level','Verbosity of PHP exception logging',1,0,'log_level',111,'HTTP Request Log Level',3);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
