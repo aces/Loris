@@ -67,13 +67,11 @@ foreach ($flagData as $cmid => $data) {
     $decs = $instrument->_determineRequiredElementsCompleted();
     $instrument->_setRequiredElementsCompletedFlag($decs);
 
-
-    $jsonData = json_decode($data['Data']);
+    $jsonData = json_decode($data['Data'], true);
 
     // Unset Data_entry_completion_status so that it is not
     // saved to data column
     if (isset($jsonData['Data_entry_completion_status'])) {
-        print_r($cmid);
         unset($jsonData['Data_entry_completion_status']);
 
         // $instrument->save() is not used here in order to explicitly REMOVE the
@@ -81,12 +79,10 @@ foreach ($flagData as $cmid => $data) {
         // column in flag.
         // unsafeUpdate is used here as it is in _save() function from NDB_BVL_Instrument
         // so that html characters are not escaped
-        if (!empty($dataToUpdate)) {
-            $DB->unsafeUpdate(
-                'flag',
-                [$data => json_encode($jsonData)],
-                ['CommentID' => $cmid]
-            );
-        }
+        $DB->unsafeUpdate(
+            'flag',
+            ['Data' => json_encode($jsonData)],
+            ['CommentID' => $cmid]
+        );
     }
 }
