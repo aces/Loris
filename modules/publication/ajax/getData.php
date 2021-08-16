@@ -20,6 +20,7 @@ if (isset($_REQUEST['action'])) {
 
     if ($action === 'getData') {
         if (userCanGetData($db, $user)) {
+            header('Content-Type: application/json');
             exit(json_encode(getData($db)));
         } else {
             http_response_code(403);
@@ -31,6 +32,7 @@ if (isset($_REQUEST['action'])) {
     } elseif ($action === 'getProjectData') {
         $id = $_REQUEST['id'];
         if (userCanGetData($db, $user, $id)) {
+            header('Content-Type: application/json');
             exit(json_encode(getProjectData($db, $user, $id)));
         } else {
             http_response_code(403);
