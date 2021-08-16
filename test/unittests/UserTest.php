@@ -1155,7 +1155,7 @@ class UserTest extends TestCase
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,
-                     'action'      => 'View/Create',
+                    'action'      => 'View/Create',
                     'moduleID'    => 5,
                     'label'       => 'Timepoint List: View/Create description 3'
                 ]
