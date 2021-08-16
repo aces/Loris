@@ -12,7 +12,7 @@
   */
 use Facebook\WebDriver\WebDriverSelect;
 use Facebook\WebDriver\WebDriverBy;
- require_once __DIR__
+require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
  /**
   * Implements tests for conflict resolver
@@ -50,7 +50,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
-        $this->setUpConfigSetting("useProjects", "true");
     }
      /**
       * Delete testing data from database
@@ -61,7 +60,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function tearDown(): void
     {
         parent::tearDown();
-        $this->restoreConfigSetting("useProjects");
         // if data not exist then insert the origin test data
         $CommentId1 = $this->DB->pselectOne(
             'SELECT CommentId1 FROM conflicts_unresolved
@@ -225,8 +223,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/conflict_resolver/?CandID=475906&instrument=radiology_review"
         );
-         $element    = "tr:nth-child(1) .form-control";
-         $row        = self::$display;
+        $element     = "tr:nth-child(1) .form-control";
+        $row         = self::$display;
         $el_dropdown = new WebDriverSelect(
             $this->safeFindElement(WebDriverBy::cssSelector("$element"))
         );
@@ -235,7 +233,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector($row)
         )->getText();
-         // 4 means there are 4 records under this site.
-        $this->assertStringContainsString("of 575", $bodyText);
+        // 4 means there are 4 records under this site.
+        $this->assertStringContainsString("of 572", $bodyText);
     }
 }
