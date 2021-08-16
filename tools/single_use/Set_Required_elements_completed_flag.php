@@ -30,6 +30,15 @@ to generate a DROP COLUMN patch to remove the old column from instrument tables.
 \n";
 $DB = \Database::singleton();
 
+$loris = new \LORIS\LorisInstance(
+    \NDB_Factory::singleton()->database(),
+    \NDB_Factory::singleton()->config(),
+    [
+        "project/modules",
+        "modules",
+    ]
+);
+
 // Get all data from flag to back-populate
 $flagData = $DB->pselectWithIndexKey(
     "SELECT Data, CommentID, Test_name 
@@ -44,6 +53,7 @@ foreach ($flagData as $cmid => $data) {
     // instantiate instrument
     try {
         $instrument = NDB_BVL_Instrument::factory(
+            $loris,
             $data['Test_name'],
             $cmid,
             ''
@@ -53,29 +63,30 @@ foreach ($flagData as $cmid => $data) {
         continue;
     }
 
-    $dataArray = $instrument->getInstanceData();
-    $desc      = $data['Data_entry_completion_status'];
+    // determine and set required elements completed
+    $decs = $instrument->_determineRequiredElementsCompleted();
+    $instrument->_setRequiredElementsCompletedFlag($decs);
 
-    // change value from complete / incomplete to Y / N
-    if ($decs === 'Complete') {
-        $dataToUpdate['Required_elements_completed'] = 'Y';
-    }
+
+    $jsonData = json_decode($data['Data']);
 
     // Unset Data_entry_completion_status so that it is not
     // saved to data column
-    if (isset($dataArray['Data_entry_completion_status'])) {
-        unset($dataArray['Data_entry_completion_status']);
-        $dataToUpdate['Data'] = json_encode($dataArray);
-    }
+    if (isset($jsonData['Data_entry_completion_status'])) {
+        print_r($cmid);
+        unset($jsonData['Data_entry_completion_status']);
 
-    // $instrument->save() is not used here in order to explicitly REMOVE the
-    // Data_entry_completion_status field from the JSON string saved in the Data
-    // column in flag.
-    if (!empty($dataToUpdate)) {
-        $DB->update(
-            'flag',
-            $dataToUpdate,
-            ['CommentID' => $cmid]
-        );
+        // $instrument->save() is not used here in order to explicitly REMOVE the
+        // Data_entry_completion_status field from the JSON string saved in the Data
+        // column in flag.
+        // unsafeUpdate is used here as it is in _save() function from NDB_BVL_Instrument
+        // so that html characters are not escaped
+        if (!empty($dataToUpdate)) {
+            $DB->unsafeUpdate(
+                'flag',
+                [$data => json_encode($jsonData)],
+                ['CommentID' => $cmid]
+            );
+        }
     }
 }

@@ -34,12 +34,26 @@ will result in a loss of data.
 echo "Getting instrument list...\n";
 $DB = \Database::singleton();
 
+$loris = new \LORIS\LorisInstance(
+    \NDB_Factory::singleton()->database(),
+    \NDB_Factory::singleton()->config(),
+    [
+        "project/modules",
+        "modules",
+    ]
+);
+
 // Get instrument names
 $instruments = [];
 foreach (\Utility::getAllInstruments() as $testname => $fullName) {
     // Instantiate instrument
     try {
-        $instr = \NDB_BVL_Instrument::factory($testname, '', '');
+        $instr = \NDB_BVL_Instrument::factory(
+            $loris, 
+            $testname, 
+            '', 
+            ''
+        );
     } catch (Exception $e) {
         echo "$testname does not seem to be a valid instrument.\n";
         continue;
