@@ -229,9 +229,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             $this->query .= ' AND session.CenterID IN (' . $site_arr . ')';
         }
 
-        $proj_arr     = implode(",", $user->getProjectIDs());
-        $this->query .= " AND session.ProjectID IN ($proj_arr)";
-
         $this->group_by = '';
         $this->order_by = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->headers  = [
@@ -257,6 +254,8 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
+        // Create user object
+        $user = \NDB_Factory::singleton()->user();
 
         // Get instruments
         $instruments = \Utility::getAllInstruments();
@@ -265,17 +264,34 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $visits = \Utility::getVisitList();
         $visits = array_merge(['' => 'All'], $visits);
 
+        // Get sites
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList();
+            foreach ($sites as $key => $site) {
+                unset($sites[$key]);
+                $sites[$site] = $site;
+            }
+            if (is_array($sites)) {
+                $sites = ['' => 'All'] + $sites;
+            }
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+            foreach ($sites as $key => $site) {
+                unset($sites[$key]);
+                $sites[$site] = $site;
+            }
+            $sites = ['' => 'All User Sites'] + $sites;
+        }
+
         $labelOptions = [
             'addEmptyOption'   => true,
             'emptyOptionValue' => '',
         ];
 
         // Add form elements
-        $this->addSelect(
-            'site',
-            'For Site:',
-            ['' => 'All'] + $this->getSiteOptions(false)
-        );
+        $this->addSelect('site', 'For Site:', $sites);
         $this->addSelect('instrument', 'Instrument:', $instruments, $labelOptions);
         $this->addSelect('visitLabel', 'Visit label:', $visits);
         $this->addBasicText(
@@ -297,7 +313,14 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             ]
         );
         $this->addBasicText('question', 'Question:');
-        $this->addSelect('project', 'Project: ', $this->getProjectOptions(false));
+
+        // Project list, if applicable
+        $list_of_projects = [];
+        $projectList      = \Utility::getProjectList();
+        foreach ($projectList as $key => $value) {
+            $list_of_projects[$value] = $value;
+        }
+        $this->addSelect('project', 'Project: ', $list_of_projects);
     }
 
     /**
