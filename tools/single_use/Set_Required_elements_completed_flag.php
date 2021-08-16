@@ -77,8 +77,8 @@ foreach ($flagData as $cmid => $data) {
         // $instrument->save() is not used here in order to explicitly REMOVE the
         // Data_entry_completion_status field from the JSON string saved in the Data
         // column in flag.
-        // unsafeUpdate is used here as it is in _save() function from NDB_BVL_Instrument
-        // so that html characters are not escaped
+        // unsafeUpdate is used here as it is in _save() function from
+        // NDB_BVL_Instrument so that html characters are not escaped
         $DB->unsafeUpdate(
             'flag',
             ['Data' => json_encode($jsonData)],

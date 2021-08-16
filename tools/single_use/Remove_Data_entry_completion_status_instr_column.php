@@ -49,9 +49,9 @@ foreach (\Utility::getAllInstruments() as $testname => $fullName) {
     // Instantiate instrument
     try {
         $instr = \NDB_BVL_Instrument::factory(
-            $loris, 
-            $testname, 
-            '', 
+            $loris,
+            $testname,
+            '',
             ''
         );
     } catch (Exception $e) {
