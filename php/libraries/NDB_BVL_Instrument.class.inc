@@ -2319,11 +2319,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 default:
                     $values[$row['COLUMN_NAME']] = null;
                 }
-                $db->update(
-                    $this->table,
-                    $values,
-                    ['CommentID' => $this->commentID]
-                );
             }
             $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
