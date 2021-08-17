@@ -338,6 +338,8 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
+        // create user object
+        $user        =&        \User::singleton();
         $config      =&        \NDB_Config::singleton();
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
@@ -383,12 +385,12 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         $this->addSelect(
             'Project',
             'Project',
-            ['' => 'All'] + $this->getProjectOptions()
+            ['' => 'All'] + $this->getProjectOptions($user)
         );
         $this->addSelect(
             'Subproject',
             'Subproject',
-            ['' => 'All'] + $this->getSubprojectOptions()
+            ['' => 'All'] + $this->getSubprojectOptions($user)
         );
 
         $this->addSelect(
@@ -398,7 +400,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                 ''         => 'All (including unknown)',
                 'AllKnown' => 'All (excluding unknown)',
                 'Unknown'  => 'Unknown'
-            ] + $this->getSiteOptions(),
+            ] + $this->getSiteOptions($user),
         );
     }
 

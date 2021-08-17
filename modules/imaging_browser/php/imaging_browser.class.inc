@@ -86,6 +86,9 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
+        // create user object
+        $user = \User::singleton();
+
         // get visit QC status options
         $visitQCStatus = [
             'Pass' => 'Pass',
@@ -118,13 +121,11 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         return [
             'sites'         => $this->getSiteOptions(
+                $user,
                 false,
-                [
-                    'imaging_browser_view_allsites',
-                    'imaging_browser_phantom_allsites',
-                ]
+                $this->allSitePermissionNames()
             ),
-            'projects'      => $this->getProjectOptions(false),
+            'projects'      => $this->getProjectOptions($user, false),
             'visitQCStatus' => $visitQCStatus,
             'sequenceTypes' => $all_scan_types,
             'pendingNew'    => $pending,

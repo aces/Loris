@@ -179,6 +179,7 @@ class Imaging_QC extends \NDB_Menu_Filter
     {
 
         $this->skipTemplate = true;
+        $user       = \User::singleton();
         $db         = \Database::singleton();
         $visitList  = \Utility::getVisitList();
         $scan_types = $this->_getScanTypes();
@@ -199,10 +200,9 @@ class Imaging_QC extends \NDB_Menu_Filter
         ];
 
         $this->fieldOptions = [
-
-            'site'             => $this->getSiteOptions(false, []),
-            'project'          => $this->getProjectOptions(false),
-            'subproject'       => $this->getSubprojectOptions(false),
+            'site'             => $this->getSiteOptions($user, false, null),
+            'project'          => $this->getProjectOptions($user, false),
+            'subproject'       => $this->getSubprojectOptions($user, false),
             'scanType'         => $scan_types,
             'mRIParameterForm' => [
                 "Incomplete" => "Incomplete",
@@ -286,7 +286,10 @@ class Imaging_QC extends \NDB_Menu_Filter
         $this->query .= " WHERE site IN ($site_arr) ";
 
         // allow only to view own project data
-        $project_arr  = "'" . implode("', '", $this->getProjectOptions(true)) . "'";
+        $project_arr  = "'" . implode(
+            "', '",
+            $this->getProjectOptions($user, true)
+        ) . "'";
         $this->query .= " AND project IN ($project_arr) ";
 
         $this->columns = [
