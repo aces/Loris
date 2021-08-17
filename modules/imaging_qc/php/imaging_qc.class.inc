@@ -280,9 +280,14 @@ class Imaging_QC extends \NDB_Menu_Filter
         $this->query = " FROM ( " . $query . " ) as tmp";
 
         $user = \User::singleton();
+
         // allow only to view own site data
         $site_arr     = "'" . implode("', '", $user->getStudySites()) . "'";
         $this->query .= " WHERE site IN ($site_arr) ";
+
+        // allow only to view own project data
+        $project_arr  = "'" . implode("', '", $this->getProjectOptions(true)) . "'";
+        $this->query .= " AND project IN ($project_arr) ";
 
         $this->columns = [
             'PSCID',
