@@ -73,6 +73,25 @@ class NDB_BVL_InstrumentStatus
         'Pass',
     ];
 
+
+    /**
+     * The LORIS instance that the status comes from
+     *
+     * @var \LORIS\LorisInstance
+     */
+    protected $loris;
+
+    /**
+     * Construct an NDB_BVL_InstrumentStatus object to manage
+     * instrument status flags.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance hosting
+     *                                    the instrument
+     */
+    public function __construct(\LORIS\LorisInstance $loris)
+    {
+        $this->loris = $loris;
+    }
     /**
      * Loads the object with the current status of the instrument
      *
@@ -213,6 +232,7 @@ class NDB_BVL_InstrumentStatus
 
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
+                        $this->loris,
                         $instrumentName,
                         $principalCommentId,
                         $DDECommentId

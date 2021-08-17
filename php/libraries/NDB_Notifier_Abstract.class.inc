@@ -299,16 +299,8 @@ abstract class NDB_Notifier_Abstract
             ]
         );
 
-        $reqPerm  =[];
-        $userPerm =[];
-        //Build and compare arrays
-        foreach ($necessary as $k=>$row) {
-            $reqPerm[] =$row['perm_id'];
-        }
-
-        foreach ($current as $k=>$row) {
-            $userPerm[] =$row['permID'];
-        }
+        $reqPerm  = array_column($necessary, 'perm_id');
+        $userPerm = array_column($current, 'permID');
 
         $diff = array_diff($reqPerm, $userPerm);
 

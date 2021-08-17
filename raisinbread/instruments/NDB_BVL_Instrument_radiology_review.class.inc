@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -31,12 +32,6 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $this->_requiredElements = array(
             'Date_taken',
             'Examiner'
-        );
-
-        $this->dateTimeFields = array(
-            'Date_taken',
-            'MRI',
-            'Review'
         );
 
         // setup the form

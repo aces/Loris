@@ -46,8 +46,19 @@ class NDB_PageTest extends TestCase
     {
         parent::setUp();
 
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($mockconfig);
+        $factory->setDatabase($mockdb);
+
         $this->_module = new NullModule("test_module");
         $this->_page   = new NDB_Page(
+            new \LORIS\LorisInstance($mockdb, $mockconfig, []),
             $this->_module,
             "test_page",
             "515",
@@ -763,7 +774,6 @@ class NDB_PageTest extends TestCase
         $this->_page->name = "page_name";
         $this->_page->page = "page_name";
         $name = $this->_page->name;
-        $page = $this->_page->page;
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name")

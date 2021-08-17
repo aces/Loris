@@ -112,7 +112,6 @@ class Imaging_Session_ControlPanel
         * any way by any user.
          */
         $params     = [];
-        $ID         = 'NULL';
         $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";

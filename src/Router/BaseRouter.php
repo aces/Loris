@@ -92,8 +92,22 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $modulename = $components[0];
         }
 
-        $factory  = \NDB_Factory::singleton();
-        $ehandler = new \LORIS\Middleware\ExceptionHandlingMiddleware();
+        $factory           = \NDB_Factory::singleton();
+        $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
+        $exceptionloglevel = $this->lorisinstance->getConfiguration()
+            ->getLogSettings()
+            ->getExceptionLogLevel();
+
+        if ($exceptionloglevel != "none") {
+            $ehandler->setLogger(
+                new \LORIS\Log\ErrorLogLogger(
+                    $factory->config()->getLogSettings()->getExceptionLogLevel()
+                )
+            );
+        } else {
+            $ehandler->setLogger(new \PSR\Log\NullLogger);
+        }
+
         if ($this->lorisinstance->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
@@ -115,15 +129,13 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
         if (preg_match("/^([0-9]{6})$/", $components[0])) {
-            // FIXME: This assumes the baseURL is under /
-            $path    = $uri->getPath();
             $baseurl = $uri->withPath("")->withQuery("");
 
             $factory->setBaseURL($baseurl);
             if (count($components) == 1) {
                 $request = $request
-                ->withAttribute("baseurl", $baseurl->__toString())
-                ->withAttribute("CandID", $components[0]);
+                    ->withAttribute("baseurl", $baseurl->__toString())
+                    ->withAttribute("CandID", $components[0]);
                 $module  = \Module::factory("timepoint_list");
                 $mr      = new ModuleRouter($module);
                 return $ehandler->process($request, $mr);

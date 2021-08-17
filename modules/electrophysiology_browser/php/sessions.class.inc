@@ -131,7 +131,7 @@ class Sessions extends \NDB_Page
         }
 
         $outputType = $parameters['outputType'];
-        if (!in_array($outputType, ['raw', 'derivatives', 'all_types'])) {
+        if (!in_array($outputType, ['raw', 'derivative', 'all_types'])) {
             return (new \LORIS\Http\Response\JSON\BadRequest(
                 'invalid output type'
             ));
@@ -395,10 +395,11 @@ class Sessions extends \NDB_Page
         ];
 
         $queries = [
-            'physiological_electrode'  => 'physiological_electrode_file',
-            'physiological_channel'    => 'physiological_channel_file',
-            'physiological_task_event' => 'physiological_task_event_file',
-            'physiological_archive'    => 'all_files',
+            'physiological_electrode'          => 'physiological_electrode_file',
+            'physiological_channel'            => 'physiological_channel_file',
+            'physiological_task_event'         => 'physiological_task_event_file',
+            'physiological_annotation_archive' => 'physiological_annotation_files',
+            'physiological_archive'            => 'all_files',
         ];
 
         foreach ($queries as $query_key => $query_value) {

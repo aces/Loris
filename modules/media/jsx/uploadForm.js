@@ -44,21 +44,28 @@ class MediaUploadForm extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        this.setState({
+          error: 'An error occurred when loading the form!',
+        });
+        return;
+      }
+
+      response.json().then((data) => {
+        this.setState({
           Data: data,
           isLoaded: true,
         });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -279,34 +286,25 @@ class MediaUploadForm extends Component {
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        if (formData[key] !== '') {
-          formObj.append(key, formData[key]);
-        }
+    let formObject = new FormData();
+    for (const [key, value] of Object.entries(formData)) {
+      if (formData[key] !== '') {
+        formObject.append(key, value);
       }
     }
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      success: function(data) {
+
+    let xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', (evt) => {
+      if (evt.lengthComputable) {
+        let percent = Math.round((evt.loaded / evt.total) * 100);
+        this.setState({uploadProgress: percent});
+      }
+    }, false);
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status < 400) {
         // Update data "row" into table
-        this.props.insertRow(JSON.parse(data));
+        this.props.insertRow(JSON.parse(xhr.response));
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(formData.file.name);
@@ -321,17 +319,38 @@ class MediaUploadForm extends Component {
           uploadProgress: -1,
         });
         swal.fire('Upload Successful!', '', 'success');
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
+      } else {
+        console.error(xhr.status + ': ' + xhr.statusText);
+        let msg = 'Upload error!';
+        if (xhr.response) {
+          const resp = JSON.parse(xhr.response);
+          if (resp.message) {
+            msg = resp.message;
+          }
+        }
+
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
         });
         swal.fire(msg, '', 'error');
-      }.bind(this),
-    });
+      }
+    }, false);
+
+    xhr.addEventListener('error', () => {
+      console.error(xhr.status + ': ' + xhr.statusText);
+      let msg = xhr.response && xhr.response.message
+        ? xhr.response.message
+        : 'Upload error!';
+      this.setState({
+        errorMessage: msg,
+        uploadProgress: -1,
+      });
+      swal.fire(msg, '', 'error');
+    }, false);
+
+    xhr.open('POST', this.props.action);
+    xhr.send(formObject);
   }
 
   /**

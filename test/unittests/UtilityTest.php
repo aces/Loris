@@ -224,7 +224,7 @@ class UtilityTest extends TestCase
     public function testCalculateAgeFormat($first, $second)
     {
         $this->expectException('\LorisException');
-        $array = Utility::calculateAge($first, $second);
+        Utility::calculateAge($first, $second);
     }
 
     /**

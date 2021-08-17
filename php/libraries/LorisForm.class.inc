@@ -1618,7 +1618,6 @@ class LorisForm
     {
         $val      = $this->getValue($el['name']);
         $checked  = '';
-        $value    = '';
         $disabled = '';
         $value    = $el["checkStates"];
         if ($val === $value[1]) {
@@ -2063,7 +2062,7 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -2125,8 +2124,6 @@ class LorisForm
             $bracketIdx = strpos($name, '[');
             if ($bracketIdx !== false) {
                 $fieldName = substr($name, 0, $bracketIdx);
-                $fieldIdx  = substr($name, $bracketIdx+1);
-                $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
                     $arr[$fieldName] = $this->getValue($fieldName);
                 }

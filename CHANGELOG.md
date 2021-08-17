@@ -8,12 +8,13 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-##LORIS 24.0 (Release Date: ??)
+## LORIS 24.0 (Release Date: ??)
 ### Core
 - New classes to describe a data dictionary (PR #6938)
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
+- Login module adds toggle visibility for password field.
 
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
@@ -23,8 +24,9 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
+- The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 #### Bug Fixes
-- *Add item here*
+- The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
@@ -35,11 +37,16 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### API Documentation (**New Module**)
+- New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- Deprecation of `begintable` and `endtable` elements in LINST instruments
+- Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 ### Notes For Developers
 - *Add item here*
 

@@ -38,10 +38,10 @@ class ElectrophysiologyBrowserRow implements \LORIS\Data\DataInstance,
      *
      * @param array      $row The row (in the same format as
      *                        \Database::pselectRow returns
-     * @param integer    $cid The centerID affiliated with this row.
+     * @param \CenterID  $cid The centerID affiliated with this row.
      * @param \ProjectID $pid The projectID affiliated with this row.
      */
-    public function __construct(array $row, int $cid, \ProjectID $pid)
+    public function __construct(array $row, \CenterID $cid, \ProjectID $pid)
     {
         $this->DBRow     = $row;
         $this->CenterID  = $cid;
@@ -62,9 +62,9 @@ class ElectrophysiologyBrowserRow implements \LORIS\Data\DataInstance,
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
         return $this->CenterID;
     }

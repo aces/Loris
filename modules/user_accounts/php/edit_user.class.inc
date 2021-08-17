@@ -636,22 +636,14 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // it is a new user
-        $group = [];
         if ($this->identifier == '') {
             // user name
-            $group[] = $this->createText('UserID', 'User name');
-            $group[] = $this->createCheckbox(
+            $this->addBasicText('UserID', 'User name', ['required' => true]);
+            $this->addCheckbox(
                 'NA_UserID',
-                'Make user name match email address'
+                'Make user name match email address',
+                []
             );
-            $this->addGroup(
-                $group,
-                'UserID_Group',
-                'User name',
-                $this->_GUIDelimiter,
-                ['required' => true]
-            );
-            unset($group);
 
         } else {
             // It is an existing user:
@@ -710,7 +702,7 @@ class Edit_User extends \NDB_Form
 
         // extra info
 
-        ////if the option is not set or if it's and it's true then display it
+        // if the option is not set or if it's and it's true then display it
 
         if ($additional_user_info) {
             $this->addBasicText('Degree', 'Degree');
@@ -726,17 +718,8 @@ class Edit_User extends \NDB_Form
         }
 
         // email address
-        $group   = [];
-        $group[] = $this->createText('Email', 'Email address');
-        $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
-        $this->addGroup(
-            $group,
-            'Email_Group',
-            'Email address',
-            $this->_GUIDelimiter,
-            ['required' => true]
-        );
-        unset($group);
+        $this->addBasicText('Email', 'Email address', ['required' => true]);
+        $this->addCheckbox('SendEmail', 'Send email to user', []);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
@@ -765,8 +748,8 @@ class Edit_User extends \NDB_Form
             // allow only to add to their own site
             $site_arr = $editor->getCenterIDs();
             foreach ($site_arr as $key => $val) {
-                $site[$key]        =& \Site::singleton($val);
-                $siteOptions[$val] = $site[$key]->getCenterName();
+                $site["$key"]        =& \Site::singleton($val);
+                $siteOptions["$val"] = $site["$key"]->getCenterName();
             }
         }
 
@@ -784,7 +767,7 @@ class Edit_User extends \NDB_Form
         $editorProjects = $editor->getProjectIDs();
         $projects       = \Utility::getProjectList();
         $projectOptions = [];
-        foreach ($editorProjects as $key => $projectID) {
+        foreach (array_values($editorProjects) as $projectID) {
             $projectOptions[$projectID->__toString()]
                 = $projects[$projectID->__toString()];
         }
@@ -912,9 +895,18 @@ class Edit_User extends \NDB_Form
             $this->tpl_data['can_reject']
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
-        // get the editor's permissions
 
-        $perms    = $editor->getPermissionsVerbose();
+        // get the editor's permissions
+        if ($editor->hasPermission('superuser')) {
+            $query = "SELECT p.permID, p.code, p.description, pc.Description as type
+            FROM permissions p
+                LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+                ORDER BY p.categoryID, p.description";
+            $perms = $factory->database()->pselect($query, []);
+        } else {
+            $perms = $editor->getPermissionsVerbose();
+        }
+
         $lastRole = '';
         $group    = [];
         foreach ($perms as $row) {

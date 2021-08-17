@@ -14,7 +14,8 @@ namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \Loris\StudyEntities\Candidate\CandID;
+
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The timepoint list menu
@@ -76,9 +77,8 @@ class Timepoint_List extends \NDB_Menu
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
 
-        $numberOfVisits           = 0;
-        $this->tpl_data['candID'] = $this->candID;
-        $this->tpl_data['PSCID']  = $candidate->getPSCID();
+        $this->tpl_data['candID']    = $this->candID;
+        $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
 
         $listOfSessionIDs = $candidate->getListOfTimePoints();
@@ -121,7 +121,6 @@ class Timepoint_List extends \NDB_Menu
                 if (empty($firstDateOfVisit)) {
                     $firstDateOfVisit = $dateOfVisit;
                 }
-                $numberOfVisits++;
             }
 
             // get timepoint data

@@ -53,6 +53,21 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($this->hasPrefix('/static/', $request->getURI())) {
+            /*
+             * Bypass for statically served files. If the request url
+             * is /api/static/... this will call the handle  function
+             * of the superclass \Module.
+             *
+             * It prevents this class handle to reject the request because
+             * of the absence of version in the url.
+             *
+             * Important!! There is no permission check on those files
+             */
+            return  parent::handle($request);
+        }
+
+        // Requests sent to this module must start with /api/$version
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(
@@ -113,5 +128,15 @@ class Module extends \Module
     public function getLongName() : string
     {
         return "API";
+    }
+
+    /**
+     * This module have a specification
+     *
+     * @return bool Always true
+     */
+    public function hasAPISpecification() : bool
+    {
+        return true;
     }
 }

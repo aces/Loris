@@ -61,7 +61,8 @@ class Module extends \Module
         // Falling back to instrument_list, ensure that the CandID
         // and SessionID are valid, and if so attach the models to
         // the request.
-        $page = $this->loadPage("instrument_list");
+        $loris = $request->getAttribute("loris");
+        $page  = $this->loadPage($loris, "instrument_list");
         '@phan-var Instrument_List $page';
 
         $gets = $request->getQueryParams();

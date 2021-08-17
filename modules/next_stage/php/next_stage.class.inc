@@ -118,6 +118,7 @@ class Next_Stage extends \NDB_Form
 
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
+            $this->loris,
             $timePoint->getSubprojectID(),
             $newStage,
             $timePoint->getVisitLabel(),

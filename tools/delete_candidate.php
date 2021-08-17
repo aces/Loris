@@ -27,8 +27,7 @@ set_include_path(
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-
-use LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * This script deletes the specified candidate information.
@@ -166,9 +165,10 @@ USAGE;
 function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 {
 
-    //Find candidate...
+    // Find candidate...
     $candidate = new Candidate();
-    $candidate->select($CandID); //find the candidate with the given CandID
+    // find the candidate with the given CandID
+    $candidate->select(new CandID($CandID));
 
     // Passing argument to delete session script
     $outputType ="";

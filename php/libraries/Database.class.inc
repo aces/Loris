@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 define("DEBUG", false);
+use \Psr\Log\LoggerAwareInterface;
 
 /**
  * Database abstraction layer presents a unified interface to database
@@ -12,8 +13,10 @@ define("DEBUG", false);
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Database
+class Database implements LoggerAwareInterface
 {
+    use \Psr\Log\LoggerAwareTrait;
+
     /**
      * The database handle, created by the connect() method
      *
@@ -51,6 +54,17 @@ class Database
      */
     private $_databaseName = '';
 
+    /**
+     * Constructor must be public for unit tests to pass, but this should not
+     * be used directly. Should only be called by singleton method.
+     */
+    public function __construct()
+    {
+        // Begins with a PSR NullLogger because we don't know the appropriate
+        // level until after the database connection is established for NDB_Config,
+        // NDB_Factory will set an appropriate ApacheLogger after the fact.
+        $this->setLogger(new \Psr\Log\NullLogger);
+    }
     /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
@@ -102,7 +116,7 @@ class Database
 
             // create the connection if none exists
             if (empty($connections[$connection])) {
-                $connections[$connection] = new Database;
+                $connections[$connection] = new Database();
                 $connections[$connection]->connect(
                     $database,
                     $username,
@@ -622,6 +636,7 @@ class Database
             return;
         }
 
+        $this->logger->info("Deleted from database with query $query");
         if (preg_match("/=NULL/", $query)) {
             throw new DatabaseException(
                 "NULL values not allowed in a WHERE structure.",
@@ -1254,11 +1269,12 @@ class Database
      */
     function _printQuery(string $query, array $params = []): void
     {
-        if (!$this->_showQueries) {
-            return;
-        }
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
+        }
+        $this->logger->debug($query, []);
+        if (!$this->_showQueries) {
+            return;
         }
         print "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())

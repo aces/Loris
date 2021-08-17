@@ -289,7 +289,7 @@ class Utility
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
                 "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID) 
+                JOIN project_subproject_rel USING (SubprojectID)
                 WHERE ProjectID=:pID",
                 ['pID' => $projectID]
             );
@@ -351,7 +351,6 @@ class Utility
         $query .= " GROUP BY Test_name ORDER BY Test_name";
 
         // get the list of instruments
-        $rows  = [];
         $tests = [];
         $rows  = $DB->pselect($query, $params);
 
@@ -458,6 +457,12 @@ class Utility
      */
     static function getAllInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
@@ -481,6 +486,12 @@ class Utility
      */
     static function getAllDDEInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getAllDDEInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $config        = $Factory->config();
@@ -513,12 +524,18 @@ class Utility
      */
     static function getDirectInstruments(): array
     {
+        error_log(
+            "LORIS Deprecation Warning: The getDirectInstruments() function of
+            the Utility class has been deprecated. This function does not load the
+            most accurate Full_name value and should be replaced by
+            getDirectEntryInstrumentNamesList() of the NDB_BVL_Instrument class."
+        );
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         $instruments   = [];
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
             []
         );
@@ -882,7 +899,7 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type 
+            "SELECT ID, Scan_type
              FROM mri_scan_type mri
                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
             []

@@ -48,6 +48,7 @@ class ElectrophysiologyBrowserRowProvisioner
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
+              GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Type,
               s.ID                                      AS SessionID,
               s.CenterID                                AS CenterID,
               s.ProjectID                               AS ProjectID
@@ -78,7 +79,7 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = (int )$row['CenterID'];
+        $cid = new \CenterID($row['CenterID']);
         $pid = new \ProjectID($row['ProjectID']);
         unset($row['CenterID']);
         unset($row['ProjectID']);

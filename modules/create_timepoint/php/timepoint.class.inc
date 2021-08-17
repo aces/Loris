@@ -183,7 +183,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if ($num_sites == 1) {
             $site = \Site::singleton($user_list_of_sites[0]);
         } else if ($num_sites > 1) {
-            $site = \Site::singleton(intval($values['psc']));
+            $site = \Site::singleton(new \CenterID(($values['psc'])));
         }
 
         // Project
@@ -255,7 +255,8 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             null : $values['psc'];
 
         // validate site entered
-        $site = (int) $values['psc'];
+        $site = !empty($values['psc']) ? new \CenterID($values['psc']) : null;
+
         $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         $conflict           = [];

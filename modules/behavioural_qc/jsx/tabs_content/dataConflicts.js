@@ -208,7 +208,15 @@ class DataConflicts extends Component {
           options: options.projects,
         },
       },
-
+      {
+        label: 'Subproject',
+        show: false,
+        filter: {
+          name: 'Subproject',
+          type: 'select',
+          options: options.subprojects,
+        },
+      },
       {
         label: 'Site',
         show: false,

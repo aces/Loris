@@ -45,6 +45,7 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 c.PSCID AS _pscID,
                 s.visit_label AS _visit,
                 s.ProjectID AS _project,
+                s.SubprojectID AS _subproject,
                 psc.CenterID AS _site,
                 s.ID AS _id,
                 f.SessionID as _sessionID,

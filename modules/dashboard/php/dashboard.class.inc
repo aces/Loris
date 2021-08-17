@@ -46,20 +46,32 @@ class Dashboard extends \NDB_Form
     /**
      * Page constructor for the dashboard main page.
      *
-     * @param \Module $module     The test name being accessed
-     * @param string  $page       The subtest being accessed (may be an empty string)
-     * @param string  $identifier The identifier for the data to load on this page
-     * @param string  $commentID  The CommentID to load the data for
-     * @param string  $formname   The name to give this form
+     * @param \LORIS\LorisInstance $loris      The LORIS instance the page is being
+     *                                         constructed for
+     * @param \Module              $module     The test name being accessed
+     * @param string               $page       The subtest being accessed
+     *                                         (may be an empty string)
+     * @param string               $identifier The identifier for the data to
+     *                                         load on this page
+     * @param string               $commentID  The CommentID to load the data for
+     * @param string               $formname   The name to give this form
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID,
         string $formname
     ) {
-        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        parent::__construct(
+            $loris,
+            $module,
+            $page,
+            $identifier,
+            $commentID,
+            $formname
+        );
 
         // This needs to be done before setup so that the widget specific CSS and
         // javascript are available for getCSSDependencies and getJSDependencies,

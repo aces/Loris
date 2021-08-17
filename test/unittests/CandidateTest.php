@@ -515,6 +515,7 @@ class CandidateTest extends TestCase
      */
     public function testGetListOfVisitLabels()
     {
+        $this->markTestSkipped("Test is incomplete");
         $this->_setUpTestDoublesForSelectCandidate();
 
         $selectReturns = [
@@ -534,7 +535,7 @@ class CandidateTest extends TestCase
         }
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
-        //$this->assertEquals($expected, $this->_candidate->getListOfVisitLabels());
+        $this->assertEquals($expected, $this->_candidate->getListOfVisitLabels());
 
     }
 
@@ -1148,9 +1149,11 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
-        $user = $this->getMockBuilder('\User')->getMock();
+        $user = $this->getMockBuilder('\User')
+            ->onlyMethods(['getCenterIDs', 'getProjectIDs'])
+            ->getMock();
         $user->expects($this->once())->method("getCenterIDs")
-            ->willReturn([1, 2]);
+            ->willReturn([new \CenterID("1"), new \CenterID("2")]);
         $user->expects($this->once())->method("getProjectIDs")
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
         '@phan-var \User $user';
@@ -1172,9 +1175,11 @@ class CandidateTest extends TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->_setUpMockDB();
 
-        $user = $this->getMockBuilder('\User')->getMock();
+        $user = $this->getMockBuilder('\User')
+            ->onlyMethods(['getCenterIDs', 'getProjectIDs'])
+            ->getMock();
         $user->expects($this->atLeastOnce())->method("getCenterIDs")
-            ->willReturn([1, 2]);
+            ->willReturn([new \CenterID("1"), new \CenterID("2")]);
         $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([new \ProjectID("2"), new \ProjectID("3")]);
         '@phan-var \User $user';
@@ -1198,7 +1203,7 @@ class CandidateTest extends TestCase
 
         $user = $this->getMockBuilder('\User')->getMock();
         $user->expects($this->atLeastOnce())->method("getCenterIDs")
-            ->willReturn([1, 3]);
+            ->willReturn([new \CenterID("1"), new \CenterID("3")]);
         $user->expects($this->atLeastOnce())->method("getProjectIDs")
             ->willReturn([new \ProjectID("1"), new \ProjectID("3")]);
 

@@ -45,6 +45,8 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (41,'electrophysiology_bro
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (42,'my_preferences','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (43,'candidate_profile','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (44,'dqt','Y');
-INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'parent_portal','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'api_docs','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'parent_portal','Y');
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

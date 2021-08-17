@@ -101,7 +101,7 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to project specific endpoint.
         try {
-            $project_name = $pathparts[1] ?? '';
+            $project_name = urldecode($pathparts[1] ?? '');
             $project      = \NDB_Factory::singleton()
                 ->project($project_name);
         } catch (\NotFound $e) {
