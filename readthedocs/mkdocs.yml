@@ -41,7 +41,6 @@ nav:
         - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
-        - 'Feedback and Issues': 'docs/wiki/99_Developers/Reporting_Issues.md'
 
 use_directory_urls: False
 
