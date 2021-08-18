@@ -258,8 +258,8 @@ class UploadForm extends Component {
         // - Resets errorMessage and hasError so no errors are displayed on form
         // - Displays pop up window with success message
         // - Returns to Browse tab
-        let errorMessage = this.state.errorMessage;
-        let hasError = this.state.hasError;
+        const errorMessage = this.state.errorMessage;
+        const hasError = this.state.hasError;
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = '';
@@ -307,7 +307,7 @@ class UploadForm extends Component {
     console.error(xhr.status + ': ' + xhr.statusText);
 
     let errorMessage = Object.assign({}, this.state.errorMessage);
-    let hasError = Object.assign({}, this.state.hasError);
+    const hasError = Object.assign({}, this.state.hasError);
     let messageToPrint = '';
     if (xhr.response) {
       const resp = JSON.parse(xhr.response);
