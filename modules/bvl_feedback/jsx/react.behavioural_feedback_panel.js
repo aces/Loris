@@ -372,6 +372,7 @@ class CommentEntryForm extends Component {
     super(props);
     this.state = {
       value: '',
+      message: '',
     };
     this.sendComment = this.sendComment.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -383,7 +384,8 @@ class CommentEntryForm extends Component {
   sendComment() {
     this.props.onCommentSend(this.state.value);
     this.setState({
-      value: 'Comment added!',
+      value: '',
+      message: 'Comment added!',
     });
     this.props.toggleThisThread();
   }
@@ -421,6 +423,7 @@ class CommentEntryForm extends Component {
               Send
             </span>
           </div>
+          {this.state.message}
         </td>
       </tr>
     );
@@ -507,6 +510,7 @@ class NewThreadPanel extends Component {
     super(props);
     this.state = {
       textValue: '',
+      message: '',
       selectValue: 'Across All Fields',
       inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
@@ -563,7 +567,10 @@ class NewThreadPanel extends Component {
         }
 
         response.json().then((data) => {
-          this.setState({textValue: 'The new thread has been submitted!'});
+          this.setState({
+            message: 'The new thread has been submitted!',
+            textValue: '',
+          });
           this.props.addThread(data);
           this.props.updateSummaryThread();
         });
@@ -649,6 +656,7 @@ class NewThreadPanel extends Component {
           </div>
         </div>
         <div className='form-group'>
+          {this.state.message}
           <button
             id='save_data'
             onClick={this.createNewThread}
