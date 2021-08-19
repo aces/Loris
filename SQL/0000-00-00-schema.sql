@@ -899,21 +899,21 @@ INSERT INTO bids_export_non_imaging_file_category (BIDSNonImagingFileCategoryNam
   ('session_list_of_scans');
 
 CREATE TABLE `bids_export_files` (
-  `BIDSExportedFileID`           int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `BIDSExportFileLevelID`        int(10) unsigned NOT NULL,
-  `FileID`                       int(10) unsigned DEFAULT NULL,
-  `SessionID`                    int(10) unsigned DEFAULT NULL,
-  `BIDSNonImagingFileCategoryID` int(10) unsigned DEFAULT NULL,
-  `BIDSCategoryID`               int(3)  unsigned DEFAULT NULL,
-  `FileType`                     varchar(12) NOT NULL,
-  `FilePath`                     varchar(255) NOT NULL,
+  `BIDSExportedFileID`            int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSExportFileLevelCategoryID` int(10) unsigned NOT NULL,
+  `FileID`                        int(10) unsigned DEFAULT NULL,
+  `SessionID`                     int(10) unsigned DEFAULT NULL,
+  `BIDSNonImagingFileCategoryID`  int(10) unsigned DEFAULT NULL,
+  `BIDSCategoryID`                int(3)  unsigned DEFAULT NULL,
+  `FileType`                      varchar(12) NOT NULL,
+  `FilePath`                      varchar(255) NOT NULL,
   PRIMARY KEY (`BIDSExportedFileID`),
-  CONSTRAINT `FK_bef_BIDSExportFileLevelID`        FOREIGN KEY (`BIDSExportFileLevelID`)        REFERENCES `bids_export_file_level_category` (`BIDSExportFileLevelCategoryID`),
-  CONSTRAINT `FK_bef_FileID`                       FOREIGN KEY (`FileID`)                       REFERENCES `files`   (`FileID`),
-  CONSTRAINT `FK_bef_SessionID`                    FOREIGN KEY (`SessionID`)                    REFERENCES `session` (`ID`),
-  CONSTRAINT `FK_bef_BIDSNonImagingFileCategoryID` FOREIGN KEY (`BIDSNonImagingFileCategoryID`) REFERENCES `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`),
-  CONSTRAINT `FK_bef_ModalityType`                 FOREIGN KEY (`BIDSCategoryID`)               REFERENCES `bids_category` (`BIDSCategoryID`),
-  CONSTRAINT `FK_bef_FileType`                     FOREIGN KEY (`FileType`)                     REFERENCES `ImagingFileTypes` (`type`)
+  CONSTRAINT `FK_bef_BIDSExportFileLevelID`        FOREIGN KEY (`BIDSExportFileLevelCategoryID`) REFERENCES `bids_export_file_level_category` (`BIDSExportFileLevelCategoryID`),
+  CONSTRAINT `FK_bef_FileID`                       FOREIGN KEY (`FileID`)                        REFERENCES `files`   (`FileID`),
+  CONSTRAINT `FK_bef_SessionID`                    FOREIGN KEY (`SessionID`)                     REFERENCES `session` (`ID`),
+  CONSTRAINT `FK_bef_BIDSNonImagingFileCategoryID` FOREIGN KEY (`BIDSNonImagingFileCategoryID`)  REFERENCES `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`),
+  CONSTRAINT `FK_bef_ModalityType`                 FOREIGN KEY (`BIDSCategoryID`)                REFERENCES `bids_category` (`BIDSCategoryID`),
+  CONSTRAINT `FK_bef_FileType`                     FOREIGN KEY (`FileType`)                      REFERENCES `ImagingFileTypes` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
