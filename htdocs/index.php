@@ -25,6 +25,7 @@ session_cache_limiter("");
 // PHP documentation says this should always be enabled for session security.
 // PHP documentation says this is disabled by default.
 // Explicitly enable it.
+// phpcs:ignore
 // See: https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
 ini_set('session.use_strict_mode', '1');
 
