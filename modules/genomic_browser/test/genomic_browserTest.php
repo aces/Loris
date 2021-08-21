@@ -230,9 +230,9 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testUploadFile()
     {
         $this->safeGet($this->url . "/genomic_browser/");
-        $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::cssSelector("#tab-tabFiles")
-        )->click();
+        );sleep(2);
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "div.panel:nth-child(2) > div:nth-child(1)".
