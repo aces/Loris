@@ -19,16 +19,7 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-$instruments = \NDB_BVL_Instrument::getInstrumentsList(
-    new \LORIS\LorisInstance(
-        $DB,
-        $config,
-        [
-            __DIR__ . "/../../project/modules",
-            __DIR__ . "/../../modules/",
-        ],
-    )
-);
+$instruments = \NDB_BVL_Instrument::getInstrumentsList($lorisInstance);
 
 if (empty($argv[1])
     || (!empty($argv[1])
