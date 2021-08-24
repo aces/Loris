@@ -41,7 +41,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 #### Data Dictionary
-- Changed filter to multiselect  (PR #7040)
+- Changed instrument filter to multiselect  (PR #7040)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
