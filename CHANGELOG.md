@@ -25,6 +25,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 ### Modules
@@ -39,6 +40,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Data Dictionary
+- Changed filter to multiselect  (PR #7040)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
