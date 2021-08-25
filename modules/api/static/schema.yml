@@ -334,6 +334,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_409'
+    patch:
+      tags:
+        - Visit
+      summary: Updates a timepoint. Providing a "Visit" stage with "In Progress" as status will attemp to start the visiti (start next stage).
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitPatchFields'
+      responses:
+        '200':
+          description: The visit was updated successfully
+
   '/candidates/{candid}/{visit}/instruments':
     get:
       tags:
@@ -1888,6 +1918,11 @@ components:
             - Failure
             - Withdrawal
             - In Progress
+    VisitPatchFields:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/VisitMetaFields'
+        - $ref: '#/components/schemas/VisitStages'
     InstrumentScreening:
       type: object
       properties:
