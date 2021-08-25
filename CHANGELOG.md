@@ -27,6 +27,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
+- The imaging uploader now starts automatically if you have the imaging uploader auto-launch set to true and your current upload overwrites an existing file (PR #7084).
+- Script CouchDB_MRI_Importer now computes the correct names the data dictionary entries associated to MRI comments (PR #7082). 
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
