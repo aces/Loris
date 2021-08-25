@@ -26,8 +26,5 @@ Ensure Past,Next 30 Days and today tabs function correctly.
 
 7. Filters 
 Ensure all filters work correctly 
-Earliest date and Latest date is for a date range, however can be used separately. 
-For example, if Earliest date is 2020-01-01, the result is all appointments including and after 2020-01-01
-Similarly, if Latest date is 2020-01-01, the result is all appointments including and before 2020-01-01
 Ensure results are accurate when using more than one filter 
 Results tab should pop up when filtering, and will disappear when you click Clear 
