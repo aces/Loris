@@ -865,6 +865,7 @@ CREATE TABLE `MRICandidateErrors` (
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
+  `EchoTime` double DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_tarchive_MRICandidateError_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
@@ -886,6 +887,7 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
+  `EchoTime` double DEFAULT NULL,
   `MriProtocolChecksGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
