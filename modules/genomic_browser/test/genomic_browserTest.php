@@ -194,7 +194,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clear,
             'Female',
-            '334'
+            '20'
         );
 
         $this->_filterTest(
