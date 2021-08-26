@@ -717,7 +717,7 @@ abstract class LorisIntegrationTest extends TestCase
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
-        $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $this->safeClick(WebDriverBy::cssSelector("$btn"));
     }
 
     /**
