@@ -25,6 +25,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Addition of `changeProject` and `resetProject` helper functions to the `LorisIntegrationTest` class to help test project permissions (PR #6912)
+- Unit tests added for the `NDB_BVL_Instrument`, `NDB_Page`, `NDB_Factory`, `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
@@ -40,8 +42,23 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Instruments
+- General help text added for instrument data entry (PR #6902)
+#### Genomic Browser
+- CNV/CPG records added for candidates to view and test the CNV and Methylation tabs in the Genomic Browser (PR #6900)
+#### Electrophysiology Browser
+- Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
+on the session page to support new annotation features (PR #7345)
+- New integration test class added to this module (PR #6922)
+#### Configuration
+- Addition of configuration settings for the MINC to BIDS converter script (PR #7488)
+#### Candidate Profile
+- New integration test class to test project permissions (PR #6912)
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
+- Removal of references to Reliability module in Raisinbread (PR #6895)
+- Raisinbread visit stage inconsistency changed (PR #6896)
+- HRRT patch sourced to Raisinbread (PR #6897)
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
