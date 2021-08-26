@@ -80,7 +80,7 @@ print "Reading instruments\n";
 //Read the ip_output.txt staging file.
 $fp = fopen(__DIR__."/../ip_output.txt", "r");
 if (!$fp) {
-    print "There was an issue opening the ip_output file. Ensure the 
+    print "There was an issue opening the ip_output file. Ensure the
     file exists and the permissions are properly set.\n";
     die();
 }
@@ -105,6 +105,8 @@ foreach ($instruments AS $instrument) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
         switch($bits[0]){
+        case "testname":
+            break;
         case "table":
             $table = $bits[1];
             print "Instrument: $table\n";
@@ -116,7 +118,7 @@ foreach ($instruments AS $instrument) {
             // insertIgnore does not work here since name
             // is not a Unique key in the database
             $catId = $DB->pselectOne(
-                "SELECT ParameterTypeCategoryID 
+                "SELECT ParameterTypeCategoryID
                        FROM parameter_type_category
                        WHERE Name=:name AND Type=:type",
                 [
@@ -370,4 +372,3 @@ function enumizeOptions($options, $table, $name)
     $enum =implode(",", $enum);
     return "enum($enum)";
 }
-

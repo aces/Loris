@@ -119,7 +119,7 @@ function uploadFile()
     // If required fields are not set, show an error
     if (empty($_FILES)) {
         showMediaError(
-            "File could not be uploaded successfully. 
+            "File could not be uploaded successfully.
             Please contact the administrator.",
             400
         );
@@ -132,7 +132,10 @@ function uploadFile()
 
     checkDateTaken($dateTaken);
 
-    $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    // urldecode() necessary to decode double quotes encoded automatically
+    // by chrome browsers to avoid XSS attacks
+    $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
@@ -181,12 +184,12 @@ function uploadFile()
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
-            $db->insertOnDuplicateUpdate('media', $query);
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
             $result = $db->pselect(
                 'SELECT ID, CandID, CenterID, ProjectID, Visit_label
-                            from session 
+                            from session
                         where ID=:ID',
                 $qparam
             )[0];
