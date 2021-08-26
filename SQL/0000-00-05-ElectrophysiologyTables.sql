@@ -204,7 +204,7 @@ CREATE TABLE `physiological_archive` (
 -- Create physiological_annotation_file_type table
 CREATE TABLE `physiological_annotation_file_type` (
     `FileType`        VARCHAR(20)   NOT NULL UNIQUE,
-    `Description` VARCHAR(255),
+    `Description`     VARCHAR(255),
     PRIMARY KEY (`FileType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -243,7 +243,7 @@ CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
     `Sources`               VARCHAR(255),
-    `Author`                VARCHAR(50),
+    `Author`                VARCHAR(255),
     PRIMARY KEY (`AnnotationParameterID`),
     CONSTRAINT `FK_annotation_file_ID`
         FOREIGN KEY (`AnnotationFileID`)
@@ -252,9 +252,10 @@ CREATE TABLE `physiological_annotation_parameter` (
 
 -- Create an annotation_label_type table
 CREATE TABLE `physiological_annotation_label` (
-  `AnnotationLabelID`    INT(5)       UNSIGNED NOT NULL      AUTO_INCREMENT,
-  `LabelName`            VARCHAR(255)          NOT NULL      UNIQUE,
-  `LabelDescription`         VARCHAR(255)          DEFAULT NULL,
+  `AnnotationLabelID`    INT(5)       UNSIGNED NOT NULL AUTO_INCREMENT,
+  `AnnotationFileID`     INT(10)      UNSIGNED DEFAULT NULL,
+  `LabelName`            VARCHAR(255) NOT NULL,
+  `LabelDescription`     TEXT         DEFAULT NULL,
   PRIMARY KEY (`AnnotationLabelID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -280,6 +281,19 @@ CREATE TABLE `physiological_annotation_instance` (
     CONSTRAINT `FK_annotation_label_ID`
         FOREIGN KEY (`AnnotationLabelID`)
         REFERENCES `physiological_annotation_label` (`AnnotationLabelID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create physiological_annotation_rel table
+CREATE TABLE `physiological_annotation_rel` (
+    `AnnotationTSV`  INT(10)    UNSIGNED NOT NULL,
+    `AnnotationJSON` INT(10)    UNSIGNED NOT NULL,
+    PRIMARY KEY (`AnnotationTSV`, `AnnotationJSON`),
+    CONSTRAINT `FK_AnnotationTSV`
+        FOREIGN KEY (`AnnotationTSV`)
+        REFERENCES `physiological_annotation_file` (`AnnotationFileID`),
+    CONSTRAINT `FK_AnnotationJSON`
+        FOREIGN KEY (`AnnotationJSON`)
+        REFERENCES `physiological_annotation_file` (`AnnotationFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Insert into physiological_output_type
