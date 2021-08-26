@@ -186,19 +186,14 @@ class Instrument_List extends \NDB_Menu_Filter
         // set template data
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
+        $this->tpl_data['stage']     = \Utility::getStageUsingCandID(
+            new CandID(strval($this->tpl_data['candID']))
+        );
 
         // get behavioural battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
-
-        $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
-            new CandID(strval($this->tpl_data['candID']))
-        );
-
-        // get the list of instruments
-        $listOfInstruments = $this->getBatteryInstrumentList(
-            $this->tpl_data['stage']
-        );
+        $listOfInstruments = $battery->getBatteryVerbose();
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -317,72 +312,6 @@ class Instrument_List extends \NDB_Menu_Filter
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
         return $html;
-    }
-
-    /**
-     * Gets an associative array of instruments which are members of the current
-     * battery for instrument list module
-     *
-     * @param string $stage Either 'visit' or 'screening' - determines
-     *                      whether to register only screening instruments
-     *                      or visit instruments
-     *
-     * @return array an associative array containing Test_name,
-     *         Full_name, Sub_group, CommentID
-     */
-    function getBatteryInstrumentList($stage=null)
-    {
-        $DB = \Database::singleton();
-
-        // assert that a battery has already been selected
-        if (is_null($this->timePoint)) {
-            throw new \Exception("No battery selected");
-        }
-
-        // craft the select query
-        $query = "SELECT DISTINCT f.Test_name,
-                    t.Full_name,
-                    f.CommentID,
-                    CONCAT('DDE_', f.CommentID) AS DDECommentID,
-                    ts.Subgroup_name as Sub_group,
-                    ts.group_order as Subgroup_order,
-                    t.isDirectEntry";
-        if (!is_null($stage)) {
-            $query .= ", b.instr_order as instrument_order";
-        }
-        $query  .= " FROM flag f
-            	JOIN test_names t ON (f.Test_name=t.Test_name)
-            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
-            	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = ['SID' => $this->timePoint->getSessionID()];
-
-        if (!is_null($stage)) {
-            $query .= "
-            	LEFT JOIN test_battery b
-       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
-      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL)
-       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
-       	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
-        }
-        $query .= " WHERE f.SessionID=:SID
-            AND LEFT(f.CommentID, 3) != 'DDE'";
-
-        if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
-            $query .= " ORDER BY Subgroup_name";
-        } else {
-            $query .= " ORDER BY Subgroup_order";
-        }
-        if (!is_null($stage)) {
-            $query .= ", instrument_order";
-        } else {
-            $query .= ", Full_name";
-        }
-
-        // get the list of instruments
-        $rows = $DB->pselect($query, $qparams);
-
-        // return all the data selected
-        return $rows;
     }
 
     /**
