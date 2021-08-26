@@ -190,14 +190,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->_filterTest(
-            self::$sex,
-            self::$display,
-            self::$clear,
-            'Female',
-            '334'
-        );
-
-        $this->_filterTest(
             self::$file,
             self::$display,
             self::$clear,
@@ -227,6 +219,13 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$clear,
             'Yes',
             '3 rows'
+        );
+        $this->_filterTest(
+            self::$sex,
+            self::$display,
+            self::$clear,
+            'Female',
+            '334'
         );
     }
 
