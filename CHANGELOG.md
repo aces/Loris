@@ -37,6 +37,10 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### Conflict Resolver
+- Changes are now saved automatically, one by one. Once a conflict is resolved the cell that contains the input field will glow green. It is possible to change
+ the resolved conflicts to a new value until the page is refreshed. [(PR #7558)](https://github.com/aces/Loris/pull/7558)
+- This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
