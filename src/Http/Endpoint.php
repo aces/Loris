@@ -29,11 +29,8 @@ use \Psr\Http\Message\ResponseInterface;
 abstract class Endpoint implements RequestHandlerInterface
 {
     /**
-     * An API endpoint overrides the default LORIS middleware to remove the
-     * PageDecorationMiddleware, since the API only deals with JSON.
-     *
-     * It also acts as its own middleware by validating that an endpoint supports
-     * the HTTP method request type.
+     * An Endpoint overrides the default LORIS middleware to remove the
+     * PageDecorationMiddleware.
      *
      * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 request handler
@@ -42,15 +39,10 @@ abstract class Endpoint implements RequestHandlerInterface
      */
     public function process(
         ServerRequestInterface $request,
-        Endpoint $handler
+        RequestHandlerInterface $handler
     ): ResponseInterface {
-        $user = $request->getAttribute("user");
-
-        if (!$handler->isAccessibleBy($user)) {
-            return new \LORIS\Http\Response\JSON\Forbidden();
-        }
-
-        if ($handler instanceof \LORIS\Middleware\ETagCalculator) {
+        $interfaces = class_implements($handler);
+        if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {
             return (new \LORIS\Middleware\ETag())->process($request, $handler);
         }
 
@@ -64,8 +56,8 @@ abstract class Endpoint implements RequestHandlerInterface
      *
      * @return bool
      */
-    public function isAccessibleBy(\User $user): bool
+    public function hasAccess(\User $user): bool
     {
-        return true;
+        return !($user instanceof \LORIS\AnonymousUser);
     }
 }

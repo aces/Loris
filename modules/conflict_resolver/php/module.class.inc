@@ -15,7 +15,6 @@
 namespace LORIS\conflict_resolver;
 
 use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
