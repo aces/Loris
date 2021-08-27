@@ -220,13 +220,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             'Yes',
             '3 rows'
         );
-        $this->_filterTest(
-            self::$sex,
-            self::$display,
-            self::$clear,
-            'Female',
-            '334'
-        );
     }
 
     /**
