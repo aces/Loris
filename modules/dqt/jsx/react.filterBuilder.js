@@ -702,21 +702,19 @@ class FilterBuilder extends Component {
   defineCSVCandidates(type, data) {
     let session = [];
     let children = [];
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const value = data[key][0];
-        children.push({
-          field: type,
-          fieldType: 'varchar(255)',
-          instrument: 'demographics',
-          operator: 'equal',
-          session: [value],
-          type: 'rule',
-          value: value,
-          visit: 'All',
-        });
-        session.push(value);
-      }
+    for (const item of data) {
+      const value = item[0];
+      children.push({
+        field: type,
+        fieldType: 'varchar(255)',
+        instrument: 'demographics',
+        operator: 'equal',
+        session: [value],
+        type: 'rule',
+        value: value,
+        visit: 'All',
+      });
+      session.push(value);
     }
     const results = {
       session: session,
@@ -741,8 +739,7 @@ class FilterBuilder extends Component {
           console.error(data);
         });
       }
-    }
-    ).catch((error) => {
+    }).catch((error) => {
       console.error(error);
     });
   }
