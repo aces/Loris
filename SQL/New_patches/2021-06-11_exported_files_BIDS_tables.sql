@@ -12,7 +12,6 @@ INSERT INTO ImagingFileTypes (type, description) VALUES
 --
 -- Create table to store PhaseEncodingDirection possible values
 --
-DROP TABLE IF EXISTS `bids_phase_encoding_direction`;
 CREATE TABLE `bids_phase_encoding_direction` (
   `BIDSPhaseEncodingDirectionID`   int(3) unsigned NOT NULL AUTO_INCREMENT,
   `BIDSPhaseEncodingDirectionName` varchar(3) NOT NULL,
@@ -41,7 +40,6 @@ ALTER TABLE bids_mri_scan_type_rel
 --
 -- Table structure for `bids_file_level_category`
 --
-DROP TABLE IF EXISTS `bids_export_file_level_category`;
 CREATE TABLE `bids_export_file_level_category` (
   `BIDSExportFileLevelCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
   `BIDSExportFileLevelCategoryName` varchar(12) NOT NULL,
@@ -58,7 +56,6 @@ INSERT INTO bids_export_file_level_category (BIDSExportFileLevelCategoryName) VA
 --
 -- BIDS non-imaging file types
 --
-DROP TABLE IF EXISTS `bids_export_non_imaging_file_category`;
 CREATE TABLE `bids_export_non_imaging_file_category` (
   `BIDSNonImagingFileCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
   `BIDSNonImagingFileCategoryName` varchar(40) NOT NULL,
@@ -76,7 +73,6 @@ INSERT INTO bids_export_non_imaging_file_category (BIDSNonImagingFileCategoryNam
 --
 -- Table structure for table `bids_export_files`
 --
-DROP TABLE IF EXISTS `bids_export_files`;
 CREATE TABLE `bids_export_files` (
   `BIDSExportedFileID`            int(10) unsigned NOT NULL AUTO_INCREMENT,
   `BIDSExportFileLevelCategoryID` int(10) unsigned NOT NULL,
