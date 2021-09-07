@@ -92,6 +92,7 @@ class DataQueryApp extends Component {
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
     this.importCSV = this.importCSV.bind(this);
+    this.getAllSessions = this.getAllSessions.bind(this);
   }
 
   /**
@@ -1110,6 +1111,14 @@ class DataQueryApp extends Component {
   }
 
   /**
+   * get AllSessions when needed.
+   * @return {array}
+   */
+  getAllSessions() {
+    return this.props.AllSessions;
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -1230,6 +1239,7 @@ class DataQueryApp extends Component {
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFilters'}
             importCSV={this.importCSV}
+            getAllSessions={this.getAllSessions}
           />
         )}
       />

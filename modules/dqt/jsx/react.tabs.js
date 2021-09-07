@@ -138,6 +138,7 @@ let FieldSelectTabPane = (props) => {
  * @return {JSX} - React markup for the component
  */
 let FilterSelectTabPane = (props) => {
+
   return (
     <TabPane TabId={props.TabId} Loading={props.Loading}>
       <FilterBuilder items={props.categories}
@@ -146,6 +147,7 @@ let FilterSelectTabPane = (props) => {
                      Visits={props.Visits}
                      Active={props.Active}
                      importCSV={props.importCSV}
+                     getAllSessions={props.getAllSessions}
       />
     </TabPane>
   );
