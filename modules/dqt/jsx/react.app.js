@@ -133,7 +133,7 @@ class DataQueryApp extends Component {
           let curRequest;
           curRequest = Promise.resolve(
             $.ajax(loris.BaseURL
-              + '/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID='
+              + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
               + encodeURIComponent(this.state.queryIDs[key][i])), {
               data: {
                 DocID: this.state.queryIDs[key][i],
@@ -288,7 +288,7 @@ class DataQueryApp extends Component {
     // This call is made synchronously
     $.ajax({
       url: loris.BaseURL
-        + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
+        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
       success: (data) => {
         rule.fields = data;
       },
@@ -332,7 +332,7 @@ class DataQueryApp extends Component {
         break;
     }
     $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dataquery&script=' + script,
+      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
       success: (data) => {
         let i;
         let allSessions = {};
@@ -732,7 +732,7 @@ class DataQueryApp extends Component {
         $.ajax({
           type: 'POST',
           url: loris.BaseURL
-            + '/AjaxHelper.php?Module=dataquery&script='
+            + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
           data: {
             DocType: category,
