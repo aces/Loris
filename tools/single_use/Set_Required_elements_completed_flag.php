@@ -47,6 +47,8 @@ $flagData = $DB->pselectWithIndexKey(
     'CommentID'
 );
 
+$mismatched = [];
+
 foreach ($flagData as $cmid => $data) {
     print_r("Migrating Data_entry_completion_status for {$cmid}.\n");
 
@@ -63,11 +65,31 @@ foreach ($flagData as $cmid => $data) {
         continue;
     }
 
-    // determine and set required elements completed
-    $decs = $instrument->_determineRequiredElementsCompleted();
-    $instrument->_setRequiredElementsCompletedFlag($decs);
-
     $jsonData = json_decode($data['Data'], true);
+
+    if (!$instrument->usesJSONData()) {
+        // Get previously existing DECS either from instrument or flag data
+        $instrDECS = $DB->pselectOne(
+            "SELECT Data_entry_completion_status 
+            FROM {$data['Test_name']} WHERE CommentID=:cmid",
+            ["cmid" => $cmid]
+        );
+    }
+    $jsonDECS = $jsonData['Data_entry_completion_status'] ?? null;
+    $existingDECS = $instrDECS ?? $jsonDECS;
+    // determine and set required elements completed
+    $recf = $instrument->_determineRequiredElementsCompletedFlag();
+    if (
+        ($recf === 'Y' && $existingDECS !== 'Complete') ||
+        ($recf === 'N' && $existingDECS !== 'Incomplete')
+    ) {
+        $mismatched[$cmid] = [
+            'Data entry completion status' => $existingDECS,
+            'New Required elements completed flag' => $recf
+        ];
+    }
+
+    // $instrument->_setRequiredElementsCompletedFlag($recf);
 
     // Unset Data_entry_completion_status so that it is not
     // saved to data column
@@ -79,10 +101,16 @@ foreach ($flagData as $cmid => $data) {
         // column in flag.
         // unsafeUpdate is used here as it is in _save() function from
         // NDB_BVL_Instrument so that html characters are not escaped
-        $DB->unsafeUpdate(
-            'flag',
-            ['Data' => json_encode($jsonData)],
-            ['CommentID' => $cmid]
-        );
+        // $DB->unsafeUpdate(
+        //     'flag',
+        //     ['Data' => json_encode($jsonData)],
+        //     ['CommentID' => $cmid]
+        // );
     }
 }
+
+echo "\nThe following CommentIDs reflect cases where the existing 
+    Data entry completion status does not match the determined 
+    Required elements completed:\n";
+print_r($mismatched);
+

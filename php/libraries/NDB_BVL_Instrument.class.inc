@@ -589,7 +589,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
             $this->score();
-            $this->updateElementsCompletedFlag();
+            $this->updateRequiredElementsCompletedFlag();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -621,14 +621,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    public function updateDataEntryCompletionStatus(): void
+    public function updateRequiredElementsCompletedFlag(): void
     {
-        // determine the data entry completion status, and store that in
+        // determine the required elements completed flag, and store that in
         // the database
-        $dataEntryCompletionStatus
-            = $this->_determineDataEntryCompletionStatus();
-        $this->_setDataEntryCompletionStatus(
-            $dataEntryCompletionStatus
+        $requiredElementsCompletedFlag
+            = $this->_determineRequiredElementsCompletedFlag();
+        $this->_setRequiredElementsCompletedFlag(
+            $requiredElementsCompletedFlag
         );
     }
 
@@ -1485,7 +1485,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return string  Either 'Y' or 'N'
      */
-    function _determineRequiredElementsCompleted(): string
+    function _determineRequiredElementsCompletedFlag(): string
     {
         // don't bother checking anything if the required elements array is empty
         if (empty($this->_requiredElements)) {
