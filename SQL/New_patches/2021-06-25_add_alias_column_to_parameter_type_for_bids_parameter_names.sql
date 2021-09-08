@@ -1,4 +1,5 @@
 ALTER TABLE parameter_type ADD COLUMN `Alias` VARCHAR(255) DEFAULT NULL AFTER Name;
+ALTER TABLE parameter_type MODIFY COLUMN `SourceFrom` VARCHAR(255);
 ALTER TABLE parameter_type ADD UNIQUE `name_sourceFrom_index` (`Name`, `SourceFrom`);
 
 

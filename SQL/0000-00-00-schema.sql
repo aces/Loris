@@ -1518,7 +1518,7 @@ CREATE TABLE `parameter_type` (
   `RangeMin` double default NULL,
   `RangeMax` double default NULL,
   `SourceField` text,
-  `SourceFrom` text,
+  `SourceFrom` VARCHAR(255),
   `SourceCondition` text,
   `Queryable` tinyint(1) default '1',
   `IsFile` tinyint(1) default '0',
