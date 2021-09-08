@@ -15,18 +15,25 @@
  */
 require_once __DIR__ . '/../generic_includes.php';
 
-echo "\n*** Set Data_entry_completion_satus in flag table***
+echo "\n*** Set Data_entry_completion_satus in flag table ***
 
-This script is to be run for one time use only to migrate and rename the 
+####################################################################################
+This script is to be run for one time use only to update and rename the 
 Data_entry_completion_status field. 
 
-If the instrument has a valid table in the database, Data_entry_completion_status 
-will be taken for back-population from the instrument table. Otherwise, it will be 
-taken from the data column of the flag table. An update on the flag table will set 
-the Required_elements_completed column to the Data_entry_completion_status. 
+Without being run with 'confirm', the script only reports mismatching data. If run 
+with 'confirm', the new Required_elements_completed flag is updated by using the 
+_determineRequiredElementsCompletedFlag and _setRequiredElementsCompletedFlag 
+functions. An array is printed at the end of the script that lists all the cases 
+where the new Required_elements_completed flag does not match the old 
+Data_entry_completion_status. If the Required_elements_completed flag is not updated
+through this script or through instrument saving, it's default is 'N'.
 
-After running this script, run Remove_Data_entry_completion_status_instr_column.php 
-to generate a DROP COLUMN patch to remove the old column from instrument tables.
+After running this script with 'confirm', run 
+Remove_Data_entry_completion_status_instr_column.php to generate a DROP COLUMN patch
+to remove the old column from instrument tables.
+####################################################################################
+
 \n";
 $DB = \Database::singleton();
 
@@ -39,6 +46,8 @@ $loris = new \LORIS\LorisInstance(
     ]
 );
 
+$confirm = isset($argv[1]) && strtolower($argv[1]) === 'confirm';
+
 // Get all data from flag to back-populate
 $flagData = $DB->pselectWithIndexKey(
     "SELECT Data, CommentID, Test_name 
@@ -50,8 +59,8 @@ $flagData = $DB->pselectWithIndexKey(
 $mismatched = [];
 
 foreach ($flagData as $cmid => $data) {
-    print_r("Migrating Data_entry_completion_status for {$cmid}.\n");
-
+    echo $confirm ? "Setting Required_elements_completed for {$cmid}.\n" :
+        "Checking mismatching flag for {$cmid}.\n";
     // instantiate instrument
     try {
         $instrument = NDB_BVL_Instrument::factory(
@@ -67,45 +76,47 @@ foreach ($flagData as $cmid => $data) {
 
     $jsonData = json_decode($data['Data'], true);
 
+    // Get previously existing DECS either from instrument or flag data
     if (!$instrument->usesJSONData()) {
-        // Get previously existing DECS either from instrument or flag data
         $instrDECS = $DB->pselectOne(
             "SELECT Data_entry_completion_status 
             FROM {$data['Test_name']} WHERE CommentID=:cmid",
             ["cmid" => $cmid]
         );
     }
-    $jsonDECS = $jsonData['Data_entry_completion_status'] ?? null;
+    $jsonDECS     = $jsonData['Data_entry_completion_status'] ?? null;
     $existingDECS = $instrDECS ?? $jsonDECS;
-    // determine and set required elements completed
-    $recf = $instrument->_determineRequiredElementsCompletedFlag();
-    if (
-        ($recf === 'Y' && $existingDECS !== 'Complete') ||
-        ($recf === 'N' && $existingDECS !== 'Incomplete')
+    $rec          = $instrument->_determineRequiredElementsCompletedFlag();
+    // Compare DECS and RECF to see if it mismatches
+    if (($rec === 'Y' && $existingDECS !== 'Complete')
+        || ($rec === 'N' && $existingDECS !== 'Incomplete')
     ) {
         $mismatched[$cmid] = [
-            'Data entry completion status' => $existingDECS,
-            'New Required elements completed flag' => $recf
+            'Data entry completion status'         => $existingDECS,
+            'New Required elements completed flag' => $rec
         ];
     }
 
-    // $instrument->_setRequiredElementsCompletedFlag($recf);
+    if ($confirm) {
+        // set the new required elements complete flag
+        $instrument->_setRequiredElementsCompletedFlag($rec);
 
-    // Unset Data_entry_completion_status so that it is not
-    // saved to data column
-    if (isset($jsonData['Data_entry_completion_status'])) {
-        unset($jsonData['Data_entry_completion_status']);
+        // Unset Data_entry_completion_status so that it is not
+        // saved to data column
+        if (isset($jsonData['Data_entry_completion_status'])) {
+            unset($jsonData['Data_entry_completion_status']);
 
-        // $instrument->save() is not used here in order to explicitly REMOVE the
-        // Data_entry_completion_status field from the JSON string saved in the Data
-        // column in flag.
-        // unsafeUpdate is used here as it is in _save() function from
-        // NDB_BVL_Instrument so that html characters are not escaped
-        // $DB->unsafeUpdate(
-        //     'flag',
-        //     ['Data' => json_encode($jsonData)],
-        //     ['CommentID' => $cmid]
-        // );
+            // $instrument->save() is not used here in order to explicitly REMOVE the
+            // Data_entry_completion_status field from the JSON string saved in the
+            // Data column in flag.
+            // unsafeUpdate is used here as it is in _save() function from
+            // NDB_BVL_Instrument so that html characters are not escaped
+            $DB->unsafeUpdate(
+                'flag',
+                ['Data' => json_encode($jsonData)],
+                ['CommentID' => $cmid]
+            );
+        }
     }
 }
 
@@ -114,3 +125,8 @@ echo "\nThe following CommentIDs reflect cases where the existing
     Required elements completed:\n";
 print_r($mismatched);
 
+
+if (!$confirm) {
+    echo "\n\nRun this tool again with the argument 'confirm' to ".
+    "perform the changes\n\n";
+}
