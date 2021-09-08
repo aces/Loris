@@ -1398,7 +1398,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements array is empty
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressNoRequiredEl()
@@ -1410,7 +1410,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->assertEquals(
             'Y',
-            $this->_instrument->_determineRequiredElementsCompleted()
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
@@ -1419,7 +1419,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Incomplete' if the _requiredElements field and status field are not set
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithUnanswered()
@@ -1443,7 +1443,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->assertEquals(
             'N',
-            $this->_instrument->_determineRequiredElementsCompleted()
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
@@ -1452,7 +1452,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements field and status field have set values
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompleted
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithAnswered()
@@ -1476,7 +1476,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->assertEquals(
             'Y',
-            $this->_instrument->_determineRequiredElementsCompleted()
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
