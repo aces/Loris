@@ -285,6 +285,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Set page name to testName
+        $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
@@ -587,14 +589,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
             $this->score();
-
-            // determine the data entry completion status, and store that in
-            // the database
-            $requiredElementsCompletedFlag
-                = $this->_determineRequiredElementsCompleted();
-            $this->_setRequiredElementsCompletedFlag(
-                $requiredElementsCompletedFlag
-            );
+            $this->updateElementsCompletedFlag();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -618,6 +613,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         return true;
+    }
+
+    /**
+     * This checks the current status of and instrument's data entry and updates
+     * it accordingly in the database
+     *
+     * @return void
+     */
+    public function updateDataEntryCompletionStatus(): void
+    {
+        // determine the data entry completion status, and store that in
+        // the database
+        $dataEntryCompletionStatus
+            = $this->_determineDataEntryCompletionStatus();
+        $this->_setDataEntryCompletionStatus(
+            $dataEntryCompletionStatus
+        );
     }
 
     /**
@@ -1994,27 +2006,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $record    = $this->getInstanceData();
-        $scoreCols = array_combine($scoreCols, $scoreCols);
-        // order is important here because it keeps values of first array
-        // unsetting all columns which are not scores
-        $data = array_intersect_key($record, $scoreCols);
-
         // set the scoring cols to NULL
+        $scores = [];
         foreach ($scoreCols as $key => $val) {
             // Some Instruments use an associative array for
             // $scoreCols of the form column => description, others
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
             if (is_numeric($key)) {
-                $data[$val] = null; //null array
+                $scores[$val] = null; //null array
             } else {
-                $data[$key] = null;
+                $scores[$key] = null;
             }
 
         }
 
-        $this->_save($data);
+        $this->_save($scores);
         return;
     }
 
@@ -2301,27 +2308,34 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config   = NDB_Config::singleton();
         $db       = Database::singleton();
         $dbconfig = $config->getSetting('database');
-        $columns  = $db->pselect(
-            "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
-            [
-                'table' => $this->table,
-                'db'    => $dbconfig['database'],
-            ]
-        );
 
-        $values = [];
-        foreach ($columns as $row) {
-            switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue 2;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+        if (!$this->jsonData) {
+            $columns = $db->pselect(
+                "SELECT COLUMN_NAME FROM information_schema.columns
+            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+                [
+                    'table' => $this->table,
+                    'db'    => $dbconfig['database'],
+                ]
+            );
+
+            $values = [];
+            foreach ($columns as $row) {
+                switch ($row['COLUMN_NAME']) {
+                case 'CommentID':
+                case 'UserID':
+                    continue 2;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
+                }
             }
+            $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
-        $db->update($this->table, $values, ['CommentID' => $this->commentID]);
+
+        // Clear data out of the flag table's Data column
+        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
         $this->_setRequiredElementsCompletedFlag('N');
+
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
@@ -2864,13 +2878,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $status->select($this->commentID);
 
         // freeze the form to prevent data entry
-        // IF (1) Instrument is NOT in progress
+        // IF (1) Instrument is set to complete
         // OR (2) The user does NOT have `data_entry` permission
         // OR (3) The user does NOT have access to the timepoint
         //        at which the instrument is instantiated
         // AND (4) The instrument is NOT in preview mode
         // AND (5) the instrument is NOT a direct entry
-        if ($status->getDataEntryStatus() != 'In Progress'
+        if (($status->getDataEntryStatus() == 'Complete')
             || !$user->hasPermission('data_entry')
             || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
             && $this->preview !== true

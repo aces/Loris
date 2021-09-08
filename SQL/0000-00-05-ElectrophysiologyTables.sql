@@ -56,7 +56,7 @@ CREATE TABLE `physiological_parameter_file` (
   `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-  `Value`                        VARCHAR(255),
+  `Value`                        TEXT,
   PRIMARY KEY (`PhysiologicalParameterFileID`),
   CONSTRAINT `FK_phys_file_FileID`
     FOREIGN KEY (`PhysiologicalFileID`)
@@ -170,8 +170,8 @@ CREATE TABLE `physiological_task_event` (
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
-  `EventValue`               INT(10)          DEFAULT NULL,
-  `EventSample`              INT(10)          DEFAULT NULL,
+  `EventValue`               varchar(255)     DEFAULT NULL,
+  `EventSample`              decimal(11,6)    DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
