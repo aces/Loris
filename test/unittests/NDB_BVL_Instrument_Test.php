@@ -1894,11 +1894,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             "parameter_type",
             [
                 [
+                    'Name'        => 'name 1',
                     'Description' => 'description 1',
                     'SourceField' => 'Not validity',
                     'SourceFrom'  => 'Testname1'
                 ],
                 [
+                    'Name'        => 'name 2',
                     'Description' => 'description 2',
                     'SourceField' => 'Validity',
                     'SourceFrom'  => 'Testname1'
