@@ -421,7 +421,6 @@ class SelectElement extends Component {
         }
       }
     }
-    console.log(e.target);
 
     this.props.onUserInput(this.props.name, value, e.target.id, 'select');
   }

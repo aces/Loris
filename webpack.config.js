@@ -88,7 +88,7 @@ const config = [{
   },
   resolve: {
     alias: {
-      lorisutil: path.resolve(__dirname, './htdocs/js/util'),
+      util: path.resolve(__dirname, './htdocs/js/util'),
       jsx: path.resolve(__dirname, './jsx'),
       Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
       DataTable: path.resolve(__dirname, './jsx/DataTable'),
