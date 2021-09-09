@@ -282,6 +282,16 @@ ul#navlist {
     border-top-left-radius: 6px;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0.2;
+  }
+}
+
+.animate-flicker {
+  animation: fadeIn 1s infinite alternate;
+}
+
 .close {
     color: white;
     opacity: 1;

@@ -261,6 +261,8 @@ class SearchableDropdown extends Component {
     // clear currentInput
     if (prevProps.value && !this.props.value) {
       this.setState({currentInput: ''});
+    } else if (this.props.value !== prevProps.value && this.props.value) {
+      this.setState({currentInput: this.props.options[this.props.value]});
     }
   }
 
@@ -403,6 +405,24 @@ class SelectElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    const optionsArray = Object.keys(this.props.options);
+    if (this.props.autoSelect && optionsArray.length === 1) {
+      this.props.onUserInput(this.props.name, optionsArray[0]);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const options = Object.keys(this.props.options);
+    const prevOptions = Object.keys(prevProps.options);
+    if (options.length !== prevOptions.length ||
+        !options.every((v, i) => v === prevOptions[i])) {
+      if (this.props.autoSelect && options.length === 1) {
+        this.props.onUserInput(this.props.name, options[0]);
+      }
+    }
+  }
+
   handleChange(e) {
     let value = e.target.value;
     let options = e.target.options;
@@ -472,13 +492,19 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
+    const label = this.props.label && (
+      <label className="col-sm-5 control-label" htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-7' : 'col-sm-12';
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-7">
+        {label}
+        <div className={columnSize}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -914,13 +940,19 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
+    const label = this.props.label && (
+      <label className="col-sm-5 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-7' : 'col-sm-12';
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-7">
+        {label}
+        <div className={columnSize}>
           <input
             type="text"
             className="form-control"
@@ -1010,10 +1042,6 @@ class DateElement extends Component {
     }
   }
 
-  handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
-  }
-
   handleButton(e) {
     let date = new Date();
     let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
@@ -1022,14 +1050,26 @@ class DateElement extends Component {
     this.props.onUserInput(this.props.name, dateString);
   }
 
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
+  }
+
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.hasError) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
     }
 
     // Check if props minYear and maxYear are valid values if supplied
@@ -1068,7 +1108,7 @@ class DateElement extends Component {
     ) : null;
 
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
@@ -1088,6 +1128,7 @@ class DateElement extends Component {
                 required={required}
                 disabled={disabled}
               />
+              {errorMessage}
             </div>
             {todayButton}
           </div>
@@ -1108,6 +1149,8 @@ DateElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   todayBtn: PropTypes.bool,
+  hasError: PropTypes.bool,
+  errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1122,6 +1165,8 @@ DateElement.defaultProps = {
   disabled: false,
   required: false,
   todayBtn: true,
+  hasError: false,
+  errorMessage: 'This field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1136,29 +1181,50 @@ class TimeElement extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleButton = this.handleButton.bind(this);
   }
 
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
+  handleButton(e) {
+    let date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const timeString = ('0'+hours).slice(-2)+':'+('0'+minutes).slice(-2);
+    this.props.onUserInput(this.props.name, timeString);
+  }
+
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.hasError) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-5 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
         <div className="col-sm-7">
+          <div
+            style={{display: 'flex'}}
+          >
+            <div style={{flexGrow: 3}}>
           <input
             type="time"
             className="form-control"
@@ -1171,6 +1237,18 @@ class TimeElement extends Component {
             pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
             title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
           />
+              {errorMessage}
+            </div>
+            <div style={{flexGrow: 1}}>
+              <button
+                type="button"
+                onClick={this.handleButton}
+                className= "btn btn-primary"
+              >
+                Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1184,6 +1262,8 @@ TimeElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  hasError: PropTypes.bool,
+  errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1194,6 +1274,8 @@ TimeElement.defaultProps = {
   id: '',
   disabled: false,
   required: false,
+  hasError: false,
+  errorMessage: 'This field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1217,14 +1299,33 @@ class NumericElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    const label = this.props.label && (
+      <label className="col-sm-5 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
+    const columnSize = this.props.label ? 'col-sm-7' : 'col-sm-12';
 
     return (
-      <div className="row form-group">
-        <label className="col-sm-5 control-label" htmlFor={this.props.id}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-7">
+      <div className={elementClass}>
+        {label}
+        <div className={columnSize}>
           <input
             type="number"
             className="form-control"
@@ -1237,6 +1338,7 @@ class NumericElement extends Component {
             required={required}
             onChange={this.handleChange}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1746,6 +1848,172 @@ class LorisElement extends Component {
   }
 }
 
+/**
+ * Radio Component
+ * React wrapper for a <input type='radio'> element.
+ *
+ * Example `options` prop:
+ *   {
+ *     female: 'Female',
+ *     male: 'Male',
+ *   }
+ */
+class RadioElement extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.generateLayout = this.generateLayout.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  /**
+   * Generate layout
+   *
+   * @return {JSX[]} - An array of element React markup
+   */
+  generateLayout() {
+    let layout = [];
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+
+    const styleRow = {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      width: '100%',
+    };
+    const styleColumn = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignSelf: 'flex-start',
+      marginRight: '10px',
+    };
+    const styleContainer = {
+      paddingTop: '7px',
+      cursor: 'pointer',
+    };
+    const styleLabel = {
+      margin: 0,
+      color: '#064785',
+      cursor: 'pointer',
+    };
+    const styleInput = {
+      display: 'inline-block',
+      margin: '0 5px 0 5px',
+      cursor: 'pointer',
+    };
+
+    let content = [];
+    for (const key in this.props.options) {
+      if (this.props.options.hasOwnProperty(key)) {
+        const checked = this.props.checked === key;
+        content.push(
+          <div key={key}
+               style={styleColumn}>
+            <div style={styleContainer}>
+              <input
+                type='radio'
+                name={this.props.name}
+                value={key}
+                id={key}
+                checked={checked}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+                style={styleInput}
+              />
+              <label htmlFor={key}
+                     style={styleLabel}
+              >
+                {this.props.options[key]}
+              </label>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    layout.push(
+      <div key={this.props.name + '_key'}
+           style={styleRow}>
+        {content}
+      </div>
+    );
+
+    return layout;
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = this.props.elementClass;
+    let required = this.props.required ? 'required' : null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = this.props.elementClass + ' has-error';
+    }
+    // Generate layout
+    const layout = this.generateLayout();
+
+    return (
+      <div className={elementClass}>
+        <label className={'col-sm-3 control-label'}>
+          {this.props.label}
+          {errorMessage}
+          {requiredHTML}
+        </label>
+        <div className={'col-sm-9'}>
+          {layout}
+        </div>
+      </div>
+    );
+  }
+}
+RadioElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  options: PropTypes.object.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  checked: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
+  onUserInput: PropTypes.func,
+};
+RadioElement.defaultProps = {
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  elementClass: 'row form-group',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+};
+
+
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
@@ -1764,6 +2032,7 @@ window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
+window.RadioElement = RadioElement;
 
 export default {
   FormElement,
@@ -1784,4 +2053,5 @@ export default {
   ButtonElement,
   CTA,
   LorisElement,
+  RadioElement,
 };

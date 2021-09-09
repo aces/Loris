@@ -135,6 +135,15 @@ case 'DICOMTAR':
     $DownloadFilename = basename($File);
     $PatientName      = $_GET['patientName'] ?? '';
     break;
+case 'csv':
+    // Biospecimens files
+    if(strpos($File, 'Open-Summary') !== false){
+        $FullPath         = '/data/biospecimens/' . basename($File);
+        $MimeType         = 'text/csv';
+        $DownloadFilename = basename($File);
+        break;
+    }
+    // Otherwise fall in the default case
 default:
     $FullPath         = $DownloadPath . '/' . $File;
     $MimeType         = 'application/octet-stream';
