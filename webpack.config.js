@@ -67,12 +67,18 @@ const config = [{
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: [
+          {
+            loader: 'babel-loader?cacheDirectory',
+          },
+          {
+            loader: 'eslint-loader',
+            options: {
+              cache: true,
+            },
+          },
+        ],
+        enforce: 'pre',
       },
       {
         test: /\.json$/,
@@ -82,7 +88,7 @@ const config = [{
   },
   resolve: {
     alias: {
-      util: path.resolve(__dirname, './htdocs/js/util'),
+      lorisutil: path.resolve(__dirname, './htdocs/js/util'),
       jsx: path.resolve(__dirname, './jsx'),
       Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
       DataTable: path.resolve(__dirname, './jsx/DataTable'),

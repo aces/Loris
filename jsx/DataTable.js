@@ -31,6 +31,7 @@ class DataTable extends Component {
     this.sortRows = this.sortRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
     this.renderActions = this.renderActions.bind(this);
+    this.renderForms = this.renderForms.bind(this);
   }
 
   changePage(i) {
@@ -344,6 +345,14 @@ class DataTable extends Component {
     }
   }
 
+  renderForms() {
+    if (this.props.forms) {
+      return this.props.forms.map((form, key) => {
+        return <div key={key}>{form}</div>;
+      });
+    }
+  }
+
   render() {
     if ((this.props.data === null || this.props.data.length === 0) && !this.props.nullTableShow) {
       return (
@@ -352,6 +361,7 @@ class DataTable extends Component {
             <div className="col-xs-12">
               <div className="pull-right" style={{marginRight: '10px'}}>
                 {this.renderActions()}
+                {this.renderForms()}
               </div>
             </div>
           </div>
@@ -494,6 +504,7 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
+              {this.renderForms()}
               <button
                 className="btn btn-primary"
                 onClick={this.downloadCSV.bind(null, filteredRowIndexes)}

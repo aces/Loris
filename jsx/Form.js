@@ -23,7 +23,7 @@ CheckboxElement, ButtonElement, LorisElement
  *
  */
 
-import React, {Component} from 'react';
+import React, {useState, Component} from 'react';
 import PropTypes from 'prop-types';
 
 class FormElement extends Component {
@@ -39,23 +39,6 @@ class FormElement extends Component {
     const maxColumnSize = 12;
     const colSize = Math.floor(maxColumnSize / columns);
     const colClass = 'col-xs-12 col-sm-' + colSize + ' col-md-' + colSize;
-
-    // Render elements from JSON
-    const filter = this.props.formElements;
-
-    Object.keys(filter).forEach(function(objKey, index) {
-      const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
-      const value = filter[objKey].value ? filter[objKey].value : '';
-      formElementsHTML.push(
-        <div key={'el_' + index} className={colClass}>
-          <LorisElement
-            element={filter[objKey]}
-            onUserInput={userInput}
-            value={value}
-          />
-        </div>
-      );
-    }.bind(this));
 
     // Render elements from React
     React.Children.forEach(this.props.children, function(child, key) {
@@ -258,7 +241,7 @@ class SearchableDropdown extends Component {
   componentDidUpdate(prevProps) {
     // need to clear out currentInput for when props.value gets wiped
     // if the previous value prop contained data and the current one doesn't
-    // clear currentInput
+    // clear currentInput.
     if (prevProps.value && !this.props.value) {
       this.setState({currentInput: ''});
     } else if (this.props.value !== prevProps.value && this.props.value) {
@@ -382,7 +365,7 @@ SearchableDropdown.defaultProps = {
   options: {},
   strictSearch: true,
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   disabled: false,
@@ -406,7 +389,8 @@ class SelectElement extends Component {
   }
 
   componentDidMount() {
-    const optionsArray = Object.keys(this.props.options);
+    const options = this.props.options || {};
+    const optionsArray = Object.keys(options);
     if (this.props.autoSelect && optionsArray.length === 1) {
       this.props.onUserInput(this.props.name, optionsArray[0]);
     }
@@ -429,7 +413,7 @@ class SelectElement extends Component {
     const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple && numOfOptions > 1) {
+    if (this.props.multiple) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
@@ -437,6 +421,7 @@ class SelectElement extends Component {
         }
       }
     }
+    console.log(e.target);
 
     this.props.onUserInput(this.props.name, value, e.target.id, 'select');
   }
@@ -450,7 +435,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterisk
     if (required) {
@@ -463,9 +448,9 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === '')) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+    if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
+      errorMessage = <span>{this.props.errorMessage || 'The field is required!'}</span>;
+      elementClass = 'has-error';
     }
 
     let newOptions = {};
@@ -539,7 +524,6 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -547,8 +531,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: '',
-  value: undefined,
+  label: null,
+  value: null,
   id: null,
   class: '',
   multiple: false,
@@ -556,8 +540,6 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
-  hasError: false,
-  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -804,13 +786,12 @@ TagsElement.defaultProps = {
   options: {},
   items: [],
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   required: false,
   disabled: false,
   emptyOption: true,
-  hasError: false,
   allowDupl: false,
   useSearch: false,
   strictSearch: false, // only accept items specified in options
@@ -892,7 +873,7 @@ TextareaElement.propTypes = {
 TextareaElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -927,7 +908,7 @@ class TextboxElement extends Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    let elementClass = null;
 
     // Add required asterix
     if (required) {
@@ -937,7 +918,7 @@ class TextboxElement extends Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = 'has-error';
     }
 
     const label = this.props.label && (
@@ -959,7 +940,7 @@ class TextboxElement extends Component {
             name={this.props.name}
             id={this.props.id}
             value={this.props.value || ''}
-            required={required}
+            datarequired={required}
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
@@ -985,8 +966,8 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: '',
-  value: '',
+  label: null,
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -1051,7 +1032,7 @@ class DateElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
+    this.props.onUserInput(this.props.name, e.target.value);
   }
 
   render() {
@@ -1082,19 +1063,8 @@ class DateElement extends Component {
       maxYear = '9999';
     }
 
-    // Handle date format
-    let format = this.props.dateFormat;
-    let inputType = 'date';
-    let minFullDate = minYear + '-01-01';
-    let maxFullDate = maxYear + '-12-31';
-    if (!format.match(/d/i)) {
-      inputType = 'month';
-      minFullDate = minYear + '-01';
-      maxFullDate = maxYear + '-12';
-    }
-
     // Add 'Today' button
-    const todayButton = this.props.todayBtn ? (
+    const todayButton = this.props.today ? (
       <div style={{flexGrow: 1, flexBasis: '0%'}}>
         <button
           type="button"
@@ -1107,12 +1077,16 @@ class DateElement extends Component {
       </div>
     ) : null;
 
+    const label = this.props.label && (
+      <label className="col-sm-5 control-label" htmlFor={this.props.label}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+    );
+
     return (
       <div className={elementClass}>
-        <label className="col-sm-5 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
+        {label}
         <div className="col-sm-7">
           <div style={{display: 'flex'}}>
             <div style={{flexGrow: 3, flexBasis: '60%'}}>
@@ -1145,10 +1119,9 @@ DateElement.propTypes = {
   id: PropTypes.string,
   maxYear: PropTypes.string,
   minYear: PropTypes.string,
-  dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  todayBtn: PropTypes.bool,
+  today: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -1157,14 +1130,14 @@ DateElement.propTypes = {
 DateElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
-  maxYear: '9999',
-  minYear: '1000',
-  dateFormat: 'YMd',
+  maxYear: '9999-12-31',
+  minYear: '1000-01-01',
+  today: true,
   disabled: false,
   required: false,
-  todayBtn: true,
+  today: true,
   hasError: false,
   errorMessage: 'This field is required!',
   onUserInput: function() {
@@ -1240,14 +1213,14 @@ class TimeElement extends Component {
               {errorMessage}
             </div>
             <div style={{flexGrow: 1}}>
-              <button
+              <ButtonElement
+                label="Now"
                 type="button"
-                onClick={this.handleButton}
+                onUserInput={this.handleButton}
                 className= "btn btn-primary"
-              >
-                Now
-              </button>
+              />
             </div>
+          </InlineField>
           </div>
         </div>
       </div>
@@ -1270,8 +1243,8 @@ TimeElement.propTypes = {
 TimeElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
-  id: '',
+  value: null,
+  id: null,
   disabled: false,
   required: false,
   hasError: false,
@@ -1361,8 +1334,8 @@ NumericElement.defaultProps = {
   name: '',
   min: null,
   max: null,
-  label: '',
-  value: '',
+  label: null,
+  value: null,
   id: null,
   required: false,
   disabled: false,
@@ -1413,7 +1386,7 @@ class FileElement extends Component {
     };
 
     // Add error message
-    if (this.props.hasError) {
+    if (this.props.errorMessage) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
     }
@@ -1488,7 +1461,6 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -1496,12 +1468,10 @@ FileElement.propTypes = {
 FileElement.defaultProps = {
   name: '',
   label: 'File to Upload',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
-  hasError: false,
-  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1521,23 +1491,21 @@ FileElement.defaultProps = {
  *    label={note}
  * />
  * ```
+ *
+ * @param {object} props
+ * @return {jsx}
  */
-class StaticElement extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-5 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-7">
-          <p className="form-control-static">{this.props.text}</p>
-        </div>
+function StaticElement(props) {
+  return (
+    <div className="row form-group">
+      <label className="col-sm-5 control-label">
+        {this.props.label}
+      </label>
+      <div className="col-sm-7">
+        <p className="form-control-static">{this.props.text}</p>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 StaticElement.propTypes = {
@@ -1642,7 +1610,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
+    let elementClass = 'checkbox-inline';
     let label = null;
 
     // Add required asterix
@@ -1653,7 +1621,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = 'checkbox-inline has-error';
     }
 
     return (
@@ -1685,7 +1653,6 @@ CheckboxElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
-  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1694,7 +1661,6 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
-  elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1716,10 +1682,12 @@ class ButtonElement extends Component {
 
   render() {
     return (
-      <div className="row form-group">
-        <div className={this.props.columnSize}>
-          <button
+      <div>
+        <label className="control-label"></label>
+        <div>
+          <Button
             name={this.props.name}
+            label={this.props.label}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
@@ -1751,6 +1719,17 @@ ButtonElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+function Button(props) {
+  return (
+    <button
+      className={'btn btn-primary'}
+      {...props}
+    >
+      {props.label}
+    </button>
+  );
+}
 
 /**
   * Call To Action (CTA) component
@@ -2013,6 +1992,129 @@ RadioElement.defaultProps = {
   },
 };
 
+function FormHeader({level = 4, header = ''}) {
+  const Tag = 'h' + level;
+  return (
+    <>
+      <Tag>{header}</Tag>
+      <HorizontalRule/>
+    </>
+  );
+}
+
+function HorizontalRule() {
+  const lineStyle = {
+    borderTop: '1.5px solid #DDDDDD',
+    paddingTop: 15,
+    marginTop: 0,
+  };
+  return <div style={lineStyle}/>;
+}
+
+function InputList({
+  name,
+  label,
+  items,
+  setItems,
+  errorMessage,
+  options,
+}) {
+  const [item, setItem] = useState('');
+
+  const removeItem = (index) => setItems(items.filter((item, i) => index != i));
+  const addItem = () => {
+    const match = Object.keys(options).find((key) => options[key][name] == item);
+    // if entry is in list of options and does not already exist in the list.
+    if (match && !items.includes(match)) {
+      setItems([...items, match]);
+      setItem('');
+    }
+  };
+
+  const listStyle = {
+    border: '1px solid #DDD',
+    borderRadius: '10px',
+    minHeight: '85px',
+    padding: '5px',
+    marginBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const listItemStyle = {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  };
+
+  const itemsDisplay = items.map((item, i) => {
+    const style = {
+      color: '#DDDDDD',
+      marginLeft: 10,
+      cursor: 'pointer',
+    };
+    return (
+      <div key={i} style={listItemStyle}>
+        <div>{options[item][name]}</div>
+        <div
+          className='glyphicon glyphicon-remove'
+          onClick={() => removeItem(i)}
+          style={style}
+        />
+      </div>
+    );
+  });
+
+  const error = errorMessage instanceof Array ? errorMessage.join(' ') : errorMessage;
+  return (
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' Input'}/>
+        <InlineField weights={[1, 0]}>
+          <TextboxElement
+            name={name}
+            onUserInput={(name, value) => setItem(value)}
+            value={item}
+            errorMessage={error}
+          />
+          <Button
+            label='Add'
+            onClick={addItem}
+          />
+        </InlineField>
+      </div>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' List'}/>
+        <div style={listStyle}>
+          {itemsDisplay}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InlineField({children, label = '', weights = []}) {
+  const fields = React.Children.map(children, (child, i) => {
+    return (
+      <div style={{flex: weights[i] || 0}}>
+        {child}
+      </div>
+    );
+  });
+
+  const inlineStyle = {
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'spaceBetween',
+  };
+  return (
+    <div style={inlineStyle}>
+      {fields}
+    </div>
+  );
+}
 
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
@@ -2030,9 +2132,13 @@ window.HeaderElement = HeaderElement;
 window.LinkElement = LinkElement;
 window.CheckboxElement = CheckboxElement;
 window.ButtonElement = ButtonElement;
+window.Button = Button;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
 window.RadioElement = RadioElement;
+window.FormHeader = FormHeader;
+window.HorizontalRule = HorizontalRule;
+window.InputList = InputList;
 
 export default {
   FormElement,
