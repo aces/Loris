@@ -132,8 +132,7 @@ class Imaging_Browser extends \DataFrameworkMenu
         ];
 
         $all_scan_types = array_values(\Utility::getScanTypeList());
-        $sequenceTypes = array_combine($all_scan_types, $all_scan_types);
-        
+        $sequenceTypes  = array_combine($all_scan_types, $all_scan_types);
 
         $config = \NDB_Config::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
