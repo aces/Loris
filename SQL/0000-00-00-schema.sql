@@ -7,7 +7,8 @@ CREATE TABLE `Project` (
     `Name` VARCHAR(255) NULL,
     `Alias` char(4) NOT NULL,
     `recruitmentTarget` INT(6) Default NULL,
-    PRIMARY KEY (`ProjectID`)
+    PRIMARY KEY (`ProjectID`),
+    UNIQUE KEY `u_ProjectName` (`Name`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `Project` (Name,Alias) VALUES ('loris','LORI');
