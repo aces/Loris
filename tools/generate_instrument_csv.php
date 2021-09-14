@@ -17,7 +17,10 @@ $dir = __DIR__ . '/../project/instruments/';
 
 $filelist   = scandir($dir);
 $outputFile = fopen($dir."instrumentQuestion.csv", 'w');
-fwrite($outputFile, "short name, long name, page, section, question name, description, options \n");
+fwrite(
+    $outputFile, 
+    "short name, long name, page, section, question name, description, options \n"
+);
 
 foreach ($filelist as $file) {
     if (substr($file, -5) == "linst") {
@@ -51,7 +54,7 @@ foreach ($filelist as $file) {
             case "selectmultiple":
                 $testcase    = $lineParts[1];
                 $description = $lineParts[2];
-                $choices     = array();
+                $choices     = [];
                 $parts       = explode("{-}", $lineParts[3]);
                 foreach ($parts as $part) {
                     $subpart   = explode("=>", $part);
@@ -69,8 +72,10 @@ foreach ($filelist as $file) {
                 $description = $lineParts[0] . " - " . $lineParts[1];
                 break;
             }
-            fwrite($outputFile, 
-                   "$shortName, $longName, $page, $section, $testcase, $description, $option \n");
+            fwrite(
+               $outputFile, 
+               "$shortName, $longName, $page, $section, $testcase, $description, $option \n"
+            );
         }
         fclose($fhandle);
     }
