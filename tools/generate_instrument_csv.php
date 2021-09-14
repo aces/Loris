@@ -18,7 +18,7 @@ $dir = __DIR__ . '/../project/instruments/';
 $filelist   = scandir($dir);
 $outputFile = fopen($dir."instrumentQuestion.csv", 'w');
 fwrite(
-    $outputFile, 
+    $outputFile,
     "short name, long name, page, section, question name, description, options \n"
 );
 
@@ -73,8 +73,9 @@ foreach ($filelist as $file) {
                 break;
             }
             fwrite(
-               $outputFile, 
-               "$shortName, $longName, $page, $section, $testcase, $description, $option \n"
+                $outputFile,
+                "$shortName, $longName, $page, $section, $testcase, "
+                . "$description, $option \n"
             );
         }
         fclose($fhandle);
