@@ -529,7 +529,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$dccid,
             self::$display,
             self::$clearFilter,
-            'DCC422',
+            '475906',
             '6 rows'
         );
         $this->_filterTest(
