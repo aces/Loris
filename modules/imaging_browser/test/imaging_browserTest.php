@@ -544,7 +544,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'Pumpernickel',
-            'of 27'
+            'of 29'
         );
         $this->_filterTest(
             self::$visitLabel,
