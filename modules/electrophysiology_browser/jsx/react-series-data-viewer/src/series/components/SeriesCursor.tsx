@@ -3,7 +3,7 @@ import {bisector} from 'd3-array';
 import {colorOrder} from '../../color';
 import {Channel, Epoch} from '../store/types';
 import {connect} from 'react-redux';
-import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE} from '../../vector';
+import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
 import {useEffect} from 'react';
 import {RootState} from '../store';
 
@@ -100,7 +100,7 @@ const SeriesCursor = (
         borderRadius: '3px',
       }}
     >
-      {Math.round(time)}
+      {Math.round(time)} s
     </div>
   );
 
@@ -196,7 +196,7 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
             }}
           >
             {showMarker && (<Marker color={colorOrder(contentIndex)} />)}
-            {chunk && Math.round(computeValue(chunk))}
+            {chunk && Math.round(computeValue(chunk))} {SIGNAL_UNIT}
           </div>
         );
       })}
