@@ -90,9 +90,36 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         );
 
         // Retrieve visit labels.
-        $visit_options = [];
-        foreach ($allSubprojects as $sid=>$title) {
-            $visit_options[$sid] = \Utility::getVisitsForSubproject($sid);
+        $projectID = $candidate->getProjectID();
+        error_log(print_r("hi there", true));
+        error_log(print_r($projectID, true));
+        $visitLabelsByProject = \Project::getVisitList($projectID);
+        $visit_options      = [];
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        foreach (
+            \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
+        ) {
+            if (!empty($values['subproject'])) {
+                $visitLabel   = \Utility::associativeToNumericArray($visitLabel)[0];
+                $labelOptions = [];
+                $items        = \Utility::associativeToNumericArray(
+                    $visitLabel['labelSet']['item']
+                );
+//                foreach ($items as $item) {
+//                    $item = \Utility::associativeToNumericArray($item)[0];
+//                    $labelOptions[$item['@']['value']] = $item['#'];
+//                }
+                foreach ($items as $item) {
+                    $item = \Utility::associativeToNumericArray($item)[0];
+                    if (empty($visitLabelsByProject)
+                        || in_array($item['@']['value'], $visitLabelsByProject)
+                    ) {
+                        $labelOptions[$item['@']['value']] = $item['#'];
+                    }
+                }
+                $visit_options[$visitLabel['@']['subprojectID']]
+                    = array_filter($labelOptions);
+            }
         }
         $values['visit'] = $visit_options;
 

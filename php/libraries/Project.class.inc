@@ -470,4 +470,34 @@ class Project implements \JsonSerializable
     {
         return $this->_projectName;
     }
+
+    /**
+     * Returns the list of visit labels with the corresponding project
+     *
+     * @param $projectID ProjectID to get visit labels of
+     *
+     * @return array Associative array in the format VisitID=>VisitName
+     */
+     public function getVisitList($projectID): array
+    {
+        $factory = NDB_Factory::singleton();
+        //make sure it returns an array
+        $visitLabelArray = array();
+
+        $db = $factory->database();
+
+        $query  = "SELECT v.VisitID AS VisitID, v.VisitName AS VisitName
+                  FROM visit v, visit_project_subproject_rel vp, 
+                  project_subproject_rel pr, Project p 
+                  WHERE v.VisitID=vp.VisitID 
+                  AND vp.ProjectSubprojectRelID=pr.ProjectSubprojectRelID 
+                  AND pr.ProjectID=:projectID";
+        $result = $db->pselect($query, array('projectID' => $projectID));
+
+        foreach ($result as $key=>$value) {
+            $visitLabelArray[$key] = $value["VisitName"];
+        }
+
+        return $visitLabelArray;
+    }
 }
