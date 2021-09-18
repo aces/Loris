@@ -90,12 +90,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         );
 
         // Retrieve visit labels.
-        $projectID = $candidate->getProjectID();
-        error_log(print_r("hi there", true));
-        error_log(print_r($projectID, true));
+        $projectID            = $candidate->getProjectID();
         $visitLabelsByProject = \Project::getVisitList($projectID);
-        $visit_options      = [];
-        $visitLabelSettings = $config->getSetting('visitLabel');
+        $visitLabelSettings   = $config->getSetting('visitLabel');
+        $visit_options        = [];
         foreach (
             \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
         ) {
@@ -105,10 +103,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 $items        = \Utility::associativeToNumericArray(
                     $visitLabel['labelSet']['item']
                 );
-//                foreach ($items as $item) {
-//                    $item = \Utility::associativeToNumericArray($item)[0];
-//                    $labelOptions[$item['@']['value']] = $item['#'];
-//                }
+
                 foreach ($items as $item) {
                     $item = \Utility::associativeToNumericArray($item)[0];
                     if (empty($visitLabelsByProject)

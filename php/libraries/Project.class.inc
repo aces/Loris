@@ -478,13 +478,12 @@ class Project implements \JsonSerializable
      *
      * @return array Associative array in the format VisitID=>VisitName
      */
-     public function getVisitList($projectID): array
+    static function getVisitList($projectID): array
     {
         $factory = NDB_Factory::singleton();
-        //make sure it returns an array
-        $visitLabelArray = array();
+        $db      = $factory->database();
 
-        $db = $factory->database();
+        $visitLabelArray = [];
 
         $query  = "SELECT v.VisitID AS VisitID, v.VisitName AS VisitName
                   FROM visit v, visit_project_subproject_rel vp, 
@@ -492,7 +491,7 @@ class Project implements \JsonSerializable
                   WHERE v.VisitID=vp.VisitID 
                   AND vp.ProjectSubprojectRelID=pr.ProjectSubprojectRelID 
                   AND pr.ProjectID=:projectID";
-        $result = $db->pselect($query, array('projectID' => $projectID));
+        $result = $db->pselect($query, ['projectID' => $projectID]);
 
         foreach ($result as $key=>$value) {
             $visitLabelArray[$key] = $value["VisitName"];
