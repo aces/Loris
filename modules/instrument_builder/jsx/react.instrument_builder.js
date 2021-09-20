@@ -120,6 +120,22 @@ class LoadPane extends Component {
           class: 'alert alert-danger alert-dismissible',
         };
         break;
+      case 'multipleTests':
+        alert = {
+          message: 'Error!',
+          details: 'Multiple tests in .csv file',
+          display: 'block',
+          class: 'alert alert-danger alert-dismissible',
+        };
+        break;
+      case 'syntaxError':
+        alert = {
+          message: 'Error!',
+          details: this.state.alertMessage,
+          display: 'block',
+          class: 'alert alert-danger alert-dismissible',
+        };
+        break;
       default:
         break;
     }

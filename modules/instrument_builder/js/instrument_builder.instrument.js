@@ -218,7 +218,22 @@ var Instrument = {
                                 Values : {},
                                 AllowMultiple : specialCase
                             };
-                            options = pieces[3].split("{-}");
+                            try {
+                              options = pieces[3].split("{-}");
+                            } catch (error) {
+                              console.error(error);
+                              var alertMessage = [
+                                "Syntax error found on element named: ",
+                                tempElement.Name,
+                                ".",
+                                React.createElement('br'),
+                                "Instrument file unable to load.",
+                                React.createElement('br'),
+                                "Please verify the content of your LINST or CSV file!",
+                              ];
+                              callback.error("syntaxError", alertMessage);
+                              return;
+                            }
                             for (option of options) {
                                 keyVal = option.split("=>");
                                 if (keyVal[0].indexOf('not_answered') == -1) {
@@ -383,7 +398,7 @@ var Instrument = {
               const newLinst = parsedCSV.map((line) => {
                 // Table name
                 if (tableName !== '' && tableName !== line["Form Name"]) {
-                  callback.error("multiple tests in csv file");  
+                  callback.error("multipleTests");
                 } else if (tableName === '') {
                   tableName = line["Form Name"]; 
                 }
