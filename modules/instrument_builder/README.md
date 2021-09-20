@@ -5,6 +5,8 @@
 The instrument builder provides a graphical interface for users to
 design and build instruments to be installed on a LORIS instance.
 
+The interface also allows users to load and modify an existing instrument, in either .linst format or a REDCap .csv format.
+
 ## Intended Users
 
 The instrument builder is intended to be used by non-programmers who
