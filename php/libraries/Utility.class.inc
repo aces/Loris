@@ -952,4 +952,21 @@ class Utility
         // If the first part began with a front-slash, add it back
         return ($addSlash ? '/' : '') . implode('/', $result);
     }
+
+    /**
+     * Convert 'null' strings from FormData object to NULL
+     *
+     * @param array $formData The received FormData object.
+     *
+     * @return array The parsed FormData object.
+     */
+    public static function parseFormData(array $formData) : array
+    {
+        foreach ($formData as $key => $val) {
+            if ($formData[$key] === 'null') {
+                $formData[$key] = null;
+            }
+        }
+        return $formData;
+    }
 }
