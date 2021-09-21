@@ -110,6 +110,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - New tool `populate_visits.php` to backpopulate visits from the `config.xml`, `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
 
+#### Instrument Builder
+- Ability to load a REDCap .csv instrument data dictionary, modify it in the builder, and save it as a .linst file.
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 - Removal of the violated_scans_edit permission (PR #6747)
