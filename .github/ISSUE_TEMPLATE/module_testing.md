@@ -1,13 +1,10 @@
 ---
 name: Module Testing
 about: Create a module testing report
-title: '[Manual Testing] Module '
+title: '[Manual Testing] '
 labels: 24.0.0-testing
-assignees: ''
 
 ---
-
-# Module Name: 
 
 ## Tasks:
 - [ ] Review issues from previous release testing
@@ -20,10 +17,19 @@ assignees: ''
  - [ ] Check if automated tests are up to date
  - [ ] Make sure RB is complete
 ### Standards: Make sure the latest standards are upheld
+*Check the boxes below only if the statements are true !*
  - [ ] No ajax dir
- - [ ] Data framework
- - [ ] React
- - [ ] Widgets (at least 1 for candidate to show up in candidate profile)
+ - [ ] Data framework implemented
+ - [ ] React (no templates directory)
+ - [ ] Widgets (If module contains candidate information, at least 1 widget is implemented for the candidate profile module)
+
+## Issues
+ - **list related issues/bugs here**
 
 ## Comments
  - **insert comments here**
+
+## Status
+ - [ ] Testing COMPLETE
+ - [ ] Partially Tested
+ - [ ] Could Not Test (please specify reasons in comment)
