@@ -19,6 +19,7 @@ class Direct_Consent extends \NDB_Page
     private $result      = [];
     private $candID      = "";
     private $consentData = [];
+    private $key         = "";
 
     /**
      * Check user permissions
@@ -169,7 +170,7 @@ class Direct_Consent extends \NDB_Page
      *
      * @param ServerRequestInterface $request The incoming request
      *
-     * @return none
+     * @return ResponseInterface
      */
     function _handlePost(ServerRequestInterface $request) : ResponseInterface
     {
@@ -195,7 +196,7 @@ class Direct_Consent extends \NDB_Page
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return none
+     * @return ResponseInterface
      */
     function _updateProgress(ServerRequestInterface $request) : ResponseInterface
     {
@@ -240,7 +241,7 @@ class Direct_Consent extends \NDB_Page
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return none
+     * @return ResponseInterface
      */
     function _submitConsent(ServerRequestInterface $request) : ResponseInterface
     {
@@ -336,8 +337,8 @@ class Direct_Consent extends \NDB_Page
     /**
      * Validates the format of the eConsent form
      *
-     * @param Array $consents - List of consent codes
-     * @param Array $training - eConsent form
+     * @param Array        $consents - List of consent codes
+     * @param false|string $training - eConsent form
      *
      * @return Array errors
      */

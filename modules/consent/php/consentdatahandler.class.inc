@@ -36,7 +36,7 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return ResponseInterface The outgoing PSR7 response
+     * @return none
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -337,7 +337,8 @@ class ConsentDataHandler extends \NDB_Form
 
         // get settings for Send
         $config  = \NDB_Config::singleton();
-        $baseURL = \NDB_Factory::settings()->getBaseURL();
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
 
         $key = $db->pselectOne(
             "SELECT OneTimeKey FROM direct_consent
@@ -446,7 +447,7 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param String $consentGroup - name / label of consent group
      *
-     * @return String
+     * @return ?string
      */
     function getConsentGroupID($consentGroup)
     {
@@ -465,7 +466,7 @@ class ConsentDataHandler extends \NDB_Form
      * @param String $candID         - CandidateID
      * @param String $consentGroupID - ConsentGroupID
      *
-     * @return String
+     * @return ?string
      */
     function getRequestStatus($candID, $consentGroupID)
     {
@@ -546,7 +547,6 @@ class ConsentDataHandler extends \NDB_Form
      */
     function validateEmail($values)
     {
-        $db     = \Database::singleton();
         $action = $values['action'];
 
         // Check email validation if sending
