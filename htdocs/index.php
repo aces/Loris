@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file contains the entry point for a LORIS PSR15-based router.
  * The entrypoint constructs a ServerRequestInterface PSR7 object
