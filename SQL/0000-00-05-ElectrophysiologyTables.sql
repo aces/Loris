@@ -32,6 +32,8 @@ CREATE TABLE `physiological_file` (
   `AcquisitionTime`           DATETIME             DEFAULT '1970-01-01 00:00:01',
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
   `FilePath`                  VARCHAR(255)         NOT NULL,
+  `Index`                     INT(5)               DEFAULT NULL,
+  `ParentID`                  INT(10) unsigned     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
   CONSTRAINT `FK_session_ID`
     FOREIGN KEY (`SessionID`)
@@ -44,10 +46,29 @@ CREATE TABLE `physiological_file` (
     REFERENCES `physiological_modality` (`PhysiologicalModalityID`),
   CONSTRAINT `FK_phys_output_type_TypeID`
     FOREIGN KEY (`PhysiologicalOutputTypeID`)
-    REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`)
+    REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`),
+  CONSTRAINT `FK_ParentID`
+    FOREIGN KEY (`ParentID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+-- Create a physiological_split_file table
+CREATE TABLE `physiological_split_file` (
+  `ID`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Index`     INT(5)           NOT NULL,
+  `ArchiveID` INT(10) UNSIGNED NOT NULL,
+  `FileType`  VARCHAR(12)      DEFAULT NULL,
+  `FilePath`  VARCHAR(255)     NOT NULL,
+  `Duration`  DECIMAL(10,3)    NOT NULL,
+  CONSTRAINT `FK_ArchiveID`
+    FOREIGN KEY (`ArchiveID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`),
+  CONSTRAINT `FK_ImagingFileTypes`
+    FOREIGN KEY (`FileType`)
+    REFERENCES `ImagingFileTypes` (`type`),
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create a physiological_parameter_file table that will store all JSON
 -- information that accompanies the BIDS physiological dataset
@@ -364,7 +385,8 @@ INSERT INTO ImagingFileTypes
   ('vhdr', 'Brainvision file format (EEG)'),
   ('vsm',  'BrainStorm file format (EEG)'),
   ('edf',  'European data format (EEG)'),
-  ('cnt',  'Neuroscan CNT data format (EEG)');
+  ('cnt',  'Neuroscan CNT data format (EEG)'),
+  ('archive', 'Archive file');
 
 -- Insert into annotation_file_type
 INSERT INTO physiological_annotation_file_type
