@@ -203,19 +203,28 @@ class FeedbackPanelRow extends Component {
    * Load server state
    */
   loadServerState() {
-    let that = this;
-    $.ajax({
-      type: 'GET',
-      url: loris.BaseURL + '/bvl_feedback/ajax/get_thread_entry_data.php',
-      dataType: 'json',
-      data: {feedbackID: this.props.feedbackID},
-      success: function(data) {
-        that.setState({threadEntriesLoaded: data});
-      },
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    let url = new URL(
+      loris.BaseURL
+      + '/bvl_feedback/ajax/get_thread_entry_data.php'
+    );
+    const params = {feedbackID: this.props.feedbackID};
+    Object.keys(params).forEach(
+      (key) => url.searchParams.append(key, params[key])
+    );
+
+    fetch(url, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) =>
+        this.setState({threadEntriesLoaded: data})
+      );
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -238,25 +247,29 @@ class FeedbackPanelRow extends Component {
    * @param {string} comment
    */
   newThreadEntry(comment) {
-    let feedbackID = this.props.feedbackID;
-    let candID = this.props.candID;
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
-      dataType: 'json',
-      data: {
-        comment: comment,
-        feedbackID: feedbackID,
-        candID: candID,
-      },
-      success: function(response) {
-        this.loadServerState();
-        // end of success function
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', this.props.feedbackID);
+    formData.append('comment', comment);
+
+    fetch(
+      loris.BaseURL
+      + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then(() =>
+        this.loadServerState()
+      );
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -359,6 +372,7 @@ class CommentEntryForm extends Component {
     super(props);
     this.state = {
       value: '',
+      message: '',
     };
     this.sendComment = this.sendComment.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -370,7 +384,8 @@ class CommentEntryForm extends Component {
   sendComment() {
     this.props.onCommentSend(this.state.value);
     this.setState({
-      value: 'Comment added!',
+      value: '',
+      message: 'Comment added!',
     });
     this.props.toggleThisThread();
   }
@@ -408,6 +423,7 @@ class CommentEntryForm extends Component {
               Send
             </span>
           </div>
+          {this.state.message}
         </td>
       </tr>
     );
@@ -494,6 +510,7 @@ class NewThreadPanel extends Component {
     super(props);
     this.state = {
       textValue: '',
+      message: '',
       selectValue: 'Across All Fields',
       inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
@@ -532,28 +549,33 @@ class NewThreadPanel extends Component {
    */
   createNewThread() {
     if (this.state.textValue.length) {
-      $.ajax({
-        type: 'POST',
-        url: loris.BaseURL + '/bvl_feedback/ajax/new_bvl_feedback.php',
-        dataType: 'json',
-        data: {
-          inputType: this.state.inputValue,
-          fieldName: this.state.selectValue,
-          comment: this.state.textValue,
-          candID: this.props.candID,
-          sessionID: this.props.sessionID,
-          commentID: this.props.commentID,
-          user: this.props.commentID,
-        },
-        success: function(data) {
-          this.setState({textValue: 'The new thread has been submitted!'});
+      const formData = new FormData();
+      formData.append('candID', this.props.candID);
+      formData.append('inputType', this.state.inputValue);
+      formData.append('fieldName', this.state.selectValue);
+      formData.append('comment', this.state.textValue);
+      formData.append('sessionID', this.props.sessionID);
+      formData.append('commentID', this.props.commentID);
+
+      fetch(loris.BaseURL + '/bvl_feedback/ajax/new_bvl_feedback.php', {
+        method: 'POST',
+        body: formData,
+      }).then((response) => {
+        if (!response.ok) {
+          console.error(response.status + ': ' + response.statusText);
+          return;
+        }
+
+        response.json().then((data) => {
+          this.setState({
+            message: 'The new thread has been submitted!',
+            textValue: '',
+          });
           this.props.addThread(data);
           this.props.updateSummaryThread();
-        }.bind(this),
-        error: function(xhr, desc, err) {
-          console.error(xhr);
-          console.error('Details: ' + desc + '\nError:' + err);
-        },
+        });
+      }).catch((error) => {
+        console.error(error);
       });
     }
   }
@@ -634,6 +656,7 @@ class NewThreadPanel extends Component {
           </div>
         </div>
         <div className='form-group'>
+          {this.state.message}
           <button
             id='save_data'
             onClick={this.createNewThread}
@@ -778,22 +801,25 @@ class FeedbackPanel extends Component {
    * Load summary server data
    */
   loadSummaryServerData() {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/get_bvl_feedback_summary.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        sessionID: this.props.sessionID,
-        commentID: this.props.commentID,
-      },
-      success: function(data) {
-        this.setState({summary: data});
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('sessionID', this.props.sessionID);
+    formData.append('commentID', this.props.commentID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/get_bvl_feedback_summary.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) =>
+        this.setState({summary: data})
+      );
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -801,24 +827,26 @@ class FeedbackPanel extends Component {
    * Load thread server state
    */
   loadThreadServerState() {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/react_get_bvl_threads.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        sessionID: this.props.sessionID,
-        commentID: this.props.commentID,
-        user: this.props.commentID,
-      },
-      success: function(data) {
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('sessionID', this.props.sessionID);
+    formData.append('commentID', this.props.commentID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/react_get_bvl_threads.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) => {
         this.setState({threads: data});
         this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -843,22 +871,25 @@ class FeedbackPanel extends Component {
 
     threads.push(entry);
 
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/close_bvl_feedback_thread.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        feedbackID: feedbackID,
-      },
-      success: function(data) {
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', feedbackID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/close_bvl_feedback_thread.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then(() => {
         this.setState({threads: threads});
         this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -875,22 +906,25 @@ class FeedbackPanel extends Component {
     threads.splice(index, 1);
     threads.unshift(entry);
 
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/open_bvl_feedback_thread.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        feedbackID: feedbackID,
-      },
-      success: function(data) {
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', feedbackID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/open_bvl_feedback_thread.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then(() => {
         this.setState({threads: threads});
         this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 

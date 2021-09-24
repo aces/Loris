@@ -34,7 +34,7 @@
     "d3": "^5.15.0",
     "eslint": "^7.17.0",
     "eslint-config-google": "0.9.1",
-    "eslint-plugin-no-jquery": "^2.5.0",
+    "eslint-plugin-no-jquery": "^2.6.0",
     "eslint-plugin-react": "^7.16.0",
     "eslint-webpack-plugin": "2.1.0",
     "style-loader": "^1.1.3",

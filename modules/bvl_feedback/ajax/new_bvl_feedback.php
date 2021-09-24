@@ -19,18 +19,19 @@ require_once "bvl_panel_ajax.php";
 //Creating a new array to pass the set values into the DB.
 $newThreadValues = [];
 
+$data = \Utility::parseFormData($_POST);
+
 //For profile level feedback
-if (isset($_POST['comment']) && isset($_POST['candID'])
-    && (!isset($_POST['sessionID']) || empty($_POST['sessionID'])
-    && !isset($_POST['commentID']))
+if (isset($data['comment']) && isset($data['candID'])
+    && (!isset($data['sessionID']) || empty($data['sessionID'])
+    && !isset($data['commentID']))
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
-
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
-        $_POST['inputType'],
-        $_POST['comment'],
+        $data['inputType'],
+        $data['comment'],
         'Y'
     );
 
@@ -38,15 +39,15 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
     print json_encode($newEntryValues);
 }
 
-if (isset($_POST['comment']) && isset($_POST['candID'])
-    && isset($_POST['sessionID']) && !isset($_POST['commentID'])
+if (isset($data['comment']) && isset($data['candID'])
+    && isset($data['sessionID']) && !isset($data['commentID'])
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
-        $_POST['inputType'],
-        $_POST['comment'],
+        $data['inputType'],
+        $data['comment'],
         'Y'
     );
 
@@ -54,17 +55,17 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
     print json_encode($newEntryValues);
 }
 
-if (isset($_POST['comment']) && isset($_POST['candID'])
-    && isset($_POST['sessionID']) && isset($_POST['commentID'])
+if (isset($data['comment']) && isset($data['candID'])
+    && isset($data['sessionID']) && isset($data['commentID'])
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
-        $_POST['inputType'],
-        $_POST['comment'],
+        $data['inputType'],
+        $data['comment'],
         'Y',
-        $_POST['fieldName']
+        $data['fieldName']
     );
 
     print json_encode($newEntryValues);
