@@ -1545,7 +1545,6 @@ class CheckboxElement extends React.Component {
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = this.props.elementClass;
-    let label = null;
 
     // Add required asterix
     if (required) {
