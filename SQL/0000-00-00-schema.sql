@@ -477,7 +477,12 @@ INSERT INTO `ImagingFileTypes` (type, description) VALUES
   ('txt',      'text file'),
   ('nii',      'NIfTI file'),
   ('nrrd',     'NRRD file format (used by DTIPrep)'),
-  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation'),
+  ('json',     'JSON file'),
+  ('readme',   'README file'),
+  ('tsv',      'Tab separated values (TSV) file'),
+  ('bval',     'NIfTI DWI file with b-values'),
+  ('bvec',     'NIfTI DWI file with b-vectors');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -797,18 +802,34 @@ INSERT INTO `bids_scan_type` (BIDSScanType) VALUES
   ('T2w'),
   ('dwi');
 
+CREATE TABLE `bids_phase_encoding_direction` (
+  `BIDSPhaseEncodingDirectionID`   int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSPhaseEncodingDirectionName` varchar(3) NOT NULL,
+  PRIMARY KEY (`BIDSPhaseEncodingDirectionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_phase_encoding_direction (BIDSPhaseEncodingDirectionName) VALUES
+  ('i'),
+  ('i-'),
+  ('j'),
+  ('j-'),
+  ('k'),
+  ('k-');
+
 CREATE TABLE `bids_mri_scan_type_rel` (
-  `MRIScanTypeID`             int(10) UNSIGNED NOT NULL,
-  `BIDSCategoryID`            int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSScanTypeSubCategoryID` int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSScanTypeID`            int(3)  UNSIGNED DEFAULT NULL,
-  `BIDSEchoNumber`            int(3)  UNSIGNED DEFAULT NULL,
+  `MRIScanTypeID`                int(10) UNSIGNED NOT NULL,
+  `BIDSCategoryID`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSScanTypeSubCategoryID`    int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSScanTypeID`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSEchoNumber`               int(3)  UNSIGNED DEFAULT NULL,
+  `BIDSPhaseEncodingDirectionID` int(3)  UNSIGNED DEFAULT NULL,
   PRIMARY KEY  (`MRIScanTypeID`),
   KEY `FK_bids_mri_scan_type_rel` (`MRIScanTypeID`),
-  CONSTRAINT `FK_bids_mri_scan_type_rel`     FOREIGN KEY (`MRIScanTypeID`)             REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bids_category`              FOREIGN KEY (`BIDSCategoryID`)            REFERENCES `bids_category`(`BIDSCategoryID`),
-  CONSTRAINT `FK_bids_scan_type_subcategory` FOREIGN KEY (`BIDSScanTypeSubCategoryID`) REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
-  CONSTRAINT `FK_bids_scan_type`             FOREIGN KEY (`BIDSScanTypeID`)            REFERENCES `bids_scan_type` (`BIDSScanTypeID`)
+  CONSTRAINT `FK_bids_mri_scan_type_rel`        FOREIGN KEY (`MRIScanTypeID`)                REFERENCES `mri_scan_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bids_category`                 FOREIGN KEY (`BIDSCategoryID`)               REFERENCES `bids_category`(`BIDSCategoryID`),
+  CONSTRAINT `FK_bids_scan_type_subcategory`    FOREIGN KEY (`BIDSScanTypeSubCategoryID`)    REFERENCES `bids_scan_type_subcategory` (`BIDSScanTypeSubCategoryID`),
+  CONSTRAINT `FK_bids_scan_type`                FOREIGN KEY (`BIDSScanTypeID`)               REFERENCES `bids_scan_type` (`BIDSScanTypeID`),
+  CONSTRAINT `FK_bids_phase_encoding_direction` FOREIGN KEY (`BIDSPhaseEncodingDirectionID`) REFERENCES `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -851,6 +872,50 @@ INSERT INTO bids_mri_scan_type_rel
     (SELECT BIDSScanTypeID FROM bids_scan_type WHERE BIDSSCanType='dwi'),
     NULL
   );
+
+
+CREATE TABLE `bids_export_file_level_category` (
+  `BIDSExportFileLevelCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSExportFileLevelCategoryName` varchar(12) NOT NULL,
+  PRIMARY KEY (`BIDSExportFileLevelCategoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_export_file_level_category (BIDSExportFileLevelCategoryName) VALUES
+  ('study'),
+  ('image'),
+  ('session');
+
+CREATE TABLE `bids_export_non_imaging_file_category` (
+  `BIDSNonImagingFileCategoryID`   int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSNonImagingFileCategoryName` varchar(40) NOT NULL,
+  PRIMARY KEY (`BIDSNonImagingFileCategoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO bids_export_non_imaging_file_category (BIDSNonImagingFileCategoryName) VALUES
+  ('dataset_description'),
+  ('README'),
+  ('bids-validator-config'),
+  ('participants_list_file'),
+  ('session_list_of_scans');
+
+CREATE TABLE `bids_export_files` (
+  `BIDSExportedFileID`            int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `BIDSExportFileLevelCategoryID` int(10) unsigned NOT NULL,
+  `FileID`                        int(10) unsigned DEFAULT NULL,
+  `SessionID`                     int(10) unsigned DEFAULT NULL,
+  `BIDSNonImagingFileCategoryID`  int(10) unsigned DEFAULT NULL,
+  `BIDSCategoryID`                int(3)  unsigned DEFAULT NULL,
+  `FileType`                      varchar(12) NOT NULL,
+  `FilePath`                      varchar(255) NOT NULL,
+  PRIMARY KEY (`BIDSExportedFileID`),
+  CONSTRAINT `FK_bef_BIDSExportFileLevelID`        FOREIGN KEY (`BIDSExportFileLevelCategoryID`) REFERENCES `bids_export_file_level_category` (`BIDSExportFileLevelCategoryID`),
+  CONSTRAINT `FK_bef_FileID`                       FOREIGN KEY (`FileID`)                        REFERENCES `files`   (`FileID`),
+  CONSTRAINT `FK_bef_SessionID`                    FOREIGN KEY (`SessionID`)                     REFERENCES `session` (`ID`),
+  CONSTRAINT `FK_bef_BIDSNonImagingFileCategoryID` FOREIGN KEY (`BIDSNonImagingFileCategoryID`)  REFERENCES `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`),
+  CONSTRAINT `FK_bef_ModalityType`                 FOREIGN KEY (`BIDSCategoryID`)                REFERENCES `bids_category` (`BIDSCategoryID`),
+  CONSTRAINT `FK_bef_FileType`                     FOREIGN KEY (`FileType`)                      REFERENCES `ImagingFileTypes` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- MRI violations tables
