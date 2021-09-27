@@ -1,8 +1,7 @@
 /**
  * Share Consent form
  *
- * Renders form for copying eConsent link, setting
- * eConsent on patient portal, or sending eConsent
+ * Renders form for copying eConsent link or sending eConsent
  *
  * @author Camille Beaudoin
  *
@@ -35,15 +34,12 @@ class ShareConsentForm extends Component {
       },
       isLoaded: false,
       showEmails: false,
-      // showSet: false,
       showSend: false,
     };
 
     this.setFormData = this.setFormData.bind(this);
     this.copyLink = this.copyLink.bind(this);
-    // this.updateEmail = this.updateEmail.bind(this);
     this.sendConsent = this.sendConsent.bind(this);
-    // this.showSet = this.showSet.bind(this);
     this.showSend = this.showSend.bind(this);
   }
 
@@ -85,8 +81,7 @@ class ShareConsentForm extends Component {
     let submitButton;
     let startingButtons = [];
 
-    // Show emails if user clicks "Set on patient portal"
-    // or "Send consent"
+    // Show emails if user clicks "Send consent"
     if (this.state.showEmails) {
       emails = (
         <div>
@@ -134,20 +129,6 @@ class ShareConsentForm extends Component {
           />
         </div>
       );
-
-      // If not already on patient portal, show button
-      // to set on patient portal
-      if (this.props.data['Patient Portal'] === 'NA') {
-        startingButtons.push(
-          <div>
-            <ButtonElement
-              label={<div>Set on Patient Portal</div>}
-              buttonClass="btn btn-sm btn-primary"
-              onUserInput={this.showSet}
-            />
-          </div>
-        );
-      }
 
       // Add button for sending
       startingButtons.push(
@@ -207,17 +188,6 @@ class ShareConsentForm extends Component {
     swal.fire('Success!', 'E-Consent form link copied!', 'success');
   }
 
-  // /**
-  //  * Submit form data to update email in DB (set on patient portal)
-  //  */
-  // updateEmail() {
-  //   this.props.submitData(
-  //     this.state.formData,
-  //     'UpdateEmail',
-  //     'E-Consent form set on Patient Portal.'
-  //   );
-  // }
-
   /**
    * Submit form data & send eConsent to participant
    */
@@ -228,17 +198,6 @@ class ShareConsentForm extends Component {
       'E-Consent form sent.'
     );
   }
-
-
-  // /**
-  //  * Display "set on patient portal" form elements
-  //  */
-  // showSet() {
-  //   this.setState({
-  //     showEmails: true,
-  //     showSet: true,
-  //   });
-  // }
 
   /**
    * Display "Send consent" form elements

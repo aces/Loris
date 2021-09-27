@@ -366,7 +366,7 @@ class ConsentDataHandler extends \NDB_Form
             'send_consent.tpl',
             $msg_data,
             "",
-            "CCNA Team <noreply@loris.ca>"
+            "Loris Team <noreply@loris.ca>"
         );
     }
 

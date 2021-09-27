@@ -161,7 +161,7 @@ class DirectEntryFormElement extends React.Component {
               value={this.props.values[this.props.name]}
               onUserInput={this.props.updateAnswer}
               disabled={this.props.element.options.disabled}
-              elementClass={'checkbox-inline checkbox-custom'}
+              elementClass={'checkbox-inline'}
            />
          </div>
         );
