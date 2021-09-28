@@ -419,7 +419,34 @@ The JSON object is of the form:
 A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
-A PATCH request with the Meta fields and a date NextStageDate will start the next stage, if the stage is 'Not Started' and the CandID and Visit label provided are valid.
+A PATCH request of the form:
+```js
+{
+    "CandID"  : 317604,
+    "Visit"   : 'Visit 01',
+    "Site"    : 'DCC',
+    "Battery" : 'Stale',
+    "Project" : 'Pumpernickel',
+    "Stages" : {
+        "Screening" :  {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
+        },
+        "Visit" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
+        },
+        "Approval" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "Pass|Failure|Withdrawal|In Progress"
+        }
+    }
+}
+```
+will update the stages date and status. 
+
+At this moment, we only support requests for the Visit stage with the In progress status,
+to start the next stage if the Visit stage is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
