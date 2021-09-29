@@ -428,25 +428,15 @@ A PATCH request of the form:
     "Battery" : 'Stale',
     "Project" : 'Pumpernickel',
     "Stages" : {
-        "Screening" :  {
-            "Date" : "YYYY-MM-DD",
-            "Status" : "Pass|Failure|Withdrawal|In Progress"
-        },
         "Visit" : {
             "Date" : "YYYY-MM-DD",
-            "Status" : "Pass|Failure|Withdrawal|In Progress"
-        },
-        "Approval" : {
-            "Date" : "YYYY-MM-DD",
-            "Status" : "Pass|Failure|Withdrawal|In Progress"
+            "Status" : "In Progress"
         }
     }
 }
 ```
-will update the stages date and status. 
-
-At this moment, we only support requests for the Visit stage with the In progress status,
-to start the next stage if the Visit stage is 'Not Started' and the CandID and Visit label provided are valid.
+will update the Visit stage date and status and start the next stage if the Visit stage
+is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
