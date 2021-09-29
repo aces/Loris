@@ -193,7 +193,7 @@
 				<div class="row form-group col-xs-12">
 					{$element.html}
 				</div>
-			{elseif $element.label eq $element.html}
+			{elseif $element.label === $element.html}
 				<label class="row form-group col-xs-12">
 					{$element.label}
 				</label>

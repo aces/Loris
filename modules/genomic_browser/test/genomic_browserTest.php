@@ -47,6 +47,23 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     private $_FilesUI = [
         'Files' => '#tab-tabFiles',
     ];
+
+    //Filter locations
+    static $site       = 'select[name="Site"]';
+    static $DCCID      = 'input[name="DCCID"]';
+    static $PSCID      = 'input[name="PSCID"]';
+    static $sex        = 'select[name="Sex"]';
+    static $subproject = 'select[name="Subproject"]';
+    static $externID   = 'input[name="External ID"]';
+    static $file       = 'select[name="File"]';
+    static $SNP        = 'select[name="SNPs found"]';
+    static $CNV        = 'select[name="CNVs found"]';
+    static $CPG        = 'select[name="CPGs found"]';
+
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+    static $clear       = "div.col-xs-12.col-sm-12.col-md-12 > ul > li > a";
+
     /**
      * Tests that, when loading the genomic_browser module, the
      * breadcrumb is 'Genomic browser' or an error is given according
@@ -112,70 +129,99 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->_FilesUI
         );
     }
+
+
     /**
-     * Tests that, inputing test data and searching the data,
-     * checking the results in the table.
+     * Tests that the filters and the clear filter buton the Profiles
+     * tab of the genomic browser function correctly
      *
      * @return void
      */
-    function testGenomicBrowserFilterEachTab()
+    function testGenomicBrowserFiltersProfileTab()
     {
-        $this->markTestSkipped("Skipping long test");
-        return;
-        // test filter in Profiles Tab
-        //$this->_testFilter("/genomic_browser/", "PSCID", "MTL001", "1 rows");
-        //$this->_testFilter("/genomic_browser/", "DCCID", "300001", "1 rows");
-        //$this->_testFilter(
-        //    "/genomic_browser/",
-        //    "PSCID",
-        //    "999999",
-        //    "No result found."
-        //);
-        //$this->_testFilter(
-        //    "/genomic_browser/",
-        //    "DCCID",
-        //    "999999",
-        //    "No result found."
-        //);
-        //// test filter in GWAS Tab
-        //$this->_testFilter(
-        //    "/genomic_browser/gwas_browser/",
-        //    "Chromosome",
-        //    "chr14",
-        //    "No result found."
-        //);
-        //$this->_testFilter(
-        //    "/genomic_browser/gwas_browser/",
-        //    "BP_Position",
-        //    "19009011",
-        //    "No result found."
-        //);
-        //$this->_testFilter(
-        //    "/genomic_browser/gwas_browser/",
-        //    "Chromosome",
-        //    "999999",
-        //    "No result found."
-        //);
-        //$this->_testFilter(
-        //    "/genomic_browser/gwas_browser/",
-        //    "BP_Position",
-        //    "999999",
-        //    "No result found."
-        //);
-        //// test filter in SNP Tab
-        //$this->_testFilter(
-        //    "/genomic_browser/snp_browser/",
-        //    "rsID",
-        //    "MTL001",
-        //    "No result found."
-        //);
-        //$this->_testFilter(
-        //    "/genomic_browser/snp_browser/",
-        //    "rsID",
-        //    "999999",
-        //    "No result found."
-        //);
+        $this->safeGet($this->url . "/genomic_browser/");
+
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clear,
+            'Montreal',
+            '20 rows'
+        );
+
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clear,
+            'Data Coordinating Center',
+            '6 rows'
+        );
+
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clear,
+            'test',
+            '0 rows'
+        );
+
+        $this->_filterTest(
+            self::$DCCID,
+            self::$display,
+            self::$clear,
+            '475906',
+            '1 rows'
+        );
+
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clear,
+            'test',
+            '0 rows'
+        );
+
+        $this->_filterTest(
+            self::$PSCID,
+            self::$display,
+            self::$clear,
+            'MTL024',
+            '1 rows'
+        );
+
+        $this->_filterTest(
+            self::$file,
+            self::$display,
+            self::$clear,
+            'Yes',
+            '0 rows'
+        );
+
+        $this->_filterTest(
+            self::$SNP,
+            self::$display,
+            self::$clear,
+            'No',
+            '5 rows'
+        );
+
+        $this->_filterTest(
+            self::$CNV,
+            self::$display,
+            self::$clear,
+            'Yes',
+            '3 rows'
+        );
+
+        $this->_filterTest(
+            self::$CPG,
+            self::$display,
+            self::$clear,
+            'Yes',
+            '3 rows'
+        );
     }
+
     /**
      * This function could test UI elemnts in each Tabs.
      *
@@ -230,9 +276,9 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testUploadFile()
     {
         $this->safeGet($this->url . "/genomic_browser/");
-        $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::cssSelector("#tab-tabFiles")
-        )->click();
+        );sleep(2);
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "div.panel:nth-child(2) > div:nth-child(1)".

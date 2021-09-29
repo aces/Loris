@@ -33,7 +33,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/900000/");
         $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Candidate Profile 900000", $bodyText);
     }

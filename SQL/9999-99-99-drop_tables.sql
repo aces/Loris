@@ -134,14 +134,19 @@ DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
 DROP TABLE IF EXISTS `bids_mri_scan_type_rel`;
+DROP TABLE IF EXISTS `bids_export_files`;
 DROP TABLE IF EXISTS `bids_category`;
 DROP TABLE IF EXISTS `bids_scan_type`;
 DROP TABLE IF EXISTS `bids_scan_type_subcategory`;
+DROP TABLE IF EXISTS `bids_phase_encoding_direction`;
+DROP TABLE IF EXISTS `bids_export_non_imaging_file_category`;
+DROP TABLE IF EXISTS `bids_export_file_level_category`;
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group_target`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
 DROP TABLE IF EXISTS `mri_protocol_checks_group`;
+DROP TABLE IF EXISTS `mri_upload_rel`;
 DROP TABLE IF EXISTS `mri_upload`;
 DROP TABLE IF EXISTS `mri_protocol_group_target`;
 DROP TABLE IF EXISTS `MRICandidateErrors`;
@@ -155,11 +160,13 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
-DROP TABLE IF EXISTS `mri_upload_rel`;
 
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
+
+DROP TABLE IF EXISTS `hrrt_archive_files`;
+DROP TABLE IF EXISTS `hrrt_archive`;
 
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
@@ -181,7 +188,5 @@ DROP TABLE IF EXISTS `visit_project_subproject_rel`;
 DROP TABLE IF EXISTS `visit`;
 DROP TABLE IF EXISTS `project_subproject_rel`;
 DROP TABLE IF EXISTS `consent_group`;
-DROP TABLE IF EXISTS `hrrt_archive_files`;
-DROP TABLE IF EXISTS `hrrt_archive`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;

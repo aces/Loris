@@ -31,6 +31,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - In Candidate Parameters, fix caveat emptor flag being editable without a permission to edit candidate profiles(PR #7047)
 - Candidate library now allows a null sex in the select() function to accommodate scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
+- The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
@@ -41,10 +42,14 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### Conflict Resolver
+- Changes are now saved automatically, one by one. Once a conflict is resolved the cell that contains the input field will glow green. It is possible to change
+ the resolved conflicts to a new value until the page is refreshed. [(PR #7558)](https://github.com/aces/Loris/pull/7558)
+- This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
-- *Add item here*
+- Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)

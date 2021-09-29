@@ -42,20 +42,19 @@ const resolve = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
   },
-  extensions: ['*', '.js', '.jsx', '.json'],
+  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
 };
 
 const mod = {
   rules: [
     {
-      test: /\.(js|jsx)$/,
+      test: /\.(jsx?|tsx?)$/,
       exclude: /node_modules/,
       use: [
         {
           loader: 'babel-loader?cacheDirectory',
         },
       ],
-      enforce: 'pre',
     },
     {
       test: /\.css$/,
@@ -63,6 +62,10 @@ const mod = {
         'style-loader',
         'css-loader',
       ],
+    },
+    {
+      test: /\.tsx?$/,
+      loader: 'ts-loader',
     },
   ],
 };
@@ -214,12 +217,8 @@ const config = [
     'CandidateParameters',
     'ConsentWidget',
   ]),
-  lorisModule('configuration', ['SubprojectRelations']),
-  lorisModule('conflict_resolver', [
-    'CandidateConflictsWidget',
-    'conflictResolverIndex',
-    'resolvedConflictsIndex',
-  ]),
+  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
+  lorisModule('conflict_resolver', ['conflict_resolver']),
   lorisModule('battery_manager', ['batteryManagerIndex']),
   lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
   lorisModule('behavioural_qc', ['behaviouralQCIndex']),
