@@ -160,6 +160,7 @@ const config = [
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        files: ['modules/', 'jsx/', 'htdocs/js'],
         cache: true,
       }),
       new CopyPlugin({
