@@ -463,6 +463,9 @@ class Edit_User extends \NDB_Form
         }
         // update the user
         if ($this->isCreatingNewUser()) {
+            $set["Password_hash"] = new \Password(
+                                    htmlspecialchars_decode($values['Password_hash'])
+                                    );
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
