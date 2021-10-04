@@ -351,7 +351,6 @@ class Edit_User extends \NDB_Form
                     [
                         'full_name'   => $values['Real_name'],
                         'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
                     ]
                 );
                 $examinerID = $DB->pselectOne(
@@ -464,6 +463,9 @@ class Edit_User extends \NDB_Form
         }
         // update the user
         if ($this->isCreatingNewUser()) {
+            $set["Password_hash"] = new \Password(
+                htmlspecialchars_decode($values['Password_hash'])
+            );
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
@@ -486,6 +488,15 @@ class Edit_User extends \NDB_Form
                     ]
                 );
             }
+                $DB->update(
+                    'examiners',
+                    [
+                        'userID'      => $uid,
+                    ],
+                    [
+                        "full_name" => $values['Real_name'],
+                    ]
+                );
         } else {
             // update the user
             $user = \User::factory($this->identifier);
