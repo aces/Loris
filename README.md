@@ -36,6 +36,7 @@ Deploy and log in with username *admin* and the password that's set up during de
  * NodeJS <b>10.13.0</b> or higher
  * NPM
  * make
+ * Protocol Buffers v3.0.0 or higher
 
 These dependencies are subject to change so be sure to verify your version of MySQL and PHP when updating LORIS. Installing some dependencies may require `sudo` privileges.
 
