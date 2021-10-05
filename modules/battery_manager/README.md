@@ -12,7 +12,7 @@ administrators.
 
 ## Scope
 The Battery Manager module provides a tool for browsing, adding,
-editing, activating, and deactivating entries in the the Test Battery.
+editing, activating, and deactivating entries in the Test Battery.
 
 #### Interactions with LORIS
 Changes, additions and deletion of data in this module affects the test
