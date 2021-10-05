@@ -1922,7 +1922,10 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/VisitMetaFields'
-        - $ref: '#/components/schemas/VisitStages'
+        - type: object
+          properties:
+            Stages:
+              $ref: '#/components/schemas/InstrumentVisit'
     InstrumentScreening:
       type: object
       properties:
