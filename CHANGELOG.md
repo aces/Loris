@@ -20,6 +20,7 @@ database (PR #5260)
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
 - Fix special character double escaping in instruments (PR #6223)
+- Fix duplicate examiners created / examiners overwritten (PR #7462)
 
 ### Modules 
 #### Candidate Profile
@@ -78,6 +79,7 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 be used by projects having custom modules not in LORIS. (PR #5913)
 - Duplicate filenames in the data release module will cause an error when downloading. Make sure to remove all filename duplications before upgrading to this version. (PR #6461)
 - New tool for detecting and reporting the presence of double escaped special characters in the database instruments (PR #6477)
+- Run `tools/single_use/Remove_duplicate_examiners.php` to remove duplicate examiners that may have been created before bugfix. Make sure to run this script _before_ running the `SQL/New_patches/2021-09-28-Unique_examiners.sql`. (PR #7462)
 
 ### Notes For Developers
 - The tool `phpstan` has been added to our automated test suite. (PR #4928)

@@ -1193,8 +1193,8 @@ CREATE TABLE `examiners` (
   `radiologist` tinyint(1) default 0 NOT NULL,
   `userID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`examinerID`),
-  UNIQUE KEY `full_name` (`full_name`),
-  KEY `FK_examiners_2` (`userID`),
+  UNIQUE KEY `unique_examiner` (`full_name`,`userID`),
+  UNIQUE KEY `FK_examiners_2` (`userID`),
   CONSTRAINT `FK_examiners_2` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

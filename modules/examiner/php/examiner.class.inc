@@ -72,6 +72,7 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                            LEFT JOIN users u ON u.ID=e.userID
                         WHERE 1=1 ";
         } else {
 
@@ -83,12 +84,14 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                            LEFT JOIN users u ON u.ID=e.userID
                         WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
         $this->columns      = array(
             'e.full_name as Examiner',
+            'u.Email',
             'e.examinerID as ID',
             'psc.Name as Site',
             'e.radiologist as Radiologist',
@@ -100,6 +103,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
             'Examiner',
+            'Email',
             'ID',
             'Site',
             'Radiologist',
@@ -216,31 +220,24 @@ class Examiner extends \NDB_Menu_Filter_Form
             $radiologist = 1;
         }
 
-        //Check if examiner is already in the database 'examiners', if not add them
+        // Check if examiner is already in the database 'examiners', if not add them
+        // Assumption made that only non-users are added to the table here
+        // Otherwise, would need more information to identify which loris user
+        // the name refers to
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
-             WHERE full_name=:fullName",
+             WHERE full_name=:fullName
+             AND userID IS NULL",
             array('fullName' => $fullName)
         );
 
-        //Check if examiner is already a loris user, if so add foreign key
-        $isUser = $DB->pselectOne(
-            "SELECT ID FROM users WHERE Real_name=:fullName",
-            array('fullName' => $fullName)
-        );
-
-        $user_id = null;
-        if (!empty($isUser)) {
-            $user_id = $isUser;
-        }
         if (empty($examinerID)) {
             $DB->insert(
                 'examiners',
                 array(
                     'full_name'   => $fullName,
-                    'radiologist' => $radiologist,
-                    'userID'      => $user_id,
+                    'radiologist' => $radiologist
                 )
             );
         } else {
@@ -278,7 +275,9 @@ class Examiner extends \NDB_Menu_Filter_Form
             "SELECT e.examinerID
              FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-             WHERE e.full_name=:fullName AND epr.centerID=:siteID",
+             WHERE e.full_name=:fullName 
+             AND epr.centerID=:siteID 
+             AND e.userID IS NULL",
             array(
                 'fullName' => $fullName,
                 'siteID'   => $siteID,
@@ -305,7 +304,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
-             WHERE full_name=:fullName",
+             WHERE full_name=:fullName AND userID IS NULL",
             array('fullName' => $fullName)
         );
 
