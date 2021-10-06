@@ -33,3 +33,16 @@ electrophysiology_browser_view_site
 
 You can download all the files related to a recording (channel information,
 electrode information, task event information, the actual recording...).
+
+## Installation requirements to use the visualization features
+The visualization component requires Protocol Buffers v3.0.0 or higher.
+For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
+
+In order to automatically generate the protoc compiled files, add the following block in `modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json`: 
+``` 
+"scripts": {
+  "postinstall": "protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/"
+}
+```
+and run `npm run install` from the loris root directory.
+

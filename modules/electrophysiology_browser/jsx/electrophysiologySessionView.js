@@ -339,7 +339,9 @@ class ElectrophysiologySessionView extends Component {
             >
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
-                  chunksURL={chunksURLs?.[file.splitData?.splitIndex]}
+                  chunksURL={
+                    chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
+                  }
                   epochsURL={epochsURL}
                   electrodesURL={electrodesURL}
                 >
