@@ -50,6 +50,7 @@ that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (M
 4. Ensure that, when the module which added the extra `CandidateInfo` terms
    is disabled, the terms from that module no longer show up in the
    `Candidate Info` card.
+5. Ensure that all the links work without 500 error.
 
 All other widgets are part of other modules, and should be tested as
 part of that module's testing.
