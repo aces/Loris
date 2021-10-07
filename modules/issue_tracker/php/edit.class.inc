@@ -158,18 +158,18 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $allmodules = \Module::getActiveModulesIndexed($db);
+        $allModules = \Module::getActiveModulesIndexed($db);
 
         $modules = [];
-        foreach ($allmodules as $key => $m) {
+        foreach ($allModules as $key => $m) {
             $modules[$key] = $m->getLongName();
         }
 
-        //Now get issue values
+        // Now get issue values
         $issueData = $this->getIssueData();
         if (!empty($_GET['issueID'])
             && $_GET['issueID'] != "new"
-        ) { //if an existing issue
+        ) { // if an existing issue
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID);
 
@@ -263,7 +263,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'centerID'      => $user->getCenterIDs(),
             'status'        => 'new',
             'priority'      => 'normal',
-            'issueID'       => 0, //TODO: this is dumb
+            'issueID'       => 0, // TODO: this is dumb
             'title'         => null,
             'lastUpdate'    => null,
             'PSCID'         => null,
@@ -298,7 +298,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             ['issueID' => $issueID]
         );
 
-        //looping by reference so can edit in place
+        // looping by reference so can edit in place
         $modules = \Module::getActiveModulesIndexed($db);
         foreach ($unformattedComments as &$comment) {
             if ($comment['fieldChanged'] === 'module') {
@@ -463,7 +463,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ]
             );
             if (!$success) {
-                showError($attachment->errorMessage);
+                $this->showError($attachment->errorMessage);
             }
         }
 
@@ -475,7 +475,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             ];
             $db->replace('issues_watching', $nowWatching);
 
-            //sending email
+            // sending email
             $this->emailUser($issueID, $issueValues['assignee']);
         }
 
@@ -604,17 +604,16 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param array $values values to be validated
      *
-     * @throws DatabaseException
-     *
      * @return array success with values, or error with message.
+     *
      */
-    function validateInput($values)
+    function validateInput(array $values): array
     {
         $factory    = \NDB_Factory::singleton();
         $db         = $factory->database();
-        $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
-        $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
-        $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
+        $pscid      = ($values['PSCID'] ?? null);
+        $visitLabel = ($values['visitLabel'] ?? null);
+        $centerID   = ($values['centerID'] ?? null);
         $result     = [
             'PSCID'             => $pscid,
             'visit'             => $visitLabel,
@@ -665,7 +664,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
             }
             if (!$validCenter) {
-                showError("PSCID and Center ID do not match a valid session!");
+                $this->showError("PSCID and Center ID do not match a valid session!");
             }
         }
         // If both are set, return SessionID and CandID
@@ -684,7 +683,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $result['sessionID'] = $session[0]['sessionID'];
                 $result['candID']    = $session[0]['candID'];
             } else {
-                showError(
+                $this->showError(
                     "PSCID and Visit Label do not match a valid candidate session!"
                 );
             }
@@ -707,7 +706,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             if ($candidate) {
                 $result['candID'] = $candidate;
             } else {
-                showError("PSCID does not match a valid candidate!");
+                $this->showError("PSCID does not match a valid candidate!");
             }
 
             return $result;
@@ -715,7 +714,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // If only visit label is set, return an error
         if (isset($result['visit'])) {
-            showError("Visit Label must be accompanied by a PSCID");
+            $this->showError("Visit Label must be accompanied by a PSCID");
         }
 
         return $result;
@@ -798,6 +797,23 @@ class Edit extends \NDB_Page implements ETagCalculator
             ];
             $db->insert('issues_comments', $commentValues);
         }
+    }
+
+    /**
+     * Utility function to return errors from the server
+     *
+     * @param string $message error message to display
+     *
+     * @return void
+     */
+    function showError(string $message) : void
+    {
+        if (!isset($message)) {
+            $message = 'An unknown error occurred!';
+        }
+        header('HTTP/1.1 400 Bad Request');
+        header('Content-Type: application/json; charset=UTF-8');
+        die(json_encode(['message' => $message]));
     }
 
     /**
