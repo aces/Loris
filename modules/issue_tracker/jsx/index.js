@@ -9,7 +9,8 @@ window.addEventListener('load', () => {
     <IssueForm
       Module='issue_tracker'
       DataURL={loris.BaseURL
-              + '/issue_tracker/ajax/EditIssue.php?action=getData&issueID='
+        + '/issue_tracker/Edit/?action=getData&issueID='
+              // + '/issue_tracker/ajax/EditIssue.php?action=getData&issueID='
               + id}
       action={loris.BaseURL
              + '/issue_tracker/ajax/EditIssue.php?action=edit'}
