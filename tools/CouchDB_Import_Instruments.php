@@ -180,7 +180,7 @@ class CouchDBInstrumentImporter
      */
     function updateCandidateDocs($Instruments)
     {
-        $results = [
+        $results       = [
             'new'       => 0,
             'modified'  => 0,
             'unchanged' => 0,
@@ -189,8 +189,8 @@ class CouchDBInstrumentImporter
             \NDB_Factory::singleton()->database(),
             \NDB_Factory::singleton()->config(),
             [
-              __DIR__ . "/../project/modules",
-              __DIR__ . "/../modules/",
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
             ]
         );
         foreach ($Instruments as $instrument => $name) {
