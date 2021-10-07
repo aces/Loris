@@ -2,6 +2,7 @@
 
 namespace LORIS\issue_tracker;
 
+use Email;
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -376,13 +377,427 @@ class Edit extends \NDB_Page implements ETagCalculator
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values = json_decode((string) $request->getBody(), true);
+        $values = $request->getParsedBody();
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
             );
         }
-        return new \LORIS\Http\Response\JSON\Created(['success']);
+
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $user    = $factory->user();
+
+        $issueValues    = [];
+        $validateValues = [];
+        $fields         = [
+            'assignee',
+            'status',
+            'priority',
+            'centerID',
+            'title',
+            'category',
+            'module',
+        ];
+        $fieldsToValidateFirst = [
+            'PSCID',
+            'visitLabel',
+            'centerID',
+        ];
+
+        foreach ($fields as $field) {
+            // The default is a string "null" because if the front end submits
+            // null, it comes through as a string, so the default is to behave
+            // the same way
+            $value = $values[$field] ?? "null";
+            if ($value === "null") {
+                $value = null;
+            }
+            if (isset($field)) {
+                $issueValues[$field] = $value;
+            }
+        }
+        foreach ($fieldsToValidateFirst as $vField) {
+            if (isset($values[$vField]) && $values[$vField] !== "null") {
+                $validateValues[$vField] = $values[$vField];
+            }
+        }
+
+        $issueID = intval($values['issueID']);
+
+        $issueValues['lastUpdatedBy'] = $user->getUsername();
+
+        $validatedInput = $this->validateInput($validateValues);
+        if (array_key_exists('sessionID', $validatedInput)) {
+            $issueValues['sessionID'] = $validatedInput['sessionID'];
+        }
+
+        if (array_key_exists('candID', $validatedInput)) {
+            $issueValues['candID'] = $validatedInput['candID'];
+        }
+
+        // Get changed values to save in history
+        $historyValues = $this->getChangedValues($issueValues, $issueID);
+
+        if (!empty($issueID)) {
+            $db->update('issues', $issueValues, ['issueID' => $issueID]);
+        } else {
+            $issueValues['reporter']    = $user->getUsername();
+            $issueValues['dateCreated'] = date('Y-m-d H:i:s');
+            $db->insert('issues', $issueValues);
+            $issueID = intval($db->getLastInsertId());
+        }
+
+        $this->updateHistory($historyValues, $issueID);
+        $this->updateComments($values['comment'], $issueID);
+
+        // Attachment for new issue.
+        if (isset($_FILES['file'])) {
+            $attachment = new \LORIS\issue_tracker\UploadHelper();
+            $success    = $attachment->setupUploading(
+                $user,
+                $_FILES,
+                [
+                    'fileDescription' => '',
+                    'issueID'         => $issueID,
+                ]
+            );
+            if (!$success) {
+                showError($attachment->errorMessage);
+            }
+        }
+
+        // Adding new assignee to watching
+        if (isset($issueValues['assignee'])) {
+            $nowWatching = [
+                'userID'  => $issueValues['assignee'],
+                'issueID' => $issueID,
+            ];
+            $db->replace('issues_watching', $nowWatching);
+
+            //sending email
+            $this->emailUser($issueID, $issueValues['assignee']);
+        }
+
+        // Adding others from multiselect to watching table.
+        if (isset($values['othersWatching'])) {
+
+            // Clear the list of current watchers
+            $db->delete(
+                'issues_watching',
+                ['issueID' => $issueID]
+            );
+
+            // Add new watchers (if any)
+            $usersWatching = explode(',', $values['othersWatching']);
+            foreach ($usersWatching as $usersWatching) {
+                if ($usersWatching) {
+                    $db->insert(
+                        'issues_watching',
+                        [
+                            'userID'  => $usersWatching,
+                            'issueID' => $issueID,
+                        ]
+                    );
+                }
+            }
+        }
+
+        // Add editor to the watching table unless they don't want to be added.
+        if (isset($values['watching']) && $values['watching'] == 'Yes') {
+            $nowWatching = [
+                'userID'  => $user->getUsername(),
+                'issueID' => $issueID,
+            ];
+            $db->replace('issues_watching', $nowWatching);
+        } else if (isset($values['watching']) && $values['watching'] == 'No') {
+            $db->delete(
+                'issues_watching',
+                [
+                    'issueID' => $issueID,
+                    'userID'  => $user->getUsername(),
+                ]
+            );
+        }
+        return new \LORIS\Http\Response\JsonResponse(
+            ['issueID' => $issueID]
+        );
+    }
+
+    /**
+     * Emails all users that are watching the issue with the changes.
+     *
+     * @param int $issueID          the issueID
+     * @param string $changed_assignee changed assignee
+     *
+     * @return void
+     */
+    function emailUser(int $issueID, string $changed_assignee)
+    {
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+        //not sure if this is necessary
+        $baseurl = $factory->settings()->getBaseURL();
+
+        $title = $db->pSelectOne(
+            "SELECT title FROM issues
+            WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+
+        $msg_data            = [];
+        $msg_data['url']     = $baseurl .
+            "/issue_tracker/issue/" . $issueID;
+        $msg_data['issueID'] = $issueID;
+        $msg_data['currentUser'] = $user->getUsername();
+        $msg_data['title']       = $title;
+
+        if (isset($changed_assignee)) {
+            $issueChangeEmailsAssignee = $db->pselect(
+                "SELECT u.Email as Email, u.First_name as firstname " .
+                "FROM users u WHERE u.UserID=:assignee
+                AND u.UserID<>:currentUser",
+                [
+                    'assignee'    => $changed_assignee,
+                    'currentUser' => $user->getUserName(),
+                ]
+            );
+
+            if (isset($issueChangeEmailsAssignee[0])) {
+                $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
+
+                Email::send(
+                    $issueChangeEmailsAssignee[0]['Email'],
+                    'issue_assigned.tpl',
+                    $msg_data
+                );
+            }
+        } else {
+            $changed_assignee = $user->getUsername(); // so query below doesn't break..
+        }
+
+        $issue_change_emails = $db->pselect(
+            "SELECT u.Email as Email, u.First_name as firstname " .
+            "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
+            "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
+            [
+                'issueID'  => $issueID,
+                'uid'      => $user->getUsername(),
+                'assignee' => $changed_assignee,
+            ]
+        );
+
+        $msg_data['url']         = $baseurl .
+            "/issue_tracker/issue/?issueID=" . $issueID;
+        $msg_data['issueID']     = $issueID;
+        $msg_data['currentUser'] = $user->getUsername();
+
+        foreach ($issue_change_emails as $email) {
+            $msg_data['firstname'] = $email['firstname'];
+            Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+        }
+    }
+
+    /**
+     * Validate PSCID and Visit Label
+     *
+     * @param array $values values to be validated
+     *
+     * @throws DatabaseException
+     *
+     * @return array success with values, or error with message.
+     */
+    function validateInput($values)
+    {
+        $factory    = \NDB_Factory::singleton();
+        $db         = $factory->database();
+        $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
+        $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
+        $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
+        $result     = [
+            'PSCID'             => $pscid,
+            'visit'             => $visitLabel,
+            'centerID'          => $centerID,
+            'candID'            => null,
+            'sessionID'         => null,
+            'isValidSubmission' => true,
+            'invalidMessage'    => null,
+        ];
+
+        if (isset($result['PSCID'], $result['centerID'])) {
+            $validCenter = $db->pselectOne(
+                "
+                SELECT
+                    RegistrationCenterID = :center_id as CenterID
+                FROM
+                    candidate
+                WHERE
+                    PSCID = :psc_id
+            ",
+                [
+                    "center_id" => $result['centerID'],
+                    "psc_id"    => $result['PSCID'],
+                ]
+            );
+            if (!$validCenter) {
+                $validCenter = $db->pselectOne(
+                    "
+                    SELECT
+                        EXISTS (
+                            SELECT
+                                *
+                            FROM
+                                session s
+                            JOIN
+                                candidate c
+                            ON
+                                c.CandID = s.CandID
+                            WHERE
+                                s.CenterID = :center_id AND
+                                c.PSCID = :psc_id
+                        )
+                ",
+                    [
+                        "center_id" => $result['centerID'],
+                        "psc_id"    => $result['PSCID'],
+                    ]
+                );
+            }
+            if (!$validCenter) {
+                showError("PSCID and Center ID do not match a valid session!");
+            }
+        }
+        // If both are set, return SessionID and CandID
+        if (isset($result['PSCID']) && isset($result['visit'])) {
+            $session = $db->pSelect(
+                "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
+                INNER JOIN session s on (c.CandID = s.CandID)
+                WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
+                [
+                    'PSCID'      => $result['PSCID'],
+                    'visitLabel' => $result['visit'],
+                ]
+            );
+
+            if (isset($session[0]['sessionID'])) {
+                $result['sessionID'] = $session[0]['sessionID'];
+                $result['candID']    = $session[0]['candID'];
+            } else {
+                showError(
+                    "PSCID and Visit Label do not match a valid candidate session!"
+                );
+            }
+
+            return $result;
+        }
+
+        // If only PSCID is set, return CandID
+        if (isset($result['PSCID'])) {
+            $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
+            $params = ['PSCID' => $result['PSCID']];
+
+            $user = $factory->user();
+            if (!$user->hasPermission('access_all_profiles')) {
+                $params['CenterID'] = implode(',', $user->getCenterIDs());
+                $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
+            }
+
+            $candidate = $db->pSelectOne($query, $params);
+            if ($candidate) {
+                $result['candID'] = $candidate;
+            } else {
+                showError("PSCID does not match a valid candidate!");
+            }
+
+            return $result;
+        }
+
+        // If only visit label is set, return an error
+        if (isset($result['visit'])) {
+            showError("Visit Label must be accompanied by a PSCID");
+        }
+
+        return $result;
+    }
+
+    /**
+     * Iterates through submitted values and filters only values that have changed
+     *
+     * @param array $issueValues new values
+     * @param int $issueID     issue ID
+     *
+     * @return array array of changed values
+     *
+     */
+    function getChangedValues(array $issueValues, int $issueID): array
+    {
+        $issueData     = $this->getIssueData($issueID);
+        $changedValues = [];
+        foreach ($issueValues as $key => $value) {
+            // Only include fields that have changed
+            // centerID is allowed to be NULL
+            if ($issueValues[$key] != ($issueData[$key] ?? '')
+                && (!empty($value) || $key === 'centerID')
+            ) {
+                $changedValues[$key] = $value;
+            }
+        }
+        return $changedValues;
+    }
+
+    /**
+     * Puts updated fields into the issues_history table.
+     *
+     * @param array $values  the new values
+     * @param int $issueID the issue ID
+     *
+     * @return void
+     *
+     */
+    function updateHistory(array $values, int $issueID)
+    {
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+
+        foreach ($values as $key => $value) {
+            // centerID is allowed to be NULL
+            if (!empty($value) || $key === 'centerID') {
+                $changedValues = [
+                    'newValue'     => $value ?? '',
+                    'fieldChanged' => $key,
+                    'issueID'      => $issueID,
+                    'addedBy'      => $user->getUsername(),
+                ];
+                $db->insert('issues_history', $changedValues);
+            }
+        }
+    }
+
+    /**
+     * Puts updated fields into the issues_comments table.
+     *
+     * @param string $comment new issue comment
+     * @param int $issueID the issue ID
+     *
+     * @return void
+     *
+     */
+    function updateComments(string $comment, int $issueID)
+    {
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
+
+        if (isset($comment) && $comment != "null") {
+            $commentValues = [
+                'issueComment' => $comment,
+                'addedBy'      => $user->getUsername(),
+                'issueID'      => $issueID,
+            ];
+            $db->insert('issues_comments', $commentValues);
+        }
     }
 
     /**
