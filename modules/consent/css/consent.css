@@ -28,10 +28,15 @@
 
 #door-icon {
     width:  6vw;
+    width:  min(6rem, 5vw);
+}
+
+#door-text {
+    font-size: min(2.5rem, 4vw);
 }
 
 .checkmark {
-    font-size: 6vw;
+    font-size: min(8rem, 6vw);
     text-align: center;
     color: transparent;
     text-shadow: 0 0 0 green;

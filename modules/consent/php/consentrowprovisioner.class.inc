@@ -54,9 +54,10 @@ class ConsentRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 	            JOIN consent c ON ccr.ConsentID=c.ConsentID 
 	            JOIN consent_group cg ON c.ConsentGroupID=cg.ConsentGroupID
 	            JOIN candidate ca ON ccr.CandidateID=ca.CandID
-	            LEFT JOIN direct_consent dc ON dc.ConsentGroupID=c.ConsentGroupID
-            WHERE (dc.CandidateID=ccr.CandidateID OR dc.CandidateID IS NULL)
-            	AND ca.Active='Y'
+                LEFT JOIN direct_consent dc ON 
+                    (dc.ConsentGroupID=c.ConsentGroupID 
+                    AND dc.CandidateID=ccr.CandidateID)
+            WHERE ca.Active='Y'
             ORDER BY ca.PSCID, cg.Label, c.Label",
             []
         );

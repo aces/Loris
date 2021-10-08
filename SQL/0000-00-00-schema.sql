@@ -2325,6 +2325,7 @@ CREATE TABLE `consent_display_rel` (
   `ConsentGroupID` int(10) unsigned NOT NULL,
   `CenterID` int(10) unsigned DEFAULT NULL,
   `ConsentDisplayID` int(10) unsigned NOT NULL,
+  UNIQUE KEY `consent_display_rel_row` (`ConsentGroupID`,`CenterID`,`ConsentDisplayID`),
   CONSTRAINT `FK_consent_group_consent_display_rel_1` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_psc_consent_display_rel_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_consent_display_consent_display_rel_1` FOREIGN KEY (`ConsentDisplayID`) REFERENCES `consent_display` (`ConsentDisplayID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -2338,7 +2339,7 @@ CREATE TABLE `direct_consent` (
   `Date_sent` date DEFAULT NULL,
   `Data_cleared` tinyint(1) DEFAULT NULL,
   `trainingProgress` varchar(255) DEFAULT NULL,
-  KEY `direct_consent_cand_ConsentGroupID` (`CandidateID`,`ConsentGroupID`),
+  PRIMARY KEY `direct_consent_cand_ConsentGroupID` (`CandidateID`,`ConsentGroupID`),
   CONSTRAINT `FK_direct_consent_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_direct_consent_2` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

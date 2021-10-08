@@ -305,12 +305,13 @@ class Direct_Consent extends \NDB_Page
         // Only update request status to "complete"
         // if all consents have been updated from consent group
         $consents = $db->pselectColWithIndexKey(
-            "SELECT ccr.ConsentID, ccr.Status 
+            "SELECT ccr.ConsentID, ccr.Status
             FROM direct_consent dc
             JOIN consent c ON c.ConsentGroupID=dc.ConsentGroupID
-            LEFT JOIN candidate_consent_rel ccr ON ccr.ConsentID=c.ConsentID
-            WHERE dc.OneTimeKey=:key
-            AND ccr.CandidateID=dc.CandidateID",
+            LEFT JOIN candidate_consent_rel ccr ON
+                (ccr.ConsentID=c.ConsentID
+                AND ccr.CandidateID=dc.CandidateID)
+            WHERE dc.OneTimeKey=:key",
             ['key' => $oneTimeKey],
             'ConsentID'
         );

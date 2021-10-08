@@ -36,7 +36,7 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return none
+     * @return ResponseInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -53,7 +53,7 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
-     * @return none
+     * @return ResponseInterface
      */
     function _handlePost(ServerRequestInterface $request) : ResponseInterface
     {
@@ -102,6 +102,7 @@ class ConsentDataHandler extends \NDB_Form
     function createConsent($values)
     {
         $this->validateCandidate($values);
+        $this->validateEmail($values);
         $db = \Database::singleton();
 
         // Get consent codes

@@ -105,7 +105,7 @@ class TrainingPage extends React.Component {
                     'error'
                   )}
             >
-              <span>{section.description.EN}</span>
+              <span id="door-text">{section.description.EN}</span>
               <div id="Media">
                 <img src={section.image} id='door-icon'/>
               </div>
@@ -119,7 +119,7 @@ class TrainingPage extends React.Component {
                  onClick={() => this.changePage(section.order[0])}
                  disabled={true}
             >
-              <span>{section.description.EN}</span>
+              <span id="door-text">{section.description.EN}</span>
               <div id="Media">
                 <img src={section.image} id='door-icon'/>
               </div>
