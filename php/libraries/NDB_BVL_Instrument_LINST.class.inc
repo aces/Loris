@@ -564,7 +564,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'date':
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
-                            $dateOptions = [];
+                            $dateOptions = null;
                         } else {
                             $dateOptions = array(
                                 'language'         => 'en',
