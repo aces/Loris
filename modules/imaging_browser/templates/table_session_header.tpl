@@ -13,27 +13,27 @@
             <th>Output Type</th>
             <th>Scanner</th>
             <th>Subproject</th>
-            {if $useEDC}
+            {if $useEDC|default}
             <th>EDC</th>
             {/if}
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>{$subject.mriqcstatus|escape}</td>
-            <td>{$subject.pscid|escape}_{$subject.candid|escape}_{$subject.visitLabel|escape}</td>
-            <td>{$subject.pscid|escape}</td>
-            <td>{$subject.candid|escape}</td>
-            <td>{$subject.visitLabel|escape}</td>
-            <td>{$subject.site|escape}</td>
+            <td>{$subject.mriqcstatus}</td>
+            <td>{$subject.pscid}_{$subject.candid}_{$subject.visitLabel}</td>
+            <td>{$subject.pscid}</td>
+            <td>{$subject.candid}</td>
+            <td>{$subject.visitLabel}</td>
+            <td>{$subject.site}</td>
             <td>{if $subject.mriqcpending=="Y"}<img src="{$baseurl}/images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}</td>
-            <td>{$subject.dob|escape}</td>
-            <td>{$subject.sex|escape}</td>
-            <td>{$outputType|escape}</td>
-            <td>{$subject.scanner|escape}</td>
-            <td>{$subject.SubprojectTitle|escape}</td>
-            {if $useEDC}
-            <td>{$subject.edc|escape}</td>
+            <td>{$subject.dob}</td>
+            <td>{$subject.sex}</td>
+            <td>{$outputType|default}</td>
+            <td>{$subject.scanner}</td>
+            <td>{$subject.SubprojectTitle}</td>
+            {if $useEDC|default}
+            <td>{$subject.edc}</td>
             {/if}
         </tr>
     </tbody>
