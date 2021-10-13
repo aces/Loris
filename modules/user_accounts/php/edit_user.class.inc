@@ -458,16 +458,16 @@ class Edit_User extends \NDB_Form
 
                 // examiner was not previously added, add and set to active
                 if (empty($result)) {
-                    if (!empty($examinerID)){
-                    $DB->insert(
-                        'examiners_psc_rel',
-                        [
+                    if (!empty($examinerID)) {
+                        $DB->insert(
+                            'examiners_psc_rel',
+                            [
                             'examinerID'       => $examinerID,
                             'centerID'         => $v,
                             'active'           => 'Y',
                             'pending_approval' => $ex_pending,
-                        ]
-                    );
+                            ]
+                        );
                     }
                 } else {
                     $DB->update(
