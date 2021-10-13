@@ -336,7 +336,7 @@ class Edit_User extends \NDB_Form
         // END SETUP EXAMINER VALUES
 
         // make the set
-        $set = array();
+        $set = [];
         foreach ($values as $key => $value) {
             // Password updates are handled separately
             if (!empty($value) && $key != 'Password_hash') {
@@ -354,19 +354,19 @@ class Edit_User extends \NDB_Form
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
-                    array(
+                    [
                         "UserID"   => $uid,
                         "CenterID" => $site,
-                    )
+                    ]
                 );
             }
             foreach ($us_curr_projects as $project) {
                 $DB->insert(
                     'user_project_rel',
-                    array(
+                    [
                         "UserID"    => $uid,
                         "ProjectID" => $project,
-                    )
+                    ]
                 );
             }
         } else {
@@ -400,14 +400,14 @@ class Edit_User extends \NDB_Form
                     [
                         'full_name'   => $values['Real_name'],
                         'radiologist' => $ex_radiologist,
-                        'userID' => $uid,
+                        'userID'      => $uid,
                     ]
                 );
                 $examinerID = $DB->pselectOne(
                     "SELECT examinerID
                             FROM examiners
                             WHERE userID=:uid",
-                    array('uid' => $uid)
+                    ['uid' => $uid]
                 );
             } elseif (!empty($examinerID)
                 && ((!empty($ex_radiologist)
@@ -426,7 +426,8 @@ class Edit_User extends \NDB_Form
                         'full_name'   => $values['Real_name']
                     ],
                     [
-                        'userID' => $uid                    ]
+                        'userID' => $uid
+                    ]
                 );
                 $examinerID = $examinerID[0]['examinerID'];
 
@@ -462,10 +463,10 @@ class Edit_User extends \NDB_Form
                         $DB->insert(
                             'examiners_psc_rel',
                             [
-                            'examinerID'       => $examinerID,
-                            'centerID'         => $v,
-                            'active'           => 'Y',
-                            'pending_approval' => $ex_pending,
+                                'examinerID'       => $examinerID,
+                                'centerID'         => $v,
+                                'active'           => 'Y',
+                                'pending_approval' => $ex_pending,
                             ]
                         );
                     }
