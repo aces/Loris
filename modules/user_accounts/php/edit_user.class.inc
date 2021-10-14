@@ -485,7 +485,9 @@ class Edit_User extends \NDB_Form
                 }
             }
             //de-activate examiner if sites where no longer checked
-            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+            if (!empty($ex_prev_sites)) {
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+            }
             foreach ($ex_inactive as $cid) {
                 $DB->update(
                     'examiners_psc_rel',
