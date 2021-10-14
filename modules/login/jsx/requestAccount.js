@@ -182,7 +182,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             class={'col-sm-12'}
             required={true}
-            type={'text'}
+            type={'email'}
             placeholder={'Email address'}
           />
           <SelectElement
