@@ -310,7 +310,6 @@ class Edit_User extends \NDB_Form
             $ex_curr_sites  = [];
             $ex_prev_sites  = [];
             $ex_radiologist = 'N';
-            $ex_pending     = 'Y';
 
             foreach ($values as $k => $v) {
                 //examiner fields
@@ -322,9 +321,6 @@ class Edit_User extends \NDB_Form
                 }
                 if ($k === 'examiner_radiologist') {
                     $ex_radiologist = $v;
-                }
-                if ($k === 'examiner_pending') {
-                    $ex_pending = $v;
                 }
             }
             foreach ($ex_curr_sites as $k => $v) {
