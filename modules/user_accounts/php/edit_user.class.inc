@@ -377,9 +377,9 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $ex_curr_sites  = [];
-            $ex_prev_sites  = [];
-            $ex_pending     = 'Y';
+            $ex_curr_sites = [];
+            $ex_prev_sites = [];
+            $ex_pending    = 'Y';
 
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
