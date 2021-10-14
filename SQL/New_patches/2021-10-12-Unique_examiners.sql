@@ -1,5 +1,3 @@
--- Note: For projects with duplicate examiners, patch must be run AFTER running
--- tools/single_use/Remove_duplicate_examiners.php
 
 -- Remove constraint on full name
 -- Change userID to be unique
