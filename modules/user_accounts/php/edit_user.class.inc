@@ -498,8 +498,8 @@ class Edit_User extends \NDB_Form
                             'centerID'   => $cid,
                         ]
                     );
-                }                
-            }            
+                }
+            }
         }
 
         // Now set the password. Note that this field is named incorrectly
