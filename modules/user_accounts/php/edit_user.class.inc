@@ -377,10 +377,6 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $ex_curr_sites  = [];
-            $ex_prev_sites  = [];
-            $ex_pending     = 'Y';
-
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
@@ -448,7 +444,7 @@ class Edit_User extends \NDB_Form
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
-            foreach ($ex_curr_sites as $v) {
+            foreach ($ex_curr_sites as $k => $v) {
 
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
