@@ -442,47 +442,48 @@ class Edit_User extends \NDB_Form
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
-            foreach ($ex_curr_sites as $v) {
+            if (!empty($ex_curr_sites)) {
+                foreach ($ex_curr_sites as $v) {
 
-                //Check if examiner already in db for site
-                $result = $DB->pselectRow(
-                    "SELECT epr.centerID
-                           FROM examiners_psc_rel epr
-                           WHERE epr.examinerID=:eid AND epr.centerID=:cid",
-                    [
-                        "eid" => $examinerID,
-                        "cid" => $v,
-                    ]
-                );
+                    //Check if examiner already in db for site
+                    $result = $DB->pselectRow(
+                        "SELECT epr.centerID
+                               FROM examiners_psc_rel epr
+                               WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                        [
+                            "eid" => $examinerID,
+                            "cid" => $v,
+                        ]
+                    );
 
-                // examiner was not previously added, add and set to active
-                if (empty($result)) {
-                    if (!empty($examinerID)) {
-                        $DB->insert(
+                    // examiner was not previously added, add and set to active
+                    if (empty($result)) {
+                        if (!empty($examinerID)) {
+                            $DB->insert(
+                                'examiners_psc_rel',
+                                [
+                                    'examinerID'       => $examinerID,
+                                    'centerID'         => $v,
+                                    'active'           => 'Y',
+                                    'pending_approval' => $ex_pending,
+                                ]
+                            );
+                        }
+                    } else {
+                        $DB->update(
                             'examiners_psc_rel',
                             [
-                                'examinerID'       => $examinerID,
-                                'centerID'         => $v,
                                 'active'           => 'Y',
                                 'pending_approval' => $ex_pending,
+                            ],
+                            [
+                                'examinerID' => $examinerID,
+                                'centerID'   => $v,
                             ]
                         );
                     }
-                } else {
-                    $DB->update(
-                        'examiners_psc_rel',
-                        [
-                            'active'           => 'Y',
-                            'pending_approval' => $ex_pending,
-                        ],
-                        [
-                            'examinerID' => $examinerID,
-                            'centerID'   => $v,
-                        ]
-                    );
                 }
             }
-
             //de-activate examiner if sites where no longer checked
             $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
             foreach ($ex_inactive as $cid) {
