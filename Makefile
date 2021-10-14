@@ -45,3 +45,8 @@ check: checkstatic unittests
 
 testdata:
 	php tools/raisinbread_refresh.php
+
+docker-install:
+	docker-compose run --rm npm install
+	docker-compose run --rm npm run compile
+	docker-compose run --rm composer install --no-dev
