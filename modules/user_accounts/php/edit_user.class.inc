@@ -488,16 +488,18 @@ class Edit_User extends \NDB_Form
             if (!empty($ex_prev_sites)) {
                 $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
             }
-            foreach ($ex_inactive as $cid) {
-                $DB->update(
-                    'examiners_psc_rel',
-                    ["active" => 'N'],
-                    [
-                        'examinerID' => $examinerID,
-                        'centerID'   => $cid,
-                    ]
-                );
-            }
+            if (!empty($ex_inactive)) {
+                foreach ($ex_inactive as $cid) {
+                    $DB->update(
+                        'examiners_psc_rel',
+                        ["active" => 'N'],
+                        [
+                            'examinerID' => $examinerID,
+                            'centerID'   => $cid,
+                        ]
+                    );
+                }                
+            }            
         }
 
         // Now set the password. Note that this field is named incorrectly
