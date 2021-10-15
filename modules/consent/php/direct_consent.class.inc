@@ -271,7 +271,9 @@ class Direct_Consent extends \NDB_Page
                 "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
                 ['cnst' => $consent]
             );
-            if ($consentInfo['ConsentID'] !== null && $consentInfo['Label'] !== null) {
+            if ($consentInfo['ConsentID'] !== null
+                && $consentInfo['Label'] !== null
+            ) {
                 $consentID = $consentInfo['ConsentID'];
                 // Update consent status
                 $db->update(
