@@ -74,6 +74,7 @@ foreach ($flagData as $cmid => $data) {
 
     $jsonData = json_decode($data['Data'], true);
 
+    $instrDECS = null;
     // Get previously existing DECS either from instrument or flag data
     if (!$instrument->usesJSONData()) {
         $instrDECS = $DB->pselectOne(
