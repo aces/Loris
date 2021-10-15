@@ -271,35 +271,34 @@ class Direct_Consent extends \NDB_Page
                 "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
                 ['cnst' => $consent]
             );
-            $consentID   = $consentInfo['ConsentID'];
-            $label       = $consentInfo['Label'];
-
-            // Update consent status
-            $db->update(
-                "candidate_consent_rel",
-                [
-                    'Status'    => $value,
-                    'DateGiven' => date('Y-m-d H-i-s')
-                ],
-                [
-                    'CandidateID' => $candID,
-                    'ConsentID'   => $consentID
-                ]
-            );
-
-            // Update history
-            $updateHistory = [
-                'PSCID'        => $pscid,
-                'ConsentName'  => $consent,
-                'ConsentLabel' => $label,
-                'Status'       => $value,
-                'DateGiven'    => date('Y-m-d H-i-s'),
-                'EntryStaff'   => 'Candidate',
-            ];
-            $db->insert(
-                "candidate_consent_history",
-                $updateHistory,
-            );
+            if ($consentInfo['ConsentID'] !== null && $consentInfo['Label'] !== null) {
+                $consentID = $consentInfo['ConsentID'];
+                // Update consent status
+                $db->update(
+                    "candidate_consent_rel",
+                    [
+                        'Status'    => $value,
+                        'DateGiven' => date('Y-m-d H-i-s')
+                    ],
+                    [
+                        'CandidateID' => $candID,
+                        'ConsentID'   => $consentID
+                    ]
+                );
+                // Update history
+                $updateHistory = [
+                    'PSCID'        => $pscid,
+                    'ConsentName'  => $consent,
+                    'ConsentLabel' => $label,
+                    'Status'       => $value,
+                    'DateGiven'    => date('Y-m-d H-i-s'),
+                    'EntryStaff'   => 'Candidate',
+                ];
+                $db->insert(
+                    "candidate_consent_history",
+                    $updateHistory,
+                );
+            }
         }
 
         // Only update request status to "complete"
