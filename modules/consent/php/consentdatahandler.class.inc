@@ -517,7 +517,6 @@ class ConsentDataHandler extends \NDB_Form
      */
     function validateConsent($values)
     {
-        $db = \Database::singleton();
         if ($this->valueIsNull($values['candID'])) {
             return new \LORIS\Http\Response\JSON\BadRequest("CandID required.");
         }
