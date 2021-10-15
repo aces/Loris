@@ -539,7 +539,7 @@ class ConsentDataHandler extends \NDB_Form
         }
 
         $validCand = \Candidate::candidateExists(
-            new CandID($values['candID']),
+            $candID,
             $values['pscid']
         );
         if (!$validCand) {
