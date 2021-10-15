@@ -72,7 +72,7 @@ foreach ($eConsents AS $key => $consentData) {
         $expiryPeriod = '-' . $consentData['Reset_period_days'] . ' days';
 
         // only wipe data if:
-        // the form has already been sent,
+        // the form has already been sent to participant from coordinator,
         // the form has not been completed,
         // the form has not yet had it's data cleared
         // (should only be the first time after accessing expiry period),

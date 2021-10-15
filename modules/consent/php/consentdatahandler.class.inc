@@ -2,6 +2,8 @@
 namespace LORIS\consent;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * Create the form for consent/add page
  * It includes three functions.
@@ -69,24 +71,21 @@ class ConsentDataHandler extends \NDB_Form
 
         switch ($action) {
         case 'Create':
-            $this->createConsent($values);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            return $this->createConsent($values);
         case 'CreateEConsent':
-            $this->createEConsent($values);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            return $this->createEConsent($values);
         case 'Send':
-            $this->sendConsent($values);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            return $this->sendConsent($values);
         case 'CreateSend':
-            $this->createConsent($values);
-            $this->sendConsent($values);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            $createConsent = $this->createConsent($values);
+            if ($createConsent->getStatusCode() !== 200) {
+                return $createConsent;
+            }
+            return $this->sendConsent($values);
         case 'Expire':
-            $this->expireConsent($values);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            return $this->expireConsent($values);
         case 'ExpireAndInactivate':
-            $this->expireConsent($values, true);
-            return (new \LORIS\Http\Response())->withStatus(200);
+            return $this->expireConsent($values, true);
         default:
             return new \LORIS\Http\Response\JSON\BadRequest("Invalid action");
         }
@@ -97,12 +96,19 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values consent form values
      *
-     * @return void
+     * @return ResponseInterface
      */
     function createConsent($values)
     {
-        $this->validateCandidate($values);
-        $this->validateEmail($values);
+        $validConsent = $this->validateConsent($values);
+        if ($validConsent->getStatusCode() !== 200) {
+            return $validConsent;
+        }
+        $validEmail = $this->validateEmail($values);
+        if ($validEmail->getStatusCode() !== 200) {
+            return $validEmail;
+        }
+
         $db = \Database::singleton();
 
         // Get consent codes
@@ -116,9 +122,9 @@ class ConsentDataHandler extends \NDB_Form
 
         // Error if consent codes not found
         if (empty($consentIDs)) {
-            http_response_code(400);
-            echo('Consent codes not found');
-            throw new \LorisException("Error Processing Request", 1);
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Consent codes not found"
+            );
         }
 
         $addingEConsent = array_key_exists('eConsent', $values) &&
@@ -146,27 +152,16 @@ class ConsentDataHandler extends \NDB_Form
 
         // If all consent codes have been created for the group, give error
         if ($consentCreated) {
-            http_response_code(400);
-            echo("Consent form has already been added for this candidate.");
-            throw new \LorisException("Error Processing Request", 1);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "Consent form has already been added for this candidate."
+            );
         }
 
         // Add each consent code as row
         foreach ($consentIDs as $id) {
 
-            $existsInCandConsent = $db->pselectOne(
-                "SELECT CandidateID
-                FROM candidate_consent_rel 
-                WHERE CandidateID=:candid 
-                AND ConsentID=:cnst",
-                [
-                    'candid' => $values['candID'],
-                    'cnst'   => $id
-                ]
-            );
-
             // insert into candidate_consent_rel if it's not already there
-            if (empty($existsInCandConsent)) {
+            if (!array_key_exists($id, $candidateConsents)) {
 
                 $db->insert(
                     'candidate_consent_rel',
@@ -180,8 +175,9 @@ class ConsentDataHandler extends \NDB_Form
 
         // If also adding eConsent, call createEConsent method
         if ($addingEConsent) {
-            $this->createEConsent($values);
+            return $this->createEConsent($values);
         }
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -190,11 +186,14 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values consent form values
      *
-     * @return void
+     * @return ResponseInterface
      */
     function createEConsent($values)
     {
-        $this->validateCandidate($values);
+        $validConsent = $this->validateConsent($values);
+        if ($validConsent->getStatusCode() !== 200) {
+            return $validConsent;
+        }
 
         $db = \Database::singleton();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
@@ -230,18 +229,18 @@ class ConsentDataHandler extends \NDB_Form
         );
 
         if (empty($eConsentCompatible)) {
-            http_response_code(400);
-            echo("Consent form not available for eConsent.");
-            throw new \LorisException("Error Processing Request", 1);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "Consent form not available for eConsent."
+            );
         }
 
         // Get request status
         $requestStatus = $this->getRequestStatus($values['candID'], $consentGroupID);
         // error if already exists in DB
         if (!empty($requestStatus) && $requestStatus !== 'expired') {
-            http_response_code(400);
-            echo("Consent form already added as eConsent.");
-            throw new \LorisException("Error Processing Request", 1);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "Consent form already added as eConsent."
+            );
         }
 
         // New key for insert
@@ -292,6 +291,7 @@ class ConsentDataHandler extends \NDB_Form
                 $data
             );
         }
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -299,12 +299,18 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values consent form values
      *
-     * @return void
+     * @return ResponseInterface
      */
     function sendConsent($values)
     {
-        $this->validateCandidate($values);
-        $this->validateEmail($values);
+        $validConsent = $this->validateConsent($values);
+        if ($validConsent->getStatusCode() !== 200) {
+            return $validConsent;
+        }
+        $validEmail = $this->validateEmail($values);
+        if ($validEmail->getStatusCode() !== 200) {
+            return $validEmail;
+        }
 
         $db = \Database::singleton();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
@@ -313,9 +319,9 @@ class ConsentDataHandler extends \NDB_Form
         $requestStatus = $this->getRequestStatus($values['candID'], $consentGroupID);
 
         if ($requestStatus === 'complete') {
-            http_response_code(400);
-            echo("Can not send eConsent form if consent is already completed");
-            throw new \LorisException("Error Processing Request", 1);
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "Can not send eConsent form if consent is already completed"
+            );
         }
 
         // update date sent & request status (if applicable)
@@ -369,6 +375,7 @@ class ConsentDataHandler extends \NDB_Form
             "",
             "Loris Team <noreply@loris.ca>"
         );
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -377,11 +384,15 @@ class ConsentDataHandler extends \NDB_Form
      * @param array $values              consent form values
      * @param bool  $inactivateCandidate Whether candidate should be inactivated
      *
-     * @return void
+     * @return ResponseInterface
      */
     function expireConsent($values, $inactivateCandidate = false)
     {
-        $this->validateCandidate($values);
+        $validConsent = $this->validateConsent($values);
+        if ($validConsent->getStatusCode() !== 200) {
+            return $validConsent;
+        }
+
         $db = \Database::singleton();
         $consentGroupID = $this->getConsentGroupID($values['consent_group']);
 
@@ -405,9 +416,9 @@ class ConsentDataHandler extends \NDB_Form
         if ($inactivateCandidate) {
             $user = \User::singleton();
             if (!$user->hasPermission('candidate_parameter_edit')) {
-                http_response_code(403);
-                echo("Can not edit participant status without correct permission");
-                throw new \LorisException("Error Processing Request", 1);
+                return new \LORIS\Http\Response\JSON\Unauthorized(
+                    "Can not edit participant status without correct permission"
+                );
             }
 
             $status       = $db->pselectOne(
@@ -441,6 +452,7 @@ class ConsentDataHandler extends \NDB_Form
             // Update history
             $db->insert('participant_status_history', $updateValues);
         }
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -501,42 +513,44 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values send consent form values
      *
-     * @return void
+     * @return ResponseInterface
      */
-    function validateCandidate($values)
+    function validateConsent($values)
     {
         $db = \Database::singleton();
         if ($this->valueIsNull($values['candID'])) {
-            http_response_code(400);
-            die("DCC required.");
+            return new \LORIS\Http\Response\JSON\BadRequest("CandID required.");
         }
         if ($this->valueIsNull($values['pscid'])) {
-            http_response_code(400);
-            die("PSCID required.");
+            return new \LORIS\Http\Response\JSON\BadRequest("PSCID required.");
         }
         if ($this->valueIsNull($values['consent_group'])) {
-            http_response_code(400);
-            die("Consent form required.");
-        }
-
-        // Check that given candID & pscid are valid
-        $validCand = $db->pselectOne(
-            "SELECT CandID 
-            FROM candidate 
-            WHERE CandID=:candid 
-            AND PSCID=:pscid",
-            [
-                'candid' => $values['candID'],
-                'pscid'  => $values['pscid']
-            ]
-        );
-
-        if (empty($validCand)) {
-            http_response_code(400);
-            die(
-                "Make sure PSCID and CandID are valid and reflect the same candidate"
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Consent form required."
             );
         }
+
+        // Check that candidate exists and CandID / PSCID match
+        try {
+            $candID = new CandID($values['candID']);
+        } catch (\DomainException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Invalid CandID."
+            );
+        }
+
+        $validCand = \Candidate::candidateExists(
+            new CandID($values['candID']),
+            $values['pscid']
+        );
+        if (!$validCand) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Make sure PSCID and CandID are valid ".
+                "and reflect the same candidate."
+            );
+        }
+
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -544,7 +558,7 @@ class ConsentDataHandler extends \NDB_Form
      *
      * @param array $values send consent form values
      *
-     * @return void
+     * @return ResponseInterface
      */
     function validateEmail($values)
     {
@@ -554,26 +568,27 @@ class ConsentDataHandler extends \NDB_Form
         if ($values['eConsent']
             || $action === 'Send'
         ) {
-            if ($values['email1'] !== $values['email2']) {
-                // check that emails match
-                http_response_code(400);
-                die("Emails must match");
-            } else if (!$this->valueIsNull($values['email1'])
-                && !filter_var($values['email1'], FILTER_VALIDATE_EMAIL)
-            ) {
-                // check that email is valid
-                http_response_code(400);
-                die("Email format not valid");
-            }
             // Email required when sending
             if ($this->valueIsNull($values['email1'])
                 && ($action === 'Send'
                 || $action === 'CreateSend')
             ) {
-                http_response_code(400);
-                die("Email Required");
+                return new \LORIS\Http\Response\JSON\BadRequest("Email required.");
+            }
+
+            if ($values['email1'] !== $values['email2']) {
+                // check that emails match
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    "Emails must match."
+                );
+            } else if (!$this->valueIsNull($values['email1'])
+                && !filter_var($values['email1'], FILTER_VALIDATE_EMAIL)
+            ) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    "Email format not valid."
+                );
             }
         }
-        return;
+        return new \LORIS\Http\Response\JSON\OK();
     }
 }

@@ -55,22 +55,21 @@ class ConsentRow implements \LORIS\Data\DataInstance
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return $this->CenterID;
+        return new \CenterID($this->CenterID);
     }
 
     /**
      * Returns the ProjectID for this row, for filters such as
      * \LORIS\Data\Filters\UserProjectMatch to match again.
      *
-     * @var    \ProjectID
-     * @return \ProjectID The ProjectID
+     * @return \ProjectID
      */
     public function getProjectID(): \ProjectID
     {
-        return $this->ProjectID;
+        return new \ProjectID($this->ProjectID);
     }
 }

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The consent module is a 2-part module. It acts as a place where coordinators can filter through consent information from all of their participants, edit consent, and manage eConsent. The participant side of eConsent is also in this module, where participants can view and submit eConsent forms.
+The consent module is a 2-part module. It acts as a hub in which coordinators can filter through consent information from all of their participants, edit consent, and manage eConsent. The participant side of eConsent is also in this module, where participants can view and submit eConsent forms.
 
 ## Intended Users
 
@@ -20,6 +20,10 @@ The Consent module uses the following permissions
 
  - `consent_edit`
     - This permission gives the user access to edit consent and send / manage eConsent.
+
+## Integration with LORIS
+
+- In the "Edit" form of the consent module, the candidate parameters Consent Status page is rendered. The code for the Consent Status page checks whether it is being called from the consent module or candidate parameters to modify the display.
 
 ## Setup
 

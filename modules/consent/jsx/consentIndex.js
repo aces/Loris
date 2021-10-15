@@ -18,7 +18,7 @@ import ConsentStatus from './../../candidate_parameters/jsx/ConsentStatus';
  *
  * Renders Consent main page consisting of FilterableDataTable and FormElement.
  *
- * @author Camille beaudoin
+ * @author Camille Beaudoin
  *
  */
 class ConsentIndex extends Component {
@@ -273,7 +273,6 @@ class ConsentIndex extends Component {
           if (result.value) {
             this.closeAddForm();
             this.fetchData();
-            this.render();
           }
         });
         // call on success function if given
@@ -283,7 +282,8 @@ class ConsentIndex extends Component {
       } else {
         // give error if unsuccessful
         resp.text().then((message) => {
-          swal.fire('Error!', message, 'error');
+          let msg = JSON.parse(message);
+          swal.fire('Error!', msg.error, 'error');
         });
       }
     })

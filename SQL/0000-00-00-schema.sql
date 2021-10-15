@@ -2340,8 +2340,8 @@ CREATE TABLE `direct_consent` (
   `Data_cleared` tinyint(1) DEFAULT NULL,
   `trainingProgress` varchar(255) DEFAULT NULL,
   PRIMARY KEY `direct_consent_cand_ConsentGroupID` (`CandidateID`,`ConsentGroupID`),
-  CONSTRAINT `FK_direct_consent_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_direct_consent_2` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`)
+  CONSTRAINT `FK_direct_consent_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_direct_consent_2` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `visit` (

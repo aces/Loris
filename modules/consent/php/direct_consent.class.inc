@@ -233,7 +233,7 @@ class Direct_Consent extends \NDB_Page
                 'OneTimeKey' => $oneTimeKey
             ]
         );
-        return (new \LORIS\Http\Response())->withStatus(204);
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
@@ -335,7 +335,7 @@ class Direct_Consent extends \NDB_Page
             );
         }
 
-        return (new \LORIS\Http\Response())->withStatus(204);
+        return new \LORIS\Http\Response\JSON\OK();
     }
 
     /**
