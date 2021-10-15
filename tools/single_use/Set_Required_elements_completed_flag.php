@@ -59,8 +59,6 @@ $flagData = $DB->pselectWithIndexKey(
 $mismatched = [];
 
 foreach ($flagData as $cmid => $data) {
-    echo $confirm ? "Setting Required_elements_completed for {$cmid}.\n" :
-        "Checking mismatching flag for {$cmid}.\n";
     // instantiate instrument
     try {
         $instrument = NDB_BVL_Instrument::factory(
