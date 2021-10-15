@@ -78,9 +78,10 @@ class ExpireConsentForm extends Component {
           method="POST"
         >
           <p>
-            To set the consent rows relevant to this consent groupto expired,
-            please click "Expire". If you also wish to set the participant to
-            inactive, please click "Expire and Inactivate".
+            To set the eConsent form <b>{this.state.formData.consent_group} </b>
+             to expired for <b>{this.state.formData.pscid}</b>, please click "Expire".
+             If you also wish to set the participant to inactive, please click
+             "Expire and Inactivate".
           </p>
           <ButtonElement
             label={<div>Expire</div>}
