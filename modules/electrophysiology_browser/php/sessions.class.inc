@@ -70,7 +70,6 @@ class Sessions extends \NDB_Page
         \User $user, ServerRequestInterface $request
     ) : void {
 
-
         $path    = $request->getUri()->getPath();
         $matches = [];
 
