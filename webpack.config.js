@@ -161,11 +161,11 @@ const config = [
     plugins: [
       new ESLintPlugin({
         files: [
-          'modules/', 
-          'jsx/', 
-          'jslib/', 
-          'htdocs/js/', 
-          'webpack.config.js'
+          'modules/',
+          'jsx/',
+          'jslib/',
+          'htdocs/js/',
+          'webpack.config.js',
         ],
         cache: true,
       }),
