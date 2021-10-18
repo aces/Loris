@@ -86,9 +86,9 @@ foreach ($flagData as $cmid => $data) {
     $jsonDECS     = $jsonData['Data_entry_completion_status'] ?? null;
     $existingDECS = $instrDECS ?? $jsonDECS;
     $rec          = $instrument->_determineRequiredElementsCompletedFlag();
-    // Compare DECS and RECF to see if it mismatches
-    if (($rec === 'Y' && $existingDECS !== 'Complete')
-        || ($rec === 'N' && $existingDECS !== 'Incomplete')
+    // Compare DECS and REC to see if it mismatches
+    if (($rec === 'N' && $existingDECS === 'Complete')
+        || ($rec === 'Y' && $existingDECS !== 'Complete')
     ) {
         $mismatched[$cmid] = [
             'Data entry completion status'         => $existingDECS,
