@@ -43,11 +43,6 @@ class ResolvedFilterableDataTable extends Component {
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     switch (column) {
-      case 'Correct Answer':
-        const value = (cell == 1) ? rowData['Value 1'] : rowData['Value 2'];
-        return (
-          <td>{value}</td>
-        );
       default:
         return (
           <td>{cell}</td>
