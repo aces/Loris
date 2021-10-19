@@ -25,31 +25,90 @@ namespace LORIS;
 class Visit
 {
     /**
-     * The visit name (formely known as visit_label)
-     *
-     * @var ?string
+     * The ID of the visit in the DB
+     */
+    protected $id;
+
+    /**
+     * The visit name (formerly known as visit_label)
      */
     protected $name;
 
     /**
      * The visit label displayed in the browser
-     *
-     * @var ?string
      */
     protected $label;
 
     /**
-     * The contructor
+     * Variables holding Visit_Windows data
+     */
+    protected $WindowMinDays;
+    protected $WindowMaxDays;
+    protected $OptimumMinDays;
+    protected $OptimumMaxDays;
+    protected $WindowMidpointDays;
+
+    /**
+     * Variable holding ProjectSubprojectIDs affiliated with this visit
      *
-     * @param ?string $name  The visit name
-     * @param ?string $label The visit label (Front-end)
+     * This variable is null when the Visit object is lazy-loaded
+     */
+    protected $projectSubprojectIDs;
+
+
+    /**
+     * The constructor
+     *
+     * @param ?int   $id                 The visit id
+     * @param string $name               The visit name
+     * @param string $label              The visit label (Front-end)
+     * @param ?int   $WindowMinDays      The minimum age of candidate to be
+     *                                   within the PERMITTED range for
+     *                                   this visit
+     * @param ?int   $WindowMaxDays      The maximum age of candidate to be
+     *                                   within the PERMITTED range for
+     *                                   this visit
+     * @param ?int   $OptimumMinDays     The minimum age of candidate to be
+     *                                   within the OPTIMAL range for this
+     *                                   visit
+     * @param ?int   $OptimumMaxDays     The maximum age of candidate to be
+     *                                   within the OPTIMAL range for this
+     *                                   visit
+     * @param ?int   $WindowMidpointDays Candidate's ideal age in days for
+     *                                   a visit
      */
     public function __construct(
-        ?string $name = null,
-        ?string $label = null
+        ?int $id = null,
+        string $name,
+        string $label,
+        ?int $WindowMinDays = null,
+        ?int $WindowMaxDays = null,
+        ?int $OptimumMinDays = null,
+        ?int $OptimumMaxDays = null,
+        ?int $WindowMidpointDays = null
     ) {
-        $this->name  = $name;
-        $this->label = $label;
+        //ID should only be null when creating a new visit
+        $this->id            = $id;
+        $this->name          = $name;
+        $this->label         = $label;
+        $this->WindowMinDays = $WindowMinDays;
+        $this->WindowMaxDays = $WindowMaxDays;
+        $this->OptimumMinDays     = $OptimumMinDays;
+        $this->OptimumMaxDays     = $OptimumMaxDays;
+        $this->WindowMidpointDays = $WindowMidpointDays;
+    }
+
+    /**
+     * Getter for visit ID
+     *
+     * @return int The visit's Identifier
+     */
+    public function getID(): int
+    {
+        if ($this->id === null) {
+            throw new \LorisException("No ID defined for Visit");
+        }
+        return $this->id;
     }
 
     /**
@@ -77,4 +136,164 @@ class Visit
         }
         return $this->label;
     }
+
+    /**
+     * Getter for the window min days
+     *
+     * @return ?int The minimum age of candidate to be within the PERMITTED
+     *                  range for this visit
+     */
+    public function getWindowMinDays(): ?int
+    {
+        return $this->WindowMinDays;
+    }
+
+    /**
+     * Getter for the window max days
+     *
+     * @return ?int The maximum age of candidate to be within the PERMITTED
+     *                  range for this visit
+     */
+    public function getWindowMaxDays(): ?int
+    {
+        return $this->WindowMaxDays;
+    }
+
+    /**
+     * Getter for the optimum min days
+     *
+     * @return ?int The minimum age of candidate to be within the OPTIMAL
+     *                  range for this visit
+     */
+    public function getOptimumMinDays(): ?int
+    {
+        return $this->OptimumMinDays;
+    }
+
+    /**
+     * Getter for the optimum max days
+     *
+     * @return ?int The maximum age of candidate to be within the OPTIMAL
+     *                  range for this visit
+     */
+    public function getOptimumMaxDays(): ?int
+    {
+        return $this->OptimumMaxDays;
+    }
+
+    /**
+     * Getter for the window midpoint days
+     *
+     * @return ?int Candidate's ideal age in days for a visit
+     */
+    public function getWindowMidpointDays(): ?int
+    {
+        return $this->WindowMidpointDays;
+    }
+
+    /**
+     * Getter for ProjectSubprojectIDs associated to this visit
+     *
+     * @return array
+     */
+    public function getProjectSubprojectIDs(): array
+    {
+        if ($this->projectSubprojectIDs === null) {
+            throw new \LorisException(
+                "The array defining ProjectSubproject associations for this visit
+                is null, make sure to load these associations using the controller
+                before querying them."
+            );
+        }
+        return $this->projectSubprojectIDs;
+    }
+
+    /**
+     * Setter for the visit label
+     *
+     * @param string $label Label of the visit
+     *
+     * @return void
+     */
+    public function setLabel(string $label)
+    {
+        $this->label =$label;
+    }
+
+    /**
+     * Setter for the window min days
+     *
+     * @param ?int $WindowMinDays The minimum age of candidate to be within
+     *                            the PERMITTED range for this visit
+     *
+     * @return void
+     */
+    public function setWindowMinDays(?int $WindowMinDays)
+    {
+        $this->WindowMinDays =$WindowMinDays;
+    }
+
+    /**
+     * Setter for the window max days
+     *
+     * @param ?int $WindowMaxDays The maximum age of candidate to be within
+     *                            the PERMITTED range for this visit
+     *
+     * @return void
+     */
+    public function setWindowMaxDays(?int $WindowMaxDays)
+    {
+        $this->WindowMaxDays =$WindowMaxDays;
+    }
+
+    /**
+     * Setter for the optimum min days
+     *
+     * @param ?int $OptimumMinDays The minimum age of candidate to be within
+     *                             the OPTIMAL range for this visit
+     *
+     * @return void
+     */
+    public function setOptimumMinDays(?int $OptimumMinDays)
+    {
+        $this->OptimumMinDays =$OptimumMinDays;
+    }
+
+    /**
+     * Setter for the optimum max days
+     *
+     * @param ?int $OptimumMaxDays The maximum age of candidate to be within
+     *                             the OPTIMAL range for this visit
+     *
+     * @return void
+     */
+    public function setOptimumMaxDays(?int $OptimumMaxDays)
+    {
+        $this->OptimumMaxDays =$OptimumMaxDays;
+    }
+
+    /**
+     * Setter for the window midpoint days
+     *
+     * @param ?int $WindowMidpointDays Candidate's ideal age in days for a visit
+     *
+     * @return void
+     */
+    public function setWindowMidpointDays(?int $WindowMidpointDays)
+    {
+        $this->WindowMidpointDays = $WindowMidpointDays;
+    }
+
+    /**
+     * Setter for ProjectSubprojectIDs associated to this visit
+     *
+     * @param array $projectSubprojectIDs Array of IDs to add to the visit object
+     *
+     * @return array
+     */
+    public function setProjectSubprojectIDs(array $projectSubprojectIDs)
+    {
+        return $this->projectSubprojectIDs = $projectSubprojectIDs;
+    }
+
 }
