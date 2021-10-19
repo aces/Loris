@@ -14,7 +14,7 @@ use \LORIS\Middleware\ETagCalculator;
  * Handles issue edits and returns data in response to a front end call.
  *
  * @category Loris
- * @package  Issue Tracker
+ * @package  Issue_Tracker
  * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -33,14 +33,14 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET($request);
-            case 'POST':
-                return $this->_handlePOST($request);
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            return $this->_handleGET($request);
+        case 'POST':
+            return $this->_handlePOST($request);
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -188,7 +188,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $isWatching = $db->pselectOne(
+            $isWatching            = $db->pselectOne(
                 "SELECT userID, issueID FROM issues_watching
                 WHERE issueID=:issueID AND userID=:userID",
                 [
@@ -252,10 +252,16 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         if (!empty($issueID)) {
             return $db->pselectRow(
-                "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
-                "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
-                "LEFT JOIN session s ON (i.sessionID=s.ID) " .
-                "WHERE issueID=:issueID",
+                "SELECT
+                            i.*,
+                            c.PSCID,
+                            s.Visit_label AS visitLabel
+                        FROM
+                            issues AS i
+                            LEFT JOIN candidate c ON (i.candID = c.CandID)
+                            LEFT JOIN session s ON (i.sessionID = s.ID)
+                        WHERE
+                            issueID = :issueID",
                 ['issueID' => $issueID]
             ) ?? [];
         }
@@ -285,7 +291,6 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param int $issueID the issueID
      *
      * @return array $commentHistory
-     *
      */
     function getComments(int $issueID): array
     {
@@ -308,7 +313,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $mid = $comment['newValue'];
                 $comment['newValue'] = $modules[$mid]->getLongName();
             } else if ($comment['fieldChanged'] === 'centerID') {
-                $comment['newValue']     = $this->getSiteName(intval($comment['newValue']));
+                $comment['newValue']     = $this->getSiteName(
+                    intval($comment['newValue'])
+                );
                 $comment['fieldChanged'] = 'site';
             } else if ($comment['fieldChanged'] === 'candID') {
                 $PSCID = $db->pselectOne(
@@ -530,7 +537,7 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Emails all users that are watching the issue with the changes.
      *
-     * @param int $issueID          the issueID
+     * @param int    $issueID          the issueID
      * @param string $changed_assignee changed assignee
      *
      * @return void
@@ -577,13 +584,21 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
             }
         } else {
-            $changed_assignee = $user->getUsername(); // so query below doesn't break..
+            // so query below doesn't break..
+            $changed_assignee = $user->getUsername();
         }
 
         $issue_change_emails = $db->pselect(
-            "SELECT u.Email as Email, u.First_name as firstname " .
-            "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
-            "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
+            "SELECT
+                        u.Email AS Email,
+                        u.First_name AS firstname
+                    FROM
+                        users u
+                        INNER JOIN issues_watching w ON (w.userID = u.userID)
+                    WHERE
+                        w.issueID = :issueID
+                        AND u.UserID <> :uid
+                        AND u.UserID <> :assignee",
             [
                 'issueID'  => $issueID,
                 'uid'      => $user->getUsername(),
@@ -608,7 +623,6 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param array $values values to be validated
      *
      * @return array success with values, or error with message.
-     *
      */
     function validateInput(array $values): array
     {
@@ -667,7 +681,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
             }
             if (!$validCenter) {
-                $this->showError("PSCID and Center ID do not match a valid session!");
+                $this->showError(
+                    "PSCID and Center ID do not match a valid session!"
+                );
             }
         }
         // If both are set, return SessionID and CandID
@@ -727,10 +743,9 @@ class Edit extends \NDB_Page implements ETagCalculator
      * Iterates through submitted values and filters only values that have changed
      *
      * @param array $issueValues new values
-     * @param int $issueID     issue ID
+     * @param int   $issueID     issue ID
      *
      * @return array array of changed values
-     *
      */
     function getChangedValues(array $issueValues, int $issueID): array
     {
@@ -752,10 +767,9 @@ class Edit extends \NDB_Page implements ETagCalculator
      * Puts updated fields into the issues_history table.
      *
      * @param array $values  the new values
-     * @param int $issueID the issue ID
+     * @param int   $issueID the issue ID
      *
      * @return void
-     *
      */
     function updateHistory(array $values, int $issueID)
     {
@@ -781,10 +795,9 @@ class Edit extends \NDB_Page implements ETagCalculator
      * Puts updated fields into the issues_comments table.
      *
      * @param string $comment new issue comment
-     * @param int $issueID the issue ID
+     * @param int    $issueID the issue ID
      *
      * @return void
-     *
      */
     function updateComments(string $comment, int $issueID)
     {
