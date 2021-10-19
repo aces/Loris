@@ -32,13 +32,16 @@ class Edit extends \NDB_Page implements ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // Ensure GET or POST request.
-        return match ($request->getMethod()) {
-            'GET' => $this->_handleGET($request),
-            'POST' => $this->_handlePOST($request),
-            default => new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                $this->allowedMethods()
-            ),
-        };
+        switch ($request->getMethod()) {
+            case 'GET':
+                return $this->_handleGET($request);
+            case 'POST':
+                return $this->_handlePOST($request);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
+        }
     }
 
     /**
