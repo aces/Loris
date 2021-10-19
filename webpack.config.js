@@ -160,6 +160,13 @@ const config = [
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        files: [
+          'modules/',
+          'jsx/',
+          'jslib/',
+          'htdocs/js/',
+          'webpack.config.js',
+        ],
         cache: true,
       }),
       new CopyPlugin({
