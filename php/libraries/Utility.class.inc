@@ -717,7 +717,6 @@ class Utility
         return $sourcefields;
     }
 
-
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *

@@ -245,8 +245,8 @@ class NDB_Factory
             $user     = $couchConfig['admin'];
             $password = $couchConfig['adminpass'];
             error_log(
-                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no 
-                 longer support accepting only a database name, make sure to 
+                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no
+                 longer support accepting only a database name, make sure to
                  specify all necessary parameters in the function call."
             );
         } else if (!empty($database)
@@ -266,8 +266,8 @@ class NDB_Factory
             $user     = $couchConfig['admin'];
             $password = $couchConfig['adminpass'];
             error_log(
-                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no 
-                 longer support accepting only a database name, make sure to 
+                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no
+                 longer support accepting only a database name, make sure to
                  specify all necessary parameters in the function call."
             );
         } else if (empty($database)
@@ -357,6 +357,19 @@ class NDB_Factory
     public function project(string $projectName): \Project
     {
         return \Project::singleton($projectName);
+    }
+
+    /**
+     * Retrieve a Visit object representing this visit
+     *
+     * @param string $visitName The name of the visit (previously visit_label)
+     *
+     * @return \LORIS\Visit object
+     */
+    public function visit(string $visitName): \LORIS\Visit
+    {
+        $controller = new \LORIS\VisitController($this->database());
+        return $controller->getVisitByName($visitName);
     }
 
     /**

@@ -67,15 +67,27 @@ class VisitTest extends TestCase
         );
         $this->visitController = new \Loris\VisitController($this->DB);
 
-        $v1 = new \Loris\Visit('V1');
-        $v2 = new \Loris\Visit('V2');
-        $v3 = new \Loris\Visit('V3');
-        $v4 = new \Loris\Visit('V4');
-        $v5 = new \Loris\Visit('V5');
-        $v6 = new \Loris\Visit('V6');
-        $v7 = new \Loris\Visit('Living_Phantom_DCC_SD_3t2');
-        $v8 = new \Loris\Visit('Living_Phantom_DCC_SD_3dwi');
-        $v9 = new \Loris\Visit('Living_Phantom_DCC_SD_3mprage');
+        $v1 = new \Loris\Visit(null, 'V1', 'V1');
+        $v2 = new \Loris\Visit(null, 'V2', 'V2');
+        $v3 = new \Loris\Visit(null, 'V3', 'V3');
+        $v4 = new \Loris\Visit(null, 'V4', 'V4');
+        $v5 = new \Loris\Visit(null, 'V5', 'V5');
+        $v6 = new \Loris\Visit(null, 'V6', 'V6');
+        $v7 = new \Loris\Visit(
+            null,
+            'Living_Phantom_DCC_SD_3t2',
+            'Living_Phantom_DCC_SD_3t2'
+        );
+        $v8 = new \Loris\Visit(
+            null,
+            'Living_Phantom_DCC_SD_3dwi',
+            'Living_Phantom_DCC_SD_3dwi'
+        );
+        $v9 = new \Loris\Visit(
+            null,
+            'Living_Phantom_DCC_SD_3mprage',
+            'Living_Phantom_DCC_SD_3mprage'
+        );
 
         $this->listOfVisit = [
             $v1,
@@ -124,7 +136,7 @@ class VisitTest extends TestCase
     function testVisit()
     {
         $visit_name = "Visit 1";
-        $visit      = new Visit($visit_name);
+        $visit      = new Visit(null, $visit_name, $visit_name);
         $this->assertEquals(
             $visit_name,
             $visit->getName(),
@@ -141,8 +153,6 @@ class VisitTest extends TestCase
      */
     function testAllVisit()
     {
-        $this->markTestSkipped("Test Will be restored after Visit class revamp");
-
         $visits = $this->visitController->getAllVisits();
         $this->assertEquals(
             $this->listOfVisit,
@@ -160,8 +170,6 @@ class VisitTest extends TestCase
      */
     function testVisitsProjects()
     {
-        $this->markTestSkipped("Test Will be restored after Visit class revamp");
-
         $visits = $this->visitController->getVisitsProjectCohort();
         $this->assertEquals(
             $this->listOfVisitProject,
@@ -169,26 +177,6 @@ class VisitTest extends TestCase
             "the project cohort relation does not match value in DB"
         );
     }
-
-    /**
-     * Test that VisitController::getVisitsByName returns an array with
-     * visit objects from the database with the given name
-     *
-     * @return void
-     * @covers VisitController::getVisitsByName
-     */
-    function testGetVisitsByName()
-    {
-        $this->markTestSkipped("Test Will be restored after Visit class revamp");
-
-        $visit_result = new \Loris\Visit('V1');
-        $visits       = $this->visitController->getVisitsByName("V1");
-        $this->assertEquals(
-            [$visit_result],
-            $visits
-        );
-    }
-
 
     /**
      * Tears down the fixture, for example, close a network connection.
