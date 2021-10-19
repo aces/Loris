@@ -61,6 +61,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp(): void
     {
+        // test 
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
