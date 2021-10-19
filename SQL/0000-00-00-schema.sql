@@ -2285,6 +2285,7 @@ CREATE TABLE `candidate_consent_history` (
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
+  `VisitLabel` VARCHAR(200) UNIQUE NOT NULL,
   CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -28,6 +28,7 @@
 2021-08-21_issue_tracker_description_change.sql
 2021-08-25-physiological_annotation_schema_changes.sql
 2021-08-27_conflict_resolved_unique_key.sql
+2021-10-01-visits_in_database.sql
 
 # CLEAN-UP
 2020-02-06-NoMultipleSitesConf.sql
