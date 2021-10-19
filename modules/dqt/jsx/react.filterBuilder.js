@@ -279,6 +279,9 @@ class FilterRule extends Component {
     let visits;
     if (this.props.rule.instrument) {
       // Only display field select and etc. if instrument is selected
+      if (this.props.rule.fields) {
+        // this.props.rule.fields
+      }
       let fields = this.props.rule.fields.map((field, index) => {
         if (this.props.rule.field && field.key[1] === this.props.rule.field) {
           fieldIndex = index;
@@ -676,6 +679,7 @@ class FilterBuilder extends Component {
     this.openModalCSV = this.openModalCSV.bind(this);
     this.closeModalCSV = this.closeModalCSV.bind(this);
     this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
+    this.requestField = this.requestField.bind(this);
   }
 
   /**
@@ -695,6 +699,37 @@ class FilterBuilder extends Component {
   }
 
   /**
+   * requestField - get request.
+   * @param {string} type
+   * @param {object} data
+   * @param {function} callback
+   */
+  async requestField(type, data, callback) {
+    let children = [];
+    for (const item of data) {
+      await $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php',
+        {category: 'demographics'},
+      (data) => {
+        const value = item[0];
+        const rule = {
+          field: type,
+          fieldType: 'varchar(255)',
+          instrument: 'demographics',
+          operator: 'equal',
+          session: [value],
+          type: 'rule',
+          value: value,
+          visit: 'All',
+          fields: data,
+        };
+        children.push(rule);
+        // this.props.updateRule(this.props.index, rule);
+      }, 'json');
+    }
+    return callback(children);
+  }
+
+  /**
    * Define the Candidates from CSV.
    * @param {string} type
    * @param {object} data
@@ -703,49 +738,20 @@ class FilterBuilder extends Component {
     console.log('this.props.getAllSessions() is ');
     console.log(this.props.getAllSessions());
     let session = [];
-    let children = [];
-    for (const item of data) {
-      const value = item[0];
-      children.push({
-        field: type,
-        fieldType: 'varchar(255)',
-        instrument: 'demographics',
-        operator: 'equal',
-        session: [value],
-        type: 'rule',
-        value: value,
-        visit: 'All',
-      });
-      session.push(value);
-    }
-    const results = {
-      session: session,
-      children: children,
-    };
-    console.log('results: ');
-    console.log(results);
-    fetch(
-      window.location.origin
-      + '/dqt/DemographicIdentifierFiltersBuilder',
-      {
-        credentials: 'same-origin',
-        method: 'POST',
-        body: JSON.stringify(results),
-      }
-    ).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          this.props.importCSV(data);
+    this.requestField(type, data, (children) => {
+        if (children) {
+          session.push(children);
+          const results = {
+            activeOperator: '1',
+            session: session,
+            children: children,
+          };
+          this.props.importCSV(results);
           this.closeModalCSV();
-        });
-      } else {
-        response.json().then((data) => {
-          console.error(data);
-        });
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+        } else {
+          console.error('requestField failed');
+        }
+      });
   }
 
   /**
