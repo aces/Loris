@@ -102,26 +102,26 @@ class Sites extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Returns a list of sites for this LORIS instance.
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface
      */
-    private function _handleGET() : ResponseInterface
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         if (!isset($this->_cache)) {
-            // The sites list should be related to the user in the request
-            // attributes.
-            $sites = array_map(
-                fn ($siteID) => (new \LORIS\api\Views\Site(
-                    \Site::singleton(new \CenterID(strval($siteID)))
-                ))->toArray(),
-                array_keys(\Utility::getSiteList())
-            );
+            $provisioner = (new \LORIS\api\Provisioners\SitesProvisioner())
+                 ->filter(new \LORIS\Data\Filters\UserSiteMatch());
 
-            $this->_cache = ['Sites' => $sites];
+            $sites = (new \LORIS\Data\Table())
+                ->withDataFrom($provisioner)
+                ->toArray($request->getAttribute('user'));
+
+            $this->_cache = new \LORIS\Http\Response\JsonResponse(
+                ['Sites' => $sites]
+            );
         }
 
-        return new \LORIS\Http\Response\JsonResponse(
-            $this->_cache
-        );
+        return $this->_cache;
     }
 
     /**
