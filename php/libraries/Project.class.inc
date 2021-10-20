@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+use \LORIS\StudyEntities\AccessibleResource;
 /**
  * The Project class encapsulates all details of a project.
  *
@@ -21,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Project implements \JsonSerializable
+class Project implements \JsonSerializable, AccessibleResource
 {
     private static $_instances = [];
 
@@ -384,6 +385,42 @@ class Project implements \JsonSerializable
     }
 
     /**
+     * Get a specific subproject associated with this project.
+     *
+     * @param string $title The subproject title
+     *
+     * @return \Subproject
+     */
+    public function getSubproject(string $title): \Subproject
+    {
+        $filtered = array_filter(
+            $this->getSubprojects(),
+            function ($subproject) use ($title) {
+                return $subproject['title'] == $title;
+            }
+        );
+
+        if (empty($filtered)) {
+            throw new \NotFound('There is no matching subproject title');
+        }
+
+        if (count($filtered) > 1) {
+            throw new \LorisException('Multiple subprojects with the same title');
+        }
+
+        $subproject = array_shift($filtered);
+
+        return new \Subproject(
+            $subproject['subprojectId'],
+            $this->_projectId,
+            $subproject['title'],
+            $subproject['useEDC'],
+            $subproject['windowDifference'],
+            $subproject['recruitmentTarget']
+        );
+    }
+
+    /**
      * Get that project's participants
      *
      * @return array A list of object representation of a basic candidates
@@ -469,5 +506,19 @@ class Project implements \JsonSerializable
     public function jsonSerialize()
     {
         return $this->_projectName;
+    }
+
+    /**
+     * Implements the AccessibleResource interface. A candidate can
+     * be accessed by a user if it shares the same registration project
+     * and site or it has access to any of the timepoints.
+     *
+     * @param \User $user The user whose access should be validated.
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        return in_array($this->_projectId, $user->getProjectIDs());
     }
 }

@@ -108,6 +108,10 @@ class Projects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
+        if (!$project->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
         $endpoint = new Project\Project($project);
 
         // Removing `/projects/<project_name>` from pathparts.

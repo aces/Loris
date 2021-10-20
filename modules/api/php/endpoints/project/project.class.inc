@@ -110,6 +110,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case 'instruments':
             $handler = new Instruments($this->_project);
             break;
+        case 'subprojects':
+            $handler = new Subprojects($this->_project);
+            break;
         case 'visits':
             $handler = new Visits($this->_project);
             break;
