@@ -304,13 +304,15 @@ class Edit_User extends \NDB_Form
         unset($values['ProjectIDs']);
         // END PROJECT UPDATE
 
-        // EXAMINER UPDATE
+        // SETUP EXAMINER VALUES
+        // The examiner will be updated after user is created
+        // so as to ensure an ID exists if new user
+        $ex_curr_sites  = [];
+        $ex_prev_sites  = [];
+        $ex_radiologist = 'N';
+        $ex_pending     = 'Y';
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-            $ex_curr_sites  = [];
-            $ex_prev_sites  = [];
-            $ex_radiologist = 'N';
-            $ex_pending     = 'Y';
 
             foreach ($values as $k => $v) {
                 //examiner fields
@@ -327,13 +329,63 @@ class Edit_User extends \NDB_Form
                     $ex_pending = $v;
                 }
             }
+            foreach ($ex_curr_sites as $k => $v) {
+                unset($values[$k]);
+            }
+        }
+        unset($values['examiner_radiologist']);
+        unset($values['examiner_pending']);
+        // END SETUP EXAMINER VALUES
+
+        // make the set
+        $set = [];
+        foreach ($values as $key => $value) {
+            // Password updates are handled separately
+            if (!empty($value) && $key != 'Password_hash') {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
+        }
+        // update the user
+        if ($this->isCreatingNewUser()) {
+            // insert a new user
+            \User::insert($set);
+            $user = \User::factory($set['UserID']);
+            $uid  = $user->getData('ID');
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    [
+                        "UserID"   => $uid,
+                        "CenterID" => $site,
+                    ]
+                );
+            }
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    [
+                        "UserID"    => $uid,
+                        "ProjectID" => $project,
+                    ]
+                );
+            }
+        } else {
+            // update the user
+            $user = \User::factory($this->identifier);
+            $user->update($set);
+        }
+
+        // START EXAMINER UPDATE
+        if ($editor->hasPermission('examiner_multisite')) {
 
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
-             WHERE e.full_name=:fn",
+             WHERE e.userID=:uid",
                 [
-                    "fn" => $values['Real_name'],
+                    "uid" => $uid,
                 ]
             );
 
@@ -346,6 +398,7 @@ class Edit_User extends \NDB_Form
                 // If examiner not in table and radiologist, pending and current
                 // sites fields set add the examiner to the examiner table
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
+
                 $DB->insert(
                     'examiners',
                     [
@@ -355,9 +408,9 @@ class Edit_User extends \NDB_Form
                 );
                 $examinerID = $DB->pselectOne(
                     "SELECT examinerID
-                            FROM examiners
-                            WHERE full_name=:fullName",
-                    ['fullName' => $values['Real_name']]
+                    FROM examiners
+                    WHERE userID=:uid",
+                    ['uid' => $uid]
                 );
             } elseif (!empty($examinerID)
                 && ((!empty($ex_radiologist)
@@ -373,10 +426,10 @@ class Edit_User extends \NDB_Form
                     'examiners',
                     [
                         'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                        'full_name'   => $values['Real_name']
                     ],
                     [
-                        "full_name" => $values['Real_name'],
+                        'userID' => $uid
                     ]
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -394,7 +447,7 @@ class Edit_User extends \NDB_Form
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
-            foreach ($ex_curr_sites as $k => $v) {
+            foreach ($ex_curr_sites as $v) {
 
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
@@ -431,7 +484,6 @@ class Edit_User extends \NDB_Form
                         ]
                     );
                 }
-                unset($values[$k]);
             }
 
             //de-activate examiner if sites where no longer checked
@@ -447,61 +499,7 @@ class Edit_User extends \NDB_Form
                 );
             }
         }
-        unset($values['examiner_radiologist']);
-        unset($values['examiner_pending']);
         //END EXAMINER UPDATE
-
-        // make the set
-        $set = [];
-        foreach ($values as $key => $value) {
-            // Password updates are handled separately
-            if (!empty($value) && $key != 'Password_hash') {
-                $set[$key] = $value;
-            } else {
-                $set[$key] = null;
-            }
-        }
-        // update the user
-        if ($this->isCreatingNewUser()) {
-            $set["Password_hash"] = new \Password(
-                htmlspecialchars_decode($values['Password_hash'])
-            );
-            // insert a new user
-            \User::insert($set);
-            $user = \User::factory($set['UserID']);
-            $uid  = $user->getId();
-            foreach ($us_curr_sites as $site) {
-                $DB->insert(
-                    'user_psc_rel',
-                    [
-                        "UserID"   => $uid,
-                        "CenterID" => $site,
-                    ]
-                );
-            }
-            foreach ($us_curr_projects as $project) {
-                $DB->insert(
-                    'user_project_rel',
-                    [
-                        "UserID"    => $uid,
-                        "ProjectID" => $project,
-                    ]
-                );
-            }
-                $DB->update(
-                    'examiners',
-                    [
-                        'userID'      => $uid,
-                    ],
-                    [
-                        "full_name" => $values['Real_name'],
-                    ]
-                );
-        } else {
-            // update the user
-            $user = \User::factory($this->identifier);
-            $user->update($set);
-        }
 
         // Now set the password. Note that this field is named incorrectly
         // and represents a plaintext password, not a hash.
