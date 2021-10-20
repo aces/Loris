@@ -409,9 +409,9 @@ class DataQueryApp extends Component {
     filter.importCSV = true;
     this.setState({
       fields: this.state.fields ?? [],
-      selectedFields: {},
+      selectedFields: this.state.selectedFields ?? {},
       filter: filter,
-      alertLoaded: true,
+      alertLoaded: false,
       alertSaved: false,
       loading: false,
     });

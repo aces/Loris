@@ -209,8 +209,6 @@ class FilterRule extends Component {
         };
         rule.session = Object.keys(allCandiates);
         rule.visit = 'All';
-        console.log('rule is ');
-        console.log(rule);
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
@@ -707,9 +705,7 @@ class FilterBuilder extends Component {
    * @param {function} callback
    */
   async requestSessions(type, data, callback) {
-    console.log('type is ');
-    console.log(type);
-    // fetch CandID to PSCID map
+    // fetch CandID for PSCID (session) map
     if (type === 'CandID') {
       await fetch(
       window.location.origin
@@ -721,8 +717,6 @@ class FilterBuilder extends Component {
         if (response.ok) {
           response.json().then((data) => {
             data = Object.assign({}, ...data);
-            console.log('data is ');
-            console.log(data);
             return callback(data);
           });
         } else {
@@ -743,8 +737,6 @@ class FilterBuilder extends Component {
    * @param {object} data
    */
   defineCSVCandidates(type, data) {
-    console.log('this.props.getAllSessions() is ');
-    console.log(this.props.getAllSessions());
     let session = [];
     this.requestSessions(type, data, (sessions) => {
       let children = [];
@@ -767,8 +759,6 @@ class FilterBuilder extends Component {
             }],
           };
           children.push(rule);
-          console.log('rule is ');
-          console.log(rule);
       }
       session.push(children);
       const filters = {
@@ -776,10 +766,6 @@ class FilterBuilder extends Component {
         session: session,
         children: children,
       };
-      console.log('filters is ');
-      console.log(filters);
-      console.log('LOOK');
-      console.log(filters['children'][0].fields[0]);
       this.props.loadImportedCSV(filters);
       this.closeModalCSV();
     });
