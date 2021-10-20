@@ -422,7 +422,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
         )->getText();
         $this->assertStringContainsString("Resolved", $bodyText);
@@ -441,7 +441,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("test");
         $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();

@@ -368,8 +368,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $breadcrumbText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Imaging Browser", $breadcrumbText);
     }
@@ -391,7 +391,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $errorText = $this->webDriver->findElement(
+        $errorText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
