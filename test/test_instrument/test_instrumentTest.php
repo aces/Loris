@@ -206,6 +206,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 
         // select 'No' option and check it.
         $this->_landing();
+        sleep(1);
         $select  = $this->safeFindElement(
             WebDriverBy::cssSelector("select[name='consent']")
         );
