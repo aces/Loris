@@ -42,7 +42,7 @@ class FilterBuilder extends \NDB_Page
         // Ensure allowed request.
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGET($request);
+            return $this->_handleGET();
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ['GET']
@@ -55,11 +55,9 @@ class FilterBuilder extends \NDB_Page
      * concerning sessions for filters to be built
      * when searching for CandID.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request.
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         // create DB object
         $DB = \Database::singleton();
