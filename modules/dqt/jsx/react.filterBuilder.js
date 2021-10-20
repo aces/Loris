@@ -209,6 +209,8 @@ class FilterRule extends Component {
         };
         rule.session = Object.keys(allCandiates);
         rule.visit = 'All';
+        console.log('rule is ');
+        console.log(rule);
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
@@ -705,26 +707,46 @@ class FilterBuilder extends Component {
    * @param {function} callback
    */
   async requestField(type, data, callback) {
+    console.log('type is ');
+    console.log(type);
     let children = [];
     for (const item of data) {
-      await $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php',
-        {category: 'demographics'},
-      (data) => {
-        const value = item[0];
-        const rule = {
-          field: type,
-          fieldType: 'varchar(255)',
-          instrument: 'demographics',
-          operator: 'equal',
-          session: [value],
-          type: 'rule',
-          value: value,
-          visit: 'All',
-          fields: data,
-        };
-        children.push(rule);
-        // this.props.updateRule(this.props.index, rule);
-      }, 'json');
+      const value = item[0];
+      const rule = {
+        field: type,
+        fieldType: 'varchar(255)',
+        instrument: 'demographics',
+        operator: 'equal',
+        session: [value],
+        type: 'rule',
+        value: value,
+        visit: 'All',
+        fields: [{
+          id: 'DataDictionary:Demographics',
+          key: ['demographics', 'PSCID'],
+        }],
+      };
+      children.push(rule);
+      // await $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php',
+      //   {category: 'demographics'},
+      // (data) => {
+      //   const value = item[0];
+      //   const rule = {
+      //     field: type,
+      //     fieldType: 'varchar(255)',
+      //     instrument: 'demographics',
+      //     operator: 'equal',
+      //     session: [value],
+      //     type: 'rule',
+      //     value: value,
+      //     visit: 'All',
+      //     fields: data,
+      //   };
+      //   children.push(rule);
+      //   console.log('rule is ');
+      //   console.log(rule);
+      //   // this.props.updateRule(this.props.index, rule);
+      // }, 'json');
     }
     return callback(children);
   }

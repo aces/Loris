@@ -138,7 +138,6 @@ let FieldSelectTabPane = (props) => {
  * @return {JSX} - React markup for the component
  */
 let FilterSelectTabPane = (props) => {
-
   return (
     <TabPane TabId={props.TabId} Loading={props.Loading}>
       <FilterBuilder items={props.categories}
