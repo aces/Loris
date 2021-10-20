@@ -78,20 +78,25 @@ database (PR #5260)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
 - Fix special character double escaping in instruments (PR #6223)
 - Fix duplicate examiners created / examiners overwritten (PR #7462)
+- Prevent horizontal scroll on all modules (PR #6531)
+- Fix to prevent help boxes to float over the page content when scrolling (PR #6721)
 
 ### Modules 
 #### Candidate Profile
-- New module created to provide dashboard of a single candidate's data across all
-  modules. (Various PRs)
+- New module created to provide dashboard of a single candidate's data across all modules. (Various PRs)
 
 ##### Issue Tracker
 - The issue_tracker module now has the feature of uploading attachments to new or existing issues. (PR #5394)
 - All sites now appear in the dropdown for site, not only study sites. (PR #6135)
+- Status filter converted to a multiselect field. The Active Issues tab now displays Status filter: All except Closed. (PR #6529)
+- Module filter fix to remove [object Object] entries. (PR #6522)
+- Priority filter Low option added. (PR #6609)
+- Fix to decode issue descriptions with special characters (&<>) (PR #6643)
+- Add help text on Create/Edit Issue (PR #6600)
 
 #### Battery Manager
 - New module created to manage the entries in the `test_battery` table of the database.
-This allows projects to modify their instrument battery without requiring backend access.
- (PR #4221)
+This allows projects to modify their instrument battery without requiring backend access. (PR #4221)
  
 #### Module Manager
 - New module created to manage the status of installed modules. (PR #6015)
@@ -112,6 +117,26 @@ death for candidates. (PR #4929)
 
 #### MRI Violations
 - Add support for multiple MRI protocols (PR #4321)
+
+#### Login
+- Pwd Expiry: Password validation for rejection if matching user's email or username
+or not matching password confirmation. (PR #6615, #6705, #6611)
+
+#### Statistics
+- Fix to prevent Notice error logs (PR #6720) 
+- Projects filter only displays projects user has permission for. (PR #6706)
+
+#### Genomic Browser
+- In Profile and SNP screens, display subproject title instead of id. (PR #6633)
+
+#### Survey
+- Fix Notice error logs and infinite redirect. (PR #6644)
+
+#### User Accounts
+- Fix typo in user_accounts_multisite permission name. (PR #6656)
+
+#### DQT
+- Improve the visibility of some dropdown elements (PR #6602)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
