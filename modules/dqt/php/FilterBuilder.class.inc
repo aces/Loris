@@ -71,7 +71,7 @@ class FilterBuilder extends \NDB_Page
                     FROM candidate",
             []
         );
-        $data = [];
+        $data   = [];
         for ($i=0; $i<=count($result); $i++) {
             array_push(
                 $data,
