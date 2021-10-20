@@ -15,7 +15,7 @@
 namespace LORIS\api\Provisioners;
 
 use \LORIS\Data\Provisioners\DBObjectProvisioner;
-use \LORIS\api\Models\SitesRow;
+
 /**
  * This class implements a data provisioner to get the site information
  * of all site accessible to a given user.
