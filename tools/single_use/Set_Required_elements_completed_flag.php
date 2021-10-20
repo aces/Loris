@@ -24,7 +24,10 @@ Data_entry_completion_status field.
 Without being run with 'confirm', the script only reports mismatching data. If run 
 with 'confirm', the new Required_elements_completed flag is updated by using the 
 _determineRequiredElementsCompletedFlag and _setRequiredElementsCompletedFlag 
-functions. An array is printed at the end of the script that lists all the cases 
+functions. A previous Data_entry_completion_status value that does not match the 
+newly determined Required_elements_completed value will be overwritten.
+
+An array is printed at the end of the script that lists all the cases 
 where the new Required_elements_completed flag does not match the old 
 Data_entry_completion_status. If the Required_elements_completed flag is not updated
 through this script or through instrument saving, it's default is 'N'.
