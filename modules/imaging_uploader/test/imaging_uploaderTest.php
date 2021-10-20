@@ -131,8 +131,8 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString(
             "Imaging Upload",
@@ -149,7 +149,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions([""]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -167,7 +167,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["imaging_uploader"]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
