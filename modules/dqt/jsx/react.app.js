@@ -91,7 +91,7 @@ class DataQueryApp extends Component {
     this.navigationClicked = this.navigationClicked.bind(this);
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
-    this.importCSV = this.importCSV.bind(this);
+    this.loadImportedCSV = this.loadImportedCSV.bind(this);
     this.getAllSessions = this.getAllSessions.bind(this);
   }
 
@@ -401,24 +401,14 @@ class DataQueryApp extends Component {
   }
 
   /**
-   * Import the CSV from the user.
-   *
-   * @param {array} data
-   */
-  importCSV(data) {
-    data.importCSV = true;
-    this.loadImportedCSV(null, data);
-  }
-
-  /**
    * Load the imported CSV from the user.
    *
-   * @param {array} fields
    * @param {array} filter
    */
-  loadImportedCSV(fields, filter) {
+  loadImportedCSV(filter) {
+    filter.importCSV = true;
     this.setState({
-      fields: [],
+      fields: this.state.fields ?? [],
       selectedFields: {},
       filter: filter,
       alertLoaded: true,
@@ -1238,7 +1228,7 @@ class DataQueryApp extends Component {
             Visits={this.props.Visits}
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFilters'}
-            importCSV={this.importCSV}
+            loadImportedCSV={this.loadImportedCSV}
             getAllSessions={this.getAllSessions}
           />
         )}

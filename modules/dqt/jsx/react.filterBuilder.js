@@ -771,14 +771,16 @@ class FilterBuilder extends Component {
           console.log(rule);
       }
       session.push(children);
-      const results = {
+      const filters = {
         activeOperator: '1',
         session: session,
         children: children,
       };
-      console.log('result is ');
-      console.log(results);
-      this.props.importCSV(results);
+      console.log('filters is ');
+      console.log(filters);
+      console.log('LOOK');
+      console.log(filters['children'][0].fields[0]);
+      this.props.loadImportedCSV(filters);
       this.closeModalCSV();
     });
   }
