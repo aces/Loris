@@ -42,12 +42,9 @@ class ResolvedFilterableDataTable extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    switch (column) {
-      default:
-        return (
-          <td>{cell}</td>
-        );
-    }
+    return (
+        <td>{cell}</td>
+    );
   }
   /**
    * Retrieve data from the provided URL and save it in state
