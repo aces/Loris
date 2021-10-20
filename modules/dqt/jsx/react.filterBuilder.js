@@ -681,7 +681,7 @@ class FilterBuilder extends Component {
     this.openModalCSV = this.openModalCSV.bind(this);
     this.closeModalCSV = this.closeModalCSV.bind(this);
     this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
-    this.requestField = this.requestField.bind(this);
+    this.requestSessions = this.requestSessions.bind(this);
   }
 
   /**
@@ -701,54 +701,40 @@ class FilterBuilder extends Component {
   }
 
   /**
-   * requestField - get request.
+   * requestSessions - get request for session mapping.
    * @param {string} type
    * @param {object} data
    * @param {function} callback
    */
-  async requestField(type, data, callback) {
+  async requestSessions(type, data, callback) {
     console.log('type is ');
     console.log(type);
-    let children = [];
-    for (const item of data) {
-      const value = item[0];
-      const rule = {
-        field: type,
-        fieldType: 'varchar(255)',
-        instrument: 'demographics',
-        operator: 'equal',
-        session: [value],
-        type: 'rule',
-        value: value,
-        visit: 'All',
-        fields: [{
-          id: 'DataDictionary:Demographics',
-          key: ['demographics', 'PSCID'],
-        }],
-      };
-      children.push(rule);
-      // await $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php',
-      //   {category: 'demographics'},
-      // (data) => {
-      //   const value = item[0];
-      //   const rule = {
-      //     field: type,
-      //     fieldType: 'varchar(255)',
-      //     instrument: 'demographics',
-      //     operator: 'equal',
-      //     session: [value],
-      //     type: 'rule',
-      //     value: value,
-      //     visit: 'All',
-      //     fields: data,
-      //   };
-      //   children.push(rule);
-      //   console.log('rule is ');
-      //   console.log(rule);
-      //   // this.props.updateRule(this.props.index, rule);
-      // }, 'json');
+    // fetch CandID to PSCID map
+    if (type === 'CandID') {
+      await fetch(
+      window.location.origin
+      + '/dqt/FilterBuilder',
+      {
+        credentials: 'same-origin',
+        method: 'GET',
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            data = Object.assign({}, ...data);
+            console.log('data is ');
+            console.log(data);
+            return callback(data);
+          });
+        } else {
+          response.json().then((data) => {
+            console.error(data);
+          });
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
     }
-    return callback(children);
+    return callback(null);
   }
 
   /**
@@ -760,20 +746,41 @@ class FilterBuilder extends Component {
     console.log('this.props.getAllSessions() is ');
     console.log(this.props.getAllSessions());
     let session = [];
-    this.requestField(type, data, (children) => {
-        if (children) {
-          session.push(children);
-          const results = {
-            activeOperator: '1',
-            session: session,
-            children: children,
+    this.requestSessions(type, data, (sessions) => {
+      let children = [];
+      for (const item of data) {
+        const value = item[0];
+        const rule = {
+            field: type,
+            fieldType: 'varchar(255)',
+            instrument: 'demographics',
+            operator: 'equal',
+            session: [
+              sessions ? sessions[value] ?? '' : value,
+            ], // session needs to have pscid.
+            type: 'rule',
+            value: value,
+            visit: 'All',
+            fields: [{
+              id: 'DataDictionary:Demographics',
+              key: ['demographics', type],
+            }],
           };
-          this.props.importCSV(results);
-          this.closeModalCSV();
-        } else {
-          console.error('requestField failed');
-        }
-      });
+          children.push(rule);
+          console.log('rule is ');
+          console.log(rule);
+      }
+      session.push(children);
+      const results = {
+        activeOperator: '1',
+        session: session,
+        children: children,
+      };
+      console.log('result is ');
+      console.log(results);
+      this.props.importCSV(results);
+      this.closeModalCSV();
+    });
   }
 
   /**
