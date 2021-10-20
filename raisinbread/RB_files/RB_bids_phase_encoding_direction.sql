@@ -1,0 +1,11 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `bids_phase_encoding_direction`;
+LOCK TABLES `bids_phase_encoding_direction` WRITE;
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (1,'i');
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (2,'i-');
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (3,'j');
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (4,'j-');
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (5,'k');
+INSERT INTO `bids_phase_encoding_direction` (`BIDSPhaseEncodingDirectionID`, `BIDSPhaseEncodingDirectionName`) VALUES (6,'k-');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -203,8 +203,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = str_replace(
-            ";",
+        $tpl_data['user']['SitesTooltip'] = implode(
             "<br/>",
             $this->user->getSiteNames()
         );

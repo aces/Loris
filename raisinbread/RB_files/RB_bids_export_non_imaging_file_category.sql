@@ -1,0 +1,10 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `bids_export_non_imaging_file_category`;
+LOCK TABLES `bids_export_non_imaging_file_category` WRITE;
+INSERT INTO `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`, `BIDSNonImagingFileCategoryName`) VALUES (1,'dataset_description');
+INSERT INTO `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`, `BIDSNonImagingFileCategoryName`) VALUES (2,'README');
+INSERT INTO `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`, `BIDSNonImagingFileCategoryName`) VALUES (3,'bids-validator-config');
+INSERT INTO `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`, `BIDSNonImagingFileCategoryName`) VALUES (4,'participants_list_file');
+INSERT INTO `bids_export_non_imaging_file_category` (`BIDSNonImagingFileCategoryID`, `BIDSNonImagingFileCategoryName`) VALUES (5,'session_list_of_scans');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;
