@@ -279,9 +279,6 @@ class FilterRule extends Component {
     let visits;
     if (this.props.rule.instrument) {
       // Only display field select and etc. if instrument is selected
-      if (this.props.rule.fields) {
-        // this.props.rule.fields
-      }
       let fields = this.props.rule.fields.map((field, index) => {
         if (this.props.rule.field && field.key[1] === this.props.rule.field) {
           fieldIndex = index;
