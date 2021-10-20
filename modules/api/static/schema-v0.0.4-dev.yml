@@ -4,17 +4,67 @@ info:
   description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
   contact:
     name: LORIS Development Team
-    url: 'https://github.com/aces/loris'
+    url: https://github.com/aces/loris
   license:
-    name: 'GNU Public License, Version 3'
-    url: 'https://opensource.org/licenses/GPL-3.0'
+    name: GNU Public License, Version 3
+    url: https://opensource.org/licenses/GPL-3.0
   version: 0.0.4-dev
 servers:
   - url: /api/v0.0.4-dev
 security:
   - ApiKeyAuth: []
 paths:
-  '/candidates/{candid}/{visit}':
+  '/projects/{project}/subprojects':
+    get:
+      tags:
+        - Projects
+      summary: List all subprojects of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of subprojects descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSubprojects'
+  '/projects/{project}/subprojects/{subproject}':
+    get:
+      tags:
+        - Projects
+      summary: Get a subproject descriptor in that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: subproject
+          in: path
+          description: The subproject title
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An JSON representation of the subproject
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSubproject'
+  /candidates/{candid}/{visit}:
     patch:
       tags:
         - Visit
@@ -44,8 +94,52 @@ paths:
       responses:
         '204':
           description: The visit stage was updated successfully
+  
 components:
   schemas:
+    ProjectSubprojects:
+      type: object
+      properties:
+        Subprojects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subproject'
+    Subproject:
+      type: object
+      properties:
+        SubprojectID:
+          type: string
+        Title:
+          type: string
+        UseEDC:
+          type: boolean
+        WindowDifference:
+          type: string
+        RecruitmentTarget:
+          type: integer
+    ProjectSubproject:
+      type: object
+      properties:
+        SubprojectID:
+          type: string
+        Title:
+          type: string
+        UseEDC:
+          type: boolean
+        WindowDifference:
+          type: string
+          enum:
+            - 'optimal'
+            - 'battery'
+        RecruitmentTarget:
+          type: integer
+        Visits:
+          type: array
+          items:
+            type: object
+            properties:
+              VisitLabel:
+                type: string
     VisitMetaFields:
       type: object
       properties:
@@ -79,23 +173,15 @@ components:
           properties:
             Stages:
               $ref: '#/components/schemas/InstrumentVisit'
-
     InstrumentVisit:
       type: object
       properties:
         Visit:
           $ref: '#/components/schemas/VisitStage'
 
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
       in: header
-
 
