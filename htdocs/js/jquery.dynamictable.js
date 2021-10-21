@@ -90,7 +90,6 @@
     if ((element.offsetHeight < element.scrollHeight) ||
         (element.offsetWidth < element.scrollWidth)) {
       // Your element has overflow
-
       $(wrapper).on('scroll', function() {
         let leftScroll = $(wrapper).scrollLeft();
         $(headers).scrollLeft(leftScroll);
@@ -191,14 +190,14 @@
   let freezeColm = function(tableID, colmStatic) {
     let statColPos = $('.' + tableID + 'FrozenColumn').offset().left;
     let statColWid = $('.' + tableID + 'FrozenColumn').outerWidth();
-    let leftScrollPos = $('.leftScrollBar').offset().left;
-    let leftScrollWid = $('.leftScrollBar').outerWidth();
+    let leftScrollPos = $('.leftScrollBar').offset().left + 25;
+    let leftScrollWid = $('.leftScrollBar').outerWidth() + 100;
     let nextColPos = $('.' + tableID + 'Next').offset().left;
     let tablePos = $('#' + tableID).offset().left;
     let header = $('#' + tableID).siblings('.frozenHeader')[0];
-
     if (colmStatic === true) {
       if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
+        $('.' + tableID + 'Next').width(200);
         $('.' + tableID).each(function(key, value) {
           if (key >= 0) {
             $(value).css('height', '');
@@ -210,6 +209,22 @@
         return false;
       }
     } else if (statColPos <= leftScrollWid + leftScrollPos) {
+      $('.' + tableID + 'FrozenColumn').each(function(key, value) {
+        if (key >= 0) {
+          let height = $(value).next().outerHeight();
+          $(value).outerHeight(height);
+        }
+      });
+      $('.' + tableID + 'FrozenColumn').addClass('static-col colm-static');
+      if ($(header).parent().find('.headerColm').length === 0 &&
+        $(header).parent().find('.frozenHeader').is(':visible')
+      ) {
+        addFrozenHeaderColm(header);
+      }
+      return true;
+    } else if (
+      document.documentElement.clientWidth < 1400
+      && leftScrollWid < 55 && leftScrollPos < 25) {
       $('.' + tableID + 'FrozenColumn').each(function(key, value) {
         if (key >= 0) {
           let height = $(value).next().outerHeight();
@@ -299,9 +314,6 @@
           child1 = $(value).children().get(columnNumber);
           // height = $(child1).next().outerHeight();
           $(child1).addClass(id + 'FrozenColumn');
-        });
-        $(this).parent().scroll(function() {
-          colmStatic = freezeColm(id, colmStatic);
         });
       }
 
