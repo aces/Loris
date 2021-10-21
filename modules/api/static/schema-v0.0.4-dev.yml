@@ -35,7 +35,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectSubprojects'
-  '/projects/{project}/subprojectss/{subproject}':
+  '/projects/{project}/subprojects/{subproject}':
     get:
       tags:
         - Projects
@@ -80,7 +80,7 @@ components:
           type: string
         Title:
           type: string
-        useEDC:
+        UseEDC:
           type: boolean
         WindowDifference:
           type: string
@@ -93,16 +93,22 @@ components:
           type: string
         Title:
           type: string
-        useEDC:
+        UseEDC:
           type: boolean
         WindowDifference:
           type: string
+          enum:
+            - 'optimal'
+            - 'battery'
         RecruitmentTarget:
           type: integer
         Visits:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              VisitLabel:
+                type: string
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
