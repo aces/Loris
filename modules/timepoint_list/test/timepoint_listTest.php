@@ -71,7 +71,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _validateSessionTableContents($expectedSessions)
     {
-        $sessionTable        = $this->safeFindElements(
+        $sessionTable        = $this->webDriver->findElements(
             WebDriverBy::ClassName('dynamictable')
         );
         $actualSessions      = $sessionTable[1]->findElements(
