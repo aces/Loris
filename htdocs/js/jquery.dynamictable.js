@@ -90,6 +90,7 @@
     if ((element.offsetHeight < element.scrollHeight) ||
         (element.offsetWidth < element.scrollWidth)) {
       // Your element has overflow
+
       $(wrapper).on('scroll', function() {
         let leftScroll = $(wrapper).scrollLeft();
         $(headers).scrollLeft(leftScroll);
@@ -195,6 +196,7 @@
     let nextColPos = $('.' + tableID + 'Next').offset().left;
     let tablePos = $('#' + tableID).offset().left;
     let header = $('#' + tableID).siblings('.frozenHeader')[0];
+
     if (colmStatic === true) {
       if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
         $('.' + tableID).each(function(key, value) {
