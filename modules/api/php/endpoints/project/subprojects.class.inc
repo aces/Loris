@@ -128,7 +128,7 @@ class Subprojects extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $subprojects = array_map(
             function ($subproject) {
                 return [
-                    'SubprojectID'      => $subproject['subprojectId'], 
+                    'SubprojectID'      => $subproject['subprojectId'],
                     'Title'             => $subproject['title'],
                     'UseEDC'            => $subproject['useEDC'],
                     'WindowDifference'  => $subproject['windowDifference'],
@@ -138,7 +138,7 @@ class Subprojects extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_project->getSubprojects()
         );
 
-        $array       = [
+        $array = [
             'Subprojects' => $subprojects
         ];
 
