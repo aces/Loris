@@ -94,7 +94,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     private function _testContent($content)
     {
         $this->_landing();
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
@@ -144,10 +144,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testTextElement()
     {
         $this->_landing();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("testText")
         )->sendKeys("Test Text successful");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
@@ -165,10 +165,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testCheckBoxElement()
     {
         $this->_landing();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("testCheckbox")
         )->click();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
@@ -194,7 +194,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         sleep(1);
         $element->selectByVisibleText("Yes");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
 
@@ -206,6 +206,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 
         // select 'No' option and check it.
         $this->_landing();
+        sleep(1);
         $select  = $this->safeFindElement(
             WebDriverBy::cssSelector("select[name='consent']")
         );
@@ -214,7 +215,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 
         sleep(1);
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
 
