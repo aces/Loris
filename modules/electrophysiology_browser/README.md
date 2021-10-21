@@ -53,4 +53,5 @@ In order to automatically generate the protoc compiled files, add the following 
   "postinstall": "protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/"
 }
 ```
-and run `npm run install` from the loris root directory.
+and run `make dev` or 'npm install && npm run compile' from the loris root directory.
+
