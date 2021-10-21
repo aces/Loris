@@ -7,7 +7,7 @@
  *
  * The script also populates the visits_subproject_project_rel table.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -16,8 +16,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once __DIR__.'/../generic_includes.php';
-require_once 'Database.class.inc';
-require_once 'Utility.class.inc';
 
 /**
  * Class to implement logic which populates table.
@@ -91,8 +89,8 @@ class VisitsPopulator
     {
         // Get all ProjectSubprojectRelIDs associated with the concerned subproject
         $psrids = $this->DB->pselectCol(
-            "SELECT ProjectSubprojectRelID 
-		FROM project_subproject_rel 
+            "SELECT ProjectSubprojectRelID
+		FROM project_subproject_rel
 		WHERE SubprojectID=:sid",
             ['sid' => $sid],
             "ProjectSubprojectRelID"
@@ -102,7 +100,7 @@ class VisitsPopulator
         foreach ($psrids as $psrid) {
             $verify = $this->DB->pselectOne(
                 "SELECT 'x'
-		    FROM visit_project_subproject_rel 
+		    FROM visit_project_subproject_rel
 		    WHERE VisitID=:vid AND ProjectSubprojectRelID=:psrid",
                 ['vid' => $vid, 'psrid' => $psrid]
             );
