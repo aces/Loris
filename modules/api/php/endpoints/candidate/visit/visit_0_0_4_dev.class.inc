@@ -383,126 +383,63 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             );
         }
 
-        if (!isset($data['Stages'])) {
+        if ($this->_visit->getCurrentStage() !== 'Not Started') {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "This visit is already started"
+            );
+        }
+
+        try {
+            $date = new \DateTime($data['Stages']['Visit']['Date'] ?? 0);
+        } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'There is no stage data specified'
+                'Stages.Visit.Date is invalid or missing'
+            );
+        }
+        // TODO :: Check for min and max year
+
+        $status = $data['Stages']['Visit']['Status'] ?? '';
+        if ($status != 'In Progress') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Stages.Visit.Status invalid or missing'
             );
         }
 
-        $allowedStages   = ['Screening', 'Visit', 'Approval'];
-        $allowedStatuses = ['Pass', 'Failure', 'Withdrawal', 'In Progress'];
+        $newStage = $this->_visit->getNextStage();
 
-        // loop on all stages to validate
-        foreach ($data['Stages'] as $stage => $stageData) {
-            if (!in_array($stage, $allowedStages)) {
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    "Stage $stage is not valid"
-                );
-            }
+        $this->_visit->startStage($newStage);
 
-            // TODO: Implement and remove
-            if (in_array($stage, ['Screening', 'Approval'])) {
-                return new \LORIS\Http\Response\JSON\NotImplemented(
-                    "Stage $stage is not implemented yet"
-                );
-            }
+        // set the date for the new stage
+        $this->_visit->setData(["Date_$newStage" => $date->format('Y-m-d')]);
 
-            if (!isset($stageData['Status'])) {
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    "There is no $stage stage status specified"
-                );
-            }
+        // TODO :: Add support for scan done
 
-            if (!in_array($stageData['Status'], $allowedStatuses)) {
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    "Stage $stage status {$stageData['Status']} is not valid"
-                );
-            }
+        // create a new battery object && new battery
+        $candidate  = \Candidate::singleton($this->_visit->getCandID());
+        $visitLabel = $this->_visit->getVisitLabel();
 
-            // TODO: Implement and remove
-            if (in_array($stageData['Status'], ['Pass', 'Failure', 'Withdrawal'])) {
-                return new \LORIS\Http\Response\JSON\NotImplemented(
-                    "Stage $stage status transition
-                    {$stageData['Status']} is not implemented yet"
-                );
-            }
-
-            if (!isset($stageData['Date'])) {
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    "There is no $stage stage date specified"
-                );
-            }
-
-            $stageData['Date'] = \DateTime::createFromFormat(
-                'Y-m-d',
-                $stageData['Date']
-            );
-            if (!$stageData['Date']) {
-                return new \LORIS\Http\Response\JSON\BadRequest(
-                    "The stage date specified for $stage is invalid.
-                    Date must be of the form YYYY-MM-DD"
-                );
-            }
+        // First visit ?
+        $firstVisit = false;
+        try {
+            $firstVisit = ($candidate->getFirstVisit() == $visitLabel);
+        } catch (\LorisException $e) {
         }
 
-        // Passed this point, the request should be valid
-        // Loop again and process the request
-        foreach ($data['Stages'] as $stage => $stageData) {
-            switch ($stage) {
-                // Only Visit | In progress is supported at the moment
-            case 'Visit':
-                switch ($stageData['Status']) {
-                case 'In Progress':
-                    if ($this->_visit->getCurrentStage() !== 'Not Started') {
-                        return new \LORIS\Http\Response\JSON\Conflict(
-                            "This visit is already started"
-                        );
-                    }
+        $battery = new \NDB_BVL_Battery;
+        // select a specific time point (sessionID) for the battery
+        $battery->selectBattery($this->_visit->getSessionID());
 
-                    $newStage = $this->_visit->getNextStage();
-                    if (!$newStage) {
-                        return new \LORIS\Http\Response\JSON\Conflict(
-                            "Next stage is null"
-                        );
-                    }
+        // add instruments to the time point
+        $battery->createBattery(
+            $request->getAttribute("loris"),
+            $this->_visit->getSubprojectID(),
+            $newStage,
+            $this->_visit->getVisitLabel(),
+            $this->_visit->getCenterID(),
+            $firstVisit
+        );
 
-                    // start that stage
-                    $this->_visit->startStage($newStage);
-
-                    // set the date for the new stage
-                    $this->_visit->setData(["Date_$newStage" => $stageData["Date"]]);
-
-                    // create a new battery object && new battery
-                    $candidate  = \Candidate::singleton($this->_visit->getCandID());
-                    $visitLabel = $this->_visit->getVisitLabel();
-
-                    // First visit ?
-                    $firstVisit = false;
-                    try {
-                        if ($candidate->getFirstVisit() == $visitLabel) {
-                            $firstVisit = true;
-                        }
-                    } catch (\LorisException $e) {
-                    }
-
-                    $battery = new \NDB_BVL_Battery;
-                    // select a specific time point (sessionID) for the battery
-                    $battery->selectBattery($this->_visit->getSessionID());
-
-                    // add instruments to the time point
-                    $battery->createBattery(
-                        $request->getAttribute("loris"),
-                        $this->_visit->getSubprojectID(),
-                        $newStage,
-                        $this->_visit->getVisitLabel(),
-                        $this->_visit->getCenterID(),
-                        $firstVisit
-                    );
-
-                    return new \LORIS\Http\Response\JSON\OK();
-                }
-            }
-        }
+        return new \LORIS\Http\Response\JSON\NoContent();
     }
 
     /**
