@@ -34,11 +34,11 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
         $this->safeGet($this->url . "/api_docs");
         $selectOptions = null;
         try {
-            $selectOptions = $this->webDriver->findElement(
+            $selectOptions = $this->safeFindElement(
                 WebDriverBy::cssSelector("select")
             );
         } catch (\Facebook\WebDriver\Exception\NoSuchElementException $e) {
-            $content = $this->webDriver->findElement(
+            $content = $this->safeFindElement(
                 WebDriverBy::id("lorisworkspace")
             );
             $this->fail('Can`t find select element. Found: ' . $content->getText());

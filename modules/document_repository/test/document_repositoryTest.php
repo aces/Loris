@@ -59,7 +59,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(["superuser"]);
          $this->safeGet($this->url . "/document_repository/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(

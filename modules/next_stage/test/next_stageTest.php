@@ -40,7 +40,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
@@ -104,7 +104,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -119,7 +119,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(

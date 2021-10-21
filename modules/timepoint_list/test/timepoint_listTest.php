@@ -56,7 +56,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     function testTimepointListPageLoad()
     {
         $this->safeGet($this->url . "/" . self::$_TST0001_CANDID . "/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Candidate Profile", $bodyText);
@@ -71,7 +71,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _validateSessionTableContents($expectedSessions)
     {
-        $sessionTable        = $this->webDriver->findElements(
+        $sessionTable        = $this->safeFindElements(
             WebDriverBy::ClassName('dynamictable')
         );
         $actualSessions      = $sessionTable[1]->findElements(

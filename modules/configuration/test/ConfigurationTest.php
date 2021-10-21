@@ -61,7 +61,7 @@ class ConfigurationTest extends LorisIntegrationTest
     public function testConfigurationPageLoads()
     {
         $this->safeGet($this->url . "/configuration/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertMatchesRegularExpression(
@@ -78,7 +78,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(["config"]);
          $this->safeGet($this->url . "/configuration/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -96,7 +96,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
          $this->setupPermissions([]);
          $this->safeGet($this->url . "/configuration/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -170,7 +170,7 @@ class ConfigurationTest extends LorisIntegrationTest
     private function _linkTest($text)
     {
         $this->safeClick(WebDriverBy::linkText($text));
-        $webActives = $this->webDriver->findElements(
+        $webActives = $this->safeFindElements(
             WebDriverBy::cssSelector(".active")
         );
         $bodyText   = $webActives[1]->getText();
@@ -203,7 +203,7 @@ class ConfigurationTest extends LorisIntegrationTest
     private function _testProjectsLink()
     {
         $this->safeGet($this->url . "/configuration/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(

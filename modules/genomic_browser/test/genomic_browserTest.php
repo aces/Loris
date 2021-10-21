@@ -75,7 +75,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions([]);
          $this->safeGet($this->url . "/genomic_browser/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -100,7 +100,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             ]
         );
          $this->safeGet($this->url . "/genomic_browser/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(

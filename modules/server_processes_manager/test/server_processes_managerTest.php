@@ -66,7 +66,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->setupConfigSetting('mriCodePath', null);
         $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString('Cannot continue', $bodyText);
@@ -85,7 +85,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
         $this->setupPermissions([""]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -104,7 +104,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
