@@ -981,15 +981,9 @@ class DataQueryApp extends Component {
    * @param {object} filter
    */
   updateFilter(filter) {
-    console.log('updateFilter() has ran! [special]');
     if (filter.children.length === 0) {
-      console.log('if statement [true]');
       filter.session = this.props.AllSessions;
-    } else {
-      console.log('if statement [false]');
     }
-    console.log('filter: ');
-    console.log(filter);
     this.setState({filter});
   }
 
