@@ -263,6 +263,50 @@ will return a JSON object of the form:
 }
 ```
 
+#### 2.1.6 Single project subprojects
+```
+GET /projects/$ProjectName/subprojects
+```
+
+will return a JSON object of the form:
+```js
+{
+  "Subprojects": [
+    {
+      "SubprojectID": "1",
+      "Title": "Fresh",
+      "UseEDC": true,
+      "WindowDifference": "battery",
+      "RecruitmentTarget": 10000
+    },
+    ...
+  ]
+}
+```
+
+#### 2.1.6.1 Single project subproject
+```
+GET /projects/$ProjectName/subprojects/SubprojectTitle
+```
+
+will return a JSON object of the form:
+```js
+{
+  "SubprojectID": "1",
+  "Title": "Fresh",
+  "UseEDC": true,
+  "WindowDifference": "battery",
+  "RecruitmentTarget": 1000,
+  "Visits": [
+    {
+      "VisitLabel": "V1"
+    },
+    ...
+  ]
+}
+```
+
+
 ### 2.2 Instrument Forms
 
 ```

@@ -50,6 +50,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
 - Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
 - Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
+- Add /project/{project}/subprojects endpoint to list subprojects of a given project.
+- Add /project/{project}/subprojects/{subproject} to get a descriptor of a subproject that contains a list of visit labels for the project+subproject association.
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 - Fix to prevent titles cut off (PR #6731)
