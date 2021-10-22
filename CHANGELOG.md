@@ -34,6 +34,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Add /project/{project}/subprojects endpoint to list subprojects of a given project.
+- Add /project/{project}/subprojects/{subproject} to get a descriptor of a subproject that contains a list of visit labels for the project+subproject association.
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 #### API Documentation (**New Module**)

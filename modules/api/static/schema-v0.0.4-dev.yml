@@ -30,7 +30,7 @@ paths:
             type: string
       responses:
         '200':
-          description: An object containing the list of instrument summary descriptors
+          description: An object containing the list of subprojects descriptors
           content:
             application/json:
               schema:
