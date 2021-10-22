@@ -492,7 +492,7 @@ class Sessions extends \NDB_Page
      * @return array array with the path to the different files associated to the
      *               electrophysiology file
      */
-    function getDownloadlinks(ElectrophysioFile $physioFile): array
+    function getDownloadLinks(ElectrophysioFile $physioFile): array
     {
         $nSplit        = intval($physioFile->getParameter('SplitCount'));
         $downloadLinks = [];
@@ -610,6 +610,26 @@ class Sessions extends \NDB_Page
             ];
         }
         return $downloadLinks;
+    }
+
+    /**
+     * Get JS Dependencies
+     *
+     * @return array of extra JS files that this page depends on
+     */
+    function getJSDependencies()
+    {
+        $depends = parent::getJSDependencies();
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            [
+                $baseurl
+                . '/electrophysiology_browser/js/electrophysiologySessionView.js',
+            ]
+        );
+        return $depends;
     }
 
     /**
