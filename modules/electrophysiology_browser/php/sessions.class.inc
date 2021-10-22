@@ -479,6 +479,7 @@ class Sessions extends \NDB_Page
             $fileSummary['annotations'] = $annotations->getData();
         }
 
+        $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
 
         return $fileSummary;
