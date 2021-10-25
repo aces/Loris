@@ -594,23 +594,23 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->safeGet($this->url . '/configuration/');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
             )
         )->click();
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='48']/input"
             )
         )->clear();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='48']/input"
             )
         )->sendKeys('888');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )

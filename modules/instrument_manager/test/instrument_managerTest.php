@@ -37,7 +37,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentManagerDoespageLoad()
     {
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
@@ -53,7 +53,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         // Check read permission, 'instrument_manager_read'
         $this->setupPermissions(['instrument_manager_read']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
@@ -62,7 +62,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         // Check write permission, 'instrument_manager_write'
         $this->setupPermissions(['instrument_manager_write']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
@@ -78,7 +78,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
