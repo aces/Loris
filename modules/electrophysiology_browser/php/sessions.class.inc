@@ -480,7 +480,7 @@ class Sessions extends \NDB_Page
         }
 
         $fileSummary['output_type'] = $fileOutput;
-        $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
+        $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
 
         return $fileSummary;
     }

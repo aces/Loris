@@ -58,7 +58,7 @@ class Annotations extends \NDB_Page
             ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
-            
+
             $physioFileID = intval($parameters['physioFileID']);
             (new ElectrophysioAnnotations($physioFileID))->updateFiles();
 
