@@ -612,10 +612,7 @@ class UtilityTest extends TestCase
             ->method('pselectColWithIndexKey')
             ->willReturn(
                 [
-                    ['name1' => 'display1',
-                        'TestName'    => 'name1',
-                        'Visit_label' => 'V1'
-                    ]
+                    'name1' => 'display1'
                 ]
             );
 
