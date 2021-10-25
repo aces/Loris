@@ -44,7 +44,7 @@
     permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
     in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
     Repository button takes you to the Document Repository page.
-    [Automate Test]
+    [Manual Test]
 18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Manual Test]
 19. Check that a 'New' notification is not labeled 'New' anymore after login in again. [Manual Test]
 
