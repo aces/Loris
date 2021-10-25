@@ -20,6 +20,8 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
 
+    protected $subprojectName = 'Fresh';
+
     /**
      * Tests the HTTP GET request for the endpoint /projects
      *
@@ -520,5 +522,135 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
         $this->markTestSkipped('Missing data in docker image');
+    }
+
+    /**
+     * Tests the HTTP GET request for the endpoint /projects/{project}/subprojects
+     *
+     * @return void
+     */
+    public function testGetProjectsProjectSubprojects(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/subprojects",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Verify the endpoint body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $data = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(
+            gettype($data['Subprojects']),
+            'array'
+        );
+
+        $this->assertCount( 4, $subprojects);
+
+        foreach ($subprojects as $subproject) {
+            $this->assertSame(
+                gettype($subproject['SubprojectID']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($subproject['Title']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($subproject['UseEDC']),
+                'boolean'
+            );
+            $this->assertSame(
+                gettype($subproject['WindowDifference']),
+                'string'
+            );
+            $this->assertSame(
+                gettype($subproject['RecruitmentTarget']),
+                'integer'
+            );
+        }
+    }
+
+    /**
+     * Tests the HTTP GET request for the endpoint /projects/{project}/subprojects/{subproject}
+     *
+     * @return void
+     */
+    public function testGetProjectsProjectSuprojectsSuproject(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/subprojects/$this->subprojectName",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Verify the endpoint body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $data = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(
+            gettype($data),
+            'array'
+        );
+
+        $this->assertSame(
+            gettype($data['SubprojectID']),
+            'string'
+        );
+
+        $this->assertSame(
+            gettype($data['Title']),
+            'string'
+        );
+
+        $this->assertSame(
+            gettype($data['UseEDC']),
+            'boolean'
+        );
+
+        $this->assertSame(
+            gettype($data['WindowDifference']),
+            'string'
+        );
+
+        $this->assertSame(
+            gettype($data['RecruitmentTarget']),
+            'integer'
+        );
+
+        $this->assertSame(
+            gettype($data['Visits']),
+            'array'
+        );
+
+        foreach ($data['Visits'] as $visit) {
+            $this->assertArrayHasKey(
+                'VisitLabel',
+                $visit
+            );
+        }
     }
 }
