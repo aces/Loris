@@ -620,9 +620,7 @@ class UtilityTest extends TestCase
             );
 
         $this->assertEquals(
-            ['name1' => 'display1',
-                'TestName'    => 'name1',
-                'Visit_label' => 'V1'
+            ['name1' => 'display1'
             ],
             Utility::getVisitInstruments('V1')
         );
