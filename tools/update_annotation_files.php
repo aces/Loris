@@ -10,7 +10,9 @@ set_include_path(
 use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-require_once __DIR__ . "/../modules/electrophysiology_browser/php/models/electrophysioannotations.class.inc";
+require_once __DIR__
+    . "/../modules/electrophysiology_browser/php/models/" 
+    . "electrophysioannotations.class.inc";
 
 /**
  * Update any derivative files that are not up to date
