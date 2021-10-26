@@ -349,7 +349,7 @@ class ElectrophysioAnnotations
                 FROM physiological_annotation_instance p
                   LEFT JOIN physiological_annotation_label l 
                     ON (l.AnnotationLabelID=p.AnnotationLabelID)
-                WHERE AnnotationFileID=:AFID",
+                WHERE p.AnnotationFileID=:AFID",
                 ['AFID' => $tsv[0]['id']]
             );
 
