@@ -557,7 +557,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'array'
         );
 
-        $this->assertCount( 4, $subprojects);
+        $this->assertCount( 4, $data['Subprojects']);
 
         foreach ($subprojects as $subproject) {
             $this->assertSame(
@@ -611,44 +611,45 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             true
         );
 
-        $this->assertSame(
-            gettype($data),
-            'array'
+        $this->assertEqual(
+            'array',
+            gettype($data)
         );
 
-        $this->assertSame(
-            gettype($data['SubprojectID']),
-            'string'
+        $this->assertEqual(
+            'string',
+            gettype($data['SubprojectID'])
         );
 
-        $this->assertSame(
-            gettype($data['Title']),
-            'string'
+        $this->assertEqual(
+            'string',
+            gettype($data['Title'])
         );
 
-        $this->assertSame(
-            gettype($data['UseEDC']),
-            'boolean'
+        $this->assertEqual(
+            'boolean',
+            gettype($data['UseEDC'])
         );
 
-        $this->assertSame(
-            gettype($data['WindowDifference']),
-            'string'
+        $this->assertEqual(
+            'string',
+            gettype($data['WindowDifference'])
         );
 
-        $this->assertSame(
+        $this->assertEqual(
+            'integer',
             gettype($data['RecruitmentTarget']),
-            'integer'
+            json_encode($data)
         );
 
-        $this->assertSame(
-            gettype($data['Visits']),
-            'array'
+        $this->assertEqual(
+            'array',
+            gettype($data['Visits'])
         );
 
         foreach ($data['Visits'] as $visit) {
             $this->assertArrayHasKey(
-                'VisitLabel',
+                'VisitName',
                 $visit
             );
         }
