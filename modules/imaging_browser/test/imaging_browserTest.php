@@ -579,7 +579,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'dwi65',
-            '16 rows'
+            '12 rows'
         );
         $this->_filterTest(
             self::$sequenceType,
