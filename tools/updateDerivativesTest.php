@@ -96,12 +96,12 @@ testAddDataToDB();
 
 //Testing adding a new instance with new label/updating parameter table
 $values1 = [
-    'instance_id' => 1,
+    'instance_id'  => 1,
     'parameter_id' => 1,
-    'metadata' => [
-        'description'  => 'A New Description!',
-        'sources'      => 'Source Source',
-        'author'       => 'Shakespeare',
+    'metadata'     => [
+        'description' => 'A New Description!',
+        'sources'     => 'Source Source',
+        'author'      => 'Shakespeare',
     ],
     'instance'     => [
         'onset'             => 1.222,
@@ -116,14 +116,14 @@ $values1 = [
 
 //Test updating an existing annotation
 $values2 = [
-    'instance_id' => 1,
+    'instance_id'  => 1,
     'parameter_id' => 1,
-    'metadata' => [
+    'metadata'     => [
         'description' => '',
         'sources'     => '',
         'author'      => '',
     ],
-    'instance'    => [
+    'instance'     => [
         'onset'       => 1.222,
         'duration'    => 3.444,
         'label_name'  => 'Fun Label',
@@ -137,12 +137,12 @@ $values2 = [
 //that doesn't have any annotation files
 //Note: empty all annotation DB tables before running with this array
 $values3 = [
-    'metadata' => [
+    'metadata'     => [
         'description' => 'New Description New File!',
         'sources'     => 'New File Source',
         'author'      => 'Shakespeare Again',
     ],
-    'instance'    => [
+    'instance'     => [
         'onset'             => 3.222,
         'duration'          => 5.000,
         'label_name'        => 'Another New Label',
@@ -151,7 +151,7 @@ $values3 = [
         'abs_time'          => null,
         'description'       => 'new instance description'
     ],
-    'instance_id' => 1,
+    'instance_id'  => 1,
     'parameter_id' => 1
 ];
 
