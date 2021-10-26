@@ -1,8 +1,16 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
-use LORIS\electrophysiology_browser\Model\ElectrophysioAnnotations;
+
+set_include_path(
+    get_include_path().":".
+    __DIR__."/../project/tools:".
+    __DIR__."/../php/tools:"
+);
+
+use \LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
+//require_once __DIR__ . "/../modules/electrophysiology_browser/php/models/electrophysioannotations.class.inc";
 
 
 /**
