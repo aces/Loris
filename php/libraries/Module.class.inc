@@ -14,6 +14,9 @@
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use \Psr\Log\LoggerAwareInterface;
+
 /**
  * The Module class encapsulates all details of a module which are not specific
  * to a certain page.
@@ -25,8 +28,10 @@ use \Psr\Http\Message\ResponseInterface;
  * @link     https://www.github.com/aces/Loris/
  */
 abstract class Module extends \LORIS\Router\PrefixRouter
-    implements RequestHandlerInterface
+    implements RequestHandlerInterface, LoggerAwareInterface
 {
+    use \Psr\Log\LoggerAwareTrait;
+
     const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
         . "server error. Please contact your project administrator for more "
         . "information.";
@@ -164,6 +169,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function __construct(string $name, string $moduledir)
     {
+        $config   = \NDB_Factory::singleton()->config();
+        $loglevel = $config->getLogSettings()->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
         parent::__construct(
             new \ArrayIterator(
                 [
@@ -246,6 +255,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         if ($this->isPublicModule() !== true) {
             if ($user instanceof \LORIS\AnonymousUser) {
+                $this->logger->debug(
+                    "Denied module access because AnonymousUser attempted to " .
+                    "access non-public module"
+                );
                 return false;
             }
         }
@@ -323,6 +336,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $this->logger->debug("Module handle function called");
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
             $path = $request->getURI()->getPath();
@@ -351,32 +365,23 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $user  = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
         $loris = $request->getAttribute("loris");
+
         try {
             $page = $this->loadPage($loris, $pagename);
-            // FIXME: Hack required for breadcrumbs. This should be removed,
-            // but some tests depend on it.
-            if ($this->getName() === $pagename) {
-                $_REQUEST['test_name'] = $pagename;
-            } else {
-                $_REQUEST['subtest'] = $pagename;
-            }
+        } catch(\NotFound $e) {
+            $this->logger->debug("Page $pagename not found");
+            return $resp->withStatus(404);
+        }
+        // FIXME: Hack required for breadcrumbs. This should be removed,
+        // but some tests depend on it.
+        if ($this->getName() === $pagename) {
+            $_REQUEST['test_name'] = $pagename;
+        } else {
+            $_REQUEST['subtest'] = $pagename;
+        }
 
-            $page->loadResources($user, $request);
-            if ($page->_hasAccess($user) !== true) {
-                return (new \LORIS\Middleware\PageDecorationMiddleware(
-                    $user
-                ))->process(
-                    $request,
-                    new \LORIS\Router\NoopResponder(
-                        new \LORIS\Http\Error(
-                            $request,
-                            403,
-                            "You do not have access to this page."
-                        )
-                    )
-                );
-            }
-        } catch (\NotFound $e) {
+        $page->loadResources($user, $request);
+        if ($page->_hasAccess($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -384,45 +389,12 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 new \LORIS\Router\NoopResponder(
                     new \LORIS\Http\Error(
                         $request,
-                        404,
-                        "File not found: " . $request->getURI()->__toString()
+                        403,
+                        "You do not have access to this page."
                     )
                 )
             );
-            /* The order of these catch statements matter and should go from
-             * most to least specific. Otherwise all Exceptions will be caught
-             * as their more generic parent class which reduces precision.
-             */
-        } catch (\DatabaseException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
-        } catch (\ConfigurationException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::CONFIGURATION_ERROR
-            );
-        } catch (\LorisException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
         }
-
         return $page->process($request, $page);
     }
 

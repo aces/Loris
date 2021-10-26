@@ -7,7 +7,7 @@
  *
  * @category Instrument
  * @package  TEMPLATE
- * @author   Stella Lee <slee.mcin@gmail.com>
+ * @author   Author Name
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/loris/
  */
@@ -17,7 +17,7 @@
  *
  * @category Instrument
  * @package  TEMPLATE
- * @author   Stella Lee <slee.mcin@gmail.com>
+ * @author   Author Name
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/loris/
  */
@@ -25,7 +25,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
 
     /**
-     * Sets up basic data such as the HTML_Quickform object, database references
+     * Sets up basic data.
      *
      * @param string $commentID the CommentID identifying the data to load
      * @param string $page      if a multipage form, the page to show
@@ -49,12 +49,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields =array("Date_taken");
-
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
         $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -69,7 +64,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     }
 
     /**
-     * Builds the HTML_Quickform object into a paged form
+     * Builds the object into a paginated form
      *
      * @return void
      * @access private
@@ -81,7 +76,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
         } else {
             $this->_main();
         }
-        // Defines the call back function for HTML Quickform to use in validation
+        // Defines the call back function to use in validation
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
@@ -126,5 +121,27 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
         //continue onto further pages, if needed.
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string|null
+     */
+    public function getFullName(): ?string
+    {
+        return "TEMPLATE TEST NAME";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    function getSubtestList(): array
+    {
+        $subtest = [
+            ['Name'=>'<TEST_NAME>_page1','Description'=>'Subtest One'],
+            ['Name'=>'<TEST_NAME>_page2','Description'=>'Subtest Two'],
+        ];
+        return $subtest;
+    }
 }
-?>

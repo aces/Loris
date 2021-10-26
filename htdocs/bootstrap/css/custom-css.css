@@ -496,7 +496,7 @@ div.navbar div.container div.navbar-brand {
     margin-right: 5px;
 }
 
-.btn-default {
+.btn-default:not(.disabled) {
     border-color: #246EB6;
     color: #246EB6;
     background-color: white;
@@ -533,7 +533,7 @@ div.navbar div.container div.navbar-brand {
     border-color: #246EB6;
 }
 
-a.btn.btn-primary {
+a.btn.btn-primary:not(.download, .split-nav) {
     color: #064785;
     border-color: transparent;
     background-color: white;
@@ -541,7 +541,7 @@ a.btn.btn-primary {
     transition: background-color 0.2s ease-in;
 }
 
-a.btn.btn-primary:hover {
+a.btn.btn-primary:hover:not(.download, .split-nav) {
   color: #E89A0C;
   border-color: transparent;
   background-color: white;

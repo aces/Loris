@@ -1,8 +1,30 @@
 <?php
+/**
+ * This file contains the NDB_BVL_Instrument_TEMPLATE
+ * class
+ *
+ * PHP Version 5
+ *
+ * @category Instrument
+ * @package  TEMPLATE
+ * @author   Author Name
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/loris/
+ */
+
+/**
+ * Creates the form elements for the Boston_Diagnostic_Aphasia_Exam instrument
+ *
+ * @category Instrument
+ * @package  TEMPLATE
+ * @author   Author Name
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/loris/
+ */
 class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -23,12 +45,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields=array("Date_taken");
-
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
         $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -42,7 +59,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the object into a paginated form
     *
     * @return void
     * @access private
@@ -57,7 +74,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
             $this->_main();
             break;
         }
-        //Defines the call back function for HTML Quickform to use when validating the form.
+        //Defines the call back function to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
     }
 
@@ -86,7 +103,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 
     }
 
-    function _saveValues($values)
+    function _saveValues($values) :void
     {
          $timepoint = TimePoint::singleton($this->getSessionID());
          $candidate = Candidate::singleton($timepoint->getCandID());
@@ -187,5 +204,26 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
        return true;
    }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string|null
+     */
+    public function getFullName(): ?string
+    {
+        return "UPLOADER TEMPLATE TEST NAME";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    function getSubtestList(): array
+    {
+        $subtest = [
+            ['Name'=>'<TEST_NAME>_page1','Description'=>'Subtest One'],
+        ];
+        return $subtest;
+    }
 }
-?>

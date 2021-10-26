@@ -124,7 +124,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode
@@ -338,6 +338,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
+        sleep(2);
         $URL =  $this->webDriver->executeScript("return window.location.href;");
         $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
@@ -351,6 +352,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
+        sleep(1);
         $this->safeClick(WebDriverBy::cssSelector($link));
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
