@@ -611,38 +611,38 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             true
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'array',
             gettype($data)
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'string',
             gettype($data['SubprojectID'])
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'string',
             gettype($data['Title'])
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'boolean',
             gettype($data['UseEDC'])
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'string',
             gettype($data['WindowDifference'])
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'integer',
             gettype($data['RecruitmentTarget']),
             json_encode($data)
         );
 
-        $this->assertEqual(
+        $this->assertEquals(
             'array',
             gettype($data['Visits'])
         );
