@@ -117,7 +117,7 @@ class Subproject extends Endpoint implements \LORIS\Middleware\ETagCalculator
             function ($carry, $item) {
                 // This is just changing the keys from visit_label to VisitLabel
                 // It should probably be delegated to a view object.
-                array_push($carry, ['VisitLabel' => $item['visit_label']]);
+                array_push($carry, ['VisitName' => $item->getName()]);
                 return $carry;
             },
             []

@@ -61,9 +61,9 @@ class Subproject implements \JsonSerializable
     }
 
     /**
-     * Gets the visit label for that subproject
+     * Gets the visit names for that subproject
      *
-     * @return array An array of string
+     * @return array An array of Visit object
      */
     public function getVisits(): array
     {
@@ -71,7 +71,7 @@ class Subproject implements \JsonSerializable
         $visitsData = $factory->database()->pselect(
             "
              SELECT
-               v.VisitName visit_label
+               v.VisitName name
              FROM visit v
              LEFT JOIN visit_project_subproject_rel vpsr
                ON (v.VisitID = vpsr.VisitID)
@@ -87,7 +87,12 @@ class Subproject implements \JsonSerializable
             ]
         );
 
-        return $visitsData;
+        return array_map(
+            function ($visit) {
+                return new \LORIS\Visit($visit['name']);
+            },
+            $visitsData
+        );
     }
 
     /**

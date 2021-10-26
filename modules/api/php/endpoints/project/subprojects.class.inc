@@ -130,9 +130,9 @@ class Subprojects extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return [
                     'SubprojectID'      => $subproject['subprojectId'],
                     'Title'             => $subproject['title'],
-                    'UseEDC'            => $subproject['useEDC'],
+                    'UseEDC'            => boolval($subproject['useEDC']),
                     'WindowDifference'  => $subproject['windowDifference'],
-                    'RecruitmentTarget' => $subproject['recruitmentTarget']
+                    'RecruitmentTarget' => intval($subproject['recruitmentTarget'])
                 ];
             },
             $this->_project->getSubprojects()

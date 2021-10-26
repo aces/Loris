@@ -138,7 +138,7 @@ components:
           items:
             type: object
             properties:
-              VisitLabel:
+              VisitName:
                 type: string
     VisitMetaFields:
       type: object

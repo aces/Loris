@@ -299,7 +299,7 @@ will return a JSON object of the form:
   "RecruitmentTarget": 1000,
   "Visits": [
     {
-      "VisitLabel": "V1"
+      "VisitName": "V1"
     },
     ...
   ]
