@@ -1,8 +1,11 @@
 #!/usr/bin/php
 <?php
+
 use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
+require_once __DIR__ . "/../modules/electrophysiology_browser/php/models/electrophysioannotations.class.inc";
+
 
 /**
  * Test that updating files works by changing data in DB
