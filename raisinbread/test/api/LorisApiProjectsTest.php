@@ -559,7 +559,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 
         $this->assertCount( 2, $data['Subprojects'], json_encode($data));
 
-        foreach ($subprojects as $subproject) {
+        foreach ($data['Subprojects'] as $subproject) {
             $this->assertSame(
                 gettype($subproject['SubprojectID']),
                 'string'
