@@ -5,7 +5,9 @@
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Site implements \LORIS\StudyEntities\SiteHaver
+class Site implements
+    \LORIS\StudyEntities\SiteHaver,
+    \LORIS\StudyEntities\AccessibleResource
 {
     var $_siteInfo;
 
@@ -122,6 +124,18 @@ class Site implements \LORIS\StudyEntities\SiteHaver
     function isStudySite(): bool
     {
         return ($this->_siteInfo['Study_site'] == 'Y');
+    }
+
+    /**
+     * Implements the AccessibleResource interface for Sites
+     *
+     * @param \User $user The User whose access is being checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+           return $user->hasCenter($this->getCenterID());
     }
 }
 
