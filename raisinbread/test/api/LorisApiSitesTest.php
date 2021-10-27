@@ -15,7 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiProjectsTest extends LorisApiAuthenticatedTest
+class LorisApiSitesTest extends LorisApiAuthenticatedTest
 {
     /**
      * Tests the HTTP GET request for the endpoint /sites
