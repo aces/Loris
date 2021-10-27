@@ -1136,3 +1136,30 @@ Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
+
+
+## 7.0 Sites API
+
+The Sites API list available sites for the requesting user.
+
+```
+GET /sites
+```
+
+Will return a list of sites in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
+
+```js
+{
+  "Sites" : [
+    {
+      "Name": "string",
+      "Alias": "string",
+      "MRI alias": "string",
+      "Study site": boolean
+    },
+    ...
+  ]
+}
+```
+
