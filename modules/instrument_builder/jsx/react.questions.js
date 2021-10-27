@@ -916,7 +916,7 @@ class AddElement extends Component {
       if (minDate > maxDate && min !== '' && max !== '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'End year append before start year';
+        temp.dateOption = 'End year happened before start year';
         this.setState({
           error: temp,
         });
