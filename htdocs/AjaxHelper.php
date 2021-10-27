@@ -31,6 +31,7 @@ set_include_path(
     __DIR__ . "/../project/libraries:" .
     __DIR__ . "/../php/libraries"
 );
+ini_set('session.use_strict_mode', '1');
 
 require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.

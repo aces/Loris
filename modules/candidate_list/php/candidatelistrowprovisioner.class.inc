@@ -73,6 +73,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
                 WHERE c.Active = 'Y'
+                AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",

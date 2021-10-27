@@ -33,16 +33,16 @@ class SNP
     /**
      * Constructor
      *
-     * @param array $list_of_sites    The list_of_sites for form element
+     * @param array $sites            The list_of_sites for form element
      * @param array $subprojects      The subprojects for form element
      * @param array $platform_options The platform_options for form element
      */
-    public function __construct($list_of_sites, $subprojects, $platform_options)
+    public function __construct($sites, $subprojects, $platform_options)
     {
         $this->_formElement = [
-            'Sites'        => $list_of_sites,
-            'SubprojectID' => $subprojects,
-            'Platform'     => $platform_options,
+            'Sites'       => $sites,
+            'Subprojects' => $subprojects,
+            'Platform'    => $platform_options,
         ];
     }
 

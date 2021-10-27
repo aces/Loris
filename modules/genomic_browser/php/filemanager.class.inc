@@ -2,7 +2,6 @@
 
 namespace LORIS\genomic_browser;
 
-use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use LORIS\genomic_browser\Provisioners\FilesProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -55,10 +54,7 @@ class FileManager extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['genomic_browser_view_allsites']
-        );
-        $provisioner = (new FilesProvisioner())->filter($filter);
+        $provisioner = new FilesProvisioner();
         $user        = $request->getAttribute('user');
 
         $data = (new \LORIS\Data\Table())

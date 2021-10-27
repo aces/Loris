@@ -63,6 +63,10 @@ class CouchDBMRIImporter
     function run()
     {
         $ScanTypes = $this->getScanTypes();
+        if (empty($scanTypes)) {
+            fwrite(STDERR, "No scan types found to import.\n");
+            exit(1);
+        }
         $this->updateDataDict($ScanTypes);
 
         $CandidateData = $this->getCandidateData($ScanTypes);
@@ -118,22 +122,99 @@ class CouchDBMRIImporter
 
         foreach ($s as $scan) {
             $scantype = $scan['ScanType'];
-            $Query   .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
-              ON (msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                    as `Selected_$scantype`, (SELECT fqc.QCStatus
-                    FROM files f
-                    LEFT JOIN files_qcstatus fqc USING(FileID)
-                    LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                     as `$scantype"."_QCStatus`";
+
+            //--------------------------------------------------------------------//
+            // Add to the query a subselect that will compute the selected file
+            // for the given session/modality. If more than one selected file
+            // exists, the subquery will return 'Multiple Selected files'.
+            // If no selected file exists, the subselect will return 'No selected
+            // file'. Otherwise the file path of the selected file is returned
+            // by the subselect.
+            //-------------------------------------------------------------------//
+            $Query .= ', '
+                    . '('
+                    . ' CASE ('.
+                        $this->_getQueryForSelectedFiles(
+                            'count(*)',
+                            $scantype
+                        )
+                    . ') '
+                    . '  WHEN 1 '
+                    . '    THEN (' .
+                        $this->_getQueryForSelectedFiles(
+                            'f.File',
+                            $scantype
+                        )
+                    . ') '
+                    . '  WHEN 0 '
+                    . '    THEN "No selected file" '
+                    . '  ELSE "Multiple selected files"'
+                    . ' END'
+                    . ") as `Selected_$scantype`";
+
+            //----------------------------------------------------------------------//
+            // Add to the query a subselect that will compute the Qc status of the
+            // selected file for the given session/modality. If more than one
+            // selected file exists, the subquery will return 'Unknown:
+            // multiple Selected files'. If no selected file exists, the subselect
+            // will return 'No selected file'. Otherwise the subselect will return
+            // the Qc status of the selected file (or 'No Qc on selected file'
+            // if the file has not been Qced)
+            //---------------------------------------------------------------------//
+            $Query .= ', '
+                    . '('
+                    . ' CASE (' .
+                            $this->_getQueryForSelectedFiles(
+                                'count(*)',
+                                $scantype
+                            )
+                    . ') '
+                    . '  WHEN 1 '
+                    . '    THEN ('
+                    .        $this->_getQueryForSelectedFiles(
+                        'COALESCE(fqs.QCStatus, "No QC on selected file")',
+                        $scantype,
+                        's.ID'
+                    )
+                    .     ') '
+                    . '  WHEN 0 '
+                    . '    THEN "No selected file" '
+                    . '  ELSE "Unknown: multiple selected files"'
+                    . ' END'
+                    . ") as `{$scantype}_QCStatus`";
         }
-        $Query .= " FROM session s JOIN candidate c USING (CandID)
-            LEFT JOIN feedback_mri_comments fmric
-            ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
-            WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
-                  AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
+
+        $Query .= " FROM session s"
+                . " JOIN candidate c USING (CandID)"
+                . " LEFT JOIN feedback_mri_comments fmric"
+                . " ON (fmric.SessionID=s.ID)"
+                . " LEFT JOIN feedback_mri_comment_types fmct"
+                . " ON (fmric.CommentTypeID=fmct.CommentTypeID"
+                . " AND fmct.CommentType='visit')"
+                . " WHERE c.Entity_type != 'Scanner'"
+                . " AND c.Active='Y' AND s.Active='Y' AND s.CenterID <> 1";
+
         return $Query;
+    }
+
+    /**
+     * Build a query to find specific information on the MRI files that were selected
+     * for a given session/scan type.
+     *
+     * @param string $whatToSelect the comma separated list of fields to select.
+     * @param string $scanType     name of the scan type.
+     *
+     * @return string built query.
+     */
+    function _getQueryForSelectedFiles($whatToSelect, $scanType)
+    {
+        return "SELECT $whatToSelect "
+             . 'FROM files f '
+             . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
+             . 'LEFT JOIN files_qcstatus fqs USING (FileID) '
+             . 'WHERE f.SessionID=s.ID '
+             . "AND msc.Scan_type='$scanType' "
+             . 'AND fqs.selected=\'true\'';
     }
 
     /**
@@ -413,29 +494,37 @@ class CouchDBMRIImporter
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
                 if (!empty($row['Selected_' . $scan_type])) {
-                    $fileID  = $this->SQLDB->pselectOne(
+                    $fileID = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE BINARY File=:fname",
                         ['fname' => $row['Selected_' . $scan_type]]
                     );
-                    $FileObj = new MRIFile($fileID);
-                    $mri_header_results = $this->_addMRIHeaderInfo(
-                        $FileObj,
-                        $scan_type
-                    );
-                    $row = array_merge(
-                        $row,
-                        $mri_header_results
-                    );
-                    // instantiate feedback mri object
-                    $mri_feedback     = new FeedbackMRI($fileID, $row['SessionID']);
-                    $current_feedback = $mri_feedback->getComments();
-                    $mri_qc_results   = $this->_addMRIFeedback(
-                        $current_feedback,
-                        $scan_type,
-                        $mri_feedback
-                    );
+                    if (!empty($fileID)) {
+                        $FileObj            = new MRIFile($fileID);
+                        $mri_header_results = $this->_addMRIHeaderInfo(
+                            $FileObj,
+                            $scan_type
+                        );
 
-                    $row = array_merge($row, $mri_qc_results);
+                        $row = array_merge(
+                            $row,
+                            $mri_header_results
+                        );
+
+                        // instantiate feedback mri object
+
+                        $mri_feedback     = new FeedbackMRI(
+                            $fileID,
+                            new \SessionID($row['SessionID'])
+                        );
+                        $current_feedback = $mri_feedback->getComments();
+                        $mri_qc_results   = $this->_addMRIFeedback(
+                            $current_feedback,
+                            $scan_type,
+                            $mri_feedback
+                        );
+
+                        $row = array_merge($row, $mri_qc_results);
+                    }
                 }
             }
         }
@@ -660,7 +749,7 @@ class CouchDBMRIImporter
     function _getFeedbackMRICommentTypes() : array
     {
         if (!$this->FeedbackMRICommentTypes) {
-            $feedbackMRI = new FeedbackMRI(1, "");
+            $feedbackMRI = new FeedbackMRI(1, null);
             $this->FeedbackMRICommentTypes = $feedbackMRI->getAllCommentTypes();
         }
 
@@ -676,7 +765,7 @@ class CouchDBMRIImporter
      */
     function _getPredefinedComments(int $commentTypeID) : array
     {
-        $feedbackMRI = new FeedbackMRI(1, "");
+        $feedbackMRI = new FeedbackMRI(1, null);
         return $feedbackMRI->getAllPredefinedComments($commentTypeID);
     }
 }

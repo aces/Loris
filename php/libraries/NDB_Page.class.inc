@@ -28,6 +28,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class NDB_Page implements RequestHandlerInterface
 {
+    use Psr\Log\LoggerAwareTrait;
+
     protected $lorisinstance;
     /**
      * The name of the test_name being accessed
@@ -141,6 +143,13 @@ class NDB_Page implements RequestHandlerInterface
         $this->defaults   = [];
 
         $this->template = $page;
+
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
     }
     /**
      * Safely sets a smarty template variable.
@@ -689,6 +698,7 @@ class NDB_Page implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+        $this->logger->debug("NDB_Page middleware called");
         $user = $request->getAttribute("user");
         if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
@@ -736,6 +746,8 @@ class NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $this->logger->debug("NDB_Page handle called");
+
         $this->setup();
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
@@ -762,6 +774,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function display()
     {
+        $this->logger->debug("Rendering page via display function");
         switch($this->format) {
         case 'json':
             return $this->toJSON();
