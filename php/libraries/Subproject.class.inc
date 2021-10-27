@@ -106,11 +106,11 @@ class Subproject implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "SubprojectID"       => $this->_subproject_id,
-            "Title"              => $this->_title,
-            "UseEDC"             => $this->_useEDC,
-            "WindowDifference"   => $this->_windowDifference,
-            "RecruitementTarget" => $this->_recruitmentTarget
+            "SubprojectID"      => $this->_subproject_id,
+            "Title"             => $this->_title,
+            "UseEDC"            => $this->_useEDC,
+            "WindowDifference"  => $this->_windowDifference,
+            "RecruitmentTarget" => $this->_recruitmentTarget
         ];
     }
 }
