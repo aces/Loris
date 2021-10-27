@@ -47,6 +47,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
 - Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
 - Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
 #### Candidate Parameters

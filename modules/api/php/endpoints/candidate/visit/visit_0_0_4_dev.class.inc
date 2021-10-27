@@ -17,6 +17,7 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
 use \LORIS\StudyEntities\Candidate\CandID;
 
+
 /**
  * A class for handling the /candidates/$candidate/$visit_label endpoint.
  *
@@ -26,8 +27,9 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
+
     /**
      * The requested Candidate
      *
@@ -41,6 +43,20 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * @var ?\Timepoint
      */
     private $_visit;
+
+    /**
+     * The visit centerID
+     *
+     * @var ?\CenterID
+     */
+    private $_centerID;
+
+    /**
+     * The visit Project
+     *
+     * @var ?\Project
+     */
+    private $_project;
 
     /**
      * Contructor
@@ -63,6 +79,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'GET',
+            'PATCH',
             'PUT',
         ];
     }
@@ -75,9 +92,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-         return [
-             'v0.0.3',
-         ];
+        return [
+            'v0.0.4-dev'
+        ];
     }
 
     /**
@@ -94,27 +111,25 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             if (!$this->_visit->isAccessibleBy($user)) {
                 return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
             }
-
         }
 
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
-            switch ($request->getMethod()) {
-            case 'GET':
-                return $this->_handleGET();
+            $method = $request->getMethod();
 
-            case 'PUT':
-                return $this->_handlePUT($request);
+            if (in_array($method, $this->allowedMethods())) {
+                $handle = '_handle'.$method;
+                return $this->$handle($request);
+            }
 
-            case 'OPTIONS':
+            if ($method === 'OPTIONS') {
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
-
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
             }
+
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
 
         if ($this->_visit === null) {
@@ -171,13 +186,81 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
-     * Handles a PUT request that creates or replace a candidate visit
+     * Validate a PUT request
      *
      * TODO: There is no way to validate the the visit_label in the url
      *       fits the json data of the request because it is removed from the
      *       pathparts in the calling class. The correct way to do it would be
      *       to pass a "light" timepoint class that contains the visit_label but
      *       no sessionid in the constructor.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ?ResponseInterface The outgoing PSR7 response
+     */
+    private function _validatePUT(
+        ServerRequestInterface $request
+    ): ?ResponseInterface {
+        $user = $request->getAttribute('user');
+        $data = json_decode((string) $request->getBody(), true) ?? [];
+
+        $requiredfields = [
+            'CandID',
+            'Visit',
+            'Site',
+            'Battery',
+            'Project',
+        ];
+
+        $diff = array_diff($requiredfields, array_keys($data));
+        if (!empty($diff)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Field(s) missing: ' . implode(', ', $diff)
+            );
+        }
+
+        try {
+            $this->_project = \NDB_Factory::singleton()->project($data['Project']);
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
+        if (strval($data['CandID']) !== strval($this->_candidate->getCandID())) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'The CandID field does not match this candidate'
+            );
+        }
+
+        if (!$this->_candidate->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "You can't modify that candidate"
+            );
+        }
+
+        $centerID = array_search($data['Site'], \Utility::getSiteList());
+
+        if ($centerID === false
+            || !in_array(
+                new \CenterID(strval($centerID)),
+                $user->getCenterIDs()
+            )
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "You can't create or modify candidates' visits for the site " .
+                $data['Site']
+            );
+        }
+
+        // Now that the validation is done, convert to an object.
+        $this->_centerID = new \CenterID(strval($centerID));
+
+        return null;
+    }
+
+    /**
+     * Handles a PUT request that creates or replace a candidate visit
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -189,55 +272,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $data      = json_decode((string) $request->getBody(), true);
         $visitinfo = $data ?? [];
 
-        $requiredfields = [
-            'CandID',
-            'Visit',
-            'Site',
-            'Battery',
-            'Project',
-        ];
-        $diff           = array_diff($requiredfields, array_keys($visitinfo));
-
-        if (!empty($diff)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Field(s) missing: ' . implode(', ', $diff)
-            );
+        $response = $this->_validatePUT($request);
+        if ($response !== null) {
+            return $response;
         }
-
-        try {
-            $project = \NDB_Factory::singleton()->project($visitinfo['Project']);
-        } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
-            );
-        }
-
-        if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID does not match this candidate'
-            );
-        }
-
-        if (!$this->_candidate->isAccessibleBy($user)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify that candidate"
-            );
-        }
-
-        $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
-
-        if ($centerid === false
-            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
-        ) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify candidates visit for the site " .
-                $centerid
-            );
-        }
-
-        // \Utility::getSiteList key was a string. Now that the
-        // validation is done, convert to an object.
-        $centerid = new \CenterID("$centerid");
 
         $subprojectid = array_search(
             $visitinfo['Battery'],
@@ -254,6 +292,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $timepoint = \NDB_Factory::singleton()->timepoint(
                 new \SessionID(strval($sessionid))
             );
+
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     'This visit is already started'
@@ -265,7 +304,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
             $timepoint->setData(
                 [
-                    'CenterID'        => $centerid,
+                    'CenterID'        => $this->_centerID,
                     'Visit_label'     => $visitinfo['Visit'],
                     'SubprojectID'    => $subprojectid,
                     'Active'          => 'Y',
@@ -274,7 +313,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     'UserID'          => $username,
                     'Date_registered' => $today,
                     'Testdate'        => $today,
-                    'ProjectID'       => $project->getId(),
+                    'ProjectID'       => $this->_project->getId(),
                 ]
             );
 
@@ -300,14 +339,107 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_candidate,
             $subprojectid,
             $visitinfo['Visit'],
-            \Site::singleton($centerid),
-            $project
+            \Site::singleton($this->_centerID),
+            $this->_project
         );
 
         $link = '/' . $request->getUri()->getPath();
         return (new \LORIS\Http\Response())
             ->withStatus(201)
             ->withHeader('Content-Location', $link);
+    }
+
+    /**
+     * Handles a PATCH request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePATCH(
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (is_null($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'The request is not a valid json object'
+            );
+        }
+
+        if (is_null($this->_visit)) {
+            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+        }
+
+        // a PATCH request should contain the same mandatory fields as a PUT request.
+        $response = $this->_validatePUT($request);
+        if ($response !== null) {
+            return $response;
+        }
+
+        if ($data['Visit'] !== $this->_visit->getVisitLabel()) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'The Visit field does not match this visit'
+            );
+        }
+
+        if ($this->_visit->getCurrentStage() !== 'Not Started') {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                "This visit is already started"
+            );
+        }
+
+        try {
+            $date = new \DateTime($data['Stages']['Visit']['Date'] ?? 0);
+        } catch (\Exception $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Stages.Visit.Date is invalid or missing'
+            );
+        }
+        // TODO :: Check for min and max year
+
+        $status = $data['Stages']['Visit']['Status'] ?? '';
+        if ($status != 'In Progress') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Stages.Visit.Status invalid or missing'
+            );
+        }
+
+        $newStage = $this->_visit->getNextStage();
+
+        $this->_visit->startStage($newStage);
+
+        // set the date for the new stage
+        $this->_visit->setData(["Date_$newStage" => $date->format('Y-m-d')]);
+
+        // TODO :: Add support for scan done
+
+        // create a new battery object && new battery
+        $candidate  = \Candidate::singleton($this->_visit->getCandID());
+        $visitLabel = $this->_visit->getVisitLabel();
+
+        // First visit ?
+        $firstVisit = false;
+        try {
+            $firstVisit = ($candidate->getFirstVisit() == $visitLabel);
+        } catch (\LorisException $e) {
+        }
+
+        $battery = new \NDB_BVL_Battery;
+        // select a specific time point (sessionID) for the battery
+        $battery->selectBattery($this->_visit->getSessionID());
+
+        // add instruments to the time point
+        $battery->createBattery(
+            $request->getAttribute("loris"),
+            $this->_visit->getSubprojectID(),
+            $newStage,
+            $this->_visit->getVisitLabel(),
+            $this->_visit->getCenterID(),
+            $firstVisit
+        );
+
+        return new \LORIS\Http\Response\JSON\NoContent();
     }
 
     /**
