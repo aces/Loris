@@ -115,19 +115,10 @@ components:
     ProjectSubproject:
       type: object
       properties:
-        SubprojectID:
-          type: string
         Title:
           type: string
         UseEDC:
           type: boolean
-        WindowDifference:
-          type: string
-          enum:
-            - 'optimal'
-            - 'battery'
-        RecruitmentTarget:
-          type: integer
         Visits:
           type: array
           items:

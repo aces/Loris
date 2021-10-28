@@ -268,16 +268,15 @@ will return a JSON object of the form:
 GET /projects/$ProjectName/subprojects
 ```
 
-will return a JSON object of the form:
+This endpoints returns a list of subproject title for a given project. Details about the subproject can be accessed using the provided link.
+
+It will return a JSON object of the form:
 ```js
 {
   "Subprojects": [
     {
-      "SubprojectID": "1",
       "Title": "Fresh",
-      "UseEDC": true,
-      "WindowDifference": "battery",
-      "RecruitmentTarget": 10000
+      "Link": "/projects/{project}/subprojects/{title}"
     },
     ...
   ]
@@ -289,14 +288,13 @@ will return a JSON object of the form:
 GET /projects/$ProjectName/subprojects/SubprojectTitle
 ```
 
+This endpoint provides details about a given subproject. It contains a Visits property that list available VisitNames for that subproject.
+
 will return a JSON object of the form:
 ```js
 {
-  "SubprojectID": "1",
   "Title": "Fresh",
   "UseEDC": true,
-  "WindowDifference": "battery",
-  "RecruitmentTarget": 1000,
   "Visits": [
     {
       "VisitName": "V1"

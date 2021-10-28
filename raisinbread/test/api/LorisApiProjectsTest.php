@@ -557,34 +557,23 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'array'
         );
 
-        $this->assertCount( 2, $data['Subprojects'], json_encode($data));
+        $this->assertCount(2, $data['Subprojects'], json_encode($data));
 
         foreach ($data['Subprojects'] as $subproject) {
-            $this->assertSame(
-                gettype($subproject['SubprojectID']),
-                'string'
-            );
             $this->assertSame(
                 gettype($subproject['Title']),
                 'string'
             );
             $this->assertSame(
-                gettype($subproject['UseEDC']),
-                'boolean'
-            );
-            $this->assertSame(
-                gettype($subproject['WindowDifference']),
+                gettype($subproject['Link']),
                 'string'
-            );
-            $this->assertSame(
-                gettype($subproject['RecruitmentTarget']),
-                'integer'
             );
         }
     }
 
     /**
-     * Tests the HTTP GET request for the endpoint /projects/{project}/subprojects/{subproject}
+     * Tests the HTTP GET request for the endpoint
+     * /projects/{project}/subprojects/{subproject}
      *
      * @return void
      */
@@ -618,28 +607,12 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 
         $this->assertEquals(
             'string',
-            gettype($data['SubprojectID'])
-        );
-
-        $this->assertEquals(
-            'string',
             gettype($data['Title'])
         );
 
         $this->assertEquals(
             'boolean',
             gettype($data['UseEDC'])
-        );
-
-        $this->assertEquals(
-            'string',
-            gettype($data['WindowDifference'])
-        );
-
-        $this->assertEquals(
-            'integer',
-            gettype($data['RecruitmentTarget']),
-            json_encode($data)
         );
 
         $this->assertEquals(

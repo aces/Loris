@@ -111,7 +111,10 @@ class Subproject extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_cache;
         }
 
-        $data   = json_decode(json_encode($this->_subproject), true);
+        $data = json_decode(json_encode($this->_subproject), true);
+        unset($data['SubprojectID']);
+        unset($data['WindowDifference']);
+        unset($data['RecruitmentTarget']);
         $visits = array_reduce(
             $this->_subproject->getVisits(),
             function ($carry, $item) {
