@@ -239,7 +239,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             "/instruments/testtest/?commentID=11111111111111111"
             . "&sessionID=999999&candID=900000"
         );
-       sleep(1);
+        sleep(1);
     }
 }
 
