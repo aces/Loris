@@ -16,6 +16,7 @@ changes in the following format: PR #1234***
 - Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
+- New data dictionary framework and module (#6936)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -114,6 +115,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
+- There is a new abstract "getDataDictionary" function in the instrument class for the new data dictionary framework. This is already implemented for LINST instruments, and existing instruments using LorisForm can use the `\LorisFormDictionaryImpl` to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
 
 ### Notes For Developers
 - Eslint warnings cleanup (Various PRs)
