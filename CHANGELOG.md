@@ -99,10 +99,13 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Fix fatal errors in delete_candidate.php tool. (PR #6805, #7275)
 - Fix fatal errors in fix_candidate_age.php (PR #7546)
 - New tool generate_candidate_externalids.php to fill external IDs for all candidates where a NULL value is found. (PR #7095)
+- New tool `populate_visits.php` to backpopulate visits from the `config.xml`, `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+- Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
 
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 - Removal of the violated_scans_edit permission (PR #6747)
+- Removal for the need of the `VisitLabel` section of the `config.xml` file. All Visit configurations and their association to projects are now in the database (#7663 & #7729)
 
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
@@ -110,6 +113,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deprecation of `begintable` and `endtable` elements in LINST instruments
 - Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
 
 ### Notes For Developers
 - Eslint warnings cleanup (Various PRs)
