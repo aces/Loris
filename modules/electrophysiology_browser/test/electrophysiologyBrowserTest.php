@@ -347,7 +347,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testEEGBrowserSortableByColumn()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/?");
-
+        sleep(1);
         //Test PSCID Header
         $this->safeClick(
             WebDriverBy::cssSelector(self::$PSCIDHeader)
