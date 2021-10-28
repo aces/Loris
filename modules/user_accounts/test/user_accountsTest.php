@@ -305,7 +305,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit();
-
+        sleep(1);
         // Reload
         $this->_accessUser($userId);
 
