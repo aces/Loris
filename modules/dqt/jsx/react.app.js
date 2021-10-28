@@ -86,7 +86,6 @@ class DataQueryApp extends Component {
         User: [],
         Shared: [],
       },
-      AllSessions: [],
       Visits: [],
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
@@ -271,7 +270,6 @@ class DataQueryApp extends Component {
                 ...prevState.filter,
                 session: data.sessions,
               },
-              AllSessions: data.sessions,
             };
           }, () => {
             return callback(true);
@@ -652,7 +650,7 @@ class DataQueryApp extends Component {
           type: 'rule',
         },
       ];
-      filterState.session = this.state.AllSessions;
+      filterState.session = this.state.filter.session;
     }
     this.setState({
       fields: fieldsList,
@@ -811,9 +809,6 @@ class DataQueryApp extends Component {
     if (this.state.filter.children.length > 0) {
       // If filter exists return filter sessions
       return this.state.filter.session;
-    } else {
-      // Else return all sessions
-      return this.state.AllSessions;
     }
   }
 
@@ -1138,9 +1133,7 @@ class DataQueryApp extends Component {
    */
   updateFilter(filter) {
     if (filter.children.length === 0) {
-      filter.session = this.props.AllSessions;
-    } else {
-      filter.session = this.state.AllSessions;
+      filter.session = this.state.filter.session;
     }
     this.setState({filter});
   }
@@ -1416,7 +1409,7 @@ class DataQueryApp extends Component {
             Active={this.state.ActiveTab === 'ViewData'}
             Fields={this.state.fields}
             Criteria={this.state.criteria}
-            AllSessions={this.state.AllSessions}
+            AllSessions={this.state.filter.session}
             filter={this.state.filter}
             Sessions={this.getSessions()}
             Data={this.state.rowData.rowdata}
@@ -1513,7 +1506,6 @@ DataQueryApp.propTypes = {
   baseURL: PropTypes.string,
   title: PropTypes.string,
   SavedQueries: PropTypes.object,
-  AllSessions: PropTypes.array,
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
@@ -1524,7 +1516,6 @@ DataQueryApp.defaultProps = {
     User: [],
     Shared: [],
   },
-  AllSessions: [],
   categories: [],
   Visits: [],
   UpdatedTime: 'Fetching when data was last updated information...',
