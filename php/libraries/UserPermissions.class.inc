@@ -317,7 +317,7 @@ class UserPermissions
         // Module Long Name: action description
         foreach ($results as $key=>$perm) {
             $newDesc = '';
-            if (!empty($perm['moduleID'])) {
+            if (!empty($perm['moduleID']) && !empty($modules[$perm['moduleID']])) {
                 $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
             }
             $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
