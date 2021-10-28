@@ -103,20 +103,15 @@ components:
         Subprojects:
           type: array
           items:
-            $ref: '#/components/schemas/Subproject'
-    Subproject:
+            $ref: '#/components/schemas/SubprojectItem'
+    SubprojectItem:
       type: object
       properties:
-        SubprojectID:
-          type: string
         Title:
           type: string
-        UseEDC:
-          type: boolean
-        WindowDifference:
+        Link:
           type: string
-        RecruitmentTarget:
-          type: integer
+          description: url to details of that subproject
     ProjectSubproject:
       type: object
       properties:
@@ -138,7 +133,7 @@ components:
           items:
             type: object
             properties:
-              VisitName:
+              VisitLabel:
                 type: string
     VisitMetaFields:
       type: object
