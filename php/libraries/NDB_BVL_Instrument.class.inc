@@ -437,7 +437,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print  "$this->testName instrument has error running scoring algorithm";
+                print  "An error occurred while running the scoring algorithm of instrument $this->testName.";
             }
         }
     }
