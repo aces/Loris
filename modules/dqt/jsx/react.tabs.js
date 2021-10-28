@@ -10,7 +10,6 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-import DataRequest from './components/datarequest';
 import DataTable from './components/table';
 import swal from 'sweetalert2';
 
@@ -525,24 +524,6 @@ class ViewDataTabPane extends Component {
             &nbsp;Visualized Data
           </button>
         </div>
-
-        <div className='flex-row-item'>
-          <button
-            onClick={() => {
-              this.setState({dataRequestPrompt: true});
-            }}
-            className='action-btn request-data'
-          >
-            <span className='glyphicon glyphicon-list-alt'/>
-            &nbsp;Controlled Data Request
-          </button>
-        </div>
-        <DataRequest
-          show={this.state.dataRequestPrompt}
-          onClose={() => {
-            this.setState({dataRequestPrompt: false});
-          }}
-        />
 
         <div className='flex-row-item'>
           <div style={{

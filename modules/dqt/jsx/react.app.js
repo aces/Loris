@@ -16,7 +16,6 @@ import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
-import DataRequest from './components/datarequest';
 
 /**
  * DataQueryApp component
@@ -1338,12 +1337,6 @@ class DataQueryApp extends Component {
               >
                 Controlled Data Request
               </button>
-              <DataRequest
-                show={this.state.dataRequestPrompt}
-                onClose={() => {
-                  this.setState({dataRequestPrompt: false});
-                }}
-              />
             </div>
           </>
         )}
