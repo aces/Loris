@@ -1,11 +1,6 @@
 <?php declare(strict_types=1);
 namespace LORIS\new_profile;
 
-use LORIS\StudyEntities\Candidate\Sex;
-
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
-
 /**
  * New_profile module. This class handles the creation of new candidates from
  * the front-end of LORIS.
@@ -15,9 +10,6 @@ use \Psr\Http\Message\ResponseInterface;
 class New_Profile extends \NDB_Form
 {
     public $skipTemplate = true;
-    private $_candID;
-    private $_pscid;
-    private $_error;
 
     /**
      * Determines whether a user can access the page. The access to tied to
@@ -91,8 +83,6 @@ class New_Profile extends \NDB_Form
             'site'      => $site,
             'project'   => $project,
         ];
-
-        $this->form->addFormRule([&$this, '_validateNewCandidate']);
     }
 
     /**
