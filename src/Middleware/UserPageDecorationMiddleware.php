@@ -138,7 +138,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
         $page = $request->getAttribute("pageclass");
-
+        $bvl_module = \Database::singleton()->pselectone(
+            "SELECT Name FROM modules WHERE Active='Y' and Name='bvl_feedback'",
+            []
+        );
         if ($page !== null
             && method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
@@ -153,10 +156,11 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $candID,
                 $sessionID
             );
-
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
+            if ($bvl_module) {
+                $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
                 $this->PageName
-            );
+                );
+            }
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
