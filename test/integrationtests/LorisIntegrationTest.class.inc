@@ -719,6 +719,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
         $this->safeClick(WebDriverBy::cssSelector("$btn"));
+        sleep(1);
     }
 
     /**
