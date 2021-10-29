@@ -26,7 +26,6 @@ class Subproject implements \JsonSerializable
     private $_subproject_id;
     private $_project_id;
     private $_title;
-    private $_useEDC;
     private $_windowDifference;
     private $_recruitmentTarget;
 
@@ -36,7 +35,6 @@ class Subproject implements \JsonSerializable
      * @param string     $id                The subproject id
      * @param \ProjectID $project_id        the associated project id
      * @param string     $title             This title
-     * @param ?string    $useEDC            useEDC Either "0", "1" or null
      * @param ?string    $windowDifference  Value from the database
      * @param ?string    $recruitmentTarget A numeric string or null
      */
@@ -44,16 +42,12 @@ class Subproject implements \JsonSerializable
         string $id,
         \ProjectID $project_id,
         string $title,
-        ?string $useEDC = null,
         ?string $windowDifference = null,
         ?string $recruitmentTarget = null
     ) {
-        $this->_subproject_id = $id;
-        $this->_project_id    = $project_id;
-        $this->_title         = $title;
-        if (!is_null($useEDC)) {
-            $this->_useEDC = boolval($useEDC);
-        }
+        $this->_subproject_id    = $id;
+        $this->_project_id       = $project_id;
+        $this->_title            = $title;
         $this->_windowDifference = $windowDifference;
         if (!is_null($recruitmentTarget)) {
             $this->_recruitmentTarget = intval($recruitmentTarget);
@@ -108,7 +102,6 @@ class Subproject implements \JsonSerializable
         return [
             "SubprojectID"      => $this->_subproject_id,
             "Title"             => $this->_title,
-            "UseEDC"            => $this->_useEDC,
             "WindowDifference"  => $this->_windowDifference,
             "RecruitmentTarget" => $this->_recruitmentTarget
         ];

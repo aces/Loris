@@ -368,7 +368,6 @@ class Project implements \JsonSerializable, AccessibleResource
             SELECT
               sp.subprojectId,
               sp.title,
-              sp.useEDC,
               sp.windowDifference,
               sp.recruitmentTarget
             FROM
@@ -414,7 +413,6 @@ class Project implements \JsonSerializable, AccessibleResource
             $subproject['subprojectId'],
             $this->_projectId,
             $subproject['title'],
-            $subproject['useEDC'],
             $subproject['windowDifference'],
             $subproject['recruitmentTarget']
         );

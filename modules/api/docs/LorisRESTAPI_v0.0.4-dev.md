@@ -294,7 +294,6 @@ will return a JSON object of the form:
 ```js
 {
   "Title": "Fresh",
-  "UseEDC": true,
   "Visits": [
     {
       "VisitName": "V1"

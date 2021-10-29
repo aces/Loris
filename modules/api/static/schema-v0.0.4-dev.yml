@@ -117,8 +117,6 @@ components:
       properties:
         Title:
           type: string
-        UseEDC:
-          type: boolean
         Visits:
           type: array
           items:
