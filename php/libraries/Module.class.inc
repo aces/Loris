@@ -236,7 +236,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * @return bool False. Subclasses must override this function in the case
      *                  that they should be publicly available.
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         return false;
     }
