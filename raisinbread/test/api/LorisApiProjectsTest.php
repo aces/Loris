@@ -611,11 +611,6 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         );
 
         $this->assertEquals(
-            'boolean',
-            gettype($data['UseEDC'])
-        );
-
-        $this->assertEquals(
             'array',
             gettype($data['Visits'])
         );
