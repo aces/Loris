@@ -32,7 +32,8 @@
   - Select the right Visit-label
   - Check that 'Clear Form' removes values from the filters and resets the table
   - Verify that filters work as expected - inspect the results table
-6. Operation of resolving conflict and saving data should work as follows:[Automation Testing]
+  - Check other filters manually [Manual Testing]
+6. Operation of resolving conflict and saving data should work as follows:[Manual Testing]
  - On Unresolved conflicts tab, set value of dropdown lists to accepted value
  Ensure the changes take effect:
  - Check database to verify that submitted value have been properly saved
@@ -44,23 +45,23 @@
 
 ## Dashboard Widget
 
-1. Go to the LORIS dashboard. 
+1. Go to the LORIS dashboard. [Manual Testing]
  - Ensure that the "My Tasks" widget on the LORIS dashboard has a "Data entry conflicts"
    item
  - Toggle `access_all_profiles` user permission and verify the label changes between "Sites: All"
    and "Sites: User sites" and the number associated with the tasks is updated accordingly.
 2. Clicking on the entry in the task in the dashboard should navigate to the conflict resolver
-   module
+   module [Manual Testing]
 
 ## Candidate Profile Widget
 1. Go to the `candidate_profile` module through the "Candidate -> Access Profile (beta)" and
-   access a candidate with at least 1 conflict.
+   access a candidate with at least 1 conflict. [Manual Testing]
   - Ensure that there is an "Unresolved Conflicts" card if the user has the `conflict_resolver`
     permission
   - Ensure that the card does *not* appear (but no other cards are affected) after removing
     the `conflict_resolver` permission
 2. With the `conflict_resolver` permission, ensure that there is a bar graph of the number
-   of conflicts per instrument, grouped by visit.
+   of conflicts per instrument, grouped by visit.[Manual Testing]
   - Ensure that clicking a bar in the bar graph brings you to the conflict resolver module
     with the filters preset to filter for that instrument and visit
   - Ensure that clicking on an instrument in the legend takes you to the conflict resolver
