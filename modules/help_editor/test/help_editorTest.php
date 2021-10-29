@@ -72,7 +72,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function testHelpPageLoad()
     {
         $this->safeGet($this->url . "/help_editor/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Help Editor", $bodyText);
     }//end test_help_pageload()
