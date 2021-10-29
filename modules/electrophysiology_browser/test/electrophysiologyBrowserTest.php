@@ -548,6 +548,9 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testSessionsBreadcrumbLink()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->safeClick(WebDriverBy::cssSelector(self::$breadcrumbLink));
 
         $bodyText = $this->safeFindElement(
