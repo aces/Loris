@@ -42,17 +42,9 @@ class ResolvedFilterableDataTable extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    switch (column) {
-      case 'Correct Answer':
-        const value = (cell == 1) ? rowData['Value 1'] : rowData['Value 2'];
-        return (
-          <td>{value}</td>
-        );
-      default:
-        return (
-          <td>{cell}</td>
-        );
-    }
+    return (
+        <td>{cell}</td>
+    );
   }
   /**
    * Retrieve data from the provided URL and save it in state

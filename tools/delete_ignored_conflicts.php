@@ -48,7 +48,6 @@ $defaultFields = [
     'Testdate',
     'Window_Difference',
     'Candidate_Age',
-    'Data_entry_completion_status',
 ];
 
 $instruments         = [];

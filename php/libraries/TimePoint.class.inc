@@ -324,24 +324,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $isValid            = false;
-        foreach (\Utility::associativeToNumericArray($visitLabelSettings)
-            as $visitLabelSetting) {
-            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
-                $items = \Utility::associativeToNumericArray(
-                    $visitLabelSetting['labelSet']['item']
-                );
-                foreach ($items as $item) {
-                    if ($item['@']['value'] == $visitLabel) {
-                        $isValid = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if (!$isValid) {
+        // Check if visit label exists for this subproject
+        if (!array_key_exists(
+            $visitLabel,
+            \Utility::getVisitsForSubproject($subprojectID)
+        )
+        ) {
             throw new \LorisException(
                 'This visit label is not valid for this subproject.'
             );

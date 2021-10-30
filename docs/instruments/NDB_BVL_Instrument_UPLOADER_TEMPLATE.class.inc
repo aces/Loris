@@ -23,6 +23,8 @@
  */
 class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
+    use \LorisFormDictionaryImpl;
+
     /**
     * sets up basic data.
     *

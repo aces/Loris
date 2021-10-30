@@ -125,7 +125,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
             " CASE
-              WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
+              WHEN f.Required_elements_completed='N' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE

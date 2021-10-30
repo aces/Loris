@@ -1,11 +1,11 @@
 # Document Repository Test Plan
 
 1. User has access to document repository if they have one of the `document_repository_*` permissions or `superuser`.
-   [Automation Testing]
+   [Automation Testing (superuser permissions only)]
 2. Create a category and a sub category.
-   [Automation Testing]
+   [Manual Testing]
 3. Check that the comments for a category are displayed properly as a tooltip.
-   [Automation Testing]
+   [Manual Testing]
 4. Upload a file.
    [Manual Testing]
 5. User is able to delete a file if they have the "Delete files in Document Repository" permission or is the super user.
@@ -44,7 +44,7 @@
     permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
     in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
     Repository button takes you to the Document Repository page.
-    [Automate Test]
-18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Automate Test]
+    [Manual Test]
+18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Manual Test]
 19. Check that a 'New' notification is not labeled 'New' anymore after login in again. [Manual Test]
 

@@ -65,7 +65,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         // Setup variables
         $conflict       = []; // conflict messages.
-        $config         = \NDB_Config::singleton();
         $candidate      = \Candidate::singleton(new CandID($values['candID']));
         $allSubprojects = \Utility::getSubprojectList();
 
@@ -77,7 +76,8 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         // List of valid subprojects for a given project
-        $subprojList = $candidate->getValidSubprojects();
+        $subprojList    = $candidate->getValidSubprojects();
+        $allSubprojects = \Utility::getSubprojectList();
         if (empty($subprojList)) {
             $conflict['subprojectID'] = 'No subprojects have been
             defined for the project this candidate is affiliated with.
@@ -85,29 +85,14 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             add new subprojects and associate them with projects.';
         }
         $values['subproject'] = array_intersect_key(
-            \Utility::getSubprojectList(),
+            $allSubprojects,
             $candidate->getValidSubprojects()
         );
 
         // Retrieve visit labels.
-        $visit_options      = [];
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (
-            \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
-        ) {
-            if (!empty($values['subproject'])) {
-                $visitLabel   = \Utility::associativeToNumericArray($visitLabel)[0];
-                $labelOptions = [];
-                $items        = \Utility::associativeToNumericArray(
-                    $visitLabel['labelSet']['item']
-                );
-                foreach ($items as $item) {
-                    $item = \Utility::associativeToNumericArray($item)[0];
-                    $labelOptions[$item['@']['value']] = $item['#'];
-                }
-                $visit_options[$visitLabel['@']['subprojectID']]
-                    = array_filter($labelOptions);
-            }
+        $visit_options = [];
+        foreach ($allSubprojects as $sid=>$title) {
+            $visit_options[$sid] = \Utility::getVisitsForSubproject($sid);
         }
         $values['visit'] = $visit_options;
 

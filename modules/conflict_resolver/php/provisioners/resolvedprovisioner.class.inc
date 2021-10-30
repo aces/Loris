@@ -41,7 +41,11 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               conflicts_resolved.FieldName as question,
               conflicts_resolved.OldValue1 as value1,
               conflicts_resolved.OldValue2 as value2,
-              conflicts_resolved.NewValue  as correctanswer,
+              CASE
+                WHEN conflicts_resolved.NewValue = 1
+                    THEN conflicts_resolved.OldValue1
+                    ELSE conflicts_resolved.OldValue2
+                END AS correctanswer,
               conflicts_resolved.ResolutionTimestamp as resolutiontimestamp,
               conflicts_resolved.User1 as user1,
               conflicts_resolved.User2 as user2,

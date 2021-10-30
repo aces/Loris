@@ -6,8 +6,6 @@ CREATE TABLE `mri_parameter_form` (
                             `Examiner` varchar(255) default NULL,
 
                             `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-                            `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,

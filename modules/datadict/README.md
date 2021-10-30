@@ -10,7 +10,7 @@ LORIS data dictionary descriptions.
 The module displays and manages the data dictionary for fields
 already stored in the LORIS `parameter_type` table. This table is
 generally autopopulated and provides a dictionary for imaging headers
-(populated by the imaging pipeline) and behavioural instrument
+(populated by the imaging pipeline) and behavioural instruments
 (populated by the `lorisform_parser.php` script).
 
 It does not provide a way to enter new fields into the data dictionary,
@@ -47,5 +47,5 @@ the two tables, with `parameter_type_override` taking priority.
 This allows the `parameter_type` table itself to be regenerated
 when instruments change without losing the user modified values.
 
-The data query module uses the customized data dictionary descriptions
+The Data Query Tool module uses the customized data dictionary descriptions
 from this module.

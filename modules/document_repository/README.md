@@ -16,7 +16,7 @@ This module is used primarily by study coordinators/administrators who share stu
 ## Permissions
 
  A user that has "document_repository_view" permission can view files in Document Repository.
- A user that has "document_repository_edit" permission upload and edit files in Document Repository.
+ A user that has "document_repository_edit" permission can upload and edit files in Document Repository.
  A user that has "document_repository_delete" permission can delete files in Document Repository.
 
 ## Configurations
@@ -30,7 +30,7 @@ uploaded file system where new files will be written.
 
 ## Interactions with LORIS
 
-Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following event occurs:
+Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following events occurs:
 * Addition, deletion or modification of a file (by another user)
 * Addition of a category (by another user)
 

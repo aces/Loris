@@ -321,6 +321,36 @@ class Utility
     }
 
     /**
+     * Returns a list of visits associated with the supplied subproject.
+     * The visits are in an associative array format [VisitName=>VisitLabel]
+     *
+     * @param int $subprojectID ID of the subproject
+     *
+     * @return array list of visits for supplied subproject
+     *
+     * @note This function should be moved to a subproject class when it is created
+     */
+    static function getVisitsForSubproject(int $subprojectID): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $result = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT VisitName, VisitLabel
+            FROM visit v
+                JOIN visit_project_subproject_rel vpsr USING(VisitID)
+                JOIN project_subproject_rel psr USING(ProjectSubprojectRelID)
+                JOIN subproject s USING(SubprojectID)
+            WHERE SubprojectID = :sid
+            ORDER BY VisitLabel",
+            ["sid"=>$subprojectID],
+            "VisitName"
+        );
+
+        return $result;
+    }
+
+    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
