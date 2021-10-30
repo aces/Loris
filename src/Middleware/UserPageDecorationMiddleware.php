@@ -141,6 +141,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         if ($page !== null
             && method_exists($page, 'getFeedbackPanel')
+            && $loris->hasModule("bvl_feedback")
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
