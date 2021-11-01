@@ -302,13 +302,13 @@ class UserPermissions
         if (!$this->hasPermission('superuser')) {
             $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON (p.moduleID=m.ID)
+                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, m.Name, p.description";
             $results = $DB->pselect($query, ['UID' => $this->userID]);
         } else {
             $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON (p.moduleID=m.ID)";
+                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'";
             $results = $DB->pselect($query, []);
 
         }
@@ -317,7 +317,7 @@ class UserPermissions
         // Module Long Name: action description
         foreach ($results as $key=>$perm) {
             $newDesc = '';
-            if (!empty($perm['moduleID']) && !empty($modules[$perm['moduleID']])) {
+            if (!empty($perm['moduleID'])) {
                 $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
             }
             $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
