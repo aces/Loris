@@ -638,7 +638,7 @@ abstract class LorisIntegrationTest extends TestCase
         $webElement = $this->safeFindElement($by, $waitPeriod);
 
         return $this->webDriver->executeScript(
-            "return arguments[0].textcontent;",
+            "return arguments[0].textContent;",
             [$webElement]
         );
     }
