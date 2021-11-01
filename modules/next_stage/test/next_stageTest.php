@@ -58,7 +58,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#breadcrumbs")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
         $this->resetPermissions();
@@ -77,7 +77,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#breadcrumbs")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
             "You do not have access to this page.",
@@ -120,7 +120,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#breadcrumbs")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
             "You do not have access to this page.",
