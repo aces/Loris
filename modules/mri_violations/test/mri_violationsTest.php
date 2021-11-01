@@ -323,7 +323,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "/mri_violations/mri_protocol_violations/"
         );
         $value = "#bc2 > a:nth-child(3)";
-        $text = $this->safeTextContent(WebDriverBy::cssSelector($value));
+        $text  = $this->safeTextContent(WebDriverBy::cssSelector($value));
         $this->assertEquals("Mri Protocol Violations", $text);
     }
 
@@ -341,7 +341,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "/mri_violations/mri_protocol_check_violations/"
         );
         $value = "#bc2 > a:nth-child(3) > div";
-        $text = $this->safeTextContent(WebDriverBy::cssSelector($value));
+        $text  = $this->safeTextContent(WebDriverBy::cssSelector($value));
         $this->assertEquals("Mri Protocol Check Violations", $text);
     }
 
