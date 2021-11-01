@@ -139,7 +139,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDateError()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
