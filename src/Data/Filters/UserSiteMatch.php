@@ -45,7 +45,8 @@ class UserSiteMatch implements \LORIS\Data\Filter
             // If the Resource belongs to multiple CenterIDs, the user can
             // access the data if the user is part of any of those centers.
             foreach ($resource->getCenterIDs() as $site) {
-                if ($user->hasCenter(new \CenterID($site))) {
+                $center = new \CenterID($site);
+                if ($user->hasCenter($center)) {
                        return true;
                 }
             }
