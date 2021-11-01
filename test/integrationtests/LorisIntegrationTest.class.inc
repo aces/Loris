@@ -540,12 +540,32 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
+        $this->waitForElement($by, $waitPeriod);
+        return $this->webDriver->findElement($by);
+    }
+
+    /**
+     * Wrapper method for WebDriverWait to reduce boilerplate. It will
+     * It will sleep until the element is located on the page.
+     *
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws Facebook\WebDriver\Exception\NoSuchElementException
+     *          if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return void
+     */
+    function waitForElement($by, $waitPeriod=15)
+    {
         $wait = new WebDriverWait($this->webDriver, $waitPeriod, 500);
         $wait->until(
             WebDriverExpectedCondition::visibilityOfElementLocated($by)
         );
-        return $this->webDriver->findElement($by);
     }
+
 
     /**
      * Safely click on a page element, even if not yet visible. The click is done
@@ -600,6 +620,28 @@ abstract class LorisIntegrationTest extends TestCase
         }
     }
 
+    /**
+     * Gets the content of $by, after waiting for it to load on the
+     * page. If a maximum period of $waitPeriod passes, will throw
+     * an exception causing the test to fail.
+     *
+     * @param WebDriverBy $by         Criteria used to find the element
+     *                                on the page.
+     * @param int         $waitPeriod After this amount of seconds, the
+     *                                wait period finishes and an
+     *                                exception is thrown.
+     *
+     * @return string the textcontent of $by
+     */
+    function safeTextContent(WebDriverBy $by, $waitPeriod=15)
+    {
+        $webElement = $this->safeFindElement($by, $waitPeriod);
+
+        return $this->webDriver->executeScript(
+            "return arguments[0].textcontent;",
+            [$webElement]
+        );
+    }
     /**
      * Ensures that the module loads if and only if the user has the correct
      * permissions.

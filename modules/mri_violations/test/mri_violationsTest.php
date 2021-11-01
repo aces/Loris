@@ -322,12 +322,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_violations/"
         );
-        sleep(1);
         $value = "#bc2 > a:nth-child(3)";
-        $text  = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
-            $this->assertEquals("Mri Protocol Violations", $text);
+        $text = $this->safeTextContent(WebDriverBy::cssSelector($value));
+        $this->assertEquals("Mri Protocol Violations", $text);
     }
 
     /**
@@ -343,12 +340,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_check_violations/"
         );
-        sleep(1);
         $value = "#bc2 > a:nth-child(3) > div";
-        $text  = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
-            $this->assertEquals("Mri Protocol Check Violations", $text);
+        $text = $this->safeTextContent(WebDriverBy::cssSelector($value));
+        $this->assertEquals("Mri Protocol Check Violations", $text);
     }
 
     /**
@@ -543,15 +537,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
-        sleep(1);
+
         $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(10) > select";
         $savebtn          = "#mri_violations > div.pull-right > input:nth-child(1)";
+
+        $this->waitForElement(WebDriverBy::cssSelector($resolutionStatus));
         $this->webDriver->executescript(
             "document.querySelector('$resolutionStatus').value='other'"
         );
-        $this->webDriver->executescript(
-            "document.querySelector('$savebtn').click()"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($savebtn));
         $this->safeGet($this->url . "/mri_violations/resolved_violations/");
         sleep(1);
         $body = $this->webDriver->getPageSource();
@@ -670,7 +664,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
-        sleep(1);
+
+        $this->waitForElement(
+            WebDriverBy::cssSelector(
+                '#datatable > div > div.table-header.panel-heading > div'
+            )
+        );
         $bodyText = $this->webDriver->executescript(
             "return document.querySelector(
                     '#datatable > div > div.table-header.panel-heading > div')
@@ -690,6 +689,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/mri_violations/");
         foreach ($this->_loadingUI as $key => $value) {
+            $this->waitForElement(WebDriverBy::cssSelector($value));
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );

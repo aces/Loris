@@ -352,7 +352,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $link = self::$pscidLink;
-        sleep(1);
         $this->safeClick(WebDriverBy::cssSelector($link));
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

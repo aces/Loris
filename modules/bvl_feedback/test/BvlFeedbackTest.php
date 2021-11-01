@@ -14,6 +14,8 @@
 require_once __DIR__
     . "/../../../test/integrationtests/".
     "LorisIntegrationTest.class.inc";
+
+use Facebook\WebDriver\WebDriverBy;
 /**
  * Configuration module automated integration tests
  *
@@ -40,25 +42,25 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         // Candidate Profile
         $this->safeGet($this->url . "/300002/");
-        $this->webDriver->executescript(
-            "document.querySelector('#nav-right >".
-            " li:nth-child(1) > a > span').click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#nav-right > li:nth-child(1) > a > span"
+            )
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector".
-            "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
+        $text = $this->safeTextContent(
+            WebDriverBy::cssSelector(
+                "#bvl_feedback_menu > div.breadcrumb-panel > a"
+            )
         );
         $this->assertStringContainsString("Feedback for PSCID: ", $text);
         // Instrument List
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
-        $this->webDriver->executescript(
-            "document.querySelector('#nav-right > li:nth-child(1) > a > span').".
-            "click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#nav-right > li:nth-child(1) > a > span"
+            )
         );
-        $text = $this->webDriver->executescript(
-            "return document.querySelector".
-            "('#bvl_feedback_menu').textContent"
-        );
+        $text = $this->safeTextContent(WebDriverBy::id("bvl_feedback_menu"));
         $this->assertStringContainsString("Feedback for PSCID: ", $text);
         //Todo: Any instrument
 

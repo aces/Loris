@@ -12,7 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ . "/../../../test/integrationtests"
     . "/LorisIntegrationTestWithCandidate.class.inc";
 
@@ -76,33 +75,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better.'
         );
-    }
-
-    /**
-     * Create a timepoint with three parameters.
-     *
-     * @param string $canID      ID of candidate
-     * @param string $subproject text of subproject
-     * @param string $visitlabel text of visit label
-     *
-     * @return void
-     */
-    private function _createTimepoint($canID, $subproject, $visitlabel)
-    {
-        $this->safeGet(
-            $this->url . "/create_timepoint/?candID=" . $canID .
-            "&identifier=" .$canID
-        );
-        $select  = $this->safeFindElement(WebDriverBy::Name("#subproject"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
-        $this->safeFindElement(
-            WebDriverBy::Name("#visit")
-        )->sendKeys($visitlabel);
-        $this->safeFindElement(
-            WebDriverBy::Name(".col-sm-9 > .btn")
-        )->click();
-        sleep(1);
     }
 
 

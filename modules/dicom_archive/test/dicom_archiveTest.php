@@ -211,10 +211,13 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('$location').textContent"
         );
         $this->assertEquals('View Images', $text);
-        $this->webDriver->executescript(
-            "document.querySelector('$location').click()"
+        $this->safeClick(WebDriverBy::cssSelector($location));
+
+        $this->waitForElement(
+            WebDriverBy::cssSelector(
+                '#bc2>a:nth-child(3)>div'
+            )
         );
-        sleep(1);
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );

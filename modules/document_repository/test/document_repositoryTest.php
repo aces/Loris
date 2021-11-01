@@ -94,9 +94,10 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->markTestSkipped("This method isn't working properly on travis.");
         $this->safeGet($this->url . "/document_repository/");
+        $this->waitForElement(WebDriverBy::id("tab-upload"));
         $this->webDriver->executescript(
             "document.querySelector('#tab-upload').click()"
-        );sleep(300);
+        );
         $text = $this->webDriver->executescript(
             "return document.querySelector('#upload > div > div > form > div >".
             "div:nth-child(1) > h3').textContent"
@@ -150,7 +151,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(WebDriverBy::Id("commentsEdit"))
              ->sendKeys("This is a test comment!");
          $this->safeFindElement(WebDriverBy::Id("postEdit"))->click();
-         sleep(3);
 
         $this->safeFindElement(
             WebDriverBy::Name("File_name")
@@ -179,7 +179,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
-         sleep(3);
          $text = $this->safeFindElement(WebDriverBy::cssSelector("tbody"), 3000)
              ->getText();
          $this->assertEquals('', $text);
