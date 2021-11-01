@@ -302,8 +302,8 @@ class UserPermissions
         if (!$this->hasPermission('superuser')) {
             $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
-            WHERE up.userID = :UID
+                LEFT JOIN modules m ON p.moduleID=m.ID
+            WHERE up.userID = :UID and m.Active='Y'
                 ORDER BY p.categoryID, m.Name, p.description";
             $results = $DB->pselect($query, ['UID' => $this->userID]);
         } else {
