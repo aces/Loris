@@ -58,7 +58,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
         $this->resetPermissions();
@@ -72,12 +72,12 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString(
             "You do not have access to this page.",
@@ -100,7 +100,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load without permission
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -115,12 +115,12 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load with permission
         $this->setupPermissions(["data_entry"]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString(
             "You do not have access to this page.",
