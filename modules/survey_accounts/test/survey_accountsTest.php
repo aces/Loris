@@ -330,9 +330,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
+            $bodyText = $this->safeTextContent(WebDriverBy::cssSelector($table));
             $this->assertStringContainsString($records, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
@@ -343,16 +341,13 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
+            $bodyText = $this->safeTextContent(WebDriverBy::cssSelector($table));
             $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = self::$clearFilter;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->waitForElement(WebDriverBy::cssSelector($element));
         $inputText = $this->webDriver->executescript(
             "return document.querySelector('$element').value"
         );
