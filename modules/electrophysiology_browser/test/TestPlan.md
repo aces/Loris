@@ -23,13 +23,13 @@
 13. Test that if changes have been made to the session's annotations, the downloaded annotation files are correctly updated to match [Manual Testing]
 
 ### C. Visualization  
-13. Follow the [module README extra installation steps](https://github.com/aces/Loris/tree/main/modules/electrophysiology_browser#installation-requirements-to-use-the-visualization-features) 
+13. Follow the [module README extra installation steps](modules/electrophysiology_browser#installation-requirements-to-use-the-visualization-features) 
 and make sure the [Signal Viewer panel] displays correctly on the screen. (Documentation: see modules/electrophysiology_browser/jsx/react-series-data-viewer#user-manual )
 14. Delete modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js and revert the change made 
 to modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json to simulate an environement for which the extra installation steps have not been run yet. 
 Make sure `make dev` runs without failing, and that except the Signal Viewer panel, all the other components in the page display well. 
 15. Temporarily desactivate an entry in `physiological_parameter_file` 
-for a ParameterTypeID IN (SELECT ParameterTypeID from parameter_type WHERE Name = 'electrophyiology_chunked_dataset_path')
+for a ParameterTypeID IN (SELECT ParameterTypeID from parameter_type WHERE Name = 'electrophysiology_chunked_dataset_path')
 and a chosen PhysiologicalFileID to simulate an environment for which the visualization components are not loaded.
 Load the corresponding session page and make sure that except the Signal Viewer panel, the rest of the page displays well, either with or without the extra installation steps.
 
