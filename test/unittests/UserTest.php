@@ -184,13 +184,13 @@ class UserTest extends TestCase
 
     private $_moduleInfo = [
         0 => [
-            'ID'   => 2,
-            'Name' => 'candidate_list',
+            'ID'     => 2,
+            'Name'   => 'candidate_list',
             'Active' => 'Y',
         ],
         1 => [
-            'ID'   => 5,
-            'Name' => 'timepoint_list',
+            'ID'     => 5,
+            'Name'   => 'timepoint_list',
             'Active' => 'Y',
         ],
 
