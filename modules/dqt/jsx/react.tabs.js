@@ -10,7 +10,7 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-import DataTable from './components/table';
+const {jStat} = require('jstat');
 
 /**
  * Loading Component
@@ -208,11 +208,6 @@ class ViewDataTabPane extends Component {
     this.setState({
       runQueryClicked: true,
     });
-    console.log('runQuery clicked!');
-    console.log('this.props.Fields: ');
-    console.log(this.props.Fields);
-    console.log('this.props.Sessions: ');
-    console.log(this.props.Sessions);
     this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
@@ -488,11 +483,12 @@ class ViewDataTabPane extends Component {
     }
 
     const queryTable = this.state.runQueryClicked ? (
-      <DataTable
+      <StaticDataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>

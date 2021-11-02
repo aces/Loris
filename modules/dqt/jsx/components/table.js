@@ -47,10 +47,8 @@ class DataTable extends Component {
    * @return {boolean} update component if true.
    */
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.Data === this.props.Data && nextState === this.state) {
-      return false;
-    }
-    return true;
+    return !(this.props.DisableFilter && nextProps.Data === this.props.Data
+      && nextState === this.state);
   }
 
   /**
