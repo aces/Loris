@@ -59,7 +59,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/".
             "?candID=900000&identifier=900000&subprojectID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Create Time Point", $bodyText);
@@ -96,10 +96,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $select  = $this->safeFindElement(WebDriverBy::Name("#subproject"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("#visit")
         )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name(".col-sm-9 > .btn")
         )->click();
         sleep(1);
@@ -136,7 +136,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
 

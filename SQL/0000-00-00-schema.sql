@@ -275,6 +275,7 @@ CREATE TABLE `flag` (
   `Test_name` varchar(255) NOT NULL default '',
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
+  `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
@@ -2285,6 +2286,7 @@ CREATE TABLE `candidate_consent_history` (
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
+  `VisitLabel` VARCHAR(200) UNIQUE NOT NULL,
   CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

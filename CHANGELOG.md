@@ -11,7 +11,14 @@ changes in the following format: PR #1234***
 ## LORIS 24.0 (Release Date: ??)
 ### Core
 - New classes to describe a data dictionary (PR #6938)
+- Validation for DateElement (JS). (PR #7266)
+- Fix "Go to main page" broken link (PR #7258)
+- Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
+- Session Current_stage default value changed for Not Started (PR #7102)
+- Fix public pages with missing title (PR #7121)
+- New data dictionary framework and module (#6936)
 - The Data Query Tool (Beta) is no longer beta and replaces the previous version (PR #7561)
+
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
@@ -25,37 +32,102 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
+- Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+- Update validation to allow NULL Site (For All Sites issues) (#6526)
+- Fixing redirect and error reporting when creating a new issue (PR #7323)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
+- Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
+- Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+- Fix to prevent titles cut off (PR #6731)
 #### Conflict Resolver
 - Changes are now saved automatically, one by one. Once a conflict is resolved the cell that contains the input field will glow green. It is possible to change
  the resolved conflicts to a new value until the page is refreshed. [(PR #7558)](https://github.com/aces/Loris/pull/7558)
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### User Accounts
+- Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
+- Fix to allow a superuser to create new users with customizable permissions. (#6770)
+- Indicate required fields (#6617)
+#### New profile
+ - Fix fatal errors on submission. (PR #6822)
+#### Instrument Builder
+- Fix for error 'Max value must be larger than min value' when clicking 'Add Row'. (PR #6810)
+#### EEG Browser
+- Signal Visualization, Events and Electrode map (PR #7387)
+- Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+#### Media
+- Fix to display the file name when editing a file (PR #7381)
+#### Imaging Browser
+- Fix nullable type fatal error (PR #7336)
+#### Publication
+- Display all filterable columns in datatable (#7277)
+- Fix for file deletion (PR #7284)
+#### Behavioural feedback
+- Fix fatals thrown when submitting a feedback (PR #7036, #7063)
+#### Instrument list
+- Fix a fatal thrown when sending to DCC (PR #7063)
+#### Conflict Resolver
+- Change the display of multi select values from "value1{@}value2" to "value1, value2"
+ in the Correct Answer column of Unresolved and Resolved Conflicts. (PR #7239)
+#### Instrument
+- Fix to avoid select with required option in group fields to display as multiselect (PR #7254)
+- Fixes to insert JSON intrument (PR #7155)
+#### Create timepoint
+- Fix a reindexing of the languages array which caused a database insert error. (PR #7145)
+#### Login
+- Add option to toggle visibility on password input types. (PR #6210, #7043)
+#### Behavioural QC
+- Fix a fatal error if the datatable is filtered with All instrument (PR #6945)
+- Fix for the Instrument filter to keep track of the selected value (PR #6945)
+
+### Tools
+- Fix fatal errors in delete_candidate.php tool. (PR #6805, #7275)
+- Fix fatal errors in fix_candidate_age.php (PR #7546)
+- New tool generate_candidate_externalids.php to fill external IDs for all candidates where a NULL value is found. (PR #7095)
+- New tool `populate_visits.php` to backpopulate visits from the `config.xml`, `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+- Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
+
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
+- Removal of the violated_scans_edit permission (PR #6747)
+- Removal for the need of the `VisitLabel` section of the `config.xml` file. All Visit configurations and their association to projects are now in the database (#7663 & #7729)
+
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- The `Data_entry_completion_status` column of instrument tables has been migrated to its own column in flag, and renamed to `Required_elements_completed`. After script `Set_Required_elements_completed_flag.php` is run, projects will need to delete the `Data_entry_completion_status` column of instrument tables. This can be accomplished by running `Remove_Data_entry_completion_status_instr_column.php`, and then sourcing the patch generated by this script.
+- If `_setDataEntryCompletionStatus`, `_determineDataEntryCompletionStatus`, and/or `updateDataEntryCompletionStatus` are called in any overrides, make sure to replace all instances with their newly named counterparts, `_setRequiredElementsCompletedFlag`, `_determineRequiredElementsCompletedFlag`, `updateRequiredElementsCompletedFlag`
 - Deprecation of `begintable` and `endtable` elements in LINST instruments
 - Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
+- There is a new abstract "getDataDictionary" function in the instrument class for the new data dictionary framework. This is already implemented for LINST instruments, and existing instruments using LorisForm can use the `\LorisFormDictionaryImpl` trait to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
+
 ### Notes For Developers
-- *Add item here*
+- Eslint warnings cleanup (Various PRs)
+- JQuery cleanup (Various PRs)
+- PHPCS enabled for tools/ and test/ (Various PRs)
+- Auto fix PHPCS (npm run lintfix:php) (#6825)
+
+
 
 
 ## LORIS 23.0.0 (Release Date: 2020-06-12)
