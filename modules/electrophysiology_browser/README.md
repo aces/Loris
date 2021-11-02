@@ -41,30 +41,7 @@ electrode information, task event information, the actual recording) -- as well 
 
 ## Updating Derivative Files
 
-Derivative files are updated with new or edited annotations before downloading. 
-In order to keep all these files updated on your system, a script is provided under `tools/update_annotation_files.php` which will do this automatically. 
-Follow these instructions to setup a cron job to have this script run on a regular basis:
-
-In general, the syntax of the cron job command is as follows:   
-`crontab -e 1 2 3 4 5 /path/to/script`     
-where   
-```
-        1 2 3 4 5
-        | | | | |
-        | | | | ----- Day of week (0 - 7) (Sunday=0 or 7)
-        | | | ------- Month (1 - 12)
-        | | --------- Day of month (1 - 31)
-        | ----------- Hour (0 - 23)
-        ------------- Minute (0 - 59)
-```
-
-For example, this commmand will run the script on the first day of every month at midnight.     
-`crontab -e 01 00 1 * * /tools/update_annotation_files.php`     
-
-When the cron job runs, it will send an email to your local email account with the output of the command. 
-In order to disable this, append `>/dev/null 2>&1` to the above command. For example:
-
-`crontab -e 01 00 1 * * /tools/update_annotation_files.php >/dev/null 2>&1`
+New annotations or edits to existing annotations made through the browser must also be updated in the derivative files stored in the filesystem, before a user tries to download a derivative file package. To do this automatically, a script is provided under `tools/update_annotation_files.php`, and a cron job should be set up to execute it regularly, e.g. every evening. 
 
 ## Installation requirements to use the visualization features
 The visualization component requires Protocol Buffers v3.0.0 or higher.
