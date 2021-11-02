@@ -431,7 +431,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
         $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("#eegSessionView"))
             ->getText();
         $this->assertStringContainsString("Electrophysiology Browser", $bodyText);
     }
