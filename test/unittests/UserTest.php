@@ -1140,7 +1140,7 @@ class UserTest extends TestCase
                     'description' => "description 1",
                     'type'        => "category 1",
                     'action'      => "View",
-                    'moduleID'    => 2,
+                    'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
                 ],
                 2 => ['permID' => '3',
@@ -1148,7 +1148,7 @@ class UserTest extends TestCase
                     'description' => "description 2",
                     'type'        => "category 2",
                     'action'      => "Edit",
-                    'moduleID'    => 5,
+                    'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
                 ],
                 3 => ['permID' => '4',
@@ -1156,7 +1156,7 @@ class UserTest extends TestCase
                     'description' => 'description 3',
                     'type'        => null,
                     'action'      => 'View/Create',
-                    'moduleID'    => 5,
+                    'moduleID'    => '5',
                     'label'       => 'Timepoint List: View/Create description 3'
                 ]
             ]
