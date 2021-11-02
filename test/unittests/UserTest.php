@@ -185,12 +185,15 @@ class UserTest extends TestCase
     private $_moduleInfo = [
         0 => [
             'ID'   => 2,
-            'Name' => 'candidate_list'
+            'Name' => 'candidate_list',
+            'Active' => 'Y',
         ],
         1 => [
             'ID'   => 5,
-            'Name' => 'timepoint_list'
+            'Name' => 'timepoint_list',
+            'Active' => 'Y',
         ],
+
     ];
 
     private $_userPermInfo = [0 => ['permID' => 1,
@@ -1127,15 +1130,7 @@ class UserTest extends TestCase
         $this->assertEquals(
             $this->_user->getPermissionsVerbose(),
             [
-                0 => ['permID' => '1',
-                    'code'        => "superuser",
-                    'description' => "superuser description",
-                    'type'        => "superuser category",
-                    'action'      => null,
-                    'moduleID'    => null,
-                    'label'       => 'superuser description'
-                ],
-                1 => ['permID' => '2',
+                0 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
                     'type'        => "category 1",
@@ -1143,7 +1138,7 @@ class UserTest extends TestCase
                     'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
                 ],
-                2 => ['permID' => '3',
+                1 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
                     'type'        => "category 2",
@@ -1151,7 +1146,7 @@ class UserTest extends TestCase
                     'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
                 ],
-                3 => ['permID' => '4',
+                2 => ['permID' => '4',
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,
