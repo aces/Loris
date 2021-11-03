@@ -178,11 +178,6 @@ class CreateTimepoint extends React.Component {
     state.form.options.visit = state.storage.visit[
       state.form.value.subproject
       ];
-    if (state.form.value.subproject) {
-      state.form.value.visit = Object.keys(state.storage.visit[
-        state.form.value.subproject
-        ])[0];
-    }
     state.form.display.visit = true;
     this.setState(state);
   }
