@@ -39,9 +39,9 @@ class SitesRow implements DataInstance, SiteHaver
     public function jsonSerialize() : array
     {
         return [
-            'Name'       => $this->_name,
-            'Alias'      => $this->_alias,
-            'MRI alias'  => $this->_mrialias
+            'Name'      => $this->_name,
+            'Alias'     => $this->_alias,
+            'MRI alias' => $this->_mrialias
         ];
     }
 
