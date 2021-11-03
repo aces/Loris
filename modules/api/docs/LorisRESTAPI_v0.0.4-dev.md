@@ -1164,5 +1164,5 @@ request. The JSON returned is of the form:
 
 `Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
 
-* Note that only the `Name` property is unique accross all sites.
+* Note that only the `Name` property is unique across all sites.
 
