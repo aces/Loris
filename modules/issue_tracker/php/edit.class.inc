@@ -607,7 +607,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         $msg_data['url']         = $baseurl .
-            "/issue_tracker/issue/?issueID=" . $issueID;
+            "/issue_tracker/issue/" . $issueID;
         $msg_data['issueID']     = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
 
