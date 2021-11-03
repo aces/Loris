@@ -41,8 +41,7 @@ class SitesRow implements DataInstance, SiteHaver
         return [
             'Name'       => $this->_name,
             'Alias'      => $this->_alias,
-            'MRI alias'  => $this->_mrialias,
-            'Study site' => $this->_isstudysite == 'Y'
+            'MRI alias'  => $this->_mrialias
         ];
     }
 

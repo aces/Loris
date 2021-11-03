@@ -1155,11 +1155,14 @@ request. The JSON returned is of the form:
     {
       "Name": "string",
       "Alias": "string",
-      "MRI alias": "string",
-      "Study site": boolean
+      "MRI alias": "string"
     },
     ...
   ]
 }
 ```
+
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file nameing purposes. (e.g: PSCID generation, minc files naming convention, ...).
+
+* Note that only the `Name` property is unique accross all sites.
 

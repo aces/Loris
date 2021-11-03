@@ -76,11 +76,6 @@ class LorisApiSitesTest extends LorisApiAuthenticatedTest
                 gettype($site['MRI alias']),
                 json_encode($data)
             );
-            $this->assertEquals(
-                'boolean',
-                gettype($site['Study site']),
-                json_encode($data)
-            );
         }
     }
 }
