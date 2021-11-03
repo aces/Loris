@@ -52,7 +52,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -73,7 +73,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -94,7 +94,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(

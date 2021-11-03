@@ -289,20 +289,29 @@ class UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $query   = "SELECT
+        $query = "SELECT
                 p.permID,
                 p.code,
                 p.description,
                 pc.Description as type,
                 p.action,
                 p.moduleID
-            FROM permissions p
-                JOIN user_perm_rel up ON (p.permID=up.PermID)
+            FROM permissions p ";
+
+        //If not superuser, get the permissions that the user has
+        if (!$this->hasPermission('superuser')) {
+            $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID=m.ID)
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, m.Name, p.description";
-        $results = $DB->pselect($query, ['UID' => $this->userID]);
+            $results = $DB->pselect($query, ['UID' => $this->userID]);
+        } else {
+            $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+                LEFT JOIN modules m ON (p.moduleID=m.ID)";
+            $results = $DB->pselect($query, []);
+
+        }
         $modules = \Module::getActiveModulesIndexed($DB);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description

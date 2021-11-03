@@ -24,7 +24,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Instrument_List
@@ -123,8 +123,6 @@ class Instrument_List extends \NDB_Menu_Filter
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $this->candidate = $request->getAttribute("Candidate");
-        $this->timePoint = $request->getAttribute("timePoint");
         if ($this->candidate === null || $this->timePoint === null) {
             // This shouldn't happen, the module level router verifies that
             // the candidate exists before getting here.
@@ -188,19 +186,14 @@ class Instrument_List extends \NDB_Menu_Filter
         // set template data
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
+        $this->tpl_data['stage']     = \Utility::getStageUsingCandID(
+            new CandID(strval($this->tpl_data['candID']))
+        );
 
         // get behavioural battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $battery->selectBattery($this->timePoint->getSessionID());
-
-        $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
-            new CandID(strval($this->tpl_data['candID']))
-        );
-
-        // get the list of instruments
-        $listOfInstruments = $this->getBatteryInstrumentList(
-            $this->tpl_data['stage']
-        );
+        $listOfInstruments = $battery->getBatteryVerbose();
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -322,72 +315,6 @@ class Instrument_List extends \NDB_Menu_Filter
     }
 
     /**
-     * Gets an associative array of instruments which are members of the current
-     * battery for instrument list module
-     *
-     * @param string $stage Either 'visit' or 'screening' - determines
-     *                      whether to register only screening instruments
-     *                      or visit instruments
-     *
-     * @return array an associative array containing Test_name,
-     *         Full_name, Sub_group, CommentID
-     */
-    function getBatteryInstrumentList($stage=null)
-    {
-        $DB = \Database::singleton();
-
-        // assert that a battery has already been selected
-        if (is_null($this->timePoint)) {
-            throw new \Exception("No battery selected");
-        }
-
-        // craft the select query
-        $query = "SELECT DISTINCT f.Test_name,
-                    t.Full_name,
-                    f.CommentID,
-                    CONCAT('DDE_', f.CommentID) AS DDECommentID,
-                    ts.Subgroup_name as Sub_group,
-                    ts.group_order as Subgroup_order,
-                    t.isDirectEntry";
-        if (!is_null($stage)) {
-            $query .= ", b.instr_order as instrument_order";
-        }
-        $query  .= " FROM flag f
-            	JOIN test_names t ON (f.Test_name=t.Test_name)
-            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
-            	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = ['SID' => $this->timePoint->getSessionID()];
-
-        if (!is_null($stage)) {
-            $query .= "
-            	LEFT JOIN test_battery b
-       	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
-      	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL)
-       	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
-       	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
-        }
-        $query .= " WHERE f.SessionID=:SID
-            AND LEFT(f.CommentID, 3) != 'DDE'";
-
-        if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
-            $query .= " ORDER BY Subgroup_name";
-        } else {
-            $query .= " ORDER BY Subgroup_order";
-        }
-        if (!is_null($stage)) {
-            $query .= ", instrument_order";
-        } else {
-            $query .= ", Full_name";
-        }
-
-        // get the list of instruments
-        $rows = $DB->pselect($query, $qparams);
-
-        // return all the data selected
-        return $rows;
-    }
-
-    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -433,5 +360,39 @@ class Instrument_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+        $gets      = $request->getQueryParams();
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            $candidate = \Candidate::singleton(new CandID($attribute));
+        } else {
+            $candidate = \Candidate::singleton(new CandID($gets['candID']));
+        }
+
+        $attribute = $request->getAttribute("timePoint");
+        if ($attribute === null) {
+            $timePoint       = \TimePoint::singleton(
+                new \SessionID($gets['sessionID'])
+            );
+            $this->timePoint = $timePoint;
+        } else {
+            $this->timePoint = $attribute;
+        }
+
+        $this->candidate = $candidate;
+    }
+
 
 }

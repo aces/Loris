@@ -40,7 +40,12 @@ jobs:
 
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/7.4/${{ matrix.php }}/g" Dockerfile.test.php7
-      
+
+    - name: Install package dependencies
+      run: sudo apt-get install -y protobuf-compiler 
+           && cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+           && protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest

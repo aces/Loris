@@ -52,6 +52,10 @@ class NDB_PageTest extends TestCase
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
 
+        $factory = NDB_Factory::singleton();
+        $factory->setConfig($mockconfig);
+        $factory->setDatabase($mockdb);
+
         $this->_module = new NullModule("test_module");
         $this->_page   = new NDB_Page(
             new \LORIS\LorisInstance($mockdb, $mockconfig, []),

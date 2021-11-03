@@ -20,8 +20,8 @@
     [Manual Testing]
 6.  Under 'View Details' Check to make sure all the specific parameters are Populated
     [Manual Testing]
-7.  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if permission 
-    'Violated Scans: View all-sites Violated Scans' is granted
+7.  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if the
+    'MRI Violated Scans: View Violated Scans - All Sites' or 'MRI Violated Scans: View Violated Scans - Own Sites' is set.
     [Manual Testing]
 8.  Under 'View Details' Click on 'Show/Hide Series' and 'Show/Hide Files' to view a list of all DICOM Series/Files,
     respectively, for the given DICOM study
@@ -29,8 +29,8 @@
 9.  Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the PatientID does not match the
     regex set in the Configuration module under the 'Imaging Modules' submenu. Repeat the same operation for
     'Patient Name' [Manual Testing]
-10. Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
-    pages' or 'View own-site Imaging Browser pages' permission is set
+10. Click on 'View Images' to acess the Imaging-Browser for the given subject if 'Imaging Browser: View Imaging Scans - All Sites' or
+    'Imaging Browser: View Imaging Scans - Own Sites' permission is set, and the user has the corresponding project affiliation.
     [Manual Testing]
 11. Ensure that clicking on any row in the 'Archive Location' column triggers a download of the corresponding 
     archived DICOM study. Make sure that the copy of the file downloaded to

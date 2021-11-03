@@ -95,7 +95,13 @@ class BatteryManagerIndex extends Component {
       .then((body) => {
         body = JSON.parse(body);
         if (response.ok) {
-          resolve(body.message);
+          swal.fire('Submission successful!', body.message, 'success')
+          .then((result) => {
+            if (result.value) {
+              this.closeForm();
+              resolve(body.message);
+            }
+          });
         } else {
           swal.fire(body.error, '', 'error');
           reject(body.error);

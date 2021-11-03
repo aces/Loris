@@ -131,8 +131,8 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString(
             "Imaging Upload",
@@ -149,7 +149,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions([""]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -167,7 +167,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["imaging_uploader"]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -189,22 +189,22 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 
         $this->safeGet($this->url . '/imaging_uploader/');
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("CandID")
         )->sendKeys("test");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("PSCID")
         )->sendKeys("test");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("reset")
         )->click();
 
-        $bodyText1 = $this->webDriver->findElement(
+        $bodyText1 = $this->safeFindElement(
             WebDriverBy::name("CandID")
         )->getText();
-        $bodyText2 = $this->webDriver->findElement(
+        $bodyText2 = $this->safeFindElement(
             WebDriverBy::name("PSCID")
         )->getText();
 
@@ -235,7 +235,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $this->markTestSkipped("This method isn't working properly on travis.");
             $this->safeGet($this->url . '/imaging_uploader/');
         if ($url == "/imaging_uploader/#upload") {
-            $this->webDriver->findElement(
+            $this->safeFindElement(
                 WebDriverBy::ID("tab-upload")
             )->click();
         }

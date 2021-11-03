@@ -471,8 +471,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             if (!isset($this->form)) {
                 $this->form = new \LorisForm();
             }
-            $this->dateTimeFields = ["Date_taken"];
-            $this->formType       = 'XIN';
+            $this->formType = 'XIN';
 
             $this->form->addFormRule([&$this, 'XINValidate']);
             $fp = fopen($filename, "r");
@@ -577,26 +576,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $Group['Elements'] = [];
                     }
                     break;
-
                 case 'begintable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
-                    break;
                 case 'endtable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
+                    error_log(
+                        "DEPRECATION MESSAGE: `begintable` and `endtable` elements ".
+                        "are deprecated. $this->testName instrument should be ".
+                        "modified to remove these elements as they will be ".
+                        "completely removed in a future version of LORIS."
+                    );
                     break;
                 case 'text':
                     if ($addElements) {
@@ -651,7 +638,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'date':
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
-                            $dateOptions = null;
+                            $dateOptions = [];
                         } else {
                             $dateOptions = [
                                 'language'         => 'en',

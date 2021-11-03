@@ -62,7 +62,10 @@ class ElectrophysiologyBrowserRowProvisioner
             WHERE c.Active='Y'
               AND s.Active='Y' 
               AND pf.FileType IN (
-                SELECT type FROM ImagingFileTypes WHERE Description LIKE '%(EEG)'
+                SELECT type FROM ImagingFileTypes
+                WHERE
+                  description LIKE '%(EEG)'
+                  OR type = 'archive'
               )
             GROUP BY SessionID",
             []

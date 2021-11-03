@@ -1,0 +1,163 @@
+.react-series-data-viewer-scoped .dropdown-menu {
+  width: calc(100% - 5px);
+}
+
+.react-series-data-viewer-scoped .dropdown-menu li {
+  margin-top: 0;
+  padding: 0 10px;
+}
+
+.react-series-data-viewer-scoped .dropdown-menu li:hover {
+  background: #eee;
+  cursor: pointer;
+  margin-top: 0;
+  width: 100%;
+}
+
+.btn.btn-xs {
+  font-size: 12px;
+}
+
+.btn-group .btn {
+  margin: 0;
+}
+
+.btn-group {
+  margin-right: 10px;
+}
+
+.btn-primary:focus:not(.active),
+.btn-primary:active:not(.active) {
+  color: #246EB6;
+  background-color: white;
+  border-color: #246EB6;
+  outline: 0;
+}
+
+.no-gutters > div {
+  padding:0;
+}
+
+svg {
+  user-select: none;
+}
+
+.annotation.list-group-item {
+  background: #fffae6;
+  border-left: 5px solid #ff6600;
+}
+
+.event-list .btn.btn-primary {
+  color: #555;
+  border: 1px solid #555;
+}
+
+.event-list .btn.btn-primary.active {
+  color: #000;
+  background-color: #ddd;
+  border: 1px solid #000;
+}
+
+.event-list .btn.btn-primary:hover {
+  color: #333;
+  background-color: #eee;
+  border: 1px solid #333;
+}
+
+#electrode-montage .list-group {
+  border: 1px solid #ddd;
+}
+
+#electrode-montage .list-group-item:first-child {
+  border-top: none;
+}
+
+#electrode-montage .list-group-item {
+  margin-bottom: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.electrode:hover circle {
+  stroke: #064785;
+  cursor: pointer;
+  fill: #E4EBF2
+}
+
+.electrode:hover text {
+  fill: #064785;
+  cursor: pointer;
+}
+
+#eegSessionView .table-scroll {
+  padding-bottom: 0;
+}
+
+#eegSessionView #lorisworkspace > .panel {
+  border: none;
+}
+
+#eegSessionView .panel-heading {
+  height: auto !important;
+}
+
+#eegSidebar {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(100%);
+  position: fixed;
+}
+
+#page.eegBrowser {
+  vertical-align: top;
+  position: relative;
+  width: auto;
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+  .pagination-nav {
+    padding-top: 8px;
+  }
+
+  #eegSidebar {
+    display: none;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+  #eegSidebar {
+    display: block;
+  }
+
+  #page.eegBrowser {
+    margin-left: 150px;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+  .event-list {
+    margin-top: 40px;
+    margin-bottom: 0;
+  }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+  .pull-right-lg {
+    float: right;
+  }
+
+  .pagination-nav {
+    padding-top: 0;
+  }
+}

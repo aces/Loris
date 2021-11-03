@@ -52,7 +52,7 @@ class Login extends Endpoint
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    function hasAccess(\User $user) : bool
     {
         // Anyone can try and login. Even you.
         return true;

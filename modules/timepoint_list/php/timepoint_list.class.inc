@@ -14,7 +14,8 @@ namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \Loris\StudyEntities\Candidate\CandID;
+
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The timepoint list menu
