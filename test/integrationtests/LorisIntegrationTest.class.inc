@@ -61,6 +61,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp(): void
     {
+        // test
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -179,17 +180,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**
@@ -687,10 +678,11 @@ abstract class LorisIntegrationTest extends TestCase
             WebDriverBy::cssSelector("body")
         )->getText();
     }
+
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
-     * @param string $element        The input element loaction (css selector)
+     * @param string $element        The input element location (css selector)
      * @param string $row            React Table row number
      * @param string $btn            clear filter button
      * @param string $test_value     The test value
@@ -701,7 +693,6 @@ abstract class LorisIntegrationTest extends TestCase
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
     {
         // get element from the page
-
         if (strpos($element, "select") === false) {
             $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
             $el->sendKeys($test_value);
@@ -711,13 +702,39 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("$row")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertStringContainsString($expect_records, $bodyText);
-            //test clear filter
-            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$row")
+        )->getText();
+        // 4 means there are 4 records under this site.
+        $this->assertStringContainsString($expect_records, $bodyText);
+        //test clear filter
+        $this->safeClick(WebDriverBy::cssSelector("$btn"));
+    }
+
+    /**
+     * Testing filter function and clear button
+     *
+     * @param string  $element    The input element location (css selector)
+     * @param string  $test_value The test value
+     * @param boolean $contains   Test for presence/absence
+     *
+     * @return void
+     */
+    function _filterOptionsTest($element,$test_value,$contains=true): void
+    {
+        // get element from the page
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$element")
+        )->getText();
+
+        if (!$contains) {
+            $this->assertThat(
+                $bodyText,
+                $this->logicalNot($this->stringContains($test_value))
+            );
+        } else {
+            $this->assertStringContainsString($test_value, $bodyText);
+        }
     }
 
     /**

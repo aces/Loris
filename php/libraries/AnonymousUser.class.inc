@@ -26,11 +26,61 @@ namespace LORIS;
 class AnonymousUser extends \User
 {
     /**
+     * An anonymous user username
+     *
+     * @return string
+     */
+    function getUsername(): string
+    {
+        return "";
+    }
+
+    /**
      * An anonymous user is not a member of any site.
      *
-     * @return array The empty string
+     * @return array An empty array
      */
     public function getSiteNames() : array
+    {
+        return [];
+    }
+
+    /**
+     * An anonymous user real name
+     *
+     * @return string
+     */
+    function getFullname(): string
+    {
+        return "AnonymousUser";
+    }
+
+    /**
+     * An anonymous user is not a member of any site.
+     *
+     * @return array An empty array
+     */
+    function getCenterIDs(): array
+    {
+        return [];
+    }
+
+    /**
+     * An anonymous user is not a member of any project.
+     *
+     * @return array An empty array
+     */
+    function getProjectIDs(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns all sites where Examiner is active
+     *
+     * @return array
+     */
+    function getExaminerSites(): array
     {
         return [];
     }

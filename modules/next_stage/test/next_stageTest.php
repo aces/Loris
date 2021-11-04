@@ -40,7 +40,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
@@ -57,7 +57,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
@@ -76,7 +76,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -104,7 +104,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -119,7 +119,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -150,22 +150,22 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-02'"
         );
-        $scanDone = $this->webDriver->findElement(
+        $scanDone = $this->safeFindElement(
             WebDriverBy::Name("scan_done")
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->webDriver->findElement(
+        $Subproject = $this->safeFindElement(
             WebDriverBy::Name("SubprojectID")
         );
         $Subproject->sendKeys("Control");
 
-        $startVisit = $this->webDriver->findElement(
+        $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         );
         $startVisit->submit();
         sleep(1);
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Both Date fields must match.", $bodyText);
@@ -178,7 +178,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageSuccess()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -188,22 +188,22 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-        $scanDone = $this->webDriver->findElement(
+        $scanDone = $this->safeFindElement(
             WebDriverBy::Name("scan_done")
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->webDriver->findElement(
+        $Subproject = $this->safeFindElement(
             WebDriverBy::Name("SubprojectID")
         );
         $Subproject->sendKeys("Fresh");
 
-        $startVisit = $this->webDriver->findElement(
+        $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         );
         $startVisit->submit();
         sleep(2);
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next stage started.", $bodyText);

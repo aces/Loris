@@ -39,7 +39,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["battery_manager_view"]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -58,7 +58,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(

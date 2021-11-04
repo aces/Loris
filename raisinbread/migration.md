@@ -10,8 +10,25 @@
 2020-07-14_NewModuleDQT.sql
 2020-07-22_RenameBatteryManagerPermissions.sql
 2020-08-10_add_AcquisitionDate_to_files.sql
+2020-08-11_adding_api_docs_module.sql
 2020-10-29-session-current-stage-default.sql
 2021-01-31-renaming_permissions.sql
+2021-02-19_electrophysiology_annotation_tables.sql
+2021-03-15_change_parameter_file_Value_longtext.sql
+2021-03-31-NewDictionaryModule.sql
+2021-05-20-Electrophysiology-split-files.sql
+2021-06-11_exported_files_BIDS_tables.sql
+2021-06-17_mnc2bids_Config_Settings.sql
+2021-06-23_set_default_ScannerID_to_NULL.sql
+2021-06-25_add_alias_column_to_parameter_type_for_bids_parameter_names.sql
+2021-07-19-log_level.sql
+2021-07-28_add_EchoTime_field_to_violation_tables.sql
+2021-07-29-physiological_task_event_columns_types.sql
+2021-07-30-physiological_parameter_file_columns_types.sql
+2021-08-21_issue_tracker_description_change.sql
+2021-08-25-physiological_annotation_schema_changes.sql
+2021-08-27_conflict_resolved_unique_key.sql
+2021-10-01-visits_in_database.sql
 
 # CLEAN-UP
 2020-02-06-NoMultipleSitesConf.sql

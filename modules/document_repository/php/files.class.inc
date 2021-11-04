@@ -62,9 +62,7 @@ class Files extends \NDB_Page
         case "POST":
             return $this->uploadDocFile($request);
         case "PUT":
-            $tmp = $request->getBody();
-            $arr = (array)json_decode($tmp);
-            return $this->editDocFile($arr);
+            return $this->editDocFile($request);
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
@@ -72,7 +70,17 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $filename   = urldecode(basename($request->getUri()->getPath()));
+            $filename = urldecode(basename($request->getUri()->getPath()));
+            $route    = explode('/', $request->getUri()->getPath());
+            if ($route[2] == 'meta') {
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode($this->getUploadDocFields($filename))
+                        )
+                    );
+            }
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
                     $downloadpath . $request->getAttribute('user')->getUsername()
@@ -90,11 +98,11 @@ class Files extends \NDB_Page
     /**
      * Handles the document editing process
      *
-     * @param array $req the request
+     * @param ServerRequestInterface $req The incoming PSR7 request
      *
      * @return ResponseInterface
      */
-    function editDocFile(array $req): ResponseInterface
+    function editDocFile(ServerRequestInterface $req): ResponseInterface
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -104,6 +112,7 @@ class Files extends \NDB_Page
                 self::FORBIDDEN
             );
         }
+        $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
             'comments'   => $req['comments'] ?? null,
@@ -111,7 +120,7 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
-        $fileName     = $req['fileName'];
+        $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -120,7 +129,7 @@ class Files extends \NDB_Page
             $db->update(
                 'document_repository',
                 $updateValues,
-                ['record_id' => $req['id']]
+                ['record_id' => $req['id'] ?? null]
             );
             $factory  = \NDB_Factory::singleton();
             $baseURL  = $factory->settings()->getBaseURL();
@@ -308,7 +317,7 @@ class Files extends \NDB_Page
                 'No file uploaded'
             );
         }
-        $filename = $uploadedFile->getClientFilename();
+        $filename = urldecode($uploadedFile->getClientFilename());
 
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger($category)) {
@@ -334,7 +343,6 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        $filename = $uploadedFile->getClientFileName();
         try{
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(
@@ -375,7 +383,7 @@ class Files extends \NDB_Page
         $fileType = pathinfo($filename, PATHINFO_EXTENSION);
 
         // Insert record of this file into the `document_repository` table.
-        $DB->insert(
+        $DB->unsafeInsertOnDuplicateUpdate(
             'document_repository',
             [
                 'File_category' => $category,

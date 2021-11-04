@@ -140,6 +140,8 @@ class VisitTest extends TestCase
      */
     function testAllVisit()
     {
+        $this->markTestSkipped("Test Will be restored after Visit class revamp");
+
         $visits = $this->visitController->getAllVisits();
         $this->assertEquals(
             $this->listOfVisit,
@@ -157,6 +159,8 @@ class VisitTest extends TestCase
      */
     function testVisitsProjects()
     {
+        $this->markTestSkipped("Test Will be restored after Visit class revamp");
+
         $visits = $this->visitController->getVisitsProjectSubproject();
         $this->assertEquals(
             $this->listOfVisitProject,
@@ -174,6 +178,8 @@ class VisitTest extends TestCase
      */
     function testGetVisitsByName()
     {
+        $this->markTestSkipped("Test Will be restored after Visit class revamp");
+
         $visit_result = new \Loris\Visit('V1');
         $visits       = $this->visitController->getVisitsByName("V1");
         $this->assertEquals(
