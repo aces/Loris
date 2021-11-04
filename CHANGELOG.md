@@ -33,7 +33,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
-- Pending accounts in Dashboard now includes DDC users (PR #7054)
+- Pending accounts in Dashboard now includes DCC users (PR #7054)
 - Subproject filter added to Behavioural QC module (PR #7430)
 
 #### Bug Fixes
