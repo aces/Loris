@@ -221,8 +221,11 @@
         $(header).parent().find('.frozenHeader').is(':visible')
       ) {
         addFrozenHeaderColm(header);
+        return true;
       }
-      return true;
+      return false;
+      // return;
+      // return true;
     }
     return colmStatic;
   };
@@ -301,19 +304,9 @@
           $(child1).addClass(id + 'FrozenColumn');
         });
         $(this).parent().scroll(function() {
-          const windowWidth = window.innerWidth;
-          const dataTableWidth = document.getElementById(
-            'dynamictable'
-          ).offsetWidth;
-          if (windowWidth + 35 >= dataTableWidth) {
-            // window width is too close to dynamictable width
-            // so we "return this" and skip setting colmStatic.
-            return this;
-          }
           colmStatic = freezeColm(id, colmStatic);
         });
       }
-
       return this;
     });
     return this;
