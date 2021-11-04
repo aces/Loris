@@ -221,9 +221,8 @@
         $(header).parent().find('.frozenHeader').is(':visible')
       ) {
         addFrozenHeaderColm(header);
-        return colmStatic;
+        return true;
       }
-      return colmStatic;
     }
     return colmStatic;
   };
