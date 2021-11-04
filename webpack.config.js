@@ -18,6 +18,7 @@ const optimization = {
     }),
   ],
 };
+
 const resolve = {
   alias: {
     util: path.resolve(__dirname, './htdocs/js/util'),
@@ -46,29 +47,49 @@ const resolve = {
 };
 
 const mod = {
-  rules: [
-    {
-      test: /\.(jsx?|tsx?)$/,
-      exclude: /node_modules/,
-      use: [
-        {
-          loader: 'babel-loader?cacheDirectory',
-        },
-      ],
-    },
-    {
-      test: /\.css$/,
-      use: [
-        'style-loader',
-        'css-loader',
-      ],
-    },
-    {
-      test: /\.tsx?$/,
-      loader: 'ts-loader',
-    },
-  ],
+  rules: [],
 };
+
+// If no compiled chunk.proto found, desactivate compilation
+// on the file importing it to avoid import errors
+// chunk.proto is only required for EEG visualization and requires protoc
+if (!fs.existsSync(
+  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
+  + 'protocol-buffers/chunk_pb.js')
+) {
+  mod.rules.push({
+    test: /react-series-data-viewer\/src\/chunks/,
+    use: 'null-loader',
+  });
+}
+
+mod.rules.push(
+  {
+    test: /\.(jsx?|tsx?)$/,
+    exclude: /node_modules/,
+    use: [
+      {
+        loader: 'babel-loader?cacheDirectory',
+      },
+    ],
+  },
+  {
+    test: /\.css$/,
+    use: [
+      'style-loader',
+      'css-loader',
+    ],
+  },
+  {
+    test: /\.tsx?$/,
+    use: [
+      {
+        loader: 'ts-loader',
+        options: {onlyCompileBundledFiles: true},
+      },
+    ],
+  },
+);
 
 /**
  * Creates a webpack config entry for a LORIS module named
@@ -160,6 +181,13 @@ const config = [
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        files: [
+          'modules/',
+          'jsx/',
+          'jslib/',
+          'htdocs/js/',
+          'webpack.config.js',
+        ],
         cache: true,
       }),
       new CopyPlugin({

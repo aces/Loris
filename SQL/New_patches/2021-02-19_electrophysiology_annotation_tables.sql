@@ -116,5 +116,4 @@ INSERT INTO physiological_annotation_label
     (22, 'sleep_k-complex',     'sleep K-complex'),
     (23, 'scorelabeled',        'a global label indicating that the EEG has been annotated with SCORE.');
 
-UPDATE physiological_output_type SET OutputTypeName='derivative' WHERE PhysiologicalOutputTypeID=2;
-
+UPDATE physiological_output_type SET OutputTypeName='derivative' WHERE OutputTypeName='derivatives';

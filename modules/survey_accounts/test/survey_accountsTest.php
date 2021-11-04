@@ -181,7 +181,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(["survey_accounts_view"]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("Survey Accounts", $bodyText);
         $this->resetPermissions();

@@ -422,7 +422,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
         )->getText();
         $this->assertStringContainsString("Resolved", $bodyText);
@@ -441,33 +441,33 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->getText();
         $this->assertEquals("", $bodyText);
 
         //testing the Description
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("Description")
         )->sendKeys("test");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("Description")
         )->getText();
         $this->assertEquals("", $bodyText);
 
         //testing the MincFile
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("Filename")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("Filename")
         )->getText();
         $this->assertEquals("", $bodyText);
@@ -483,11 +483,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("", $value);
 
         //testing the Series UID
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("SeriesUID")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("SeriesUID")
         )->getText();
         $this->assertEquals("", $bodyText);
@@ -537,10 +537,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testNotResolvedSaveButton()
     {
         $this->safeGet($this->url . "/mri_violations/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("[name]test");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
@@ -664,10 +664,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function _searchTest($searchBy,$testValue)
     {
         //$this->safeGet($this->url . "/mri_violations/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name($searchBy)
         )->sendKeys($testValue);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
@@ -677,7 +677,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                  .textContent"
         );
         $this->assertStringContainsString("1 rows displayed of 1", $bodyText);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
     }

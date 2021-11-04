@@ -275,6 +275,7 @@ CREATE TABLE `flag` (
   `Test_name` varchar(255) NOT NULL default '',
   `CommentID` varchar(255) NOT NULL default '',
   `Data_entry` enum('In Progress','Complete') default NULL,
+  `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
@@ -624,8 +625,8 @@ INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
-  `Center_name` varchar(4) NOT NULL default '',
-  `ScannerID` int(10) unsigned default NULL,
+  `CenterID` integer unsigned DEFAULT NULL,
+  `ScannerID` int(10) unsigned DEFAULT NULL,
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
@@ -655,16 +656,17 @@ CREATE TABLE `mri_protocol` (
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
  TE_max,time_min,time_max,MriProtocolGroupID) VALUES
-   ('ZZZZ',48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   ('ZZZZ',45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
+   (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
+   (NULL,45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
 
 CREATE TABLE `mri_protocol_group_target` (
      `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1318,8 +1320,8 @@ CREATE TABLE `examiners` (
   `radiologist` tinyint(1) default 0 NOT NULL,
   `userID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`examinerID`),
-  UNIQUE KEY `full_name` (`full_name`),
-  KEY `FK_examiners_2` (`userID`),
+  UNIQUE KEY `unique_examiner` (`full_name`,`userID`),
+  UNIQUE KEY `FK_examiners_2` (`userID`),
   CONSTRAINT `FK_examiners_2` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2284,6 +2286,7 @@ CREATE TABLE `candidate_consent_history` (
 CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
+  `VisitLabel` VARCHAR(200) UNIQUE NOT NULL,
   CONSTRAINT `PK_visit` PRIMARY KEY (`VisitID`),
   CONSTRAINT `UK_visit_name` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -124,7 +124,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode

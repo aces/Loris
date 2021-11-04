@@ -1,3 +1,4 @@
+// @ts-ignore
 import {FloatChunk} from '../protocol-buffers/chunk_pb';
 import {fetchBlob} from '../ajax';
 
