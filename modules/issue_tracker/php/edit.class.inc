@@ -240,7 +240,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      * otherwise return empty issue data object
      *
      * @param int|null $issueID the ID of the requested issue
-     * @param \User $user the user requesting the issue
+     * @param \User    $user    the user requesting the issue
      *
      * @return array
      */
@@ -531,7 +531,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int    $issueID          the issueID
      * @param string $changed_assignee changed assignee
-     * @param \User $user the user requesting the change
+     * @param \User  $user             the user requesting the change
      *
      * @return void
      */
