@@ -43,6 +43,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- The script tools/single_use/remove_publication_users_edit_perm_rel_duplicates.php should be run before upgrading LORIS. 
+
 ### Notes For Developers
 - *Add item here*
 
@@ -111,7 +113,6 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 
 ### Notes For Existing Projects
 - PHP should be upgraded to 7.3 to before upgrading LORIS.
-- The script tools/single_use/remove_publication_users_edit_perm_rel_duplicates.php should be run before upgrading LORIS. 
 - For dev instances, php7.3-curl is now a required dependency.
 - Legacy Quickform instruments may have issues due to code changes (PR #4928)
 - Customized entries in the `LorisMenu` and `LorisMenuPermissions` tables need to be 
