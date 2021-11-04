@@ -17,7 +17,7 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
-- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7307)
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
