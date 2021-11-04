@@ -2881,9 +2881,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $req = $request->getParsedBody();
+        $req     = $request->getParsedBody();
+        $success = false;
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
-            $this->save();
+            $success = $this->save();
         }
 
         // Disable form if data entry is complete
@@ -2911,6 +2912,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             && $this->DataEntryType !== 'DirectEntry'
         ) {
             $this->freeze();
+        }
+
+        if ($success) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+            $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $pageURL   = !empty($this->page) ? urlencode($this->page) ."/" : "";
+            $url       = $baseURL . "/instruments/" .
+                urlencode($this->testName) . "/" .
+                $pageURL .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
         }
 
         return (new \LORIS\Http\Response())
