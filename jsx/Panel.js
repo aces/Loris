@@ -83,15 +83,17 @@ class Panel extends Component {
     ) : '';
 
     const transformHeight = this.state.collapsed
-      ? {height: '0', transition: 'height .5s ease-in-out'}
+      ? {height: '0', transition: 'height .3s ease-in-out'}
       : {height: this.props.panelSize,
         transition: 'height .5s ease-in-out',
         overflow: 'hidden',
       };
 
     const transformVisible = this.state.collapsed
-      ? {opacity: 0, transition: 'opacity .5s'}
-      : {opacity: 1, transition: 'opacity .5s'};
+      ? {opacity: 0,
+        transition: 'opacity .3s'}
+      : {opacity: 1,
+        transition: 'opacity .3s'};
 
     return (
       <div className={'panel ' + this.props.class}

@@ -52,9 +52,6 @@ class Card extends Component {
     if (this.props.style) {
         divStyling = {...divStyling, ...this.props.style};
     }
-    if (this.props.cardSize) {
-        divStyling.height = this.props.cardSize;
-    }
     return (
       <div style={divStyling}>
         <Panel
