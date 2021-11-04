@@ -56,9 +56,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        $user    = $factory->user();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
 
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
@@ -246,9 +245,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getIssueData(int $issueID=null): array
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
 
         if (!empty($issueID)) {
             return $db->pselectRow(
@@ -294,8 +292,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getComments(int $issueID): array
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
+        $db =& \Database::singleton();
 
         $unformattedComments = $db->pselect(
             "SELECT newValue, fieldChanged, dateAdded, addedBy " .
@@ -346,8 +343,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getWatching(int $issueID): array
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
+        $db =& \Database::singleton();
 
         $watching = $db->pselect(
             "SELECT userID from issues_watching WHERE issueID=:issueID",
@@ -370,11 +366,9 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getSiteName(int $centerID): ?string
     {
-        $db =& \Database::singleton();
-        return $centerID == null ? 'All Sites' : $db->pselectOne(
-            "SELECT Name FROM psc WHERE CenterID=:centerID",
-            ['centerID' => $centerID]
-        );
+        return $centerID == null
+            ? 'All Sites'
+            : \Site::singleton(new \CenterID(strval($centerID)))->getCenterName();
     }
 
     /**
@@ -394,9 +388,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
         }
 
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        $user    = $factory->user();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
 
         $issueValues    = [];
         $validateValues = [];
@@ -544,11 +537,10 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function emailUser(int $issueID, string $changed_assignee)
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
         //not sure if this is necessary
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
 
         $title = $db->pSelectOne(
             "SELECT title FROM issues
@@ -626,8 +618,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function validateInput(array $values): array
     {
-        $factory    = \NDB_Factory::singleton();
-        $db         = $factory->database();
+        $db         =& \Database::singleton();
         $pscid      = ($values['PSCID'] ?? null);
         $visitLabel = ($values['visitLabel'] ?? null);
         $centerID   = ($values['centerID'] ?? null);
@@ -715,7 +706,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
             $params = ['PSCID' => $result['PSCID']];
 
-            $user = $factory->user();
+            $user =& \User::singleton();
             if (!$user->hasPermission('access_all_profiles')) {
                 $params['CenterID'] = implode(',', $user->getCenterIDs());
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
@@ -773,9 +764,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function updateHistory(array $values, int $issueID)
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
 
         foreach ($values as $key => $value) {
             // centerID is allowed to be NULL
@@ -801,9 +791,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function updateComments(string $comment, int $issueID)
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user =& \User::singleton();
+        $db   =& \Database::singleton();
 
         if (isset($comment) && $comment != "null") {
             $commentValues = [
