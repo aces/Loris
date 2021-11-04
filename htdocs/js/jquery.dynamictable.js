@@ -221,9 +221,9 @@
         $(header).parent().find('.frozenHeader').is(':visible')
       ) {
         addFrozenHeaderColm(header);
-        return true;
+        return colmStatic;
       }
-      return false;
+      return colmStatic;
     }
     return colmStatic;
   };
@@ -302,7 +302,11 @@
           $(child1).addClass(id + 'FrozenColumn');
         });
         $(this).parent().scroll(function() {
-          colmStatic = freezeColm(id, colmStatic);
+          if (window.innerWidth <= document.getElementById(
+            'dynamictable'
+          ).offsetWidth) {
+            colmStatic = freezeColm(id, colmStatic);
+          }
         });
       }
       return this;
