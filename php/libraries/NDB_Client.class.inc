@@ -116,11 +116,13 @@ class NDB_Client
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
             . "img-src 'self' data:; "
+            . "frame-ancestors 'none'; "
+            . "form-action 'self'; "
             . $config_additions
         );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
-        $sessionOptions['cookie_samesite'] = true;
+        $sessionOptions['cookie_samesite'] = "Strict";
 
         // API Detect
         if (strpos(

@@ -58,19 +58,6 @@
             <candidate>ProbandDoB</candidate>
             <parameter_session>MRI_Done</parameter_session>
         </HeaderTable>
-        <!-- defines how visit labels are assigned -->
-        <visitLabel subprojectID="1">
-            <labelSet>
-                <item value="V01">V01</item>
-                <item value="V02">V02</item>
-            </labelSet>
-        </visitLabel>
-        <visitLabel subprojectID="2">
-            <labelSet>
-                <item value="V01">V01</item>
-                <item value="V02">V02</item>
-            </labelSet>
-        </visitLabel>
 
          <!-- certification module -->
         <Certification>

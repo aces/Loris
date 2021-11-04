@@ -253,6 +253,7 @@ class Stats_Demographic extends \NDB_Form
         //SUBPROJECTS
         $subprojectQuery = '';
         $subprojects     = \Utility::getSubprojectList();
+        $this->tpl_data['Subprojects'] = $subprojects;
         // Only search for subprojects if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject(

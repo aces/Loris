@@ -32,6 +32,8 @@ CREATE TABLE `physiological_file` (
   `AcquisitionTime`           DATETIME             DEFAULT '1970-01-01 00:00:01',
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
   `FilePath`                  VARCHAR(255)         NOT NULL,
+  `Index`                     INT(5)               DEFAULT NULL,
+  `ParentID`                  INT(10) unsigned     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
   CONSTRAINT `FK_session_ID`
     FOREIGN KEY (`SessionID`)
@@ -44,10 +46,29 @@ CREATE TABLE `physiological_file` (
     REFERENCES `physiological_modality` (`PhysiologicalModalityID`),
   CONSTRAINT `FK_phys_output_type_TypeID`
     FOREIGN KEY (`PhysiologicalOutputTypeID`)
-    REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`)
+    REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`),
+  CONSTRAINT `FK_ParentID`
+    FOREIGN KEY (`ParentID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+-- Create a physiological_split_file table
+CREATE TABLE `physiological_split_file` (
+  `ID`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Index`     INT(5)           NOT NULL,
+  `ArchiveID` INT(10) UNSIGNED NOT NULL,
+  `FileType`  VARCHAR(12)      DEFAULT NULL,
+  `FilePath`  VARCHAR(255)     NOT NULL,
+  `Duration`  DECIMAL(10,3)    NOT NULL,
+  CONSTRAINT `FK_ArchiveID`
+    FOREIGN KEY (`ArchiveID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`),
+  CONSTRAINT `FK_ImagingFileTypes`
+    FOREIGN KEY (`FileType`)
+    REFERENCES `ImagingFileTypes` (`type`),
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create a physiological_parameter_file table that will store all JSON
 -- information that accompanies the BIDS physiological dataset
@@ -56,7 +77,7 @@ CREATE TABLE `physiological_parameter_file` (
   `PhysiologicalFileID`          INT(10) UNSIGNED NOT NULL,
   `ParameterTypeID`              INT(10) UNSIGNED NOT NULL,
   `InsertTime`                   TIMESTAMP        NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-  `Value`                        VARCHAR(255),
+  `Value`                        TEXT,
   PRIMARY KEY (`PhysiologicalParameterFileID`),
   CONSTRAINT `FK_phys_file_FileID`
     FOREIGN KEY (`PhysiologicalFileID`)
@@ -170,8 +191,8 @@ CREATE TABLE `physiological_task_event` (
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
-  `EventValue`               INT(10)          DEFAULT NULL,
-  `EventSample`              INT(10)          DEFAULT NULL,
+  `EventValue`               varchar(255)     DEFAULT NULL,
+  `EventSample`              decimal(11,6)    DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
@@ -204,7 +225,7 @@ CREATE TABLE `physiological_archive` (
 -- Create physiological_annotation_file_type table
 CREATE TABLE `physiological_annotation_file_type` (
     `FileType`        VARCHAR(20)   NOT NULL UNIQUE,
-    `Description` VARCHAR(255),
+    `Description`     VARCHAR(255),
     PRIMARY KEY (`FileType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -243,7 +264,7 @@ CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
     `Sources`               VARCHAR(255),
-    `Author`                VARCHAR(50),
+    `Author`                VARCHAR(255),
     PRIMARY KEY (`AnnotationParameterID`),
     CONSTRAINT `FK_annotation_file_ID`
         FOREIGN KEY (`AnnotationFileID`)
@@ -252,9 +273,10 @@ CREATE TABLE `physiological_annotation_parameter` (
 
 -- Create an annotation_label_type table
 CREATE TABLE `physiological_annotation_label` (
-  `AnnotationLabelID`    INT(5)       UNSIGNED NOT NULL      AUTO_INCREMENT,
-  `LabelName`            VARCHAR(255)          NOT NULL      UNIQUE,
-  `LabelDescription`         VARCHAR(255)          DEFAULT NULL,
+  `AnnotationLabelID`    INT(5)       UNSIGNED NOT NULL AUTO_INCREMENT,
+  `AnnotationFileID`     INT(10)      UNSIGNED DEFAULT NULL,
+  `LabelName`            VARCHAR(255) NOT NULL,
+  `LabelDescription`     TEXT         DEFAULT NULL,
   PRIMARY KEY (`AnnotationLabelID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -280,6 +302,19 @@ CREATE TABLE `physiological_annotation_instance` (
     CONSTRAINT `FK_annotation_label_ID`
         FOREIGN KEY (`AnnotationLabelID`)
         REFERENCES `physiological_annotation_label` (`AnnotationLabelID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create physiological_annotation_rel table
+CREATE TABLE `physiological_annotation_rel` (
+    `AnnotationTSV`  INT(10)    UNSIGNED NOT NULL,
+    `AnnotationJSON` INT(10)    UNSIGNED NOT NULL,
+    PRIMARY KEY (`AnnotationTSV`, `AnnotationJSON`),
+    CONSTRAINT `FK_AnnotationTSV`
+        FOREIGN KEY (`AnnotationTSV`)
+        REFERENCES `physiological_annotation_file` (`AnnotationFileID`),
+    CONSTRAINT `FK_AnnotationJSON`
+        FOREIGN KEY (`AnnotationJSON`)
+        REFERENCES `physiological_annotation_file` (`AnnotationFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Insert into physiological_output_type
@@ -350,7 +385,8 @@ INSERT INTO ImagingFileTypes
   ('vhdr', 'Brainvision file format (EEG)'),
   ('vsm',  'BrainStorm file format (EEG)'),
   ('edf',  'European data format (EEG)'),
-  ('cnt',  'Neuroscan CNT data format (EEG)');
+  ('cnt',  'Neuroscan CNT data format (EEG)'),
+  ('archive', 'Archive file');
 
 -- Insert into annotation_file_type
 INSERT INTO physiological_annotation_file_type

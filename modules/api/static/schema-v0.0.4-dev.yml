@@ -1,0 +1,101 @@
+openapi: 3.0.1
+info:
+  title: LORIS - REST API endpoints
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  contact:
+    name: LORIS Development Team
+    url: 'https://github.com/aces/loris'
+  license:
+    name: 'GNU Public License, Version 3'
+    url: 'https://opensource.org/licenses/GPL-3.0'
+  version: 0.0.4-dev
+servers:
+  - url: /api/v0.0.4-dev
+security:
+  - ApiKeyAuth: []
+paths:
+  '/candidates/{candid}/{visit}':
+    patch:
+      tags:
+        - Visit
+      summary: Updates a timepoint. Providing a "Visit" stage with "In Progress" as status will attemp to start the visit (start next stage).
+      parameters:
+        - name: candid
+          in: path
+          description: The candidate identifier
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitPatchFields'
+      responses:
+        '204':
+          description: The visit stage was updated successfully
+components:
+  schemas:
+    VisitMetaFields:
+      type: object
+      properties:
+        CandID:
+          type: string
+        Visit:
+          type: string
+        Site:
+          type: string
+        Battery:
+          type: string
+        Project:
+          type: string
+    VisitStage:
+      type: object
+      properties:
+        Date:
+          type: string
+        Status:
+          type: string
+          enum:
+            - Pass
+            - Failure
+            - Withdrawal
+            - In Progress
+    VisitPatchFields:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/VisitMetaFields'
+        - type: object
+          properties:
+            Stages:
+              $ref: '#/components/schemas/InstrumentVisit'
+
+    InstrumentVisit:
+      type: object
+      properties:
+        Visit:
+          $ref: '#/components/schemas/VisitStage'
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+
+

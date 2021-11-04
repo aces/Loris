@@ -322,19 +322,16 @@ class CandidateListIndex extends Component {
           },
         },
       },
-
-    ];
-     fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
-          },
+      {
+        'label': 'Project',
+        'show': true,
+        'filter': {
+          name: 'project',
+          type: 'select',
+          options: options.project,
         },
-      );
+      },
+    ];
 
     if (options.useedc === 'true') {
       fields.push(

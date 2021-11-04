@@ -34,19 +34,4 @@ _not yet available. See [API documentation](../../99_Developers/LORIS-REST-API-0
 ## Interaction With LORIS
 
 ### Subprojects
- **Timepoints** should be assigned to subprojects in order to be able to create timepoints for candidates. This association should be defined in the `config.xml` file of the `%LORIS_ROOT%/project/` directory as follows:
- 
- ```xml
- <visitLabel subprojectID="1">
-   <labelSet>
-     <item value="V1">V1 label description</item>   
-     <item value="V2">V2 label description</item>   
-   </labelSet>
- </visitLabel>
- <visitLabel subprojectID="2">
-   <labelSet>
-     <item value="V1">V1 label description</item>   
-     <item value="V3">V3 label description</item>   
-   </labelSet>
- </visitLabel>
- ```
+ **Timepoints** should be assigned to subprojects in order to be able to create timepoints for candidates. This association should be defined in the `visit_project_subproject_rel` table of the database.

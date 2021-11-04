@@ -49,7 +49,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["media_read"]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -68,7 +68,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
