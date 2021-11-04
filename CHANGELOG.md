@@ -25,7 +25,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
-- Pending accounts in Dashboard are now includes DDC users (PR #7054)
+- Pending accounts in Dashboard now includes DDC users (PR #7054)
 - Subproject filter added to Behavioural QC module (PR #7430)
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
