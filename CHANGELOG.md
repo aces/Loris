@@ -49,7 +49,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 - Update validation to allow NULL Site (For All Sites issues) (#6526)
 - Fixing redirect and error reporting when creating a new issue (PR #7323)
-- Show inactive users in the list of assignees as a disabled option. If the inactive user had already been previously assigned the issue, the disabled option appears but cannot be reselected. Inactive users can no longer be assigned new issues.
+- Show inactive users in the list of assignees as a disabled option. If the inactive user had already been previously assigned the issue, the disabled option appears but cannot be reselected. Inactive users can no longer be assigned new issues. (PR #7306)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
