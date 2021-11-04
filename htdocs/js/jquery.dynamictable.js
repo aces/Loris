@@ -224,8 +224,6 @@
         return true;
       }
       return false;
-      // return;
-      // return true;
     }
     return colmStatic;
   };
