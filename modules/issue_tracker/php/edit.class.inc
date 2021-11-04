@@ -170,8 +170,8 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Now get issue values
         $issueData = $this->getIssueData();
-        if (!empty($_GET['issueID'])
-            && $_GET['issueID'] != "new"
+        if (!empty($values['issueID'])
+            && $values['issueID'] != "new"
         ) { // if an existing issue
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID);
