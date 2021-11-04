@@ -833,10 +833,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $values = Utility::nullifyEmpty($values, $key);
         }
 
+        // If the instrument is saving as JSON into the Data column, the
+        // table may not exist, so don't try and update it.
         if ($this->jsonData !== true && !empty($values)) {
-            // If the instrument is saving as JSON into the Data column, the
-            // table may not exist, so don't try and update it.
-            $db->update(
+            // Use unsafe update to avoid storing HTML escaped values in the database
+            // instead values should be escaped on display
+            $db->unsafeUpdate(
                 $this->table,
                 $values,
                 ['CommentID' => $this->getCommentID()]

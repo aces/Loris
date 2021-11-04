@@ -706,7 +706,7 @@ class LorisForm
             }
         }
 
-        return $newValue;
+        return htmlspecialchars($newValue);
     }
 
     /**

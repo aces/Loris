@@ -52,6 +52,15 @@ if (isset($argv[1]) && $argv[1] === 'use-objects') {
     $useObjects =true;
 }
 
+$lorisinstance = new \LORIS\LorisInstance(
+    $DB,
+    $config,
+    [
+        __DIR__ . "/../../project/modules",
+        __DIR__ . "/../../modules/",
+    ]
+);
+
 // DEFINE VARIABLES
 // All instruments looked at
 $instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
@@ -83,7 +92,7 @@ foreach($instrumentNames as $instrumentName) {
     $instrumentData=array();
     if ($useObjects) {
         try {
-            $instrument = \NDB_BVL_Instrument::factory($instrumentName);
+            $instrument = \NDB_BVL_Instrument::factory($lorisinstance, $instrumentName);
         } catch (Exception $e) {
             printError(
                 "There was an error instantiating instrument $instrumentName.
@@ -93,7 +102,7 @@ foreach($instrumentNames as $instrumentName) {
             continue;
         }
         foreach ($instrumentCIDs as $cid) {
-            $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
+            $instrumentInstance = \NDB_BVL_Instrument::factory($lorisinstance, $instrumentName, $cid);
             $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ
@@ -153,7 +162,7 @@ if ($errorsDetected) {
 
     if(!empty($escapedEntries)) {
         printOut(
-            "Below is a list of all entries in the database instruemnts which " .
+            "Below is a list of all entries in the database instruments which " .
             "contain escaped characters"
         );
         print_r($escapedEntries);
