@@ -188,6 +188,44 @@
     $(frozenCell).html($($('.dynamictableFrozenColumn')[0]).html());
     $(frozenHeader).after(frozenCell);
   };
+  let freezeColm = function(tableID, colmStatic) {
+    let statColPos = $('.' + tableID + 'FrozenColumn').offset().left;
+    let statColWid = $('.' + tableID + 'FrozenColumn').outerWidth();
+    let leftScrollPos = $('.leftScrollBar').offset().left;
+    let leftScrollWid = $('.leftScrollBar').outerWidth();
+    let nextColPos = $('.' + tableID + 'Next').offset().left;
+    let tablePos = $('#' + tableID).offset().left;
+    let header = $('#' + tableID).siblings('.frozenHeader')[0];
+
+    if (colmStatic === true) {
+      if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
+        $('.' + tableID).each(function(key, value) {
+          if (key >= 0) {
+            $(value).css('height', '');
+          }
+        });
+        $('.' + tableID + 'FrozenColumn').removeClass('static-col colm-static');
+        $(header).find('.dynamictableFrozenColumn').css({padding: '8px'});
+        $('.headerColm').remove();
+        return false;
+      }
+    } else if (statColPos <= leftScrollWid + leftScrollPos) {
+      $('.' + tableID + 'FrozenColumn').each(function(key, value) {
+        if (key >= 0) {
+          let height = $(value).next().outerHeight();
+          $(value).outerHeight(height);
+        }
+      });
+      $('.' + tableID + 'FrozenColumn').addClass('static-col colm-static');
+      if ($(header).parent().find('.headerColm').length === 0 &&
+        $(header).parent().find('.frozenHeader').is(':visible')
+      ) {
+        addFrozenHeaderColm(header);
+      }
+      return true;
+    }
+    return colmStatic;
+  };
 
   $.fn.DynamicTable = function(options) {
     if (options && options.removeDynamicTable) {
@@ -199,6 +237,7 @@
       let rightLink;
       let table = this;
       let id = $(table).attr('id');
+      let colmStatic = false;
       let column;
       let columnNumber;
       let child1;
@@ -260,6 +299,18 @@
           child1 = $(value).children().get(columnNumber);
           // height = $(child1).next().outerHeight();
           $(child1).addClass(id + 'FrozenColumn');
+        });
+        $(this).parent().scroll(function() {
+          const windowWidth = window.innerWidth;
+          const dataTableWidth = document.getElementById(
+            'dynamictable'
+          ).offsetWidth;
+          if (windowWidth + 35 >= dataTableWidth) {
+            // window width is too close to dynamictable width
+            // so we "return this" and skip setting colmStatic.
+            return this;
+          }
+          colmStatic = freezeColm(id, colmStatic);
         });
       }
 
