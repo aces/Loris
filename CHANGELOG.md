@@ -33,11 +33,14 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+- A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
+- A subtest with only static and/or static score fields (i.e. no values to submit) can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
 
 ### Modules
 #### Help Editor
@@ -46,6 +49,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 - Update validation to allow NULL Site (For All Sites issues) (#6526)
 - Fixing redirect and error reporting when creating a new issue (PR #7323)
+- Show inactive users in the list of assignees as a disabled option. If the inactive user had already been previously assigned the issue, the disabled option appears but cannot be reselected. Inactive users can no longer be assigned new issues.
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
@@ -119,6 +123,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
 - There is a new abstract "getDataDictionary" function in the instrument class for the new data dictionary framework. This is already implemented for LINST instruments, and existing instruments using LorisForm can use the `\LorisFormDictionaryImpl` trait to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 
 ### Notes For Developers
 - Eslint warnings cleanup (Various PRs)
