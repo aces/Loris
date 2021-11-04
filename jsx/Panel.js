@@ -66,7 +66,6 @@ class Panel extends Component {
       <div
         className="panel-heading"
         onClick={this.toggleCollapsed}
-        data-toggle="collapse"
         data-target={'#' + this.props.id}
         data-parent={this.props.parentId ?
           '#'+this.props.parentId :
@@ -83,22 +82,27 @@ class Panel extends Component {
       </div>
     ) : '';
 
-    const panelHeight = this.props.collapsing
-      ? null
-      : {height: this.props.panelSize};
+    const transformHeight = this.state.collapsed
+      ? {height: '0', transition: 'height .5s ease-in-out'}
+      : {height: this.props.panelSize,
+        transition: 'height .5s ease-in-out',
+        overflow: 'hidden',
+      };
+
+    const transformVisible = this.state.collapsed
+      ? {opacity: 0, transition: 'opacity .5s'}
+      : {opacity: 1, transition: 'opacity .5s'};
 
     return (
       <div className={'panel ' + this.props.class}
-           style={panelHeight}
       >
         {panelHeading}
         <div id={this.props.id}
-             className={this.panelClass}
              role='tabpanel'
-             style={this.props.collapsing ? {} : {height: 'calc(100% - 3em)'}}
+             style={transformHeight}
         >
           <div className="panel-body"
-               style={{...this.props.style, height: this.props.height}}>
+               style={{...this.props.style, ...transformVisible}}>
             {this.props.children}
           </div>
         </div>
