@@ -56,8 +56,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Parse GET query params.
         $values = $request->getQueryParams();
 
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
+        $user = $request->getAttribute('user');
+        $db   = $this->loris->getDatabaseConnection();
 
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
@@ -168,12 +168,12 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Now get issue values
-        $issueData = $this->getIssueData();
+        $issueData = $this->getIssueData(null, $user);
         if (!empty($values['issueID'])
             && $values['issueID'] != "new"
         ) { // if an existing issue
             $issueID   = intval($values['issueID']);
-            $issueData = $this->getIssueData($issueID);
+            $issueData = $this->getIssueData($issueID, $user);
 
             $desc = $db->pselect(
                 "SELECT issueComment
@@ -240,13 +240,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      * otherwise return empty issue data object
      *
      * @param int|null $issueID the ID of the requested issue
+     * @param \User $user the user requesting the issue
      *
      * @return array
      */
-    function getIssueData(int $issueID=null): array
+    function getIssueData(int $issueID=null, \User $user): array
     {
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         if (!empty($issueID)) {
             return $db->pselectRow(
@@ -292,7 +292,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getComments(int $issueID): array
     {
-        $db =& \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $unformattedComments = $db->pselect(
             "SELECT newValue, fieldChanged, dateAdded, addedBy " .
@@ -330,7 +330,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $comment['fieldChanged'] = 'Visit Label';
             }
         }
-
         return $unformattedComments; //now formatted I guess
     }
 
@@ -343,7 +342,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function getWatching(int $issueID): array
     {
-        $db =& \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $watching = $db->pselect(
             "SELECT userID from issues_watching WHERE issueID=:issueID",
@@ -388,8 +387,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
         }
 
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
+        $user = $request->getAttribute('user');
+        $db   = $this->loris->getDatabaseConnection();
 
         $issueValues    = [];
         $validateValues = [];
@@ -430,7 +429,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $issueValues['lastUpdatedBy'] = $user->getUsername();
 
-        $validatedInput = $this->validateInput($validateValues);
+        $validatedInput = $this->validateInput($validateValues, $user);
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
@@ -440,7 +439,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Get changed values to save in history
-        $historyValues = $this->getChangedValues($issueValues, $issueID);
+        $historyValues = $this->getChangedValues($issueValues, $issueID, $user);
 
         if (!empty($issueID)) {
             $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -451,8 +450,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueID = intval($db->getLastInsertId());
         }
 
-        $this->updateHistory($historyValues, $issueID);
-        $this->updateComments($values['comment'], $issueID);
+        $this->updateHistory($historyValues, $issueID, $user);
+        $this->updateComments($values['comment'], $issueID, $user);
 
         // Attachment for new issue.
         if (isset($_FILES['file'])) {
@@ -479,7 +478,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->replace('issues_watching', $nowWatching);
 
             // sending email
-            $this->emailUser($issueID, $issueValues['assignee']);
+            $this->emailUser($issueID, $issueValues['assignee'], $user);
         }
 
         // Adding others from multiselect to watching table.
@@ -532,14 +531,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int    $issueID          the issueID
      * @param string $changed_assignee changed assignee
+     * @param \User $user the user requesting the change
      *
      * @return void
      */
-    function emailUser(int $issueID, string $changed_assignee)
+    function emailUser(int $issueID, string $changed_assignee, \User $user)
     {
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
-        //not sure if this is necessary
+        $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
 
         $title = $db->pSelectOne(
@@ -613,12 +611,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      * Validate PSCID and Visit Label
      *
      * @param array $values values to be validated
+     * @param \User $user   the user requesting the change
      *
      * @return array success with values, or error with message.
      */
-    function validateInput(array $values): array
+    function validateInput(array $values, \User $user): array
     {
-        $db         =& \Database::singleton();
+        $db         = $this->loris->getDatabaseConnection();
         $pscid      = ($values['PSCID'] ?? null);
         $visitLabel = ($values['visitLabel'] ?? null);
         $centerID   = ($values['centerID'] ?? null);
@@ -697,7 +696,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                     "PSCID and Visit Label do not match a valid candidate session!"
                 );
             }
-
             return $result;
         }
 
@@ -706,7 +704,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
             $params = ['PSCID' => $result['PSCID']];
 
-            $user =& \User::singleton();
             if (!$user->hasPermission('access_all_profiles')) {
                 $params['CenterID'] = implode(',', $user->getCenterIDs());
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
@@ -726,7 +723,6 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (isset($result['visit'])) {
             $this->showError("Visit Label must be accompanied by a PSCID");
         }
-
         return $result;
     }
 
@@ -735,12 +731,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param array $issueValues new values
      * @param int   $issueID     issue ID
+     * @param \User $user        current user
      *
      * @return array array of changed values
      */
-    function getChangedValues(array $issueValues, int $issueID): array
+    function getChangedValues(array $issueValues, int $issueID, \User $user): array
     {
-        $issueData     = $this->getIssueData($issueID);
+        $issueData     = $this->getIssueData($issueID, $user);
         $changedValues = [];
         foreach ($issueValues as $key => $value) {
             // Only include fields that have changed
@@ -759,14 +756,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param array $values  the new values
      * @param int   $issueID the issue ID
+     * @param \User $user    the user
      *
      * @return void
      */
-    function updateHistory(array $values, int $issueID)
+    function updateHistory(array $values, int $issueID, \User $user)
     {
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
-
+        $db = $this->loris->getDatabaseConnection();
         foreach ($values as $key => $value) {
             // centerID is allowed to be NULL
             if (!empty($value) || $key === 'centerID') {
@@ -786,14 +782,13 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param string $comment new issue comment
      * @param int    $issueID the issue ID
+     * @param \User  $user    the user
      *
      * @return void
      */
-    function updateComments(string $comment, int $issueID)
+    function updateComments(string $comment, int $issueID, \User $user)
     {
-        $user =& \User::singleton();
-        $db   =& \Database::singleton();
-
+        $db = $this->loris->getDatabaseConnection();
         if (isset($comment) && $comment != "null") {
             $commentValues = [
                 'issueComment' => $comment,
