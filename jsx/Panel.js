@@ -83,9 +83,13 @@ class Panel extends Component {
       </div>
     ) : '';
 
+    const panelHeight = this.props.collapsing
+      ? null
+      : {height: this.props.panelSize};
+
     return (
       <div className={'panel ' + this.props.class}
-           style={{height: this.props.panelSize}}
+           style={panelHeight}
       >
         {panelHeading}
         <div id={this.props.id}
