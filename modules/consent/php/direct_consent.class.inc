@@ -271,8 +271,9 @@ class Direct_Consent extends \NDB_Page
                 "SELECT ConsentID, Label FROM consent WHERE Name=:cnst",
                 ['cnst' => $consent]
             );
-            if ($consentInfo['ConsentID'] !== null
-                && $consentInfo['Label'] !== null
+            if (is_array($consentInfo)
+                && array_key_exists('ConsentID', $consentInfo)
+                && array_key_exists('Label', $consentInfo)
             ) {
                 $consentID = $consentInfo['ConsentID'];
                 // Update consent status
@@ -291,7 +292,7 @@ class Direct_Consent extends \NDB_Page
                 $updateHistory = [
                     'PSCID'        => $pscid,
                     'ConsentName'  => $consent,
-                    'ConsentLabel' => $label,
+                    'ConsentLabel' => $consentInfo['Label'],
                     'Status'       => $value,
                     'DateGiven'    => date('Y-m-d H-i-s'),
                     'EntryStaff'   => 'Candidate',

@@ -438,7 +438,7 @@ function getConsentStatusFields()
     $candidateConsent = $candidate->getConsents();
 
     // Set only specified consentID if coming from consent module
-    if (!is_null($_GET['consent'])) {
+    if (array_key_exists('consent', $_GET) && !is_null($_GET['consent'])) {
         $id = $_GET['consent'];
         $consentDetails   = [
             $id => $consentDetails[$id]
@@ -462,7 +462,7 @@ function getConsentStatusFields()
 
             // Process dates from datetime to date
             $dateGiven = '';
-            if (!empty($candidateConsentID['DateWithdrawn'])) {
+            if (!empty($candidateConsentID['DateGiven'])) {
                 $dateGiven = strtotime($candidateConsentID['DateGiven']);
                 $dateGiven = date('Y-m-d', $dateGiven);
             }
@@ -509,7 +509,7 @@ function getConsentStatusHistory($pscid)
     $db = (\NDB_Factory::singleton())->database();
 
     // Set only specified consentID if coming from consent module
-    if (!is_null($_GET['consent'])) {
+    if (array_key_exists('consent', $_GET) && !is_null($_GET['consent'])) {
         $id     = $_GET['consent'];
         $query  = "SELECT cch.EntryDate, cch.DateGiven, cch.DateWithdrawn,
          cch.PSCID, cch.ConsentName, cch.ConsentLabel, cch.Status, cch.EntryStaff
