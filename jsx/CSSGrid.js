@@ -106,10 +106,6 @@ function CSSGrid(props) {
         if (value.Order) {
             style.order = value.Order;
         }
-        console.log('style is ');
-        console.log(style);
-        console.log('cardSize is ');
-        console.log(pSize);
 
         style.alignSelf = 'stretch';
         return (
