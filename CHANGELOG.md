@@ -39,6 +39,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 - The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+- Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
 
 #### Bug Fixes
@@ -72,6 +73,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Data Dictionary
+- Changed instrument filter to multiselect  (PR #7040)
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
