@@ -37,6 +37,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
 
 #### Bug Fixes
@@ -67,6 +68,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Data Dictionary
+- Changed instrument filter to multiselect  (PR #7040)
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
