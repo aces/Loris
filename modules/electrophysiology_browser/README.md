@@ -43,7 +43,7 @@ electrode information, task event information, the actual recording) -- as well 
 
 New annotations or edits to existing annotations made through the browser must also be updated in the derivative files stored in the filesystem, before a user tries to download a derivative file package. To do this automatically, a script is provided under `tools/update_annotation_files.php`, and a cron job should be set up to execute it regularly, e.g. every evening. 
 
-## Installation requirements to use the visualization features
+## <a name="installation-requirements-to-use-the-visualization-features"></a> Installation requirements to use the visualization features
 The visualization component requires Protocol Buffers v3.0.0 or higher.
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
 

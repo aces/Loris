@@ -23,8 +23,9 @@
 13. Test that if changes have been made to the session's annotations, the downloaded annotation files are correctly updated to match [Manual Testing]
 
 ### C. Visualization  
-13. Follow the [module README extra installation steps](modules/electrophysiology_browser#installation-requirements-to-use-the-visualization-features) 
-and make sure the [Signal Viewer panel] displays correctly on the screen. (Documentation: see modules/electrophysiology_browser/jsx/react-series-data-viewer#user-manual )
+
+13. Follow the [module README extra installation steps](../README.md#installation-requirements-to-use-the-visualization-features) 
+and make sure the [Signal Viewer panel] displays correctly on the screen. (Documentation: see [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#user-manual))
 14. Delete modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js and revert the change made 
 to modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json to simulate an environement for which the extra installation steps have not been run yet. 
 Make sure `make dev` runs without failing, and that except the Signal Viewer panel, all the other components in the page display well. 
