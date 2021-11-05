@@ -908,9 +908,11 @@ class Edit_User extends \NDB_Form
 
         // get the editor's permissions
         $perms = $editor->getPermissionsVerbose();
-
         $lastRole = '';
         $group    = [];
+        usort($perms, function($a, $b) {
+            return strcmp($a['label'], $b['label']);
+        });
         foreach ($perms as $row) {
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
@@ -967,6 +969,7 @@ class Edit_User extends \NDB_Form
         );
 
         $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
+
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
