@@ -591,9 +591,9 @@ class SelectElement extends Component {
       });
     }
 
-    if (this.props.selectLabel !== '') {
+    if (this.props.placeholder !== '') {
       optionList.unshift(<option value={''} disabled={true} selected={true}>
-        {this.props.selectLabel}
+        {this.props.placeholder}
       </option>);
     }
 
@@ -659,7 +659,7 @@ SelectElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
-  selectLabel: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 SelectElement.defaultProps = {
@@ -680,7 +680,7 @@ SelectElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
   noMargins: false,
-  selectLabel: '',
+  placeholder: '',
 };
 
 /**
