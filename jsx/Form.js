@@ -592,7 +592,7 @@ class SelectElement extends Component {
     }
 
     if (this.props.placeholder !== '') {
-      optionList.unshift(<option value={''} disabled={true} selected={true}>
+      optionList.unshift(<option value={''} selected={true}>
         {this.props.placeholder}
       </option>);
     }
