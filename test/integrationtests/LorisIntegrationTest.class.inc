@@ -61,6 +61,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp(): void
     {
+        // test
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -179,17 +180,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**

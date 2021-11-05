@@ -68,7 +68,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchiveViewDetailsDoespageLoad()
     {
         $this->safeGet($this->url . "/dicom_archive/viewDetails/?tarchiveID=27");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("View Details", $bodyText);
     }

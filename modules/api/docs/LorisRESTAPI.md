@@ -416,7 +416,7 @@ The JSON object is of the form:
 }
 ```
 
-A PUT of the same format but with only the Meta fields will create the VisitLabel
+A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
 PATCH is not supported for Visit Labels.

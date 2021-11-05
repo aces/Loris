@@ -86,7 +86,7 @@ class ExaminerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
-        $tableText = $this->webDriver->findElement(
+        $tableText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Examiner", $tableText);
@@ -105,7 +105,7 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -124,7 +124,7 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(['superuser']);
         $this->safeGet($this->url . "/examiner/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -145,10 +145,10 @@ class ExaminerTest extends LorisIntegrationTest
             'Skipping tests until Travis and React get along better'
         );
         $this->safeGet($this->url . "/examiner/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("examiner")
         )->sendKeys("XXXX");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
         $bodyText = $this->safeFindElement(
@@ -183,10 +183,10 @@ class ExaminerTest extends LorisIntegrationTest
         )->click();
         $this->safeGet($this->url . "/examiner/");
         //search the examiner which inserted
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("examiner")
         )->sendKeys("Test_Examiner");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("filter") // Filter button removed in
         )->click();                     // Reactified menu filter
         $text = $this->webDriver->executescript(

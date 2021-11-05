@@ -11,6 +11,17 @@ changes in the following format: PR #1234***
 ## LORIS 24.0 (Release Date: ??)
 ### Core
 - New classes to describe a data dictionary (PR #6938)
+- Validation for DateElement (JS). (PR #7266)
+- Fix "Go to main page" broken link (PR #7258)
+- Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
+- Session Current_stage default value changed for Not Started (PR #7102)
+- Fix public pages with missing title (PR #7121)
+- New data dictionary framework and module (#6936)
+- LorisInstance class was added to represent an installed LORIS instance (PR #6118)
+- Added ability for scripts to bulk load instrument data (PR #6869)
+- Multiple classes of errors flagged by phan are now fixed (various PRs)
+- A PSR3 compatible logging interface was added (PR #7509)
+
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
@@ -24,22 +35,44 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
 - Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
+- Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 - Addition of `changeProject` and `resetProject` helper functions to the `LorisIntegrationTest` class to help test project permissions (PR #6912)
 - Unit tests added for the `NDB_BVL_Instrument`, `NDB_Page`, `NDB_Factory`, `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+- Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
+- New Data Dictionary framework to better describe data (PR #6936)
+
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
+- The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+- A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
+- A subtest with only static and/or static score fields (i.e. no values to submit) can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
+
 ### Modules
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+- Update validation to allow NULL Site (For All Sites issues) (#6526)
+- Fixing redirect and error reporting when creating a new issue (PR #7323)
+- Show inactive users in the list of assignees as a disabled option. If the inactive user had already been previously assigned the issue, the disabled option appears but cannot be reselected. Inactive users can no longer be assigned new issues. (PR #7306)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
+- Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
+- Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
+- Documentation was moved into the module docs directory (PR #6151)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+- Fix to prevent titles cut off (PR #6731)
+#### Conflict Resolver
+- Changes are now saved automatically, one by one. Once a conflict is resolved the cell that contains the input field will glow green. It is possible to change
+ the resolved conflicts to a new value until the page is refreshed. [(PR #7558)](https://github.com/aces/Loris/pull/7558)
+- This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 #### Instruments
@@ -54,19 +87,80 @@ on the session page to support new annotation features (PR #7345)
 - Addition of configuration settings for the MINC to BIDS converter script (PR #7488)
 #### Candidate Profile
 - New integration test class to test project permissions (PR #6912)
+
+#### Data Dictionary
+- Changed instrument filter to multiselect  (PR #7040)
+#### User Accounts
+- Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
+- Fix to allow a superuser to create new users with customizable permissions. (#6770)
+- Indicate required fields (#6617)
+#### New profile
+ - Fix fatal errors on submission. (PR #6822)
+#### Instrument Builder
+- Fix for error 'Max value must be larger than min value' when clicking 'Add Row'. (PR #6810)
+#### EEG Browser
+- Signal Visualization, Events and Electrode map (PR #7387)
+- Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+#### Media
+- Fix to display the file name when editing a file (PR #7381)
+#### Imaging Browser
+- Fix nullable type fatal error (PR #7336)
+#### Publication
+- Display all filterable columns in datatable (#7277)
+- Fix for file deletion (PR #7284)
+#### Behavioural feedback
+- Fix fatals thrown when submitting a feedback (PR #7036, #7063)
+#### Instrument list
+- Fix a fatal thrown when sending to DCC (PR #7063)
+#### Conflict Resolver
+- Change the display of multi select values from "value1{@}value2" to "value1, value2"
+ in the Correct Answer column of Unresolved and Resolved Conflicts. (PR #7239)
+#### Instrument
+- Fix to avoid select with required option in group fields to display as multiselect (PR #7254)
+- Fixes to insert JSON intrument (PR #7155)
+#### Create timepoint
+- Fix a reindexing of the languages array which caused a database insert error. (PR #7145)
+#### Login
+- Add option to toggle visibility on password input types. (PR #6210, #7043)
+#### Behavioural QC
+- Fix a fatal error if the datatable is filtered with All instrument (PR #6945)
+- Fix for the Instrument filter to keep track of the selected value (PR #6945)
+
+### Tools
+- Fix fatal errors in delete_candidate.php tool. (PR #6805, #7275)
+- Fix fatal errors in fix_candidate_age.php (PR #7546)
+- New tool generate_candidate_externalids.php to fill external IDs for all candidates where a NULL value is found. (PR #7095)
+- New tool `populate_visits.php` to backpopulate visits from the `config.xml`, `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+- Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
+
 ### Clean Up
+- Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
+- Removal of the violated_scans_edit permission (PR #6747)
+- Removal for the need of the `VisitLabel` section of the `config.xml` file. All Visit configurations and their association to projects are now in the database (#7663 & #7729)
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 - Removal of references to Reliability module in Raisinbread (PR #6895)
 - Raisinbread visit stage inconsistency changed (PR #6896)
 - HRRT patch sourced to Raisinbread (PR #6897)
+
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- The `Data_entry_completion_status` column of instrument tables has been migrated to its own column in flag, and renamed to `Required_elements_completed`. After script `Set_Required_elements_completed_flag.php` is run, projects will need to delete the `Data_entry_completion_status` column of instrument tables. This can be accomplished by running `Remove_Data_entry_completion_status_instr_column.php`, and then sourcing the patch generated by this script.
+- If `_setDataEntryCompletionStatus`, `_determineDataEntryCompletionStatus`, and/or `updateDataEntryCompletionStatus` are called in any overrides, make sure to replace all instances with their newly named counterparts, `_setRequiredElementsCompletedFlag`, `_determineRequiredElementsCompletedFlag`, `updateRequiredElementsCompletedFlag`
 - Deprecation of `begintable` and `endtable` elements in LINST instruments
 - Deletion of `dateTimeFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
+- Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
+- There is a new abstract "getDataDictionary" function in the instrument class for the new data dictionary framework. This is already implemented for LINST instruments, and existing instruments using LorisForm can use the `\LorisFormDictionaryImpl` trait to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
+
 ### Notes For Developers
-- *Add item here*
+- Eslint warnings cleanup (Various PRs)
+- JQuery cleanup (Various PRs)
+- PHPCS enabled for tools/ and test/ (Various PRs)
+- Auto fix PHPCS (npm run lintfix:php) (#6825)
+
+
 
 
 ## LORIS 23.0.0 (Release Date: 2020-06-12)
@@ -89,20 +183,26 @@ database (PR #5260)
 - Fix edge-case that gave a confusing error message when changing password (PR #5956)
 - Fix bug where examiner form field was incorrectly hidden (PR #6085)
 - Fix special character double escaping in instruments (PR #6223)
+- Fix duplicate examiners created / examiners overwritten (PR #7462)
+- Prevent horizontal scroll on all modules (PR #6531)
+- Fix to prevent help boxes to float over the page content when scrolling (PR #6721)
 
 ### Modules 
 #### Candidate Profile
-- New module created to provide dashboard of a single candidate's data across all
-  modules. (Various PRs)
+- New module created to provide dashboard of a single candidate's data across all modules. (Various PRs)
 
 ##### Issue Tracker
 - The issue_tracker module now has the feature of uploading attachments to new or existing issues. (PR #5394)
 - All sites now appear in the dropdown for site, not only study sites. (PR #6135)
+- Status filter converted to a multiselect field. The Active Issues tab now displays Status filter: All except Closed. (PR #6529)
+- Module filter fix to remove [object Object] entries. (PR #6522)
+- Priority filter Low option added. (PR #6609)
+- Fix to decode issue descriptions with special characters (&<>) (PR #6643)
+- Add help text on Create/Edit Issue (PR #6600)
 
 #### Battery Manager
 - New module created to manage the entries in the `test_battery` table of the database.
-This allows projects to modify their instrument battery without requiring backend access.
- (PR #4221)
+This allows projects to modify their instrument battery without requiring backend access. (PR #4221)
  
 #### Module Manager
 - New module created to manage the status of installed modules. (PR #6015)
@@ -123,6 +223,26 @@ death for candidates. (PR #4929)
 
 #### MRI Violations
 - Add support for multiple MRI protocols (PR #4321)
+
+#### Login
+- Pwd Expiry: Password validation for rejection if matching user's email or username
+or not matching password confirmation. (PR #6615, #6705, #6611)
+
+#### Statistics
+- Fix to prevent Notice error logs (PR #6720) 
+- Projects filter only displays projects user has permission for. (PR #6706)
+
+#### Genomic Browser
+- In Profile and SNP screens, display subproject title instead of id. (PR #6633)
+
+#### Survey
+- Fix Notice error logs and infinite redirect. (PR #6644)
+
+#### User Accounts
+- Fix typo in user_accounts_multisite permission name. (PR #6656)
+
+#### DQT
+- Improve the visibility of some dropdown elements (PR #6602)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
@@ -147,9 +267,11 @@ exception). It is recommended to run this tool for existing projects (PR #5270)
 be used by projects having custom modules not in LORIS. (PR #5913)
 - Duplicate filenames in the data release module will cause an error when downloading. Make sure to remove all filename duplications before upgrading to this version. (PR #6461)
 - New tool for detecting and reporting the presence of double escaped special characters in the database instruments (PR #6477)
+- Run `tools/single_use/Remove_duplicate_examiners.php` to remove duplicate examiners that may have been created before bugfix. Make sure to run this script _before_ running the `SQL/New_patches/2021-09-28-Unique_examiners.sql`. (PR #7462)
 
 ### Notes For Developers
 - The tool `phpstan` has been added to our automated test suite. (PR #4928)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)

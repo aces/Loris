@@ -555,16 +555,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'begingroup':
                     if ($addElements) {
                         $Group['Name']      = $pieces[1] . '_group';
-                        $Group['Delimiter'] = trim($pieces[2]);
-
-                        if (empty($Group['Delimiter'])) {
-                            $Group['Delimiter'] = $this->_GUIDelimiter;
-                        }
+                        $Group['Delimiter'] = isset($pieces[2])
+                            ? trim($pieces[2]) : $this->_GUIDelimiter;
                     }
                     break;
                 case 'endgroup':
                     if ($addElements) {
-                        $groupLabel = $pieces[2];
+                        $groupLabel = isset($pieces[2]) ? trim($pieces[2]) : null;
                         $this->addGroup(
                             $Group['Elements'],
                             $Group['Name'] ?? '',
@@ -638,7 +635,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'date':
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
-                            $dateOptions = null;
+                            $dateOptions = [];
                         } else {
                             $dateOptions = [
                                 'language'         => 'en',
@@ -840,7 +837,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                     if ($addElements) {
                         if ($Group['Name'] != null) {
-                            print "Creating $pieces[1] with label: $pieces[2]";
                             $Group['Elements'][]
                                 = $this->form->createElement(
                                     'static',

@@ -180,17 +180,26 @@ class CouchDBInstrumentImporter
      */
     function updateCandidateDocs($Instruments)
     {
-        $results = [
+        $results       = [
             'new'       => 0,
             'modified'  => 0,
             'unchanged' => 0,
         ];
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
+        );
         foreach ($Instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // the database, we need to instantiate the object to get the
             // table name.
             // We need to check if it is a JSONData instrument or SQL data
             $instrumentObj = \NDB_BVL_Instrument::factory(
+                $lorisinstance,
                 $instrument,
                 '',
                 ''

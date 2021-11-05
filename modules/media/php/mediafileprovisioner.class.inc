@@ -30,14 +30,22 @@ namespace LORIS\media;
  */
 class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    protected $lorisinstance;
+
     /**
      * Create a MediaFileProvisioner, which gets files for the meida
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $lorisinstance The LORIS instance that the module
+     *                                            is serving.
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $lorisinstance)
     {
+        $this->lorisinstance = $lorisinstance;
+
         parent::__construct(
             "SELECT m.file_name as fileName,
+                    m.instrument as testName,
                     c.PSCID as pscid,
                     s.Visit_label as visitLabel,
                     l.language_label as languageLabel,
@@ -72,6 +80,18 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new MediaFile($row);
+        if (!is_null($row['testName'])) {
+            try {
+                $instrumentName  = \NDB_BVL_Instrument::factory(
+                    $this->lorisinstance,
+                    $row['testName'],
+                )->getFullname();
+                $row['fullName'] = $instrumentName;
+            } catch (\Exception $e) {
+            }
+        }
+        unset($row['testName']);
+
+        return new MediaFile($row);
     }
 }
