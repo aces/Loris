@@ -907,12 +907,15 @@ class Edit_User extends \NDB_Form
         }
 
         // get the editor's permissions
-        $perms = $editor->getPermissionsVerbose();
+        $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         $group    = [];
-        usort($perms, function($a, $b) {
-            return strcmp($a['label'], $b['label']);
-        });
+        usort(
+            $perms,
+            function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            }
+        );
         foreach ($perms as $row) {
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
