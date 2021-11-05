@@ -17,7 +17,6 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
-- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -35,6 +34,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 - The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
@@ -246,3 +246,4 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
