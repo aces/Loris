@@ -17,6 +17,10 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
+- LorisInstance class was added to represent an installed LORIS instance (PR #6118)
+- Added ability for scripts to bulk load instrument data (PR #6869)
+- Multiple classes of errors flagged by phan are now fixed (various PRs)
+- A PSR3 compatible logging interface was added (PR #7509)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -34,6 +38,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
+- New Data Dictionary framework to better describe data (PR #6936)
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
@@ -53,6 +58,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
 - Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
 - Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
+- Documentation was moved into the module docs directory (PR #6151)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 - Fix to prevent titles cut off (PR #6731)
