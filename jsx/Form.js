@@ -591,6 +591,12 @@ class SelectElement extends Component {
       });
     }
 
+    if (this.props.placeholder !== '') {
+      optionList.unshift(<option value={''} selected={true}>
+        {this.props.placeholder}
+      </option>);
+    }
+
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
@@ -653,6 +659,7 @@ SelectElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
+  placeholder: PropTypes.string,
 };
 
 SelectElement.defaultProps = {
@@ -673,6 +680,7 @@ SelectElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
   noMargins: false,
+  placeholder: '',
 };
 
 /**

@@ -192,6 +192,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your site:'}
           />
           <SelectElement
             name={'project'}
@@ -200,6 +201,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your project:'}
           />
           <CheckboxElement
             name={'examiner'}
