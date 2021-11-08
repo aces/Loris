@@ -260,12 +260,16 @@ class UserPermissions
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
-        // get all the permissions for this user
-        $query = "SELECT permissions.permID
-            FROM permissions, user_perm_rel
-            WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
-
-        $results = $DB->pselect($query, ['UID' => $this->userID]);
+        $query = "SELECT permissions.permID FROM permissions";
+        //If not superuser, get the permissions that the user has
+        if (!$this->hasPermission('superuser')) {
+            $query  .= ", user_perm_rel
+                WHERE permissions.permID = user_perm_rel.permID
+                AND userID = :UID";
+            $results = $DB->pselect($query, ['UID' => $this->userID]);
+        } else {
+            $results = $DB->pselect($query, []);
+        }
 
         // isolate and return numeric permission values
         $permIDs = [];
