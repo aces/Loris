@@ -98,40 +98,38 @@ class DirectDataEntryMainPage
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
             ['key' => $this->key]
         );
-        $this->NumPages  = $DB->pselectOne(
-            "SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN",
-            ['TN' => $this->TestName]
-        );
 
         if (empty($this->TestName) && empty($this->CommentID)) {
             throw new Exception("Data has already been submitted.", 403);
         }
 
-        $pageNum = null;
+        $instrumentObj  = \NDB_BVL_Instrument::factory(
+            $this->loris,
+            $this->TestName,
+        );
+        $subtests       = $instrumentObj->getSubtestList();
+        $this->NumPages = count($subtests) + 1;
+
+        $pageNum           = null;
+        $this->NextPageNum = null;
+        $this->PrevPageNum = null;
         if (!empty($_REQUEST['pageNum'])) {
             $pageNum = $_REQUEST['pageNum'];
         }
 
         if ($pageNum === 'finalpage') {
-            $this->Subtest = 'finalpage';
-        } else {
-            $this->Subtest = $DB->pselectOne(
-                "SELECT Subtest_name
-                FROM instrument_subtests
-                WHERE Test_name=:TN AND Order_number=:PN",
-                [
-                    'TN' => $this->TestName,
-                    'PN' => $pageNum,
-                ]
-            );
+            $this->Subtest     = 'finalpage';
+            $this->PrevPageNum = $this->getPrevPageNum($pageNum);
+        } else if ($pageNum === 'top') {
+            $this->Subtest     = 'finalpage';
+            $this->NextPageNum = intval($pageNum) + 1 === $this->NumPages
+                ? null : $this->getNextPageNum($pageNum);
+        } else if (isset($pageNum) && is_numeric($pageNum)) {
+            $this->Subtest     = $subtests[intval($pageNum)-1]['Name'];
+            $this->NextPageNum = intval($pageNum) + 1 === $this->NumPages
+                ? null : $this->getNextPageNum($pageNum);
+            $this->PrevPageNum = $this->getPrevPageNum($pageNum);
         }
-
-        $totalPages        = $DB->pselectOne(
-            "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
-            ['TN' => $this->TestName]
-        );
-        $this->NextPageNum = $this->getNextPageNum($pageNum);
-        $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
         $this->CommentID = $this->getCommentID();
         $this->tpl_data  = [
@@ -140,7 +138,7 @@ class DirectDataEntryMainPage
             'pageNum'     =>
                 $pageNum && is_numeric($pageNum) ?
                     intval($pageNum) + 1 : 1,
-            'totalPages'  => $totalPages,
+            'totalPages'  => $this->NumPages,
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
         ];
@@ -157,25 +155,15 @@ class DirectDataEntryMainPage
      */
     function getNextPageNum($currentPage): int
     {
-        if ($currentPage === null) {
+        if ($currentPage === null || !is_numeric($currentPage)) {
             return 1;
         }
 
-        if (!is_numeric($currentPage)) {
-            return -1;
+        if ($currentPage+1 === $this->NumPages) {
+            return 0;
         }
 
-        $nextPage = $currentPage+1;
-        return intval(
-            \Database::singleton()->pselectOne(
-                "SELECT Order_number FROM instrument_subtests
-                WHERE Test_name=:TN AND Order_number=:PN",
-                [
-                    'TN' => $this->TestName,
-                    'PN' => $nextPage,
-                ]
-            )
-        );
+        return $currentPage+1;
     }
 
     /**
@@ -188,7 +176,6 @@ class DirectDataEntryMainPage
      */
     function getPrevPageNum($currentPage): ?string
     {
-        $DB = Database::singleton();
         if ($currentPage === null) {
             // On the top page or no page specified, do not include link
             return null;
@@ -200,22 +187,9 @@ class DirectDataEntryMainPage
         }
 
         if ($currentPage === 'finalpage') {
-            return $DB->pselectOne(
-                "SELECT MAX(Order_number)
-                FROM instrument_subtests
-                WHERE Test_name=:TN",
-                ['TN' => $this->TestName]
-            );
+            strval($this->NumPages - 1);
         }
-        $prevPage = $currentPage-1;
-        return $DB->pselectOne(
-            "SELECT Order_number FROM instrument_subtests
-            WHERE Test_name=:TN AND Order_number=:PN",
-            [
-                'TN' => $this->TestName,
-                'PN' => $prevPage,
-            ]
-        );
+        return strval($currentPage - 1);
     }
 
     /**
@@ -387,15 +361,7 @@ class DirectDataEntryMainPage
             $this->tpl_data['complete']  = true;
 
             $this->updateStatus('Complete');
-            $DB->update(
-                $this->TestName,
-                [
-                    'Date_taken' => date('Y-m-d'),
-                ],
-                [
-                    'CommentID' => $this->CommentID,
-                ]
-            );
+            $this->caller->instrument->_saveValues(['Date_taken' => date('Y-m-d')]);
             $DB->update(
                 'flag',
                 [

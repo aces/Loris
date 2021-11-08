@@ -112,7 +112,8 @@ class NDB_Caller
                 $loris,
                 $test_name,
                 $subtest,
-                $CommentID
+                $CommentID,
+                $nextpage
             );
             $this->type = 'instrument';
             return $html;
