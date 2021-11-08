@@ -49,10 +49,11 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
 if (!empty($image_file) && !empty($image_path)) {
     if (preg_match('/nii(\.gz)?/i', $image_file)) {
         header('Content-Type: application/x-nii');
-    } elseif (preg_match('/mnc/', $image_file)) {
+    } elseif (preg_match('/mnc/', $image_path)) {
         header('Content-Type: application/x-mnc');
     }
     header('X-FileID: ' . $_REQUEST['file_id']);
+    header('X-Filename: ' . basename($image_file));
     readgzfile($image_path);
 } else {
     header("HTTP/1.1 404 Not Found");
