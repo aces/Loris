@@ -28,7 +28,7 @@ $(function() {
   window.viewer = BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
     var loading_div = $("#loading");
 
-    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
+    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = {} ,
     bboptions = {};
 
     ///////////////////////////
@@ -536,18 +536,11 @@ $(function() {
         });
       });
 
-      $.ajax({
-          dataType: "json",
-          data: 'file_id=' + minc_ids_arr[vol_id],
-          url: loris.BaseURL + '/brainbrowser/ajax/getImageName.php',
-          method: 'GET',
-          success: function(data) {
-              let fileName = $("#filename-" + vol_id);
-              fileName.html(data.filename);
-              fileName.data("title", data.filename);
-              fileName.tooltip();
-          }
-      });
+      const fileName_id = $("#filename-" + vol_id);
+      const filename = minc_filenames[vol_id];
+      fileName_id.html(filename);
+      fileName_id.data("title", filename);
+      fileName_id.tooltip();
 
       $('#filename-'+vol_id).on("click", function() {
                $('#filename-additional-info-'+vol_id).slideToggle("fast");
@@ -749,22 +742,25 @@ $(function() {
         minc_ids_arr = [minc_ids];
     }
 
-    function requestMINC(minc_id) {
+
+    function requestMINC(vol_id, minc_id) {
       return new Promise((resolve) => {
         $.ajax({
           url: loris.BaseURL + "/brainbrowser/ajax/image.php",
           data: 'file_id=' + minc_id,
           method: 'GET',
           success: function (response, status, jqXHR) {
-            let type = jqXHR.getResponseHeader('Content-Type');
-            let fileid = jqXHR.getResponseHeader('X-FileID');
+            const type = jqXHR.getResponseHeader('Content-Type');
+            const fileid = jqXHR.getResponseHeader('X-FileID');
+            const filename = jqXHR.getResponseHeader('X-Filename');
+            minc_filenames[vol_id] = filename;
             if (type === "application/x-mnc") {
               minc_volumes.push({
                 type: 'minc',
                 raw_data_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
                 template: {
                   element_id: "volume-ui-template4d",
-                  viewer_insert_class: "volume-viewer-display"
+                  viewer_insert_class: "volume-viewer-display",
                 }
               });
             } else if (type === "application/x-nii") {
@@ -773,7 +769,7 @@ $(function() {
                 nii_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
                 template: {
                   element_id: "volume-ui-template4d",
-                  viewer_insert_class: "volume-viewer-display"
+                  viewer_insert_class: "volume-viewer-display",
                 }
               });
             } else {
@@ -801,7 +797,7 @@ $(function() {
 
     let promises = [];
     for (i = 0; i < minc_ids_arr.length; i += 1) {
-      promises.push(requestMINC(minc_ids_arr[i]));
+      promises.push(requestMINC(i, minc_ids_arr[i]));
     }
 
     if (getQueryVariable("overlay") === "true") {
