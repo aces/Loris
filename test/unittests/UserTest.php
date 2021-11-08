@@ -1106,7 +1106,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertEquals($this->_user->getPermissionIDs(), [1, 2, 3]);
+        $this->assertEquals($this->_user->getPermissionIDs(), [1, 2, 3, 4]);
     }
 
     /**
