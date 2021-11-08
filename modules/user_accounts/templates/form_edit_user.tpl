@@ -1,5 +1,6 @@
 <br />
 <form method="post" name="edit_user" autocomplete="off">
+    {if $form.errors}
     <div class="alert alert-danger" role="alert">
         The form you submitted contains data entry errors
     </div>
@@ -265,10 +266,10 @@
     	</div>
     </div>
     {/if}
-    {if $form.errors.Email_Group|default}
+    {if $form.errors.Email|default}
     <div class="row form-group has-error">
         <div class="col-sm-offset-2">
-            <font class="form-error">{$form.errors.Email_Group}</font>
+            <font class="form-error">{$form.errors.Email}</font>
         </div>
     {else}
     <div class="row form-group">
@@ -285,7 +286,7 @@
         <div class="col-sm-4">{$form.SendEmail.html}</div>
         {if $form.errors.Email|default}
             <div class="col-sm-offset-2">
-                <font class="form-error">{$form.errors.Email_Group}</font>
+                <font class="form-error">{$form.errors.Email}</font>
             </div>
         {/if}
     </div>
