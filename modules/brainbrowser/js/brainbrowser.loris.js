@@ -748,7 +748,7 @@ $(function() {
         $.ajax({
           url: loris.BaseURL + "/brainbrowser/ajax/image.php",
           data: 'file_id=' + minc_id,
-          method: 'GET',
+          method: 'HEAD',
           success: function (response, status, jqXHR) {
             const type = jqXHR.getResponseHeader('Content-Type');
             const fileid = jqXHR.getResponseHeader('X-FileID');
