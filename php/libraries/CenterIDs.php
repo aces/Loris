@@ -9,9 +9,9 @@ class CenterIDs extends IteratorIterator
     /**
      * Constructor
      *
-     * @param CenterIDs|null $centerIDs Elements in collection.
+     * @param CenterIDs|null ...$centerIDs Elements in collection.
      *
-     * @return \CenterIDs A collection of CenterIDs.
+     * @return CenterIDs A collection of CenterIDs.
      * @access public
      */
     public function __construct(CenterID ...$centerIDs)
@@ -22,7 +22,7 @@ class CenterIDs extends IteratorIterator
     /**
      * The current CenterID pointed in the collection.
      *
-     * @return \CenterID Current CenterID.
+     * @return CenterID Current CenterID.
      * @access public
      */
     public function current() : CenterID
@@ -33,12 +33,14 @@ class CenterIDs extends IteratorIterator
     /**
      * Adds a CenterID to the collection.
      *
+     * @param CenterID $centerID Element to add.
+     *
      * @return void.
      * @access public
      */
-    public function add(CenterID $centerIDs)
+    public function add(CenterID $centerID)
     {
-        $this->getInnerIterator()->append($centerIDs);
+        $this->getInnerIterator()->append($centerID);
     }
 }
 
