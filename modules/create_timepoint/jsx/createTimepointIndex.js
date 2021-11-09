@@ -127,7 +127,8 @@ class CreateTimepoint extends React.Component {
           const state = Object.assign({}, this.state);
           // Populate the select options for subproject.
           if (data.hasOwnProperty('subproject')) {
-            state.form.options.subproject = data.subproject;
+            console.log(data.subproject);
+            state.form.options.subproject = {1: 'Stale'}; // data.subproject;
             state.form.display.subproject = true;
           }
           // Populate the select options for psc.
@@ -289,6 +290,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.subproject}
       />
     ) : null;
@@ -303,6 +305,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.psc}
       />
     ) : null;
@@ -317,6 +320,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.project}
       />
     ) : null;
@@ -331,6 +335,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.visit}
       />
     ) : null;
@@ -345,6 +350,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.languages}
       />
     ) : null;
