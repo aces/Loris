@@ -6,14 +6,36 @@
  */
 class CenterIDs extends IteratorIterator
 {
+    /**
+     * Constructor
+     *
+     * @param CenterIDs|null $centerIDs Elements in collection.
+     *
+     * @return \CenterIDs A collection of CenterIDs.
+     * @access public
+     */
     public function __construct(CenterID ...$centerIDs)
     {
         parent::__construct(new ArrayIterator($centerIDs));
     }
+
+    /**
+     * The current CenterID pointed in the collection.
+     *
+     * @return \CenterID Current CenterID.
+     * @access public
+     */
     public function current() : CenterID
     {
         return parent::current();
     }
+
+    /**
+     * Adds a CenterID to the collection.
+     *
+     * @return void.
+     * @access public
+     */
     public function add(CenterID $centerIDs)
     {
         $this->getInnerIterator()->append($centerIDs);
