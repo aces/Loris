@@ -37,9 +37,11 @@ class UserAccountRow implements
      *
      * @return array The CenterIDs
      */
-    public function getCenterIDs() : array
+    public function getCenterIDs() : \CenterIDs
     {
-        return $this->_centerIDs;
+        return new \CenterIDs(
+            new \CenterID($this->_centerIDs[0])
+        );
     }
 
     /**

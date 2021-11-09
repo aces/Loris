@@ -60,7 +60,7 @@ class AnonymousUser extends \User
      *
      * @return array An empty array
      */
-    function getCenterIDs(): array
+    function getCenterIDs(): \CenterIDs
     {
         return [];
     }

@@ -15,5 +15,5 @@ interface MultiSiteHaver
      *
      * @return \CenterID[]
      */
-    public function getCenterIDs() : iterable;
+    public function getCenterIDs() : \CenterIDs;
 }

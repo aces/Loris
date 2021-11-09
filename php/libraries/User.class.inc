@@ -299,9 +299,13 @@ class User extends UserPermissions implements
      *
      * @return CenterID[]
      */
-    function getCenterIDs(): array
+    function getCenterIDs(): \CenterIDs
     {
-        return $this->userInfo['CenterIDs'];
+        $centerIDs = new \CenterIDs();
+        foreach ($this->userInfo['CenterIDs'] as $centerID) {
+            $centerIDs->add($centerID);
+        }
+        return $centerIDs;
     }
 
     /**
@@ -420,7 +424,10 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
+        return (in_array(
+            new \CenterID("1"),
+            iterator_to_array($this->getCenterIDs()))
+        );
     }
 
     /**
@@ -432,7 +439,10 @@ class User extends UserPermissions implements
      */
     public function hasCenter(CenterID $center_id) : bool
     {
-        return in_array($center_id, $this->getCenterIDs());
+        return in_array(
+            $center_id,
+            iterator_to_array($this->getCenterIDs())
+        );
     }
 
     /**
