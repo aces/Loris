@@ -155,9 +155,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $sessionID
             );
 
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->PageName
-            );
+            $tpl_data['bvl_feedback'] = true;
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference

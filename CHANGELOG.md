@@ -17,6 +17,10 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
+- LorisInstance class was added to represent an installed LORIS instance (PR #6118)
+- Added ability for scripts to bulk load instrument data (PR #6869)
+- Multiple classes of errors flagged by phan are now fixed (various PRs)
+- A PSR3 compatible logging interface was added (PR #7509)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -33,11 +37,17 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+- Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
+- New Data Dictionary framework to better describe data (PR #6936)
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+- A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
+- A subtest with only static and/or static score fields (i.e. no values to submit) can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
 
 ### Modules
 #### Help Editor
@@ -46,12 +56,14 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Readability of comments and history was improved. (PR #6138)
 - Update validation to allow NULL Site (For All Sites issues) (#6526)
 - Fixing redirect and error reporting when creating a new issue (PR #7323)
+- Show inactive users in the list of assignees as a disabled option. If the inactive user had already been previously assigned the issue, the disabled option appears but cannot be reselected. Inactive users can no longer be assigned new issues. (PR #7306)
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 - Addition of a PATCH request for /candidates/$CandID/$VisitLabel to start next stage when the payload contains a "Visit" stage with "In Progress" as Status, when the current status of the Visit stage is "Not Started". (PR #7479)
 - Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
 - Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
+- Documentation was moved into the module docs directory (PR #6151)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 - Fix to prevent titles cut off (PR #6731)
@@ -61,6 +73,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Data Dictionary
+- Changed instrument filter to multiselect  (PR #7040)
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
@@ -119,6 +133,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of `monthYearFields` variable in instrument class. all references to this variable should be removed from project instruments.
 - Visit definitions is no longer done in the `config.xml`. An importer tool is available to import the current setup into the `visit` table of the database. Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
 - There is a new abstract "getDataDictionary" function in the instrument class for the new data dictionary framework. This is already implemented for LINST instruments, and existing instruments using LorisForm can use the `\LorisFormDictionaryImpl` trait to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
+- The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 
 ### Notes For Developers
 - Eslint warnings cleanup (Various PRs)
@@ -240,3 +255,4 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
+- React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)

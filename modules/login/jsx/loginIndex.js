@@ -80,8 +80,6 @@ class Login extends Component {
         state.study.logo = window.location.origin
           + '/' + json.login.logo;
         // request account setup.
-        json.requestAccount.site[''] = 'Choose your site:';
-        json.requestAccount.project[''] = 'Choose your project:';
         state.component.requestAccount = json.requestAccount;
         state.isLoaded = true;
         this.setState(state);
