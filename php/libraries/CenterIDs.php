@@ -9,7 +9,7 @@ class CenterIDs extends IteratorIterator
     /**
      * Constructor
      *
-     * @param CenterIDs|null ...$centerIDs Elements in collection.
+     * @param CenterID|null ...$centerIDs Elements in collection.
      *
      * @return CenterIDs A collection of CenterIDs.
      * @access public
