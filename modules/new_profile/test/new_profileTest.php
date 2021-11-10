@@ -12,7 +12,6 @@
  */
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
-use Facebook\WebDriver\WebDriverKeys;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
