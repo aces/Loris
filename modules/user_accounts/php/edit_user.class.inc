@@ -920,7 +920,7 @@ class Edit_User extends \NDB_Form
         $roles       = [];
         foreach ($perms as $row) {
             $lastRole = $row['type'];
-            $attribs = ["class" => "perm_$lastRole"];
+            $attribs  = ["class" => "perm_$lastRole"];
             if ($this->_isEditingOwnAccount()) {
                 $attribs['disabled'] = true;
             }
@@ -939,34 +939,34 @@ class Edit_User extends \NDB_Form
             }
         }
 
-        $collection = [];
-        $collection[]  = $this->form->createElement(
-                        'static',
-                        '',
-                        '',
-                        '</div>'
+        $collection   = [];
+        $collection[] = $this->form->createElement(
+            'static',
+            '',
+            '',
+            '</div>'
                         . "<h3 id=\"header_Permission\" "
                         . "class=\"perm_header button\" "
                         . "style=\"text-align: center; margin-top: 5px;\">"
                         ."Permissions"
                         . '</h3>'
                         . "<div id=\"perms_Permission\" style=\"margin-top: 5px;\">"
-                    );
+        );
         foreach ($permissions as $row) {
             $collection[] = $row;
         }
-        $collection[]  = $this->form->createElement(
-                        'static',
-                        '',
-                        '',
-                        '</div>'
+        $collection[] = $this->form->createElement(
+            'static',
+            '',
+            '',
+            '</div>'
                         . "<h3 id=\"header_Roles\" "
                         . "class=\"perm_header button\" "
                         . "style=\"text-align: center; margin-top: 5px;\">"
                         ."Roles"
                         . '</h3>'
                         . "<div id=\"perms_Roles\" style=\"margin-top: 5px;\">"
-                    );
+        );
         foreach ($roles as $row) {
             $collection[] = $row;
         }
