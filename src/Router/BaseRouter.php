@@ -118,8 +118,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $baseurl = $uri->withPath($baseurl)->withQuery("");
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
 
-            // Reset factory object so that the base URL can be reset
-            $factory->reset();
             $factory->setBaseURL($baseurl);
 
             $module  = \Module::factory($modulename);
