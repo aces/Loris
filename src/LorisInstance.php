@@ -126,4 +126,23 @@ class LorisInstance
     {
         return $this->config;
     }
+
+    /**
+     * Returns a list of Site objects that are valid for this
+     * Loris instance
+     *
+     * @return \Site[]
+     */
+    public function getAllSites() : array
+    {
+        $DB      = $this->getDatabaseConnection();
+        $centers = $DB->pselectCol("SELECT CenterID FROM psc", []);
+
+        return array_map(
+            function ($center) {
+                return \Site::singleton(new \CenterID($center));
+            },
+            $centers
+        );
+    }
 }
