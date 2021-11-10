@@ -907,47 +907,71 @@ class Edit_User extends \NDB_Form
         }
 
         // get the editor's permissions
-        $perms    = $editor->getPermissionsVerbose();
-        $lastRole = '';
-        $group    = [];
+        $perms = $editor->getPermissionsVerbose();
+        $group = [];
+
         usort(
             $perms,
             function ($a, $b) {
                 return strcmp($a['label'], $b['label']);
             }
         );
+        $permissions = [];
+        $roles       = [];
         foreach ($perms as $row) {
-            if ($row['type'] != $lastRole) {
-                $lastRole = $row['type'];
-                $group[]  = $this->form->createElement(
-                    'static',
-                    '',
-                    '',
-                    '</div>'
-                    . "<h3 id=\"header_$lastRole\" "
-                    . "class=\"perm_header button\" "
-                    . "style=\"text-align: center; margin-top: 5px;\">"
-                    .ucwords($row['type'])
-                    . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
-                );
-            }
-
-            // If the user is editing his/her own account, disable all permission
-            // checkboxes. Note that they will not be submitted when the form is
-            // saved
+            $lastRole = $row['type'];
             $attribs = ["class" => "perm_$lastRole"];
             if ($this->_isEditingOwnAccount()) {
                 $attribs['disabled'] = true;
             }
-            $group[] = $this->createCheckbox(
-                'permID['.$row['permID'].']',
-                htmlspecialchars($row['label']) . "<br>",
-                $attribs
-            );
+            if ($row['type'] === 'Roles') {
+                $roles[] = $this->createCheckbox(
+                    'permID['.$row['permID'].']',
+                    htmlspecialchars($row['label']) . "<br>",
+                    $attribs
+                );
+            } else {
+                $permissions[] = $this->createCheckbox(
+                    'permID['.$row['permID'].']',
+                    htmlspecialchars($row['label']) . "<br>",
+                    $attribs
+                );
+            }
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "");
-        unset($group);
+
+        $collection = [];
+        $collection[]  = $this->form->createElement(
+                        'static',
+                        '',
+                        '',
+                        '</div>'
+                        . "<h3 id=\"header_Permission\" "
+                        . "class=\"perm_header button\" "
+                        . "style=\"text-align: center; margin-top: 5px;\">"
+                        ."Permissions"
+                        . '</h3>'
+                        . "<div id=\"perms_Permission\" style=\"margin-top: 5px;\">"
+                    );
+        foreach ($permissions as $row) {
+            $collection[] = $row;
+        }
+        $collection[]  = $this->form->createElement(
+                        'static',
+                        '',
+                        '',
+                        '</div>'
+                        . "<h3 id=\"header_Roles\" "
+                        . "class=\"perm_header button\" "
+                        . "style=\"text-align: center; margin-top: 5px;\">"
+                        ."Roles"
+                        . '</h3>'
+                        . "<div id=\"perms_Roles\" style=\"margin-top: 5px;\">"
+                    );
+        foreach ($roles as $row) {
+            $collection[] = $row;
+        }
+        $this->addGroup($collection, 'PermID_Group', 'Permissions', "");
+        unset($collection);
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
