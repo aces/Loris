@@ -95,7 +95,9 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::cssSelector($this->btn));
 
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector('#lorisworkspace > fieldset > div > div > p:nth-child(1)')
+            WebDriverBy::cssSelector(
+                '#lorisworkspace > fieldset > div > div > p:nth-child(1)'
+            )
         )->getText();
         $this->assertStringContainsString("New candidate created.", $bodyText);
     }
