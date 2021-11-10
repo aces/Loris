@@ -908,7 +908,6 @@ class Edit_User extends \NDB_Form
 
         // get the editor's permissions
         $perms = $editor->getPermissionsVerbose();
-        $group = [];
 
         usort(
             $perms,
