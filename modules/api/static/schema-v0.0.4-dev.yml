@@ -14,6 +14,27 @@ servers:
 security:
   - ApiKeyAuth: []
 paths:
+  '/projects/{project}':
+    get:
+      tags:
+        - Projects
+      summary: List all subprojects of that project
+      parameters:
+        - name: project
+          in: path
+          description: The project name
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An object containing the list of subprojects descriptors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
   '/projects/{project}/subprojects':
     get:
       tags:
@@ -97,6 +118,24 @@ paths:
   
 components:
   schemas:
+    Project:
+      type: object
+      properties:
+        Name:
+          type: string
+        Alias:
+          type: string
+        Links:
+          type: object
+          properties:
+            Candidates:
+              type: string
+            Images:
+              type: string
+            Recordings:
+              type: string
+            Subprojects:
+              type: string
     ProjectSubprojects:
       type: object
       properties:
