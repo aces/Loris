@@ -586,7 +586,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'dwi25',
-            'of 34'
+            'of 27'
         );
         $this->_filterTest(
             self::$pendingNew,
