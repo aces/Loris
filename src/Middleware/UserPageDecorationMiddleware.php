@@ -141,6 +141,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         if ($page !== null
             && method_exists($page, 'getFeedbackPanel')
+            && $loris->hasModule("bvl_feedback")
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
@@ -154,9 +155,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $sessionID
             );
 
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->PageName
-            );
+            $tpl_data['bvl_feedback'] = true;
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference

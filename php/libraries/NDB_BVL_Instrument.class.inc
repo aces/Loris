@@ -145,7 +145,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Testdate',
             'Window_Difference',
             'Candidate_Age',
-            'Data_entry_completion_status',
         ];
 
     /**
@@ -452,7 +451,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "Error running scoring algorithm";
+                print "An error occurred while running the scoring 
+                algorithm of instrument ".$this->testName.".";
             }
         }
     }
@@ -566,9 +566,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
             foreach ($this->selectMultipleElements AS $elname) {
-                if (isset($defaults[$elname])
-                    && stristr($defaults[$elname], "{@}")
-                ) {
+                if (isset($defaults[$elname])) {
                     $defaults[$elname] = explode("{@}", $defaults[$elname]);
                 }
             }
@@ -590,7 +588,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
             $this->score();
-            $this->updateDataEntryCompletionStatus();
+            $this->updateRequiredElementsCompletedFlag();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -622,14 +620,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return void
      */
-    public function updateDataEntryCompletionStatus(): void
+    public function updateRequiredElementsCompletedFlag(): void
     {
-        // determine the data entry completion status, and store that in
+        // determine the required elements completed flag, and store that in
         // the database
-        $dataEntryCompletionStatus
-            = $this->_determineDataEntryCompletionStatus();
-        $this->_setDataEntryCompletionStatus(
-            $dataEntryCompletionStatus
+        $requiredElementsCompletedFlag
+            = $this->_determineRequiredElementsCompletedFlag();
+        $this->_setRequiredElementsCompletedFlag(
+            $requiredElementsCompletedFlag
         );
     }
 
@@ -1500,15 +1498,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Determines what the data entry status flag should be set to
+     * Determines what the required elements completed flag should be set to
      *
-     * @return string  Either 'Complete' or 'Incomplete'
+     * @return string  Either 'Y' or 'N'
      */
-    function _determineDataEntryCompletionStatus(): string
+    function _determineRequiredElementsCompletedFlag(): string
     {
         // don't bother checking anything if the required elements array is empty
         if (empty($this->_requiredElements)) {
-            return 'Complete';
+            return 'Y';
         }
 
         $allData = $this->getInstanceData();
@@ -1520,45 +1518,58 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if ((is_null($allData[$field] ?? null) || $allData[$field] === "")
                 && empty($allData[$statusField])
             ) {
-                return 'Incomplete';
+                return 'N';
             }
         }
 
-        return 'Complete';
+        return 'Y';
     }
 
 
     /**
      * Gets the data entry completion status for this instrument
      *
-     * @return string Either 'Complete' or 'Incomplete'
+     * @return string Either 'Y' or 'N'
      */
-    function getDataEntryCompletionStatus(): string
+    function getRequiredElementsCompletedFlag(): string
     {
-        $data = $this->getInstanceData();
-        return $data["Data_entry_completion_status"];
+        $db     = Database::singleton();
+        $status = $db->pselectOne(
+            "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
+            ['CID' => $this->getCommentID()]
+        );
+        if ($status !== 'Y' && $status !== 'N') {
+            throw new LorisException(
+                "Invalid Data entry completion status encountered"
+            );
+        }
+        return $status;
     }
 
 
     /**
      * Sets the data entry completion status
      *
-     * @param string $status The status - either 'Complete'
-     *                       or 'Incomplete'
+     * @param string $status The status - either 'Y'
+     *                       or 'N'
      *
      * @return void
      */
-    function _setDataEntryCompletionStatus(string $status): void
+    function _setRequiredElementsCompletedFlag(string $status): void
     {
-        if (!in_array($status, ['Complete', 'Incomplete'])) {
+        if (!in_array($status, ['Y', 'N'], true)) {
             throw new InvalidArgumentException(
-                "Invalid status passed to _setDataEntryCompletionStatus - "
+                "Invalid status passed to _setRequiredElementsCompleted - "
                 . "'$status' should have been either "
-                . "'Complete' or 'Incomplete'<br>\n"
+                . "'Y' or 'N'<br>\n"
             );
         }
-
-        $this->_save(["Data_entry_completion_status" => $status]);
+        $DB = Database::singleton();
+        $DB->update(
+            "flag",
+            ["Required_elements_completed" => $status],
+            ['CommentID' => $this->getCommentID()]
+        );
     }
 
     /**
@@ -2331,9 +2342,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 case 'CommentID':
                 case 'UserID':
                     continue 2;
-                case 'Data_entry_completion_status':
-                    $values[$row['COLUMN_NAME']] = 'Incomplete';
-                    break;
                 default:
                     $values[$row['COLUMN_NAME']] = null;
                 }
@@ -2343,6 +2351,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // Clear data out of the flag table's Data column
         $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
+        $this->_setRequiredElementsCompletedFlag('N');
+
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
@@ -2878,7 +2888,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Disable form if data entry is complete
         $user      = $request->getAttribute("user");
         $sessionID = $request->getQueryParams()["sessionID"];
-        $timepoint = \Timepoint::singleton(new SessionID($sessionID));
+        if ($sessionID !== null) {
+            $timepoint = \Timepoint::singleton(new SessionID($sessionID));
+        }
 
         // create an instrument status object
         $status = new \NDB_BVL_InstrumentStatus($this->loris);
