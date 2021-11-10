@@ -131,14 +131,18 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 
 ```js
 {
-    "Meta" : {
-        "Project" : "ProjectName"
-    },
-    "Visits" : ["V1", "V2", ... ],
-    "Instruments" : ["InstrumentName", "InstrumentName2", ...],
-    "Candidates" : ["123543", "523234", ...]
+    "Name" : "ProjectName",
+    "Alias" : "ProjectAlias"
+    "Links" : {
+        "Candidates" : "/projects/{ProjectName}/candidates",
+        "Images" : "/projects/{ProjectName}/images",
+        "Recordings": "/projects/{ProjectName}/recordings",
+        "Subprojects": "/projects/{ProjectName}/subprojects"
+    }
 }
 ```
+
+The `Alias` property is often used to build PSCID for new candidates. 
 
 #### 2.1.1 Single project images  
 ```
