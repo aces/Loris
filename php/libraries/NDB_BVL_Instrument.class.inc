@@ -451,7 +451,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "An error occurred while running the scoring 
+                print "An error occurred while running the scoring
                 algorithm of instrument ".$this->testName.".";
             }
         }
@@ -1403,12 +1403,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
-        $allValues = $this->getInstanceData();
+        $allValues  = $this->getInstanceData();
+        $dictionary = $this->getDataDictionary();
 
-        if (!array_key_exists($field, $allValues)) {
-            throw new \OutOfBoundsException("Invalid field for instrument");
+        foreach ($dictionary as $item) {
+            if ($field === $item->getName()) {
+                return $allValues[$field];
+            }
         }
-        return $allValues[$field];
+        throw new \OutOfBoundsException(
+            "Invalid field $field for instrument $this->testName"
+        );
     }
 
 
@@ -2517,10 +2522,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['TN' => $this->testName]
         );
 
-        $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
-        );
+        $Responses = $this->getInstanceData();
 
         foreach ($tpl_data['questions'] as &$row) {
             if (isset($Responses[$row['SourceField']])) {
