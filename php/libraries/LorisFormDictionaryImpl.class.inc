@@ -146,7 +146,12 @@ trait LorisFormDictionaryImpl
      */
     public function getDataDictionary() : iterable
     {
-        $subtests =$this->getSubtestList();
+        $subtests = array_merge(
+            [
+                ["Name"=>"","Description"=>""]
+            ],
+            $this->getSubtestList()
+        );
         foreach ($subtests as $subtest) {
             $this->page = $subtest['Name'];
 

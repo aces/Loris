@@ -118,6 +118,15 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->quickForm = new \LorisForm();
 
+        $dictionaryItem = $this->getMockBuilder(
+            \LORIS\Data\Dictionary\DictionaryItem::class
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dictionaryItem->method('getName')
+            ->willReturn('Test_Date_taken');
+        '@phan-var \LORIS\Data\Dictionary\DictionaryItem $dictionaryItem';
+
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -126,9 +135,10 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument->method('getFullName')->willReturn("Test Instrument");
         $instrument->method('getSubtestList')->willReturn([]);
-        $instrument->method('getDataDictionary')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([$dictionaryItem]);
 
         '@phan-var \NDB_BVL_Instrument $instrument';
+
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
 
@@ -1140,8 +1150,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
-            'Test Examiner1',
-            $this->_instrument->getFieldValue('Examiner')
+            '2010-05-05',
+            $this->_instrument->getFieldValue('Date_taken')
         );
     }
 
@@ -1252,7 +1262,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->testName  = 'Test Name1';
+        $this->_instrument->testName  = 'Test';
         $values = ['Date_taken' => '2005-06-06'];
         $this->_instrument->_saveCandidateAge($values);
         $this->assertEquals(
@@ -1309,7 +1319,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->testName  = 'TestName1';
+        $this->_instrument->testName  = 'Test';
         $this->_instrument->formType  = "XIN";
         $values = ['Date_taken' => '2005-06-06',
             'arthritis_age'        => 2,
@@ -1870,13 +1880,13 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'CommentID'  => 'commentID1',
                     'UserID'     => '456',
                     'Examiner'   => 'Test Examiner1',
-                    'Date_taken' => '2010-05-05 00:00:01'
+                    'Date_taken' => '2010-05-05'
                 ],
                 [
                     'CommentID'  => 'commentID2',
                     'UserID'     => '457',
                     'Examiner'   => 'Test Examiner2',
-                    'Date_taken' => '2010-05-05 00:00:01'
+                    'Date_taken' => '2010-05-05'
                 ],
             ]
         );

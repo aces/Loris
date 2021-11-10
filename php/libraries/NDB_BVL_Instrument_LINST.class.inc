@@ -86,7 +86,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->dictionary,
             [
                 new DictionaryItem(
-                    'Date_taken',
+                    $this->testName.'_Date_taken',
                     'Date of Administration',
                     $scope,
                     new \LORIS\Data\Types\DateType(),
@@ -105,7 +105,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            'Candidate_age',
+                            $this->testName.'_Candidate_age',
                             'Candidate Age (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
@@ -123,7 +123,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            'Candidate_age',
+                            $this->testName.'_Candidate_age',
                             'Candidate Age At Death (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
@@ -140,7 +140,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $this->dictionary,
                 [
                     new DictionaryItem(
-                        'Window_Difference',
+                        $this->testName.'_Window_Difference',
                         'Window difference from test battery (days)',
                         $scope,
                         new \LORIS\Data\Types\Duration(),
@@ -164,7 +164,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->dictionary,
             [
                 new DictionaryItem(
-                    'Examiner',
+                    $this->testName.'_Examiner',
                     'Examiner',
                     $scope,
                     // This should be an enum of examiners, but
@@ -595,7 +595,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         new StringType(255),
@@ -620,7 +620,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         new StringType(),
@@ -648,7 +648,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
 
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new DateType(),
@@ -716,7 +716,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new IntegerType(),
@@ -819,7 +819,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                     $t  = new Enumeration(...$dictopts);
                     $it = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         $t,
@@ -857,7 +857,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             = ['type' => 'score'];
 
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new StringType(255),

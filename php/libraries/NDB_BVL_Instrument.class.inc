@@ -1307,7 +1307,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     echo "$rule[0] ";
                 }
 
-                //Handle select multiples who's controllre values are arrays.
+                //Handle select multiples who's controller values are arrays.
 
                 //explicitly cast the controller value as an array
                 if (!is_array($elements[$rule[0]])) {
@@ -1407,7 +1407,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dictionary = $this->getDataDictionary();
 
         foreach ($dictionary as $item) {
-            if ($field === $item->getName()) {
+            // The Field name to compare to in the data dictionary is
+            // prefixed with the testname
+            $dictionaryFieldName = $this->testName."_".$field;
+            if ($dictionaryFieldName === $item->getName()) {
                 return $allValues[$field];
             }
         }
