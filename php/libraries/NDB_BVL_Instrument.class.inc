@@ -1652,7 +1652,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus(): string
     {
         $data = NDB_BVL_Instrument::loadInstanceData($this);
-        return $data["Data_entry_completion_status"];
+        return $data["Data_entry_completion_status"] ?? '';
     }
 
 
