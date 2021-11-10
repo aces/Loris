@@ -140,38 +140,49 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             true
         );
 
-        $this->assertSame(
-            gettype($projectsProjectArray['Meta']),
-            'array'
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Name'])
         );
-        $this->assertSame(
-            gettype($projectsProjectArray['Meta']['Project']),
-            'string'
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Alias'])
         );
-        $this->assertSame(
-            gettype($projectsProjectArray['Candidates']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($projectsProjectArray['Candidates']['0']),
-            'string'
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $projectsProjectArray
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $projectsProjectArray['Meta']
+        $this->assertEquals(
+            'array',
+            gettype($projectsProjectArray['Links'])
         );
         $this->assertArrayHasKey(
             'Candidates',
-            $projectsProjectArray
+            $projectsProjectArray['Links']
+        );
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Links']['Candidates'])
         );
         $this->assertArrayHasKey(
-            '0',
-            $projectsProjectArray['Candidates']
+            'Images',
+            $projectsProjectArray['Links']
+        );
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Links']['Images'])
+        );
+        $this->assertArrayHasKey(
+            'Recordings',
+            $projectsProjectArray['Links']
+        );
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Links']['Recordings'])
+        );
+        $this->assertArrayHasKey(
+            'Subprojects',
+            $projectsProjectArray['Links']
+        );
+        $this->assertEquals(
+            'string',
+            gettype($projectsProjectArray['Links']['Subprojects'])
         );
     }
 
