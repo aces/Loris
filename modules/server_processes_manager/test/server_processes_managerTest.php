@@ -57,9 +57,9 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         ];
 
     //Filter locations
-    static $pid         = 'input[name="pid"]';
-    static $type        = 'input[name="type"]';
-    static $userid      = 'input[name="userid"]';
+    static $pid    = 'input[name="pid"]';
+    static $type   = 'input[name="type"]';
+    static $userid = 'input[name="userid"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
@@ -132,9 +132,9 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/server_processes_manager/");
         foreach ($this->_loadingUI as $key => $value) {
-        $text = $this->safeFindElement(
-                 WebDriverBy::cssSelector("$value")
-                )->getText();
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector("$value")
+            )->getText();
             $this->assertStringContainsString($key, $text);
         }
     }
