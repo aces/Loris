@@ -488,6 +488,7 @@ class ViewDataTabPane extends Component {
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>

@@ -313,7 +313,9 @@ class NDB_Factory
      */
     public function setBaseURL(string $baseURL)
     {
-        $this->_baseURL = $baseURL;
+        // Reset static settings object so that the base URL can be properly set
+        self::$_settings = null;
+        $this->_baseURL  = $baseURL;
     }
     /**
      * Returns a singleton settings object

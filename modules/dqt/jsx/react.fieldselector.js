@@ -418,7 +418,7 @@ class FieldSelector extends Component {
         } else {
           isFile = (this.state.categoryFields[
             category
-            ][i].value.isFile)
+            ][i].value.IsFile)
             ? true
             : false;
           this.props.onFieldChange(fieldName, category, isFile);
@@ -447,7 +447,7 @@ class FieldSelector extends Component {
           ][i].key[0];
         if (this.props.selectedFields[category]
           && this.props.selectedFields[category][fieldName]) {
-          isFile = (this.state.categoryFields[category][i].value.isFile)
+          isFile = (this.state.categoryFields[category][i].value.IsFile)
             ? true
             : false;
           this.props.onFieldChange(fieldName, category, isFile);

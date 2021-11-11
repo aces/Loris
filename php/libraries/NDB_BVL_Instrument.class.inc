@@ -451,7 +451,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "Error running scoring algorithm";
+                print "An error occurred while running the scoring 
+                algorithm of instrument ".$this->testName.".";
             }
         }
     }
@@ -565,9 +566,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
             foreach ($this->selectMultipleElements AS $elname) {
-                if (isset($defaults[$elname])
-                    && stristr($defaults[$elname], "{@}")
-                ) {
+                if (isset($defaults[$elname])) {
                     $defaults[$elname] = explode("{@}", $defaults[$elname]);
                 }
             }
