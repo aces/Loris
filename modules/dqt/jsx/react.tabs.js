@@ -10,6 +10,7 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
+const {jStat} = require('jstat');
 
 /**
  * Loading Component
@@ -207,11 +208,6 @@ class ViewDataTabPane extends Component {
     this.setState({
       runQueryClicked: true,
     });
-    console.log('runQuery clicked!');
-    console.log('this.props.Fields: ');
-    console.log(this.props.Fields);
-    console.log('this.props.Sessions: ');
-    console.log(this.props.Sessions);
     this.props.runQuery(this.props.Fields, this.props.Sessions);
   }
 
@@ -492,6 +488,7 @@ class ViewDataTabPane extends Component {
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>
