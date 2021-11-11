@@ -18,7 +18,8 @@ CREATE TABLE `subproject` (
     `useEDC` boolean,
     `WindowDifference` enum('optimal', 'battery'),
     `RecruitmentTarget` int(10) unsigned,
-    PRIMARY KEY (SubprojectID)
+    PRIMARY KEY (SubprojectID),
+    UNIQUE KEY `title` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
 

@@ -12,6 +12,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+namespace LORIS;
+
 /**
  * The Project class encapsulates all details of a project.
  *
@@ -23,70 +25,78 @@
  */
 class Subproject implements \JsonSerializable
 {
-    private $_subproject_id;
-    private $_project_id;
-    private $_title;
-    private $_windowDifference;
-    private $_recruitmentTarget;
+    protected ?int $id;
+    public string $title;
+    public ?bool $useEDC;
+    public ?string $windowDifference;
+    public ?int $recruitmentTarget;
+    protected array $projects;
+    protected array $visits;
 
     /**
      * Contructor
      *
-     * @param string     $id                The subproject id
-     * @param \ProjectID $project_id        the associated project id
-     * @param string     $title             This title
-     * @param ?string    $windowDifference  Value from the database
-     * @param ?string    $recruitmentTarget A numeric string or null
+     * @param ?int    $id                The subproject id
+     * @param string  $title             The subproject title
+     * @param ?bool   $useEDC            Expected date of confinement status
+     * @param ?string $windowDifference  Value from the database
+     * @param ?int    $recruitmentTarget Target number for subproject recruitment
      */
     public function __construct(
-        string $id,
-        \ProjectID $project_id,
+        ?int $id,
         string $title,
+        ?bool $useEDC,
         ?string $windowDifference = null,
-        ?string $recruitmentTarget = null
+        ?int $recruitmentTarget = null
     ) {
-        $this->_subproject_id    = $id;
-        $this->_project_id       = $project_id;
-        $this->_title            = $title;
-        $this->_windowDifference = $windowDifference;
-        if (!is_null($recruitmentTarget)) {
-            $this->_recruitmentTarget = intval($recruitmentTarget);
-        }
+        //ID should only be null when creating a new subproject
+        $this->id     = $id;
+        $this->title  = $title;
+        $this->useEDC = $useEDC;
+        $this->windowDifference  = $windowDifference;
+        $this->recruitmentTarget = $recruitmentTarget;
     }
 
     /**
-     * Gets the visit names for that subproject
+     * Getter for subproject ID
      *
-     * @return array An array of Visit object
+     * @return int The subproject's identifier
      */
-    public function getVisits(): array
+    public function getID(): int
     {
-        $factory    = \NDB_Factory::singleton();
-        $visitsData = $factory->database()->pselect(
-            "
-             SELECT
-               v.VisitName name
-             FROM visit v
-             LEFT JOIN visit_project_subproject_rel vpsr
-               ON (v.VisitID = vpsr.VisitID)
-             LEFT JOIN project_subproject_rel psr
-               ON (vpsr.ProjectSubprojectRelID = psr.ProjectSubprojectRelID)
-             WHERE
-               psr.SubprojectID = :v_subproject_id AND
-               psr.ProjectID = :v_project_id
-            ",
-            [
-                'v_subproject_id' => $this->_subproject_id,
-                'v_project_id'    => $this->_project_id
-            ]
-        );
+        if ($this->id === null) {
+            throw new \LorisException("No ID defined for Subproject");
+        }
+        return $this->id;
+    }
 
-        return array_map(
-            function ($visit) {
-                return new \LORIS\Visit($visit['name']);
-            },
-            $visitsData
-        );
+    /**
+     * Getter for associated projects
+     *
+     * @return array Projects associated with this subproject
+     */
+    public function getProjects() : array
+    {
+        if ($this->projects === null) {
+            throw new \LorisException(
+                "The array defining Project associations for this subproject
+                is null, make sure to load these associations using the controller
+                before querying them."
+            );
+        }
+        return $this->projects;
+    }
+
+    /**
+     * Setter for Projects associated to this subproject
+     *
+     * @param array $projects Array of project objects to add to the subproject
+     *
+     * @return void
+     */
+    public function setProjects(array $projects)
+    {
+        $this->projects = $projects;
     }
 
     /**
@@ -100,10 +110,11 @@ class Subproject implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "SubprojectID"      => $this->_subproject_id,
-            "Title"             => $this->_title,
-            "WindowDifference"  => $this->_windowDifference,
-            "RecruitmentTarget" => $this->_recruitmentTarget
+            "SubprojectID"      => $this->id,
+            "Title"             => $this->title,
+            "UseEDC"            => $this->useEDC,
+            "WindowDifference"  => $this->windowDifference,
+            "RecruitmentTarget" => $this->recruitmentTarget
         ];
     }
 }

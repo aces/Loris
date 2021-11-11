@@ -154,7 +154,7 @@ class Project implements \JsonSerializable
         // TODO :: Add unique constraint to the name column of the Project table
         $projectId = $factory->database()->pselectOne(
             "
-            SELECT 
+            SELECT
               projectId
             FROM
               Project
@@ -357,6 +357,8 @@ class Project implements \JsonSerializable
     /**
      * Get that project subprojects as defined in the project_subproject_rel table
      *
+     * @note Move function to subproject class
+     *
      * @return array A list of object representation of subprojects
      */
     public function getSubprojects(): array
@@ -372,7 +374,7 @@ class Project implements \JsonSerializable
               sp.recruitmentTarget
             FROM
               project_subproject_rel psr
-            JOIN 
+            JOIN
               subproject sp USING (subprojectId)
             WHERE
               psr.projectId = :v_project_id
@@ -469,5 +471,58 @@ class Project implements \JsonSerializable
     public function jsonSerialize() : string
     {
         return $this->_projectName;
+    }
+
+    /**
+     * Getter for a list of projects associated with a given subproject. This
+     * function behaves as a bulk factory as well to avoid a call to the
+     * singleton function for every project. This also updates the static instances
+     * array containing a cache of projects.
+     *
+     * @param \LORIS\Subproject $subproject The subproject object for which we want
+     *                                      the associated subprojects
+     *
+     * @return \Project[] List of projects for the given subproject
+     */
+    public static function getProjectsForSubproject(
+        \LORIS\Subproject $subproject
+    ) : array {
+        $projectsData = \NDB_Factory::singleton()->database()->pSelect(
+            "SELECT
+              projectId,
+              name,
+              Alias,
+              recruitmentTarget as recTarget
+            FROM
+              Project p
+              JOIN project_subproject_rel psr USING(ProjectID)
+            WHERE SubprojectID = :sid
+            ",
+            ['sid' => $subproject->getID()]
+        );
+
+        if (empty($projectsData)) {
+            throw new \NotFound(
+                "No projects found for subproject: " . $subproject->title
+            );
+        }
+        $projects = [];
+        foreach ($projectsData as $projectData) {
+            if (isset(self::$_instances[$projectData['name']])) {
+                $projects[] = self::$_instances[$projectData['name']];
+                break;
+            }
+            $project = new Project();
+
+            $project->_projectId         = new ProjectID($projectData['projectId']);
+            $project->_projectName       = $projectData['name'];
+            $project->_projectAlias      = $projectData['Alias'];
+            $project->_recruitmentTarget = (integer)$projectData['recTarget'];
+
+            self::$_instances[$projectData['name']] = $project;
+            $projects[] = $project;
+        }
+
+        return $projects;
     }
 }
