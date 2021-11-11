@@ -743,13 +743,6 @@ $(function() {
     }
 
 
-    /*
-    for (i = 0; i < minc_ids_arr.length; i += 1) {
-      promises.push(requestMINC(i, minc_ids_arr[i]));
-    }
-    */
-    //let promises = [];
-    console.log('abc');
     await fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
         .then((resp) => resp.json())
         .then((data) => {
@@ -803,11 +796,9 @@ $(function() {
     /////////////////////
     // Load the volumes.
     /////////////////////
-    //Promise.all(promises).then(() => {
-      bboptions.volumes = minc_volumes;
-      viewer.render();                // start the rendering
-      viewer.loadVolumes(bboptions);  // load the volumes
-    //});
+    bboptions.volumes = minc_volumes;
+    viewer.render();                // start the rendering
+    viewer.loadVolumes(bboptions);  // load the volumes
 
   });
 
