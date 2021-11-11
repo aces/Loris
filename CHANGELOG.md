@@ -37,10 +37,13 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Addition of `changeProject` and `resetProject` helper functions to the `LorisIntegrationTest` class to help test project permissions (PR #6912)
+- Unit tests added for the `NDB_BVL_Instrument`, `NDB_Page`, `NDB_Factory`, `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
 - The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
+- Addition of 4 configuration settings for the minc2bids converter (PR #7488)
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
@@ -48,6 +51,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
 - A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
 - A subtest with only static and/or static score fields (i.e. no values to submit) can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
+- When a superuser edits another user, the labels for each permission is correctly displayed (PR #7451) 
 
 ### Modules
 #### Help Editor
@@ -73,12 +77,21 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Instruments
+- General help text added for instrument data entry (PR #6902)
+#### Genomic Browser
+- CNV/CPG records added for candidates to view and test the CNV and Methylation tabs in the Genomic Browser (PR #6900)
+#### Configuration
+- Addition of configuration settings for the MINC to BIDS converter script (PR #7488)
+#### Candidate Profile
+- New integration test class to test project permissions (PR #6912)
 #### Data Dictionary
 - Changed instrument filter to multiselect  (PR #7040)
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
 - Indicate required fields (#6617)
+- Fix to show superuser the labels of each permission when editing a user (PR #7451)
 #### New profile
  - Fix fatal errors on submission. (PR #6822)
 #### Instrument Builder
@@ -86,6 +99,9 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### EEG Browser
 - Signal Visualization, Events and Electrode map (PR #7387)
 - Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+- Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
+on the session page to support new annotation features (PR #7345)
+- New integration test class added to this module (PR #6922)
 #### Media
 - Fix to display the file name when editing a file (PR #7381)
 #### Imaging Browser
@@ -122,6 +138,10 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 - Removal of the violated_scans_edit permission (PR #6747)
 - Removal for the need of the `VisitLabel` section of the `config.xml` file. All Visit configurations and their association to projects are now in the database (#7663 & #7729)
+- Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
+- Removal of references to Reliability module in Raisinbread (PR #6895)
+- Raisinbread visit stage inconsistency changed (PR #6896)
+- HRRT patch sourced to Raisinbread (PR #6897)
 
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
