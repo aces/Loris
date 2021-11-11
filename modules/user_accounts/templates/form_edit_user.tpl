@@ -266,9 +266,11 @@
     	</div>
     </div>
     {/if}
-
     {if $form.errors.Email|default}
     <div class="row form-group has-error">
+        <div class="col-sm-offset-2">
+            <font class="form-error">{$form.errors.Email}</font>
+        </div>
     {else}
     <div class="row form-group">
     {/if}
