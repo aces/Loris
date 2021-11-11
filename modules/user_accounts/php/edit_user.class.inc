@@ -1071,7 +1071,6 @@ class Edit_User extends \NDB_Form
                     $errors['UserID_Group']
                         = 'The user name must not exceed 255 characters';
                 }
-
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
@@ -1164,7 +1163,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email_Group']
+            $errors['Email']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
@@ -1192,7 +1191,7 @@ class Edit_User extends \NDB_Form
         if (!empty($values['Email'])) {
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
-                $errors['Email_Group'] = $emailError;
+                $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
                     $errors['__ConfirmEmail'] = 'Email and confirmed email '
@@ -1201,7 +1200,7 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // No email entered: error
-            $errors['Email_Group'] = 'You must enter an email address';
+            $errors['Email'] = 'You must enter an email address';
         }
 
         //======================================

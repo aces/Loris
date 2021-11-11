@@ -178,11 +178,6 @@ class CreateTimepoint extends React.Component {
     state.form.options.visit = state.storage.visit[
       state.form.value.subproject
       ];
-    if (state.form.value.subproject) {
-      state.form.value.visit = Object.keys(state.storage.visit[
-        state.form.value.subproject
-        ])[0];
-    }
     state.form.display.visit = true;
     this.setState(state);
   }
@@ -294,6 +289,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.subproject}
       />
     ) : null;
@@ -308,6 +304,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.psc}
       />
     ) : null;
@@ -322,6 +319,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.project}
       />
     ) : null;
@@ -336,6 +334,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.visit}
       />
     ) : null;
@@ -350,6 +349,7 @@ class CreateTimepoint extends React.Component {
         onUserInput={this.setForm}
         emptyOption={true}
         disabled={false}
+        autoSelect={true}
         required={this.state.form.options.required.languages}
       />
     ) : null;

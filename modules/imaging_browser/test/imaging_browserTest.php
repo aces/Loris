@@ -529,8 +529,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$dccid,
             self::$display,
             self::$clearFilter,
-            '300001',
-            '0 rows'
+            '475906',
+            '6 rows'
         );
         $this->_filterTest(
             self::$project,
@@ -544,7 +544,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'Pumpernickel',
-            '20 rows'
+            'of 29'
         );
         $this->_filterTest(
             self::$visitLabel,
@@ -579,14 +579,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'dwi65',
-            '0 rows'
+            '12 rows'
         );
         $this->_filterTest(
             self::$sequenceType,
             self::$display,
             self::$clearFilter,
             'dwi25',
-            '0 rows'
+            'of 27'
         );
         $this->_filterTest(
             self::$pendingNew,

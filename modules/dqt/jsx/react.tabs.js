@@ -10,8 +10,8 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-import DataTable from './components/table';
 import swal from 'sweetalert2';
+const {jStat} = require('jstat');
 
 /**
  * Loading Component
@@ -653,6 +653,7 @@ class ViewDataTabPane extends Component {
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>
