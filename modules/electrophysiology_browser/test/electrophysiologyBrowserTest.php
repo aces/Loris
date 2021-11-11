@@ -211,7 +211,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testEEGBrowserDoesPageLoad()
     {
-        $this->safeGet($this->url . "/electrophysiology_browser/?");
+        $this->safeGet($this->url . "/electrophysiology_browser/");
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
