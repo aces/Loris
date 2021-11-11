@@ -11,6 +11,7 @@
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import StaticDataTable from '../../../jsx/StaticDataTable';
 const {jStat} = require('jstat');
 
 /**
@@ -648,7 +649,7 @@ class ViewDataTabPane extends Component {
       }
     }
     const queryTable = this.state.runQueryClicked ? (
-      <DataTable
+      <StaticDataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
