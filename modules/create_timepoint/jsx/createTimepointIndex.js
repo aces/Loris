@@ -141,6 +141,7 @@ class CreateTimepoint extends React.Component {
             state.form.display.project = true;
           }
           // Populate the select options for visit.
+          console.log(data);
           if (data.visit) {
             // Store the (complete) visit selection information.
             state.storage.visit = data.visit;
@@ -179,6 +180,9 @@ class CreateTimepoint extends React.Component {
       state.form.value.subproject
       ];
     state.form.display.visit = true;
+    if (Array.isArray(state.storage.visit) && !state.storage.visit.length) {
+      state.form.display.visit = false;
+    }
     this.setState(state);
   }
 

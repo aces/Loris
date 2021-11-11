@@ -92,7 +92,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // Retrieve visit labels.
         $visit_options = [];
         foreach ($allSubprojects as $sid=>$title) {
-            $visit_options[$sid] = \Utility::getVisitsForSubproject($sid);
+            $visit_option = \Utility::getVisitsForSubproject($sid);
+            if (!empty($visit_option)) {
+                $visit_options[$sid] = $visit_option;
+            }
         }
         $values['visit'] = $visit_options;
 
