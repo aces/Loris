@@ -468,7 +468,6 @@ class Sessions extends \NDB_Page
             ['physioFileID' => $physioFileID]
         );
 
-
         //Get the annotation data
         $annotations = new ElectrophysioAnnotations(
             intval($physioFileID)
