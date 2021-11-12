@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class FilterBuilder extends \NDB_Page
+class Filterbuilder extends \NDB_Page
 {
     /**
      * This function will return a json response.

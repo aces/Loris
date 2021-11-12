@@ -25,9 +25,10 @@ class ModalImportCSV extends Component {
       file: null,
       csvData: [],
       csvType: 'PSCID',
+      csvOperator: 'OR',
     };
-    this.handleCandidateType = this.handleCandidateType.bind(this);
     this.submitCandidateData = this.submitCandidateData.bind(this);
+    this.handleRadioPress = this.handleRadioPress.bind(this);
     this.getFileCSV = this.getFileCSV.bind(this);
     this.updateData = this.updateData.bind(this);
   }
@@ -60,16 +61,14 @@ class ModalImportCSV extends Component {
   }
 
   /**
-   * Store the value of the element in this.state.csvType
-   * the csvType tracks whether the user is importing
-   * PSCID or DCCID identifiers from a CSV file.
+   * Store the value of the element in this.state[formElement].
    *
    * @param {string} formElement - name of the form element
    * @param {string} value - value of the form element
    */
-  handleCandidateType(formElement, value) {
+  handleRadioPress(formElement, value) {
     const state = Object.assign({}, this.state);
-    state.csvType = value;
+    state[formElement] = value;
     this.setState(state);
   }
 
@@ -82,9 +81,10 @@ class ModalImportCSV extends Component {
    */
   submitCandidateData() {
     const type = this.state.csvType;
+    const operator = this.state.csvOperator === 'OR' ? 1 : 0;
     const data = this.state.csvData;
     if (this.state.csvData.length > 0) {
-      this.props.defineCSVCandidates(type, data);
+      this.props.defineCSVCandidates(type, operator, data);
     }
   }
 
@@ -114,7 +114,7 @@ class ModalImportCSV extends Component {
             &nbsp;PSCID or CandID identifiers.
           </div>
           <RadioElement
-            name={'csvTypeRadio'}
+            name={'csvType'}
             label={'Candidate Type (PSCID or DCCID)'}
             options={{
               PSCID: 'PSCID',
@@ -122,7 +122,18 @@ class ModalImportCSV extends Component {
             }}
             checked={this.state.csvType}
             required={true}
-            onUserInput={this.handleCandidateType}
+            onUserInput={this.handleRadioPress}
+          />
+          <RadioElement
+            name={'csvOperator'}
+            label={'Filter (AND or OR) Operator'}
+            options={{
+              AND: 'AND',
+              OR: 'OR',
+            }}
+            checked={this.state.csvOperator}
+            required={true}
+            onUserInput={this.handleRadioPress}
           />
           <ButtonElement
             label='Submit'

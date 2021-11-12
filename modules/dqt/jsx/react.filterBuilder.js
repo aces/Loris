@@ -451,16 +451,13 @@ class FilterGroup extends Component {
    * @param {string} child
    */
   updateChild(index, child) {
-    console.log('updateChild() has ran!');
     let group = this.props.group;
     group.children[index] = child;
 
     if (this.props.index) {
-      console.log('if statement [true] 2');
       // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
     } else {
-      console.log('if statement [false] 2');
       // Else base filter group, update the filter in the data query component
       this.props.updateFilter(group);
     }
@@ -492,21 +489,16 @@ class FilterGroup extends Component {
    * @param {string} child
    */
   updateSessions(index, child) {
-    console.log('updateSessions() has ran!');
     // Computes the desired sessions of the current group
     const group = this.props.group;
     group.children[index] = child;
 
     // Update the groups sessions by calling the arrayintersect.js functions
     group.session = getSessions(group);
-    console.log('group.session: ');
-    console.log(group.session);
     if (this.props.index) {
-      console.log('if statement [true]');
       // If not base filter group, recursively call update parents session
       this.props.updateSessions(this.props.index, group);
     } else {
-      console.log('if statement [false]');
       // Else base filter group, update the filter in the data query component
       this.props.updateFilter(group);
     }
@@ -552,7 +544,6 @@ class FilterGroup extends Component {
    * @param {number} index
    */
   deleteChild(index) {
-    console.log('deleteChild() has ran!');
     let group = this.props.group;
     group.children.splice(index, 1);
 
@@ -706,7 +697,7 @@ class FilterBuilder extends Component {
     if (type === 'CandID') {
       await fetch(
       window.location.origin
-      + '/dqt/FilterBuilder',
+      + '/dqt/Filterbuilder',
       {
         credentials: 'same-origin',
         method: 'GET',
@@ -731,14 +722,22 @@ class FilterBuilder extends Component {
   /**
    * Define the Candidates from CSV.
    * @param {string} type
+   * @param {number} operator
    * @param {object} data
    */
-  defineCSVCandidates(type, data) {
+  defineCSVCandidates(type, operator, data) {
     let session = [];
+    // todo make change to AND or OR operator of filter.
+    // this.props.setFilterOperator(operator);
+
     this.requestSessions(type, data, (sessions) => {
       let children = [];
+      let pscidSessions = [];
       for (const item of data) {
         const value = item[0];
+        if (value && operator === 1) {
+          pscidSessions.push(value);
+        }
         const rule = {
             field: type,
             fieldType: 'varchar(255)',
@@ -759,8 +758,8 @@ class FilterBuilder extends Component {
       }
       session.push(children);
       const filters = {
-        activeOperator: '1',
-        session: session,
+        activeOperator: operator,
+        session: pscidSessions,
         children: children,
       };
       this.props.loadImportedCSV(filters);
