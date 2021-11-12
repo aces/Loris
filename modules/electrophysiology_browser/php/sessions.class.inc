@@ -461,7 +461,6 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
-
         //Get the annotation data
         $annotations = new ElectrophysioAnnotations(
             intval($physioFileID)
