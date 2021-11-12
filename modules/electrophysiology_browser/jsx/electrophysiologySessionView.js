@@ -193,7 +193,6 @@ class ElectrophysiologySessionView extends Component {
       return resp.json();
     })
       .then((data) => {
-        console.log(data);
           const database = data.database.map((dbEntry) => ({
             ...dbEntry,
             // EEG Visualisation parameters

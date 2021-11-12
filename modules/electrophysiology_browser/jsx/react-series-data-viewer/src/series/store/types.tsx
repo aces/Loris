@@ -32,7 +32,7 @@ export type Epoch = {
   channels: number[] | "all",
 };
 
-export type Annotation = {
+export type AnnotationMetadata = {
   instances: any[],
   labels: any[],
   metadata: any[]
