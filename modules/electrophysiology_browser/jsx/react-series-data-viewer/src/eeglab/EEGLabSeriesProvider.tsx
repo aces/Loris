@@ -17,8 +17,7 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {Channel} from '../series/store/types';
-import {Annotation} from '../series/store/types';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import {AnnotationMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
@@ -30,7 +29,7 @@ type CProps = {
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
-  annotations: Annotation,
+  annotations: AnnotationMetadata,
   limit: number,
 };
 
@@ -53,7 +52,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     this.store = createStore(
       rootReducer,
-      composeWithDevTools(applyMiddleware(thunk, epicMiddleware))
+      applyMiddleware(thunk, epicMiddleware)
     );
 
     this.state = {
