@@ -704,7 +704,10 @@ class FilterBuilder extends Component {
       }).then((response) => {
         if (response.ok) {
           response.json().then((data) => {
-            data = Object.assign({}, ...data);
+            data = {
+              allCandidates: data['allCandidates'],
+              mapping: Object.assign({}, ...data['mapping']),
+            };
             return callback(data);
           });
         } else {
@@ -725,27 +728,26 @@ class FilterBuilder extends Component {
    * @param {number} operator
    * @param {object} data
    */
-  defineCSVCandidates(type, operator, data) {
+  async defineCSVCandidates(type, operator, data) {
     let session = [];
-    // todo make change to AND or OR operator of filter.
-    // this.props.setFilterOperator(operator);
-
-    this.requestSessions(type, data, (sessions) => {
-      let children = [];
-      let pscidSessions = [];
-      for (const item of data) {
-        const value = item[0];
-        if (value && operator === 1) {
-          pscidSessions.push(value);
-        }
-        const rule = {
+    await this.requestSessions(type, data, (sessions) => {
+      if (sessions || type !== 'CandID') {
+        let children = [];
+        let pscidSessions = [];
+        let candidSessions = [];
+        for (const item of data) {
+          const value = item[0];
+          if (value && operator === 1) {
+            pscidSessions.push(value);
+          }
+          const rule = {
             field: type,
             fieldType: 'varchar(255)',
             instrument: 'demographics',
             operator: 'equal',
             session: [
-              sessions ? sessions[value] ?? '' : value,
-            ], // session needs to have pscid.
+              sessions ? sessions['mapping'][value] ?? '' : value,
+            ],
             type: 'rule',
             value: value,
             visit: 'All',
@@ -754,16 +756,33 @@ class FilterBuilder extends Component {
               key: ['demographics', type],
             }],
           };
+          if (type === 'CandID') {
+            const sessionKey = sessions
+              ? sessions['mapping'][value] ?? '' : value;
+            candidSessions.push(sessionKey);
+            rule.candidate = {
+              allCandidates: {
+                [sessionKey]: Object.values(sessions.allCandidates[sessionKey]),
+              },
+              allSessions: {},
+            };
+            for (const key of (rule.candidate.allCandidates[sessionKey])) {
+              rule.candidate.allSessions[key] = [sessionKey];
+            }
+          }
           children.push(rule);
+        }
+        session.push(children);
+        const filters = {
+          activeOperator: operator,
+          session: operator === 1
+            ? (type !== 'CandID' ? pscidSessions : candidSessions)
+            : [],
+          children: children,
+        };
+        this.props.loadImportedCSV(filters);
+        this.closeModalCSV();
       }
-      session.push(children);
-      const filters = {
-        activeOperator: operator,
-        session: pscidSessions,
-        children: children,
-      };
-      this.props.loadImportedCSV(filters);
-      this.closeModalCSV();
     });
   }
 

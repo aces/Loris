@@ -64,13 +64,26 @@ class Filterbuilder extends \NDB_Page
 
         $result = $DB->pselect(
             "SELECT
-                        CandID,
-                        PSCID
-                    FROM candidate",
+                        candidate.CandID,
+                        PSCID,
+                        s.Visit_label
+                    FROM
+                        candidate
+                        JOIN session s ON candidate.CandID = s.CandID",
             []
         );
         $data   = [];
+        $allCandidates = [];
         for ($i=0; $i<=count($result); $i++) {
+            if (!isset($allCandidates[$result[$i]['PSCID']])) {
+                $allCandidates[$result[$i]['PSCID']] = [];
+            }
+            if (!in_array($result[$i]['Visit_label'], $allCandidates[$result[$i]['PSCID']])) {
+                array_push(
+                    $allCandidates[$result[$i]['PSCID']],
+                    $result[$i]['Visit_label']
+                );
+            }
             array_push(
                 $data,
                 [$result[$i]['CandID'] => $result[$i]['PSCID']]
@@ -78,7 +91,7 @@ class Filterbuilder extends \NDB_Page
         }
         // Return result to the user.
         return new \LORIS\Http\Response\JsonResponse(
-            $data
+            ['mapping' => $data, 'allCandidates' => $allCandidates]
         );
     }
 
