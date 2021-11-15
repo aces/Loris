@@ -62,7 +62,7 @@ class Filterbuilder extends \NDB_Page
         // create DB object
         $DB = \Database::singleton();
 
-        $result = $DB->pselect(
+        $result        = $DB->pselect(
             "SELECT
                         candidate.CandID,
                         PSCID,
@@ -72,13 +72,17 @@ class Filterbuilder extends \NDB_Page
                         JOIN session s ON candidate.CandID = s.CandID",
             []
         );
-        $data   = [];
+        $data          = [];
         $allCandidates = [];
         for ($i=0; $i<=count($result); $i++) {
             if (!isset($allCandidates[$result[$i]['PSCID']])) {
                 $allCandidates[$result[$i]['PSCID']] = [];
             }
-            if (!in_array($result[$i]['Visit_label'], $allCandidates[$result[$i]['PSCID']])) {
+            if (!in_array(
+                $result[$i]['Visit_label'],
+                $allCandidates[$result[$i]['PSCID']]
+            )
+            ) {
                 array_push(
                     $allCandidates[$result[$i]['PSCID']],
                     $result[$i]['Visit_label']
