@@ -30,7 +30,7 @@ paths:
             type: string
       responses:
         '200':
-          description: An object containing the list of subprojects descriptors
+          description: An object describing a project and navigation links to items belonging to it.
           content:
             application/json:
               schema:
