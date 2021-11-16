@@ -1158,11 +1158,21 @@ class ManageSavedQueryRow extends Component {
     }
     return (
       <tr>
-        <td>{this.props.Name}</td>
         <td>
-          <ul>{fields}</ul>
+          <div className={'tableNamesCell'}>
+            {this.props.Name}
+          </div>
         </td>
-        <td>{filters}</td>
+        <td>
+          <div className={'tableFieldsCell'}>
+            <ul>{fields}</ul>
+          </div>
+        </td>
+        <td>
+          <div className={'tableFiltersCell'}>
+            {filters}
+          </div>
+        </td>
       </tr>
     );
   }
