@@ -555,16 +555,6 @@ class ViewDataTabPane extends Component {
               Download Files
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
-            <button className='btn btn-primary'
-                    style={{
-                      minWidth: '200px',
-                      minHeight: '30px',
-                      alignSelf: 'center',
-                      margin: '5px 0 5px 0',
-                    }}
-                    onClick={this.exportToNeuroHub}>
-              Export Results To NeuroHub
-            </button>
           </div>
         </div>
       </>

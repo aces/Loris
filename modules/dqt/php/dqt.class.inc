@@ -58,7 +58,6 @@ class Dqt extends \NDB_Form
             [
                 $baseURL . '/js/d3.min.js',
                 $baseURL . '/js/c3.min.js',
-                $baseURL . '/dqt/js/arrayintersect.js',
                 $baseURL . '/dqt/js/react.fieldselector.js',
                 $baseURL . '/dqt/js/react.filterBuilder.js',
                 $baseURL . '/dqt/js/react.tabs.js',
