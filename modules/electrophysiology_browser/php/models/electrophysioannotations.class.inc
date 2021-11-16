@@ -75,16 +75,16 @@ class ElectrophysioAnnotations
      *
      * @param array $instance_data Instance data
      * @param array $metadata      Metadata
-     * @param int   $instance_id   InstanceID
-     * @param int   $parameter_id  ParameterID
+     * @param int|null   $instance_id   InstanceID
+     * @param int|null   $parameter_id  ParameterID
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-        int $instance_id,
-        int $parameter_id
+        ?int $instance_id,
+        ?int $parameter_id
     ): void {
 
         $factory = \NDB_Factory::singleton();
@@ -135,7 +135,6 @@ class ElectrophysioAnnotations
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
                 'Channels'          => $instance_data['channels'],
-                'AbsoluteTime'      => $instance_data['abs_time'],
                 'Description'       => $instance_data['description']
             ];
 
