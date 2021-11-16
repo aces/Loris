@@ -600,6 +600,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }
                   </button>
                 }
+                {
+                  <button
+                  className={'btn btn-primary'
+                    + (rightPanel === 'annotationForm' ? ' active' : '')
+                  }
+                  onClick={() => {
+                    rightPanel === 'annotationForm'
+                      ? setRightPanel(null)
+                      : setRightPanel('annotationForm');
+                  }}
+                >
+                  {rightPanel === 'annotationForm'
+                    ? 'Close Annotation Form'
+                    : 'New Annotation'
+                  }
+                </button>
+                }
 
                 <div
                   className='pull-right col-xs-7'
