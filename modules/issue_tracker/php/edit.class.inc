@@ -469,7 +469,9 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
             if (!$success) {
                 error_log($attachment->errorMessage);
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    $attachment->errorMessage
+                );
             }
         }
 
@@ -676,7 +678,9 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
             if (!$validCenter) {
                 error_log('PSCID and Center ID do not match a valid session!');
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    'PSCID and Center ID do not match a valid session!'
+                );
             }
         }
         // If both are set, return SessionID and CandID
@@ -698,7 +702,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 error_log(
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    'PSCID and Visit Label do not match a valid candidate session!'
+                );
             }
             return $result;
         }
@@ -718,7 +724,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $result['candID'] = $candidate;
             } else {
                 error_log('PSCID does not match a valid candidate!');
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    'PSCID does not match a valid candidate!'
+                );
             }
 
             return $result;
@@ -727,7 +735,9 @@ class Edit extends \NDB_Page implements ETagCalculator
         // If only visit label is set, return an error
         if (isset($result['visit'])) {
             error_log('Visit Label must be accompanied by a PSCID');
-            return new \LORIS\Http\Response\JSON\InternalServerError();
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Visit Label must be accompanied by a PSCID'
+            );
         }
         return $result;
     }
