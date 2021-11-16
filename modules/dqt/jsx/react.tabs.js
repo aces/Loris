@@ -838,21 +838,6 @@ class StatsVisualizationTabPane extends Component {
   }
 
   /**
-   * shouldComponentUpdate
-   * @param {object} nextProps - next props
-   * @param {object} nextState - next state
-   * @return {boolean} update component if true.
-   */
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.Active && !this.props.Active) {
-      return true;
-    } else if (!nextProps.Active && this.props.Active) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
