@@ -395,3 +395,21 @@ h4 {
 .import-csv:focus {
   outline: 0;
 }
+/*
+ * Load Query table css
+ */
+.tableNamesCell {
+    overflow-x: scroll;
+    max-width: 150px;
+    min-height: 100px;
+}
+.tableFieldsCell {
+    overflow-x: scroll;
+    max-width: 400px;
+    min-height: 100px;
+}
+.tableFiltersCell {
+    overflow-x: scroll;
+    max-width: 200px;
+    min-height: 100px;
+}

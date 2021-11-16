@@ -9,6 +9,7 @@
 
 import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
+import {getSessions} from '../js/arrayintersect';
 
 /**
  * LogicOperator Component
@@ -589,7 +590,7 @@ class FilterGroup extends Component {
         );
       } else if (child.type === 'group') {
         return (
-          <li key={index} className={'test1'}>
+          <li key={index}>
             <FilterGroup group={child}
                          items={this.props.items}
                          index={index}
