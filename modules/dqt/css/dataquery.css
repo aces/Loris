@@ -365,9 +365,7 @@ h4.modal-title {
   border-radius: 10px;
 }
 
-
 /*-- Tooltip --*/
-
 .c3-tooltip {
     border-collapse: collapse;
     border-spacing: 0;
@@ -525,6 +523,9 @@ tr.statsReport:nth-child(even) {
     border-radius: 8px;
 }
 
+/*
+ * Load Query table css
+ */
 .tableNamesCell {
     overflow-x: scroll;
     max-width: 150px;
@@ -540,6 +541,7 @@ tr.statsReport:nth-child(even) {
     max-width: 200px;
     min-height: 100px;
 }
+
 .btn-breadcrumb {
   background-color: transparent;
   z-index: 10;

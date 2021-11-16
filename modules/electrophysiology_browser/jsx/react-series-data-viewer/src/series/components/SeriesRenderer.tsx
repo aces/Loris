@@ -190,6 +190,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 parentHeight={viewerHeight}
                 key={`${index}`}
                 scales={scales}
+                opacity={0.7}
               />
             );
           })
@@ -451,7 +452,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         type='number'
                         style={{width: '55px'}}
                         value={offsetIndex}
-                        onChange={(e) => setOffsetIndex(parseInt(e.target.value))}
+                        onChange={(e) => {
+                          let value = parseInt(e.target.value);
+                          !isNaN(value) && setOffsetIndex(value);
+                        }}
                       />
                       {' '}
                       to {hardLimit} of {channelMetadata.length}

@@ -2413,6 +2413,7 @@ CREATE TABLE `publication_upload` (
 CREATE TABLE `publication_users_edit_perm_rel` (
   `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
+  CONSTRAINT `PK_publication_users_edit_perm_rel` PRIMARY KEY(`PublicationID`, `UserID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
