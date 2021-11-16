@@ -18,7 +18,7 @@ paths:
     get:
       tags:
         - Projects
-      summary: List all subprojects of that project
+      summary: Provides details about a project
       parameters:
         - name: project
           in: path
