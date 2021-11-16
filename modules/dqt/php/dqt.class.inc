@@ -88,7 +88,6 @@ class Dqt extends \NDB_Form
     /**
      * Include additional CSS files:
      *  1. dataquery.css
-     *  2. datarequest.css (data request form)
      *
      * @return array of javascript to be inserted
      */
@@ -101,7 +100,6 @@ class Dqt extends \NDB_Form
             $deps,
             [
                 $baseURL . '/dqt/css/dataquery.css',
-                $baseURL . '/dqt/css/datarequest.css',
                 $baseURL . '/css/c3.css',
             ]
         );
