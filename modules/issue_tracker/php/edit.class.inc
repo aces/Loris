@@ -97,7 +97,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
                  WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
                  AND Active='N'",
-                []
+                [
+                    'CenterID' => $CenterID,
+                    'DCC'      => $DCCID,
+                ]
             );
         }
 
