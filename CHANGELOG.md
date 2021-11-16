@@ -106,6 +106,9 @@ on the session page to support new annotation features (PR #7345)
 - Fix to display the file name when editing a file (PR #7381)
 #### Imaging Browser
 - Fix nullable type fatal error (PR #7336)
+#### Imaging Uploader
+- Fixed a bug that would prevent the imaging uploader from starting automatically even if you had the imaging uploader
+auto-launch set to true and your current upload overwrote an existing file (PR #7084)
 #### Publication
 - Display all filterable columns in datatable (#7277)
 - Fix for file deletion (PR #7284)
@@ -133,6 +136,7 @@ on the session page to support new annotation features (PR #7345)
 - New tool generate_candidate_externalids.php to fill external IDs for all candidates where a NULL value is found. (PR #7095)
 - New tool `populate_visits.php` to backpopulate visits from the `config.xml`, `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
+- Fixes a bug in the way that the data dictionary entries associated to MRI comments were named in the CouchDB database (PR #7082).
 
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
@@ -142,6 +146,7 @@ on the session page to support new annotation features (PR #7345)
 - Removal of references to Reliability module in Raisinbread (PR #6895)
 - Raisinbread visit stage inconsistency changed (PR #6896)
 - HRRT patch sourced to Raisinbread (PR #6897)
+- Improved consistency of RB data: field UploadLocation of table mri_upload now has an appropriate value (PR #7086)
 
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
