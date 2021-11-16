@@ -27,14 +27,14 @@ class Annotations extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $factory    = \NDB_Factory::singleton();
-        $user       = $factory->user();
-        $db         = $factory->database();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
 
         switch ($request->getMethod()) {
         case 'GET':
             $parameters = $request->getQueryParams();
-            $sessionID = $db->pselectOne(
+            $sessionID  = $db->pselectOne(
                 'SELECT SessionID
                     FROM physiological_file
                     WHERE PhysiologicalFileID=:PFID',
