@@ -695,7 +695,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $result['sessionID'] = $session[0]['sessionID'];
                 $result['candID']    = $session[0]['candID'];
             } else {
-                error_log('PSCID and Visit Label do not match a valid candidate session!');
+                error_log(
+                    'PSCID and Visit Label do not match a valid candidate session!'
+                );
                 return new \LORIS\Http\Response\JSON\InternalServerError();
             }
             return $result;
