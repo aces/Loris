@@ -619,9 +619,9 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param array $values values to be validated
      * @param \User $user   the user requesting the change
      *
-     * @return array success with values, or error with message.
+     * @return array|\LORIS\Http\Response\JSON\InternalServerError
      */
-    function validateInput(array $values, \User $user): array
+    function validateInput(array $values, \User $user)
     {
         $db         = $this->loris->getDatabaseConnection();
         $pscid      = ($values['PSCID'] ?? null);
