@@ -199,6 +199,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         $oneIsStudySite   = in_array("1", $isStudySite);
         $tpl_data['user'] = [];
+        $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);

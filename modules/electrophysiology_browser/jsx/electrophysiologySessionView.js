@@ -206,16 +206,22 @@ class ElectrophysiologySessionView extends Component {
                 ),
             epochsURL:
                 dbEntry
-                && dbEntry.file.downloads[3]?.file
-                && loris.BaseURL
-                + '/electrophysiology_browser/file_reader/?file='
-                + dbEntry.file.downloads[3].file,
+                && dbEntry.file.downloads.map(
+                  (group) =>
+                    group.links[3]?.file
+                    && loris.BaseURL
+                      + '/electrophysiology_browser/file_reader/?file='
+                      + group.links[3].file
+                ),
             electrodesURL:
                 dbEntry
-                && dbEntry.file.downloads[1]?.file
-                && loris.BaseURL
-                + '/electrophysiology_browser/file_reader/?file='
-                + dbEntry.file.downloads[1].file,
+                && dbEntry.file.downloads.map(
+                  (group) =>
+                    group.links[1]?.file
+                    && loris.BaseURL
+                      + '/electrophysiology_browser/file_reader/?file='
+                      + group.links[1].file
+                ),
           }));
 
           this.setState({
