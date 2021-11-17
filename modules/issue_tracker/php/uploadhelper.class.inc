@@ -78,7 +78,7 @@ class UploadHelper
     ) : bool {
         // Check if post.ini max_post configured for the file_size.
         if (!isset($files['file'])
-            || empty($files['file'])
+            || empty($files['file']->getStream()->getMetadata('uri'))
         ) {
             $this->errorMessage
                 = 'The server is not configured to receive a file this large.';
