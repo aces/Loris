@@ -24,6 +24,8 @@
         <properties>
             <property name="forbiddenFunctions" type="array">
                 <element key="print" value="(PSR-3 logger)"/>
+                <element key="print_r" value="null"/>
+                <element key="var_dump" value="null"/>
                 <element key="die" value="null" />
                 <element key="create_function" value="null"/>
                 <element key="http_response_code" value="(PSR-7)"/>
