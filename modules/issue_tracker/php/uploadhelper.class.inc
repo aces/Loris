@@ -14,8 +14,6 @@
  */
 namespace LORIS\issue_tracker;
 
-use Psr\Log\LoggerInterface;
-
 /**
  * The UploadHelper Class.
  *
