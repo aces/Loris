@@ -468,7 +468,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ]
             );
             if (!$success) {
-                error_log($attachment->errorMessage);
+                $this->logger->log(
+                    \Psr\Log\LogLevel::ERROR,
+                    $attachment->errorMessage
+                );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
                     $attachment->errorMessage
                 );
@@ -677,7 +680,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
             }
             if (!$validCenter) {
-                error_log('PSCID and Center ID do not match a valid session!');
+                $this->logger->log(
+                    \Psr\Log\LogLevel::ERROR,
+                    'PSCID and Center ID do not match a valid session!'
+                );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
                     'PSCID and Center ID do not match a valid session!'
                 );
@@ -699,7 +705,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $result['sessionID'] = $session[0]['sessionID'];
                 $result['candID']    = $session[0]['candID'];
             } else {
-                error_log(
+                $this->logger->log(
+                    \Psr\Log\LogLevel::ERROR,
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
@@ -723,7 +730,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             if ($candidate) {
                 $result['candID'] = $candidate;
             } else {
-                error_log('PSCID does not match a valid candidate!');
+                $this->logger->log(
+                    \Psr\Log\LogLevel::ERROR,
+                    'PSCID does not match a valid candidate!'
+                );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
                     'PSCID does not match a valid candidate!'
                 );
@@ -734,7 +744,10 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // If only visit label is set, return an error
         if (isset($result['visit'])) {
-            error_log('Visit Label must be accompanied by a PSCID');
+            $this->logger->log(
+                \Psr\Log\LogLevel::ERROR,
+                'Visit Label must be accompanied by a PSCID'
+            );
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 'Visit Label must be accompanied by a PSCID'
             );
