@@ -466,8 +466,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 [
                     'fileDescription' => '',
                     'issueID'         => $issueID,
-                ],
-                $this->logger
+                ]
             );
             if (!$success) {
                 $this->logger->log(

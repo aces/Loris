@@ -51,11 +51,6 @@ class UploadHelper
     private $_values;
 
     /**
-     * The error logger.
-     */
-    private LoggerInterface $_logger;
-
-    /**
      * The error message if something fails.
      */
     public $errorMessage;
@@ -66,15 +61,13 @@ class UploadHelper
      * @param \User           $user   The user uploading.
      * @param array           $files  The $_FILES array content.
      * @param array           $values The post message array content.
-     * @param LoggerInterface $logger Shared instance of a Logger.
      *
      * @return boolean       success/fail
      */
     function setupUploading(
         \User $user,
         array $files,
-        array $values,
-        LoggerInterface $logger
+        array $values
     ) : bool {
         // Check if post.ini max_post configured for the file_size.
         if (!isset($files['file'])
@@ -87,7 +80,6 @@ class UploadHelper
         $this->_user   = $user;
         $this->_bytes  = $files['file']->getSize();
         $this->_values = $values;
-        $this->_logger = $logger;
 
         $this->_fileToUpload
             = (object) [
@@ -181,12 +173,8 @@ class UploadHelper
             move_uploaded_file($tmpFilePath, $path);
         } catch (\DatabaseException $e) {
             $this->endWithFailure();
-            $this->_logger->log(
-                \Psr\Log\LogLevel::ERROR,
-                $e->getMessage()
-            );
             throw new \LorisException(
-                'Could not write to the Database'
+                $e->getMessage()
             );
         }
     }

@@ -119,8 +119,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
         $response      = $attachment->setupUploading(
             $user,
             $uploadedFiles,
-            $values,
-            $this->logger
+            $values
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
