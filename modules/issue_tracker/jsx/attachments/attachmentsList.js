@@ -56,8 +56,6 @@ class AttachmentsList extends Component {
       return resp.json();
     })
       .then((data) => {
-        console.log('data is ');
-        console.log(data);
         if (data.success) {
           window.location.href = this.props.baseURL
             + '/issue_tracker/issue/'
