@@ -804,64 +804,21 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionLinks()
     {
-        $this->markTestIncomplete(
-            'Forms should be added, & router.php should be fixed for instruments'
-        );
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
-        $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > a:nth-child(1)'
             )
         );
-        $this->clickToLoadNewPage($SelectedLink);
-
-        //MRI Parameter form
-        $MRIParamForm = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
-        );
-        $MRIParamForm->click();
-
-        $MRIFormHeader = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector('body')
         )->getText();
-        // IF NO FORM PRESENT, ALLOW SECOND ASSERTION
-        //$this->assertStringContainsString("MRI Parameter Form", $MRIFormHeader);
-        $this->assertStringContainsString(
-            "This page (mri_parameter_form) is under construction",
-            $MRIFormHeader
-        );
+        $this->assertStringContainsString("administrator", $bodyText);
 
-        //Radiology review form
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
-        );
-
-        $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
-        );
-        $this->clickToLoadNewPage($SelectedLink);
-
-        $RadiologyForm = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[2]/a')
-        );
-        $RadiologyForm->click();
-
-        $RadFormHeader = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="test_form"]/div/div[1]/div/h3')
-        )->getText();
-        //$this->assertStringContainsString("Radiology Review Form", $RadFormHeader);
-        $this->assertStringContainsString(
-            "This page (radiology_review) is under construction",
-            $RadFormHeader
-        );
     }
 
     /**
