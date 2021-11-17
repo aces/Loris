@@ -28,7 +28,7 @@
                 <element key="create_function" value="null"/>
                 <element key="http_response_code" value="(PSR-7)"/>
                 <element key="header" value="(PSR-7)"/>
-                <element key="error_log" value="(PSR-3 logger)"/>
+                <!-- element key="error_log" value="(PSR-3 logger)"/ -->
             </property>
         </properties>
     </rule>
