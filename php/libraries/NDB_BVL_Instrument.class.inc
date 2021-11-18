@@ -418,7 +418,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         try {
             $candidate = \Candidate::singleton($timePoint->getCandID());
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new LorisException($e->getMessage());
         }
 

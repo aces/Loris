@@ -87,7 +87,7 @@ if (strpos($FileBase, "DCM_") === 0) {
  * name based on its extension.
  */
 $DownloadFilename = '';
-switch($FileExt) {
+switch ($FileExt) {
 case 'mnc':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = "application/x-minc";

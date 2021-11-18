@@ -81,7 +81,7 @@ trait LorisFormDictionaryImpl
 
             $t = null;
 
-            switch($element['type']) {
+            switch ($element['type']) {
             case 'select':
                 // The values of the enumeration are the keys of the
                 // options, but when the key is something like "0" or

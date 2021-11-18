@@ -36,7 +36,7 @@ if ($data == '') {
     exit;
 }
 
-switch($data) {
+switch ($data) {
 case 'candidateInfo':
     echo json_encode(getCandInfoFields());
     exit;

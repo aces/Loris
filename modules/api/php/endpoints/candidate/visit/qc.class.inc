@@ -160,7 +160,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $candid = new CandID($data['Meta']['CandID']);
-        } catch(\DomainException $e) {
+        } catch (\DomainException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandID is invalid'
             );

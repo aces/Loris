@@ -104,7 +104,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         $this->user = $request->getAttribute('user');
         $method     = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return $this->_getInstances();
         case 'POST':
