@@ -85,8 +85,6 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        ini_set('memory_limit', '-1');
-
         $data = []; // we will send as stream to client on completion.
 
         $config           = \NDB_Config::singleton();
@@ -99,12 +97,6 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
             $couchConfig['adminpass']
         );
         if (!$couchConfigValid) {
-            error_log(
-                'Data Query Tool cannot be loaded due to missing ' .
-                'configuration settings. Ensure that `dbName`, `hostname`, ' .
-                '`port`, `admin` and `adminpass` values are properly ' .
-                'configured in project/config.xml'
-            );
             throw new \ConfigurationException(
                 'Missing CouchDB configuration settings. Cannot load ' .
                 'Data Query Tool.'
