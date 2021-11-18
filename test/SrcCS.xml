@@ -33,6 +33,7 @@
                 <element key="http_response_code" value="(PSR-7)"/>
                 <element key="header" value="(PSR-7)"/>
                 <element key="ini_set" value="null"/>
+                <element key="ini_alter" value="null"/>
                 <!-- element key="error_log" value="(PSR-3 logger)"/ -->
             </property>
         </properties>
