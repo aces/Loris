@@ -66,7 +66,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case 'candidate':
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();

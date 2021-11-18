@@ -92,7 +92,7 @@ try {
     $m = Module::factory($Module);
 
     $public = $m->isPublicModule();
-} catch(LorisModuleMissingException $e) {
+} catch (LorisModuleMissingException $e) {
     $public = false;
 }
 if ($anonymous === true && $m->isPublicModule() === false) {

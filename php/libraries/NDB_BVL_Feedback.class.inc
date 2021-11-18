@@ -104,7 +104,7 @@ class NDB_BVL_Feedback
                     $sessionID,
                     $commentID
                 );
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 unset($feedbackList[$objectName]);
                 throw new Exception(
                     "Could not instantiate feedback object",

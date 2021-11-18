@@ -28,7 +28,7 @@ if ($tab === '') {
 
 $db = \Database::singleton();
 
-switch($tab) {
+switch ($tab) {
 case 'candidateInfo':
     editCandInfoFields($db);
     break;
