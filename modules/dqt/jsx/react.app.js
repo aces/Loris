@@ -1286,7 +1286,7 @@ class DataQueryApp extends Component {
                         &nbsp;document for additional information.</p>
                     </>
                   ),
-                  alwaysOpen: false,
+                  alwaysOpen: true,
                 },
                 {
                   title: 'Load Existing Query',
@@ -1317,27 +1317,6 @@ class DataQueryApp extends Component {
                 },
               ]}
             />
-            <div className='container-fluid'
-                 style={{margin: '0px auto', maxWidth: '900px'}}>
-              <button
-                onClick={() => {
-                  this.setState({dataRequestPrompt: true});
-                }}
-                style={{width: '100%',
-                    padding: '18px',
-                    outline: 'none',
-                    color: '#fff',
-                    fontSize: '15px',
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                    backgroundColor: '#246EB6',
-                    border: '1px solid #246EB6',
-                    transition: '0.4s',
-                }}
-              >
-                Controlled Data Request
-              </button>
-            </div>
           </>
         )}
       />
