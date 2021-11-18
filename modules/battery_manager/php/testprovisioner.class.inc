@@ -30,11 +30,16 @@ namespace LORIS\battery_manager;
  */
 class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private \LORIS\LorisInstance $loris;
+
     /**
-     * Create a Test Instance, which get rows fro mthe test_battery table.
+     * Create a Test Instance, which get rows from the test_battery table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the battery
      */
-    public function __construct()
+    public function __construct(\LORIS\LorisInstance $loris)
     {
+        $this->loris = $loris;
         parent::__construct(
             "SELECT b.id,
                t.Test_name as testName,
@@ -65,6 +70,12 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new Test($row);
+        return new Test(
+            $this->loris,
+            isset($row['centerId'])
+                ? new \CenterID($row['centerId'])
+                : null,
+            $row
+        );
     }
 }
