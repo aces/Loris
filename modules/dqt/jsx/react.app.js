@@ -1275,15 +1275,6 @@ class DataQueryApp extends Component {
                       </p>
                       <p>Lastly, navigate to the <i style={{color: '#596978'}}>
                         "Run Query"</i> and run the query you built. 🙂</p><br/>
-                      <p style={{textAlign: 'center'}}>
-                        Please read the&nbsp;
-                        <a style={{textDecoration: 'underline'}}
-                           href={'https://docs.google.com/document/d/' +
-                        '1E8BC9guVrXUd2KDKlX9pu0xch5Ex56lgKw34cEchaek'}
-                        target='_blank'>
-                          "Manual Of Operations"
-                        </a>
-                        &nbsp;document for additional information.</p>
                     </>
                   ),
                   alwaysOpen: true,
