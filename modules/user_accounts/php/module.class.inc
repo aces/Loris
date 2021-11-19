@@ -74,7 +74,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();

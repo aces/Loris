@@ -101,7 +101,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         // store user data in object property
         foreach ($row as $key=>$value) {
-            switch ($key){
+            switch ($key) {
             case 'Sex':
                 $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
                 break;
@@ -968,7 +968,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($seqs AS $seq) {
             $unit = "";
 
-            switch($seq['@']['type']) {
+            switch ($seq['@']['type']) {
             case 'alpha':
                 $unit .= '[a-z]';
                 break;

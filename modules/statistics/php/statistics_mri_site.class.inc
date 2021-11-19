@@ -56,7 +56,7 @@ class Statistics_Mri_Site extends Statistics_Site
      */
     function _getIssueName(string $issue)
     {
-        switch($issue) {
+        switch ($issue) {
         case "Tarchive_Missing":
             return "MRI Parameter Form Completed but Missing tarchive entry";
         case "PF_Missing":

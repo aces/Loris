@@ -259,7 +259,7 @@ class ViewDetails extends \NDB_Form
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, []);
             return true;
-        } catch(\LorisException $e) {
+        } catch (\LorisException $e) {
             return false;
         }
     }

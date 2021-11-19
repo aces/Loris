@@ -171,13 +171,11 @@ class Dqt extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/dataquery/js/arrayintersect.js",
                 $baseURL . "/dqt/js/react.fieldselector.js",
                 $baseURL . "/dqt/js/react.filterBuilder.js",
                 $baseURL . "/dqt/js/react.tabs.js",
                 $baseURL . "/dqt/js/react.sidebar.js",
                 $baseURL . "/dqt/js/react.app.js",
-                $baseURL . "/dataquery/js/jstat.js",
                 $baseURL . "/js/components/StaticDataTable.js",
                 $baseURL . "/js/flot/jquery.flot.min.js",
                 $baseURL . '/js/components/PaginationLinks.js',

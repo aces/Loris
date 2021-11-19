@@ -131,31 +131,19 @@ class Imaging_Browser extends \DataFrameworkMenu
             'N' => 'New',
         ];
 
-        // get list of scan types
-        $all_scan_types = \Utility::getScanTypeList();
+        $all_scan_types = array_values(\Utility::getScanTypeList());
+        $sequenceTypes  = array_combine($all_scan_types, $all_scan_types);
 
-        // get list of scan types that should be present in the data table
-        // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on
-        // array values rather than keys (hence the array_flip), then flip
-        // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type) combination.
         $config = \NDB_Config::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
-        $scan_id_types      = array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
-        );
 
         return [
             'sites'         => $siteList,
             'projects'      => $list_of_projects,
             'visitQCStatus' => $visitQCStatus,
-            'sequenceTypes' => $all_scan_types,
+            'sequenceTypes' => $sequenceTypes,
             'pendingNew'    => $pending,
-            'configLabels'  => $scan_id_types,
+            'configLabels'  => $toTable_scan_types,
         ];
 
     }

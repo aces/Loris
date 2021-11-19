@@ -26,7 +26,7 @@ class Site implements
             try {
                 $siteList[$cidS] = new Site();
                 $siteList[$cidS]->select($centerID);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $message = $e->getMessage();
                 unset($siteList[$cidS]);
                 throw new Exception("Could not select site ($message)", 0, $e);
