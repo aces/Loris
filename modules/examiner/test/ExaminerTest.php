@@ -141,7 +141,7 @@ class ExaminerTest extends LorisIntegrationTest
         )->getText();
         $this->assertEquals("", $bodyText);
     }
-    /*
+    /**
      * Tests that Add examiner section, insert an Examiner and find it.
      *
      * @return void
