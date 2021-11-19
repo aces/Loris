@@ -175,15 +175,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   const EpochsLayer = () => {
-    const fEpochs = [...Array(epochs.length).keys()].filter((i) =>
+    // ##################### EEGNET OVERRIDE START ################## //
+    // Override: Delete Enclosed Code
+    /*const fEpochs = [...Array(epochs.length).keys()].filter((i) =>
       epochs[i].onset + epochs[i].duration > interval[0]
       && epochs[i].onset < interval[1]
-    );
+    );*/
+    // ##################### EEGNET OVERRIDE END ################## //
 
     return (
       <Group>
-        {fEpochs.length < MAX_RENDERED_EPOCHS &&
-          fEpochs.map((index) => {
+        {// ##################### EEGNET OVERRIDE START ################## //
+          filteredEpochs.length < MAX_RENDERED_EPOCHS &&
+          filteredEpochs.map((index) => {
+          // ##################### EEGNET OVERRIDE END ################## //
             return (
               <Epoch
                 {...epochs[index]}
@@ -599,6 +604,25 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       : 'Show Event Panel'
                     }
                   </button>
+                }
+                {
+                  // ##################### EEGNET OVERRIDE START ################## //
+                  <button
+                    className={'btn btn-primary'
+                      + (rightPanel === 'annotationForm' ? ' active' : '')
+                    }
+                    onClick={() => {
+                      rightPanel === 'annotationForm'
+                        ? setRightPanel(null)
+                        : setRightPanel('annotationForm');
+                    }}
+                  >
+                    {rightPanel === 'annotationForm'
+                      ? 'Close Annotation Form'
+                      : 'New Annotation'
+                    }
+                  </button>
+                  // ##################### EEGNET OVERRIDE END ################## //
                 }
 
                 <div

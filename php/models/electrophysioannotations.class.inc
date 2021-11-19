@@ -75,16 +75,20 @@ class ElectrophysioAnnotations
      *
      * @param array $instance_data Instance data
      * @param array $metadata      Metadata
-     * @param int   $instance_id   InstanceID
-     * @param int   $parameter_id  ParameterID
+     * // ##################### EEGNET OVERRIDE START ################## //
+     * @param int|null   $instance_id   InstanceID
+     * @param int|null   $parameter_id  ParameterID
+     * // ##################### EEGNET OVERRIDE END ################## //
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-        int $instance_id,
-        int $parameter_id
+        // ##################### EEGNET OVERRIDE START ################## //
+        ?int $instance_id,
+        ?int $parameter_id
+        // ##################### EEGNET OVERRIDE END ################## //
     ): void {
 
         $factory = \NDB_Factory::singleton();
@@ -130,14 +134,15 @@ class ElectrophysioAnnotations
                 'Author'      => $metadata['author']
             ];
 
+            // ##################### EEGNET OVERRIDE START ################## //
             $instance = [
                 'Onset'             => $instance_data['onset'],
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
                 'Channels'          => $instance_data['channels'],
-                'AbsoluteTime'      => $instance_data['abs_time'],
                 'Description'       => $instance_data['description']
             ];
+            // ##################### EEGNET OVERRIDE END ################## //
 
             //Insert new files and data into DB
             if (empty($annotationFID)) {

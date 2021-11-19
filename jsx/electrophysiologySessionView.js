@@ -145,6 +145,9 @@ class ElectrophysiologySessionView extends Component {
           chunksURL: null,
           epochsURL: null,
           electrodesURL: null,
+          // ##################### EEGNET OVERRIDE START ################## //
+          annotations: null,
+          // ##################### EEGNET OVERRIDE END ################## //
           splitData: null,
         },
       ],
@@ -221,7 +224,12 @@ class ElectrophysiologySessionView extends Component {
                     && loris.BaseURL
                       + '/electrophysiology_browser/file_reader/?file='
                       + group.links[1].file
-                ),
+              ),
+            // ##################### EEGNET OVERRIDE START ################## //
+            annotations:
+                dbEntry
+                && dbEntry.file.annotations,
+            // ##################### EEGNET OVERRIDE END ################## //
           }));
 
           this.setState({
@@ -320,6 +328,9 @@ class ElectrophysiologySessionView extends Component {
         const {
           chunksURLs,
           epochsURL,
+          // ##################### EEGNET OVERRIDE START ################## //
+          annotations,
+          // ##################### EEGNET OVERRIDE END ################## //
           electrodesURL,
         } = this.state.database[i];
         const file = this.state.database[i].file;
@@ -349,6 +360,9 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
       }
         epochsURL={epochsURL}
+        // ##################### EEGNET OVERRIDE START ################## //
+        annotations={annotations}
+        // ##################### EEGNET OVERRIDE END ################## //
         electrodesURL={electrodesURL}
             >
             <Panel

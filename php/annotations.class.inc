@@ -27,13 +27,18 @@ class Annotations extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $parameters = $request->getQueryParams();
+        // ##################### EEGNET OVERRIDE START ################## //
+        /*$parameters = $request->getQueryParams();*/
+        // ##################### EEGNET OVERRIDE END ################## //
         $factory    = \NDB_Factory::singleton();
         $user       = $factory->user();
         $db         = $factory->database();
 
         switch ($request->getMethod()) {
         case 'GET':
+            // ##################### EEGNET OVERRIDE START ################## //
+            $parameters = $request->getQueryParams();
+            // ##################### EEGNET OVERRIDE END ################## //
             $sessionID = $db->pselectOne(
                 'SELECT SessionID
                     FROM physiological_file
@@ -78,6 +83,9 @@ class Annotations extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
+            // ##################### EEGNET OVERRIDE START ################## //
+            $parameters = $request->getQueryParams();
+            // ##################### EEGNET OVERRIDE END ################## //
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
@@ -94,22 +102,44 @@ class Annotations extends \NDB_Page
 
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
+            // ##################### EEGNET OVERRIDE START ################## //
+            $parameters = json_decode((string) $request->getBody(), true);
+            // ##################### EEGNET OVERRIDE END ################## //
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
-            if (!isset($parameters['physioFileID'])) {
+            // ##################### EEGNET OVERRIDE START ################## //
+            /*if (!isset($parameters['physioFileID'])) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }*/
+
+            if (!isset($parameters['sessionID'])) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
+
+            $physioFileID = $db->pselectOne(
+                'SELECT PhysiologicalFileID
+                    FROM physiological_file
+                    WHERE SessionID=:SID',
+                ['SID' => $parameters['sessionID']]
+            );
+
+            if (!isset($physioFileID)) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+            // ##################### EEGNET OVERRIDE END ################## //
 
             $instance_data = $parameters['instance'];
             $metadata      = $parameters['metadata'];
             $instance_id   = $parameters['instance_id'] ?? null;
             $parameter_id  = $parameters['parameter_id'] ?? null;
 
-            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
+            // ##################### EEGNET OVERRIDE START ################## //
+            (new ElectrophysioAnnotations(intval($physioFileID)))
                 ->update($instance_data, $metadata, $instance_id, $parameter_id);
+             // ##################### EEGNET OVERRIDE END ################## //
 
             return (new \LORIS\Http\Response\JSON\OK());
         default:

@@ -32,6 +32,14 @@ export type Epoch = {
   channels: number[] | "all",
 };
 
+// ##################### EEGNET OVERRIDE START ################## //
+export type AnnotationMetadata = {
+  instances: any[],
+  labels: any[],
+  metadata: any[]
+}
+// ##################### EEGNET OVERRIDE END ################## //
+
 export type RightPanel = 'annotationForm' | 'epochList' | null;
 
 export type Electrode = {
