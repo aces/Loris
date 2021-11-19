@@ -213,8 +213,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("No");
 
-        sleep(1);
-
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
