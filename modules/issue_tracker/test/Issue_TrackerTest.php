@@ -147,15 +147,15 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function testClearFormIssueTracker()
     {
          $this->safeGet($this->url . "/issue_tracker/");
-         $titleElement = $this->safeFindElement(
-             WebDriverBy::Name("title")
-         );
+        $titleElement = $this->safeFindElement(
+            WebDriverBy::Name("title")
+        );
          $titleElement->sendkeys('TestTestTest');
          ////click clear form button
          $this->safeClick(WebDriverBy::Name("reset"));
-         $bodyText =$this->safeFindElement(
-             WebDriverBy::Name("title")
-         )->getText();
+        $bodyText =$this->safeFindElement(
+            WebDriverBy::Name("title")
+        )->getText();
          $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 }

@@ -28,10 +28,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
     //Filter locations
-    static $pname    = 'input[name="patientName"]';
-    static $sex   = 'select[name="sex"]';
-    static $site = 'select[name="site"]';
-    static $dateOfBirth   = 'input[name="dateOfBirth"]';
+    static $pname       = 'input[name="patientName"]';
+    static $sex         = 'select[name="sex"]';
+    static $site        = 'select[name="site"]';
+    static $dateOfBirth = 'input[name="dateOfBirth"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';

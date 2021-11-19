@@ -125,10 +125,12 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("categoryName")
         )->sendKeys("test");
         $this->safeClick(
-            WebDriverBy::cssSelector("
+            WebDriverBy::cssSelector(
+                "
               #category > div > div > ".
-              "form > div > div:nth-child(6) > div > div > button
-            ")
+                "form > div > div:nth-child(6) > div > div > button
+            "
+            )
         );
         $this->safeGet($this->url . "/document_repository/");
         $text = $this->safeFindElement(

@@ -73,7 +73,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint("900000","Stale","V2");
+        $this->_createTimepoint("900000", "Stale", "V2");
         $this->safeGet($this->url . "/900000/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")

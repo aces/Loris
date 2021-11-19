@@ -30,7 +30,7 @@ require_once __DIR__ .
  */
 class ExaminerTest extends LorisIntegrationTest
 {
-    static $examnier   = 'input[name="examiner"]';
+    static $examnier = 'input[name="examiner"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
@@ -152,8 +152,10 @@ class ExaminerTest extends LorisIntegrationTest
         //in the TEST_Site.
         $this->safeGet($this->url . "/examiner/");
         $this->safeClick(
-            WebDriverBy::cssSelector("#default-panel > div > div > div.table-header ".
-              "> div > div > div:nth-child(2) > button:nth-child(1)")
+            WebDriverBy::cssSelector(
+                "#default-panel > div > div > div.table-header ".
+                "> div > div > div:nth-child(2) > button:nth-child(1)"
+            )
         );
         $this->safeFindElement(
             WebDriverBy::Name("addName")
