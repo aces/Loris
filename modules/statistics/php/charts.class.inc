@@ -84,7 +84,7 @@ class Charts extends \NDB_Page
         if (count($pathparts) != 2) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
-        switch($pathparts[1]){
+        switch ($pathparts[1]) {
         case 'siterecruitment_pie':
             return $this->_handleSitePieData();
         case 'siterecruitment_bysex':

@@ -116,9 +116,17 @@ function populateVisitLabel($result, $visit_label)
         $timePoint->getVisitLabel()."\nMissing Instruments:\n";
         print_r($diff);
     }
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
+        );
     if ($confirm === true) {
         foreach ($diff as $test_name) {
-            $battery->addInstrument($test_name);
+            $battery->addInstrument($lorisinstance, $test_name);
         }
     }
 

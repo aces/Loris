@@ -124,7 +124,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'instruments':
             $handler = new Instruments($this->_visit);
             break;

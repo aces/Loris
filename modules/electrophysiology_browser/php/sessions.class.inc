@@ -17,6 +17,7 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
+use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
 
 
 /**
@@ -82,7 +83,7 @@ class Sessions extends \NDB_Page
                 new \SessionID(strval($session_id))
             );
             $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
+        } catch (\LorisException $e) {
             throw new \NotFound("Session not found");
         }
 
@@ -136,7 +137,6 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
-
         return $this->getSessionData($outputType);
     }
 
@@ -150,6 +150,7 @@ class Sessions extends \NDB_Page
      */
     function getSessionData($outputType)
     {
+
         $db = \NDB_Factory::singleton()->database();
 
         $query = 'SELECT
@@ -210,6 +211,8 @@ class Sessions extends \NDB_Page
         return $subjectData;
     }
 
+
+
     /**
      * Get the list of electrophysiology recordings with their recording information.
      *
@@ -224,19 +227,17 @@ class Sessions extends \NDB_Page
         $fileCollection = [];
         $params         = [];
         $params['SID']  = $this->sessionID;
-
-        $query = 'SELECT
-                    pf.PhysiologicalFileID
-                 FROM
-                    physiological_file pf ';
+        $query          = 'SELECT
+                         pf.PhysiologicalFileID
+                       FROM
+                         physiological_file pf ';
 
         if ($outputType != 'all_types') {
-            $query .= 'LEFT JOIN physiological_output_type pot ON ';
-            $query .= 'pf.PhysiologicalOutputTypeID='
-                             .'pot.PhysiologicalOutputTypeID ';
-            $query .= 'WHERE SessionID=:SID ';
-            $query .= 'AND pot.OutputTypeName = :OTN AND pf.ParentID IS NULL ';
-
+            $query        .= 'LEFT JOIN physiological_output_type pot ON ';
+            $query        .= 'pf.PhysiologicalOutputTypeID='
+                .'pot.PhysiologicalOutputTypeID ';
+            $query        .= 'WHERE SessionID=:SID ';
+            $query        .= 'AND pot.OutputTypeName = :OTN ';
             $params['OTN'] = $outputType;
         } else {
             $query .= "WHERE SessionID=:SID AND pf.ParentID IS NULL";
@@ -261,6 +262,8 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
+        $db = \NDB_Factory::singleton()->database();
+
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
         $physioFileObj   = new ElectrophysioFile($physioFileID);
@@ -458,7 +461,26 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
-        $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
+        $fileOutput = $db->pselectone(
+            'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+            ['PFID' => $physioFileID]
+        );
+
+        //Get the annotation data if the output type is derivative
+        //Get the annotation data if the output type is derivative
+        if (strcmp($fileOutput, 'derivative') == 0) {
+            $annotations = new ElectrophysioAnnotations(
+                intval($physioFileID)
+            );
+            $fileSummary['annotations'] = $annotations->getData();
+        }
+
+        $fileSummary['output_type'] = $fileOutput;
+        $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
 
         return $fileSummary;
     }
@@ -471,7 +493,7 @@ class Sessions extends \NDB_Page
      * @return array array with the path to the different files associated to the
      *               electrophysiology file
      */
-    function getDownloadlinks(ElectrophysioFile $physioFile): array
+    function getDownloadLinks(ElectrophysioFile $physioFile): array
     {
         $nSplit        = intval($physioFile->getParameter('SplitCount'));
         $downloadLinks = [];
@@ -649,5 +671,4 @@ class Sessions extends \NDB_Page
             )
         );
     }
-
 }

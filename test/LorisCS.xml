@@ -11,12 +11,17 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingVersion"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
         <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <!-- handled by Squiz.ControlStructures.ControlSignature, which
+             can be autofixed -->
+        <exclude name="PEAR.ControlStructures.ControlSignature"/>
     </rule>
 
     <!-- Pieces of other standards to include... -->
 
     <!-- Make sure there's no weird spacing for array brackets -->
     <rule ref="Squiz.Arrays.ArrayBracketSpacing" />
+    <rule ref="Squiz.ControlStructures.ControlSignature" />
 
     <!-- Pick up any calls to deprecated functions. -->
     <rule ref="Generic.PHP.DeprecatedFunctions"/>

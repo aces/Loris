@@ -113,7 +113,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'format':
             $handler = new Format($image);
             break;

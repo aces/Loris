@@ -151,7 +151,7 @@ if (! $config->settingEnabled('usePwnedPasswordsAPI')) {
     $response = $client->sendRequest(
         new Request('GET', "/range/21BD1")
     );
-    switch ($response->getStatusCode()){
+    switch ($response->getStatusCode()) {
     case 200:
         $helper->printSuccess('Connection successful.');
         break;
