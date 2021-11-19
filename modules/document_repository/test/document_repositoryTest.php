@@ -92,9 +92,12 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      */
     function testDocumentRepositoryUploadPage()
     {
-        $this->safeGet($this->url . "/document_repository/#upload");sleep(10);
+        $this->safeGet($this->url . "/document_repository/#upload");
         $text = $this->safeFindElement(
-            WebDriverBy::cssSelector("#upload > div > div > form > div > div:nth-child(1) > h3")
+            WebDriverBy::cssSelector(
+                "#upload > div > div > ".
+                "form > div > div:nth-child(1) > h3"
+            )
         )->getText();
         $this->assertStringContainsString("Upload a file", $text);
 
@@ -108,7 +111,10 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/document_repository/#category");
         $text = $this->safeFindElement(
-            WebDriverBy::cssSelector("#category > div > div > form > div > div:nth-child(1) > h3")
+            WebDriverBy::cssSelector(
+                "#category > div > div > form >".
+                " div > div:nth-child(1) > h3"
+            )
         )->getText();
         $this->assertStringContainsString("Add a category", $text);
 
