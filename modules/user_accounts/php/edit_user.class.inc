@@ -909,68 +909,40 @@ class Edit_User extends \NDB_Form
         // get the editor's permissions
         $perms = $editor->getPermissionsVerbose();
 
-        usort(
-            $perms,
-            function ($a, $b) {
-                return strcmp($a['label'], $b['label']);
-            }
-        );
-        $permissions = [];
-        $roles       = [];
+        $lastRole = '';
+        $group    = [];
         foreach ($perms as $row) {
-            $lastRole = $row['type'];
-            $attribs  = ["class" => "perm_$lastRole"];
+            if ($row['type'] != $lastRole) {
+                $lastRole = $row['type'];
+                $group[]  = $this->form->createElement(
+                    'static',
+                    '',
+                    '',
+                    '</div>'
+                    . "<h3 id=\"header_$lastRole\" "
+                    . "class=\"perm_header button\" "
+                    . "style=\"text-align: center; margin-top: 5px;\">"
+                    .ucwords($row['type'])
+                    . '</h3>'
+                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
+                );
+            }
+
+            // If the user is editing his/her own account, disable all permission
+            // checkboxes. Note that they will not be submitted when the form is
+            // saved
+            $attribs = ["class" => "perm_$lastRole"];
             if ($this->_isEditingOwnAccount()) {
                 $attribs['disabled'] = true;
             }
-            if ($row['type'] === 'Roles') {
-                $roles[] = $this->createCheckbox(
-                    'permID['.$row['permID'].']',
-                    htmlspecialchars($row['label']) . "<br>",
-                    $attribs
-                );
-            } else {
-                $permissions[] = $this->createCheckbox(
-                    'permID['.$row['permID'].']',
-                    htmlspecialchars($row['label']) . "<br>",
-                    $attribs
-                );
-            }
+            $group[] = $this->createCheckbox(
+                'permID['.$row['permID'].']',
+                htmlspecialchars($row['label']) . "<br>",
+                $attribs
+            );
         }
-
-        $collection   = [];
-        $collection[] = $this->form->createElement(
-            'static',
-            '',
-            '',
-            '</div>'
-                        . "<h3 id=\"header_Permission\" "
-                        . "class=\"perm_header button\" "
-                        . "style=\"text-align: center; margin-top: 5px;\">"
-                        ."Permissions"
-                        . '</h3>'
-                        . "<div id=\"perms_Permission\" style=\"margin-top: 5px;\">"
-        );
-        foreach ($permissions as $row) {
-            $collection[] = $row;
-        }
-        $collection[] = $this->form->createElement(
-            'static',
-            '',
-            '',
-            '</div>'
-                        . "<h3 id=\"header_Roles\" "
-                        . "class=\"perm_header button\" "
-                        . "style=\"text-align: center; margin-top: 5px;\">"
-                        ."Roles"
-                        . '</h3>'
-                        . "<div id=\"perms_Roles\" style=\"margin-top: 5px;\">"
-        );
-        foreach ($roles as $row) {
-            $collection[] = $row;
-        }
-        $this->addGroup($collection, 'PermID_Group', 'Permissions', "");
-        unset($collection);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "");
+        unset($group);
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
@@ -995,7 +967,6 @@ class Edit_User extends \NDB_Form
         );
 
         $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
-
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
@@ -1100,7 +1071,6 @@ class Edit_User extends \NDB_Form
                     $errors['UserID_Group']
                         = 'The user name must not exceed 255 characters';
                 }
-
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
@@ -1193,7 +1163,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email_Group']
+            $errors['Email']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
@@ -1221,7 +1191,7 @@ class Edit_User extends \NDB_Form
         if (!empty($values['Email'])) {
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
-                $errors['Email_Group'] = $emailError;
+                $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
                     $errors['__ConfirmEmail'] = 'Email and confirmed email '
@@ -1230,7 +1200,7 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // No email entered: error
-            $errors['Email_Group'] = 'You must enter an email address';
+            $errors['Email'] = 'You must enter an email address';
         }
 
         //======================================
