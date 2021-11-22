@@ -176,7 +176,7 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
         // Note: StringStream since BinaryStream isn't in 23.0-release.
         return (new \LORIS\Http\Response())
             ->withStatus(200)
-            ->withHeader("Content-Type", "text/plain")
+            ->withHeader("Content-Type", "application/json")
             ->withBody(
                 new \LORIS\Http\StringStream(
                     json_encode($data)
