@@ -189,7 +189,7 @@ class Genomicfile
             ) {
                 $this->reportProgress(99, 'File successfully copied!');
             }
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             error_log("Cannot move file: $ex");
             $this->endWithFailure();
         }

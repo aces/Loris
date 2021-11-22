@@ -83,7 +83,7 @@ class Sessions extends \NDB_Page
                 new \SessionID(strval($session_id))
             );
             $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
+        } catch (\LorisException $e) {
             throw new \NotFound("Session not found");
         }
 

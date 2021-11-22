@@ -343,7 +343,7 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        try{
+        try {
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(
                     'application/pdf',

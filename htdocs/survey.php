@@ -228,7 +228,7 @@ class DirectDataEntryMainPage
         try {
             $this->initialize();
             $this->display();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->displayError($e);
         }
     }
@@ -259,8 +259,7 @@ class DirectDataEntryMainPage
      */
     function displayError($e)
     {
-        switch($e->getCode())
-        {
+        switch ($e->getCode()) {
         case 404:
             header("HTTP/1.1 404 Not Found");
             break;

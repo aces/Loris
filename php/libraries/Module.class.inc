@@ -61,7 +61,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         foreach ($mnames as $name) {
             try {
                 $modules[] = self::factory($name);
-            } catch(\LorisModuleMissingException $e) {
+            } catch (\LorisModuleMissingException $e) {
                 error_log($e->getMessage() . " " . $e->getTraceAsString());
             }
         }
@@ -368,7 +368,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         try {
             $page = $this->loadPage($loris, $pagename);
-        } catch(\NotFound $e) {
+        } catch (\NotFound $e) {
             $this->logger->debug("Page $pagename not found");
             return $resp->withStatus(404);
         }

@@ -46,10 +46,10 @@ class LogicOperator extends Component {
 
     // Set operator to OR if logicOperator is 1, AND otherwise
     if (this.props.logicOperator === 1) {
-      orClass += ' btn-primary';
+      orClass += ' btn-primary-filter';
       andClass += ' switch';
     } else {
-      andClass += ' btn-primary';
+      andClass += ' btn-primary-filter';
       orClass += ' switch';
     }
     return (
@@ -285,7 +285,9 @@ class FilterRule extends Component {
           fieldIndex = index;
         }
         return (
-          <option key={index} value={index}>{field.key[1]}</option>
+          <option key={index} value={index}>
+            {field.key[1]}
+          </option>
         );
       });
       let operators = [];
@@ -398,17 +400,20 @@ class FilterRule extends Component {
       );
     } else {
       // Else display dropdown for instrument select
-      let options = this.props.items.map((item, index) => {
-        return (
-          <option key={index} value={item.category}>{item.category}</option>
+      if (Array.isArray(this.props.items)) {
+        let options = this.props.items.map((item, index) => {
+          return (
+            <option key={index} value={item.category}>{item.category}</option>
+          );
+        });
+        rule = (
+          <select onChange={this.selectInstrument}
+                  className="input-sm col-xs-10">
+            <option value=''/>
+            {options}
+          </select>
         );
-      });
-      rule = (
-        <select onChange={this.selectInstrument} className="input-sm col-xs-10">
-          <option value=''/>
-          {options}
-        </select>
-      );
+      }
     }
     return (
       <div className='panel panel-default'>
