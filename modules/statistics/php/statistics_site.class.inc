@@ -102,7 +102,7 @@ class Statistics_Site extends \NDB_Menu
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        if (!empty($centerID) && $user->hasCenter(new \CenterID($centerID))) {
+        if (!empty($centerID) && $user->hasCenter($centerID)) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -251,7 +251,7 @@ class Statistics_Site extends \NDB_Menu
                 $sqlRow,
                 ['cid' => $_REQUEST['CenterID']]
             );
-            $centerID = $center['ID'] ?? '';
+            $centerID = new \CenterID($center['ID']) ?? '';
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
