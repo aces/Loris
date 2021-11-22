@@ -87,7 +87,7 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
     {
         $data = []; // we will send as stream to client on completion.
 
-        $config           = $this->lorisinstance->getConfiguration();
+        $config           = $request->getAttribute('loris')->getConfiguration();
         $couchConfig      = $config->getSetting('CouchDB');
         $couchConfigValid = isset(
             $couchConfig['dbName'],

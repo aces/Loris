@@ -86,11 +86,10 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $user = $request->getAttribute('user');
-
         $data = []; // we will send as stream to client on completion.
 
         $username         = $user->getUsername();
-        $config           = $this->lorisinstance->getConfiguration();
+        $config           = $request->getAttribute('loris')->getConfiguration();
         $couchConfig      = $config->getSetting('CouchDB');
         $couchConfigValid = isset(
             $couchConfig['dbName'],
