@@ -247,7 +247,7 @@ class SiteIDGenerator extends IdentifierGenerator
          * 'type' attributes within 'seq' elements. See project/config.xml for
          * examples.
          */
-        switch($setting) {
+        switch ($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
                 self::_getSeqAttribute($idStructure, 'type'),

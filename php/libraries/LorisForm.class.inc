@@ -410,7 +410,7 @@ class LorisForm
         $customs=[]
     ) {
         $el = null;
-        switch($type)  {
+        switch ($type) {
         case 'select':
             $el = $this->addSelect($name, $label, $options, $attribs);
             break;
@@ -1512,7 +1512,7 @@ class LorisForm
      */
     function renderElement(&$el)
     {
-        switch($el['type']) {
+        switch ($el['type']) {
         case 'date':
             return $this->dateHTML($el);
         case 'select':
@@ -1985,7 +1985,7 @@ class LorisForm
         $attribs=[],
         $customs=[]
     ) {
-        switch($type) {
+        switch ($type) {
         case 'text':
             return $this->createText($elname, $label, $attribs);
         case 'select':

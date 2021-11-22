@@ -807,7 +807,7 @@ class Utility
         $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);
 
-        switch($last) {
+        switch ($last) {
         case 'g':
             return (int)$val * 1024 * 1024 * 1024;
         case 'm':

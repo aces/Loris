@@ -106,7 +106,7 @@ class Media extends \DataFrameworkMenu
                     $this->lorisinstance,
                     $instrument["Test_name"],
                 )->getFullname();
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 $instrumentName = $instrument['Full_name'];
             }
 

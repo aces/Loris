@@ -206,7 +206,7 @@ const SavedQueriesList = (props) => {
 
   // Renders the html for the component
   let queryRows = [];
-  if (props.queriesLoaded) {
+  if (props.queriesLoaded && props.globalQueries) {
     for (let i = 0; i < props.globalQueries.length; i += 1) {
       let query = props.queryDetails[props.globalQueries[i]];
       let name = 'Unnamed Query: ' + props.globalQueries[i];
@@ -266,3 +266,4 @@ SavedQueriesList.defaultProps = {
 };
 
 export default SavedQueriesList;
+

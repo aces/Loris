@@ -516,7 +516,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     continue;
                 }
-                switch($type) {
+                switch ($type) {
                 case 'page':
                     $pageDescription  = trim($pieces[2]);
                     $pageName         = "page_$subtestCount";
@@ -958,7 +958,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // of replaced.
                     $q['UserRules'] = true;
 
-                    switch($q['type']) {
+                    switch ($q['type']) {
                     case 'select':
                         // Selects are the only type of rules that aren't part
                         // of a group, the rest include a _status element
