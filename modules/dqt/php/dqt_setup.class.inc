@@ -85,7 +85,6 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        ini_set('memory_limit', '-1');
         $user = $request->getAttribute('user');
 
         $data = []; // we will send as stream to client on completion.
