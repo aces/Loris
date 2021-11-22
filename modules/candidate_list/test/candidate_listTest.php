@@ -328,10 +328,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
         $this->safeFindElement(
-           WebDriverBy::cssSelector('$dccid')
+            WebDriverBy::cssSelector('$dccid')
         )->sendKeys('300001');
         $this->safeFindElement(
-           WebDriverBy::cssSelector('$pscid')
+            WebDriverBy::cssSelector('$pscid')
         )->sendKeys('MTL001');
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
