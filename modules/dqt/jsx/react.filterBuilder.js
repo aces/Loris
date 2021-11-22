@@ -412,12 +412,6 @@ class FilterRule extends Component {
             {options}
           </select>
         );
-      } else {
-        rule = (
-          <select className="input-sm col-xs-10">
-            <option value=''/>
-          </select>
-        );
       }
     }
     return (
