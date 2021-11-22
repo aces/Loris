@@ -362,5 +362,31 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $bodyText
         );
     }
-
+    /**
+     * Tests that, click the scan_done ="y" link, 
+     * and it will goto the imaging browser page.
+     *
+     * @return void
+     */
+    function testScanDoneLink()
+    {
+        $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+        )->getText();
+        $this->assertStringContainsString(
+            "imaging_browser/?PSCID=MTL022",
+            $bodyText
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
+        )->getText();
+        $this->assertStringContainsString(
+            "imaging_browser/?PSCID=MTL022",
+            $bodyText
+        );      
+    }
 }
