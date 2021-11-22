@@ -363,7 +363,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
     }
     /**
-     * Tests that, click the scan_done ="y" link, 
+     * Tests that, click the scan_done ="y" link,
      * and it will goto the imaging browser page.
      *
      * @return void
@@ -387,6 +387,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertStringContainsString(
             "imaging_browser/?PSCID=MTL022",
             $bodyText
-        );      
+        );
     }
 }
