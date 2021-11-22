@@ -102,7 +102,7 @@ class Statistics_Site extends \NDB_Menu
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        if (!empty($centerID) && $user->hasCenter($centerID)) {
+        if (!empty($centerID) && $user->hasCenter(new \CenterID($centerID))) {
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
@@ -190,16 +190,16 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB    =& \Database::singleton();
         $count = $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, 
-                candidate c, flag f, {$instrument} i 
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
-                AND s.CenterID <> '1' 
-                $this->query_criteria 
-                AND f.Data_entry='Complete' 
+            "SELECT count(s.CandID)  FROM session s,
+                candidate c, flag f, {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                $this->query_criteria
+                AND f.Data_entry='Complete'
                 AND s.Current_stage <> 'Recycling Bin'
-                AND f.Administration='All' 
+                AND f.Administration='All'
                 AND i.CommentID NOT LIKE 'DDE%'",
             $this->query_vars
         );
