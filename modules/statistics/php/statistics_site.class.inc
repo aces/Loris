@@ -247,7 +247,7 @@ class Statistics_Site extends \NDB_Menu
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow(
+            $center = $DB->pselectRow(
                 $sqlRow,
                 ['cid' => $_REQUEST['CenterID']]
             );
