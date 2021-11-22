@@ -305,7 +305,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             "High Yeast",
-            '62'
+            '2 rows'
         );
     }
     /**
