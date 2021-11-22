@@ -71,7 +71,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $userProjects   = $user->getProjects();
         $projectOptions = [];
         foreach ($userProjects as $project) {
-            $projectOptions[$project->getId()] = $project->getName();
+            $projectOptions[$project->getId()->__toString()] = $project->getName();
         }
         $values['project'] = $projectOptions;
         $values['psc']     = \Utility::getSiteNameListByIDs($user->getCenterIDs());
@@ -81,7 +81,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $subprojectGroups = [];
         foreach ($projectOptions as $pid=>$pname) {
             $subprojectGroups[$pid] = \Utility::getSubprojectList(
-                new \ProjectID($pid)
+                new \ProjectID(strval($pid))
             );
         }
         $values['subprojectGroups'] = $subprojectGroups;
@@ -91,7 +91,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         foreach ($subprojectGroups as $pid=>$subprojectList) {
             foreach ($subprojectList as $sid=>$title) {
                 $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectSubproject(
-                    new \ProjectID($pid),
+                    new \ProjectID(strval($pid)),
                     $sid
                 );
             }
