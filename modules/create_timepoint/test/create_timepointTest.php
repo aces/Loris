@@ -78,7 +78,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("V2", $bodyText);
+        $this->assertStringContainsString("900000", $bodyText);
 
     }
 
