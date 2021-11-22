@@ -327,22 +327,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $pscid = "#lorisworkspace > div > div:nth-child(1) > div >".
                  " div:nth-child(2)>form>div>div:nth-child(2)>div>div>input";
         // to do react input value
-        $this->webDriver->executeScript(
-            "input = document.querySelector('$dccid');
-                 lastValue = input.value;
-                 input.value = '300001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
-        );
-        $this->webDriver->executeScript(
-            "input = document.querySelector('$pscid');
-                 lastValue = input.value;
-                 input.value = 'MTL001';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);"
-        );
+        $this->safeFindElement(
+           WebDriverBy::cssSelector('$dccid')
+        )->sendKeys('300001');
+        $this->safeFindElement(
+           WebDriverBy::cssSelector('$pscid')
+        )->sendKeys('MTL001');
         $btn = ".col-sm-12 > .row .btn";
         //to do check the url
         $this->safeClick(WebDriverBy::cssSelector($btn));
@@ -383,7 +373,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
         )->getText();
         $this->assertStringContainsString(
-            "imaging_browser/?PSCID=MTL022",
+            "Y",
             $bodyText
         );
         $this->safeClick(
