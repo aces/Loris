@@ -141,7 +141,6 @@ class CreateTimepoint extends React.Component {
             state.form.display.project = true;
           }
           // Populate the select options for visit.
-          console.log(data);
           if (data.visit) {
             // Store the (complete) visit selection information.
             state.storage.visit = data.visit;
