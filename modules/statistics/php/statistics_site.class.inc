@@ -251,7 +251,8 @@ class Statistics_Site extends \NDB_Menu
                 $sqlRow,
                 ['cid' => $_REQUEST['CenterID']]
             );
-            $centerID = new \CenterID(strval($center['ID'])) ?? '';
+
+            $centerID = new \CenterID($center['ID'] ?? '');
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
