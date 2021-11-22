@@ -763,7 +763,7 @@ jStat.extend({
 			Math.exp( jStat.combinationln( n, m )) :
 		( jStat.factorial( n ) / jStat.factorial( m )) / jStat.factorial( n - m );
 	},
-	
+
 	combinationln : function( n, m ){
 		return  jStat.factorialln( n ) - jStat.factorialln( m ) - jStat.factorialln( n - m );
 	},
@@ -782,7 +782,7 @@ jStat.extend({
 			Math.exp( jStat.betaln( x, y )) :
 		jStat.gammafn( x ) * jStat.gammafn( y ) / jStat.gammafn( x + y );
 	},
-	
+
 	// natural logarithm of beta function
 	betaln : function( x, y ) {
 		return jStat.gammaln( x ) + jStat.gammaln( y ) - jStat.gammaln( x + y );
@@ -1104,9 +1104,9 @@ jStat.extend( jStat.beta, {
 // extend F function with static methods
 jStat.extend( jStat.centralF, {
 	pdf : function( x, df1, df2 ) {
-		return  ( x >= 0) ?  
+		return  ( x >= 0) ?
 			Math.sqrt( ( Math.pow( df1 * x, df1) * Math.pow( df2, df2 ) ) / ( Math.pow(df1 * x + df2, df1 + df2 ) ) ) / ( x * jStat.betafn( df1/2, df2/2 ) ) : undefined;
-		
+
 	},
 
 	cdf : function( x, df1, df2 ) {

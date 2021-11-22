@@ -17,6 +17,7 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
+- The Data Query Tool (Beta) is no longer beta and replaces the previous version (PR #7561)
 - LorisInstance class was added to represent an installed LORIS instance (PR #6118)
 - Added ability for scripts to bulk load instrument data (PR #6869)
 - Multiple classes of errors flagged by phan are now fixed (various PRs)
