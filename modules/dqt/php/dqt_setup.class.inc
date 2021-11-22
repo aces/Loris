@@ -101,12 +101,6 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
             $couchConfig['adminpass']
         );
         if (!$couchConfigValid) {
-            error_log(
-                'Data Query Tool cannot be loaded due to missing ' .
-                'configuration settings. Ensure that `dbName`, `hostname`, ' .
-                '`port`, `admin` and `adminpass` values are properly ' .
-                'configured in project/config.xml'
-            );
             throw new \ConfigurationException(
                 'Missing CouchDB configuration settings. Cannot load ' .
                 'Data Query Tool.'
