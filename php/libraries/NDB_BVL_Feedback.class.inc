@@ -502,7 +502,7 @@ class NDB_BVL_Feedback
             $qparams['ComID'] = $this->_feedbackCandidateProfileInfo['CommentID'];
         }
 
-        if (!$hasReadPermission===true) {
+        if (!$hasReadPermission) {
             $query            .= " AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
@@ -606,7 +606,7 @@ class NDB_BVL_Feedback
 
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
-        if ($hasReadPermission===true) {
+        if ($hasReadPermission) {
             $query .= " AND (ft.Active='Y' OR
                 (ft.Active='N' AND ft.UserID=:Username)
             )";
