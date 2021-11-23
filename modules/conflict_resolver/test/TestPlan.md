@@ -61,7 +61,7 @@
   - Ensure that the card does *not* appear (but no other cards are affected) after removing
     the `conflict_resolver` permission
 2. With the `conflict_resolver` permission, ensure that there is a bar graph of the number
-   of conflicts per instrument, grouped by visit.[Manual Testing]
+   of conflicts per instrument, grouped by visit. [Manual Testing]
   - Ensure that clicking a bar in the bar graph brings you to the conflict resolver module
     with the filters preset to filter for that instrument and visit
   - Ensure that clicking on an instrument in the legend takes you to the conflict resolver
