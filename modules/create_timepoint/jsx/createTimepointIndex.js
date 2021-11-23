@@ -438,7 +438,6 @@ class CreateTimepoint extends React.Component {
 
 CreateTimepoint.propTypes = {
   baseURL: PropTypes.string.isRequired,
-  dataURL: PropTypes.string.isRequired,
 };
 
 /**
@@ -448,7 +447,6 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <CreateTimepoint
       baseURL={loris.BaseURL}
-      dataURL={`${loris.BaseURL}/create_timepoint/AjaxTimepoint`}
     />,
     document.getElementById('lorisworkspace')
   );
