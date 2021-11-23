@@ -16,6 +16,9 @@ type CProps = {
   filteredEpochs: number[],
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
+  // ##################### EEGNET OVERRIDE START ################## //
+  setEpochs: (_: EpochType[]) => void,
+  // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
@@ -27,6 +30,9 @@ const AnnotationForm = ({
   filteredEpochs,
   setTimeSelection,
   setRightPanel,
+  // ##################### EEGNET OVERRIDE START ################## //
+  setEpochs,
+  // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch,
   updateActiveEpoch,
   interval,
