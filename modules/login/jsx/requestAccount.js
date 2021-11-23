@@ -176,7 +176,7 @@ class RequestAccount extends Component {
             type={'text'}
             placeholder={'Last name'}
           />
-          <TextboxElement
+          <EmailElement
             name={'email'}
             value={this.state.form.value.email}
             onUserInput={this.setForm}
