@@ -458,7 +458,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Attachment for new issue.
         $uploadedFiles = $request->getUploadedFiles();
-        if (isset($uploadedFiles)) {
+        if (isset($uploadedFiles) && !empty($uploadedFiles)) {
             $attachment = new \LORIS\issue_tracker\UploadHelper();
             $success    = $attachment->setupUploading(
                 $user,
