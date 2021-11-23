@@ -20,5 +20,5 @@ In order to use the Battery Manager module the user needs one or both of the fol
 There are no configuration settings that affect the behavior of this module.
 
 ## Interactions with LORIS
-Changes, additions and deletion of data in this module affects the test battery assigned to a candidate at each timepoint
+Changes, additions and deletion of data in this module affects the test battery assigned to a candidate at each timepoint.
 
