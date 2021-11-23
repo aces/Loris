@@ -8,6 +8,7 @@
  */
 
 import React, {Component} from 'react';
+import ModalImportCSV from './react.importCSV';
 import {getSessions} from '../js/arrayintersect';
 
 /**
@@ -666,7 +667,129 @@ class FilterBuilder extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showModalCSV: false,
+    };
+    this.openModalCSV = this.openModalCSV.bind(this);
+    this.closeModalCSV = this.closeModalCSV.bind(this);
+    this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
+    this.requestSessions = this.requestSessions.bind(this);
+  }
+
+  /**
+   * Open the CSV "import data" Modal.
+   * @param {object} e
+   */
+  openModalCSV(e) {
+    e.preventDefault();
+    this.setState({showModalCSV: true});
+  }
+
+  /**
+   * Close the CSV "import data" Modal.
+   */
+  closeModalCSV() {
+    this.setState({showModalCSV: false});
+  }
+
+  /**
+   * requestSessions - get request for session mapping.
+   * @param {string} type
+   * @param {object} data
+   * @param {function} callback
+   */
+  async requestSessions(type, data, callback) {
+    // fetch CandID for PSCID (session) map
+    if (type === 'CandID') {
+      await fetch(
+      window.location.origin
+      + '/dqt/Filterbuilder',
+      {
+        credentials: 'same-origin',
+        method: 'GET',
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            data = {
+              allCandidates: data['allCandidates'],
+              mapping: Object.assign({}, ...data['mapping']),
+            };
+            return callback(data);
+          });
+        } else {
+          response.json().then((data) => {
+            console.error(data);
+          });
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    return callback(null);
+  }
+
+  /**
+   * Define the Candidates from CSV.
+   * @param {string} type
+   * @param {number} operator
+   * @param {object} data
+   */
+  async defineCSVCandidates(type, operator, data) {
+    let session = [];
+    await this.requestSessions(type, data, (sessions) => {
+      if (sessions || type !== 'CandID') {
+        let children = [];
+        let pscidSessions = [];
+        let candidSessions = [];
+        for (const item of data) {
+          const value = item[0];
+          if (value && operator === 1) {
+            pscidSessions.push(value);
+          }
+          const rule = {
+            field: type,
+            fieldType: 'varchar(255)',
+            instrument: 'demographics',
+            operator: 'equal',
+            session: [
+              sessions ? sessions['mapping'][value] ?? '' : value,
+            ],
+            type: 'rule',
+            value: value,
+            visit: 'All',
+            fields: [{
+              id: 'DataDictionary:Demographics',
+              key: ['demographics', type],
+            }],
+          };
+          if (type === 'CandID') {
+            const sessionKey = sessions
+              ? sessions['mapping'][value] ?? '' : value;
+            candidSessions.push(sessionKey);
+            rule.candidate = {
+              allCandidates: {
+                [sessionKey]: Object.values(sessions.allCandidates[sessionKey]),
+              },
+              allSessions: {},
+            };
+            for (const key of (rule.candidate.allCandidates[sessionKey])) {
+              rule.candidate.allSessions[key] = [sessionKey];
+            }
+          }
+          children.push(rule);
+        }
+        session.push(children);
+        const filters = {
+          activeOperator: operator,
+          session: operator === 1
+            ? (type !== 'CandID' ? pscidSessions : candidSessions)
+            : [],
+          children: children,
+        };
+        this.props.loadImportedCSV(filters);
+        this.closeModalCSV();
+      }
+    });
   }
 
   /**
@@ -677,13 +800,19 @@ class FilterBuilder extends Component {
   render() {
     return (
       <div>
+        <ModalImportCSV
+          showModalCSV={this.state.showModalCSV}
+          closeModalCSV={this.closeModalCSV}
+          defineCSVCandidates={this.defineCSVCandidates}
+        />
         <div className='row'>
           <h1 className='col-xs-6'
               style={{color: '#0A3572'}}>The Query's Filter</h1>
-          {/* <button className='import-csv'> */}
-          {/* Import Population from CSV&nbsp;
-          &nbsp;<span className='glyphicon glyphicon-file'/>*/}
-          {/* </button> */}
+          <button className='import-csv'
+                  onClick={this.openModalCSV}>
+            Import Population from CSV&nbsp;&nbsp;
+            <span className='glyphicon glyphicon-file'/>
+          </button>
         </div>
         <div className='row'>
           <div className='col-xs-12'>

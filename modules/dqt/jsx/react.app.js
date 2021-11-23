@@ -107,6 +107,8 @@ class DataQueryApp extends Component {
     this.navigationClicked = this.navigationClicked.bind(this);
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
+    this.loadImportedCSV = this.loadImportedCSV.bind(this);
+    this.getAllSessions = this.getAllSessions.bind(this);
     this.loadSavedQueries = this.loadSavedQueries.bind(this);
     this.handleProgressBarSetup = this.handleProgressBarSetup.bind(this);
     this.requestSessions = this.requestSessions.bind(this);
@@ -549,6 +551,23 @@ class DataQueryApp extends Component {
     }
     group.session = getSessions(group);
     return group;
+  }
+
+  /**
+   * Load the imported CSV from the user.
+   *
+   * @param {array} filter
+   */
+  loadImportedCSV(filter) {
+    filter.importCSV = true;
+    this.setState({
+      fields: this.state.fields ?? [],
+      selectedFields: this.state.selectedFields ?? {},
+      filter: filter,
+      alertLoaded: false,
+      alertSaved: false,
+      loading: false,
+    });
   }
 
   /**
@@ -1230,6 +1249,14 @@ class DataQueryApp extends Component {
   }
 
   /**
+   * get AllSessions when needed.
+   * @return {array}
+   */
+  getAllSessions() {
+    return this.props.AllSessions;
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -1349,6 +1376,8 @@ class DataQueryApp extends Component {
             Visits={this.state.Visits}
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFilters'}
+            loadImportedCSV={this.loadImportedCSV}
+            getAllSessions={this.getAllSessions}
           />
         )}
       />

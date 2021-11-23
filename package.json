@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "copy-webpack-plugin": "^6.2.1",
     "jstat": "^1.9.5",
+    "papaparse": "^5.3.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-addons-create-fragment": "^15.6.2",

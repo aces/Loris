@@ -146,6 +146,8 @@ let FilterSelectTabPane = (props) => {
                      filter={props.filter}
                      Visits={props.Visits}
                      Active={props.Active}
+                     loadImportedCSV={props.loadImportedCSV}
+                     getAllSessions={props.getAllSessions}
       />
     </TabPane>
   );

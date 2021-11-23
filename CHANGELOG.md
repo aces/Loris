@@ -55,6 +55,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - When a superuser edits another user, the labels for each permission is correctly displayed (PR #7451) 
 
 ### Modules
+#### DQT
+- The dataquery module has been completely redesigned. (PR #6908)
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
@@ -191,6 +193,7 @@ database (PR #5260)
 - Fix to prevent help boxes to float over the page content when scrolling (PR #6721)
 
 ### Modules 
+
 #### Candidate Profile
 - New module created to provide dashboard of a single candidate's data across all modules. (Various PRs)
 
