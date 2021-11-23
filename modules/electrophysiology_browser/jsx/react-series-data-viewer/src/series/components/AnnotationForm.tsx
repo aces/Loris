@@ -5,7 +5,7 @@ import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setEpochs} from '../store/state/dataset';
 import * as R from 'ramda';
-import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
+import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
 
 type CProps = {
@@ -14,6 +14,7 @@ type CProps = {
   filteredEpochs: number[],
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
+  setEpochs: (_: EpochType[]) => void,
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
@@ -25,6 +26,7 @@ const AnnotationForm = ({
   filteredEpochs,
   setTimeSelection,
   setRightPanel,
+  setEpochs,
   toggleEpoch,
   updateActiveEpoch,
   interval,
@@ -289,10 +291,6 @@ export default connect(
     setEpochs: R.compose(
       dispatch,
       setEpochs
-    ),
-    updateFilteredEpochs: R.compose(
-      dispatch,
-      updateFilteredEpochs
     ),
     toggleEpoch: R.compose(
       dispatch,
