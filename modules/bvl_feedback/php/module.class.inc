@@ -79,18 +79,18 @@ class Module extends \Module
 
             // Add centerID restriction if needed
             if (!$user->hasPermission('access_all_profiles')) {
-                $site_arr = implode(",",$user->getCenterIDs());
-                $query .= " AND s.CenterID IN ({$site_arr}) ";
+                $site_arr = implode(",", $user->getCenterIDs());
+                $query   .= " AND s.CenterID IN ({$site_arr}) ";
             }
 
             // Add project restriction & order BY
-            $project_arr = implode(",",$user->getProjectIDs());
-            $query .= " AND s.ProjectID IN ({$project_arr}) 
+            $project_arr = implode(",", $user->getProjectIDs());
+            $query      .= " AND s.ProjectID IN ({$project_arr}) 
                 ORDER BY Testdate DESC LIMIT 4";
 
-            $bvl_feedback      = $DB->pselect(
+            $bvl_feedback = $DB->pselect(
                 $query,
-                array()
+                []
             );
 
             $frontend_feedback = [];
