@@ -178,12 +178,13 @@ class CreateTimepoint extends React.Component {
   handleSubproject() {
     const state = Object.assign({}, this.state);
     if (Array.isArray(state.storage.subproject[state.form.value.project])) {
-      // Display error message to user. show swal error.
-      state.messages = [
-        `No subprojects defined for project: ${this.state.form.options.project[
+      // Display error message to user.
+      const errorMessage = `No subprojects defined for project: ${
+        this.state.form.options.project[
           this.state.form.value.project
-        ]}`,
-      ];
+      ]}`;
+      state.messages = [errorMessage];
+      swal.fire(errorMessage, '', 'error');
       state.form.options.subproject = {};
       state.form.options.visit = {};
     } else {
@@ -210,13 +211,13 @@ class CreateTimepoint extends React.Component {
   handleVisitLabel() {
     const state = Object.assign({}, this.state);
     if (Array.isArray(state.storage.visit[state.form.value.subproject])) {
-      // Display error message to user. show swal error.
-      state.messages = [
-        `No visit labels defined for subproject:
-        ${this.state.form.options.visit[
+      // Display error message to user.
+      const errorMessage = `No visit labels defined for subproject: ${
+        this.state.form.options.visit[
           this.state.form.value.subproject
-        ]}`,
-      ];
+      ]}`;
+      state.messages = [errorMessage];
+      swal.fire(errorMessage, '', 'error');
       state.form.options.visit = {};
     } else if (state.storage.visit[
         state.form.value.project
