@@ -435,7 +435,6 @@ class CreateTimepoint extends React.Component {
     );
   }
 }
-
 CreateTimepoint.propTypes = {
   baseURL: PropTypes.string.isRequired,
 };
