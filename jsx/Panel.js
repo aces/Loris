@@ -39,7 +39,9 @@ class Panel extends Component {
    * Toggle whether this Panel is displayed as collapsed
    */
   toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
+    if (this.props.collapsing) {
+      this.setState({collapsed: !this.state.collapsed});
+    }
   }
 
   /**
@@ -66,7 +68,7 @@ class Panel extends Component {
       <div
         className="panel-heading"
         onClick={this.toggleCollapsed}
-        data-toggle="collapse"
+        data-toggle={this.props.collapsing ? 'collapse' : null}
         data-target={'#' + this.props.id}
         data-parent={this.props.parentId ?
           '#'+this.props.parentId :

@@ -52,7 +52,8 @@ window.addEventListener('load', () => {
             Content: React.createElement(
                 {$widget->getComponentName()},
                 allprops
-            )
+            ),
+            collapsing: false
             {if $widget->getWidth()},Width: {$widget->getWidth()}{/if}
             {if $widget->getOrder()},Order: {$widget->getOrder()}{/if}
             {if $widget->getHeight()},Height: {$widget->getHeight()}{/if}
