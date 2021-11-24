@@ -52,7 +52,7 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
         );
 
         $cids = array_map(
-            function (string $cid) : \CenterID{
+            function (string $cid) : \CenterID {
                 return new \CenterID($cid);
             },
             explode(',', $row['centerIds']),
