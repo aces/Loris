@@ -30,7 +30,6 @@ class CnvProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 cohort.SubprojectID AS _Subproject,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _ExternalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,

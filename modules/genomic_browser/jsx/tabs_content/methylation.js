@@ -156,10 +156,6 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Date of Birth',
-        show: false,
-      },
-      {
         label: 'Sample',
         show: true,
       },

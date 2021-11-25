@@ -82,7 +82,6 @@ class GWAS extends Component {
       'PSC',
       'DCCID',
       'externalID',
-      'DoB',
     ];
     let reactElement;
     if (-1 === hiddenHeaders.indexOf(column)) {
