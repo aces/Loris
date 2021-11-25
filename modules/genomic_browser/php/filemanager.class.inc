@@ -54,6 +54,33 @@ class FileManager extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
+        // Parse GET query params.
+        $values = $request->getQueryParams();
+        // GET request for downloading file by ID.
+        if ($values['filename']) {
+            $factory  = \NDB_Factory::singleton();
+            $config   = $factory->config();
+            $filesDir = \Utility::appendForwardSlash(
+                $config->getSetting('GenomicDataPath')
+            );
+            try {
+                $downloadhandler = new \LORIS\FilesDownloadHandler(
+                    new \SplFileInfo($filesDir)
+                );
+                $request         = $request->withAttribute(
+                    'filename',
+                    $values['filename']
+                );
+                return $downloadhandler->handle($request);
+            } catch (\LorisException $e) {
+                // FilesUploadHandler throws an exception if there's a problem with
+                // the downloaddir.
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    $e->getMessage()
+                );
+            }
+        }
+
         $provisioner = new FilesProvisioner();
         $user        = $request->getAttribute('user');
 
