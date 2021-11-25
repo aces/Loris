@@ -70,6 +70,13 @@ class CnvDTO implements \LORIS\Data\DataInstance
     private $_Subproject = "";
 
     /**
+     * The DoB
+     *
+     * @var string
+     */
+    private $_DoB = "";
+
+    /**
      * The ExternalID
      *
      * @var string

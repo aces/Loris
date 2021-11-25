@@ -80,6 +80,13 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     private $_Subproject = "";
 
     /**
+     * The DoB
+     *
+     * @var string
+     */
+    private $_DoB = "";
+
+    /**
      * The externalID
      *
      * @var string
@@ -127,6 +134,7 @@ class ProfileDTO implements \LORIS\Data\DataInstance
             'PSCID'      => $this->_PSCID,
             'Sex'        => $this->_Sex,
             'Subproject' => $this->_Subproject,
+            'DoB'        => $this->_DoB,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,
             'SNP'        => $this->_SNP,
