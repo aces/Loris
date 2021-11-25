@@ -35,6 +35,7 @@ class Files extends Component {
       },
     };
     this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
     this.openFileUploadModal = this.openFileUploadModal.bind(this);
     this.closeFileUploadModal = this.closeFileUploadModal.bind(this);
     this.renderFileUploadForm = this.renderFileUploadForm.bind(this);
@@ -151,12 +152,10 @@ class Files extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'PSCID':
-        const url = `${this.props.baseURL}/${rowData.DCCID}/`;
-        reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      case 'Subproject':
-        reactElement = <td>{this.state.data.subprojects[parseInt(cell)]}</td>;
+      case 'Name':
+        const url = `${this.props.baseURL}${rowData.Name}`;
+        const fileName = rowData.Name.split('/').pop();
+        reactElement = <td><a href={url}>{fileName}</a></td>;
         break;
       default:
         reactElement = <td>{cell}</td>;
