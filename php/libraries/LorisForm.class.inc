@@ -706,7 +706,7 @@ class LorisForm
             }
         }
 
-        return htmlspecialchars($newValue);
+        return $newValue;
     }
 
     /**
@@ -820,7 +820,7 @@ class LorisForm
         if (empty($el['name'])) {
             return $el['label'];
         }
-        $val = $this->getValue($el['name']);
+        $val = htmlspecialchars($this->getValue($el['name']));
         return $val;
     }
     /**
@@ -857,7 +857,7 @@ class LorisForm
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
-        $value    = $this->getValue($el['name']);
+        $value    = htmlspecialchars($this->getValue($el['name']));
         $format   = 'date';
 
         if (array_key_exists('options', $el) && isset($el['options']['format'])) {
@@ -946,7 +946,7 @@ class LorisForm
         if (isset($el['readonly'])) {
             $readonly = 'readonly';
         }
-        $value = $this->getValue($el['name']);
+        $value = htmlspecialchars($this->getValue($el['name']));
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
                 isset($el['onchange']) && $el['onchange']
@@ -971,7 +971,7 @@ class LorisForm
 
             . (
                 (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['name']) . '"'
+                ? ' value="' . $value . '"'
                 : ''
               )
             . $disabled
@@ -1043,7 +1043,7 @@ class LorisForm
      */
     function timeHTML($el, $type='time')
     {
-        $timeStamp = $this->getValue($el['name']);
+        $timeStamp = htmlspecialchars($this->getValue($el['name']));
         $smarty    = new Smarty_NeuroDB;
         $value     = [
             'H' => null,
@@ -1087,7 +1087,7 @@ class LorisForm
      */
     function yearHTML($el)
     {
-        $year   = $this->getValue($el['name']);
+        $year   = htmlspecialchars($this->getValue($el['name']));
         $smarty = new Smarty_NeuroDB;
         $value  = explode('-', $year)[0];
 
@@ -1132,7 +1132,7 @@ class LorisForm
     {
         $cls      = empty($el['class']) ? "" : "class=\"$el[class]\"";
         $disabled = '';
-        $val      = $this->getValue($el['name']);
+        $val      = htmlspecialchars($this->getValue($el['name']));
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
@@ -1171,12 +1171,9 @@ class LorisForm
         if (isset($el['cols'])) {
             $dims .= " cols=\"$el[cols]\"";
         }
-        $value = $this->getValue($el['name']);
+        $value = htmlspecialchars($this->getValue($el['name']));
         return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
-            . (
-                !empty($value)
-                ? $this->getValue($el['name']) : ''
-              )
+            . (!empty($value) ? $value : '')
             ."</textarea>";
     }
 
@@ -1588,7 +1585,7 @@ class LorisForm
             // Quickform advanced checkbox
             return $this->advCheckboxHTML($el);
         }
-        $val      = $this->getValue($el['name']);
+        $val      = htmlspecialchars($this->getValue($el['name']));
         $checked  = '';
         $value    = '';
         $disabled = '';
@@ -1623,7 +1620,7 @@ class LorisForm
      */
     function advCheckboxHTML($el)
     {
-        $val      = $this->getValue($el['name']);
+        $val      = htmlspecialchars($this->getValue($el['name']));
         $checked  = '';
         $disabled = '';
         $value    = $el["checkStates"];
