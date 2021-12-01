@@ -9,8 +9,7 @@ has permission "config" (Edit configuration settings).
 3. Load the config module. Roll over each of the config labels to see if it gives a 
 description of that setting.
   [Automation Test on Travis CI]
-4. Go through each field in the configuration module. For each field where there is a
-single text area or radio input to enter data, try changing the value and pressing
+4. Go through some field of various type (textbox, radiobutton, ...) in the configuration module. For each field, try changing the value and pressing
 save at the bottom of the page. Refresh the page and check that the value actually 
 persists. Try to see if the change actually affected LORIS in some way. For example, 
 for the project description in the dashboard settings, go to the dashboard to see if 
@@ -25,9 +24,8 @@ the project description actually changed.
     for example) and make sure that updating the value from the front end subsequently 
     only changes the value again without reverting the type to `true/false`.
   [Manual Test]
-6. Go through each of the fields in the configuration module that have the 
+6. Choose a field in the configuration module that have the 
 "Add field" button. These are configuration values that allow multiple entries. 
-For each of these fields:
    - try clicking the "Add field" button to see that this adds a new field to enter 
    data. Enter data and press save at the bottom of the page. Refresh the page, check
    that the data saved
