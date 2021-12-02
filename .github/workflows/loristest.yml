@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-            testsuite: ['static','unit','integration']
-            php: ['7.4']
+            testsuite: 
+               -"static"
+            php:
+               -"7.4"
 
     steps:
     - uses: actions/checkout@v2
