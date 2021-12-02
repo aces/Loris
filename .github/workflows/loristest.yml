@@ -9,10 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-            testsuite:
-            - static
-            - unit
-            - integration
+            testsuite: ['static','unit','integration']
             php: ['7.4','8.0']
 
     steps:
