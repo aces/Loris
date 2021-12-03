@@ -35,6 +35,9 @@
     "@types/react-dom": "^16.9.9",
     "@types/react-redux": "7.1.16"
   },
+  "scripts": {
+    "postinstall": "protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/"
+  },
   "license": "MIT",
   "repository": "https://github.com/aces/react-series-data-viewer"
 }
