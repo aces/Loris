@@ -298,7 +298,7 @@ class ElectrophysioAnnotations
         );
 
         $tsv_entries = [
-            'onset', 'duration', 'label', 'channels', 'aboslute_time', 'description'
+            'onset', 'duration', 'label', 'channels', 'absolute_time', 'description'
         ];
 
         $tsv = $db->pselect(
