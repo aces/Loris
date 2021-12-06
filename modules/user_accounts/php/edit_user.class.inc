@@ -224,10 +224,14 @@ class Edit_User extends \NDB_Form
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
             // granted.
-            $permIDs = array_intersect(
-                $newPermissions,
-                $editorPermissions
-            );
+            if ($editor->hasPermission('superuser')) {
+                $permIDs = $newPermissions;
+            } else {
+                $permIDs = array_intersect(
+                    $newPermissions,
+                    $editorPermissions
+                );
+            }
         }
 
         // Keep old permissions if the editor is not allowed to edit them.
