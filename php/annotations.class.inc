@@ -132,7 +132,15 @@ class Annotations extends \NDB_Page
             // ##################### EEGNET OVERRIDE END ################## //
 
             $instance_data = $parameters['instance'];
-            $metadata      = $parameters['metadata'];
+            // ##################### EEGNET OVERRIDE START ################## //
+            // $metadata      = $parameters['metadata'];
+            // TODO: Figure out a better description modeled on other derivatives
+            $metadata = [
+                'description' => 'An annotation',
+                'sources' => 'EEGNet LORIS',
+                'author' => $user->getFullname()
+            ];
+            // ##################### EEGNET OVERRIDE END ################## //
             $instance_id   = $parameters['instance_id'] ?? null;
             $parameter_id  = $parameters['parameter_id'] ?? null;
 
