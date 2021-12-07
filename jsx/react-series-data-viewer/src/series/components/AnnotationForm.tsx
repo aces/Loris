@@ -228,6 +228,8 @@ const AnnotationForm = ({
           <label htmlFor="label">Label</label>
           <select className="form-control input-sm" id="label" onChange={handleLabelChange}>
             <option></option>
+            <option>Manual</option>
+            <option>Ambiguous</option>
             <option>Artifact</option>
             <option>Motion</option>
             <option>Flux jump</option>
