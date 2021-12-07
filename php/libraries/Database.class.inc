@@ -792,8 +792,8 @@ class Database implements LoggerAwareInterface
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
-                "The pselectWithIndexKey() function expects the uniqueKey parameter 
-                to not be null or empty. If re-indexing on the primary key is 
+                "The pselectWithIndexKey() function expects the uniqueKey parameter
+                to not be null or empty. If re-indexing on the primary key is
                 not necessary please use the pselect() function instead."
             );
         }
@@ -810,9 +810,9 @@ class Database implements LoggerAwareInterface
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row)) {
                 throw new DatabaseException(
-                    "The query supplied to pselectWithIndexKey() does not contain 
-                    the unique key to re-index on. Make sure to supply the 
-                    appropriate key in the SELECT statement to match the supplied 
+                    "The query supplied to pselectWithIndexKey() does not contain
+                    the unique key to re-index on. Make sure to supply the
+                    appropriate key in the SELECT statement to match the supplied
                     parameter of this function",
                     $query
                 );
@@ -823,7 +823,7 @@ class Database implements LoggerAwareInterface
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
                     "The uniqueKey supplied to pselectWithIndexKey() does not appear
-                     to be unique or is nullable. This function expects the key to 
+                     to be unique or is nullable. This function expects the key to
                      be both UNIQUE and NOT NULL.",
                     $query
                 );
@@ -885,7 +885,7 @@ class Database implements LoggerAwareInterface
             $colNumber = count($row);
             if ($colNumber !== 1) {
                 throw new DatabaseException(
-                    "The pselectCol() function expects only one column in the 
+                    "The pselectCol() function expects only one column in the
                     SELECT clause of the query, $colNumber were passed.",
                     $query
                 );
@@ -926,7 +926,7 @@ class Database implements LoggerAwareInterface
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
                 "The pselectColWithIndexKey() function expects the uniqueKey
-                 parameter to not be null or empty. If re-indexing on the primary 
+                 parameter to not be null or empty. If re-indexing on the primary
                  key is not necessary please use the pselectCol() function instead."
             );
         }
@@ -944,9 +944,9 @@ class Database implements LoggerAwareInterface
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
                 throw new DatabaseException(
-                    "The query supplied to pselectColWithIndexKey() should only 
-                    contain the unique key and one other column in the SELECT 
-                    clause. Make sure to supply the appropriate key in the SELECT 
+                    "The query supplied to pselectColWithIndexKey() should only
+                    contain the unique key and one other column in the SELECT
+                    clause. Make sure to supply the appropriate key in the SELECT
                     statement to match the supplied parameter of this function.",
                     $query
                 );
@@ -956,8 +956,8 @@ class Database implements LoggerAwareInterface
             // in the result array
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
-                    "The uniqueKey supplied to pselectColWithIndexKey() does not 
-                    appear to be unique or is nullable. This function expects the 
+                    "The uniqueKey supplied to pselectColWithIndexKey() does not
+                    appear to be unique or is nullable. This function expects the
                     key to be both UNIQUE and NOT NULL.",
                     $query
                 );
@@ -997,7 +997,7 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        return strval($result);
     }
 
     /**
