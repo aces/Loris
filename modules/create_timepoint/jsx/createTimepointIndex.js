@@ -216,7 +216,11 @@ class CreateTimepoint extends React.Component {
       if (Array.isArray(state.storage.visit[
         state.form.value.project][state.form.value.subproject])
       ) {
-        const errorMessage = `No visit labels defined for subproject: ${
+        const errorMessage = `No visit labels defined for ${
+          this.state.form.options.project[
+            this.state.form.value.project
+          ]
+        }-${
           this.state.form.options.subproject[
             this.state.form.value.subproject
         ]}`;
