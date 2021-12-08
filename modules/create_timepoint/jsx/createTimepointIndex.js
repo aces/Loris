@@ -210,16 +210,7 @@ class CreateTimepoint extends React.Component {
    */
   handleVisitLabel() {
     const state = Object.assign({}, this.state);
-    if (Array.isArray(state.storage.visit[state.form.value.subproject])) {
-      // Display error message to user.
-      const errorMessage = `No visit labels defined for subproject: ${
-        this.state.form.options.visit[
-          this.state.form.value.subproject
-      ]}`;
-      state.messages = [errorMessage];
-      swal.fire(errorMessage, '', 'error');
-      state.form.options.visit = {};
-    } else if (state.storage.visit[
+    if (state.storage.visit[
         state.form.value.project
       ] !== undefined) {
       if (Array.isArray(state.storage.visit[
