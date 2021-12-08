@@ -222,10 +222,22 @@ class CreateTimepoint extends React.Component {
     } else if (state.storage.visit[
         state.form.value.project
       ] !== undefined) {
-      state.form.options.visit = state.storage.visit[
-        state.form.value.project
-      ][state.form.value.subproject];
-      state.form.value.visit = null;
+      if (Array.isArray(state.storage.visit[
+        state.form.value.project][state.form.value.subproject])
+      ) {
+        const errorMessage = `No visit labels defined for subproject: ${
+          this.state.form.options.subproject[
+            this.state.form.value.subproject
+        ]}`;
+        state.messages = [errorMessage];
+        swal.fire(errorMessage, '', 'error');
+        state.form.options.visit = {};
+      } else {
+        state.form.options.visit = state.storage.visit[
+          state.form.value.project
+        ][state.form.value.subproject];
+        state.form.value.visit = null;
+      }
     }
     state.form.display.visit = true;
     if (Array.isArray(state.storage.visit) && !state.storage.visit.length) {
