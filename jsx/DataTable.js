@@ -236,7 +236,6 @@ class DataTable extends Component {
       } else if (isString) {
         // if string with text convert to lowercase
         val = val.toLowerCase();
-        console.log(val);
       } else if (Array.isArray(val)) {
         val = val.join(', ');
       } else {
@@ -259,9 +258,6 @@ class DataTable extends Component {
     }
 
     index.sort((a, b) => {
-console.log(a);
-console.log('__');
-console.log(b);
       if (this.state.sort.ascending) {
         if (a.Value === b.Value) {
           // If all values are equal, sort by rownum
