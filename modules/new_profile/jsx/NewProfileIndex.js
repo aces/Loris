@@ -115,7 +115,7 @@ class NewProfileIndex extends React.Component {
           resp.json().then((message) => {
             // enable button for form resubmission.
             this.setState({submitDisabled: false});
-            swal.fire('Error!', message, 'error');
+            swal.fire('Error!', message.error, 'error');
           });
         }
       })
