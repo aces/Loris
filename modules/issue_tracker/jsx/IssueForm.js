@@ -402,7 +402,7 @@ class IssueForm extends Component {
   }
 
   /**
-   * Handles form submission
+   * Handles form submission for new issue being created
    *
    * @param {event} e form submit event
    */
