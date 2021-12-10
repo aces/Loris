@@ -441,7 +441,7 @@ class IssueForm extends Component {
         response.json().then((data) => {
           this.setState({submissionResult: 'error'});
           let msgType = 'error';
-          let message = data.message || 'Failed to submit issue :(';
+          const message = data.error ?? data.message;
           this.showAlertMessage(msgType, message);
         });
         return;

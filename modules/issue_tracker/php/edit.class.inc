@@ -433,6 +433,9 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueValues['lastUpdatedBy'] = $user->getUsername();
 
         $validatedInput = $this->validateInput($validateValues, $user);
+        if (!is_array($validatedInput)) { // Error exists.
+            return $validatedInput;
+        }
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
@@ -473,7 +476,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     $attachment->errorMessage
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     $attachment->errorMessage
                 );
             }
@@ -623,7 +626,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param array $values values to be validated
      * @param \User $user   the user requesting the change
      *
-     * @return array|\LORIS\Http\Response\JSON\InternalServerError
+     * @return \LORIS\Http\Response\JSON\Conflict
      */
     function validateInput(array $values, \User $user)
     {
@@ -682,10 +685,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
             if (!$validCenter) {
                 $this->logger->log(
-                    \Psr\Log\LogLevel::ERROR,
+                    \Psr\Log\LogLevel::WARNING,
                     'PSCID and Center ID do not match a valid session!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID and Center ID do not match a valid session!'
                 );
             }
@@ -710,7 +713,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
             }
@@ -735,7 +738,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     'PSCID does not match a valid candidate!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID does not match a valid candidate!'
                 );
             }
@@ -749,7 +752,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 \Psr\Log\LogLevel::ERROR,
                 'Visit Label must be accompanied by a PSCID'
             );
-            return new \LORIS\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\Conflict(
                 'Visit Label must be accompanied by a PSCID'
             );
         }
