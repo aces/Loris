@@ -626,7 +626,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param array $values values to be validated
      * @param \User $user   the user requesting the change
      *
-     * @return \LORIS\Http\Response\JSON\Conflict
+     * @return \LORIS\Http\Response\JSON\Conflict|array
      */
     function validateInput(array $values, \User $user)
     {
