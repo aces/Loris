@@ -409,11 +409,12 @@ class IssueForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    // Prevent new issue submissions while one is already in progress
-    if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: 'pending'});
-
-    const myFormData = this.state.formData;
+    const state = Object.assign({}, this.state);
+    // issue submissions already in progress
+    if (state.submissionResult && state.isNewIssue) {
+      return;
+    }
+    const myFormData = state.formData;
     const formRefs = this.refs;
     const formData = new FormData();
 
@@ -421,6 +422,9 @@ class IssueForm extends Component {
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
+
+    // Prevent multiple submissions
+    this.setState({submissionResult: 'pending'});
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
