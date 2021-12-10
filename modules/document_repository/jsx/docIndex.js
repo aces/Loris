@@ -337,6 +337,7 @@ class DocIndex extends React.Component {
             label="Filter globally"
             id="globalSelection"
             value={this.state.global}
+            offset=''
             elementClass='checkbox-inline'
             onUserInput={this.handleGlobal}
           />
@@ -363,6 +364,7 @@ class DocIndex extends React.Component {
           label="Filter globally"
           id="globalSelection"
           value={this.state.global}
+           offset=''
           elementClass='checkbox-inline'
           onUserInput={this.handleGlobal}
         />
