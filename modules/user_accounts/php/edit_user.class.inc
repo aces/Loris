@@ -294,11 +294,18 @@ class Edit_User extends \NDB_Form
                 foreach ($editorCenterIDs as $editorCenterID) {
                     $editorCenterIDsValues[] = (string) $editorCenterID;
                 }
-                // If the editor does not have access to all of the user's sites
-                // the difference between the two arrays will be the sites we additionally
-                // need to add to the user being modified.
-                $differenceOfCenterIDs = array_diff($userCenterIDsValues, $editorCenterIDsValues);
-                $us_curr_sites         = array_merge($us_curr_sites, $differenceOfCenterIDs);
+                // If the editor does not have access to all of the
+                // user's sites the difference between the two arrays
+                // will be the sites we additionally need to add to
+                // the user being modified.
+                $differenceOfCenterIDs = array_diff(
+                    $userCenterIDsValues,
+                    $editorCenterIDsValues
+                );
+                $us_curr_sites         = array_merge(
+                    $us_curr_sites,
+                    $differenceOfCenterIDs
+                );
             }
 
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
