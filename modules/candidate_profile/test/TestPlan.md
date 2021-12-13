@@ -50,7 +50,7 @@ that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (M
 4. Ensure that, when the module which added the extra `CandidateInfo` terms
    is disabled, the terms from that module no longer show up in the
    `Candidate Info` card.
-5. Ensure that all the instrument links work without 500 error.
+5. Clicking on a visit should redirect to the instrument_list module for the candidate.
 
 All other widgets are part of other modules, and should be tested as
 part of that module's testing.
