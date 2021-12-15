@@ -235,20 +235,17 @@ class SubprojectController
     }
 
     /**
-     * Query projects associated with the supplied subproject and load the
-     * projects into the subproject object. The querying and instanciation
-     * of projects is done by the Project class.
+     * Query projects associated with the supplied subproject.
+     * The querying and instantiation of projects is done by the Project class.
      *
      * @param \LORIS\Subproject $subproject The subproject object for which we want
      *                                      the associated subprojects
      *
-     * @return void
+     * @return \Project[] List of projects for the given subproject
      */
-    public function loadProjects(\LORIS\Subproject $subproject) : void
+    public function getProjects(\LORIS\Subproject $subproject) : array
     {
-        $projects = \Project::getProjectsForSubproject($subproject);
-        $subproject->setProjects($projects);
+        return \Project::getProjectsForSubproject($subproject);
     }
-    //TODO: loadVisits(Project)
 
 }

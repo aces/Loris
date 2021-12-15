@@ -30,8 +30,6 @@ class Subproject implements \JsonSerializable
     public ?bool $useEDC;
     public ?string $windowDifference;
     public ?int $recruitmentTarget;
-    protected array $projects;
-    protected array $visits;
 
     /**
      * Contructor
@@ -68,35 +66,6 @@ class Subproject implements \JsonSerializable
             throw new \LorisException("No ID defined for Subproject");
         }
         return $this->id;
-    }
-
-    /**
-     * Getter for associated projects
-     *
-     * @return array Projects associated with this subproject
-     */
-    public function getProjects() : array
-    {
-        if ($this->projects === null) {
-            throw new \LorisException(
-                "The array defining Project associations for this subproject
-                is null, make sure to load these associations using the controller
-                before querying them."
-            );
-        }
-        return $this->projects;
-    }
-
-    /**
-     * Setter for Projects associated to this subproject
-     *
-     * @param array $projects Array of project objects to add to the subproject
-     *
-     * @return void
-     */
-    public function setProjects(array $projects)
-    {
-        $this->projects = $projects;
     }
 
     /**
