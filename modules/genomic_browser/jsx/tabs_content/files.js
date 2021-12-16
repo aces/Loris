@@ -153,8 +153,10 @@ class Files extends Component {
     let reactElement;
     switch (column) {
       case 'Name':
-        const url = `${this.props.baseURL}${rowData.Name}`;
         const fileName = rowData.Name.split('/').pop();
+        const url =
+          `${this.props.baseURL
+        }/genomic_browser/FileManager?filename=${fileName}`;
         reactElement = <td><a href={url}>{fileName}</a></td>;
         break;
       default:
