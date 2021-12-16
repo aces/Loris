@@ -292,7 +292,7 @@ class Edit_User extends \NDB_Form
                     $editorCenterIDs
                 );
                 $us_curr_sites         = array_merge(
-                    $us_curr_sites,
+                    $userNewCenterIDs,
                     $differenceOfCenterIDs
                 );
             }
