@@ -58,8 +58,8 @@ class FileManager extends \NDB_Page implements ETagCalculator
         $values = $request->getQueryParams();
         // GET request for downloading file by ID.
         if ($values['filename']) {
-            $factory = \NDB_Factory::singleton();
-            $config  = $factory->config();
+            $factory  = \NDB_Factory::singleton();
+            $config   = $factory->config();
             $filesDir = \Utility::appendForwardSlash(
                 $config->getSetting('GenomicDataPath')
             );
