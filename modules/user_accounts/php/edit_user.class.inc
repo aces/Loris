@@ -272,6 +272,10 @@ class Edit_User extends \NDB_Form
         // multi-site UPDATE
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
+        $userNewCenterIDs = array_map(
+            function($val) {return new \CenterID($val);},
+            $values['CenterIDs']
+        );
         if (!$this->isCreatingNewUser()) {
             // Prevent deletion of rules/sites editor may not have access to edit.
             if (!$editor->hasPermission('user_accounts_multisite')) {
