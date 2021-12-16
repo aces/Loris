@@ -278,7 +278,7 @@ class Edit_User extends \NDB_Form
         );
         if (!$this->isCreatingNewUser()) {
             // Prevent deletion of rules/sites editor may not have access to edit.
-            if (!$editor->hasPermission('user_accounts_multisite')) {
+//            if (!$editor->hasPermission('user_accounts_multisite')) {
                 // Collect CenterID(s) of user being modified.
                 $userCenterIDs       = $user->getCenterIDs();
                 // Collect CenterID(s) of the editor modifying sites.
@@ -287,23 +287,29 @@ class Edit_User extends \NDB_Form
                 // user's sites the difference between the two arrays
                 // will be the sites we additionally need to add to
                 // the user being modified.
-                $differenceOfCenterIDs = array_diff(
+                $differenceOfCenterIDs = array_udiff(
                     $userCenterIDs,
-                    $editorCenterIDs
+                    $editorCenterIDs,
+                    function($userCenterID, $editorCenterID) {
+                        return strcmp(
+                            (string) $userCenterID,
+                            (string) $editorCenterID
+                        );
+                    }
                 );
                 $userNewCenterIDs         = array_merge(
                     $userNewCenterIDs,
                     $differenceOfCenterIDs
                 );
-            }
+//            }
 
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($userNewCenterIDs as $CenterID) {
+            foreach ($userNewCenterIDs as $centerID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
                         "UserID"   => $uid,
-                        "CenterID" => $site,
+                        "CenterID" => $centerID,
                     ]
                 );
             }
