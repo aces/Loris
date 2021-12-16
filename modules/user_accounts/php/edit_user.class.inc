@@ -298,7 +298,7 @@ class Edit_User extends \NDB_Form
             }
 
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($us_curr_sites as $site) {
+            foreach ($userNewCenterIDs as $CenterID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
