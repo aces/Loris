@@ -283,14 +283,6 @@ class Edit_User extends \NDB_Form
                 $userCenterIDs       = $user->getCenterIDs();
                 // Collect CenterID(s) of the editor modifying sites.
                 $editorCenterIDs       = $editor->getCenterIDs();
-                $userCenterIDsValues   = [];
-                $editorCenterIDsValues = [];
-                foreach ($userCenterIDs as $userCenterID) {
-                    $userCenterIDsValues[] = $userCenterID['CenterID'];
-                }
-                foreach ($editorCenterIDs as $editorCenterID) {
-                    $editorCenterIDsValues[] = (string) $editorCenterID;
-                }
                 // If the editor does not have access to all of the
                 // user's sites the difference between the two arrays
                 // will be the sites we additionally need to add to
