@@ -280,14 +280,7 @@ class Edit_User extends \NDB_Form
             // Prevent deletion of rules/sites editor may not have access to edit.
             if (!$editor->hasPermission('user_accounts_multisite')) {
                 // Collect CenterID(s) of user being modified.
-                $userCenterIDs = array_values(
-                    $DB->pselect(
-                        'SELECT CenterID FROM user_psc_rel WHERE UserID=:uid',
-                        [
-                            'uid' => $uid
-                        ]
-                    )
-                );
+                $userCenterIDs       = $user->getCenterIDs();
                 // Collect CenterID(s) of the editor modifying sites.
                 $editorCenterIDs       = $editor->getCenterIDs();
                 $userCenterIDsValues   = [];
