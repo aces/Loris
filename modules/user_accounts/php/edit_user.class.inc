@@ -278,7 +278,7 @@ class Edit_User extends \NDB_Form
         );
         if (!$this->isCreatingNewUser()) {
             // Prevent deletion of rules/sites editor may not have access to edit.
-//            if (!$editor->hasPermission('user_accounts_multisite')) {
+            if (!$editor->hasPermission('user_accounts_multisite')) {
                 // Collect CenterID(s) of user being modified.
                 $userCenterIDs       = $user->getCenterIDs();
                 // Collect CenterID(s) of the editor modifying sites.
@@ -292,8 +292,8 @@ class Edit_User extends \NDB_Form
                     $editorCenterIDs,
                     function($userCenterID, $editorCenterID) {
                         return strcmp(
-                            (string) $userCenterID,
-                            (string) $editorCenterID
+                            $userCenterID,
+                            $editorCenterID
                         );
                     }
                 );
@@ -301,7 +301,7 @@ class Edit_User extends \NDB_Form
                     $userNewCenterIDs,
                     $differenceOfCenterIDs
                 );
-//            }
+            }
 
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
             foreach ($userNewCenterIDs as $centerID) {
