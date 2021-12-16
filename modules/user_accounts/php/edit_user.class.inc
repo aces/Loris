@@ -288,8 +288,8 @@ class Edit_User extends \NDB_Form
                 // will be the sites we additionally need to add to
                 // the user being modified.
                 $differenceOfCenterIDs = array_diff(
-                    $userCenterIDsValues,
-                    $editorCenterIDsValues
+                    $userCenterIDs,
+                    $editorCenterIDs
                 );
                 $us_curr_sites         = array_merge(
                     $us_curr_sites,
