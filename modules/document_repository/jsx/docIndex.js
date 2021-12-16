@@ -268,7 +268,7 @@ class DocIndex extends React.Component {
       {
         label: 'Edit',
         show: this.props.hasPermission('superUser')
-        || this.props.hasPermission('document_repository_edit')
+        || this.props.hasPermission('document_repository_edit'),
       },
       {
         label: 'Delete File',
