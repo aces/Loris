@@ -273,16 +273,18 @@ class Edit_User extends \NDB_Form
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
         $userNewCenterIDs = array_map(
-            function($val) {return new \CenterID($val);},
+            function ($val) {
+                return new \CenterID($val);
+            },
             $values['CenterIDs']
         );
         if (!$this->isCreatingNewUser()) {
             // Prevent deletion of rules/sites editor may not have access to edit.
             if (!$editor->hasPermission('user_accounts_multisite')) {
                 // Collect CenterID(s) of user being modified.
-                $userCenterIDs       = $user->getCenterIDs();
+                $userCenterIDs = $user->getCenterIDs();
                 // Collect CenterID(s) of the editor modifying sites.
-                $editorCenterIDs       = $editor->getCenterIDs();
+                $editorCenterIDs = $editor->getCenterIDs();
                 // If the editor does not have access to all of the
                 // user's sites the difference between the two arrays
                 // will be the sites we additionally need to add to
@@ -290,14 +292,14 @@ class Edit_User extends \NDB_Form
                 $differenceOfCenterIDs = array_udiff(
                     $userCenterIDs,
                     $editorCenterIDs,
-                    function($userCenterID, $editorCenterID) {
+                    function ($userCenterID, $editorCenterID) {
                         return strcmp(
                             $userCenterID,
                             $editorCenterID
                         );
                     }
                 );
-                $userNewCenterIDs         = array_merge(
+                $userNewCenterIDs      = array_merge(
                     $userNewCenterIDs,
                     $differenceOfCenterIDs
                 );
