@@ -289,15 +289,9 @@ class Edit_User extends \NDB_Form
                 // user's sites the difference between the two arrays
                 // will be the sites we additionally need to add to
                 // the user being modified.
-                $differenceOfCenterIDs = array_udiff(
+                $differenceOfCenterIDs = array_diff(
                     $userCenterIDs,
-                    $editorCenterIDs,
-                    function ($userCenterID, $editorCenterID) {
-                        return strcmp(
-                            $userCenterID,
-                            $editorCenterID
-                        );
-                    }
+                    $editorCenterIDs
                 );
                 $userNewCenterIDs      = array_merge(
                     $userNewCenterIDs,
