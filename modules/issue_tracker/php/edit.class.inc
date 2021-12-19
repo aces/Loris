@@ -2,7 +2,6 @@
 
 namespace LORIS\issue_tracker;
 
-use Email;
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -585,7 +584,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (isset($issueChangeEmailsAssignee[0])) {
                 $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
 
-                Email::send(
+                \Email::send(
                     $issueChangeEmailsAssignee[0]['Email'],
                     'issue_assigned.tpl',
                     $msg_data
@@ -621,7 +620,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         foreach ($issue_change_emails as $email) {
             $msg_data['firstname'] = $email['firstname'];
-            Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+            \Email::send($email['Email'], 'issue_change.tpl', $msg_data);
         }
     }
 
