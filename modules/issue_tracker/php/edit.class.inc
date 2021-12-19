@@ -568,9 +568,14 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         if (isset($changed_assignee)) {
             $issueChangeEmailsAssignee = $db->pselect(
-                "SELECT u.Email as Email, u.First_name as firstname " .
-                "FROM users u WHERE u.UserID=:assignee
-                AND u.UserID<>:currentUser",
+                "SELECT
+                            u.Email AS Email,
+                            u.First_name AS firstname
+                        FROM
+                            users u
+                        WHERE
+                            u.UserID = :assignee
+                            AND u.UserID != :currentUser",
                 [
                     'assignee'    => $changed_assignee,
                     'currentUser' => $user->getUserName(),
@@ -597,11 +602,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                         u.First_name AS firstname
                     FROM
                         users u
-                        INNER JOIN issues_watching w ON (w.userID = u.userID)
+                        INNER JOIN issues_watching w ON (w.userID = u.UserID)
                     WHERE
                         w.issueID = :issueID
-                        AND u.UserID <> :uid
-                        AND u.UserID <> :assignee",
+                        AND w.userID = :uid
+                        AND u.UserID = :assignee",
             [
                 'issueID'  => $issueID,
                 'uid'      => $user->getUsername(),
