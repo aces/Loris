@@ -801,6 +801,7 @@ class LorisForm
                     . $el['requireMsg']
                     . "' : '')\"";
             }
+            $retVal .= '><option value="" selected="true"';
         }
         $retVal .= ">$strOptions</select>";
 
