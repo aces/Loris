@@ -230,7 +230,8 @@ class DataTable extends Component {
       if (val === '.') {
         // hack to handle non-existent items in DQT
         val = null;
-      } else if (isNumber) {
+      } else if (isNumber && this.state.sort.column === -1) {
+        // only No. column will conver to number, otherwise string
         // perform type conversion (from string to int/float)
         val = Number(val);
       } else if (isString) {
@@ -269,8 +270,8 @@ class DataTable extends Component {
         if (b.Value === null || typeof b.Value === 'undefined') return 1;
 
         // Sort by value
-        if (String(a.Value) < String(b.Value)) return -1;
-        if (String(a.Value) > String(b.Value)) return 1;
+        if (a.Value < b.Value) return -1;
+        if (a.Value > b.Value) return 1;
       } else {
         if (a.Value === b.Value) {
           // If all values are equal, sort by rownum
@@ -282,8 +283,8 @@ class DataTable extends Component {
         if (b.Value === null || typeof b.Value === 'undefined') return -1;
 
         // Sort by value
-        if (String(a.Value) < String(b.Value)) return 1;
-        if (String(a.Value) > String(b.Value)) return -1;
+        if (a.Value < b.Value) return 1;
+        if (a.Value > b.Value) return -1;
       }
       // They're equal..
       return 0;
