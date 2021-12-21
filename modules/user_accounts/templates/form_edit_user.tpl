@@ -397,6 +397,7 @@
                 {/if}
             </div>
       {/if}
+      {if $form.Active|default}
       <div class="row form-group form-inline">
            <label class="col-sm-2">
                {$form.Active.label|default}
@@ -408,6 +409,7 @@
               {$form.Active.html|default}
           </div>
       </div>
+      {/if}
 
 	{if $form.errors.active_timeWindows|default}
 	    <div class="alert alert-danger" role="alert">
