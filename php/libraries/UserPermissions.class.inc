@@ -260,6 +260,7 @@ class UserPermissions
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
+        // get all the permissions for this user
         $query = "SELECT permissions.permID
             FROM permissions, user_perm_rel
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
