@@ -120,9 +120,6 @@ class DataReleaseIndex extends Component {
           );
         }
         break;
-      case 'Version':
-        result = <td>{cell || 'Unversioned'}</td>;
-        break;
     }
     return result;
   }
