@@ -294,7 +294,7 @@ class Edit_User extends \NDB_Form
                     $editorCenterIDs
                 );
                 $userNewCenterIDs      = array_merge(
-                    $userNewCenterIDs,
+                    array_intersect($userNewCenterIDs, $editorCenterIDs),
                     $differenceOfCenterIDs
                 );
             }
