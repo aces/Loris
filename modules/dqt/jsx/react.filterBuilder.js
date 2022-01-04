@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
-import {getSessions} from '../js/arrayintersect';
+import {getSessions, enumToArray} from '../js/arrayintersect';
 
 /**
  * LogicOperator Component
@@ -337,11 +337,10 @@ class FilterRule extends Component {
                   </option>
                 );
               });
-              value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
                 <select className='input-sm col-xs-3'
                         onChange={this.valueChange}
-                        value={value}>
+                        value={this.props.rule.value ?? ''}>
                   <option value=''/>
                   {options}
                 </select>
