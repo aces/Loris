@@ -16,6 +16,7 @@ import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
+import {getSessions} from '../js/arrayintersect';
 
 /**
  * DataQueryApp component
@@ -682,7 +683,7 @@ class DataQueryApp extends Component {
       $.ajax({
         url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
-          if (data[0].value.IsFile) {
+          if (data[0] && data[0].value.IsFile) {
             let key = data[0].key[0] + ',' + data[0].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
