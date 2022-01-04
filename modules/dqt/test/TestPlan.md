@@ -39,11 +39,11 @@
      contains the "PSCID,VisitLabel" information separated with a comma
    - ensure that the fields that were selected are present in the resulting data table
    - ensure that the filters that were added are indeed applied to the resulting data table
-   - ensure the "Download Data as ZIP" is working
+   - ensure the "Download Files" and "Download Table as CSV" is working
    - ensure that clicking on the different page numbers on the right side are working
-   - change the data view from "Cross-sectional" to "Longitudinal", ensure that the 
-     data is now displayed longitudinal on the X axis with column header names changed
-     to "VisitLabel,InstrumentName" separated with a comma
+   - change the data view from "Longitudinal" to "Cross-sectional", ensure that the 
+     data is now displayed cross-sectional on the y-axis with row values 
+     correctly corresponding.
 6. Click on the "Visualized Data" button:
    - ensure that a table with "Basic Statistics" (Min, Max, Standard Deviation, Mean,
      Mean Deviation, Mean Squared Error, First Quartile, Second Quartile, Third 
