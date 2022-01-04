@@ -61,6 +61,7 @@ class DataQueryApp extends Component {
         ],
         session: [],
       },
+      allSessions: [], // persistent "all sessions" after initial load.
       selectedFields: {},
       downloadableFields: {},
       loading: false,
@@ -272,6 +273,7 @@ class DataQueryApp extends Component {
                 ...prevState.filter,
                 session: data.sessions,
               },
+              allSessions: data.sessions,
             };
           }, () => {
             return callback(true);
@@ -1152,7 +1154,7 @@ class DataQueryApp extends Component {
    */
   updateFilter(filter) {
     if (filter.children.length === 0) {
-      filter.session = this.state.filter.session;
+      filter.session = this.state.allSessions;
     }
     this.setState({filter});
   }
