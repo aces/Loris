@@ -72,7 +72,6 @@ class StaticDataTable extends Component {
         $('#dynamictable').find('tbody td:eq(0)').hide();
       }
     }
-
     if (!this.props.DisableFilter) {
       // Retrieve module preferences
       let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
@@ -106,16 +105,16 @@ class StaticDataTable extends Component {
    * @param {object} prevState - Previous React Component state
    */
   componentDidUpdate(prevProps, prevState) {
-    if (!this.props.DisableFilter) {
-      if (jQuery.fn.DynamicTable) {
-        if (this.props.freezeColumn) {
-          $('#dynamictable').DynamicTable({
-            freezeColumn: this.props.freezeColumn,
-          });
-        } else {
-          $('#dynamictable').DynamicTable();
-        }
+    if (jQuery.fn.DynamicTable) {
+      if (this.props.freezeColumn) {
+        $('#dynamictable').DynamicTable({
+          freezeColumn: this.props.freezeColumn,
+        });
+      } else {
+        $('#dynamictable').DynamicTable();
       }
+    }
+    if (!this.props.DisableFilter) {
       if (this.props.onSort &&
         (this.state.SortColumn !== prevState.SortColumn ||
           this.state.SortOrder !== prevState.SortOrder)
