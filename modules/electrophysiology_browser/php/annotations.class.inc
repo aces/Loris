@@ -119,7 +119,11 @@ class Annotations extends \NDB_Page
             }
 
             $instance_data = $parameters['instance'];
-            $metadata      = $parameters['metadata'];
+            $metadata      = [
+                'description' => 'An annotation',
+                'sources'     => 'EEGNet LORIS',
+                'author'      => $user->getFullname()
+            ];
             $instance_id   = $parameters['instance_id'] ?? null;
             $parameter_id  = $parameters['parameter_id'] ?? null;
 

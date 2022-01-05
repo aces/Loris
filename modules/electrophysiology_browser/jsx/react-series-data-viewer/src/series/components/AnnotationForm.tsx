@@ -104,12 +104,6 @@ const AnnotationForm = ({
         channels: 'all',
         description: comment,
       },
-      // TODO: Figure out data that should go here
-      metadata: {
-        description: 'An annotation',
-        sources: 'LORIS',
-        author: 'LORIS user',
-      },
     };
 
     const newAnnotation : EpochType = {
