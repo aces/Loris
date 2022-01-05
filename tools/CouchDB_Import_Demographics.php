@@ -209,8 +209,10 @@ class CouchDBDemographicsImporter
         $tablesToJoin = " FROM session s
                             JOIN candidate c USING (CandID)
                             LEFT JOIN psc p ON (p.CenterID=s.CenterID)
-                            LEFT JOIN project pr ON (pr.ProjectID=c.RegistrationProjectID)
-                            LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason)
+                            LEFT JOIN project pr ON
+                                (pr.ProjectID=c.RegistrationProjectID)
+                            LEFT JOIN caveat_options c_o
+                                ON (c_o.ID=c.flagged_reason)
                             LEFT JOIN parameter_candidate AS pc_comment
                                 ON (pc_comment.CandID=c.CandID)
                                 AND pc_comment.ParameterTypeID=(
@@ -218,7 +220,8 @@ class CouchDBDemographicsImporter
                                     FROM parameter_type
                                     WHERE Name='candidate_comment'
                                 )
-                            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                            LEFT JOIN participant_status ps
+                                ON (ps.CandID=c.CandID)
                             LEFT JOIN participant_status_options pso
                                 ON (pso.ID=ps.participant_status)
                             LEFT JOIN feedback_bvl_thread fbt
