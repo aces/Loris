@@ -188,17 +188,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         {// ##################### EEGNET OVERRIDE START ################## //
           filteredEpochs.length < MAX_RENDERED_EPOCHS &&
           filteredEpochs.map((index) => {
-          // ##################### EEGNET OVERRIDE END ################## //
             return (
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
+                color={epochs[index].type === 'Annotation' ? '#fabb8e' : '#8eecfa'}
                 key={`${index}`}
                 scales={scales}
                 opacity={0.7}
               />
             );
           })
+          // ##################### EEGNET OVERRIDE END ################## //
         }
         {timeSelection &&
           <Epoch
@@ -215,7 +216,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            color={'#ffb2b2'}
+            color={'#d8ffcc'}
           />
         }
       </Group>
@@ -587,26 +588,46 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }}
             >
               <div className='col-xs-offset-1 col-xs-11'>
-                {epochs.length > 0 &&
+                
+                {
+                // ##################### EEGNET OVERRIDE START ################## //
+                  epochs.length > 0 &&
                   <button
                     className={
                       'btn btn-primary'
-                      + (rightPanel === 'epochList' ? ' active' : '')
+                      + (rightPanel === 'eventList' ? ' active' : '')
                     }
                     onClick={() => {
-                      rightPanel === 'epochList'
+                      rightPanel === 'eventList'
                         ? setRightPanel(null)
-                        : setRightPanel('epochList');
+                        : setRightPanel('eventList');
                     }}
                   >
-                    {rightPanel === 'epochList'
+                    {rightPanel === 'eventList'
                       ? 'Hide Event Panel'
                       : 'Show Event Panel'
                     }
                   </button>
                 }
+                {epochs.length > 0 &&
+                  <button
+                    className={
+                      'btn btn-primary'
+                      + (rightPanel === 'annotationList' ? ' active' : '')
+                    }
+                    onClick={() => {
+                      rightPanel === 'annotationList'
+                        ? setRightPanel(null)
+                        : setRightPanel('annotationList');
+                    }}
+                  >
+                    {rightPanel === 'annotationList'
+                      ? 'Hide Annotation Panel'
+                      : 'Show Annotation Panel'
+                    }
+                  </button>
+                }
                 {
-                  // ##################### EEGNET OVERRIDE START ################## //
                   <button
                     className={'btn btn-primary'
                       + (rightPanel === 'annotationForm' ? ' active' : '')
@@ -636,6 +657,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   {[...Array(epochs.length).keys()].filter((i) =>
                       epochs[i].onset + epochs[i].duration > interval[0]
                       && epochs[i].onset < interval[1]
+                      && ((epochs[i].type === 'Event' && rightPanel === 'eventList')
+                      || (epochs[i].type === 'Annotation' && rightPanel === 'annotationList'))
                     ).length >= MAX_RENDERED_EPOCHS &&
                     <div
                       style={{
@@ -654,7 +677,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           {rightPanel &&
             <div className='col-md-3'>
               {rightPanel === 'annotationForm' && <AnnotationForm />}
-              {rightPanel === 'epochList' && <EventManager />}
+              {rightPanel === 'eventList' && <EventManager />}
+              {rightPanel === 'annotationList' && <EventManager />}
             </div>
           }
         </div>

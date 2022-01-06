@@ -40,7 +40,7 @@ export type AnnotationMetadata = {
 }
 // ##################### EEGNET OVERRIDE END ################## //
 
-export type RightPanel = 'annotationForm' | 'epochList' | null;
+export type RightPanel = 'annotationForm' | 'eventList' | 'annotationList' | null;
 
 export type Electrode = {
   name: string,

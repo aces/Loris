@@ -143,7 +143,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             duration: parseFloat(instance.Duration),
             type: 'Annotation',
             label: label,
-            comment: null,
+            comment: instance.Description,
             channels: 'all',
           });
         });
