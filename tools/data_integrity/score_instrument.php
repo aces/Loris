@@ -26,7 +26,7 @@ $dir = __DIR__ . "/../logs/";
 if (!is_dir($dir)) {
     mkdir($dir);
 }
-$date = date("Y-m-d_h:i");
+$date    = date("Y-m-d_h:i");
 $logPath = "$dir/score_instrument.$date.log";
 $logfp   = fopen($logPath, 'a');
 
