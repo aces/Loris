@@ -8,6 +8,7 @@ import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
 // ##################### EEGNET OVERRIDE START ################## //
 import { setEpochs } from '../store/state/dataset';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import { NumericElement, SelectElement, TextareaElement } from './Form';
 import swal from 'sweetalert2';
 // ##################### EEGNET OVERRIDE END ################## //
@@ -16,10 +17,12 @@ type CProps = {
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
+  currentAnnotation: EpochType,
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs: (_: EpochType[]) => void,
+  setCurrentAnnotation: (_: EpochType) => void,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
@@ -30,10 +33,12 @@ const AnnotationForm = ({
   timeSelection,
   epochs,
   filteredEpochs,
+  currentAnnotation,
   setTimeSelection,
   setRightPanel,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs,
+  setCurrentAnnotation,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch,
   updateActiveEpoch,
@@ -42,11 +47,13 @@ const AnnotationForm = ({
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   let [event, setEvent] = useState([startEvent, endEvent]);
   // ##################### EEGNET OVERRIDE START ################## //
-  let [label, setLabel] = useState(null);
-  let [comment, setComment] = useState('');
+  let [label, setLabel] = useState(currentAnnotation ? currentAnnotation.label : null);
+  let [comment, setComment] = useState(currentAnnotation ? currentAnnotation.comment : '');
   let [isSubmitted, setIsSubmitted] = useState(false);
+  let [isDeleted, setIsDeleted] = useState(false);
   // ##################### EEGNET OVERRIDE END ################## //
 
+  // Time Selection
   useEffect(() => {
     const [startEvent = '', endEvent = ''] = timeSelection || [];
     setEvent([startEvent, endEvent]);
@@ -115,6 +122,11 @@ const AnnotationForm = ({
     setComment('');
   }
 
+  const handleDelete = () => {
+    setIsDeleted(true);
+  }
+
+  // Submit
   useEffect(() => {
     // only proceed if isSubmitted === true
     if (!isSubmitted) {
@@ -150,18 +162,17 @@ const AnnotationForm = ({
     const sessionID = window.location.pathname.split('/')[3];
 
     // set body
-    // instance_id = null for new annotations, 
-    // should be updated when we implement annotation editing
+    // instance_id = null for new annotations
     const body = {
       sessionID: sessionID,
-      instance_id: null,
+      instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
       instance: {
         onset: startTime,
         duration: duration,
         label_name: label,
         label_description: label,
         channels: 'all',
-        description: comment,
+        description: comment
       },
     };
 
@@ -171,7 +182,8 @@ const AnnotationForm = ({
       type: 'Annotation',
       label: label,
       comment: comment,
-      channels: 'all'
+      channels: 'all',
+      annotationInstanceID: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
     };
 
     fetch(url, {
@@ -194,11 +206,18 @@ const AnnotationForm = ({
         handleReset();
         
         // Disaply success message
+        const message = currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!';
         swal.fire(
           'Success',
-          'Annotation Added!',
+          message,
           'success'
         );
+
+        // If in edit mode, switch back to annotation panel
+        if (currentAnnotation !== null) {
+          setCurrentAnnotation(null);
+          setRightPanel('annotationList');
+        }
       }
     }).catch(error => {
       console.log(error);
@@ -210,6 +229,75 @@ const AnnotationForm = ({
       );
     }) 
   }, [isSubmitted]);
+
+  // Delete
+  useEffect(() => {
+    if (isDeleted) {
+      const url = window.location.origin + '/electrophysiology_browser/annotations/';
+      const sessionID = window.location.pathname.split('/')[3];
+      const body = {
+        sessionID: sessionID,
+        instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
+      };
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        // if isConfirmed
+        if (result.value) {
+          fetch(url, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            body: JSON.stringify(body),
+          }).then(response => {
+            if (response.ok) {
+              setIsDeleted(false);
+      
+              epochs.splice(epochs.indexOf(currentAnnotation), 1);
+              setEpochs(
+                epochs
+                  .sort(function (a, b) {
+                    return a.onset - b.onset;
+                  })
+              );
+      
+              // Reset Form
+              handleReset();
+              
+              // Disaply success message
+              swal.fire(
+                'Success',
+                'Annotation Deleted!',
+                'success'
+              );
+      
+              // If in edit mode, switch back to annotation panel
+              if (currentAnnotation !== null) {
+                setCurrentAnnotation(null);
+                setRightPanel('annotationList');
+              }
+            }
+          }).catch(error => {
+            console.log(error);
+            // Display error message
+            swal.fire(
+              'Error',
+              'Something went wrong!',
+              'error'
+            );
+          });
+        } else {
+          setIsDeleted(false);
+        }
+      });
+    }
+  }, [isDeleted]);
 
   const labelOptions = {
     'manual_exclusion': 'Exclusion Flag - Manual',
@@ -252,12 +340,13 @@ const AnnotationForm = ({
             justifyContent: 'space-between',
           }}
       >
-        New Annotation
+        {currentAnnotation ? 'Edit' : 'New'} Annotation
         <i
           className='glyphicon glyphicon-remove'
           style={{cursor: 'pointer'}}
           onClick={() => {
             setRightPanel(null);
+            setCurrentAnnotation(null);
           }}
         ></i>
       </div>
@@ -303,6 +392,11 @@ const AnnotationForm = ({
           <button type="reset" onClick={handleReset} className="btn btn-primary btn-xs">
             Clear
           </button>
+          {currentAnnotation &&
+            <button type="button" onClick={handleDelete} className="btn btn-primary btn-xs">
+              Delete
+            </button>
+          }
         </div>
       </div>
     </div>
@@ -314,6 +408,7 @@ AnnotationForm.defaultProps = {
   timeSelection: null,
   epochs: [],
   filteredEpochs: [],
+  currentAnnotation: null,
 };
 
 export default connect(
@@ -321,6 +416,7 @@ export default connect(
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
+    currentAnnotation: state.currentAnnotation,
     interval: state.bounds.interval,
   }),
   (dispatch: (any) => void) => ({
@@ -344,6 +440,10 @@ export default connect(
     setEpochs: R.compose(
       dispatch,
       setEpochs
+    ),
+    setCurrentAnnotation: R.compose(
+      dispatch,
+      setCurrentAnnotation
     ),
     // ##################### EEGNET OVERRIDE END ################## //
   })

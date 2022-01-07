@@ -3,15 +3,17 @@ import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import * as R from 'ramda';
 import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
-import {RootState} from '../store';
+import { RootState } from '../store';
 
 type CProps = {
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
   rightPanel: RightPanel,
+  setCurrentAnnotation: (_: EpochType) => void,
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
   toggleEpoch: (_: number) => void,
@@ -23,6 +25,7 @@ const EventManager = ({
   epochs,
   filteredEpochs,
   rightPanel,
+  setCurrentAnnotation,
   setTimeSelection,
   setRightPanel,
   toggleEpoch,
@@ -92,7 +95,18 @@ const EventManager = ({
           ).map((index) => {
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
-            let commentVisible = false;
+            const [commentVisible, setCommentVisibility] = useState(false);
+            const handleCommentVisibilityChange = () => {
+              setCommentVisibility(!commentVisible);
+            }
+
+            const handleEditClick = () => {
+              setCurrentAnnotation(epoch);
+              setRightPanel('annotationForm');
+              const startTime = epoch.onset;
+              const endTime = epoch.duration + startTime;
+              setTimeSelection([startTime, endTime]);
+            }
 
             return (
               <>
@@ -130,7 +144,7 @@ const EventManager = ({
                       <button
                         type="button"
                         className={'btn btn-xs btn-primary'}
-                        //onClick={}
+                        onClick={() => handleEditClick()}
                       >
                         <i className={
                           'glyphicon glyphicon-edit'
@@ -154,7 +168,7 @@ const EventManager = ({
                       <button
                         type="button"
                         className={'btn btn-xs btn-primary'}
-                        onClick={() => commentVisible = !commentVisible}
+                        onClick={() => handleCommentVisibilityChange()}
                       >
                         <i className={
                           'glyphicon glyphicon-collapse-'
@@ -171,7 +185,6 @@ const EventManager = ({
                     <strong>Comment:</strong>  {epoch.comment}
                   </div>
                 }
-                
               </>
             );
           })}
@@ -196,6 +209,10 @@ export default connect(
     interval: state.bounds.interval,
   }),
   (dispatch: (_: any) => void) => ({
+    setCurrentAnnotation: R.compose(
+      dispatch,
+      setCurrentAnnotation
+    ),
     setTimeSelection: R.compose(
       dispatch,
       setTimeSelection

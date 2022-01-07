@@ -45,6 +45,7 @@ import {
   Epoch as EpochType,
   RightPanel,
 } from '../store/types';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 
 type CProps = {
   viewerWidth: number,
@@ -71,6 +72,7 @@ type CProps = {
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
   setFilteredEpochs: (_: number[]) => void,
+  setCurrentAnnotation: (_: EpochType) => void,
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
@@ -102,6 +104,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setViewerWidth,
   setViewerHeight,
   setFilteredEpochs,
+  setCurrentAnnotation,
   dragStart,
   dragContinue,
   dragEnd,
@@ -636,6 +639,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       rightPanel === 'annotationForm'
                         ? setRightPanel(null)
                         : setRightPanel('annotationForm');
+                      setCurrentAnnotation(null);
                     }}
                   >
                     {rightPanel === 'annotationForm'
@@ -760,6 +764,10 @@ export default connect(
     setFilteredEpochs: R.compose(
       dispatch,
       setFilteredEpochs
+    ),
+    setCurrentAnnotation: R.compose(
+      dispatch,
+      setCurrentAnnotation
     ),
     dragStart: R.compose(
       dispatch,

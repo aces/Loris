@@ -130,6 +130,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             label: label,
             comment: null,
             channels: 'all',
+            annotationInstanceID: null,
           }));
       }).then(events => {
         let epochs = events;
@@ -145,6 +146,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             label: label,
             comment: instance.Description,
             channels: 'all',
+            annotationInstanceID: instance.AnnotationInstanceID,
           });
         });
         return epochs;

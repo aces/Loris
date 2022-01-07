@@ -30,6 +30,9 @@ export type Epoch = {
   label: string,
   comment?: string,
   channels: number[] | "all",
+  // ##################### EEGNET OVERRIDE START ################## //
+  annotationInstanceID?: number,
+  // ##################### EEGNET OVERRIDE END ################## //
 };
 
 // ##################### EEGNET OVERRIDE START ################## //
