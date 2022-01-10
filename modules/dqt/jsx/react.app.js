@@ -369,10 +369,11 @@ class DataQueryApp extends Component {
     // Used to save the current query
 
     let filter = this.saveFilterGroup(this.state.filter);
+    const fields = JSON.stringify(this.state.selectedFields);
 
     $.post(loris.BaseURL
       + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
+      Fields: fields,
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
