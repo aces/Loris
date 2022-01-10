@@ -65,6 +65,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         // Setup variables
         $conflict       = []; // conflict messages.
+        $config         = \NDB_Config::singleton();
         $candidate      = \Candidate::singleton(new CandID($values['candID']));
         $allSubprojects = \Utility::getSubprojectList();
 
