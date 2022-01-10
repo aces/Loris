@@ -347,6 +347,7 @@ const AnnotationForm = ({
           onClick={() => {
             setRightPanel(null);
             setCurrentAnnotation(null);
+            setTimeSelection(null);
           }}
         ></i>
       </div>

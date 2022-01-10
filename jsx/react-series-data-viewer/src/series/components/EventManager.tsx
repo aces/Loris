@@ -32,8 +32,12 @@ const EventManager = ({
   updateActiveEpoch,
   interval,
 }: CProps) => {
-  const epochType = (rightPanel && rightPanel !== 'annotationForm' && rightPanel === 'eventList') ? 'Event' : 'Annotation';
+  const [epochType, setEpochType] = useState((rightPanel
+    && rightPanel !== 'annotationForm'
+    && rightPanel === 'eventList') ?
+    'Event' : 'Annotation');
   const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
+  const [commentVisible, setCommentVisibility] = useState(false);
 
   useEffect(() => {
     // Reset: turn all epochs on / off regardless of independent toggle state
@@ -50,15 +54,23 @@ const EventManager = ({
     });
   }, [allEpochsVisible]);
 
+  useEffect(() => {
+    setEpochType((rightPanel
+      && rightPanel !== 'annotationForm'
+      && rightPanel === 'eventList') ?
+      'Event' : 'Annotation');
+  }, [rightPanel]);
+
   return (
     <div className="panel panel-primary event-list">
       <div
         className="panel-heading"
         style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
       >
         {`${epochType}s in timeline view`}
         <i
@@ -95,7 +107,7 @@ const EventManager = ({
           ).map((index) => {
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
-            const [commentVisible, setCommentVisibility] = useState(false);
+            
             const handleCommentVisibilityChange = () => {
               setCommentVisibility(!commentVisible);
             }
@@ -116,29 +128,16 @@ const EventManager = ({
                     (epoch.type == 'Annotation' ? 'annotation ' : '')
                     + 'list-group-item list-group-item-action'
                   }
-                  style={{
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'sapce-between',
-                    alignItems: 'center',
-                  }}
                 >
-                  <div className="epoch-details">
+                  <div
+                    className="epoch-details"
+                  >
                     {epoch.label} <br/>
                     {epoch.onset}{epoch.duration > 0
                       && ' - ' + (epoch.onset + epoch.duration)}
                   </div>
                   <div
                     className="epoch-action"
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      position: 'absolute',
-                      right: '15px',
-                    }}
                   >
                     {epoch.type === 'Annotation' &&
                       <button
