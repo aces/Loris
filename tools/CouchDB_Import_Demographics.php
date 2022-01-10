@@ -209,7 +209,7 @@ class CouchDBDemographicsImporter
         $tablesToJoin = " FROM session s
                             JOIN candidate c USING (CandID)
                             LEFT JOIN psc p ON (p.CenterID=s.CenterID)
-                            LEFT JOIN project pr ON
+                            LEFT JOIN Project pr ON
                                 (pr.ProjectID=c.RegistrationProjectID)
                             LEFT JOIN caveat_options c_o
                                 ON (c_o.ID=c.flagged_reason)
