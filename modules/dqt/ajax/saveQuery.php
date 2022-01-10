@@ -68,8 +68,7 @@ if ($_REQUEST['SharedQuery'] === "true") {
                                     ': ' .
                                     $_REQUEST['QueryName'];
 }
-$fields = json_decode(json_encode($_REQUEST['Fields']));
-//$fields = json_decode($_REQUEST['Fields']);
+$fields = json_decode($_REQUEST['Fields']);
 $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
@@ -81,8 +80,6 @@ if ($_REQUEST['OverwriteQuery'] === "true") {
     $query['id'] = $qid;
     print json_encode($query);
 } else {
-//    $send = $cdb->postDoc($baseDocument);
-//    print json_encode($send);
-    print $cdb->postDoc($baseDocument);
+    print json_encode($cdb->postDoc($baseDocument));
 }
 
