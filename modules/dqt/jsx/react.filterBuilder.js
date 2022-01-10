@@ -549,9 +549,7 @@ class FilterGroup extends Component {
    * @param {number} index
    */
   deleteChild(index) {
-    // todo note this following line could cause a bug.
-    // before it wasn't a clone and it was slicing after.
-    let group = JSON.parse(JSON.stringify(this.props.group));
+    let group = this.props.group;
     group.children.splice(index, 1);
 
     // Update the groups sessions by calling the arrayintersect.js functions
