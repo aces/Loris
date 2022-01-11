@@ -483,20 +483,19 @@ class Project implements \JsonSerializable
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $visitLabelArray = [];
+        $query  = "SELECT DISTINCT VisitName, VisitLabel
+                FROM visit v
+                JOIN visit_project_subproject_rel vpsr USING(VisitID)
+                JOIN project_subproject_rel psr USING(ProjectSubprojectRelID)
+                JOIN Project p USING(ProjectID)
+            WHERE ProjectID = :projectID
+            ORDER BY VisitLabel";
+        $result = $db->pselectColWithIndexKey(
+            $query,
+            ['projectID' => $projectID],
+            "VisitName"
+        );
 
-        $query  = "SELECT v.VisitID AS VisitID, v.VisitName AS VisitName
-                  FROM visit v, visit_project_subproject_rel vp, 
-                  project_subproject_rel pr, Project p 
-                  WHERE v.VisitID=vp.VisitID 
-                  AND vp.ProjectSubprojectRelID=pr.ProjectSubprojectRelID 
-                  AND pr.ProjectID=:projectID";
-        $result = $db->pselect($query, ['projectID' => $projectID]);
-
-        foreach ($result as $key=>$value) {
-            $visitLabelArray[$key] = $value["VisitName"];
-        }
-
-        return $visitLabelArray;
+        return $result;
     }
 }
