@@ -37,7 +37,7 @@ const EventManager = ({
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
   const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
-  const [commentVisible, setCommentVisibility] = useState(false);
+  const [visibleComments, setVisibleComments] = useState([]);
 
   useEffect(() => {
     // Reset: turn all epochs on / off regardless of independent toggle state
@@ -109,7 +109,16 @@ const EventManager = ({
             const visible = filteredEpochs.includes(index);
             
             const handleCommentVisibilityChange = () => {
-              setCommentVisibility(!commentVisible);
+              if (!visibleComments.includes(index)) {
+                setVisibleComments([
+                  ...visibleComments,
+                  index
+                ]);
+              } else {
+                setVisibleComments(visibleComments.filter(
+                  value => value !== index
+                ));
+              }
             }
 
             const handleEditClick = () => {
@@ -171,13 +180,13 @@ const EventManager = ({
                       >
                         <i className={
                           'glyphicon glyphicon-collapse-'
-                          + (commentVisible ? 'up' : 'down')
+                          + (visibleComments.includes(index) ? 'up' : 'down')
                         }></i>
                       </button>
                     }
                   </div>
                 </div>
-                {commentVisible && epoch.comment &&
+                {visibleComments.includes(index) && epoch.comment &&
                   <div
                     className='list-group-item list-group-item-action'
                   >
