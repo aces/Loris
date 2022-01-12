@@ -110,24 +110,18 @@ class DirectDataEntryMainPage
         $subtests       = $instrumentObj->getSubtestList();
         $this->NumPages = count($subtests) + 1;
 
-        $pageNum           = null;
         $this->NextPageNum = null;
         $this->PrevPageNum = null;
-        if (!empty($_REQUEST['pageNum'])) {
-            $pageNum = $_REQUEST['pageNum'];
-        }
+        $pageNum           = $_REQUEST['pageNum'] ?? 'top';
 
         if ($pageNum === 'finalpage') {
             $this->Subtest     = 'finalpage';
             $this->PrevPageNum = $this->getPrevPageNum($pageNum);
         } else if ($pageNum === 'top') {
-            $this->Subtest     = 'finalpage';
-            $this->NextPageNum = intval($pageNum) + 1 === $this->NumPages
-                ? null : $this->getNextPageNum($pageNum);
+            $this->NextPageNum = $this->getNextPageNum($pageNum);
         } else if (isset($pageNum) && is_numeric($pageNum)) {
             $this->Subtest     = $subtests[intval($pageNum)-1]['Name'];
-            $this->NextPageNum = intval($pageNum) + 1 === $this->NumPages
-                ? null : $this->getNextPageNum($pageNum);
+            $this->NextPageNum = $this->getNextPageNum($pageNum);
             $this->PrevPageNum = $this->getPrevPageNum($pageNum);
         }
 
@@ -135,13 +129,12 @@ class DirectDataEntryMainPage
         $this->tpl_data  = [
             'nextpage'    => $this->NextPageNum,
             'prevpage'    => $this->PrevPageNum,
-            'pageNum'     =>
-                $pageNum && is_numeric($pageNum) ?
-                    intval($pageNum) + 1 : 1,
+            'pageNum'     => $pageNum,
             'totalPages'  => $this->NumPages,
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
         ];
+        print_r($this->tpl_data);
     }
 
 
@@ -155,15 +148,15 @@ class DirectDataEntryMainPage
      */
     function getNextPageNum($currentPage): int
     {
-        if ($currentPage === null || !is_numeric($currentPage)) {
-            return 1;
-        }
+        // The 'finalpage' and 'complete' value assignment is done in direct_entry.js
 
-        if ($currentPage+1 === $this->NumPages) {
+        // No more pages to go -> finalize
+        // intval('top') returns 0
+        if (intval($currentPage)+1 === $this->NumPages) {
             return 0;
         }
 
-        return $currentPage+1;
+        return intval($currentPage)+1;
     }
 
     /**
@@ -187,7 +180,7 @@ class DirectDataEntryMainPage
         }
 
         if ($currentPage === 'finalpage') {
-            strval($this->NumPages - 1);
+            return strval($this->NumPages - 1);
         }
         return strval($currentPage - 1);
     }
@@ -345,6 +338,9 @@ class DirectDataEntryMainPage
             ) {
                 // Data was submitted on the last page.
                 $this->tpl_data['workspace'] = $workspace;
+                // keep displaying the review there might have been errors
+                $this->tpl_data['review'] = $this->caller->instrument->getReview();
+
             } else {
                 // We're just getting to the last page for the first time
 
