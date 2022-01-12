@@ -104,7 +104,7 @@ export const getSessions = function(group) {
 export const enumToArray = function(enumString) {
   enumString = enumString.substring('enum('.length); // remove 'enum('
   enumString = enumString.slice(0, -1); // remove last ')'
-  const tempArray = enumString.split(', ');
+  const tempArray = enumString.split(/\'(\s)*,(\s)*\'/);
   let array = [];
   for (let i = 0; i < tempArray.length; i++) {
     // remove "'" from beginning and end of string
