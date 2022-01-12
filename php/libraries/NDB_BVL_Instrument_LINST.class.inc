@@ -657,6 +657,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
+                        // The question should be added to the LinstQuestions in this
+                        // order, before the _date is stripped below for standard
+                        // dates to allow XINValidation to recognize the field name
+                        $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
+
                         if ($dateFormat === 'MonthYear') {
                             // Shows date without day of month
                             $this->addMonthYear(
@@ -710,7 +715,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
-                    $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
                     break;
                 case 'numeric':
                     if ($addElements) {
