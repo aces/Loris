@@ -19,8 +19,7 @@ $dir = __DIR__ . "/../logs/";
 if (!is_dir($dir)) {
     mkdir($dir);
 }
-$today   = getdate();
-$date    = strftime("%Y-%m-%d_%H:%M");
+$date = date("Y-m-d_h:i");
 $logPath = "$dir/instrument_double_escape_report_$date.log";
 $logfp   = fopen($logPath, 'a');
 
