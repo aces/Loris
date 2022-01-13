@@ -347,7 +347,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testEEGBrowserSortableByColumn()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/?");
-
         //Test PSCID Header
         $this->safeClick(
             WebDriverBy::cssSelector(self::$PSCIDHeader)
@@ -548,6 +547,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testSessionsBreadcrumbLink()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
+
         $this->safeClick(WebDriverBy::cssSelector(self::$breadcrumbLink));
 
         $bodyText = $this->safeFindElement(
