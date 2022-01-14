@@ -17,7 +17,8 @@ namespace LORIS\behavioural_qc\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class IncompleteDTO implements \LORIS\Data\DataInstance
+class IncompleteDTO implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     /**
      * The instrument
@@ -102,6 +103,17 @@ class IncompleteDTO implements \LORIS\Data\DataInstance
      * @var string
      */
     private $_commentID = '';
+
+    /**
+     * Returns the CenterID for this instance, for filters such as
+     * \LORIS\Data\Filters\UserSiteMatch to match against.
+     *
+     * @return \CenterID
+     */
+    public function getCenterID(): \CenterID
+    {
+        return new \CenterID($this->_site);
+    }
 
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.

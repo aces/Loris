@@ -54,7 +54,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['access_all_profiles', 'behavioural_quality_control_view']
+            ['access_all_profiles']
         );
         $provisioner = (new IncompleteProvisioner())->filter($filter);
 
