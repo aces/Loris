@@ -140,7 +140,10 @@ function uploadFile()
     $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
     if (empty($extension)) {
-        $response = showMediaError("Please make sure your file has a valid extension!", 400);
+        $response = showMediaError(
+            "Please make sure your file has a valid extension!",
+            400,
+        );
         print $response;
         return;
     }
@@ -460,7 +463,10 @@ function checkDateTaken($dateTaken)
         $now  = new DateTime();
         $diff = intval(date_diff($date, $now)->format("%R%a"));
         if ($diff < 0) {
-            echo showMediaError("Date of administration cannot be in the future", 400);
+            echo showMediaError(
+                "Date of administration cannot be in the future",
+                400,
+            );
         }
     }
 }
