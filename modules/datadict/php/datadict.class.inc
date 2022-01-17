@@ -60,11 +60,20 @@ class Datadict extends \DataFrameworkMenu
     {
         $instruments     = \Utility::getAllInstruments();
         $dictInstruments = [];
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+               __DIR__ . "../../../project/modules",
+               __DIR__ . "../../../modules/",
+            ]
+        );
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // database we need to instantiate the object to get the table name
             try {
                 $iObj = \NDB_BVL_Instrument::factory(
+                    $lorisinstance,
                     $instrument,
                     '',
                     ''
