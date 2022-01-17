@@ -55,7 +55,7 @@ class Dicoms
             'Tarname'    => $dicom->getTarname(),
             'SeriesInfo' => array_map(
                 [
-                    'self',
+                    self::class,
                     '_formatSeries'
                 ],
                 $dicom->getSeries()
