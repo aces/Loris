@@ -26,8 +26,7 @@ $dir = __DIR__ . "/../logs/";
 if (!is_dir($dir)) {
     mkdir($dir);
 }
-$today   = getdate();
-$date    = strftime("%Y-%m-%d_%H:%M");
+$date    = date("Y-m-d_h:i");
 $logPath = "$dir/score_instrument.$date.log";
 $logfp   = fopen($logPath, 'a');
 
@@ -258,7 +257,7 @@ function logMessage($message)
         //use print instead
         print_r($message);
     }
-    $now_string = strftime("%Y-%m-%d %H:%M:%S");
+    $now_string = date("Y-m-d h:i:s");
     fwrite($logfp, "[$now_string] $message\n");
 }
 

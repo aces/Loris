@@ -325,7 +325,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     function getBody(): string
     {
         return $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
     }
     /**

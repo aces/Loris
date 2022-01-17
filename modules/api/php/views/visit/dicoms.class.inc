@@ -98,7 +98,7 @@ class Dicoms
         ];
 
         $dicomtars = array_map(
-            'self::_formatDicomTars',
+            [self::class, '_formatDicomTars'],
             $this->_dicoms
         );
 

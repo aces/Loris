@@ -71,7 +71,7 @@
             <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
         </label>
         <div class="col-sm-3">
-            <input type="password" name="{$form.Password_hash.name}" />
+            <input type="password" name="{$form.Password_hash.name}" autocomplete="new-password"/>
         </div>
         <div class="col-sm-4">{$form.NA_Password.html}</div>
         {if $form.errors.Password|default}
