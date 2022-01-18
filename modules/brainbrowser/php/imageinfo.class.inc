@@ -108,7 +108,7 @@ class ImageInfo extends \NDB_Page
                 $type = $file[0];
                 $id   = substr($file, 2);
                 // list($l, $id) = explode('l', $file);
-                switch($type) {
+                switch ($type) {
                 case 1:
                     $parsedIDs[] = ['Type' => 'ProtocolViolation', 'FileID' => $id];
                     break;
@@ -158,7 +158,7 @@ class ImageInfo extends \NDB_Page
         $queries = [];
         // For each source, generate the query to union
         foreach ($querytypes as $qtype => $params) {
-            switch($qtype) {
+            switch ($qtype) {
             case 'ImagingBrowser':
                 $queries[] = "SELECT 'ImagingBrowser' as Source,
                                      c.CandID,
@@ -221,7 +221,7 @@ class ImageInfo extends \NDB_Page
         $response = [];
         foreach ($dbfiles as $row) {
             $filename = basename($row['File']);
-            switch($row['Source']) {
+            switch ($row['Source']) {
             case 'ImagingBrowser':
                 $url = $baseurl . "/api/v0.0.3/candidates/"
                     . $row['CandID'] . "/"

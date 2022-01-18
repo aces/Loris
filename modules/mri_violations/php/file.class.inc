@@ -46,7 +46,7 @@ class File extends \NDB_Page
 
         $ftype = $matches[1];
         $id    = $matches[2];
-        switch($ftype) {
+        switch ($ftype) {
         case 'protocolviolation':
             $query = "SELECT minc_location
                         FROM mri_protocol_violated_scans
