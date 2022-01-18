@@ -75,7 +75,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * The imaging browser uses the image session's project for filtering projects.
+     * Use project for filtering projects.
      *
      * @return bool
      */
@@ -96,6 +96,11 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     ) : array {
         $user        = $request->getAttribute('user');
         $visit_array = \Utility::getVisitList();
+        $userProjects   = $user->getProjects();
+        $projects = [];
+        foreach ($userProjects as $project) {
+            $projects[$project->getId()->__toString()] = $project->getName();
+        }
         // centerID
         $list_of_sites = $user->hasPermission('access_all_profiles')
             ? \Utility::getSiteList()
@@ -103,7 +108,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
         return (new \LORIS\behavioural_qc\Views\Incomplete(
             $visit_array,
             \Utility::getAllInstruments(),
-            $user->getProjects(),
+            $projects,
             \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();

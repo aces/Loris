@@ -73,6 +73,16 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Use project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Provide the field options for the behavioural form.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
@@ -84,6 +94,11 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     ) : array {
         $user        = $request->getAttribute('user');
         $visit_array = \Utility::getVisitList();
+        $userProjects   = $user->getProjects();
+        $projects = [];
+        foreach ($userProjects as $project) {
+            $projects[$project->getId()->__toString()] = $project->getName();
+        }
         // centerID
         $list_of_sites = $user->hasPermission('access_all_profiles')
             ? \Utility::getSiteList()
@@ -91,7 +106,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
         return (new \LORIS\behavioural_qc\Views\Behavioral(
             $visit_array,
             \Utility::getAllInstruments(),
-            $user->getProjects(),
+            $projects,
             \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();
