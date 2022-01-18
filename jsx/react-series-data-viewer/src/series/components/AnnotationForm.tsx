@@ -194,6 +194,10 @@ const AnnotationForm = ({
       if (response.ok) {
         setIsSubmitted(false);
 
+        // if in edit mode, remove old annotation instance
+        if (currentAnnotation !== null) {
+          epochs.splice(epochs.indexOf(currentAnnotation), 1);
+        }
         epochs.push(newAnnotation);
         setEpochs(
           epochs
