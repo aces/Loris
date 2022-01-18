@@ -7,6 +7,7 @@ import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import * as R from 'ramda';
 import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
 import { RootState } from '../store';
+import {MAX_RENDERED_EPOCHS} from '../../vector';
 
 type CProps = {
   timeSelection?: [number, number],
@@ -36,22 +37,26 @@ const EventManager = ({
     && rightPanel !== 'annotationForm'
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
+  const [activeEpochs, setActiveEpochs] = useState([]);
   const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
   const [visibleComments, setVisibleComments] = useState([]);
 
   useEffect(() => {
     // Reset: turn all epochs on / off regardless of independent toggle state
-    [...Array(epochs.length).keys()].filter((index) =>
+    const epochsInRange = [...Array(epochs.length).keys()].filter((index) =>
       epochs[index].onset + epochs[index].duration > interval[0]
       && epochs[index].onset < interval[1]
       && epochs[index].type === epochType
-    ).map((index) => {
-      if ((!allEpochsVisible && filteredEpochs.includes(index))
-        || (allEpochsVisible && !filteredEpochs.includes(index))
-      ) {
-        toggleEpoch(index);
-      }
-    });
+    );
+    if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
+      epochsInRange.map((index) => {
+        if ((!allEpochsVisible && filteredEpochs.includes(index))
+          || (allEpochsVisible && !filteredEpochs.includes(index))
+        ) {
+          toggleEpoch(index);
+        }
+      });
+    }
   }, [allEpochsVisible]);
 
   useEffect(() => {
