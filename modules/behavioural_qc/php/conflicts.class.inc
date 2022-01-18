@@ -4,6 +4,7 @@ namespace LORIS\behavioural_qc;
 
 use LORIS\behavioural_qc\Provisioners\ConflictsProvisioner;
 use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\Data\Filters\UserProjectMatch;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -54,9 +55,11 @@ class Conflicts extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['access_all_profiles', 'behavioural_quality_control_view']
+            ['access_all_profiles']
         );
-        $provisioner = (new ConflictsProvisioner())->filter($filter);
+        $provisioner = (new ConflictsProvisioner())
+            ->filter($filter)
+            ->filter(new UserProjectMatch());
 
         $user = $request->getAttribute('user');
 
@@ -69,6 +72,16 @@ class Conflicts extends \NDB_Page implements ETagCalculator
             'subprojects'  => \Utility::getSubprojectList(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
+    }
+
+    /**
+     * The imaging browser uses the image session's project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
     }
 
     /**
@@ -90,7 +103,7 @@ class Conflicts extends \NDB_Page implements ETagCalculator
         return (new \LORIS\behavioural_qc\Views\Conflicts(
             $visit_array,
             \Utility::getAllInstruments(),
-            \Utility::getProjectList(),
+            $user->getProjects(),
             \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();

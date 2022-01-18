@@ -4,6 +4,7 @@ namespace LORIS\behavioural_qc;
 
 use LORIS\behavioural_qc\Provisioners\IncompleteProvisioner;
 use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\Data\Filters\UserProjectMatch;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -54,9 +55,11 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['access_all_profiles', 'behavioural_quality_control_view']
+            ['access_all_profiles']
         );
-        $provisioner = (new IncompleteProvisioner())->filter($filter);
+        $provisioner = (new IncompleteProvisioner())
+            ->filter($filter)
+            ->filter(new UserProjectMatch());
 
         $user = $request->getAttribute('user');
 
@@ -72,6 +75,16 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * The imaging browser uses the image session's project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Provide the field options for the incomplete form.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
@@ -83,7 +96,6 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     ) : array {
         $user        = $request->getAttribute('user');
         $visit_array = \Utility::getVisitList();
-        $projects    = \Utility::getProjectList();
         // centerID
         $list_of_sites = $user->hasPermission('access_all_profiles')
             ? \Utility::getSiteList()
@@ -91,7 +103,7 @@ class Incomplete extends \NDB_Page implements ETagCalculator
         return (new \LORIS\behavioural_qc\Views\Incomplete(
             $visit_array,
             \Utility::getAllInstruments(),
-            $projects,
+            $user->getProjects(),
             \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();
