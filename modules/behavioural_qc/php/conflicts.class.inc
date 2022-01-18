@@ -94,10 +94,10 @@ class Conflicts extends \NDB_Page implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
-        $userProjects   = $user->getProjects();
-        $projects = [];
+        $user         = $request->getAttribute('user');
+        $visit_array  = \Utility::getVisitList();
+        $userProjects = $user->getProjects();
+        $projects     = [];
         foreach ($userProjects as $project) {
             $projects[$project->getId()->__toString()] = $project->getName();
         }
