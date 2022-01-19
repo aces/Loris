@@ -440,6 +440,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
                         'options' => [
+                            ''             => '',
                             'dnk'          => 'DNK',
                             'refusal'      => 'Refusal',
                             'not_answered' => 'Not Answered',
@@ -532,6 +533,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
                         'options' => [
+                            ''               => '',
                             '88_refused'     => "88 Refused",
                             '99_do_not_know' => "99 Do not know",
                             'not_answered'   => "Not Answered"
