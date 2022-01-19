@@ -250,7 +250,7 @@ class Image
      */
     public function getFileInfo(): \SplFileInfo
     {
-        return $this->getFullPath($this->_filelocation);
+        return $this->_getFullPath($this->_filelocation);
     }
 
     /**
@@ -264,11 +264,20 @@ class Image
         if (strpos($picfile, '://') !== false) {
             // It represents a URI, not a local path
             return new \SplFileInfo($picfile);
-    }
-    return $this->getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
+        }
+
+        return $this->_getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
     }
 
-    private function getFullPath(string $relpath) : \SplFileInfo
+    /**
+     * Returns the full path to the file after adding
+     * imagePath if applicable.
+     *
+     * @param string $relpath The relative pathname
+     *
+     * @return \SplFileInfo
+     */
+    private function _getFullPath(string $relpath) : \SplFileInfo
     {
         if (strpos($relpath, '://') !== false) {
             // It represents a URI, not a local path

@@ -168,7 +168,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $realpath = $info->getRealPath();
-        if($realpath === false) {
+        if ($realpath === false) {
             $realpath = $info->getPath() . "/" . $info->getFilename();
         }
 
