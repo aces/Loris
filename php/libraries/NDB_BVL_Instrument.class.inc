@@ -856,9 +856,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $oldData = [];
         }
-        $newData =
-
- array_merge($oldData ?? [], $values);
+        $newData = array_merge($oldData ?? [], $values);
 
         // Save the JSON to the flag.Data column.
         //
@@ -1740,7 +1738,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                ''           => '',
+                ''             => '',
                 'not_answered' => 'Not Answered',
             ],
             ['class' => 'form-control input-sm not-answered']
