@@ -25,7 +25,7 @@ $(function() {
   /////////////////////////////////////
   // Start running the Volume Viewer
   /////////////////////////////////////
-  window.viewer = BrainBrowser.VolumeViewer.start("brainbrowser", async function(viewer) {
+  window.viewer = BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
     var loading_div = $("#loading");
 
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = {} ,
@@ -743,21 +743,6 @@ $(function() {
     }
 
 
-    await fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
-        .then((resp) => resp.json())
-        .then((data) => {
-            for(const file of data) {
-                minc_volumes.push({
-                    type: file.type,
-                    raw_data_url: file.URL,
-                    template: {
-                        element_id: "volume-ui-template4d",
-                        viewer_insert_class: "volume-viewer-display",
-                    }
-                })
-            }
-        });
-
     if (getQueryVariable("overlay") === "true") {
       bboptions.overlay = {
         template: {
@@ -793,12 +778,32 @@ $(function() {
 
     viewer.setDefaultPanelSize(panelSize, panelSize);
 
-    /////////////////////
-    // Load the volumes.
-    /////////////////////
-    bboptions.volumes = minc_volumes;
-    viewer.render();                // start the rendering
-    viewer.loadVolumes(bboptions);  // load the volumes
+    fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
+        .then((resp) => resp.json())
+        .then((data) => {
+            for(const file of data) {
+                minc_volumes.push({
+                    type: file.type,
+                    raw_data_url: file.URL,
+                    template: {
+                        element_id: "volume-ui-template4d",
+                        viewer_insert_class: "volume-viewer-display",
+                    }
+                })
+            }
+
+            /////////////////////
+            // Load the volumes.
+            /////////////////////
+            bboptions.volumes = minc_volumes;
+            viewer.render();                // start the rendering
+
+
+            viewer.loadVolumes(bboptions);  // load the volumes
+
+            return viewer;
+        });
+
 
   });
 
