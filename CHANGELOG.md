@@ -129,6 +129,7 @@ on the session page to support new annotation features (PR #7345)
 #### Behavioural QC
 - Fix a fatal error if the datatable is filtered with All instrument (PR #6945)
 - Fix for the Instrument filter to keep track of the selected value (PR #6945)
+- Add Site and Project filters access restrictions (PR #7956)
 
 ### Tools
 - Fix fatal errors in delete_candidate.php tool. (PR #6805, #7275)
