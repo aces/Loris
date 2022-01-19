@@ -843,8 +843,8 @@ class Edit_User extends \NDB_Form
             );
             $this->addGroup(
                 $groupB,
-                'examiner_group',
-                'Examiner Status',
+                "examiner_group",
+                "Examiner Status",
                 $this->_GUIDelimiter
             );
             unset($groupA);
@@ -856,8 +856,8 @@ class Edit_User extends \NDB_Form
         // Darwinian self-lockout. Let us help those who cannot help themselves.
         if (!$this->_isEditingOwnAccount()) {
             $this->addSelect(
-                'Pending_approval',
-                'Pending approval',
+                "Pending_approval",
+                "Pending approval",
                 [
                     'Y' => 'Yes',
                     'N' => 'No',
