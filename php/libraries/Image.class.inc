@@ -250,6 +250,10 @@ class Image
      */
     public function getFileInfo(): \SplFileInfo
     {
+        if (strpos($this->_filelocation, '://') !== false) {
+            // It represents a URI, not a local path
+            return new \SplFileInfo($this->_filelocation);
+        }
         $imagepath = \NDB_factory::singleton()
             ->config()
             ->getSetting('imagePath');

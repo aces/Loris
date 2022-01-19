@@ -33,6 +33,15 @@ ini_set('session.use_strict_mode', '1');
 $client = new \NDB_Client;
 $client->initialize();
 
+$client = new Aws\S3\S3Client([
+    'region' => 'us-west-2',
+    'version' => '2006-03-01',
+    // 'endpoint' => 'hosted.domain.com',
+    ]);
+
+// Register the stream wrapper from an S3Client object
+$client->registerStreamWrapper();
+
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.

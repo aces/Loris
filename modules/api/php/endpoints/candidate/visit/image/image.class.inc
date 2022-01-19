@@ -158,6 +158,7 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $info = $image->getFileInfo();
 
+/*
         if (!$info->isFile()) {
             error_log('file in database but not in file system');
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -167,8 +168,19 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
             error_log('file exist but is not readable by webserver');
             return new \LORIS\Http\Response\JSON\NotFound();
         }
+        */
 
-        $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+/*
+var_dump($info->getPath());
+var_dump($info->getFilename());
+var_dump($info);
+*/
+$realpath = $info->getRealPath();
+if($realpath === false) {
+    $realpath = $info->getPath() . "/" . $info->getFilename();
+}
+
+        $body = new \LORIS\Http\FileStream($realpath, 'r');
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)
