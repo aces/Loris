@@ -272,14 +272,40 @@ class Edit_User extends \NDB_Form
         // multi-site UPDATE
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
+        $userNewCenterIDs = array_map(
+            function ($val) {
+                return new \CenterID($val);
+            },
+            $values['CenterIDs']
+        );
         if (!$this->isCreatingNewUser()) {
+            // Prevent deletion of rules/sites editor may not have access to edit.
+            if (!$editor->hasPermission('user_accounts_multisite')) {
+                // Collect CenterID(s) of user being modified.
+                $userCenterIDs = $user->getCenterIDs();
+                // Collect CenterID(s) of the editor modifying sites.
+                $editorCenterIDs = $editor->getCenterIDs();
+                // If the editor does not have access to all of the
+                // user's sites the difference between the two arrays
+                // will be the sites we additionally need to add to
+                // the user being modified.
+                $differenceOfCenterIDs = array_diff(
+                    $userCenterIDs,
+                    $editorCenterIDs
+                );
+                $userNewCenterIDs      = array_merge(
+                    array_intersect($userNewCenterIDs, $editorCenterIDs),
+                    $differenceOfCenterIDs
+                );
+            }
+
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($us_curr_sites as $site) {
+            foreach ($userNewCenterIDs as $centerID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
                         "UserID"   => $uid,
-                        "CenterID" => $site,
+                        "CenterID" => $centerID,
                     ]
                 );
             }

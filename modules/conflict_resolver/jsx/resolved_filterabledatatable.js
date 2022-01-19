@@ -108,7 +108,7 @@ class ResolvedFilterableDataTable extends Component {
         options: options.site,
       }},
       {label: 'CandID', show: true, filter: {
-        name: 'CandID',
+        name: 'candidateID',
         type: 'text',
         value: '300001',
       }},
@@ -117,7 +117,7 @@ class ResolvedFilterableDataTable extends Component {
         type: 'text',
       }},
       {label: 'Visit Label', show: true, filter: {
-        name: 'VisitLabel',
+        name: 'visitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
