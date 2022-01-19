@@ -60,12 +60,12 @@ class Datadict extends \DataFrameworkMenu
     {
         $instruments     = \Utility::getAllInstruments();
         $dictInstruments = [];
-        $lorisinstance = new \LORIS\LorisInstance(
+        $lorisinstance   = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
             \NDB_Factory::singleton()->config(),
             [
-               __DIR__ . "../../../project/modules",
-               __DIR__ . "../../../modules/",
+                __DIR__ . "../../../project/modules",
+                __DIR__ . "../../../modules/",
             ]
         );
         foreach ($instruments as $instrument => $name) {
