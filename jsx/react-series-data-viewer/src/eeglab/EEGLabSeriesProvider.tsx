@@ -138,7 +138,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
           const label = annotations.labels
             .find(label =>
               label.AnnotationLabelID == instance.AnnotationLabelID
-            ).LabelDescription;
+            ).LabelName;
           epochs.push({
             onset: parseFloat(instance.Onset),
             duration: parseFloat(instance.Duration),
