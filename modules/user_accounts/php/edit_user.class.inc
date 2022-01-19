@@ -819,9 +819,9 @@ class Edit_User extends \NDB_Form
                 "examiner_radiologist",
                 "Radiologist: ",
                 [
-                    ''   => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
 
@@ -832,9 +832,9 @@ class Edit_User extends \NDB_Form
                 "examiner_pending",
                 "Pending Approval: ",
                 [
-                    ''   => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addGroup(
