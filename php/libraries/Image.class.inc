@@ -250,19 +250,7 @@ class Image
      */
     public function getFileInfo(): \SplFileInfo
     {
-        if (strpos($this->_filelocation, '://') !== false) {
-            // It represents a URI, not a local path
-            return new \SplFileInfo($this->_filelocation);
-        }
-        $imagepath = \NDB_factory::singleton()
-            ->config()
-            ->getSetting('imagePath');
-
-        $fullpath = $imagepath . $this->_filelocation;
-
-        $info = new \SplFileInfo($fullpath);
-
-        return $info;
+        return $this->getFullPath($this->_filelocation);
     }
 
     /**
@@ -272,17 +260,23 @@ class Image
      */
     public function getThumbnailFileInfo(): \SplFileInfo
     {
+        return $this->getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
+    }
+
+    private function getFullPath(string $relpath) : \SplFileInfo
+    {
+        if (strpos($this->_filelocation, '://') !== false) {
+            // It represents a URI, not a local path
+            return new \SplFileInfo($this->_filelocation);
+        }
         $imagepath = \NDB_factory::singleton()
             ->config()
             ->getSetting('imagePath');
 
-        $fullpath = $imagepath . '/pic/'. $this->getHeader('check_pic_filename');
+        $fullpath = $imagepath . $relpath;
 
-        $info = new \SplFileInfo($fullpath);
-
-        return $info;
+        return new \SplFileInfo($fullpath);
     }
-
     /**
      * Creates an immutable object representation of this Image
      *
