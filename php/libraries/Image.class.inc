@@ -260,14 +260,19 @@ class Image
      */
     public function getThumbnailFileInfo(): \SplFileInfo
     {
-        return $this->getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
+        $picfile = $this->getHeader('check_pic_filename');
+        if (strpos($picfile, '://') !== false) {
+            // It represents a URI, not a local path
+            return new \SplFileInfo($picfile);
+    }
+    return $this->getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
     }
 
     private function getFullPath(string $relpath) : \SplFileInfo
     {
-        if (strpos($this->_filelocation, '://') !== false) {
+        if (strpos($relpath, '://') !== false) {
             // It represents a URI, not a local path
-            return new \SplFileInfo($this->_filelocation);
+            return new \SplFileInfo($relpath);
         }
         $imagepath = \NDB_factory::singleton()
             ->config()
