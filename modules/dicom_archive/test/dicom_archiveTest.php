@@ -27,20 +27,15 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(2)>div>div>input";
-    static $patientName = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(3)>div>div>input";
-    static $site        = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(9)>div>div>select";
-    static $sex         = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(4)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter".
-                            ">div>div>fieldset>div:nth-child(5)>div>div>input";
-    static $clearFilter = ".col-sm-9 > .btn";
-    // first row of react table
-    static $table   = "#dynamictable > tbody > tr:nth-child(1)";
-    static $display = ".table-header > div > div > div:nth-child(1)";
+    //Filter locations
+    static $pname       = 'input[name="patientName"]';
+    static $sex         = 'select[name="sex"]';
+    static $site        = 'select[name="site"]';
+    static $dateOfBirth = 'input[name="dateOfBirth"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+
     /**
      * Insert testing data into the database
      *
@@ -102,75 +97,36 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveFilterClearBtn()
     {
-        $this->markTestSkipped(
-            'This test is currently unstables and causing transitory build '
-            . 'failures.'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-        //$this-> _testFilter(self::$patientID, self::$table, null, "ibis");
-        $this-> _testFilter(
-            self::$patientName,
-            self::$table,
-            null,
-            "MTL022_300022_V1"
+        $this->_filterTest(
+            self::$pname,
+            self::$display,
+            self::$clearFilter,
+            'MTL022_300022_V1',
+            '1 row'
         );
-        $this-> _testFilter(self::$sex, self::$table, "1", "M");
-        $this-> _testFilter(self::$dateOfBirth, self::$table, null, "1972-10-10");
-        $this-> _testFilter(self::$site, self::$table, "8", "4");
-    }
-    /**
-     * Testing filter funtion and clear button
-     *
-     * @param string  $element The input element loaction
-     * @param string  $table   The first row location in the table
-     * @param ?string $records The records number in the table
-     * @param string  $value   The test value
-     *
-     * @return void
-     */
-    function _testFilter($element,$table,$records,$value)
-    {
-        // get element from the page
-        if (strpos($element, "select") == false) {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-            );
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$table').textContent"
-            );
-            $this->assertStringContainsString($value, $bodyText);
-        } else {
-            $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 input.selectedIndex = '$value';
-                 event = new Event('change', { bubbles: true });
-                 input.dispatchEvent(event);
-                "
-            );
-            $row      = self::$display;
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('$row').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertStringContainsString($records, $bodyText);
-        }
-        //test clear filter
-        $btn = self::$clearFilter;
-
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
+        $this->_filterTest(
+            self::$sex,
+            self::$display,
+            self::$clearFilter,
+            'M',
+            '1 row'
         );
-        $inputText = $this->webDriver->executescript(
-            "return document.querySelector('$element').value"
+        $this->_filterTest(
+            self::$dateOfBirth,
+            self::$display,
+            self::$clearFilter,
+            '1972-10-10',
+            '1 row'
         );
-        $this->assertEquals("", $inputText);
+        $this->_filterTest(
+            self::$site,
+            self::$display,
+            self::$clearFilter,
+            'Montreal',
+            '5 rows'
+        );
     }
     /**
      * Tests that the (view-details) link works
@@ -179,20 +135,12 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testLinksViewDetails()
     {
-        $this->markTestSkipped(
-            'This test needs work. It is causing failures sometimes for '
-            . 'unkown reasons.'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "#dynamictable>tbody>tr:nth-child(1)>td:nth-child(8)>a";
-        $text     = $this->webDriver->executescript(
-            "return document.querySelector('$location').textContent"
-        );
-        $this->assertEquals('View Details', $text);
-        $this->webDriver->executescript(
-            "document.querySelector('$location').click()"
-        );
-        $text = $this->webDriver->getPageSource();
+        $this->safeClick(WebDriverBy::cssSelector($location));
+        $text = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
+        )->getText();
         $this->assertStringContainsString('View Details', $text);
     }
     /**
@@ -202,22 +150,13 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testLinksViewImages()
     {
-        $this->markTestSkipped(
-            'Imaging is not set'
-        );
         $this->safeGet($this->url . "/dicom_archive/");
-        $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(10) > a";
-        $text     = $this->webDriver->executescript(
-            "return document.querySelector('$location').textContent"
-        );
-        $this->assertEquals('View Images', $text);
-        $this->webDriver->executescript(
-            "document.querySelector('$location').click()"
-        );
-        sleep(1);
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
-        );
-        $this->assertEquals('View Session', $text);
+        $location = "#dynamictable>tbody>tr:nth-child(1)>td:nth-child(9)>a";
+        $this->safeClick(WebDriverBy::cssSelector($location));
+        $text = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
+        )->getText();
+        $this->assertStringContainsString('View Session', $text);
+
     }
 }
