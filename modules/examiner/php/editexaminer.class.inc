@@ -303,7 +303,7 @@ class EditExaminer extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
         $statusOptions = [
-            ''            => 'N/A',
+            ''              => 'N/A',
             'not_certified' => 'Not Certified',
             'in_training'   => 'In Training',
             'certified'     => 'Certified',

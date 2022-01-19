@@ -135,7 +135,7 @@ class ViewSession extends \NDB_Form
                 'Fail' => 'Fail',
             ];
             $this->tpl_data['caveat_options']    = [
-                ''    => '&nbsp;',
+                ''      => '&nbsp;',
                 'true'  => 'True',
                 'false' => 'False',
             ];
