@@ -856,7 +856,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $oldData = [];
         }
-        $newData = array_merge($oldData ?? [], $values);
+        $newData =
+
+ array_merge($oldData ?? [], $values);
 
         // Save the JSON to the flag.Data column.
         //
@@ -1602,7 +1604,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             [
-                null           => '',
+                ''             => '',
                 'yes'          => 'Yes',
                 'no'           => 'No',
                 'not_answered' => 'Not Answered',
@@ -1691,7 +1693,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null             => '',
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => 'Not Answered',
@@ -1738,7 +1740,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null           => '',
+                ''           => '',
                 'not_answered' => 'Not Answered',
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1789,7 +1791,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             "",
             [
-                null           => '',
+                ''             => null,
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
@@ -1842,7 +1844,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1909,7 +1911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 '88_refused'     => "88 Refused",
                 '99_do_not_know' => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -1960,7 +1962,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1996,7 +1998,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => "Not Answered",

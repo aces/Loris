@@ -136,8 +136,8 @@ class ViewSession extends \NDB_Form
             ];
             $this->tpl_data['caveat_options']    = [
                 ''    => '&nbsp;',
-                true  => 'True',
-                false => 'False',
+                'true'  => 'True',
+                'false' => 'False',
             ];
             $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;

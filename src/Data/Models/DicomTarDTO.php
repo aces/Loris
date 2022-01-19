@@ -92,7 +92,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
      *
      * @return DicomSeriesDTO[]|null
      */
-    public function getSeries(): ?array
+    public function getSeries(): ?DicomSeriesDTO[]
     {
         return $this->series;
     }

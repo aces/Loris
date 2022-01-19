@@ -169,7 +169,7 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 [
-                    null => null,
+                    ''   => null,
                     'Y'  => 'Yes',
                     'N'  => 'No',
                 ]
