@@ -121,16 +121,20 @@ class EEGLabSeriesProvider extends Component<CProps> {
       .then((text) => {
         if (!(typeof text.json === 'string'
           || text.json instanceof String)) return;
-        return tsvParse(
-          text.json.replace('trial_type', 'label'))
-          .map(({ onset, duration, label }, i) => ({
-            onset: parseFloat(onset),
-            duration: parseFloat(duration),
-            type: 'Event',
-            label: label,
-            comment: null,
-            channels: 'all',
-          }));
+        return tsvParse(text.json)
+          .map((eventRow, i) => {
+            // --- Fix related to Brock face-13 data
+            const label = (eventRow.trial_type === 'n/a' && 'sample' in eventRow) ?
+              eventRow.sample : eventRow.trial_type;
+            return {
+              onset: parseFloat(eventRow.onset),
+              duration: parseFloat(eventRow.duration),
+              type: 'Event',
+              label: label,
+              comment: null,
+              channels: 'all',
+            }
+          });
       }).then(events => {
         let epochs = events;
         annotations.instances.map(instance => {
