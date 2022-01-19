@@ -265,7 +265,11 @@ class DocIndex extends React.Component {
         type: 'text',
       }},
       {label: 'Date Uploaded', show: true},
-      {label: 'Edit', show: true},
+      {
+        label: 'Edit',
+        show: this.props.hasPermission('superUser')
+        || this.props.hasPermission('document_repository_edit'),
+      },
       {
         label: 'Delete File',
         show: this.props.hasPermission('superUser')
@@ -281,13 +285,14 @@ class DocIndex extends React.Component {
     ];
     let uploadDoc;
     let uploadCategory;
-    if (loris.userHasPermission('document_repository_view')) {
+    if (loris.userHasPermission('document_repository_edit')) {
       tabList.push(
         {
           id: 'upload',
           label: 'Upload',
         },
       );
+
       tabList.push(
         {
           id: 'category',
@@ -309,6 +314,24 @@ class DocIndex extends React.Component {
 
       uploadCategory = (
         <TabPane TabId={tabList[2].id}>
+          <DocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/UploadCategory`}
+            refreshPage={this.fetchData}
+            newCategoryState={this.newCategoryState}
+          />
+        </TabPane>
+      );
+    } else if (loris.userHasPermission('document_repository_view')) {
+      tabList.push(
+        {
+          id: 'category',
+          label: 'Category',
+        },
+      );
+
+      uploadCategory = (
+        <TabPane TabId={tabList[1].id}>
           <DocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/UploadCategory`}
