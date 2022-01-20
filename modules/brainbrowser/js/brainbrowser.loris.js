@@ -28,7 +28,7 @@ $(function() {
   window.viewer = BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
     var loading_div = $("#loading");
 
-    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = {} ,
+    var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [],
     bboptions = {};
 
     ///////////////////////////
@@ -776,9 +776,7 @@ $(function() {
     fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
         .then((resp) => resp.json())
         .then((data) => {
-            console.log(data);
             for(const file of data) {
-                console.log(file);
                 minc_volumes.push({
                     type: file.type,
                     raw_data_url: file.URL,
@@ -787,10 +785,10 @@ $(function() {
                         viewer_insert_class: "volume-viewer-display",
                     }
                 })
+                minc_filenames.push(file.Filename);
             }
             bboptions.volumes = minc_volumes;
 
-        console.log(bboptions);
             //////////////////////////////
             // Load the default color map and then call
             // render only after it's been loaded
@@ -803,9 +801,6 @@ $(function() {
                     // Load the volumes.
                     /////////////////////
                     viewer.render();                // start the rendering
-
-        console.log('loading', bboptions);
-
                     viewer.loadVolumes(bboptions);  // load the volumes
                 });
 
