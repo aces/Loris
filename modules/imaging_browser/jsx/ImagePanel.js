@@ -20,13 +20,6 @@ class ImagePanelHeader extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $('.panel-title').tooltip();
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -117,23 +110,6 @@ class ImagePanelHeadersTable extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $(ReactDOM.findDOMNode(this)).DynamicTable();
-  }
-
-  /**
-   * Invoked immediately before a component is unmounted and destroyed.
-   */
-  componentWillUnmount() {
-    // Remove wrapper nodes so React is able to remove component
-    $(ReactDOM.findDOMNode(this)).DynamicTable({
-      removeDynamicTable: true,
-    });
   }
 
   /**
