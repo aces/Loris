@@ -83,7 +83,8 @@ class NDB_Client
 
             $s3client = new Aws\S3\S3Client($s3config);
 
-            // Register the stream wrapper from an S3Client object
+            // Register the stream wrapper so that s3:// urls can be
+            // treated as regular files.
             $s3client->registerStreamWrapper();
         }
 
