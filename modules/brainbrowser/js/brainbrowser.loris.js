@@ -776,15 +776,21 @@ $(function() {
     fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
         .then((resp) => resp.json())
         .then((data) => {
-            for(const file of data) {
-                minc_volumes.push({
+            for(const file of data){
+                let volume = {
                     type: file.type,
-                    raw_data_url: file.URL,
                     template: {
                         element_id: "volume-ui-template4d",
                         viewer_insert_class: "volume-viewer-display",
                     }
-                })
+                }
+                if (file.type == 'nifti1') {
+                    volume.nii_url = file.URL;
+                } else {
+                    volume.raw_data_url = file.URL;
+                }
+
+                minc_volumes.push(volume);
                 minc_filenames.push(file.Filename);
             }
             bboptions.volumes = minc_volumes;
