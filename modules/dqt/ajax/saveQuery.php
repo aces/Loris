@@ -33,6 +33,9 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['adminpass']
 );
 $qid         = $user->getUserName() . "_" . $_REQUEST['QueryName'];
+if (preg_match('/\s/', $qid)) {
+    $qid = rawurlencode($qid);
+}
 
 if ($_REQUEST['SharedQuery'] === "true") {
     $qid = "global:" . $qid;
@@ -80,6 +83,7 @@ if ($_REQUEST['OverwriteQuery'] === "true") {
     $query['id'] = $qid;
     print json_encode($query);
 } else {
-    print json_encode($cdb->postDoc($baseDocument));
+    $response = $cdb->postDoc($baseDocument);
+    print json_encode($response);
 }
 
