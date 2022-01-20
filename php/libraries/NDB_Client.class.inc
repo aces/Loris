@@ -58,14 +58,6 @@ class NDB_Client
         // will work.
         $DB = $factory->database();
 
-        // add extra include paths. This must be done
-        // after the database is connected, since the setting
-        // can come from the database.
-        $extLibs = $config->getSetting('extLibs');
-        if (!empty($extLibs)) {
-            set_include_path($extLibs.":".get_include_path());
-        }
-
         // This must be done after the extra includes, as those may
         // include Smarty
         include_once "Smarty_hook.class.inc";
