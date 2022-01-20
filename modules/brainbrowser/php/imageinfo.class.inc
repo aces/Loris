@@ -249,15 +249,18 @@ class ImageInfo extends \NDB_Page
                 $type = 'unknown';
             }
 
-            $response[] = [
+            $file = [
                 'type'     => $type,
                 'URL'      => $url,
                 'Filename' => $filename,
                 'FileID'   => $row['FileID'],
             ];
+            if ($type == 'nifti1' && strpos($filename, '.gz') !== false) {
+                $file['compressed'] = true;
+            }
+            $response[] = $file;
         }
         return new \LORIS\Http\Response\JSON\OK($response);
     }
-
 }
 
