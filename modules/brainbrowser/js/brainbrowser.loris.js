@@ -776,7 +776,9 @@ $(function() {
     fetch('imageinfo?files=' + minc_ids, {credentials: 'same-origin', method: 'GET'})
         .then((resp) => resp.json())
         .then((data) => {
+            console.log(data);
             for(const file of data) {
+                console.log(file);
                 minc_volumes.push({
                     type: file.type,
                     raw_data_url: file.URL,
@@ -788,6 +790,7 @@ $(function() {
             }
             bboptions.volumes = minc_volumes;
 
+        console.log(bboptions);
             //////////////////////////////
             // Load the default color map and then call
             // render only after it's been loaded
@@ -801,6 +804,7 @@ $(function() {
                     /////////////////////
                     viewer.render();                // start the rendering
 
+        console.log('loading', bboptions);
 
                     viewer.loadVolumes(bboptions);  // load the volumes
                 });

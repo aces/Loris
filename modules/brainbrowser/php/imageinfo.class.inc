@@ -97,7 +97,7 @@ class ImageInfo extends \NDB_Page
         } else if ($files_str === "") {
             return [];
         } else {
-            $files = [$files_str];
+            $files = explode(',', $files_str);
         }
 
         $parsedIDs = [];
