@@ -761,11 +761,6 @@ $(function() {
       $("#panel-size").change();
     }
 
-    //////////////////////////////
-    // Load the default color map.
-    //////////////////////////////
-    viewer.loadDefaultColorMapFromURL(color_map_config.url, color_map_config.cursor_color);
-
     ////////////////////////////////////////
     // Set the size of slice display panels.
     ////////////////////////////////////////
@@ -791,19 +786,28 @@ $(function() {
                     }
                 })
             }
-
-            /////////////////////
-            // Load the volumes.
-            /////////////////////
             bboptions.volumes = minc_volumes;
-            viewer.render();                // start the rendering
+
+            //////////////////////////////
+            // Load the default color map and then call
+            // render only after it's been loaded
+            //////////////////////////////
+            viewer.loadDefaultColorMapFromURL(
+                color_map_config.url,
+                color_map_config.cursor_color,
+                function() {
+                    /////////////////////
+                    // Load the volumes.
+                    /////////////////////
+                    viewer.render();                // start the rendering
 
 
-            viewer.loadVolumes(bboptions);  // load the volumes
+                    viewer.loadVolumes(bboptions);  // load the volumes
+                });
 
-            return viewer;
         });
 
+    return viewer;
 
   });
 
