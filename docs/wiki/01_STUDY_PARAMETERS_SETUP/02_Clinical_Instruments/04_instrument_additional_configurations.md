@@ -17,7 +17,7 @@ is associated to the `sampleInstrumentPermissionName` permission and `sampleInst
 is associated to the `sampleInstrument2PermissionName` permission.
 ```xml
 <instrumentPermissions>
-    <useInstrumentPermissions>false</useInstrumentPermissions>
+    <useInstrumentPermissions>true</useInstrumentPermissions>
     <instrument>
         <Test_name>sampleInstrument</Test_name>
         <permission>sampleInstrumentPermissionName</permission>
