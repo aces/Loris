@@ -8,8 +8,8 @@ battery.
 The **Test Battery** is the theoretical set of questionnaires administered to a 
 participant at a specific timepoint. The reason we refer to it as "theoretical" 
 in this context is because some exceptions occur in a clinical environment and 
-LORIS does allow for these exception by offering the option to add or remove 
-instruments from the predetermined battery at any timepoint. The battery assignment 
+LORIS does allow for these exception by offering the option to add instruments 
+to the predetermined battery at any timepoint (See FAQ below). The battery assignment 
 is dependent on several variables such as age of the candidate, cohort, site 
 and project affiliations.
 
