@@ -105,7 +105,7 @@ are available for data entry For more information about test batteries, navigate
 to the [Test Battery](./07_clinical_test_battery.md) section directly or continue 
 following the documentation.
 
-> _**Note:** The `TEST_NAME` value int he SQL statement must match exactly the 
+> _**Note:** The `TEST_NAME` value in the SQL statement must match exactly the 
 >LINST file name  without the extension or the `testname` value in PHP instruments 
 >(i.e. The `TEST_NAME` value for `bmi.linst` is `bmi`)._
 
