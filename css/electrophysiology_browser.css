@@ -42,6 +42,7 @@ svg {
   user-select: none;
 }
 
+/* ##################### EEGNET OVERRIDE START ################## */
 .list-group-item {
   position: relative;
   display: flex;
@@ -67,6 +68,7 @@ svg {
   position: absolute;
   right: 0;
 }
+/* ##################### EEGNET OVERRIDE END ################## */
 
 .event-list .btn.btn-primary {
   color: #555;

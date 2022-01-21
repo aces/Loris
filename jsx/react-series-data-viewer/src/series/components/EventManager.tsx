@@ -1,20 +1,24 @@
+// ##################### EEGNET OVERRIDE START ################## //
 import React, {useState, useEffect} from 'react';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
+import {MAX_RENDERED_EPOCHS} from '../../vector';
+import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
+// ##################### EEGNET OVERRIDE END ################## //
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
-import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import * as R from 'ramda';
-import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
 import { RootState } from '../store';
-import {MAX_RENDERED_EPOCHS} from '../../vector';
 
 type CProps = {
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
+  // ##################### EEGNET OVERRIDE START ################## //
   rightPanel: RightPanel,
   setCurrentAnnotation: (_: EpochType) => void,
+  // ##################### EEGNET OVERRIDE END ################## //
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
   toggleEpoch: (_: number) => void,
@@ -25,14 +29,17 @@ type CProps = {
 const EventManager = ({
   epochs,
   filteredEpochs,
+  // ##################### EEGNET OVERRIDE START ################## //
   rightPanel,
   setCurrentAnnotation,
+  // ##################### EEGNET OVERRIDE END ################## //
   setTimeSelection,
   setRightPanel,
   toggleEpoch,
   updateActiveEpoch,
   interval,
 }: CProps) => {
+  // ##################### EEGNET OVERRIDE START ################## //
   const [epochType, setEpochType] = useState((rightPanel
     && rightPanel !== 'annotationForm'
     && rightPanel === 'eventList') ?
@@ -72,7 +79,6 @@ const EventManager = ({
         className="panel-heading"
         style={{
           display: 'flex',
-          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
@@ -206,6 +212,7 @@ const EventManager = ({
     </div>
   );
 };
+// ##################### EEGNET OVERRIDE END ################## //
 
 EventManager.defaultProps = {
   timeSelection: null,
@@ -218,14 +225,18 @@ export default connect(
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
+    // ##################### EEGNET OVERRIDE START ################## //
     rightPanel: state.rightPanel,
+    // ##################### EEGNET OVERRIDE END ################## //
     interval: state.bounds.interval,
   }),
   (dispatch: (_: any) => void) => ({
+    // ##################### EEGNET OVERRIDE START ################## //
     setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),
+    // ##################### EEGNET OVERRIDE END ################## //
     setTimeSelection: R.compose(
       dispatch,
       setTimeSelection

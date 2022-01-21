@@ -456,6 +456,7 @@ class ElectrophysioAnnotations
             ['PFID' => $this->_physioFileID]
         );
 
+        // ##################### EEGNET OVERRIDE START ################## //
         // Get output type (raw, derivative)
         $outputType = $db->pselectOne(
             'SELECT OutputTypeName
@@ -464,6 +465,7 @@ class ElectrophysioAnnotations
                 WHERE PhysiologicalFileID=:PFID',
             ['PFID' => $this->_physioFileID]
         );
+        // ##################### EEGNET OVERRIDE END ################## //
 
         //Create new filepaths
         //Get data directory base path from Config
@@ -477,6 +479,7 @@ class ElectrophysioAnnotations
         //Create path with correct structure
         $subPath       = strstr($physioFilePath, "sub");
 
+        // ##################### EEGNET OVERRIDE START ################## //
         if ($outputType === 'derivative') {
         $destinationPath = $dataDir
             . "bids_imports/derivatives/loris_annotations/"
@@ -497,6 +500,7 @@ class ElectrophysioAnnotations
             0,
             strrpos($destinationPath, "_")
         );
+        // ##################### EEGNET OVERRIDE END ################## //
 
         $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
         $json_path = $pathWithoutEDF . "_annotations.json";

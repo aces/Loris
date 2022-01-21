@@ -50,6 +50,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
 
   return (
     <div className='row'>
+      {/* ##################### EEGNET OVERRIDE START ################## */}
       <div
         style={{
           display: 'flex',
@@ -140,6 +141,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           />
         </div>
       </div>
+      {/* ##################### EEGNET OVERRIDE END ################## */}
       <div
         className='col-xs-offset-1 col-xs-11'
         style={{height: viewerHeight}}

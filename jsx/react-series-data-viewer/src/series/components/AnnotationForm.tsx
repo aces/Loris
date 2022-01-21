@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect, DefaultRootState} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
@@ -7,9 +7,9 @@ import * as R from 'ramda';
 import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
 // ##################### EEGNET OVERRIDE START ################## //
-import { setEpochs } from '../store/state/dataset';
+import {setEpochs} from '../store/state/dataset';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-import { NumericElement, SelectElement, TextareaElement } from './Form';
+import {NumericElement, SelectElement, TextareaElement} from './Form';
 import swal from 'sweetalert2';
 // ##################### EEGNET OVERRIDE END ################## //
 
@@ -17,11 +17,11 @@ type CProps = {
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
-  currentAnnotation: EpochType,
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs: (_: EpochType[]) => void,
+  currentAnnotation: EpochType,
   setCurrentAnnotation: (_: EpochType) => void,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch: (_: number) => void,
@@ -33,11 +33,11 @@ const AnnotationForm = ({
   timeSelection,
   epochs,
   filteredEpochs,
-  currentAnnotation,
   setTimeSelection,
   setRightPanel,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs,
+  currentAnnotation,
   setCurrentAnnotation,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch,
@@ -421,7 +421,9 @@ export default connect(
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
+    // ##################### EEGNET OVERRIDE START ################## //
     currentAnnotation: state.currentAnnotation,
+    // ##################### EEGNET OVERRIDE END ################## //
     interval: state.bounds.interval,
   }),
   (dispatch: (any) => void) => ({

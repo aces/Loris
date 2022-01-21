@@ -91,12 +91,15 @@ class Annotations extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
+            // ##################### EEGNET OVERRIDE START ################## //
             if (!isset($parameters['sessionID'])
+            // ##################### EEGNET OVERRIDE END ################## //
                 || !isset($parameters['instance_id'])
             ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
+            // ##################### EEGNET OVERRIDE START ################## //
             $physioFileID = $db->pselectOne(
                 'SELECT PhysiologicalFileID
                     FROM physiological_file
@@ -110,7 +113,7 @@ class Annotations extends \NDB_Page
 
             (new ElectrophysioAnnotations(intval($physioFileID)))
                 ->delete((int) $parameters['instance_id']);
-
+            // ##################### EEGNET OVERRIDE END ################## //
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
             // ##################### EEGNET OVERRIDE START ################## //
@@ -151,8 +154,9 @@ class Annotations extends \NDB_Page
                 'sources' => 'EEGNet LORIS',
                 'author' => $user->getFullname()
             ];
-            // ##################### EEGNET OVERRIDE END ################## //
+            
             $instance_id   = (int) $parameters['instance_id'] ?? null;
+            // ##################### EEGNET OVERRIDE END ################## //
             $parameter_id  = $parameters['parameter_id'] ?? null;
 
             // ##################### EEGNET OVERRIDE START ################## //

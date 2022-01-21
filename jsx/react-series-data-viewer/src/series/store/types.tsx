@@ -41,9 +41,9 @@ export type AnnotationMetadata = {
   labels: any[],
   metadata: any[]
 }
-// ##################### EEGNET OVERRIDE END ################## //
 
 export type RightPanel = 'annotationForm' | 'eventList' | 'annotationList' | null;
+// ##################### EEGNET OVERRIDE END ################## //
 
 export type Electrode = {
   name: string,

@@ -45,7 +45,9 @@ import {
   Epoch as EpochType,
   RightPanel,
 } from '../store/types';
+// ##################### EEGNET OVERRIDE START ################## //
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
+// ##################### EEGNET OVERRIDE END ################## //
 
 type CProps = {
   viewerWidth: number,
@@ -72,7 +74,9 @@ type CProps = {
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
   setFilteredEpochs: (_: number[]) => void,
+  // ##################### EEGNET OVERRIDE START ################## //
   setCurrentAnnotation: (_: EpochType) => void,
+  // ##################### EEGNET OVERRIDE END ################## //
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
@@ -104,7 +108,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setViewerWidth,
   setViewerHeight,
   setFilteredEpochs,
+  // ##################### EEGNET OVERRIDE START ################## //
   setCurrentAnnotation,
+  // ##################### EEGNET OVERRIDE END ################## //
   dragStart,
   dragContinue,
   dragEnd,
@@ -219,7 +225,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
+            // ##################### EEGNET OVERRIDE START ################## //
             color={'#d8ffcc'}
+            // ##################### EEGNET OVERRIDE END ################## //
           />
         }
       </Group>
@@ -660,9 +668,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 >
                   {[...Array(epochs.length).keys()].filter((i) =>
                       epochs[i].onset + epochs[i].duration > interval[0]
-                      && epochs[i].onset < interval[1]
+                    && epochs[i].onset < interval[1]
+                    // ##################### EEGNET OVERRIDE START ################## //
                       && ((epochs[i].type === 'Event' && rightPanel === 'eventList')
                       || (epochs[i].type === 'Annotation' && rightPanel === 'annotationList'))
+                    // ##################### EEGNET OVERRIDE END ################## //
                     ).length >= MAX_RENDERED_EPOCHS &&
                     <div
                       style={{
@@ -681,8 +691,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           {rightPanel &&
             <div className='col-md-3'>
               {rightPanel === 'annotationForm' && <AnnotationForm />}
+              {/* ##################### EEGNET OVERRIDE START ################## */}
               {rightPanel === 'eventList' && <EventManager />}
               {rightPanel === 'annotationList' && <EventManager />}
+              {/* ##################### EEGNET OVERRIDE START ################## */}
             </div>
           }
         </div>
@@ -765,10 +777,12 @@ export default connect(
       dispatch,
       setFilteredEpochs
     ),
+    // ##################### EEGNET OVERRIDE START ################## //
     setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),
+    // ##################### EEGNET OVERRIDE END ################## //
     dragStart: R.compose(
       dispatch,
       startDragSelection
