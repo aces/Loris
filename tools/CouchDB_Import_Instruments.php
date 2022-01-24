@@ -322,7 +322,7 @@ class CouchDBInstrumentImporter
      */
     function run()
     {
-        $tests = $this->getInstruments($this->loris);
+        $tests = $this->getInstruments();
         $this->updateDataDicts($tests);
         $results = $this->updateCandidateDocs($tests);
         $this->CreateRunLog($results);
