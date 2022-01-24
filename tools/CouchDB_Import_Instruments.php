@@ -32,15 +32,19 @@ class CouchDBInstrumentImporter
                 // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
+    var $loris;
+
     /**
      * Create new instance.
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
-        $factory       = \NDB_Factory::singleton();
-        $config        = \NDB_Config::singleton();
+        $this->loris = $loris;
+        $config        = $this->loris->getConfiguration();
         $couchConfig   = $config->getSetting('CouchDB');
-        $this->SQLDB   = $factory->Database();
+        $this->SQLDB   = $this->loris->getDatabaseConnection();
+
+        $factory = \NDB_Factory::singleton();
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -207,7 +211,7 @@ class CouchDBInstrumentImporter
             $JSONData      = $instrumentObj->usesJSONData();
             $tableName     = "";
             if ($JSONData === false) {
-                $tableName = $instrumentObj->table;
+                $tableName = $instrumentObj->table ?? "";
             }
 
             $this->CouchDB->beginBulkTransaction();
@@ -257,6 +261,10 @@ class CouchDBInstrumentImporter
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
                 print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
 
+                if(!isset($results[$success])) {
+                    $results[$success] = 0;
+                }
+
                 $results[$success] += 1;
 
                 // Count every 200 //
@@ -278,7 +286,7 @@ class CouchDBInstrumentImporter
      */
     function getInstruments()
     {
-        return \Utility::getAllInstruments();
+        return \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
     }
 
     /**
@@ -312,7 +320,7 @@ class CouchDBInstrumentImporter
      */
     function run()
     {
-        $tests = $this->getInstruments();
+        $tests = $this->getInstruments($this->loris);
         $this->updateDataDicts($tests);
         $results = $this->updateCandidateDocs($tests);
         $this->CreateRunLog($results);
@@ -320,7 +328,7 @@ class CouchDBInstrumentImporter
 }
     // Don't run if we're doing the unit tests, the unit test will call run..
 if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBInstrumentImporter();
+    $Runner = new CouchDBInstrumentImporter($lorisInstance);
     $Runner->run();
 }
 ?>
