@@ -31,20 +31,22 @@ class CouchDBInstrumentImporter
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
-
-    var $loris;
+    var $loris; // reference to the LorisInstance object
 
     /**
      * Create new instance.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance that data is being
+     *                                    imported from.
      */
     function __construct(\LORIS\LorisInstance $loris)
     {
         $this->loris = $loris;
-        $config        = $this->loris->getConfiguration();
-        $couchConfig   = $config->getSetting('CouchDB');
-        $this->SQLDB   = $this->loris->getDatabaseConnection();
+        $config      = $this->loris->getConfiguration();
+        $couchConfig = $config->getSetting('CouchDB');
+        $this->SQLDB = $this->loris->getDatabaseConnection();
 
-        $factory = \NDB_Factory::singleton();
+        $factory       = \NDB_Factory::singleton();
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -261,7 +263,7 @@ class CouchDBInstrumentImporter
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
                 print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
 
-                if(!isset($results[$success])) {
+                if (!isset($results[$success])) {
                     $results[$success] = 0;
                 }
 
