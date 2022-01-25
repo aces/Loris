@@ -253,13 +253,15 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         $candid       = $values['candID'];
         $subprojectID = intval($values['subproject']);
+        $projectID    = new \ProjectID($values['project']);
         $visitLabel   = $values['visit'] ?? '';
 
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
+                $projectID,
                 $subprojectID,
-                $visitLabel
+                $visitLabel,
             );
         } catch (\LorisException $exception) {
             $conflict['visitLabel'] = $exception->getMessage();
