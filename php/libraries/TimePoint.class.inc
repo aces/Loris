@@ -301,9 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID  $candid       The candidate identifier
-     * @param integer $subprojectID The subprojectID
-     * @param string  $visitLabel   The visit label
+     * @param CandID     $candid       The candidate identifier
+     * @param \ProjectID $projectID    The Project identifier
+     * @param integer    $subprojectID The subprojectID
+     * @param string     $visitLabel   The visit label
      *
      * @throws LorisException
      *
@@ -311,6 +312,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function isValidVisitLabel(
         CandID $candid,
+        \ProjectID $projectID,
         int $subprojectID,
         string $visitLabel
     ): void {
@@ -327,7 +329,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // Check if visit label exists for this subproject
         if (!array_key_exists(
             $visitLabel,
-            \Utility::getVisitsForSubproject($subprojectID)
+            \Utility::getVisitsForProjectSubproject(
+                $projectID,
+                $subprojectID
+            )
         )
         ) {
             throw new \LorisException(
