@@ -32,8 +32,8 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
-$qid = $user->getUserName() . "_" . $_REQUEST['QueryName'];
-$qid = rawurlencode($qid);
+$qid         = $user->getUserName() . "_" . $_REQUEST['QueryName'];
+$qid         = rawurlencode($qid);
 
 if ($_REQUEST['SharedQuery'] === "true") {
     $qid = "global:" . $qid;
