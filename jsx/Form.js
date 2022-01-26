@@ -1062,8 +1062,19 @@ class DateElement extends Component {
       maxYear = '9999';
     }
 
+    // Handle date format
+    let format = this.props.dateFormat;
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-12-31';
+    if (!format.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-12';
+    }
+
     // Add 'Today' button
-    const todayButton = this.props.today ? (
+    const todayButton = this.props.todayBtn ? (
       <div style={{flexGrow: 1, flexBasis: '0%'}}>
         <button
           type="button"
@@ -1118,9 +1129,10 @@ DateElement.propTypes = {
   id: PropTypes.string,
   maxYear: PropTypes.string,
   minYear: PropTypes.string,
+  dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
-  today: PropTypes.bool,
+  todayBtn: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -1129,14 +1141,14 @@ DateElement.propTypes = {
 DateElement.defaultProps = {
   name: '',
   label: '',
-  value: null,
+  value: '',
   id: null,
-  maxYear: '9999-12-31',
-  minYear: '1000-01-01',
-  today: true,
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
   disabled: false,
   required: false,
-  today: true,
+  todayBtn: true,
   hasError: false,
   errorMessage: 'This field is required!',
   onUserInput: function() {
@@ -1219,7 +1231,6 @@ class TimeElement extends Component {
                 className= "btn btn-primary"
               />
             </div>
-          </InlineField>
           </div>
         </div>
       </div>
@@ -1681,12 +1692,10 @@ class ButtonElement extends Component {
 
   render() {
     return (
-      <div>
-        <label className="control-label"></label>
-        <div>
-          <Button
+      <div className="row form-group">
+        <div className={this.props.columnSize}>
+          <button
             name={this.props.name}
-            label={this.props.label}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
