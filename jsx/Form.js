@@ -1527,21 +1527,23 @@ FileElement.defaultProps = {
  *    label={note}
  * />
  * ```
- *
- * @param {object} props
- * @return {jsx}
  */
-function StaticElement(props) {
-  return (
-    <div className="row form-group">
-      <label className="col-sm-5 control-label">
-        {this.props.label}
-      </label>
-      <div className="col-sm-7">
-        <p className="form-control-static">{this.props.text}</p>
+class StaticElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-5 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-7">
+          <p className="form-control-static">{this.props.text}</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 StaticElement.propTypes = {
