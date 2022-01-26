@@ -73,12 +73,12 @@ class NDB_Client
             $s3config = [
                 'version' => '2006-03-01',
             ];
-            $endpoint = $config->getSetting('S3_Endpoint');
+            $endpoint = $config->getSetting('AWS_S3_Endpoint');
             if (!empty($endpoint)) {
                 $s3config['region']   = '';
                 $s3config['endpoint'] = $endpoint;
             } else {
-                $s3config['region'] = $config->getSetting('AWS_Region');
+                $s3config['region'] = $config->getSetting('AWS_S3_Region');
             }
 
             $s3client = new Aws\S3\S3Client($s3config);
