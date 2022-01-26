@@ -1,10 +1,3 @@
-/**
- * This file contains the React Component for a Modal Window.
- *
- * @author Henri Rabalais
- * @version 1.1.0
- *
- */
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
@@ -146,9 +139,9 @@ function Modal({
       };
       return (
         <div style={submitStyle}>
-          <ButtonElement
+          <Button
             label="Submit"
-            onUserInput={submit}
+            onClick={submit}
           />
         </div>
       );
@@ -211,10 +204,6 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
-};
-
-Modal.defaultProps = {
-  throwWarning: false,
 };
 
 export default Modal;

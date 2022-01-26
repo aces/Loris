@@ -58,7 +58,7 @@ class FilterableDataTable extends PureComponent {
       />
     );
 
-    const dataTable = !isNaN(this.props.loading) && this.props.loading < 100 ? (
+    const dataTable = !isNaN(this.props.loading) && (this.props.loading < 100 || this.props.data.length == 0) ? (
       <LoadingBar progress={this.props.loading}/>
     ) : (
       <DataTable

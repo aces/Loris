@@ -40,6 +40,23 @@ class FormElement extends Component {
     const colSize = Math.floor(maxColumnSize / columns);
     const colClass = 'col-xs-12 col-sm-' + colSize + ' col-md-' + colSize;
 
+    // Render elements from JSON
+    const filter = this.props.formElements;
+
+    Object.keys(filter).forEach(function(objKey, index) {
+      const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
+      const value = filter[objKey].value ? filter[objKey].value : '';
+      formElementsHTML.push(
+        <div key={'el_' + index} className={colClass}>
+          <LorisElement
+            element={filter[objKey]}
+            onUserInput={userInput}
+            value={value}
+          />
+        </div>
+      );
+    }.bind(this));
+
     // Render elements from React
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is plain HTML, insert it as full size.
@@ -241,7 +258,7 @@ class SearchableDropdown extends Component {
   componentDidUpdate(prevProps) {
     // need to clear out currentInput for when props.value gets wiped
     // if the previous value prop contained data and the current one doesn't
-    // clear currentInput.
+    // clear currentInput
     if (prevProps.value && !this.props.value) {
       this.setState({currentInput: ''});
     } else if (this.props.value !== prevProps.value && this.props.value) {
@@ -365,7 +382,7 @@ SearchableDropdown.defaultProps = {
   options: {},
   strictSearch: true,
   label: '',
-  value: null,
+  value: undefined,
   id: null,
   class: '',
   disabled: false,
@@ -413,7 +430,7 @@ class SelectElement extends Component {
     const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple) {
+    if (this.props.multiple && numOfOptions > 1) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
@@ -434,7 +451,7 @@ class SelectElement extends Component {
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
-    let elementClass = null;
+    let elementClass = 'row form-group';
 
     // Add required asterisk
     if (required) {
@@ -447,9 +464,9 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.errorMessage || (this.props.required && this.props.value === '')) {
-      errorMessage = <span>{this.props.errorMessage || 'The field is required!'}</span>;
-      elementClass = 'has-error';
+    if (this.props.hasError || (this.props.required && this.props.value === '')) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
     }
 
     let newOptions = {};
@@ -523,6 +540,7 @@ SelectElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   emptyOption: PropTypes.bool,
+  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -530,8 +548,8 @@ SelectElement.propTypes = {
 SelectElement.defaultProps = {
   name: '',
   options: {},
-  label: null,
-  value: null,
+  label: '',
+  value: undefined,
   id: null,
   class: '',
   multiple: false,
@@ -539,6 +557,8 @@ SelectElement.defaultProps = {
   required: false,
   sortByValue: true,
   emptyOption: true,
+  hasError: false,
+  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -770,6 +790,7 @@ TagsElement.propTypes = {
   required: PropTypes.bool,
   disabled: PropTypes.bool,
   emptyOption: PropTypes.bool,
+  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   btnLabel: PropTypes.string,
   allowDupl: PropTypes.bool,
@@ -785,12 +806,13 @@ TagsElement.defaultProps = {
   options: {},
   items: [],
   label: '',
-  value: null,
+  value: undefined,
   id: null,
   class: '',
   required: false,
   disabled: false,
   emptyOption: true,
+  hasError: false,
   allowDupl: false,
   useSearch: false,
   strictSearch: false, // only accept items specified in options
@@ -872,7 +894,7 @@ TextareaElement.propTypes = {
 TextareaElement.defaultProps = {
   name: '',
   label: '',
-  value: null,
+  value: '',
   id: null,
   disabled: false,
   required: false,
@@ -907,7 +929,7 @@ class TextboxElement extends Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
@@ -917,7 +939,7 @@ class TextboxElement extends Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'has-error';
+      elementClass = 'row form-group has-error';
     }
 
     const label = this.props.label && (
@@ -939,6 +961,7 @@ class TextboxElement extends Component {
             name={this.props.name}
             id={this.props.id}
             value={this.props.value || ''}
+            required={required}
             datarequired={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -965,8 +988,8 @@ TextboxElement.propTypes = {
 
 TextboxElement.defaultProps = {
   name: '',
-  label: null,
-  value: null,
+  label: '',
+  value: '',
   id: null,
   disabled: false,
   required: false,
@@ -1031,7 +1054,7 @@ class DateElement extends Component {
   }
 
   handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, e.target.value, e.target.id, 'date');
   }
 
   render() {
@@ -1253,8 +1276,8 @@ TimeElement.propTypes = {
 TimeElement.defaultProps = {
   name: '',
   label: '',
-  value: null,
-  id: null,
+  value: '',
+  id: '',
   disabled: false,
   required: false,
   hasError: false,
@@ -1344,8 +1367,8 @@ NumericElement.defaultProps = {
   name: '',
   min: null,
   max: null,
-  label: null,
-  value: null,
+  label: '',
+  value: '',
   id: null,
   required: false,
   disabled: false,
@@ -1396,7 +1419,7 @@ class FileElement extends Component {
     };
 
     // Add error message
-    if (this.props.errorMessage) {
+    if (this.props.hasError) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
     }
@@ -1471,6 +1494,7 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
@@ -1478,10 +1502,12 @@ FileElement.propTypes = {
 FileElement.defaultProps = {
   name: '',
   label: 'File to Upload',
-  value: null,
+  value: '',
   id: null,
   disabled: false,
   required: false,
+  hasError: false,
+  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1620,7 +1646,7 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'checkbox-inline';
+    let elementClass = this.props.elementClass;
     let label = null;
 
     // Add required asterix
@@ -1631,7 +1657,7 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'checkbox-inline has-error';
+      elementClass = this.props.elementClass + ' has-error';
     }
 
     return (
@@ -1663,6 +1689,7 @@ CheckboxElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
+  elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
@@ -1671,6 +1698,7 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
