@@ -43,13 +43,6 @@ class My_Preferences extends \NDB_Form
             'Country',
             'Fax',
         ];
-        // Prevent Javascript injection on all fields
-        foreach ($fieldsThatAreStrings as $fieldName) {
-            // this check prevents PHP Notices
-            if (!empty($defaults[$fieldName])) {
-                $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
-            }
-        }
 
         foreach ($defaults['examiner'] as $cid=>$vals) {
             //sets pending approval info

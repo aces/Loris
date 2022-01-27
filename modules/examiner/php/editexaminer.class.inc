@@ -145,7 +145,7 @@ class EditExaminer extends \NDB_Form
                 if ($date_cert != "") {
                     $data['date_cert'] = $date_cert;
                 }
-                $DB->insert(
+                $DB->unsafeinsert(
                     'certification',
                     $data
                 );
@@ -227,7 +227,7 @@ class EditExaminer extends \NDB_Form
                         if ($date_cert != "") {
                             $data['date_cert'] = $date_cert;
                         }
-                        $DB->update(
+                        $DB->unsafeupdate(
                             'certification',
                             $data,
                             [
@@ -264,7 +264,6 @@ class EditExaminer extends \NDB_Form
                 }
             }
         }
-        header("Refresh:0");
     }
 
     /**

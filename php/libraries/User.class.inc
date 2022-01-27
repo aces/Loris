@@ -197,7 +197,7 @@ class User extends UserPermissions implements
      */
     public function update(array $set): void
     {
-        \Database::singleton()->update(
+        \Database::singleton()->unsafeupdate(
             'users',
             $set,
             ['UserID' => $this->userInfo['UserID']]
