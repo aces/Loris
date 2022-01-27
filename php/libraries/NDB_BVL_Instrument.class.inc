@@ -1071,7 +1071,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [];
+        $examiners = [
+            null => ''
+        ];
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $eid => $row) {
                 $name = $row['full_name'];
