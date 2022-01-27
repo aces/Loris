@@ -85,6 +85,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### Genomic Browser
 - CNV/CPG records added for candidates to view and test the CNV and Methylation tabs in the Genomic Browser (PR #6900)
 #### Configuration
+- Addition of configuration settings for the DICOM to BIDS insertion pipeline (PR #7937)
 - Addition of configuration settings for the MINC to BIDS converter script (PR #7488)
 #### Candidate Profile
 - New integration test class to test project permissions (PR #6912)
