@@ -911,7 +911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'Window Difference (+/- Days)'
             );
         }
-        $examiners = ['' => ''] + $this->_getExaminerNames();
+        $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
         $this->addRule(
@@ -1072,7 +1072,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [];
+        $examiners = ['' => ''];
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $eid => $row) {
                 $name = $row['full_name'];
