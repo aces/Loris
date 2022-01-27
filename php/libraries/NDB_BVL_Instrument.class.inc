@@ -911,7 +911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'Window Difference (+/- Days)'
             );
         }
-        $examiners = $this->_getExaminerNames();
+        $examiners = ['' => ''] + $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
         $this->addRule(
@@ -1016,8 +1016,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $centerID = null;
         }
 
-        $candID    = $_REQUEST['candID'] ?? '';
         $sessionID = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($sessionID);
+        $candID    = $timepoint->getCandID();
 
         $project = $db->pselectOne(
             "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
