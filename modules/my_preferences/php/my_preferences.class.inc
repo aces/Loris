@@ -27,23 +27,6 @@ class My_Preferences extends \NDB_Form
         // remove the password hash
         unset($defaults['Password_hash']);
 
-        // An array of each field that requires front-end sanitization
-        $fieldsThatAreStrings = [
-            'UserID',
-            'First_name',
-            'Last_name',
-            'Real_name',
-            'Email',
-            'Degree',
-            'Institution',
-            'Address',
-            'City',
-            'State',
-            'Zip_code',
-            'Country',
-            'Fax',
-        ];
-
         foreach ($defaults['examiner'] as $cid=>$vals) {
             //sets pending approval info
             if ($cid=='pending') {

@@ -96,30 +96,6 @@ class Edit_User extends \NDB_Form
                 $defaults["permID[$value]"] = 'on';
             }
 
-            // An array of each field that requires front-end sanitization
-            $fieldsThatAreStrings = [
-                'UserID',
-                'First_name',
-                'Last_name',
-                'Real_name',
-                'Email',
-                'Degree',
-                'Institution',
-                'Address',
-                'City',
-                'State',
-                'Zip_code',
-                'Country',
-                'Fax',
-            ];
-            // Prevent Javascript injection on all fields
-            foreach ($fieldsThatAreStrings as $fieldName) {
-                // this check prevents PHP Notices
-                if (!empty($defaults[$fieldName])) {
-                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
-                }
-            }
-
             $defaults['examiner'] = $defaults['examiner'] ?? [];
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
@@ -419,7 +395,7 @@ class Edit_User extends \NDB_Form
                 // If examiner not in table and radiologist, pending and current
                 // sites fields set add the examiner to the examiner table
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $DB->insert(
+                $DB->unsafeinsert(
                     'examiners',
                     [
                         'full_name'   => $values['Real_name'],

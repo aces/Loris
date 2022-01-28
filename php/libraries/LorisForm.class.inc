@@ -769,7 +769,7 @@ class LorisForm
             }
 
             $strOptions .= "<option value='$optionKey' $selected>"
-                .$optionVal
+                . htmlspecialchars($optionVal)
                 . "</option>";
         }
 

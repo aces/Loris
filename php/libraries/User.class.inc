@@ -183,7 +183,7 @@ class User extends UserPermissions implements
      */
     public static function insert(array $set): void
     {
-        \Database::singleton()->insert('users', $set);
+        \Database::singleton()->unsafeinsert('users', $set);
     }
 
 

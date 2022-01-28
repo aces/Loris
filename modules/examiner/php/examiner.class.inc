@@ -233,7 +233,7 @@ class Examiner extends \NDB_Menu_Filter_Form
         );
 
         if (empty($examinerID)) {
-            $DB->insert(
+            $DB->unsafeinsert(
                 'examiners',
                 [
                     'full_name'   => $fullName,
