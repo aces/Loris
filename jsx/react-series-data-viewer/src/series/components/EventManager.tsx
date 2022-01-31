@@ -83,21 +83,29 @@ const EventManager = ({
           justifyContent: 'space-between',
         }}
       >
-        {`${epochType}s in timeline view`}
-        <i
-          className={
-            'glyphicon glyphicon-eye-'
-            + (allEpochsVisible ? 'open' : 'close')
-          }
-          onClick={() => setAllEpochsVisibility(!allEpochsVisible)}
-        ></i>
-        <i
-          className='glyphicon glyphicon-remove'
-          style={{cursor: 'pointer'}}
-          onClick={() => {
-            setRightPanel(null);
-          }}
-        ></i>
+        <p style={{ margin: '0px' }}>
+          <strong>{`${epochType}s`}</strong>
+          <span style={{ fontSize: '0.75em' }}>
+            <br />in timeline view
+          </span>
+        </p>
+        <div style={{display: 'flex', flexDirection: 'row'}}>
+          <i
+            className={
+              'glyphicon glyphicon-eye-'
+              + (allEpochsVisible ? 'open' : 'close')
+            }
+            style={{padding: '0.5em'}}
+            onClick={() => setAllEpochsVisibility(!allEpochsVisible)}
+          ></i>
+          <i
+            className='glyphicon glyphicon-remove'
+            style={{cursor: 'pointer', padding: '0.5em'}}
+            onClick={() => {
+              setRightPanel(null);
+            }}
+          ></i>
+        </div>
       </div>
       <div
         className="panel-body"
@@ -190,7 +198,7 @@ const EventManager = ({
                         onClick={() => handleCommentVisibilityChange()}
                       >
                         <i className={
-                          'glyphicon glyphicon-collapse-'
+                          'glyphicon glyphicon-chevron-'
                           + (visibleComments.includes(index) ? 'up' : 'down')
                         }></i>
                       </button>

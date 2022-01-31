@@ -344,12 +344,12 @@ const AnnotationForm = ({
             justifyContent: 'space-between',
           }}
       >
-        {currentAnnotation ? 'Edit' : 'New'} Annotation
+        {currentAnnotation ? 'Edit' : 'Add'} Annotation
         <i
           className='glyphicon glyphicon-remove'
           style={{cursor: 'pointer'}}
           onClick={() => {
-            setRightPanel(null);
+            setRightPanel('annotationList');
             setCurrentAnnotation(null);
             setTimeSelection(null);
           }}

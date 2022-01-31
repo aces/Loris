@@ -652,14 +652,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   >
                     {rightPanel === 'annotationForm'
                       ? 'Close Annotation Form'
-                      : 'New Annotation'
+                      : 'Add Annotation'
                     }
                   </button>
                   // ##################### EEGNET OVERRIDE END ################## //
                 }
 
                 <div
-                  className='pull-right col-xs-7'
+                  className='pull-right col-xs-4'
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
