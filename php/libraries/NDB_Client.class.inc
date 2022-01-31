@@ -66,6 +66,28 @@ class NDB_Client
             set_include_path($extLibs.":".get_include_path());
         }
 
+        // Register S3 stream wrapper if configured
+        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+            // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+            // should both be set as environment variables
+            $s3config = [
+                'version' => '2006-03-01',
+            ];
+            $endpoint = $config->getSetting('AWS_S3_Endpoint');
+            if (!empty($endpoint)) {
+                $s3config['region']   = '';
+                $s3config['endpoint'] = $endpoint;
+            } else {
+                $s3config['region'] = $config->getSetting('AWS_S3_Region');
+            }
+
+            $s3client = new Aws\S3\S3Client($s3config);
+
+            // Register the stream wrapper so that s3:// urls can be
+            // treated as regular files.
+            $s3client->registerStreamWrapper();
+        }
+
         // This must be done after the extra includes, as those may
         // include Smarty
         include_once "Smarty_hook.class.inc";

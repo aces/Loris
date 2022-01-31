@@ -22,6 +22,7 @@ changes in the following format: PR #1234***
 - Added ability for scripts to bulk load instrument data (PR #6869)
 - Multiple classes of errors flagged by phan are now fixed (various PRs)
 - A PSR3 compatible logging interface was added (PR #7509)
+- Added support for Amazon S3 (PR #7963)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
