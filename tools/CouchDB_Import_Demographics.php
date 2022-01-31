@@ -186,6 +186,8 @@ class CouchDBDemographicsImporter
                                 c.PSCID, 
                                 s.Visit_label, 
                                 s.SubprojectID, 
+                                s.ProjectID,
+                                s.CenterID,
                                 p.Alias as Site, 
                                 c.Sex,
                                 s.Current_stage, 
@@ -381,6 +383,9 @@ class CouchDBDemographicsImporter
             $demographics['Cohort']
                 = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
+            $centerid = $demographics['CenterID'];
+            unset($demographics['CenterID']);
+            $projectid = $demographics['ProjectID'];
             if (isset($demographics['ProjectID'])) {
                 $demographics['Project']
                     = $this->_getProject($demographics['ProjectID']);
@@ -451,6 +456,8 @@ class CouchDBDemographicsImporter
                             $demographics['PSCID'],
                             $demographics['Visit_label'],
                         ],
+                        'ProjectID'  => $projectid,
+                        'CenterID'   => $centerid
                     ],
                     'data' => $demographics,
                 ]
