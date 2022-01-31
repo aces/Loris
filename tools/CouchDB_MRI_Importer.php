@@ -117,7 +117,7 @@ class CouchDBMRIImporter
     {
 
         $s     = $ScanTypes;
-        $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
+        $Query = "SELECT c.PSCID, s.Visit_label, s.ProjectID, s.CenterID, s.ID as SessionID, fmric.Comment
           as QCComment";
 
         foreach ($s as $scan) {
@@ -438,6 +438,12 @@ class CouchDBMRIImporter
                 $row['PSCID'],
                 $row['Visit_label'],
             ];
+
+            $projectid = $row['ProjectID'];
+            unset($row['ProjectID']);
+            $centerid  = $row['CenterID'];
+            unset($row['CenterID']);
+
             $docid      = 'MRI_Files:' . join($identifier, '_');
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
@@ -449,6 +455,8 @@ class CouchDBMRIImporter
                     'Meta' => [
                         'DocType'    => 'mri_data',
                         'identifier' => $identifier,
+                        'ProjectID'  => $projectid,
+                        'CenterID'   => $centerid,
                     ],
                     'data' => $doc,
                 ]

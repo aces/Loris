@@ -129,6 +129,8 @@ class CouchDBInstrumentImporter
         $select = "SELECT
             c.PSCID,
             s.Visit_label,
+            s.ProjectID,
+            s.CenterID,
             f.Administration,
             f.Data_entry,
             f.Validity,
@@ -217,7 +219,6 @@ class CouchDBInstrumentImporter
             $preparedStatement->execute(['inst' => $instrument]);
             while ($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID = $row['CommentID'];
-
                 if ($JSONData) {
                     //Transform JSON object into an array and add treat it the
                     //same as SQL
@@ -235,6 +236,11 @@ class CouchDBInstrumentImporter
                 unset($docdata['city_of_birth']);
                 unset($docdata['city_of_birth_status']);
 
+                $projectid = $row['ProjectID'];
+                $centerid  = $row['CenterID'];
+                unset($row['ProjectID']);
+                unset($row['CenterID']);
+
                 if (isset($docdata['Examiner'])
                     && is_numeric($docdata['Examiner'])
                 ) {
@@ -251,6 +257,8 @@ class CouchDBInstrumentImporter
                             $row['PSCID'],
                             $row['Visit_label'],
                         ],
+                        'ProjectID'  => $projectid,
+                        'CenterID'   => $centerid
                     ],
                     'data' => $docdata,
                 ];
