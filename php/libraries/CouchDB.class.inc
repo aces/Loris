@@ -417,6 +417,71 @@ class CouchDB
     }
 
     /**
+     * Executes the specified view function from the specified design document.
+     * Same as GET but will set keys in the body of the request instead of the
+     * query parameters.
+     *
+     * Note: This yields an array per document intead of a complete array of docs.
+     *
+     * @param string $design      The design document
+     * @param string $view        The view name
+     * @param array  $queryparams An associative array of param_name and values
+     * @param array  $keys        The target document keys
+     *
+     * @return A traversable of documents objects
+     */
+    public function postView(
+        string $design,
+        string $view,
+        array $queryparams,
+        array $keys
+    ): \Traversable {
+        $params = http_build_query($queryparams);
+        $url    = $this->_constructURL(
+            'POST',
+            "_design/$design/_view/$view/?$params"
+        );
+
+        $dockeys = json_encode(['keys' => $keys]);
+
+        $handler = $this->SocketHandler;
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
+
+        $handler->open();
+        $handler->write($url . " HTTP/1.0\r\n");
+        $handler->write("Content-Length: " . strlen($dockeys) . "\r\n");
+        $handler->write("Content-type: application/json\r\n");
+
+        $handler->write(
+            "Authorization: Basic "
+            . base64_encode(
+                $this->_user . ":" . $this->_password
+            )
+            . "\r\n"
+        );
+
+        $handler->write("\r\n");
+        $handler->write($dockeys);
+
+        $finishedHeaders = false;
+        while (!$handler->eof()) {
+            $line = $handler->gets();
+            if ($finishedHeaders === false) {
+                if ($line == "\r\n") {
+                    $finishedHeaders = true;
+                }
+            } else {
+                $doc = json_decode(substr(trim($line), 0, -1), true);
+                if (is_array($doc)) {
+                    yield $doc;
+                }
+            }
+        }
+        $handler->close();
+    }
+
+    /**
      * Internal function to make a low level HTTP POST request to the CouchDB
      * server, not relative to the CouchDB server (not database). This is useful
      * for posting to other CouchDB databases on the same server (ie. the users

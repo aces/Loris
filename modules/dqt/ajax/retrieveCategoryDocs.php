@@ -39,7 +39,32 @@ $keys        = array_map(
     },
     $sessions
 );
-$results     = $cdb->queryView(
+
+$docs = $cdb->postView(
+    'DQG-2.0',
+    'instruments',
+    [
+        "reduce"       => "false",
+        "include_docs" => "true",
+    ],
+    $keys
+);
+
+$results = ['rows'=>[]];
+foreach ($docs as $doc) {
+    if (!isset($doc['doc']['Meta']['ProjectID'])) {
+        var_dump($doc);
+        exit;
+    }
+    $projectid = new \ProjectID($doc['doc']['Meta']['ProjectID'] ?? '');
+    $centerid  = new \CenterID($doc['doc']['Meta']['CenterID']);
+    if ($user->hasProject($projectid) && $user->hasCenter($centerid)) {
+        $results['rows'][] = $doc;
+    }
+}
+echo json_encode($results);
+exit;
+$results = $cdb->queryView(
     "DQG-2.0",
     "instruments",
     [
@@ -49,9 +74,9 @@ $results     = $cdb->queryView(
     ],
     true
 );
-$keys        = null;
-$cdb         = null;
-$client      = null;
+$keys    = null;
+$cdb     = null;
+$client  = null;
 //print $results;
 /*
 $justTheDocs = array_map(function($row) {
