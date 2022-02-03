@@ -10,7 +10,6 @@ SELECT 'Running: SQL/Archive/24.0/2019-12-17-RemovePasswordExpiry.sql';
 
 ALTER TABLE users ADD COLUMN PasswordChangeRequired TINYINT(1) NOT NULL DEFAULT 0;
 UPDATE users SET PasswordChangeRequired=1 WHERE Password_expiry < CURDATE();
-ALTER TABLE users DROP COLUMN Password_expiry;
 
 SELECT 'Running: SQL/Archive/24.0/2020-01-07-publication_users_edit_perm_rel_pk.sql';
 
@@ -1016,9 +1015,6 @@ ALTER TABLE mri_protocol ADD FOREIGN KEY (`CenterID`) REFERENCES psc(`CenterID`)
 UPDATE mri_protocol 
 INNER JOIN psc ON (Center_name = MRI_alias) 
 SET mri_protocol.CenterID = psc.CenterID;
-
--- Drop the Center_name table (CenterID will be replacing it)
-ALTER TABLE mri_protocol DROP COLUMN `Center_name`;
 
 SELECT 'Running: SQL/Archive/24.0/2021-07-29-physiological_task_event_columns_types.sql';
 
