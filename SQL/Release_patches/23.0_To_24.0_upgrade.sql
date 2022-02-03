@@ -293,13 +293,6 @@ UPDATE permissions SET description='LORIS API Manual', moduleID=(SELECT ID FROM 
 
 SELECT 'Running: SQL/Archive/24.0/2021-02-19_electrophysiology_annotation_tables.sql';
 
--- SQL tables for BIDS derivative file structure
-DROP TABLE IF EXISTS `physiological_annotation_instance`;
-DROP TABLE IF EXISTS `physiological_annotation_parameter`;
-DROP TABLE IF EXISTS `physiological_annotation_archive`;
-DROP TABLE IF EXISTS `physiological_annotation_file`;
-DROP TABLE IF EXISTS `physiological_annotation_file_type`;
-DROP TABLE IF EXISTS `physiological_annotation_label`;
 -- Create physiological_annotation_file_type table
 CREATE TABLE `physiological_annotation_file_type` (
     `FileType`        VARCHAR(20)   NOT NULL UNIQUE,
