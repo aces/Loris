@@ -37,7 +37,6 @@ class CandidatesExtID extends APIBase
     {
         $this->AllowedMethods = [
             'GET',
-            'POST',
         ];
         $this->RequestData    = $data;
 
@@ -72,15 +71,21 @@ class CandidatesExtID extends APIBase
     public function handleGET()
     {
         $result = $this->DB->pselect(
-            "SELECT c.CandID, ProjectID, PSCID, s.Name as Site,
-                    EDC, DoB, Sex, ExtStudyID, ses.ID as SessionID
-             FROM candidate c JOIN psc s on (s.CenterID=c.RegistrationCenterID)
-                 LEFT JOIN candidate_project_extid_rel cpe ON (cpe.CandID = c.CandID)
-                 LEFT JOIN Project_external pe ON (cpe.ProjectExternalID= pe.ProjectExternalID)
-                 LEFT JOIN session ses ON (cpe.CandID = ses.CandID)
-             WHERE c.Active='Y' AND pe.Name=:name
-                ",
-            ["name"=>"QPN"]
+            "SELECT
+                c.CandID,
+                ProjectID,
+                PSCID,
+                s.Name as Site,
+                EDC,
+                DoB,
+                Sex,
+                ses.ID as SessionID,
+                ses.Visit_label as VisitLabel
+              FROM candidate c
+                JOIN psc s on (s.CenterID=c.RegistrationCenterID)
+                LEFT JOIN session ses USING (CandID)
+              WHERE c.Active='Y' AND c.Entity_type!='Scanner'",
+            []
         );
 
         $candidates = [];
@@ -88,7 +93,7 @@ class CandidatesExtID extends APIBase
             if (empty($candidates[$row['CandID']])) {
                 $candidates[$row['CandID']] = $row;
             }
-            $candidates[$row['CandID']]['SessionIDs'][] = $row['SessionID'];
+            $candidates[$row['CandID']]['SessionIDs'][$row['VisitLabel']] = $row['SessionID'];
             unset($candidates[$row['CandID']]['SessionID']);
         }
 
@@ -106,174 +111,10 @@ class CandidatesExtID extends APIBase
 
         $this->JSON = ["Candidates" => $candValues];
     }
-
-    /**
-     * Handles a candidates POST request to validate data and if everything
-     * is valid, create the candidate
-     *
-     * @return void but populates $this->JSON and writes to DB
-     */
-    public function handlePOST()
-    {
-        $candid = null;
-        $data   = $this->RequestData;
-        if ($data === null) {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Can't parse data");
-            $this->safeExit(0);
-        }
-
-        if (!isset($data['Candidate'])) {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("There is no Candidate object in the POST data");
-            $this->safeExit(0);
-        }
-        // The API requires siteName as an input to candidate creation
-        $user         = \User::singleton();
-        $centerIDs    = $user->getCenterIDs();
-        $allSiteNames = array();
-        $allUserSiteNames = array();
-        $num_sites        = count($centerIDs);
-        if ($num_sites == 0) {
-            $this->header("HTTP/1.1 401 Unauthorized");
-            $this->error("You are not affiliated with any site");
-            $this->safeExit(0);
-        } else {
-            $allSiteNames     = $this->DB->pselectColWithIndexKey(
-                "SELECT CenterID, Name FROM psc ",
-                array(),
-                "CenterID"
-            );
-            $allUserSiteNames = $this->DB->pselectColWithIndexKey(
-                "SELECT CenterID, Name FROM psc WHERE FIND_IN_SET(CenterID, :cid)",
-                array('cid' => implode(',', $centerIDs)),
-                "CenterID"
-            );
-
-            $siteName = $data['Candidate']['Site'];
-            // This will check that the SiteName provided is a valid one
-            $this->verifyField($data, 'Site', $allSiteNames);
-            $this->verifyField($data, 'Sex', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
-            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-            // Get the CenterID from the provided SiteName, and check if the
-            // user has permission to create a candidate at this site
-            $centerID = array_search($siteName, $allUserSiteNames);
-
-            if ($centerID === false) {
-                $this->header("HTTP/1.1 403 Forbidden");
-                $this->error("You are not affiliated with the candidate's site");
-                $this->safeExit(0);
-            }
-
-            //Candidate::createNew
-            try {
-                $candid = $this->createNew(
-                    $centerID,
-                    $data['Candidate']['DoB'],
-                    $data['Candidate']['EDC'],
-                    $data['Candidate']['Sex'],
-                    $data['Candidate']['PSCID']
-                );
-            } catch(\LorisException $e) {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
-            }
-
-        }
-
-        $candidate = \Candidate::singleton($candid);
-
-        if (isset($data['Candidate']['Project'])) {
-            $projectName = $data['Candidate']['Project'];
-            $project     = \Project::singleton($projectName);
-            if (!empty($project)) {
-                $candidate->setData(
-                    array('ProjectID' => $project->getId())
-                );
-            }
-        }
-
-        $candidateinfo = array(
-            'CandID'  => $candidate->getCandID(),
-            'Project' => $candidate->getProjectTitle(),
-            'PSCID'   => $candidate->getPSCID(),
-            'Site'    => $candidate->getCandidateSite(),
-            'EDC'     => $candidate->getCandidateEDC(),
-            'DoB'     => $candidate->getCandidateDoB(),
-            'Sex'     => $candidate->getCandidateSex(),
-        );
-
-        $this->header("HTTP/1.1 201 Created");
-        $this->JSON = $candidateinfo;
-    }
-
-    /**
-     * Verifies that the field POSTed to the URL is valid.
-     *
-     * @param array  $data   The data that was posted
-     * @param string $field  The field to be validated in $data
-     * @param mixed  $values Can either be an array of valid values for
-     *                       the field, or a string representing the format
-     *                       expected of the data.
-     *
-     * @return void but will generate an error and exit if the value is invalid.
-     */
-    protected function verifyField($data, $field, $values)
-    {
-        if (!isset($data['Candidate'][$field])) {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Candidate's field missing");
-            $this->safeExit(0);
-        }
-        if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Value not permitted");
-            $this->safeExit(0);
-        }
-        if ($values === 'YYYY-MM-DD'
-            && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
-        ) {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Invalid date format");
-            $this->safeExit(0);
-        }
-    }
-
-    /**
-     * Testable wrapper for Candidate::createNew
-     *
-     * @param string $centerID The center id of the candidate
-     * @param string $DoB      Date of birth of the candidate
-     * @param string $edc      EDC of the candidate
-     * @param string $sex      Biological sex of the candidate to be created
-     * @param string $PSCID    PSCID of the candidate to be created
-     *
-     * @return int $candID      candidate id of the new candidate
-     */
-    public function createNew($centerID, $DoB, $edc, $sex, $PSCID)
-    {
-        return \Candidate::createNew(
-            $centerID,
-            $DoB,
-            $edc,
-            $sex,
-            $PSCID
-        );
-    }
 }
 
 if (isset($_REQUEST['PrintCandidates'])) {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $fp   = fopen("php://input", "r");
-        $data = '';
-        while (!feof($fp)) {
-            $data .= fread($fp, 1024);
-        }
-        fclose($fp);
-
-        $obj = new CandidatesExtID($_SERVER['REQUEST_METHOD'], json_decode($data, true));
-    } else {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $obj = new CandidatesExtID($_SERVER['REQUEST_METHOD']);
     }
     print $obj->toJSONString();
