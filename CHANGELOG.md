@@ -51,8 +51,12 @@ string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction
 on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 - React Form Select Element now has the ability to set an option in the element 
 as a disabled option. (PR #7306)
+- Pending accounts in Dashboard now includes DCC users (PR #7054)
+- Subproject filter added to Behavioural QC module (PR #7430)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
+- Addition of new tables to store PET HRRT data (PR #6142)
+- Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
 - Addition of 4 configuration settings for the minc2bids converter (PR #7488)
 
 #### Bug Fixes
@@ -71,6 +75,12 @@ instrument if it includes the string `_date`. (PR #6923)
 can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
 - When a superuser edits another user, the labels for each permission is correctly 
 displayed (PR #7451) 
+- The imaging uploader now starts automatically if you have the imaging uploader 
+auto-launch set to true and your current upload overwrites an existing file (PR #7084).
+- Script CouchDB_MRI_Importer now computes the correct names the data dictionary 
+entries associated to MRI comments (PR #7082). 
+- Candidate library now allows a null sex in the select() function to accommodate 
+scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
 
 ### Modules
 #### DQT
@@ -139,6 +149,9 @@ on the session page to support new annotation features (PR #7345)
 - Fix to display the file name when editing a file (PR #7381)
 #### Imaging Browser
 - Fix nullable type fatal error (PR #7336)
+#### Imaging Uploader
+- Fixed a bug that would prevent the imaging uploader from starting automatically even if you had the imaging uploader
+auto-launch set to true and your current upload overwrote an existing file (PR #7084)
 - Use Loris API to view files (PR #7816)
 #### Publication
 - Display all filterable columns in datatable (#7277)
@@ -169,6 +182,7 @@ candidates where a NULL value is found. (PR #7095)
 - New tool `populate_visits.php` to backpopulate visits from the `config.xml`, 
 `session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
+- Fixes a bug in the way that the data dictionary entries associated to MRI comments were named in the CouchDB database (PR #7082).
 
 ### Clean Up
 - Removal of unused variables and unnecessary branching from `getBattery()` and 
@@ -181,6 +195,7 @@ Visit configurations and their association to projects are now in the database (
 - Removal of references to Reliability module in Raisinbread (PR #6895)
 - Raisinbread visit stage inconsistency changed (PR #6896)
 - HRRT patch sourced to Raisinbread (PR #6897)
+- Improved consistency of RB data: field UploadLocation of table mri_upload now has an appropriate value (PR #7086)
 
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, 
