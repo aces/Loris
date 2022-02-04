@@ -572,9 +572,9 @@ abstract class LorisIntegrationTest extends TestCase
         try {
             $webElement->click();
             $clickException = null;
-        } catch(ElementNotVisibleException $e) {
+        } catch (ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceException $e) {
+        } catch (StaleElementReferenceException $e) {
             $clickException = $e;
         }
 

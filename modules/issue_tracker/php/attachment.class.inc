@@ -112,16 +112,19 @@ class Attachment extends \NDB_Page implements ETagCalculator
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values     = $request->getQueryParams();
-        $user       = \NDB_Factory::singleton()->user();
-        $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $response   = $attachment->setupUploading(
+        $values        = $request->getQueryParams();
+        $user          = \NDB_Factory::singleton()->user();
+        $attachment    = new \LORIS\issue_tracker\UploadHelper();
+        $uploadedFiles = $request->getUploadedFiles();
+        $response      = $attachment->setupUploading(
             $user,
-            $_FILES,
+            $uploadedFiles,
             $values
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
+                ? ['success' => 'upload succeeded']
+                : ['error' => 'upload failed']
         );
     }
 

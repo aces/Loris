@@ -12,7 +12,8 @@
         "psr/http-server-middleware" : "*",
         "laminas/laminas-diactoros" : "^2.5",
         "ext-json": "*",
-        "bjeavons/zxcvbn-php": "^1.0"
+        "bjeavons/zxcvbn-php": "^1.0",
+        "aws/aws-sdk-php": "^3.209"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "^3.5",
@@ -31,5 +32,10 @@
             "LORIS\\": "src/"
         },
         "classmap": ["project/libraries", "php"]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

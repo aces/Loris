@@ -110,7 +110,7 @@ function CSSGrid(props) {
         style.alignSelf = 'stretch';
         return (
             <Card title={value.Title} id={cardID} key={cardID} style={style}
-                cardSize={pSize}>
+                cardSize={pSize} collapsing={value.collapsing}>
             {value.Content}
             </Card>
         );

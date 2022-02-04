@@ -149,12 +149,16 @@ DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Nam
 
 ### Troubleshooting
 
-If you are having issues sourcing RB using the single command above, you can try to 
+ - If you are having issues sourcing RB using the single command above, you can try to 
 use the following comands sequentially. These commands echo the name of the SQL 
 script before running it which helps to identify exactly what SQL statement is failing.
 
-```bash
-for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
-for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
-for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
-```
+   ```bash
+   for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
+   for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
+   for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
+   ```
+
+ - If you are having issues running independent scoring algorithms such as the example `bmi.score`
+file, make sure the scorer file is in the `project/instruments` directory and is exectutable by 
+apache.

@@ -190,16 +190,16 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB    =& \Database::singleton();
         $count = $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, 
-                candidate c, flag f, {$instrument} i 
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
-                AND s.CenterID <> '1' 
-                $this->query_criteria 
-                AND f.Data_entry='Complete' 
+            "SELECT count(s.CandID)  FROM session s,
+                candidate c, flag f, {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                $this->query_criteria
+                AND f.Data_entry='Complete'
                 AND s.Current_stage <> 'Recycling Bin'
-                AND f.Administration='All' 
+                AND f.Administration='All'
                 AND i.CommentID NOT LIKE 'DDE%'",
             $this->query_vars
         );
@@ -247,11 +247,12 @@ class Statistics_Site extends \NDB_Menu
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow(
+            $center = $DB->pselectRow(
                 $sqlRow,
                 ['cid' => $_REQUEST['CenterID']]
             );
-            $centerID = $center['ID'] ?? '';
+
+            $centerID = new \CenterID($center['ID'] ?? '');
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';

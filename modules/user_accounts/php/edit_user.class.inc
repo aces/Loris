@@ -272,14 +272,40 @@ class Edit_User extends \NDB_Form
         // multi-site UPDATE
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
+        $userNewCenterIDs = array_map(
+            function ($val) {
+                return new \CenterID($val);
+            },
+            $values['CenterIDs']
+        );
         if (!$this->isCreatingNewUser()) {
+            // Prevent deletion of rules/sites editor may not have access to edit.
+            if (!$editor->hasPermission('user_accounts_multisite')) {
+                // Collect CenterID(s) of user being modified.
+                $userCenterIDs = $user->getCenterIDs();
+                // Collect CenterID(s) of the editor modifying sites.
+                $editorCenterIDs = $editor->getCenterIDs();
+                // If the editor does not have access to all of the
+                // user's sites the difference between the two arrays
+                // will be the sites we additionally need to add to
+                // the user being modified.
+                $differenceOfCenterIDs = array_diff(
+                    $userCenterIDs,
+                    $editorCenterIDs
+                );
+                $userNewCenterIDs      = array_merge(
+                    array_intersect($userNewCenterIDs, $editorCenterIDs),
+                    $differenceOfCenterIDs
+                );
+            }
+
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($us_curr_sites as $site) {
+            foreach ($userNewCenterIDs as $centerID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
                         "UserID"   => $uid,
-                        "CenterID" => $site,
+                        "CenterID" => $centerID,
                     ]
                 );
             }
@@ -659,8 +685,9 @@ class Edit_User extends \NDB_Form
             // It is an existing user:
             //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
-            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
+        // Account Request Date - always displayed
+        $this->addScoreColumn('account_request_date', 'Account Request Date');
 
         // password
         if ($this->isCreatingNewUser()) {
@@ -1071,7 +1098,6 @@ class Edit_User extends \NDB_Form
                     $errors['UserID_Group']
                         = 'The user name must not exceed 255 characters';
                 }
-
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
@@ -1164,7 +1190,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email_Group']
+            $errors['Email']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
@@ -1192,7 +1218,7 @@ class Edit_User extends \NDB_Form
         if (!empty($values['Email'])) {
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
-                $errors['Email_Group'] = $emailError;
+                $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
                     $errors['__ConfirmEmail'] = 'Email and confirmed email '
@@ -1201,7 +1227,7 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // No email entered: error
-            $errors['Email_Group'] = 'You must enter an email address';
+            $errors['Email'] = 'You must enter an email address';
         }
 
         //======================================

@@ -11,6 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -26,20 +27,12 @@ require_once __DIR__ .
  */
 class NewProfileTestIntegrationTest extends LorisIntegrationTest
 {
-    public $dateTaken  = "#default-panel > div > form >".
-                         " div > div:nth-child(2) > div > div > input";
-    public $dtc        = "#default-panel > div > form >".
-                         " div > div:nth-child(3) > div > div > input";
-    public $edc        = "#default-panel > div > form >".
-                         " div > div:nth-child(4)>div>div:nth-child(1)>div>input";
-    public $edcConfirm = "#default-panel > div > form >".
-                         " div > div:nth-child(4)>div>div:nth-child(2)>div>input";
-    public $sex        = "#default-panel > div > form >".
-                         " div > div:nth-child(5) > div > div > select";
-    public $site       = "#default-panel > div > form >".
-                         " div > div:nth-child(6) > div > div > select";
-    public $btn        = "#default-panel > div > form >".
-                         " div > div:nth-child(9) > div > div > button";
+    public $dateTaken  = "input[name='dobDate']";
+    public $dtc        = "input[name='dobDateConfirm']";
+    public $edc        = "input[name='edcDate']";
+    public $edcConfirm = "input[name='edcDateConfirm']";
+
+    public $btn = "button[name='fire_away']";
     /**
      * Tests that, when loading the new_profile module with all settings
      * enabled, the correct fields all appear in the body.
@@ -79,36 +72,33 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileCreateCandidate(): void
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->setUpConfigSetting("useEDC", "false");
         $this->webDriver->get($this->url . "/new_profile/");
         // send a key to sex
-        $this->webDriver->executescript(
-            "document.querySelector('$this->sex').value='male'"
-        );
-        // send a key to site
-        $this->webDriver->executescript(
-            "document.querySelector('$this->site').value='1'"
-        );
+        $sexElement = $this->safeFindElement(WebDriverBy::Name('sex'));
+        $sexOption  = new WebDriverSelect($sexElement);
+        $sexOption->selectByValue("male");
+        $sexElement = $this->safeFindElement(WebDriverBy::Name('site'));
+        $sexOption  = new WebDriverSelect($sexElement);
+        $sexOption->selectByValue("1");
+        $sexElement = $this->safeFindElement(WebDriverBy::Name('project'));
+        $sexOption  = new WebDriverSelect($sexElement);
+        $sexOption->selectByValue("1");
 
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dateTaken').value='2015-01-01'"
-        );
-        $this->webDriver->executescript(
-            "document.querySelector('$this->dtc').value='2015-01-01'"
-        );
+        $this->safeFindElement(
+            WebDriverBy::cssSelector($this->dateTaken)
+        )->sendKeys("2015-01-01");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector($this->dtc)
+        )->sendKeys("2015-01-01");
+        $this->safeClick(WebDriverBy::cssSelector($this->btn));
 
-        $this->webDriver->executescript(
-            "document.querySelector('$this->btn').click()"
-        );
-        $bodyText = $this->webDriver->executescript(
-            "return document.querySelector('#default-panel').textContent"
-        );
-
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                '#lorisworkspace > fieldset > div > div > p:nth-child(1)'
+            )
+        )->getText();
         $this->assertStringContainsString("New candidate created.", $bodyText);
-        $this->restoreConfigSetting("useEDC");
     }
 
 }

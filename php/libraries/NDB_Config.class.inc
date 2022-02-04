@@ -265,7 +265,7 @@ class NDB_Config
     function getSettingFromDB(string $name, ?int $id = null)
     {
         // These should never come from the DB
-        switch($name) {
+        switch ($name) {
         case 'database':
         case 'sandbox':
         case 'showDatabaseQueries':
@@ -402,7 +402,7 @@ class NDB_Config
             if ($XMLValue !== null) {
                 return $XMLValue;
             }
-        } catch(ConfigurationException $e) {
+        } catch (ConfigurationException $e) {
             // There was no config in the database with this
             // name. It may exist in the XML, so we handle this
             // silently.
