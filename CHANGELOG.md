@@ -51,6 +51,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
+- The imaging uploader now starts automatically if you have the imaging uploader auto-launch set to true and your current upload overwrites an existing file (PR #7084).
+- Script CouchDB_MRI_Importer now computes the correct names the data dictionary entries associated to MRI comments (PR #7082). 
 - Candidate library now allows a null sex in the select() function to accommodate scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
