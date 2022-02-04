@@ -39,6 +39,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Pending accounts in Dashboard now includes DCC users (PR #7054)
+- Subproject filter added to Behavioural QC module (PR #7430)
 - Addition of `changeProject` and `resetProject` helper functions to the `LorisIntegrationTest` class to help test project permissions (PR #6912)
 - Unit tests added for the `NDB_BVL_Instrument`, `NDB_Page`, `NDB_Factory`, `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
 - The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
@@ -49,6 +51,7 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
+- Candidate library now allows a null sex in the select() function to accommodate scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
 - A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
