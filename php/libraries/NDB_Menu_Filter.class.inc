@@ -643,7 +643,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
-        switch($this->format) {
+        switch ($this->format) {
         case 'json':
             return $this->toJSON();
         }

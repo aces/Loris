@@ -104,7 +104,7 @@ foreach ($instruments AS $instrument) {
     foreach ($items AS $item) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
-        switch($bits[0]){
+        switch ($bits[0]) {
         case "testname":
             break;
         case "table":

@@ -37,6 +37,7 @@ class Files extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
+                'document_repository_edit'
             ]
         );
     }
@@ -343,7 +344,7 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        try{
+        try {
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(
                     'application/pdf',

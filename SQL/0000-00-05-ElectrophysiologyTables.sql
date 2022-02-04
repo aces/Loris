@@ -162,9 +162,9 @@ CREATE TABLE `physiological_electrode` (
   `PhysiologicalElectrodeMaterialID`  INT(5)  UNSIGNED DEFAULT NULL,
   `InsertTime`                        TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Name`                              VARCHAR(50)      NOT NULL,
-  `X`                                 DECIMAL(12,6)    NOT NULL,
-  `Y`                                 DECIMAL(12,6)    NOT NULL,
-  `Z`                                 DECIMAL(12,6)    NOT NULL,
+  `X`                                 DECIMAL(12,6)    DEFAULT NULL,
+  `Y`                                 DECIMAL(12,6)    DEFAULT NULL,
+  `Z`                                 DECIMAL(12,6)    DEFAULT NULL,
   `Impedance`                         INT(10)          DEFAULT NULL,
   `FilePath`                          VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalElectrodeID`),
@@ -234,7 +234,9 @@ CREATE TABLE `physiological_annotation_file` (
     `AnnotationFileID`    INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `PhysiologicalFileID` INT(10)      UNSIGNED NOT NULL,
     `FileType`            VARCHAR(20)  NOT NULL,
-    `FilePath`            VARCHAR(255) NOT NULL,
+    `FilePath`            VARCHAR(255),
+    `LastUpdate`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `LastWritten`         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`AnnotationFileID`),
     CONSTRAINT `FK_phys_file_ID`
         FOREIGN KEY (`PhysiologicalFileID`)
@@ -263,6 +265,7 @@ CREATE TABLE `physiological_annotation_archive` (
 CREATE TABLE `physiological_annotation_parameter` (
     `AnnotationParameterID` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
     `AnnotationFileID`      INT(10)      UNSIGNED NOT NULL,
+    `Description`           TEXT         NOT NULL,
     `Sources`               VARCHAR(255),
     `Author`                VARCHAR(255),
     PRIMARY KEY (`AnnotationParameterID`),

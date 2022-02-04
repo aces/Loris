@@ -244,7 +244,7 @@ class Database implements LoggerAwareInterface
             }
             $this->_PDO->query("SELECT 'x'");
             return true;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

@@ -418,7 +418,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         try {
             $candidate = \Candidate::singleton($timePoint->getCandID());
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new LorisException($e->getMessage());
         }
 
@@ -451,7 +451,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "Error running scoring algorithm";
+                print "An error occurred while running the scoring
+                algorithm of instrument ".$this->testName.".";
             }
         }
     }
@@ -1070,7 +1071,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [];
+        $examiners = [
+            '' => ''
+        ];
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $eid => $row) {
                 $name = $row['full_name'];
@@ -1306,7 +1309,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     echo "$rule[0] ";
                 }
 
-                //Handle select multiples who's controllre values are arrays.
+                //Handle select multiples who's controller values are arrays.
 
                 //explicitly cast the controller value as an array
                 if (!is_array($elements[$rule[0]])) {
@@ -1402,12 +1405,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue(string $field)
     {
-        $allValues = $this->getInstanceData();
+        $allValues  = $this->getInstanceData();
+        $dictionary = $this->getDataDictionary();
 
-        if (!array_key_exists($field, $allValues)) {
-            throw new \OutOfBoundsException("Invalid field for instrument");
+        foreach ($dictionary as $item) {
+            // The Field name to compare to in the data dictionary is
+            // prefixed with the testname
+            $dictionaryFieldName = $this->testName."_".$field;
+            if ($dictionaryFieldName === $item->getName()) {
+                return $allValues[$field];
+            }
         }
-        return $allValues[$field];
+        throw new \OutOfBoundsException(
+            "Invalid field $field for instrument $this->testName"
+        );
     }
 
 
@@ -2516,10 +2527,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['TN' => $this->testName]
         );
 
-        $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
-        );
+        $Responses = $this->getInstanceData();
 
         foreach ($tpl_data['questions'] as &$row) {
             if (isset($Responses[$row['SourceField']])) {
@@ -2879,16 +2887,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $req = $request->getParsedBody();
+        $req     = $request->getParsedBody();
+        $success = false;
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
-            $this->save();
+            $success = $this->save();
         }
 
         // Disable form if data entry is complete
         $user      = $request->getAttribute("user");
-        $sessionID = $request->getQueryParams()["sessionID"];
+        $sessionID = $this->getSessionID();
         if ($sessionID !== null) {
-            $timepoint = \Timepoint::singleton(new SessionID($sessionID));
+            $timepoint = \Timepoint::singleton($sessionID);
         }
 
         // create an instrument status object
@@ -2909,6 +2918,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             && $this->DataEntryType !== 'DirectEntry'
         ) {
             $this->freeze();
+        }
+
+        if ($success) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+            $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $pageURL   = !empty($this->page) ? urlencode($this->page) ."/" : "";
+            $url       = $baseURL . "/instruments/" .
+                urlencode($this->testName) . "/" .
+                $pageURL .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
         }
 
         return (new \LORIS\Http\Response())

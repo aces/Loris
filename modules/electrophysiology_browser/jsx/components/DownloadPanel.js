@@ -19,8 +19,13 @@ class DownloadPanel extends Component {
     super(props);
     this.state = {
       downloads: this.props.downloads,
+      physioFileID: this.props.physioFileID,
+      annotationsAction: loris.BaseURL
+          + '/electrophysiology_browser/annotations',
+      outputType: this.props.outputType,
     };
   }
+
 
   /**
    * Renders the React component.
@@ -86,7 +91,15 @@ class DownloadPanel extends Component {
                           >Not Available</a>
                         : <a
                             className='btn btn-primary download col-xs-6'
-                            href={'/mri/jiv/get_file.php?file=' + download.file}
+                            href={this.state.outputType == 'derivative' &&
+                              (download.type ==
+                              'physiological_annotation_files' ||
+                              download.type == 'all_files') ?
+                                this.state.annotationsAction
+                                + '?physioFileID=' + this.state.physioFileID
+                                + '&filePath=' + download.file
+                                : '/mri/jiv/get_file.php?file=' + download.file
+                            }
                             target='_blank'
                             download={this.state.downloads[0].file}
                             style={{

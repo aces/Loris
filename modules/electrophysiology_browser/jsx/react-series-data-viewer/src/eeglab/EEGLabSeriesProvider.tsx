@@ -86,23 +86,25 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
-        const {channelMetadata, shapes, timeInterval, seriesRange} = json;
-        this.store.dispatch(
-          setDatasetMetadata({
-            chunksURL: url,
-            channelMetadata,
-            shapes,
-            timeInterval,
-            seriesRange,
-            limit,
-          })
-        );
-        this.store.dispatch(setChannels(emptyChannels(
-            Math.min(this.props.limit, channelMetadata.length),
-            1
-        )));
-        this.store.dispatch(setDomain(timeInterval));
-        this.store.dispatch(setInterval(timeInterval));
+        if (json) {
+          const {channelMetadata, shapes, timeInterval, seriesRange} = json;
+          this.store.dispatch(
+            setDatasetMetadata({
+              chunksURL: url,
+              channelMetadata,
+              shapes,
+              timeInterval,
+              seriesRange,
+              limit,
+            })
+          );
+          this.store.dispatch(setChannels(emptyChannels(
+              Math.min(this.props.limit, channelMetadata.length),
+              1
+          )));
+          this.store.dispatch(setDomain(timeInterval));
+          this.store.dispatch(setInterval(timeInterval));
+        }
       }
     ).then(() => Promise.race(racers(fetchText, epochsURL)).then((text) => {
         if (!(typeof text.json === 'string'

@@ -32,7 +32,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (38,'imaging_uploader','Imaging Scans',22,'View/Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (39,'acknowledgements_view','Acknowledgee List',1,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (40,'acknowledgements_edit','Acknowledgee List',1,'Edit',2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (41,'dataquery_view','Cross-Modality Data',14,'View/Download',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (41,'dataquery_view','Cross-Modality Data',44,'View/Download',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (42,'genomic_data_manager','Genomic Files',18,'Upload',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (43,'media_write','Candidate Media Files',29,'Edit/Upload/Delete',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (44,'media_read','Candidate Media Files',29,'View/Download',2);

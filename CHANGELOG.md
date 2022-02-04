@@ -17,10 +17,12 @@ changes in the following format: PR #1234***
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Fix public pages with missing title (PR #7121)
 - New data dictionary framework and module (#6936)
+- The Data Query Tool (Beta) is no longer beta and replaces the previous version (PR #7561)
 - LorisInstance class was added to represent an installed LORIS instance (PR #6118)
 - Added ability for scripts to bulk load instrument data (PR #6869)
 - Multiple classes of errors flagged by phan are now fixed (various PRs)
 - A PSR3 compatible logging interface was added (PR #7509)
+- Added support for Amazon S3 (PR #7963)
 
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -37,21 +39,32 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 - Data_entry_completion_status given its own column in flag, and renamed to Required_elements_completed (PR #6876)
 - The default value of the ScannerID field of the mri_protocol table is now NULL instead of 0 (PR #7496).
+- Pending accounts in Dashboard now includes DCC users (PR #7054)
+- Subproject filter added to Behavioural QC module (PR #7430)
+- Addition of `changeProject` and `resetProject` helper functions to the `LorisIntegrationTest` class to help test project permissions (PR #6912)
+- Unit tests added for the `NDB_BVL_Instrument`, `NDB_Page`, `NDB_Factory`, `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
 - The name of a Standard Date field in a LINST instrument must now end with the string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction on the naming format of a Basic Date or MonthYear field. (PR #6923) 
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
 - Addition of new tables to store PET HRRT data (PR #6142)
 - Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
+- Addition of 4 configuration settings for the minc2bids converter (PR #7488)
 
 #### Bug Fixes
 - The default value of the `ScannerID` field of the `mri_protocol` table is now `NULL` instead of `0`. This means that if a protocol is valid on all the study's scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
+- The imaging uploader now starts automatically if you have the imaging uploader auto-launch set to true and your current upload overwrites an existing file (PR #7084).
+- Script CouchDB_MRI_Importer now computes the correct names the data dictionary entries associated to MRI comments (PR #7082). 
+- Candidate library now allows a null sex in the select() function to accommodate scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
 - A LINST instrument Date field name now appears correctly (not truncated) on the instrument if it includes the string `_date`. (PR #6923)
 - A subtest with only static and/or static score fields (i.e. no values to submit) can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
+- When a superuser edits another user, the labels for each permission is correctly displayed (PR #7451) 
 
 ### Modules
+#### DQT
+- The dataquery module has been completely redesigned. (PR #6908)
 #### Help Editor
 - Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
@@ -66,6 +79,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Handle characters that must be urlencoded (such as a space) in the API path for visit labels. (PR #7478)
 - Handle characters that must be urlencoded (such as a space) in the API path for projects. (PR #7463)
 - Documentation was moved into the module docs directory (PR #6151)
+#### BrainBrowser
+- Now uses Loris API to download imaging files (PR #7824)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 - Fix to prevent titles cut off (PR #6731)
@@ -75,12 +90,22 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - This module's API is now described in a Open API Specification file (schema.yml) that can be loaded in the new API Documentation module.
 #### API Documentation (**New Module**)
 - New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
+#### Instruments
+- General help text added for instrument data entry (PR #6902)
+#### Genomic Browser
+- CNV/CPG records added for candidates to view and test the CNV and Methylation tabs in the Genomic Browser (PR #6900)
+#### Configuration
+- Addition of configuration settings for the DICOM to BIDS insertion pipeline (PR #7937)
+- Addition of configuration settings for the MINC to BIDS converter script (PR #7488)
+#### Candidate Profile
+- New integration test class to test project permissions (PR #6912)
 #### Data Dictionary
 - Changed instrument filter to multiselect  (PR #7040)
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
 - Indicate required fields (#6617)
+- Fix to show superuser the labels of each permission when editing a user (PR #7451)
 #### New profile
  - Fix fatal errors on submission. (PR #6822)
 #### Instrument Builder
@@ -88,10 +113,14 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 #### EEG Browser
 - Signal Visualization, Events and Electrode map (PR #7387)
 - Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+- Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
+on the session page to support new annotation features (PR #7345)
+- New integration test class added to this module (PR #6922)
 #### Media
 - Fix to display the file name when editing a file (PR #7381)
 #### Imaging Browser
 - Fix nullable type fatal error (PR #7336)
+- Use Loris API to view files (PR #7816)
 #### Publication
 - Display all filterable columns in datatable (#7277)
 - Fix for file deletion (PR #7284)
@@ -124,10 +153,15 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
 - Removal of the violated_scans_edit permission (PR #6747)
 - Removal for the need of the `VisitLabel` section of the `config.xml` file. All Visit configurations and their association to projects are now in the database (#7663 & #7729)
+- Removal of unused variables and unnecessary branching from `getBattery()` and `getBatteryVerbose()` functions (PR #7167)
+- Removal of references to Reliability module in Raisinbread (PR #6895)
+- Raisinbread visit stage inconsistency changed (PR #6896)
+- HRRT patch sourced to Raisinbread (PR #6897)
 
 ### Notes For Existing Projects
 - New function Candidate::getSubjectForMostRecentVisit replaces Utility::getSubprojectIDUsingCandID, adding ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the getFullName() and getSubtestList() functions thus making entries in the test_names and instrument_subtests tables respectively unnecessary for LINST instruments (PR #7169)
+- The script tools/single_use/remove_publication_users_edit_perm_rel_duplicates.php should be run before upgrading LORIS. 
 - The `Data_entry_completion_status` column of instrument tables has been migrated to its own column in flag, and renamed to `Required_elements_completed`. After script `Set_Required_elements_completed_flag.php` is run, projects will need to delete the `Data_entry_completion_status` column of instrument tables. This can be accomplished by running `Remove_Data_entry_completion_status_instr_column.php`, and then sourcing the patch generated by this script.
 - If `_setDataEntryCompletionStatus`, `_determineDataEntryCompletionStatus`, and/or `updateDataEntryCompletionStatus` are called in any overrides, make sure to replace all instances with their newly named counterparts, `_setRequiredElementsCompletedFlag`, `_determineRequiredElementsCompletedFlag`, `updateRequiredElementsCompletedFlag`
 - Deprecation of `begintable` and `endtable` elements in LINST instruments
@@ -171,6 +205,7 @@ database (PR #5260)
 - Fix to prevent help boxes to float over the page content when scrolling (PR #6721)
 
 ### Modules 
+
 #### Candidate Profile
 - New module created to provide dashboard of a single candidate's data across all modules. (Various PRs)
 

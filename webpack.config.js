@@ -260,14 +260,6 @@ const config = [
   lorisModule('data_release', [
     'dataReleaseIndex',
   ]),
-  lorisModule('dataquery', [
-    'react.app',
-    'react.fieldselector',
-    'react.filterBuilder',
-    'react.paginator',
-    'react.sidebar',
-    'react.tabs',
-  ]),
   lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [
     'components/expansionpanels',
