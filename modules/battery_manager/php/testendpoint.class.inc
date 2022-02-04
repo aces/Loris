@@ -29,7 +29,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class TestEndpoint implements RequestHandlerInterface
+class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
 
     /**
@@ -104,7 +104,7 @@ class TestEndpoint implements RequestHandlerInterface
         $this->user = $request->getAttribute('user');
         $method     = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return $this->_getInstances();
         case 'POST':
@@ -121,7 +121,7 @@ class TestEndpoint implements RequestHandlerInterface
      */
     private function _getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new TestProvisioner();
+        $provisioner = new TestProvisioner($this->loris);
 
         if ($this->user->hasPermission('access_all_profiles') == false) {
             $provisioner = $provisioner->filter(
@@ -142,7 +142,7 @@ class TestEndpoint implements RequestHandlerInterface
     private function _putInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($testArray);
+        $test      = new Test($this->loris, null, $testArray);
         return $this->_saveInstance($test);
     }
 
@@ -156,7 +156,7 @@ class TestEndpoint implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($testArray);
+        $test      = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test);
     }

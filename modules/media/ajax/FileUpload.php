@@ -119,7 +119,7 @@ function uploadFile()
     // If required fields are not set, show an error
     if (empty($_FILES)) {
         showMediaError(
-            "File could not be uploaded successfully. 
+            "File could not be uploaded successfully.
             Please contact the administrator.",
             400
         );
@@ -132,7 +132,10 @@ function uploadFile()
 
     checkDateTaken($dateTaken);
 
-    $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    // urldecode() necessary to decode double quotes encoded automatically
+    // by chrome browsers to avoid XSS attacks
+    $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
@@ -181,12 +184,12 @@ function uploadFile()
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
-            $db->insertOnDuplicateUpdate('media', $query);
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
             $result = $db->pselect(
                 'SELECT ID, CandID, CenterID, ProjectID, Visit_label
-                            from session 
+                            from session
                         where ID=:ID',
                 $qparam
             )[0];
@@ -245,12 +248,23 @@ function getUploadFields()
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
 
+    $lorisinstance = new \LORIS\LorisInstance(
+        $db,
+        $config,
+        [
+            __DIR__ . "/../../../project/modules",
+            __DIR__ . "/../../",
+        ],
+    );
+
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
-    $sessionQuery = "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name
-                      FROM candidate c
+    $sessionQuery = "SELECT
+                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                     FROM candidate c
                       LEFT JOIN session s USING (CandID)
-                      LEFT JOIN flag f ON (s.ID=f.SessionID)";
+                      LEFT JOIN flag f ON (s.ID=f.SessionID)
+                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -269,6 +283,8 @@ function getUploadFields()
     $languageList    = Utility::getLanguageList();
     $startYear       = $config->getSetting('startYear');
     $endYear         = $config->getSetting('endYear');
+
+    $allInstruments = \NDB_BVL_Instrument::getInstrumentNamesList($lorisinstance);
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData = [];
@@ -305,8 +321,11 @@ function getUploadFields()
                 true
             )
         ) {
-            $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
-                = $record["Test_name"];
+            $testname       = $record["Test_name"];
+            $instrumentName = $allInstruments[$testname] ?: $testname;
+
+            $sessionData[$pscid]['instruments'][$visit][$testname]
+                = $instrumentName;
             if (!in_array(
                 $record["Test_name"],
                 $sessionData[$pscid]['instruments']['all'],
@@ -314,11 +333,9 @@ function getUploadFields()
             )
             ) {
                 $sessionData[$pscid]['instruments']['all'][$record["Test_name"]]
-                    = $record["Test_name"];
+                    = $instrumentName;
             }
-
         }
-
     }
 
     // Build media data to be displayed when editing a media file

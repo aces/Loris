@@ -18,6 +18,7 @@ const optimization = {
     }),
   ],
 };
+
 const resolve = {
   alias: {
     util: path.resolve(__dirname, './htdocs/js/util'),
@@ -42,30 +43,53 @@ const resolve = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
   },
-  extensions: ['*', '.js', '.jsx', '.json'],
+  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
 };
 
 const mod = {
-  rules: [
-    {
-      test: /\.(js|jsx)$/,
-      exclude: /node_modules/,
-      use: [
-        {
-          loader: 'babel-loader?cacheDirectory',
-        },
-      ],
-      enforce: 'pre',
-    },
-    {
-      test: /\.css$/,
-      use: [
-        'style-loader',
-        'css-loader',
-      ],
-    },
-  ],
+  rules: [],
 };
+
+// If no compiled chunk.proto found, desactivate compilation
+// on the file importing it to avoid import errors
+// chunk.proto is only required for EEG visualization and requires protoc
+if (!fs.existsSync(
+  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
+  + 'protocol-buffers/chunk_pb.js')
+) {
+  mod.rules.push({
+    test: /react-series-data-viewer\/src\/chunks/,
+    use: 'null-loader',
+  });
+}
+
+mod.rules.push(
+  {
+    test: /\.(jsx?|tsx?)$/,
+    exclude: /node_modules/,
+    use: [
+      {
+        loader: 'babel-loader?cacheDirectory',
+      },
+    ],
+  },
+  {
+    test: /\.css$/,
+    use: [
+      'style-loader',
+      'css-loader',
+    ],
+  },
+  {
+    test: /\.tsx?$/,
+    use: [
+      {
+        loader: 'ts-loader',
+        options: {onlyCompileBundledFiles: true},
+      },
+    ],
+  },
+);
 
 /**
  * Creates a webpack config entry for a LORIS module named
@@ -157,6 +181,13 @@ const config = [
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        files: [
+          'modules/',
+          'jsx/',
+          'jslib/',
+          'htdocs/js/',
+          'webpack.config.js',
+        ],
         cache: true,
       }),
       new CopyPlugin({
@@ -214,12 +245,8 @@ const config = [
     'CandidateParameters',
     'ConsentWidget',
   ]),
-  lorisModule('configuration', ['SubprojectRelations']),
-  lorisModule('conflict_resolver', [
-    'CandidateConflictsWidget',
-    'conflictResolverIndex',
-    'resolvedConflictsIndex',
-  ]),
+  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
+  lorisModule('conflict_resolver', ['conflict_resolver']),
   lorisModule('battery_manager', ['batteryManagerIndex']),
   lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
   lorisModule('behavioural_qc', ['behaviouralQCIndex']),
@@ -232,14 +259,6 @@ const config = [
   lorisModule('datadict', ['dataDictIndex']),
   lorisModule('data_release', [
     'dataReleaseIndex',
-  ]),
-  lorisModule('dataquery', [
-    'react.app',
-    'react.fieldselector',
-    'react.filterBuilder',
-    'react.paginator',
-    'react.sidebar',
-    'react.tabs',
   ]),
   lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [

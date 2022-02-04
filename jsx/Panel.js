@@ -39,7 +39,9 @@ class Panel extends Component {
    * Toggle whether this Panel is displayed as collapsed
    */
   toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
+    if (this.props.collapsing) {
+      this.setState({collapsed: !this.state.collapsed});
+    }
   }
 
   /**
@@ -66,12 +68,17 @@ class Panel extends Component {
       <div
         className="panel-heading"
         onClick={this.toggleCollapsed}
-        data-toggle="collapse"
+        data-toggle={this.props.collapsing ? 'collapse' : null}
         data-target={'#' + this.props.id}
-        style={this.props.collapsing ?
-          {cursor: 'pointer', height: '3em', fontWeight: 'bold'} :
-          {cursor: 'default', height: '3em', fontWeight: 'bold'}
+        data-parent={this.props.parentId ?
+          '#'+this.props.parentId :
+          false
         }
+        style={{
+          cursor: this.props.collapsing ? 'pointer' : 'default',
+          height: '3em',
+          fontWeight: 'bold',
+        }}
       >
         {title}
         {this.props.collapsing ? <span className={glyphClass}/> : ''}
@@ -86,7 +93,7 @@ class Panel extends Component {
         <div id={this.props.id}
              className={this.panelClass}
              role='tabpanel'
-             style={{height: 'calc(100% - 3em)'}}
+             style={this.props.collapsing ? {} : {height: 'calc(100% - 3em)'}}
         >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
@@ -100,6 +107,7 @@ class Panel extends Component {
 
 Panel.propTypes = {
   initCollapsed: PropTypes.bool,
+  parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
@@ -109,6 +117,7 @@ Panel.propTypes = {
 };
 Panel.defaultProps = {
   initCollapsed: false,
+  parentId: null,
   id: 'default-panel',
   height: '100%',
   class: 'panel-primary',

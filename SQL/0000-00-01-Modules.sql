@@ -21,7 +21,6 @@ INSERT INTO modules (Name, Active) VALUES ('create_timepoint', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dashboard', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('data_release', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('datadict', 'Y');
-INSERT INTO modules (Name, Active) VALUES ('dataquery', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dicom_archive', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dictionary', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('document_repository', 'Y');

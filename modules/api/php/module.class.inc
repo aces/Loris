@@ -99,7 +99,7 @@ class Module extends \Module
 
         $handlername = $pathparts[0];
 
-        switch($handlername) {
+        switch ($handlername) {
         case 'candidates':
             $handler = new \LORIS\api\Endpoints\Candidates();
             break;

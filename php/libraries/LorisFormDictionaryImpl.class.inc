@@ -32,6 +32,12 @@ trait LorisFormDictionaryImpl
     public $testName;
 
     /**
+     * Variable from NDB_Page. Must be included in trait
+     * to avoid PhanUndeclaredProperty errors.
+     */
+    protected $lorisinstance;
+
+    /**
      * Recursively extract non-group elements from $elements, and
      * return the dictionary of the items.
      *
@@ -81,7 +87,7 @@ trait LorisFormDictionaryImpl
 
             $t = null;
 
-            switch($element['type']) {
+            switch ($element['type']) {
             case 'select':
                 // The values of the enumeration are the keys of the
                 // options, but when the key is something like "0" or
@@ -146,22 +152,36 @@ trait LorisFormDictionaryImpl
      */
     public function getDataDictionary() : iterable
     {
-        $subtests =$this->getSubtestList();
+        // Create new instance of the same instrument to avoid altering variables
+        // in $this instrument
+        $instrument = \NDB_BVL_Instrument::factory(
+            $this->lorisinstance,
+            $this->testName
+        );
+        $subtests   = array_merge(
+            [
+                ["Name"=>"","Description"=>""]
+            ],
+            $instrument->getSubtestList()
+        );
         foreach ($subtests as $subtest) {
-            $this->page = $subtest['Name'];
+            $instrument->page = $subtest['Name'];
 
             if (method_exists($this, '_setupForm')) {
                 // False positive from phan. We're inside a
                 // method_exists check
                 /* @phan-suppress-next-line PhanUndeclaredMethod */
-                $this->_setupForm();
+                $instrument->_setupForm();
             }
         }
 
-        $formElements = $this->form->toElementArray();
-        $cat          = new Category($this->testName, $this->getFullName());
-        return $this->_getDataDictionaryGroup(
-            $this->testName . "_",
+        $formElements = $instrument->form->toElementArray();
+        $cat          = new Category(
+            $instrument->testName,
+            $instrument->getFullName()
+        );
+        return $instrument->_getDataDictionaryGroup(
+            $instrument->testName . "_",
             $cat,
             $formElements["elements"],
             ''

@@ -104,7 +104,7 @@ class NDB_BVL_Feedback
                     $sessionID,
                     $commentID
                 );
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 unset($feedbackList[$objectName]);
                 throw new Exception(
                     "Could not instantiate feedback object",
@@ -1048,35 +1048,5 @@ class NDB_BVL_Feedback
         $param  = ['StatID' => $statusID];
         $record = $db->pselectOne($query, $param);
         return $record;
-    }
-
-    /**
-     * This function is currently used to check whether or not to render
-     * the bvl_feedback_icon in main.tpl. It checks if the user has the
-     * bvl feedback permission first, if the user has the permissions it
-     * then checks if the user is on the timepoint_list, instrument_list
-     * or on any instrument page.
-     *
-     * Returns false if the user doesn't have the appropriate permissions
-     * or is not on one of the appropriate pages to return bvl_feedback.
-     *
-     * @param string $test_name The name of the test to be checked.
-     *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws Exception
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
-     */
-    static function bvlFeedbackPossible(string $test_name): bool
-    {
-        if (\User::singleton()->hasPermission('bvl_feedback')) {
-            if (($test_name === "timepoint_list")
-                || ($test_name === "instrument_list")
-                || ($test_name === "instruments")
-            ) {
-                return true;
-            }
-        }
-        return false; //returning false when user is not on appropriate study site
     }
 }

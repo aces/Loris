@@ -43,7 +43,7 @@ class TestOptionsEndpoint extends \NDB_Page
     {
         $method = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return new \LORIS\Http\Response\JSON\OK($this->_getOptions());
         }

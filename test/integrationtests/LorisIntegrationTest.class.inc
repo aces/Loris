@@ -61,6 +61,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp(): void
     {
+        // test
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -179,17 +180,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**
@@ -581,9 +572,9 @@ abstract class LorisIntegrationTest extends TestCase
         try {
             $webElement->click();
             $clickException = null;
-        } catch(ElementNotVisibleException $e) {
+        } catch (ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceException $e) {
+        } catch (StaleElementReferenceException $e) {
             $clickException = $e;
         }
 
@@ -717,7 +708,7 @@ abstract class LorisIntegrationTest extends TestCase
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
-        $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $this->safeClick(WebDriverBy::cssSelector("$btn"));
     }
 
     /**

@@ -16,6 +16,8 @@
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
+ini_set('session.use_strict_mode', '1');
+
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'NDB_Config.class.inc';
 require_once 'Smarty_hook.class.inc';
@@ -226,7 +228,7 @@ class DirectDataEntryMainPage
         try {
             $this->initialize();
             $this->display();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->displayError($e);
         }
     }
@@ -257,8 +259,7 @@ class DirectDataEntryMainPage
      */
     function displayError($e)
     {
-        switch($e->getCode())
-        {
+        switch ($e->getCode()) {
         case 404:
             header("HTTP/1.1 404 Not Found");
             break;

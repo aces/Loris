@@ -193,7 +193,15 @@ class ViewSession extends \NDB_Form
                      files.File",
             $args
         );
+
         $this->tpl_data['files'] = [];
+
+        $timePoint = \TimePoint::singleton(
+            new \SessionID($this->sessionID),
+        );
+        $factory   = \NDB_Factory::singleton();
+        $baseurl   = $factory->settings()->getBaseURL();
+
         foreach ($files as $fileRow) {
             $FileObj = new \MRIFile(intval($fileRow['FileID']));
             if (empty($scannerID)) {
@@ -208,18 +216,15 @@ class ViewSession extends \NDB_Form
                 }
             }
 
-            $FullFilename     = $FileObj->getParameter('File') ?? '';
-            $checkPicFilename = $FileObj->getParameter(
-                'check_pic_filename'
-            ) ?? '';
-            $FileID           = intval($fileRow['FileID']);
-            $Filename         = $JivFilename = basename($FullFilename);
-            $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
-            $JivAddress       = str_replace(
-                '_check.jpg',
-                '',
-                $checkPicFilename
-            );
+            $FullFilename = $FileObj->getParameter('File') ?? '';
+            $FileID       = intval($fileRow['FileID']);
+            $Filename     = basename($FullFilename);
+            $APIFile      = $baseurl . "/api/v0.0.3/candidates/"
+                    . $timePoint->getCandID() . "/"
+                    . $timePoint->getVisitLabel()
+                    . "/images/"
+                    . $Filename;
+
             $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
             $Pipeline   = $FileObj->getParameter('Pipeline');
@@ -305,10 +310,8 @@ class ViewSession extends \NDB_Form
             $file   = [
                 'FileID'                     => $FileID,
                 'Filename'                   => $Filename,
-                'CheckPic'                   => $CheckPic,
+                'APIFile'                    => $APIFile,
                 'FullFilename'               => $FullFilename,
-                'JivFilename'                => $JivFilename,
-                'JivAddress'                 => $JivAddress,
                 'New'                        => $New,
                 'Pipeline'                   => $Pipeline,
                 'OutputType'                 => $OutputType,

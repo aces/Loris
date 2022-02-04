@@ -13,9 +13,7 @@ jobs:
             - static
             - unit
             - integration
-            php:
-            - 7.4
-            - 8.0
+            php: ['7.4','8.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -39,8 +37,13 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Change PHP Version in Dockerfile
-      run: sed -i "s/7.4/${{ matrix.php }}/g" Dockerfile.test.php7
-      
+      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
+
+    - name: Install package dependencies
+      run: sudo apt-get install -y protobuf-compiler 
+           && cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+           && protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest

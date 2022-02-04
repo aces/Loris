@@ -37,6 +37,7 @@ class Files extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
+                'document_repository_edit'
             ]
         );
     }
@@ -317,7 +318,7 @@ class Files extends \NDB_Page
                 'No file uploaded'
             );
         }
-        $filename = $uploadedFile->getClientFilename();
+        $filename = urldecode($uploadedFile->getClientFilename());
 
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger($category)) {
@@ -343,8 +344,7 @@ class Files extends \NDB_Page
 
         $targetdir = new \SplFileInfo($path);
 
-        $filename = $uploadedFile->getClientFileName();
-        try{
+        try {
             $uploader = (new \LORIS\FilesUploadHandler($targetdir))
                 ->withPermittedMIMETypes(
                     'application/pdf',
@@ -384,7 +384,7 @@ class Files extends \NDB_Page
         $fileType = pathinfo($filename, PATHINFO_EXTENSION);
 
         // Insert record of this file into the `document_repository` table.
-        $DB->insert(
+        $DB->unsafeInsertOnDuplicateUpdate(
             'document_repository',
             [
                 'File_category' => $category,
