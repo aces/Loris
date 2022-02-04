@@ -37,7 +37,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentBuilderDoespageLoad()
     {
         $this->safeGet($this->url . "/instrument_builder/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Instrument Builder", $bodyText);
     }
@@ -51,7 +51,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["instrument_builder"]);
         $this->safeGet($this->url . "/instrument_builder/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Instrument Builder", $bodyText);
         $this->resetPermissions();

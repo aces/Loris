@@ -83,7 +83,7 @@ class Permissions extends \NDB_Page
         if (empty($action)) {
             return new \LORIS\Http\Response\JSON\BadRequest("Missing action");
         }
-        switch($action) {
+        switch ($action) {
         case 'add':
             return $this->_addPermission($request);
         case 'manage':

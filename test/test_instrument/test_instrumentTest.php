@@ -94,7 +94,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     private function _testContent($content)
     {
         $this->_landing();
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#page"))
             ->getText();
         $this->assertStringContainsString($content, $bodyText);
     }
@@ -212,8 +212,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         );
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("No");
-
-        sleep(1);
 
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")

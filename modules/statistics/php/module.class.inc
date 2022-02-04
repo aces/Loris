@@ -70,7 +70,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
             $config  = $factory->config();

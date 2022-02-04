@@ -30,16 +30,26 @@ class Test implements
     \LORIS\StudyEntities\MultiSiteHaver
 {
     public $row;
+    private ?\CenterID $center;
+    private \LORIS\LorisInstance $loris;
 
     /**
      * Create a new Test Instance.
      *
-     * @param array $row The row (in the same format as \Database::pselectRow returns
-     *                   returns
+     * @param \LORIS\LorisInstance $loris  The LORIS instance with the test
+     * @param ?\CenterID           $center The site this test is
+                                           applied at, if applicable
+     * @param array                $row    The row (in the same format as
+                                           \Database::pselectRow returns
      */
-    public function __construct(array $row)
-    {
-        $this->row = $row;
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        ?\CenterID $center,
+        array $row
+    ) {
+        $this->row    = $row;
+        $this->center = $center;
+        $this->loris  = $loris;
     }
 
     /**
@@ -56,14 +66,19 @@ class Test implements
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return array The CenterIDs
+     * @return \CenterID[] array The CenterIDs
      */
     public function getCenterIDs() : array
     {
-        $siteList = array_keys(\Utility::getSiteList(false));
-        $cids     = isset($this->row['centerId']) ? [$this->row['centerId']]
-            : $siteList;
-        return $cids;
+        if ($this->center !== null) {
+            return [$this->center];
+        }
+        return array_map(
+            function ($site) {
+                return $site->getCenterID();
+            },
+            $this->loris->getAllSites()
+        );
     }
 
     /**

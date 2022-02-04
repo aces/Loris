@@ -84,7 +84,7 @@ class FieldsSidebar extends Component {
     if ((!this.props.Fields || this.props.Fields.length === 0)
       &&
       (!this.props.Criteria || Object.keys(this.props.Criteria).length === 0)) {
-      return <div/>;
+      return null;
     }
 
     let fieldList = [];
@@ -92,13 +92,21 @@ class FieldsSidebar extends Component {
       for (let i = this.props.Fields.length - 1; i >= 0; i--) {
         let fieldInfo = this.props.Fields[i].split(',');
         fieldList.push(
-          <div className='list-group-item row'
-               style={{overflowX: 'scroll'}}
+          <div className='list-group-item row hideScrollbar'
+               style={{
+                 overflowX: 'scroll',
+                 color: '#fff',
+                 backgroundColor: '#4c8ad5',
+               }}
                key={this.props.Fields[i]}>
-            <h4 className='list-group-item-heading col-xs-12'>
+            <h4 className='list-group-item-heading col-xs-12'
+                style={{color: '#fff'}}
+            >
               {fieldInfo[0]}
             </h4>
-            <span className='col-xs-12'>{fieldInfo[1]}</span>
+            <span className='col-xs-12'>
+              {fieldInfo[1]}
+            </span>
           </div>
         );
       }

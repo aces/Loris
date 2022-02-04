@@ -775,7 +775,7 @@ class NDB_Page implements RequestHandlerInterface
     function display()
     {
         $this->logger->debug("Rendering page via display function");
-        switch($this->format) {
+        switch ($this->format) {
         case 'json':
             return $this->toJSON();
         }
