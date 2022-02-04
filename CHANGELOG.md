@@ -47,6 +47,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - New Data Dictionary framework to better describe data (PR #6936)
+- Addition of new tables to store PET HRRT data (PR #6142)
+- Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
 - Addition of 4 configuration settings for the minc2bids converter (PR #7488)
 
 #### Bug Fixes
