@@ -30,6 +30,9 @@ export type Epoch = {
   label: string,
   comment?: string,
   channels: number[] | "all",
+  // ##################### EEGNET OVERRIDE START ################## //
+  annotationInstanceID?: number,
+  // ##################### EEGNET OVERRIDE END ################## //
 };
 
 // ##################### EEGNET OVERRIDE START ################## //
@@ -38,9 +41,9 @@ export type AnnotationMetadata = {
   labels: any[],
   metadata: any[]
 }
-// ##################### EEGNET OVERRIDE END ################## //
 
-export type RightPanel = 'annotationForm' | 'epochList' | null;
+export type RightPanel = 'annotationForm' | 'eventList' | 'annotationList' | null;
+// ##################### EEGNET OVERRIDE END ################## //
 
 export type Electrode = {
   name: string,

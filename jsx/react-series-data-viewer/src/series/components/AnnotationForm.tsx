@@ -8,6 +8,9 @@ import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
 // ##################### EEGNET OVERRIDE START ################## //
 import {setEpochs} from '../store/state/dataset';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
+import {NumericElement, SelectElement, TextareaElement} from './Form';
+import swal from 'sweetalert2';
 // ##################### EEGNET OVERRIDE END ################## //
 
 type CProps = {
@@ -18,6 +21,8 @@ type CProps = {
   setRightPanel: (_: RightPanel) => void,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs: (_: EpochType[]) => void,
+  currentAnnotation: EpochType,
+  setCurrentAnnotation: (_: EpochType) => void,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
@@ -32,6 +37,8 @@ const AnnotationForm = ({
   setRightPanel,
   // ##################### EEGNET OVERRIDE START ################## //
   setEpochs,
+  currentAnnotation,
+  setCurrentAnnotation,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch,
   updateActiveEpoch,
@@ -40,11 +47,13 @@ const AnnotationForm = ({
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   let [event, setEvent] = useState([startEvent, endEvent]);
   // ##################### EEGNET OVERRIDE START ################## //
-  let [label, setLabel] = useState('');
-  let [comment, setComment] = useState('');
+  let [label, setLabel] = useState(currentAnnotation ? currentAnnotation.label : null);
+  let [comment, setComment] = useState(currentAnnotation ? currentAnnotation.comment : '');
   let [isSubmitted, setIsSubmitted] = useState(false);
+  let [isDeleted, setIsDeleted] = useState(false);
   // ##################### EEGNET OVERRIDE END ################## //
 
+  // Time Selection
   useEffect(() => {
     const [startEvent = '', endEvent = ''] = timeSelection || [];
     setEvent([startEvent, endEvent]);
@@ -59,16 +68,65 @@ const AnnotationForm = ({
   );
 
    // ##################### EEGNET OVERRIDE START ################## //
-  const handleLabelChange = (e) => {
-    setLabel(e.target.value);
+  const handleStartTimeChange = (id, val) => {
+    const value = parseInt(val);
+    setEvent([value, event[1]]);
+
+    if (validate([value, event[1]])) {
+      let endTime = event[1];
+      if (typeof endTime === 'string'){
+        endTime = parseInt(endTime);
+      }
+      setTimeSelection(
+        [
+          value || null,
+          endTime || null,
+        ]
+      );
+    }
+  }
+
+  const handleEndTimeChange = (name, val) => {
+    const value = parseInt(val);
+    setEvent([event[0], value]);
+
+    if (validate([event[0], value])) {
+      let startTime = event[0];
+      if (typeof startTime === 'string'){
+        startTime = parseInt(startTime);
+      }
+      setTimeSelection(
+        [
+          startTime || null,
+          value
+        ]
+      );
+    }
+  }
+  
+  const handleLabelChange = (name, value) => {
+    setLabel(value);
   };
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
+  const handleCommentChange = (name, value) => {
+    setComment(value);
   };
   const handleSubmit = () => {
     setIsSubmitted(true);
   };
 
+  const handleReset = () => {
+    // Clear all fields
+    setEvent(['', '']);
+    setTimeSelection([null, null]);
+    setLabel('');
+    setComment('');
+  }
+
+  const handleDelete = () => {
+    setIsDeleted(true);
+  }
+
+  // Submit
   useEffect(() => {
     // only proceed if isSubmitted === true
     if (!isSubmitted) {
@@ -76,8 +134,12 @@ const AnnotationForm = ({
     }
 
     // Validate inputs
-    if (!label || !comment || !event[0] || !event[1]) {
-      // TODO: Display message
+    if (!label || !event[0] || !event[1]) {
+      swal.fire(
+        'Warning',
+        'Please fill out all required fields',
+        'warning'
+      );
       setIsSubmitted(false);
       return;
     }
@@ -100,18 +162,17 @@ const AnnotationForm = ({
     const sessionID = window.location.pathname.split('/')[3];
 
     // set body
-    // instance_id = null for new annotations, 
-    // should be updated when we implement annotation editing
+    // instance_id = null for new annotations
     const body = {
       sessionID: sessionID,
-      instance_id: null,
+      instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
       instance: {
         onset: startTime,
         duration: duration,
         label_name: label,
         label_description: label,
         channels: 'all',
-        description: comment,
+        description: comment
       },
     };
 
@@ -121,7 +182,8 @@ const AnnotationForm = ({
       type: 'Annotation',
       label: label,
       comment: comment,
-      channels: 'all'
+      channels: 'all',
+      annotationInstanceID: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
     };
 
     fetch(url, {
@@ -131,6 +193,11 @@ const AnnotationForm = ({
     }).then(response => {
       if (response.ok) {
         setIsSubmitted(false);
+
+        // if in edit mode, remove old annotation instance
+        if (currentAnnotation !== null) {
+          epochs.splice(epochs.indexOf(currentAnnotation), 1);
+        }
         epochs.push(newAnnotation);
         setEpochs(
           epochs
@@ -138,12 +205,131 @@ const AnnotationForm = ({
             return a.onset - b.onset;
           })
         );
+
+        // Reset Form
+        handleReset();
+        
+        // Disaply success message
+        const message = currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!';
+        swal.fire(
+          'Success',
+          message,
+          'success'
+        );
+
+        // If in edit mode, switch back to annotation panel
+        if (currentAnnotation !== null) {
+          setCurrentAnnotation(null);
+          setRightPanel('annotationList');
+        }
       }
     }).catch(error => {
       console.log(error);
+      // Display error message
+      swal.fire(
+        'Error',
+        'Something went wrong!',
+        'error'
+      );
     }) 
   }, [isSubmitted]);
-   // ##################### EEGNET OVERRIDE END ################## //
+
+  // Delete
+  useEffect(() => {
+    if (isDeleted) {
+      const url = window.location.origin + '/electrophysiology_browser/annotations/';
+      const sessionID = window.location.pathname.split('/')[3];
+      const body = {
+        sessionID: sessionID,
+        instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
+      };
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        // if isConfirmed
+        if (result.value) {
+          fetch(url, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            body: JSON.stringify(body),
+          }).then(response => {
+            if (response.ok) {
+              setIsDeleted(false);
+      
+              epochs.splice(epochs.indexOf(currentAnnotation), 1);
+              setEpochs(
+                epochs
+                  .sort(function (a, b) {
+                    return a.onset - b.onset;
+                  })
+              );
+      
+              // Reset Form
+              handleReset();
+              
+              // Disaply success message
+              swal.fire(
+                'Success',
+                'Annotation Deleted!',
+                'success'
+              );
+      
+              // If in edit mode, switch back to annotation panel
+              if (currentAnnotation !== null) {
+                setCurrentAnnotation(null);
+                setRightPanel('annotationList');
+              }
+            }
+          }).catch(error => {
+            console.log(error);
+            // Display error message
+            swal.fire(
+              'Error',
+              'Something went wrong!',
+              'error'
+            );
+          });
+        } else {
+          setIsDeleted(false);
+        }
+      });
+    }
+  }, [isDeleted]);
+
+  const labelOptions = {
+    'manual_exclusion': 'Exclusion Flag - Manual',
+    'ambiguous': 'Ambiguous',
+    'artifact': 'Artifact',
+    'motion': 'Motion',
+    'flux_jump': 'Flux jump',
+    'line_noise': 'Line Noise',
+    'muscle': 'Muscle',
+    'epilepsy_interictal': 'Epilepsy interictal',
+    'epilepsy_preictal': 'Epilepsy preictal',
+    'epilepsy_seizure': 'Epilepsy seizure',
+    'epilepsy_postictal': 'Epilepsy postictal',
+    'epileptiform': 'Epileptiform',
+    'epileptiform_single': 'Epileptiform single',
+    'epileptiform_run': 'Epileptiform run',
+    'eye_blink': 'Eye blink',
+    'eye_movement': 'Eye movement',
+    'eye_fixation': 'Eye fixation',
+    'sleep_N1': 'Sleep N1',
+    'sleep_N2': 'Sleep N2',
+    'sleep_N3': 'Sleep N3',
+    'sleep_REM': 'Sleep REM',
+    'sleep_wake': 'Sleep wake',
+    'sleep_spindle': 'Sleep spindle',
+    'sleep_k-complex': 'Sleep k-complex',
+    'scorelabeled': 'Score labeled'
+  }
 
   return (
     <div
@@ -158,124 +344,76 @@ const AnnotationForm = ({
             justifyContent: 'space-between',
           }}
       >
-        New Annotation
+        {currentAnnotation ? 'Edit' : 'Add'} Annotation
         <i
           className='glyphicon glyphicon-remove'
           style={{cursor: 'pointer'}}
           onClick={() => {
-            setRightPanel(null);
+            setRightPanel('annotationList');
+            setCurrentAnnotation(null);
+            setTimeSelection(null);
           }}
         ></i>
       </div>
       <div className="panel-body">
         <div className="form-row no-gutters">
-          <div className="form-group">
-            <label htmlFor="start-time">Start time</label>
-            <input
-              type="number"
-              className="form-control input-sm"
-              id="start-time"
-              placeholder="Start time"
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                setEvent([value, event[1]]);
-
-                if (validate([value, event[1]])) {
-                  let endTime = event[1];
-                  if (typeof endTime === 'string'){
-                    endTime = parseInt(endTime);
-                  }
-                  setTimeSelection(
-                    [
-                      value || null,
-                      endTime || null,
-                    ]
-                  );
-                }
-              }}
-              value={event[0]}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="end-time">End time</label>
-            <input
-              type="number"
-              className="form-control input-sm"
+          <NumericElement
+            name="start-time"
+            id="start-time"
+            min="0"
+            label="Start Time"
+            value={event[0]}
+            required={true}
+            onUserInput={handleStartTimeChange}
+          />
+          <NumericElement
+              name="end-time"
               id="end-time"
-              placeholder="End time"
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                setEvent([event[0], value]);
-
-                if (validate([event[0], value])) {
-                  let startTime = event[0];
-                  if (typeof startTime === 'string'){
-                    startTime = parseInt(startTime);
-                  }
-                  setTimeSelection(
-                    [
-                      startTime || null,
-                      value
-                    ]
-                  );
-                }
-              }}
+              min="0"
+              label="End Time"
               value={event[1]}
-            />
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="label">Label</label>
-          <select className="form-control input-sm" id="label" onChange={handleLabelChange}>
-            <option></option>
-            <option>Exclusion Flag - Manual</option>
-            <option>Ambiguous</option>
-            <option>Artifact</option>
-            <option>Motion</option>
-            <option>Flux jump</option>
-            <option>Line noise</option>
-            <option>Muscle</option>
-            <option>Epilepsy interictal</option>
-            <option>Epilepsy preictal</option>
-            <option>Epilepsy seizure</option>
-            <option>Epilepsy postictal</option>
-            <option>Epileptiform</option>
-            <option>Epileptiform single</option>
-            <option>Epileptiform run</option>
-            <option>Eye blink</option>
-            <option>Eye movement</option>
-            <option>Eye fixation</option>
-            <option>Sleep N1</option>
-            <option>Sleep N2</option>
-            <option>Sleep N3</option>
-            <option>Sleep REM</option>
-            <option>Sleep wake</option>
-            <option>Sleep spindle</option>
-            <option>Sleep k-complex</option>
-            <option>Score labeled</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="comment">Comment</label>
-          <textarea
-            className="form-control"
+              required={true}
+              onUserInput={handleEndTimeChange}
+          />
+          <SelectElement
+            name="label"
+            id="label"
+            label="Label"
+            value={label}
+            options={labelOptions}
+            required={true}
+            onUserInput={handleLabelChange}
+          />
+          <TextareaElement
+            name="comment"
             id="comment"
-            rows={3}
-            onChange={handleCommentChange}
-          ></textarea>
+            label="Comment"
+            value={comment}
+            onUserInput={handleCommentChange}
+          />
+          <button type="submit" disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary btn-xs">
+            Submit
+          </button>
+          <button type="reset" onClick={handleReset} className="btn btn-primary btn-xs">
+            Clear
+          </button>
+          {currentAnnotation &&
+            <button type="button" onClick={handleDelete} className="btn btn-primary btn-xs">
+              Delete
+            </button>
+          }
         </div>
-        <button type="submit" disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary btn-xs">
-          Submit
-        </button>
       </div>
     </div>
   );
 };
+// ##################### EEGNET OVERRIDE END ################## //
 
 AnnotationForm.defaultProps = {
   timeSelection: null,
   epochs: [],
   filteredEpochs: [],
+  currentAnnotation: null,
 };
 
 export default connect(
@@ -283,6 +421,9 @@ export default connect(
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
+    // ##################### EEGNET OVERRIDE START ################## //
+    currentAnnotation: state.currentAnnotation,
+    // ##################### EEGNET OVERRIDE END ################## //
     interval: state.bounds.interval,
   }),
   (dispatch: (any) => void) => ({
@@ -306,6 +447,10 @@ export default connect(
     setEpochs: R.compose(
       dispatch,
       setEpochs
+    ),
+    setCurrentAnnotation: R.compose(
+      dispatch,
+      setCurrentAnnotation
     ),
     // ##################### EEGNET OVERRIDE END ################## //
   })

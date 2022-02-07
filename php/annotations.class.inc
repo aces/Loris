@@ -84,22 +84,36 @@ class Annotations extends \NDB_Page
             );
         case 'DELETE':
             // ##################### EEGNET OVERRIDE START ################## //
-            $parameters = $request->getQueryParams();
+            $parameters = json_decode((string) $request->getBody(), true);
             // ##################### EEGNET OVERRIDE END ################## //
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
-            if (!isset($parameters['physioFileID'])
+            // ##################### EEGNET OVERRIDE START ################## //
+            if (!isset($parameters['sessionID'])
+            // ##################### EEGNET OVERRIDE END ################## //
                 || !isset($parameters['instance_id'])
             ) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
-                ->delete($parameters['instance_id']);
+            // ##################### EEGNET OVERRIDE START ################## //
+            $physioFileID = $db->pselectOne(
+                'SELECT PhysiologicalFileID
+                    FROM physiological_file
+                    WHERE SessionID=:SID',
+                ['SID' => $parameters['sessionID']]
+            );
 
+            if (!isset($physioFileID)) {
+                return (new \LORIS\Http\Response\JSON\BadRequest());
+            }
+
+            (new ElectrophysioAnnotations(intval($physioFileID)))
+                ->delete((int) $parameters['instance_id']);
+            // ##################### EEGNET OVERRIDE END ################## //
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
             // ##################### EEGNET OVERRIDE START ################## //
@@ -140,8 +154,9 @@ class Annotations extends \NDB_Page
                 'sources' => 'EEGNet LORIS',
                 'author' => $user->getFullname()
             ];
+            
+            $instance_id   = (int) $parameters['instance_id'] ?? null;
             // ##################### EEGNET OVERRIDE END ################## //
-            $instance_id   = $parameters['instance_id'] ?? null;
             $parameter_id  = $parameters['parameter_id'] ?? null;
 
             // ##################### EEGNET OVERRIDE START ################## //

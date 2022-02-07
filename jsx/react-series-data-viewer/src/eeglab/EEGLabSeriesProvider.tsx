@@ -133,6 +133,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
               label: label,
               comment: null,
               channels: 'all',
+              annotationInstanceID: null,
             }
           });
       }).then(events => {
@@ -141,14 +142,15 @@ class EEGLabSeriesProvider extends Component<CProps> {
           const label = annotations.labels
             .find(label =>
               label.AnnotationLabelID == instance.AnnotationLabelID
-            ).LabelDescription;
+            ).LabelName;
           epochs.push({
             onset: parseFloat(instance.Onset),
             duration: parseFloat(instance.Duration),
             type: 'Annotation',
             label: label,
-            comment: null,
+            comment: instance.Description,
             channels: 'all',
+            annotationInstanceID: instance.AnnotationInstanceID,
           });
         });
         return epochs;
