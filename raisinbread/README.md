@@ -90,7 +90,7 @@ some configurations are necessary.
 3. Change the values of the `Config` table of the SQL database to reflect the 
 correct `host` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
-`projects/instruments/` directory
+`project/instruments/` directory
 
 > The password of the `admin` user on the RB database is `demo20!7`
 
