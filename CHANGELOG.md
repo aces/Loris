@@ -49,7 +49,7 @@ as a disabled option. (PR #7306)
 - A `LorisInstance` class was added to represent an installed LORIS instance (PR #6118)
 - Validation for `DateElement` (JS). (PR #7266)
 - Session `Current_stage` default value changed for `Not Started` (PR #7102)
-- Permissions were reorganized and categorized in the user_accounts module (PR #7327)
+- Permissions were reorganized and categorized in the user accounts module (PR #7327)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, 
 and `mri_violations_log`. `EchoTime` is necessary to distiguish MINC files for 
 multi-echo aquisitions (PR #7515).
