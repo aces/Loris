@@ -66,7 +66,7 @@ can be saved with no errors so that the instrument scoring script can be called.
 displayed (PR #7451) 
 - The imaging insertion pipeline (LORIS-MRI scripts) now starts automatically if you have the imaging uploader 
 auto-launch set to `true` and your current upload overwrites an existing file (PR #7084).
-- Script CouchDB_MRI_Importer now computes the correct names the data dictionary 
+- Script `CouchDB_MRI_Importer` now computes the correct names from the data dictionary 
 entries associated to MRI comments (PR #7082). 
 - Candidate library now allows a null sex in the select() function to accommodate 
 scanner candidates. This prevents an error from being thrown in the candidate parameters module. (PR #7058)
