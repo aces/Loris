@@ -35,7 +35,7 @@ only available select option (PR #6156)
 `User`, and `UserPermissions` libraries (PR #6819, PR #6804, PR #6776, PR #6765)
 - The name of a Standard Date field in a LINST instrument must now end with the 
 string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction 
-on the naming format of a Basic Date or MonthYear field. (PR #6923) 
+on the naming format of a Basic Date or `MonthYear` field. (PR #6923) 
 - React Form Select Element now has the ability to set an option in the element 
 as a disabled option. (PR #7306)
 - Pending accounts in Dashboard now includes DCC users (PR #7054)
