@@ -1256,13 +1256,13 @@ class ManageSavedQueryRow extends Component {
           </div>
         </td>
         <td>
-          <div className={''}>
-           <button className='btn'
-onClick={()=> { // eslint-disable-line
-this.deleteclick(); // eslint-disable-line
-} // eslint-disable-line
+          <div className={'tableNamesCell'}>
+           <button className='btn btn-danger'
+             onClick={()=> { // eslint-disable-line
+                      this.deleteclick(); // eslint-disable-line
+                           } // eslint-disable-line
 	     } // eslint-disable-line
->
+           >
             delete
           </button>
           </div>
@@ -1339,6 +1339,7 @@ let ManageSavedQueriesTabPane = (props) => {
           <th>Query Name</th>
           <th>Fields</th>
           <th>Filters</th>
+          <th>Delete</th>
         </tr>
         </thead>
         <tbody>
