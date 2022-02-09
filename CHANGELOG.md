@@ -140,7 +140,7 @@ auto-launch set to true and your current upload overwrote an existing file (PR #
 - Fixes to insert JSON instruments (PR #7155)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
-- Update validation to allow NULL Site (For All Sites issues) (#6526)
+- Update validation to allow `NULL` Site (For All Sites issues) (#6526)
 - Fixing redirect and error reporting when creating a new issue (PR #7323)
 - Show inactive users in the list of assignees as a disabled option. If the 
 inactive user had already been previously assigned the issue, the disabled option 
