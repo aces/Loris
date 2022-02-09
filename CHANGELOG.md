@@ -15,7 +15,7 @@ changes in the following format: PR #1234***
   until all data has loaded. (PR #6853)
 - Added support for Amazon S3 (PR #7963)
 - Added ability for scripts to bulk load instrument data (PR #6869)
-- New data dictionary framework and module (#6936)
+- New data dictionary framework and module (PR #6936)
 - New classes to describe a data dictionary (PR #6938)
 
 #### Updates and Improvements
