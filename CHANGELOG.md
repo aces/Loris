@@ -221,6 +221,7 @@ on the naming format of a Basic Date or MonthYear field. (PR #6923)
 examiners that may have been created before bugfix. Make sure to run this script 
 _before_ running the `SQL/New_patches/2021-09-28-Unique_examiners.sql`. (PR #7462)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Refer to instructions for clean up scripts meant to remove unused data in the `SQL/Archive/24.0/Cleanup` directory
 
 
 ### Notes For Developers
