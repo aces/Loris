@@ -105,7 +105,7 @@ interface to inspect and try LORIS modules API.
 #### Conflict Resolver
 - Changes are now saved automatically, one by one. Once a conflict is resolved
 the cell that contains the input field will glow green. It is possible to change
-the resolved conflicts to a new value until the page is refreshed. [(PR #7558)](https://github.com/aces/Loris/pull/7558)
+the resolved conflicts to a new value until the page is refreshed. (PR #7558)
 - This module's API is now described in a Open API Specification file (schema.yml) 
 that can be loaded in the new API Documentation module.
 - Change the display of multi select values from "value1{@}value2" to "value1, value2"
