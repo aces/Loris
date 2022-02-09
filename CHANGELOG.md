@@ -195,7 +195,7 @@ unnecessary for LINST instruments (PR #7169)
 - The script `tools/single_use/remove_publication_users_edit_perm_rel_duplicates.php`
 should be run before upgrading LORIS. 
 - The `Data_entry_completion_status` column of instrument tables has been migrated 
-to its own column in flag, and renamed to `Required_elements_completed`. After script 
+to its own column in the `flag` table, and renamed to `Required_elements_completed`. After script 
 `Set_Required_elements_completed_flag.php` is run, projects will need to delete the 
 `Data_entry_completion_status` column of instrument tables. This can be accomplished 
 by running `Remove_Data_entry_completion_status_instr_column.php`, and then sourcing 
