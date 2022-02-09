@@ -188,7 +188,7 @@ scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 
 ### Notes For Existing Projects
 - New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getSubprojectIDUsingCandID`, 
-adding ability to determine which subproject a candidate belongs to given their most recent visit.
+adding the ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the `getFullName()` and `getSubtestList()`
 functions thus making entries in the `test_names` and `instrument_subtests` tables 
 unnecessary for LINST instruments (PR #7169)
