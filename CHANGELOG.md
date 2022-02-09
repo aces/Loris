@@ -47,7 +47,7 @@ as a disabled option. (PR #7306)
 - A PSR3 compatible logging interface was added (PR #7509)
 - Multiple classes of errors flagged by `phan` are now fixed (multiple PRs)
 - A `LorisInstance` class was added to represent an installed LORIS instance (PR #6118)
-- Validation for DateElement (JS). (PR #7266)
+- Validation for `DateElement` (JS). (PR #7266)
 - Session Current_stage default value changed for Not Started (PR #7102)
 - Permissions were reorganized and categorized in the user_accounts module (PR #7327)
 - The `EchoTime` field has been added to the following tables: `MRICandidateErrors`, 
