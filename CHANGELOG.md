@@ -213,7 +213,7 @@ Make sure the visits displayed after these changes are what you expect. (#7663 &
 - There is a new abstract `getDataDictionary()` function in the instrument class 
 for the new data dictionary framework. This is already implemented for LINST instruments, 
 and existing instruments using `LorisForm` can use the `\LorisFormDictionaryImpl` 
-trait to extract it in the same way as `lorisform_parser.php` did for the old datadict module.
+trait to extract it in the same way as `lorisform_parser.php` did for the old `datadict` module.
 - The name of a Standard Date field in a LINST instrument must now end with the 
 string `_date`. Otherwise, a LORIS exception is thrown. There is no restriction 
 on the naming format of a Basic Date or MonthYear field. (PR #6923) 
