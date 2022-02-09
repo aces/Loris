@@ -64,7 +64,7 @@ instrument if it includes the string `_date`. (PR #6923)
 can be saved with no errors so that the instrument scoring script can be called. (PR #7124)
 - When a superuser edits another user, the labels for each permission is correctly 
 displayed (PR #7451) 
-- The imaging uploader now starts automatically if you have the imaging uploader 
+- The imaging insertion pipeline (LORIS-MRI scripts) now starts automatically if you have the imaging uploader 
 auto-launch set to true and your current upload overwrites an existing file (PR #7084).
 - Script CouchDB_MRI_Importer now computes the correct names the data dictionary 
 entries associated to MRI comments (PR #7082). 
