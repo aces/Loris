@@ -228,6 +228,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             ]
         );
         // Verify the status code
+        var_dump((string )$response_new->getBody());
         $this->assertEquals(201, $response_new->getStatusCode());
         // Verify the endpoint has a body
         $body = $response_new->getBody();
