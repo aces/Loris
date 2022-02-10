@@ -46,7 +46,7 @@ class ProjectID extends ValidatableIdentifier implements \JsonSerializable
      *
      * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return $this->value;
     }

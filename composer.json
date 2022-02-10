@@ -32,5 +32,10 @@
             "LORIS\\": "src/"
         },
         "classmap": ["project/libraries", "php"]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
