@@ -34,6 +34,8 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, LoggerAwareInt
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+        return $handler->handle($request);
+        /*
         // Catch PHP Fatal errors that aren't exceptions such as type errors
         // or out of memory errors
         register_shutdown_function(
@@ -52,10 +54,10 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, LoggerAwareInt
 
         try {
             return $handler->handle($request);
-            /* The order of these catch statements matter and should go from
-             * most to least specific. Otherwise all Exceptions will be caught
-             * as their more generic parent class which reduces precision.
-             */
+            // The order of these catch statements matter and should go from
+            // most to least specific. Otherwise all Exceptions will be caught
+            // as their more generic parent class which reduces precision.
+            // /
         } catch (\NotFound $e) {
             $this->logger->notice($e->getMessage() . $e->getTraceAsString());
             $status = 404;
@@ -85,5 +87,6 @@ class ExceptionHandlingMiddleware implements MiddlewareInterface, LoggerAwareInt
                 )
             )
         );
+        */
     }
 }
