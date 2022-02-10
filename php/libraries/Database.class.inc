@@ -459,7 +459,7 @@ class Database implements LoggerAwareInterface
      */
     public function getLastInsertId(): string
     {
-        return $this->lastInsertID;
+        return strval($this->lastInsertID);
     }
 
     /**
@@ -679,7 +679,7 @@ class Database implements LoggerAwareInterface
             );
         }
 
-        $this->lastInsertID = $this->_PDO->lastInsertId();
+        $this->lastInsertID = strval($this->_PDO->lastInsertId());
     }
 
     /**
@@ -757,7 +757,15 @@ class Database implements LoggerAwareInterface
     {
         $this->_printQuery($query, $params);
         $stmt = $this->prepare($query);
-        return $this->execute($stmt, $params);
+
+	$results = $this->execute($stmt, $params);
+
+	foreach($results as $row) {
+            foreach ($row as $key=>$val) {
+                $row[$key] = strval($val);
+	    }
+        }
+        return $results;
     }
 
     /**
@@ -830,7 +838,10 @@ class Database implements LoggerAwareInterface
             }
 
             // If you get here, we just need to build the new array
-            $filteredResult[$row[$uniqueKey]] = $row;
+	    foreach ($rows[0] as $key=>$val) {
+                $rows[0][$key] = strval($val);
+            }
+            $filteredResult[strval($row[$uniqueKey])] = $row;
         }
 
         return $filteredResult;
@@ -859,7 +870,13 @@ class Database implements LoggerAwareInterface
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
         }
-        return $rows[0] ?? null;
+        if (count($rows) == 0) {
+            return null;
+        }
+        foreach ($rows[0] as $key=>$val) {
+            $rows[0][$key] = strval($val);
+        }
+        return $rows[0];
     }
 
     /**
@@ -892,7 +909,7 @@ class Database implements LoggerAwareInterface
             }
             // Note: reset() rewinds array's internal pointer to the first element
             // and returns the value of the first array element.
-            $result[$k] =reset($row);
+            $result[strval($k)] = strval(reset($row));
         }
         return $result;
     }
@@ -966,13 +983,13 @@ class Database implements LoggerAwareInterface
             // Store the value of the key for this specific row then unset that
             // value from the $row array so that the only element remaining is
             // the column desired and its value for this row
-            $uniqueKeyValue = $row[$uniqueKey];
+            $uniqueKeyValue = strval($row[$uniqueKey]);
             unset($row[$uniqueKey]);
 
             // Note: reset() rewinds array's internal pointer to the first element
             // and returns the value of the first array element, in this case the
             // desired column value
-            $filteredResult[$uniqueKeyValue] = reset($row);
+            $filteredResult[$uniqueKeyValue] = strval(reset($row));
         }
 
         return $filteredResult;
@@ -997,7 +1014,7 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        return strval($result);
     }
 
     /**
@@ -1026,7 +1043,7 @@ class Database implements LoggerAwareInterface
             return null;
         }
 
-        return $result;
+        return intval($result);
     }
 
     /**
