@@ -289,6 +289,7 @@ class SiteIDGenerator extends IdentifierGenerator
                 'Too many values found for config setting: ' . $setting
             );
         }
+
         $val = array_pop($seqAttributes);
         if ($val === null) {
             return null;
