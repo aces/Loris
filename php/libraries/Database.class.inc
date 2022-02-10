@@ -725,7 +725,13 @@ class Database implements LoggerAwareInterface
             return [];
         }
 
-        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        $rows = array_map(function($row) {
+            $strrow = [];
+            foreach($row as $key => $val) {
+                $strrow[$key] = strval($val);
+            }
+            return $strrow;
+        }, $prepared->fetchAll(PDO::FETCH_ASSOC));
         // The fetchAll function will return an empty set if no results are
         // found and FALSE on "failure". We don't expect this case so an
         // exception is thrown.
@@ -992,7 +998,7 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        return strval($result);
     }
 
     /**
@@ -1021,7 +1027,7 @@ class Database implements LoggerAwareInterface
             return null;
         }
 
-        return $result;
+        return intval($result);
     }
 
     /**
