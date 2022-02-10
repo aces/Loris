@@ -90,7 +90,7 @@ some configurations are necessary.
 3. Change the values of the `Config` table of the SQL database to reflect the 
 correct `host` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
-`projects/instruments/` directory
+`project/instruments/` directory
 
 > The password of the `admin` user on the RB database is `demo20!7`
 
@@ -137,11 +137,11 @@ sourcing these files and exporting them, the modification will be reported as gi
 uncommitted changes and thus they can be verified and submitted to the LORIS repo 
 in the same pull request as the code.
 
-Note: when contributing back new imaging files in raisinbread, the file 
-RB_parameter_file.sql can become too big due to the complete header being dumped 
-in the parameter_file using ParameterTypeID=238. To decrease the size of the 
-RB_parameter_file.sql file, run the following query on your mysql and recreate
-the RB_parameter_file.sql file.
+***Note:** When contributing back new imaging files in raisinbread, the file 
+RB\_parameter\_file.sql can become too big due to the complete header being dumped 
+in the parameter\_file using ParameterTypeID=238. To decrease the size of the 
+RB\_parameter\_file.sql file, run the following query on your mysql and recreate
+the RB\_parameter\_file.sql file.*
 
 ```SQL
 DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
