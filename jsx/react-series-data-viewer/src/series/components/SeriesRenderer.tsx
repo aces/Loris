@@ -44,6 +44,7 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel,
+  AnnotationMetadata,
 } from '../store/types';
 // ##################### EEGNET OVERRIDE START ################## //
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
@@ -81,6 +82,8 @@ type CProps = {
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
   limit: number,
+  physioFileID: number,
+  annotationMetadata: AnnotationMetadata,
 };
 
 const SeriesRenderer: FunctionComponent<CProps> = ({
@@ -115,6 +118,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   dragContinue,
   dragEnd,
   limit,
+  physioFileID,
+  annotationMetadata,
 }) => {
   if (channels.length === 0) return null;
 
@@ -602,7 +607,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 
                 {
                 // ##################### EEGNET OVERRIDE START ################## //
-                  epochs.length > 0 &&
+                  [...Array(epochs.length).keys()].filter((i) =>
+                    epochs[i].type === 'Event'
+                  ).length > 0 &&
                   <button
                     className={
                       'btn btn-primary'
@@ -620,7 +627,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }
                   </button>
                 }
-                {epochs.length > 0 &&
+                {[...Array(epochs.length).keys()].filter((i) =>
+                    epochs[i].type === 'Annotation'
+                  ).length > 0 &&
                   <button
                     className={
                       'btn btn-primary'
@@ -690,7 +699,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           </div>
           {rightPanel &&
             <div className='col-md-3'>
-              {rightPanel === 'annotationForm' && <AnnotationForm />}
+              {rightPanel === 'annotationForm' &&
+                <AnnotationForm
+                  physioFileID={physioFileID}
+                  annotationMetadata={annotationMetadata}
+                />
+              }
               {/* ##################### EEGNET OVERRIDE START ################## */}
               {rightPanel === 'eventList' && <EventManager />}
               {rightPanel === 'annotationList' && <EventManager />}
@@ -716,7 +730,7 @@ SeriesRenderer.defaultProps = {
   hidden: [],
   channelMetadata: [],
   offsetIndex: 1,
-  limit: MAX_CHANNELS,
+  limit: MAX_CHANNELS
 };
 
 export default connect(

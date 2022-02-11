@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Epoch as EpochType, RightPanel} from '../store/types';
+import {AnnotationMetadata, Epoch as EpochType, RightPanel} from '../store/types';
 import {connect, DefaultRootState} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
@@ -27,6 +27,8 @@ type CProps = {
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
+  physioFileID: number,
+  annotationMetadata: AnnotationMetadata,
 };
 
 const AnnotationForm = ({
@@ -43,6 +45,8 @@ const AnnotationForm = ({
   toggleEpoch,
   updateActiveEpoch,
   interval,
+  physioFileID,
+  annotationMetadata,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   let [event, setEvent] = useState([startEvent, endEvent]);
@@ -158,13 +162,10 @@ const AnnotationForm = ({
     }
     const duration = endTime - startTime;
 
-    // get sessionID from path
-    const sessionID = window.location.pathname.split('/')[3];
-
     // set body
     // instance_id = null for new annotations
     const body = {
-      sessionID: sessionID,
+      physioFileID: physioFileID,
       instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
       instance: {
         onset: startTime,
@@ -192,37 +193,41 @@ const AnnotationForm = ({
       body: JSON.stringify(body),
     }).then(response => {
       if (response.ok) {
-        setIsSubmitted(false);
-
-        // if in edit mode, remove old annotation instance
-        if (currentAnnotation !== null) {
-          epochs.splice(epochs.indexOf(currentAnnotation), 1);
-        }
-        epochs.push(newAnnotation);
-        setEpochs(
-          epochs
-          .sort(function(a, b) {
-            return a.onset - b.onset;
-          })
-        );
-
-        // Reset Form
-        handleReset();
-        
-        // Disaply success message
-        const message = currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!';
-        swal.fire(
-          'Success',
-          message,
-          'success'
-        );
-
-        // If in edit mode, switch back to annotation panel
-        if (currentAnnotation !== null) {
-          setCurrentAnnotation(null);
-          setRightPanel('annotationList');
-        }
+        return response.json();
       }
+    }).then(data => {
+      setIsSubmitted(false);
+
+      // if in edit mode, remove old annotation instance
+      if (currentAnnotation !== null) {
+        epochs.splice(epochs.indexOf(currentAnnotation), 1);
+      } else {
+        newAnnotation.annotationInstanceID = parseInt(data.instance_id);
+      }
+      epochs.push(newAnnotation);
+      setEpochs(
+        epochs
+        .sort(function(a, b) {
+          return a.onset - b.onset;
+        })
+      );
+
+      // Reset Form
+      handleReset();
+      
+      // Disaply success message
+      const message = currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!';
+      swal.fire(
+        'Success',
+        message,
+        'success'
+      );
+
+      // If in edit mode, switch back to annotation panel
+      if (currentAnnotation !== null) {
+        setCurrentAnnotation(null);
+        setRightPanel('annotationList');
+      }     
     }).catch(error => {
       console.log(error);
       // Display error message
@@ -238,9 +243,8 @@ const AnnotationForm = ({
   useEffect(() => {
     if (isDeleted) {
       const url = window.location.origin + '/electrophysiology_browser/annotations/';
-      const sessionID = window.location.pathname.split('/')[3];
       const body = {
-        sessionID: sessionID,
+        physioFileID: physioFileID,
         instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
       };
 
@@ -303,33 +307,13 @@ const AnnotationForm = ({
     }
   }, [isDeleted]);
 
-  const labelOptions = {
-    'manual_exclusion': 'Exclusion Flag - Manual',
-    'ambiguous': 'Ambiguous',
-    'artifact': 'Artifact',
-    'motion': 'Motion',
-    'flux_jump': 'Flux jump',
-    'line_noise': 'Line Noise',
-    'muscle': 'Muscle',
-    'epilepsy_interictal': 'Epilepsy interictal',
-    'epilepsy_preictal': 'Epilepsy preictal',
-    'epilepsy_seizure': 'Epilepsy seizure',
-    'epilepsy_postictal': 'Epilepsy postictal',
-    'epileptiform': 'Epileptiform',
-    'epileptiform_single': 'Epileptiform single',
-    'epileptiform_run': 'Epileptiform run',
-    'eye_blink': 'Eye blink',
-    'eye_movement': 'Eye movement',
-    'eye_fixation': 'Eye fixation',
-    'sleep_N1': 'Sleep N1',
-    'sleep_N2': 'Sleep N2',
-    'sleep_N3': 'Sleep N3',
-    'sleep_REM': 'Sleep REM',
-    'sleep_wake': 'Sleep wake',
-    'sleep_spindle': 'Sleep spindle',
-    'sleep_k-complex': 'Sleep k-complex',
-    'scorelabeled': 'Score labeled'
-  }
+  let labelOptions = {};
+  annotationMetadata.labels.map(label => {
+    labelOptions = {
+      ...labelOptions,
+      [label.LabelName]: label.LabelName
+    }
+  });
 
   return (
     <div
