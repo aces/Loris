@@ -176,7 +176,9 @@ candidates where a NULL value is found. (PR #7095)
 `getBatteryVerbose()` functions (PR #7167)
 - Removal of the `violated_scans_edit` permission (PR #6747)
 - Removal for the need of the `VisitLabel` section of the `config.xml` file. All 
-visit configurations and their association to projects are now in the database (#7663 & #7729)
+visit configurations and their association to projects are now in the database.
+The visits can be removed from the `config.xml` file after running the 
+`populate_visits.php` script only. (#7663 & #7729)
 - Removal of references to Reliability module in Raisinbread (PR #6895)
 - Raisinbread visit stage inconsistency changed (PR #6896)
 - HRRT patch sourced to Raisinbread (PR #6897)
