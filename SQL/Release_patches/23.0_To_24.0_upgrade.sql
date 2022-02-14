@@ -40,9 +40,9 @@ INSERT INTO permissions (code,description,categoryID) VALUES
 INSERT INTO permissions (code,description,categoryID) VALUES
 ('survey_accounts_view','Survey Accounts: View module',(SELECT ID FROM permissions_category WHERE Description='Permission'));
 -- Grant new permission codes to users who had the old ones.
-INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='survey_accounts_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='user_accounts');
-INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='behavioural_quality_control_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='quality_control');
-INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='imaging_quality_control_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='user_accounts');
+INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='survey_accounts_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='user_accounts') and userID in (select ID from users);
+INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='behavioural_quality_control_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='quality_control') and userID in (select ID from users);
+INSERT INTO user_perm_rel SELECT userID, (SELECT permID FROM permissions WHERE code='imaging_quality_control_view') FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='user_accounts') and userID in (select ID from users);
 
 SELECT 'Running: SQL/Archive/24.0/2020-02-25_Add-Admin-Contact-Email.sql';
 
