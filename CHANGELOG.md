@@ -211,7 +211,8 @@ all instances with their newly named counterparts, `_setRequiredElementsComplete
 All references to these variables should be removed from project instruments. (PR #7183)
 - Visit definitions is no longer done in the `config.xml`. An importer tool (`populate_visits.php`) is 
 available to import the current setup into the `visit` table of the database. 
-Make sure the visits displayed after these changes are what you expect. (#7663 & #7729)
+Make sure the visits displayed after these changes are what you expect. 
+The visits can be removed from the `config.xml` file after the importer tool is run. (#7663 & #7729)
 - There is a new abstract `getDataDictionary()` function in the instrument class 
 for the new data dictionary framework. This is already implemented for LINST instruments, 
 and existing instruments using `LorisForm` can use the `\LorisFormDictionaryImpl` 
