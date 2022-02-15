@@ -1,3 +1,8 @@
+SELECT 'Running: SQL/Archive/24.0/2019-07-01_fix_project_in_session.sql';
+
+-- Populate new session field with pre recorded candidate project
+UPDATE session s JOIN candidate c ON s.CandID=c.CandID SET ProjectID=c.RegistrationProjectID WHERE ProjectId IS NULL;
+ALTER TABLE `session` CHANGE `ProjectID` `ProjectID` int(10) unsigned NOT NULL;
 
 SELECT 'Running: SQL/Archive/24.0/2019-09-18_DocRepoEdit.sql';
 
@@ -129,10 +134,10 @@ ALTER TABLE users
 
 -- determine the account_request_date based on what is present in the history
 -- table for when the user was inserted the first time in the history table
-UPDATE users u, history h 
-  SET u.account_request_date=h.changeDate 
-  WHERE 
-    h.tbl='users'  AND 
+UPDATE users u, history h
+  SET u.account_request_date=h.changeDate
+  WHERE
+    h.tbl='users'  AND
     h.col='UserID' AND
     h.old IS NULL  AND
     u.UserID=h.new;
@@ -152,11 +157,11 @@ UPDATE ConfigSettings
 	SET DataType='date_format' WHERE Name='dodFormat';
 
 -- Convert old date casing combos to supported format
-UPDATE Config SET Value='Ymd' 
+UPDATE Config SET Value='Ymd'
 	WHERE LOWER(Value)='ymd'
 	AND ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='dobFormat');
 
-UPDATE Config SET Value='Ymd' 
+UPDATE Config SET Value='Ymd'
         WHERE LOWER(Value)='ymd'
         AND ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='dodFormat');
 
@@ -187,15 +192,15 @@ SELECT 'Running: SQL/Archive/24.0/2020-08-10_add_AcquisitionDate_to_files.sql';
 
 ALTER TABLE files ADD COLUMN `AcquisitionDate` date DEFAULT NULL;
 
-UPDATE 
-  files f, 
-  parameter_file pf, 
+UPDATE
+  files f,
+  parameter_file pf,
   parameter_type pt
-SET 
+SET
   f.AcquisitionDate=pf.Value
 WHERE
-  f.FileID=pf.FileID 
-  AND pf.ParameterTypeID=pt.ParameterTypeID 
+  f.FileID=pf.FileID
+  AND pf.ParameterTypeID=pt.ParameterTypeID
   AND pt.Name='acquisition_date';
 
 SELECT 'Running: SQL/Archive/24.0/2020-08-11_adding_api_docs_module.sql';
@@ -1005,15 +1010,15 @@ ALTER TABLE mri_violations_log ADD `EchoTime` double DEFAULT NULL AFTER `ValidRe
 SELECT 'Running: SQL/Archive/24.0/2021-07-29_modify_center_name_in_mri_protocol.sql';
 
 -- Add a new CenterID column
-ALTER TABLE mri_protocol 
-ADD COLUMN `CenterID` integer unsigned DEFAULT NULL 
+ALTER TABLE mri_protocol
+ADD COLUMN `CenterID` integer unsigned DEFAULT NULL
 AFTER `Center_name`;
 
 ALTER TABLE mri_protocol ADD FOREIGN KEY (`CenterID`) REFERENCES psc(`CenterID`);
 
 -- Populate the CenterID column using Center_name (equivalent to MRI_alias in the psc table)
-UPDATE mri_protocol 
-INNER JOIN psc ON (Center_name = MRI_alias) 
+UPDATE mri_protocol
+INNER JOIN psc ON (Center_name = MRI_alias)
 SET mri_protocol.CenterID = psc.CenterID;
 
 SELECT 'Running: SQL/Archive/24.0/2021-07-29-physiological_task_event_columns_types.sql';
