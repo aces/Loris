@@ -23,12 +23,12 @@ type CProps = {
   setEpochs: (_: EpochType[]) => void,
   currentAnnotation: EpochType,
   setCurrentAnnotation: (_: EpochType) => void,
+  physioFileID: number,
+  annotationMetadata: AnnotationMetadata,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
-  physioFileID: number,
-  annotationMetadata: AnnotationMetadata,
 };
 
 const AnnotationForm = ({
@@ -41,12 +41,12 @@ const AnnotationForm = ({
   setEpochs,
   currentAnnotation,
   setCurrentAnnotation,
+  physioFileID,
+  annotationMetadata,
   // ##################### EEGNET OVERRIDE END ################## //
   toggleEpoch,
   updateActiveEpoch,
   interval,
-  physioFileID,
-  annotationMetadata,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   let [event, setEvent] = useState([startEvent, endEvent]);

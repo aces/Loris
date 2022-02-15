@@ -141,11 +141,11 @@ class Annotations extends \NDB_Page
                     []
                 );
             }
-             // ##################### EEGNET OVERRIDE END ################## //
 
             return (new \LORIS\Http\Response\JSON\OK(
                 ['instance_id' => $instance_id]
             ));
+            // ##################### EEGNET OVERRIDE END ################## //
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ["GET", "DELETE", "POST"]

@@ -422,10 +422,12 @@ class ElectrophysiologySessionView extends Component {
                       </a>
                     </>
                   }
+                  {/* ##################### EEGNET OVERRIDE START ################## */}
                   <SeriesRenderer 
                     physioFileID={this.state.database[i].file.id}
                     annotationMetadata={annotations}          
                   />
+                  {/* ##################### EEGNET OVERRIDE END ################## */}
                   </Panel>
                   <div className='row'>
                     <div className='col-md-6 col-lg-4'>

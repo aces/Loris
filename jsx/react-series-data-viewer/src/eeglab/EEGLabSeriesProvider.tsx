@@ -117,81 +117,75 @@ class EEGLabSeriesProvider extends Component<CProps> {
       }
     )
   // ##################### EEGNET OVERRIDE START ################## //
-      .then(() => {
-        if (epochsURL[0] !== "") {
-          Promise.race(racers(fetchText, epochsURL))
-          .then((text) => {
-            console.log(epochsURL);
-            if (!(typeof text.json === 'string'
-              || text.json instanceof String)) return;
-            return tsvParse(text.json)
-              .map((eventRow, i) => {
-                // --- Fix related to Brock face-13 data
-                const label = (eventRow.trial_type === 'n/a' && 'sample' in eventRow) ?
-                  eventRow.sample : eventRow.trial_type;
-                return {
-                  onset: parseFloat(eventRow.onset),
-                  duration: parseFloat(eventRow.duration),
-                  type: 'Event',
-                  label: label,
-                  comment: null,
-                  channels: 'all',
-                  annotationInstanceID: null,
-                }
-              });
-          }).then(events => {
-            let epochs = events;
-            annotations.instances.map(instance => {
-              const label = annotations.labels
-                .find(label =>
-                  label.AnnotationLabelID == instance.AnnotationLabelID
-                ).LabelName;
-              epochs.push({
-                onset: parseFloat(instance.Onset),
-                duration: parseFloat(instance.Duration),
-                type: 'Annotation',
-                label: label,
-                comment: instance.Description,
-                channels: 'all',
-                annotationInstanceID: instance.AnnotationInstanceID,
-              });
-            });
-            return epochs;
-          }).then(epochs => {
-            this.store.dispatch(
-              setEpochs(
-                epochs
-                  .flat()
-                  .sort(function (a, b) {
-                    return a.onset - b.onset;
-                  })
-              )
-            );
-            // ##################### EEGNET OVERRIDE END ################## //
-            this.store.dispatch(updateFilteredEpochs());
-          })
-        }
-      }
-    );
-    if (electrodesURL[0]!== "") {
-      Promise.race(racers(fetchText, electrodesURL))
-        .then((text) => {
-          if (!(typeof text.json === 'string'
-            || text.json instanceof String)) return;
-          this.store.dispatch(
-            setElectrodes(
-              tsvParse(text.json).map(({ name, x, y, z }) => ({
-                name: name,
-                channelIndex: null,
-                position: [parseFloat(x), parseFloat(y), parseFloat(z)],
-              }))
-            )
-          );
-        })
-        .catch((error) => {
-          console.error(error);
+      .then(() => Promise.race(racers(fetchText, epochsURL))
+      .then((text) => {
+        if (!(typeof text.json === 'string'
+          || text.json instanceof String)) return;
+        return tsvParse(text.json)
+          .map((eventRow, i) => {
+            // --- Fix related to Brock face-13 data
+            const label = (eventRow.trial_type === 'n/a' && 'sample' in eventRow) ?
+              eventRow.sample : eventRow.trial_type;
+            return {
+              onset: parseFloat(eventRow.onset),
+              duration: parseFloat(eventRow.duration),
+              type: 'Event',
+              label: label,
+              comment: null,
+              channels: 'all',
+              annotationInstanceID: null,
+            }
+          });
+      }).then(events => {
+        let epochs = events;
+        annotations.instances.map(instance => {
+          const label = annotations.labels
+            .find(label =>
+              label.AnnotationLabelID == instance.AnnotationLabelID
+            ).LabelName;
+          epochs.push({
+            onset: parseFloat(instance.Onset),
+            duration: parseFloat(instance.Duration),
+            type: 'Annotation',
+            label: label,
+            comment: instance.Description,
+            channels: 'all',
+            annotationInstanceID: instance.AnnotationInstanceID,
+          });
         });
-    }
+        return epochs;
+      }).then(epochs => {
+        this.store.dispatch(
+          setEpochs(
+            epochs
+            .flat()
+            .sort(function(a, b) {
+              return a.onset - b.onset;
+            })
+          )
+        );
+  // ##################### EEGNET OVERRIDE END ################## //
+        this.store.dispatch(updateFilteredEpochs());
+      })
+    );
+
+    Promise.race(racers(fetchText, electrodesURL))
+      .then((text) => {
+        if (!(typeof text.json === 'string'
+          || text.json instanceof String)) return;
+        this.store.dispatch(
+          setElectrodes(
+            tsvParse(text.json).map(({name, x, y, z}) => ({
+              name: name,
+              channelIndex: null,
+              position: [parseFloat(x), parseFloat(y), parseFloat(z)],
+            }))
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   /**
