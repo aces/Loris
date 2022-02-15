@@ -100,9 +100,14 @@ class ElectrophysioAnnotations
             //If the label is new, add to annotation label table
             //and get label ID
             $labelID = $db->pselectOne(
-                "SELECT AnnotationLabelID
+                // ##################### EEGNET OVERRIDE START ################## //
+                // Adding MAX here as a hack fix for now until LORIS-MRI 
+                // bugfix for issue https://github.com/aces/Loris-MRI/issues/763 
+                // is available and cleanup happens of the annotation_label table 
+                "SELECT MAX(AnnotationLabelID)
                     FROM physiological_annotation_label
                     WHERE LabelName=:label",
+                // ##################### EEGNET OVERRIDE END ################## //
                 ['label' => $instance_data['label_name']]
             );
             if (empty($labelID)) {

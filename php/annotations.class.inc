@@ -125,7 +125,7 @@ class Annotations extends \NDB_Page
             ];
             
             $instance_id   = $parameters['instance_id'] ? 
-                (int) $parameters['instance_id'] :  null;
+                 intval($parameters['instance_id']) :  null;
             // ##################### EEGNET OVERRIDE END ################## //
             $parameter_id  = $parameters['parameter_id'] ?? null;
 
@@ -137,8 +137,11 @@ class Annotations extends \NDB_Page
             if (is_null($instance_id)) {
                 $instance_id = $db->pselectOne(
                     "SELECT MAX(AnnotationInstanceID) 
-                    FROM physiological_annotation_instance",
-                    []
+                    FROM physiological_annotation_instance ai
+                    JOIN physiological_annotation_file af USING (AnnotationFileID)
+                    WHERE PhysiologicalFileID=:physioFileID
+                    ",
+                    ['physioFileID' => $parameters['physioFileID']]
                 );
             }
 
