@@ -144,7 +144,7 @@ class ElectrophysioAnnotations
                 'Onset'             => $instance_data['onset'],
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
-                'Channels'          => $instance_data['channels'],
+                'Channels'          => $instance_data['channels'] === 'all' ? null : $instance_data['channels'],
                 'Description'       => $instance_data['description']
             ];
             // ##################### EEGNET OVERRIDE END ################## //
