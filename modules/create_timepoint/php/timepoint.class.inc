@@ -173,10 +173,18 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 json_encode($values['conflict'])
             );
         }
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits    = \Utility::getVisitsForProjectSubproject(
+            $project->getId(),
+            intval($values['subproject'])
+        );
+        $visitName = $visits[$values['visit']] ?? null;
+
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
             intval($values['subproject']),
-            $values['visit'] ?? null,
+            $visitName,
             $site,
             $project,
             intval($values['languages']) ?? null
