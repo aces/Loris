@@ -189,6 +189,9 @@ scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 
 
 ### Notes For Existing Projects
+- The `RegistrationProjectID` column of the candidate table and the `ProjectID` column of the session table 
+in the database are no longer nullable. This means that a value must be set in these fields BEFORE running 
+the release SQL patch or it will fail.
 - New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getSubprojectIDUsingCandID`, 
 adding the ability to determine which subproject a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the `getFullName()` and `getSubtestList()`
