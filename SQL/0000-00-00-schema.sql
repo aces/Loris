@@ -151,7 +151,7 @@ CREATE TABLE `candidate` (
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
-  `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
+  `RegistrationProjectID` int(10) unsigned NOT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,

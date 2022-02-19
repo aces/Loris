@@ -1,7 +1,8 @@
 SELECT 'Running: SQL/Archive/24.0/2019-07-01_fix_project_in_session.sql';
 
 -- Populate new session field with pre recorded candidate project
-UPDATE session s JOIN candidate c ON s.CandID=c.CandID SET ProjectID=c.RegistrationProjectID WHERE ProjectId IS NULL;
+ALTER TABLE candidate CHANGE `RegistrationProjectID` `RegistrationProjectID` int(10) unsigned NOT NULL;
+UPDATE session s JOIN candidate c ON s.CandID=c.CandID SET ProjectID=c.RegistrationProjectID WHERE ProjectID IS NULL;
 ALTER TABLE `session` CHANGE `ProjectID` `ProjectID` int(10) unsigned NOT NULL;
 
 SELECT 'Running: SQL/Archive/24.0/2019-09-18_DocRepoEdit.sql';
