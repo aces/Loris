@@ -99,6 +99,37 @@ ORDER BY ID
             )
         );
     }
+
+    /**
+     * Instanciate a visit object using the visit label value
+     *
+     * @param string $visitLabel Label for which the Visit object s requested
+     *
+     * @return Visit Visit associated with the supplied label
+     *
+     * @throws \NotFound
+     */
+    public function getVisitFromVisitLabel(string $visitLabel) : \LORIS\Visit
+    {
+        $visitData = $this->database->pselectRow(
+            'SELECT
+                 v.VisitID, v.VisitName
+                FROM
+                 visit v
+                WHERE
+                 v.VisitLabel = :vl',
+            ['vl' => $visitLabel]
+        );
+
+        if (empty($visitData)) {
+            throw new \NotFound(
+                "No visits found in the database with label: $visitLabel"
+            );
+        }
+
+        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+    }
+
     /**
      * Returns a list of configured Visits and their association with projects
      * and subprojects
@@ -126,8 +157,8 @@ ORDER BY ID
                  JOIN
                   visit_project_subproject_rel vps
                  ON v.VisitID = vps.VisitID
-                 JOIN 
-                  project_subproject_rel psr 
+                 JOIN
+                  project_subproject_rel psr
                  ON vps.ProjectSubprojectRelID = psr.ProjectSubprojectRelID
                 ORDER BY ID, project, subproject
                 ',

@@ -3,6 +3,7 @@
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\VisitController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -175,11 +176,14 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         //Visit - Get all visits to map ID back to label for session table
-        $visits    = \Utility::getVisitsForProjectSubproject(
+        $visits     = \Utility::getVisitsForProjectSubproject(
             $project->getId(),
             intval($values['subproject'])
         );
-        $visitName = $visits[$values['visit']] ?? null;
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
