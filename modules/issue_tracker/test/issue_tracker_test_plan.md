@@ -1,7 +1,7 @@
 # Issue Tracker Test Plan
 
 ## Issue Tracker Filter Form [Automation Testing]
-1. User can access the page only if they have `issue_tracker_reporter` or `issue_tracker_developer` permission
+1. User can access the page only if they have `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` or ` Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission
 2. User can see data from other sites only if they have `access_all_profiles` permission
 3. Test that all filters work. Nothing should be filtered at first loading.
 4. Test that all tabs (with filters) work and redirect to the correct table. 
