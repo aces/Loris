@@ -150,7 +150,7 @@ DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Nam
 ### Troubleshooting
 
  - If you are having issues sourcing RB using the single command above, you can try to 
-use the following comands sequentially. These commands echo the name of the SQL 
+use the following commands sequentially. These commands echo the name of the SQL 
 script before running it which helps to identify exactly what SQL statement is failing.
 
    ```bash
