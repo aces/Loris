@@ -906,7 +906,9 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertFalse($this->_user->select("111111"));
+        $sel = $this->_user->select("111111");
+        var_dump($sel);
+        $this->assertFalse($sel);
     }
 
     /**
