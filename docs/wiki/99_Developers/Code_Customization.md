@@ -17,8 +17,11 @@ It is highly recommended to keep a Readme file under the project/ directory trac
 
 ## Modifying and overriding code under the project/ directory
 
-Code stored under `project/modules/` and `project/libraries/` and `project/templates/` **will override** the file of the same name found in the same path under Loris root php/librariies/
-* `/var/www/loris/project/libraries/_filename.class.inc_ will override` `/var/www/loris/php/libraries/_filename.class.inc_)`
+Code stored under `project/modules/` and `project/libraries/` and `project/templates/` **will override** the file of the same name found in the same path under Loris root `php/libraries/`.
+
+i.e. `/var/www/loris/project/libraries/_filename.class.inc` will override `/var/www/loris/php/libraries/_filename.class.inc_`
+
+***NOTE:** It is strongly not recommended to override LORIS library classes unless absolutely necessary. Overrides on libraries can cause upgrade issues and long term bugs and come at a great maintenance and overhead costs.*
 
 ## Module override
 
