@@ -599,6 +599,9 @@ class Database implements LoggerAwareInterface
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
+            var_dump($prep);
+            var_dump($prepQ);
+            var_dump($exec_params);
             throw new DatabaseException(
                 "Update statement did not execute successfully.",
                 $prepQ,
