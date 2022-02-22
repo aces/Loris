@@ -186,7 +186,7 @@ class Database implements LoggerAwareInterface
                 . "and the supplied password."
             );
         }
-        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
@@ -599,8 +599,13 @@ class Database implements LoggerAwareInterface
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            var_dump($prep);
+            /* var_dump($prep);
             var_dump($prepQ);
+            var_dump($exec_params);
+            */
+            var_dump($this->_PDO);
+            var_dump($prepQ);
+            var_dump($prep);
             var_dump($exec_params);
             throw new DatabaseException(
                 "Update statement did not execute successfully.",
@@ -1540,9 +1545,9 @@ class Database implements LoggerAwareInterface
 
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
-            $error[0],
-            $error[1],
-            $error[2],
+            $error[0] ?? '',
+            $error[1] ?? '',
+            $error[2] ?? '',
         );
     }
 

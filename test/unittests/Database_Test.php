@@ -187,7 +187,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['set_field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -223,7 +223,11 @@ class Database_Test extends TestCase
 
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
+        '@phan-var \PDOStatement $stmt';
         $stub->_PDO = $PDO;
+        if (PHP_MINOR_VERSION == 1) {
+            var_dump($stmt->execute(['set_field' => '<b>Hello</b>']));
+        }
         $stub->unsafeupdate("test", ['field' => '<b>Hello</b>'], []);
 
     }
