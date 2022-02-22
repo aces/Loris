@@ -112,7 +112,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
              *
              * @return DataInstance
              */
-            public function current() : mixed
+            public function current() : DataInstance
             {
                 $row    = parent::current();
                 $newrow = [];
