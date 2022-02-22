@@ -1001,6 +1001,9 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
+        if ($result === null) {
+            return null;
+        }
         return strval($result);
     }
 
