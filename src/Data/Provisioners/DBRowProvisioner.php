@@ -117,7 +117,11 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
                 $row    = parent::current();
                 $newrow = [];
                 foreach ($row as $key => $val) {
-                    $newrow[$key] = strval($val);
+                    if ($val === null) {
+                        $newrow[$key] = null;
+                    } else {
+                        $newrow[$key] = strval($val);
+                    }
                 }
                 return $this->outer->getInstance($newrow);
             }
