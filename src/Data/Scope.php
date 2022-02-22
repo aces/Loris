@@ -60,7 +60,13 @@ final class Scope implements \JsonSerializable
         }
     }
 
-    public function jsonSerialize()
+    /**
+     * Implement the jsonSerialize function by converting to
+     * a string
+     *
+     * @return mixed
+     */
+    public function jsonSerialize() : mixed
     {
         return $this->__toString();
     }

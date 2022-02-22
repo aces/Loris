@@ -22,9 +22,9 @@ class IntegerType implements \LORIS\Data\Type
     /**
      * Serialize the type by converting to JSON
      *
-     * @return string
+     * @return mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return $this->__toString();
     }
