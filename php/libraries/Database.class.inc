@@ -729,7 +729,11 @@ class Database implements LoggerAwareInterface
             function ($row) {
                 $strrow = [];
                 foreach ($row as $key => $val) {
-                    $strrow[$key] = strval($val);
+                    if ($val === null) {
+                        $strrow[$key] = null;
+                    } else {
+                        $strrow[$key] = strval($val);
+                    }
                 }
                 return $strrow;
             },
