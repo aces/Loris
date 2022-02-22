@@ -157,7 +157,6 @@ class SiteIDGenerator extends IdentifierGenerator
     ) {
         $config = \NDB_Factory::singleton()->config();
         $kind   = $config->getSetting($this->kind);
-        var_dump($kind);
 
         if (!is_array($kind)) {
             throw new \LorisException("Invalid config for $this->kind");
