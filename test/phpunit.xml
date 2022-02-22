@@ -14,7 +14,7 @@
 
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../raisinbread/test/api/</directory>
-            <!--directory>../modules/api/test/</directory>
+            <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
@@ -55,7 +55,7 @@
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
-            <directory>../test/test_instrument/</directory-->
+            <directory>../test/test_instrument/</directory>
         </testsuite>
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
