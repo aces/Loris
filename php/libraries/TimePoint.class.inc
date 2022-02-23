@@ -13,7 +13,6 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
-use LORIS\VisitController;
 
 /**
  * The Loris TimePoint class
@@ -305,7 +304,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * @param CandID     $candid       The candidate identifier
      * @param \ProjectID $projectID    The Project identifier
      * @param integer    $subprojectID The subprojectID
-     * @param string     $visitLabel   The visit label
+     * @param string     $visitName    The visit name
      *
      * @throws LorisException
      *
@@ -315,27 +314,23 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         CandID $candid,
         \ProjectID $projectID,
         int $subprojectID,
-        string $visitLabel
+        string $visitName
     ): void {
-
-        $db = \NDB_Factory::singleton()->database();
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
-        if (empty($visitLabel)) {
+        if (empty($visitName)) {
             throw new \LorisException(
                 'A visit label is required.'
             );
         }
 
         // Check if visit label exists for this subproject
-        if (!in_array(
-            $visitLabel,
-            \Utility::getVisitsForProjectSubproject(
-                $projectID,
+        if (!array_key_exists(
+            $visitName,
+            \Utility::getVisitsForSubproject(
                 $subprojectID
-            ),
-            true
+            )
         )
         ) {
             throw new \LorisException(
@@ -347,10 +342,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
-
-        $visitName = (new VisitController($db))
-            ->getVisitFromVisitLabel($visitLabel)
-            ->getName();
 
         //If the visitLabel is already in use then let the user pick another
         foreach ($timePointArray AS $used_name) {
