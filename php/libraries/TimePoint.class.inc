@@ -13,6 +13,7 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\VisitController;
 
 /**
  * The Loris TimePoint class
@@ -317,6 +318,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         string $visitLabel
     ): void {
 
+        $db = \NDB_Factory::singleton()->database();
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
@@ -327,12 +329,13 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // Check if visit label exists for this subproject
-        if (!array_key_exists(
+        if (!in_array(
             $visitLabel,
             \Utility::getVisitsForProjectSubproject(
                 $projectID,
                 $subprojectID
-            )
+            ),
+            true
         )
         ) {
             throw new \LorisException(
@@ -342,11 +345,16 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $candidate =& \Candidate::singleton($candid);
 
+        // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
 
+        $visitName = (new VisitController($db))
+            ->getVisitFromVisitLabel($visitLabel)
+            ->getName();
+
         //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($visitLabel, $used_label) == 0) {
+        foreach ($timePointArray AS $used_name) {
+            if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
                     'This visit label is not unique.'
                 );
