@@ -180,13 +180,37 @@ CREATE TABLE `physiological_electrode` (
   REFERENCES `physiological_electrode_material` (`PhysiologicalElectrodeMaterialID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create `physiological_event_file_type` table
+CREATE TABLE `physiological_event_file_type` (
+    `FileType` varchar(20) NOT NULL,
+    `Description` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`FileType`),
+    UNIQUE KEY `FileType` (`FileType`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
 
+-- Create `physiological_event_file` table
+CREATE TABLE `physiological_event_file` (
+    `EventFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `PhysiologicalFileID` int(10) unsigned NOT NULL,
+    `FileType` varchar(20) NOT NULL,
+    `FilePath` varchar(255) DEFAULT NULL,
+    `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `LastWritten` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`EventFileID`),
+    KEY `FK_physio_file_ID` (`PhysiologicalFileID`),
+    KEY `FK_event_file_type` (`FileType`),
+    CONSTRAINT `FK_event_file_type` FOREIGN KEY (`FileType`) REFERENCES `physiological_event_file_type` (`FileType`),
+    CONSTRAINT `FK_physio_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
 
 -- Create physiological_task_event table that will store all information
 -- regarding the task executed during the physiological recording
 CREATE TABLE `physiological_task_event` (
   `PhysiologicalTaskEventID` INT(10) UNSIGNED NOT NULL      AUTO_INCREMENT,
   `PhysiologicalFileID`      INT(10) UNSIGNED NOT NULL,
+  `EventFileID`              INT(10) unsigned NOT NULL,
   `InsertTime`               TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
@@ -196,15 +220,70 @@ CREATE TABLE `physiological_task_event` (
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
-  `FilePath`                 VARCHAR(255)     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
+  KEY `FK_event_file` (`EventFileID`),
   CONSTRAINT `FK_phys_file_FileID_4`
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_event_file` 
+    FOREIGN KEY (`EventFileID`) 
+    REFERENCES `physiological_event_file` (`EventFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create `physiological_event_archive` to store event archive info
+CREATE TABLE `physiological_event_archive` (
+    `EventArchiveID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `PhysiologicalFileID` int(10) unsigned NOT NULL,
+    `Blake2bHash` varchar(128) NOT NULL,
+    `FilePath` varchar(255) NOT NULL,
+    PRIMARY KEY (`EventArchiveID`),
+    KEY `FK_phy_file_ID` (`PhysiologicalFileID`),
+    CONSTRAINT `FK_phy_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
 
+-- Create `physiological_event_parameter` to capture all event parameters
+-- from events.json
+CREATE TABLE `physiological_event_parameter` (
+    `EventParameterID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `EventFileID` int(10) unsigned NOT NULL,
+    `ParameterName` varchar(255) NOT NULL,
+    `Description` text NOT NULL,
+    `LongName` varchar(255) DEFAULT NULL,
+    `Units` varchar(50) DEFAULT NULL,
+    `isCategorical` enum('Y', 'N') DEFAULT NULL,
+    `HED` text DEFAULT NULL,
+    PRIMARY KEY (`EventParameterID`),
+    KEY `FK_event_file_ID` (`EventFileID`),
+    CONSTRAINT `FK_event_file_ID` FOREIGN KEY (`EventFileID`) REFERENCES `physiological_event_file` (`EventFileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+-- Create `physiological_event_parameter_category_level` to capture 
+-- category levels from events.json
+CREATE TABLE `physiological_event_parameter_category_level` (
+    `CategoricalLevelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `EventParameterID` int(10) unsigned NOT NULL,
+    `LevelName` varchar(255) NOT NULL,
+    `Description` text NOT NULL,
+    `HED` text DEFAULT NULL,
+    PRIMARY KEY (`CategoricalLevelID`),
+    KEY `FK_event_param_ID` (`EventParameterID`),
+    CONSTRAINT `FK_event_param_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
+
+-- Create `physiological_event_assembled_hed_tag` to store assembled HED Tags
+CREATE TABLE `physiological_event_assembled_hed_tag` (
+    `TaskEventID` int(10) unsigned NOT NULL,
+    `EventParameterID` int(10) unsigned NOT NULL,
+    `AssembledHED` text NOT NULL,
+    PRIMARY KEY (`TaskEventID`, `EventParameterID`),
+    CONSTRAINT `FK_task_event_ID` FOREIGN KEY (`TaskEventID`) REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`),
+    CONSTRAINT `FK_event_parameter_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+;
 
 -- Create physiological_archive which will store archives of all the files for
 -- Front-end download
@@ -425,4 +504,10 @@ INSERT INTO physiological_annotation_label
     (21, 'sleep_spindle',       'sleep spindle'),
     (22, 'sleep_k-complex',     'sleep K-complex'),
     (23, 'scorelabeled',        'a global label indicating that the EEG has been annotated with SCORE.');
+
+-- Insert file types (json, tsv)
+INSERT INTO physiological_event_file_type (FileType, Description) VALUES
+    ('json', 'JSON File Type, sidecar for event metadata'),
+    ('tsv', 'TSV File Type, contains information about each event')
+;
 
