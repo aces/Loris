@@ -182,13 +182,13 @@ class CouchDBDemographicsImporter
 
         $fieldsInQuery = "SELECT c.DoB,
                                 c.DoD,
-                                c.CandID, 
-                                c.PSCID, 
-                                s.Visit_label, 
-                                s.SubprojectID, 
-                                p.Alias as Site, 
+                                c.CandID,
+                                c.PSCID,
+                                s.Visit_label,
+                                s.SubprojectID,
+                                p.Alias as Site,
                                 c.Sex,
-                                s.Current_stage, 
+                                s.Current_stage,
                                 CASE
                                     WHEN s.Visit='Failure' THEN 'Failure'
                                     WHEN s.Screening='Failure' THEN 'Failure'
@@ -196,52 +196,56 @@ class CouchDBDemographicsImporter
                                     WHEN s.Screening='Withdrawal' THEN 'Withdrawal'
                                     ELSE 'Neither'
                                 END as Failure,
-                                c.RegistrationProjectID, 
-                                c.flagged_caveatemptor as CEF, 
-                                c_o.Description as CEF_reason, 
-                                c.flagged_other as CEF_comment, 
-                                pc_comment.Value as Comment, 
-                                COALESCE(pso.Description,'Active') as Status, 
-                                ps.participant_suboptions as Status_reason, 
-                                ps.reason_specify as Status_comments, 
+                                pr.Name as Project,
+                                c.flagged_caveatemptor as CEF,
+                                c_o.Description as CEF_reason,
+                                c.flagged_other as CEF_comment,
+                                pc_comment.Value as Comment,
+                                COALESCE(pso.Description,'Active') as Status,
+                                ps.participant_suboptions as Status_reason,
+                                ps.reason_specify as Status_comments,
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
 
-        $tablesToJoin = " FROM session s 
-                            JOIN candidate c USING (CandID) 
-                            LEFT JOIN psc p ON (p.CenterID=s.CenterID) 
-                            LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason)
-                            LEFT JOIN parameter_candidate AS pc_comment 
-                                ON (pc_comment.CandID=c.CandID) 
+        $tablesToJoin = " FROM session s
+                            JOIN candidate c USING (CandID)
+                            LEFT JOIN psc p ON (p.CenterID=s.CenterID)
+                            LEFT JOIN Project pr ON
+                                (pr.ProjectID=c.RegistrationProjectID)
+                            LEFT JOIN caveat_options c_o
+                                ON (c_o.ID=c.flagged_reason)
+                            LEFT JOIN parameter_candidate AS pc_comment
+                                ON (pc_comment.CandID=c.CandID)
                                 AND pc_comment.ParameterTypeID=(
-                                    SELECT ParameterTypeID 
-                                    FROM parameter_type 
+                                    SELECT ParameterTypeID
+                                    FROM parameter_type
                                     WHERE Name='candidate_comment'
-                                ) 
-                            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
-                            LEFT JOIN participant_status_options pso 
+                                )
+                            LEFT JOIN participant_status ps
+                                ON (ps.CandID=c.CandID)
+                            LEFT JOIN participant_status_options pso
                                 ON (pso.ID=ps.participant_status)
-                            LEFT JOIN feedback_bvl_thread fbt 
-                                ON (fbt.CandID=c.CandID) 
-                            LEFT JOIN feedback_bvl_entry fbe 
+                            LEFT JOIN feedback_bvl_thread fbt
+                                ON (fbt.CandID=c.CandID)
+                            LEFT JOIN feedback_bvl_entry fbe
                                 ON (fbe.FeedbackID=fbt.FeedbackID)";
 
-        $groupBy = " GROUP BY s.ID, 
+        $groupBy = " GROUP BY s.ID,
                         c.DoB,
                         c.CandID,
-                        c.PSCID, 
-                        s.Visit_label, 
-                        s.SubprojectID, 
-                        Site, 
+                        c.PSCID,
+                        s.Visit_label,
+                        s.SubprojectID,
+                        Site,
                         c.Sex,
                         s.Current_stage,
                         Failure,
-                        c.RegistrationProjectID, 
-                        CEF, 
-                        CEF_reason, 
-                        CEF_comment, 
-                        pc_comment.Value, 
-                        pso.Description, 
-                        ps.participant_suboptions, 
+                        c.RegistrationProjectID,
+                        CEF,
+                        CEF_reason,
+                        CEF_comment,
+                        pc_comment.Value,
+                        pso.Description,
+                        ps.participant_suboptions,
                         ps.reason_specify";
 
         // If proband fields are being used, add proband information into the
@@ -272,10 +276,10 @@ class CouchDBDemographicsImporter
                 $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
                 $fieldsInQuery .= $consentFields;
                 $tablesToJoin  .= "
-                                LEFT JOIN candidate_consent_rel $cField 
-                                ON ($cField.CandidateID=c.CandID) 
-                                AND $cField.ConsentID=(SELECT ConsentID 
-                                FROM consent 
+                                LEFT JOIN candidate_consent_rel $cField
+                                ON ($cField.CandidateID=c.CandID)
+                                AND $cField.ConsentID=(SELECT ConsentID
+                                FROM consent
                                 WHERE Name='" . $consentName . "') ";
                 $groupBy       .= ",
                             $cField.Status,

@@ -9,7 +9,7 @@
 
 import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
-import {getSessions} from '../js/arrayintersect';
+import {getSessions, enumToArray} from '../js/arrayintersect';
 
 /**
  * LogicOperator Component
@@ -337,11 +337,10 @@ class FilterRule extends Component {
                   </option>
                 );
               });
-              value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
                 <select className='input-sm col-xs-3'
                         onChange={this.valueChange}
-                        value={value}>
+                        value={this.props.rule.value ?? ''}>
                   <option value=''/>
                   {options}
                 </select>
@@ -555,7 +554,6 @@ class FilterGroup extends Component {
 
     // Update the groups sessions by calling the arrayintersect.js functions
     group.session = getSessions(group);
-
     if (this.props.index) {
       // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);

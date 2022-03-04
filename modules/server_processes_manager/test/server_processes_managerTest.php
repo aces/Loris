@@ -55,6 +55,15 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
         ];
+
+    //Filter locations
+    static $pid    = 'input[name="pid"]';
+    static $type   = 'input[name="type"]';
+    static $userid = 'input[name="userid"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+
     /**
      * Tests that the page does not load if config setting mriCodePath has
      * not been set.
@@ -121,13 +130,11 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testPageUIs()
     {
-        $this->markTestSkipped("Skipping long test");
         $this->safeGet($this->url . "/server_processes_manager/");
-        sleep(1);
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector("$value")
+            )->getText();
             $this->assertStringContainsString($key, $text);
         }
     }
@@ -138,43 +145,28 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testFilters()
     {
-        $this->markTestSkipped("Skipping long test");
-        return;
-    }
-    /**
-     * This function could test filter function in each Tabs.
-     *
-     * @param string $url            this is for the url which needs to be tested.
-     * @param string $filter         the filter which needs to be tested.
-     * @param string $testData       the test data.
-     * @param string $expectDataRows the expect rows in the table.
-     *
-     * @return void
-     */
-    function _testFilter($url,$filter,$testData,$expectDataRows)
-    {
-        $this->safeGet($this->url . $url);
-        sleep(1);
-        $this->safeFindElement(
-            WebDriverBy::Name($filter)
-        )->sendKeys($testData);
-        //click show data button
-        $this->webDriver->executescript(
-            "document.querySelector('#filter').click()"
+        $this->safeGet($this->url . "/server_processes_manager/");
+        $this->_filterTest(
+            self::$pid,
+            self::$display,
+            self::$clearFilter,
+            '317',
+            '1 row'
         );
-        sleep(1);
-        $this->webDriver->getPageSource();
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#datatable > div >".
-            " div.table-header.panel-heading').textContent"
+        $this->_filterTest(
+            self::$type,
+            self::$display,
+            self::$clearFilter,
+            'mri_upload',
+            '51'
         );
-        //click clear form
-        $this->webDriver->executescript(
-            "document.querySelector('#server_processes > div:nth-child(3)".
-            " > div > div:nth-child(2) > input').click()"
+        $this->_filterTest(
+            self::$userid,
+            self::$display,
+            self::$clearFilter,
+            'admin',
+            '51'
         );
-
-        $this->assertStringContainsString($expectDataRows, $text);
     }
 }
 

@@ -66,9 +66,8 @@
                 <!-- add project for which certification module should be enabled-->
                 <CertificationProject></CertificationProject>
             </CertificationProjects>
-
             <CertificationInstruments>
-                <!--test value=InstrumentName>InstrumentName</test-->
+                <test value="InstrumentName">Instrument Display Name</test>
             </CertificationInstruments>
         </Certification>
 

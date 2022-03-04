@@ -82,7 +82,7 @@ foreach ($flagData as $cmid => $data) {
     if (!$instrument->usesJSONData()) {
         $instrDECS = $DB->pselectOne(
             "SELECT Data_entry_completion_status 
-            FROM {$data['Test_name']} WHERE CommentID=:cmid",
+            FROM {$instrument->table} WHERE CommentID=:cmid",
             ["cmid" => $cmid]
         );
     }
