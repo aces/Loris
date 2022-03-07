@@ -476,6 +476,14 @@ class Sessions extends \NDB_Page
             intval($physioFileID)
         );
         $fileSummary['annotations'] = $annotations->getData();
+        $fileSummary['epochsURL'] = $db->pselectOne(
+            "SELECT FilePath 
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID 
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
+        error_log(print_r($fileSummary['epochsURL'], true));
         // ##################### EEGNET OVERRIDE END ################## //
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
