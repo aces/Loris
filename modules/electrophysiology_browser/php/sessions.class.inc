@@ -459,7 +459,14 @@ class Sessions extends \NDB_Page
         // get the links to the files for downloads
 
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
-        $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
+	$fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
+	$fileSummary['epochsURL'] = $db->pselectOne(
+            "SELECT FilePath 
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID 
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
 
         $fileOutput = $db->pselectone(
             'SELECT pot.OutputTypeName
