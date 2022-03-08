@@ -74,6 +74,7 @@ scanner candidates. This prevents an error from being thrown in the candidate pa
 - Fix "Go to main page" broken link (PR #7258)
 - Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
 - Partially fix instrument escaping issues by reloading instrument and its data upon successful save (PR #7776)
+- Fix recognition of null sessionID in NDB_BVL_Instrument (PR #8031)
 
 
 ### Modules
