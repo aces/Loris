@@ -524,8 +524,8 @@ class Utility
     {
         error_log(
             "LORIS Deprecation Warning: The getAllInstruments() function of ".
-            "the Utility class has been deprecated. This function does not load the ".
-            "most accurate Full_name value and should be replaced by ".
+            "the Utility class has been deprecated. This function does not load ".
+            "the most accurate Full_name value and should be replaced by ".
             "getInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
         $Factory       = \NDB_Factory::singleton();
