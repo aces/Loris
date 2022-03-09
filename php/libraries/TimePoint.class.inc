@@ -301,9 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID  $candid       The candidate identifier
-     * @param integer $subprojectID The subprojectID
-     * @param string  $visitLabel   The visit label
+     * @param CandID     $candid       The candidate identifier
+     * @param \ProjectID $projectID    The Project identifier
+     * @param integer    $subprojectID The subprojectID
+     * @param string     $visitName    The visit name
      *
      * @throws LorisException
      *
@@ -311,14 +312,14 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function isValidVisitLabel(
         CandID $candid,
+        \ProjectID $projectID,
         int $subprojectID,
-        string $visitLabel
+        string $visitName
     ): void {
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
-        if (empty($visitLabel)) {
+        if (empty($visitName)) {
             throw new \LorisException(
                 'A visit label is required.'
             );
@@ -326,8 +327,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // Check if visit label exists for this subproject
         if (!array_key_exists(
-            $visitLabel,
-            \Utility::getVisitsForSubproject($subprojectID)
+            $visitName,
+            \Utility::getVisitsForSubproject(
+                $subprojectID
+            )
         )
         ) {
             throw new \LorisException(
@@ -337,11 +340,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $candidate =& \Candidate::singleton($candid);
 
+        // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
 
         //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($visitLabel, $used_label) == 0) {
+        foreach ($timePointArray AS $used_name) {
+            if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
                     'This visit label is not unique.'
                 );

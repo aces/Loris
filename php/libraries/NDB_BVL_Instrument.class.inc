@@ -1463,7 +1463,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSubprojectID(): ?int
     {
         $sessionID = $this->getSessionID();
-        if ($sessionID !== -1) {
+        if (!is_null($sessionID)) {
             $timepoint    = \TimePoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;

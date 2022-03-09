@@ -172,8 +172,8 @@ class ViewDataTabPane extends Component {
       dataDisplay: 'Longitudinal',
       runQueryClicked: false,
       dataRequestPrompt: false,
+      sessionsLoaded: this.props.AllSessions.length > 0,
     };
-
     this.handleDataDisplay = this.handleDataDisplay.bind(this);
     this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
@@ -182,6 +182,19 @@ class ViewDataTabPane extends Component {
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
     this.downloadDataCSV = this.downloadDataCSV.bind(this);
+  }
+
+  /**
+   * Called by React when the component has updated.
+   * @param {object} prevProps - Previous component properties
+   * @param {object} prevState - Previous component state
+   */
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.AllSessions.length > 0 &&
+      this.state.sessionsLoaded === false
+    ) {
+      this.setState({sessionsLoaded: true});
+    }
   }
 
   /**
@@ -454,9 +467,10 @@ class ViewDataTabPane extends Component {
     ) : null;
 
     let sessionsEmpty = this.props.filter.session.length === 0;
-    if (this.props.AllSessions.length > 0) {
+    if (this.state.sessionsLoaded) {
       sessionsEmpty = false;
     }
+
     let disabledMessage = this.props.Fields === undefined ||
                       this.props.Fields.length === 0 ?
       'Define Field or load an existing query before query can run' : null;
