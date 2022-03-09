@@ -266,14 +266,23 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candid       = $values['candID'];
         $subprojectID = intval($values['subproject']);
         $projectID    = new \ProjectID($values['project']);
-        $visitLabel   = $values['visit'] ?? '';
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectSubproject(
+            $projectID,
+            intval($values['subproject'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
                 $projectID,
                 $subprojectID,
-                $visitLabel,
+                $visitName,
             );
         } catch (\LorisException $exception) {
             $conflict['visitLabel'] = $exception->getMessage();
