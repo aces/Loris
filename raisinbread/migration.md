@@ -5,6 +5,7 @@
 
 ____________________________________________________________________________________________________________________
 # 24.0
+2019-07-01_fix_project_in_session.sql
 2019-09-18_DocRepoEdit.sql
 2019-12-17-RemovePasswordExpiry.sql
 2020-01-07-publication_users_edit_perm_rel_pk.sql
