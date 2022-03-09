@@ -169,9 +169,9 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return string
      */
-    function _getInstrumentName($instrument): void
+    function _getInstrumentName($instrument): string
     {
         return $this->instruments[$instrument];
     }
