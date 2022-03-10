@@ -247,7 +247,7 @@ class AddSurvey extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
 
-        if ($email) {
+        if ($email && ($_REQUEST['fire_away'] !== 'Create survey')) {
             $config   = \NDB_Config::singleton();
             $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
