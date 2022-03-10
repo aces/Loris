@@ -16,6 +16,7 @@ import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
+import {getSessions} from '../js/arrayintersect';
 
 /**
  * DataQueryApp component
@@ -60,6 +61,7 @@ class DataQueryApp extends Component {
         ],
         session: [],
       },
+      allSessions: [], // persistent "all sessions" after initial load.
       selectedFields: {},
       downloadableFields: {},
       loading: false,
@@ -271,6 +273,7 @@ class DataQueryApp extends Component {
                 ...prevState.filter,
                 session: data.sessions,
               },
+              allSessions: data.sessions,
             };
           }, () => {
             return callback(true);
@@ -366,10 +369,11 @@ class DataQueryApp extends Component {
     // Used to save the current query
 
     let filter = this.saveFilterGroup(this.state.filter);
+    const fields = JSON.stringify(this.state.selectedFields);
 
     $.post(loris.BaseURL
       + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
+      Fields: fields,
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
@@ -682,7 +686,7 @@ class DataQueryApp extends Component {
       $.ajax({
         url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
-          if (data[0].value.IsFile) {
+          if (data[0] && data[0].value.IsFile) {
             let key = data[0].key[0] + ',' + data[0].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
@@ -1151,7 +1155,7 @@ class DataQueryApp extends Component {
    */
   updateFilter(filter) {
     if (filter.children.length === 0) {
-      filter.session = this.state.filter.session;
+      filter.session = this.state.allSessions;
     }
     this.setState({filter});
   }

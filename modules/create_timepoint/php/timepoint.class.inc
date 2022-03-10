@@ -3,6 +3,7 @@
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\VisitController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -173,10 +174,21 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 json_encode($values['conflict'])
             );
         }
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectSubproject(
+            $project->getId(),
+            intval($values['subproject'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
+
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
             intval($values['subproject']),
-            $values['visit'] ?? null,
+            $visitName,
             $site,
             $project,
             intval($values['languages']) ?? null
@@ -253,13 +265,24 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         $candid       = $values['candID'];
         $subprojectID = intval($values['subproject']);
-        $visitLabel   = $values['visit'] ?? '';
+        $projectID    = new \ProjectID($values['project']);
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectSubproject(
+            $projectID,
+            intval($values['subproject'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
+                $projectID,
                 $subprojectID,
-                $visitLabel
+                $visitName,
             );
         } catch (\LorisException $exception) {
             $conflict['visitLabel'] = $exception->getMessage();

@@ -29,12 +29,13 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - name: Composer cache
       uses: actions/cache@v2
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
 
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8

@@ -121,7 +121,7 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
                 "descending" => "true",
             ]
         );
-        $data['updatetime'] = $update[0]['key'];
+        $data['updatetime'] = $update[0]['key'] ?? 'unknown';
 
         $categories = $couch->queryView(
             "DQG-2.0",

@@ -250,15 +250,7 @@ class Image
      */
     public function getFileInfo(): \SplFileInfo
     {
-        $imagepath = \NDB_factory::singleton()
-            ->config()
-            ->getSetting('imagePath');
-
-        $fullpath = $imagepath . $this->_filelocation;
-
-        $info = new \SplFileInfo($fullpath);
-
-        return $info;
+        return $this->_getFullPath($this->_filelocation);
     }
 
     /**
@@ -268,17 +260,37 @@ class Image
      */
     public function getThumbnailFileInfo(): \SplFileInfo
     {
+        $picfile = $this->getHeader('check_pic_filename');
+        if (strpos($picfile, '://') !== false) {
+            // It represents a URI, not a local path
+            return new \SplFileInfo($picfile);
+        }
+
+        return $this->_getFullPath('/pic/'. $this->getHeader('check_pic_filename'));
+    }
+
+    /**
+     * Returns the full path to the file after adding
+     * imagePath if applicable.
+     *
+     * @param string $relpath The relative pathname
+     *
+     * @return \SplFileInfo
+     */
+    private function _getFullPath(string $relpath) : \SplFileInfo
+    {
+        if (strpos($relpath, '://') !== false) {
+            // It represents a URI, not a local path
+            return new \SplFileInfo($relpath);
+        }
         $imagepath = \NDB_factory::singleton()
             ->config()
             ->getSetting('imagePath');
 
-        $fullpath = $imagepath . '/pic/'. $this->getHeader('check_pic_filename');
+        $fullpath = $imagepath . $relpath;
 
-        $info = new \SplFileInfo($fullpath);
-
-        return $info;
+        return new \SplFileInfo($fullpath);
     }
-
     /**
      * Creates an immutable object representation of this Image
      *
