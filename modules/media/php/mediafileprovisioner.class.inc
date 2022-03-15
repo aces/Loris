@@ -80,17 +80,22 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        if (!is_null($row['testName'])) {
+        static $instrumentnames = [];
+
+        $testname = $row['testName'] ?? null;
+        unset($row['testName']);
+
+        if (!isset($instrumentnames[$testname])) {
             try {
-                $instrumentName  = \NDB_BVL_Instrument::factory(
+                $instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
                     $this->lorisinstance,
                     $row['testName'],
                 )->getFullname();
-                $row['fullName'] = $instrumentName;
             } catch (\Exception $e) {
+                $instrumentnames[$testname] = null;
             }
         }
-        unset($row['testName']);
+        $row['fullName'] = $instrumentnames[$testname] ?? null;
 
         return new MediaFile($row);
     }
