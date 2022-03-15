@@ -340,7 +340,9 @@ class Files extends \NDB_Page
             $config->getSetting("documentRepositoryPath"),
             $name
         );
-        mkdir($path, 0600);
+        if (!is_dir($path)) {
+            mkdir($path, 0770);
+        }
 
         $targetdir = new \SplFileInfo($path);
 
