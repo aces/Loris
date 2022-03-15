@@ -32,6 +32,8 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     protected $lorisinstance;
 
+    private $_instrumentnames = [];
+
     /**
      * Create a MediaFileProvisioner, which gets files for the meida
      * menu table.
@@ -80,22 +82,20 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        static $instrumentnames = [];
-
         $testname = $row['testName'] ?? null;
         unset($row['testName']);
 
-        if (!isset($instrumentnames[$testname])) {
+        if (!isset($this->_instrumentnames[$testname])) {
             try {
-                $instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
+                $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
                     $this->lorisinstance,
                     $row['testName'],
                 )->getFullname();
             } catch (\Exception $e) {
-                $instrumentnames[$testname] = null;
+                $this->_instrumentnames[$testname] = null;
             }
         }
-        $row['fullName'] = $instrumentnames[$testname] ?? null;
+        $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
 
         return new MediaFile($row);
     }
