@@ -82,7 +82,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $testname = $row['testName'] ?? null;
+        $testname = $row['testName'] ?? '';
         unset($row['testName']);
 
         if (!isset($this->_instrumentnames[$testname])) {
