@@ -89,7 +89,7 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             try {
                 $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
                     $this->lorisinstance,
-                    $row['testName'],
+                    $testname,
                 )->getFullname();
             } catch (\Exception $e) {
                 $this->_instrumentnames[$testname] = null;
