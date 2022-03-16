@@ -4,7 +4,7 @@
 _Behavioural Quality Control: View Flagged Behavioural Entries_ (`behavioural_quality_control_view`)
 2. Make sure that without the _Access Profile: View Candidates and
 Timepoints - All Sites_ (`access_all_profiles`) permission the user only has 
-access to data affilioated with their site and with the permission they can see data 
+access to data affiliated with their site and with the permission they can see data 
 from all sites.
 3. Make sure the 3 tabs load _Incomplete Forms_, _Data Conflicts_ and _Behavioural Feedback_.
 4. Make sure links on all page are function and redirect the user to the appropriate page. 
