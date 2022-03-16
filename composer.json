@@ -11,6 +11,7 @@
         "psr/http-server-handler" : "*",
         "psr/http-server-middleware" : "*",
         "zendframework/zend-diactoros": "~1.8.4",
+        "phpoffice/phpword": "v0.18.*",
         "ext-json": "*"
     },
     "require-dev" : {
