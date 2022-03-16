@@ -7,7 +7,7 @@ Timepoints - All Sites_ (`access_all_profiles`) permission the user only has
 access to data affiliated with their site and with the permission they can see data 
 from all sites.
 3. Make sure the 3 tabs load _Incomplete Forms_, _Data Conflicts_ and _Behavioural Feedback_.
-4. Make sure links on all page are function and redirect the user to the appropriate page. 
+4. Make sure links on all pages are functional and redirect the user to the appropriate page. 
 Links to PSCID/DCCID should redirect to the candidate page, visits to the candidate's 
 timepoint, Instruments to the data entry form and feedback links to the appropriate 
 location where the feedback was entered.
