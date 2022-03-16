@@ -14,6 +14,9 @@ CheckboxElement, ButtonElement, LorisElement
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+const current = new Date();
+const defaultMaxYear = current.getFullYear();
+
 /**
  * Form Component.
  * React wrapper for <form> element that accepts children react components
@@ -1530,7 +1533,7 @@ class DateElement extends Component {
         minYear = '1000';
       }
       if (this.props.maxYear === '' || this.props.maxYear === null) {
-        maxYear = '9999';
+        maxYear = defaultMaxYear;
       }
       let monthInputs = $('input[type=month][name=' + this.props.name+']');
       monthInputs.datepicker({
@@ -1600,7 +1603,7 @@ class DateElement extends Component {
       minYear = '1000';
     }
     if (this.props.maxYear === '' || this.props.maxYear === null) {
-      maxYear = '9999';
+      maxYear = defaultMaxYear;
     }
 
     const currentDate = new Date();
@@ -1668,7 +1671,7 @@ DateElement.defaultProps = {
   label: '',
   value: undefined,
   id: null,
-  maxYear: '9999',
+  maxYear: defaultMaxYear,
   minYear: '1000',
   dateFormat: 'YMd',
   disabled: false,
