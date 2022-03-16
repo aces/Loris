@@ -29,7 +29,7 @@
 1. User can access the page if they fulfill all the following conditions:
 	* they have `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` or ` Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission 
 	* they have `access_all_profiles` or are a member of the site of the issue or the site has no issue.
-2. Users who have ` Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission can edit all fields if it is their issue, but are blocked except for commenting and watching options for all other issues. Users with `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` permission can make all changes on all issues that they can view. 
+2. Users who have `Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission can edit all fields if it is their issue, but are blocked except for commenting and watching options for all other issues. Users with `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` permission can make all changes on all issues that they can view. 
 3. Users can only enter a PSCID for those candidate that are in their site.
 4. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have `access_all_profiles` permission
 5. Submit just a visit label - this should give an error message.
