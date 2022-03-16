@@ -43,7 +43,7 @@
 
 ## Permissions [Automation Testing]
 1. Remove `access_all_profiles` permission.
-2. Remove ` Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission
+2. Remove `Issue Tracker: Create/Edit Own Issues and Comment on All Issues` permission
 3. Remove `Issue Tracker: Close/Edit/Re-assign/Comment on All Issues` permission
 4. Test that the module behaves correctly as described above. 
 
