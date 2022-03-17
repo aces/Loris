@@ -356,7 +356,6 @@ class MediaUploadForm extends Component {
       });
       swal.fire(msg, '', 'error');
     }, false);
-    console.log(this.props.action);
     xhr.open('POST', this.props.action);
     xhr.send(formObject);
   }
