@@ -1,23 +1,21 @@
 # Configuration Test Plan
 
-1. Verify that the Config menu item only appears in the Admin main menu if the user 
-has permission "config" (Edit configuration settings).
+1. Make sure the _Configuration_ entry in the _Admin_ menu only appears if the logged in 
+user has the _Configuration: View/Edit Settings_ (`config`) and that the user can 
+only access the module when given the permission.
   [Automation Test on Travis CI]
-2. Verify that you can only load the configuration module if the user has permission 
-"config" (Edit configuration settings).
-  [Automation Test on Travis CI]
-3. Load the config module. Roll over each of the config labels to see if it gives a 
+2. Load the config module. Roll over each of the config labels to see if it gives a 
 description of that setting.
   [Automation Test on Travis CI]
-4. Go through each field in the configuration module. For each field where there is a
-single text area or radio input to enter data, try changing the value and pressing
-save at the bottom of the page. Refresh the page and check that the value actually 
-persists. Try to see if the change actually affected LORIS in some way. For example, 
-for the project description in the dashboard settings, go to the dashboard to see if 
-the project description actually changed.
+3. Go through at least 1 field of each type (text, radio button, multiple entries, ...) 
+in the configuration module. For each field where there is a single text area or 
+radio input to enter data, try changing the value and pressing save at the bottom of 
+the page. Refresh the page and check that the value actually persists. Try to see if 
+the change actually affected LORIS in some way. For example, for the project description 
+in the dashboard settings, go to the dashboard to see if the project description actually changed.
+   [Manual Test]
    >Some settings will break LORIS, like changing the base path, or Main project 
  URL, so be wary.
-  [Manual Test]
 5. Boolean configurations in the database can be either set to `1/0` or `true/false`.
    - make sure that changing the value from the module does not alter the type of 
    boolean (`1/0` or `true/false`) in the database but only alters it's value. 
@@ -75,6 +73,3 @@ project_subproject_rel table in the database.
   [Manual Test]
 5. Test the breadcrumb to see if you can navigate back to the main config page.
   [Automation Test]
-6. Go back to the project configuration page and click on the subproject link and 
-confirm that it brings you to the subproject configuration page.
-  [Manual Test]
