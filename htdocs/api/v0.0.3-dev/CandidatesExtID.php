@@ -78,9 +78,9 @@ class CandidatesExtID extends APIBase
                  LEFT JOIN candidate_project_extid_rel cpe ON (cpe.CandID = c.CandID)
                  LEFT JOIN Project_external pe ON (cpe.ProjectExternalID= pe.ProjectExternalID)
                  LEFT JOIN session ses ON (cpe.CandID = ses.CandID)
-             WHERE c.Active='Y' AND pe.Name=:name
+             WHERE c.Active='Y' AND FIND_IN_SET(pe.Name, :name)
                 ",
-            ["name"=>"QPN"]
+            ["name"=>"QPN,COPN"]
         );
 
         $candidates = [];
