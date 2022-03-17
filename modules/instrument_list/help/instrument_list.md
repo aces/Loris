@@ -15,4 +15,3 @@ If a study uses Double Data Entry forms to protect against user input errors and
 To finalize data entry for a timepoint: in the sidebar under "Send Time Point" users must select "Send to DCC". After clicking "Send to DCC", no data entry changes can be made in the timepoint (including instruments) for this candidate. Users with the authorization to "Reverse Send to DCC" can make this timepoint editable after it has been finalized in this manner.
 
 The "BVL QC Type" flag in the sidebar panel is used to record whether Behavioural Quality Control (QC) was done via visual inspection or based on detailed comparison with a paper hard copy.  The "BVL QC Status" flag records whether Quality Control has been reviewed and completed.
-I am a test

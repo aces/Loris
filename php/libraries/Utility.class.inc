@@ -351,6 +351,41 @@ class Utility
     }
 
     /**
+     * Returns a list of visits associated with the supplied Project AND subproject.
+     * The visits are in an associative array format [VisitID=>VisitLabel]
+     *
+     * @param \ProjectID $projectID    ID of the project
+     * @param int        $subprojectID ID of the subproject
+     *
+     * @return array list of visits for supplied project-subproject combination
+     *
+     * @note This function should be moved to a visits class when it is created
+     */
+    static function getVisitsForProjectSubproject(
+        \ProjectID $projectID,
+        int $subprojectID
+    ): array {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $result = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT VisitID, VisitLabel
+            FROM visit v
+                JOIN visit_project_subproject_rel vpsr USING(VisitID)
+                JOIN project_subproject_rel psr USING(ProjectSubprojectRelID)
+	    WHERE SubprojectID = :sid
+		AND ProjectID = :pid
+            ORDER BY VisitLabel",
+            ["sid"=>$subprojectID, "pid"=>$projectID],
+            "VisitID"
+        );
+
+        return $result;
+    }
+
+
+
+    /**
      * Returns a list of bvl instruments
      *
      * Returns a list of instruments for a timepoint's stage ($stage).
@@ -488,10 +523,10 @@ class Utility
     static function getAllInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getAllInstruments() function of
-            the Utility class has been deprecated. This function does not load the
-            most accurate Full_name value and should be replaced by
-            getInstrumentNamesList() of the NDB_BVL_Instrument class."
+            "LORIS Deprecation Warning: The getAllInstruments() function of ".
+            "the Utility class has been deprecated. This function does not load ".
+            "the most accurate Full_name value and should be replaced by ".
+            "getInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();

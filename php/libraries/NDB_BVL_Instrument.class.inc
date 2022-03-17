@@ -1071,7 +1071,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [];
+        $examiners = [
+            '' => ''
+        ];
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $eid => $row) {
                 $name = $row['full_name'];
@@ -1461,7 +1463,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSubprojectID(): ?int
     {
         $sessionID = $this->getSessionID();
-        if ($sessionID !== -1) {
+        if (!is_null($sessionID)) {
             $timepoint    = \TimePoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;

@@ -13,9 +13,7 @@ jobs:
             - static
             - unit
             - integration
-            php:
-            - 7.4
-            - 8.0
+            php: ['7.4','8.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -31,15 +29,16 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - name: Composer cache
       uses: actions/cache@v2
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
 
     - name: Change PHP Version in Dockerfile
-      run: sed -i "s/7.4/${{ matrix.php }}/g" Dockerfile.test.php7
+      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install package dependencies
       run: sudo apt-get install -y protobuf-compiler 

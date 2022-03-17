@@ -118,7 +118,7 @@ function uploadFile()
 
     // If required fields are not set, show an error
     if (empty($_FILES)) {
-        showMediaError(
+        echo showMediaError(
             "File could not be uploaded successfully.
             Please contact the administrator.",
             400
@@ -126,7 +126,7 @@ function uploadFile()
     }
 
     if (!isset($pscid, $visit)) {
-        showMediaError("Please fill in all required fields!", 400);
+        echo showMediaError("Please fill in all required fields!", 400);
         return;
     }
 
@@ -137,10 +137,14 @@ function uploadFile()
     // by chrome browsers to avoid XSS attacks
     $fileName  = urldecode($fileName);
     $fileType  = $_FILES["file"]["type"];
-    $extension = pathinfo($fileName)['extension'];
+    $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
-    if (!isset($extension)) {
-        showMediaError("Please make sure your file has a valid extension!", 400);
+    if (empty($extension)) {
+        $response = showMediaError(
+            "Please make sure your file has a valid extension!",
+            400,
+        );
+        print $response;
         return;
     }
 
@@ -157,7 +161,7 @@ function uploadFile()
     );
 
     if (!isset($sessionID) || strlen($sessionID) < 1) {
-        showMediaError(
+        echo showMediaError(
             "Error! A session does not exist for candidate '$pscid'' " .
             "and visit label '$visit'.",
             404
@@ -213,10 +217,10 @@ function uploadFile()
                 ]
             );
         } catch (DatabaseException $e) {
-            showMediaError("Could not upload the file. Please try again!", 500);
+            echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("Could not upload the file. Please try again!", 500);
     }
 }
 
@@ -229,8 +233,8 @@ function viewData()
 {
     $user =& User::singleton();
     if (!$user->hasPermission('media_read')) {
-        showMediaError("Permission denied", 403);
-        exit;
+        echo showMediaError("Permission denied", 403);
+        return;
     }
     echo json_encode(getUploadFields());
 }
@@ -382,16 +386,16 @@ function getUploadFields()
  * @param int    $code    The HTTP response code to
  *                        use with the message
  *
- * @return void
+ * @return string
  */
-function showMediaError($message, $code)
+function showMediaError($message, $code) : string
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
+    return json_encode(['message' => $message]);
 }
 
 /**
@@ -452,13 +456,17 @@ function checkDateTaken($dateTaken)
     if (!empty($dateTaken)) {
         $date = date_create_from_format("Y-m-d", $dateTaken);
         if ($date === false) {
-            showMediaError("Invalid date: $dateTaken", 400);
+            echo showMediaError("Invalid date: $dateTaken", 400);
+            return;
         }
 
         $now  = new DateTime();
         $diff = intval(date_diff($date, $now)->format("%R%a"));
         if ($diff < 0) {
-            showMediaError("Date of administration cannot be in the future", 400);
+            echo showMediaError(
+                "Date of administration cannot be in the future",
+                400,
+            );
         }
     }
 }

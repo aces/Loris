@@ -1295,6 +1295,10 @@ class EmailElement extends Component {
         <div className={inputClass}>
           <input
             type="email"
+            pattern={'/^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[' +
+              'a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-' +
+              ']{0,61}[a-zA-Z0-9])?)*$/'}
+            title="Please provide a valid email address!"
             className="form-control"
             name={this.props.name}
             id={this.props.id}
