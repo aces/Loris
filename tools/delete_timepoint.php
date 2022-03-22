@@ -121,7 +121,8 @@ case 'delete_timepoint':
         $confirm,
         $printToSQL,
         $DB,
-        $output
+        $output,
+        $lorisInstance
     );
 }
 
@@ -153,17 +154,27 @@ USAGE;
  * (second-level relations) should have actions on delete specified in the
  * database schema
  *
- * @param string   $CandID     Identifying the candidate
- * @param string   $sessionID  Identifying the TimePoint
- * @param string   $confirm    Whether to execute the script
- * @param string   $printToSQL Whether to print the results
- * @param Database $DB         The database to connect to
- * @param string   $output     The string containing the statements to execute
+ * @param string               $CandID        Identifying the candidate
+ * @param string               $sessionID     Identifying the TimePoint
+ * @param string               $confirm       Whether to execute the script
+ * @param string               $printToSQL    Whether to print the results
+ * @param Database             $DB            The database to connect to
+ * @param string               $output        The string containing the statements to
+ *                                            execute
+ * @param \LORIS\LorisInstance $lorisInstance The LORIS instance that data is
+ *                                            being checked from.
  *
  * @return void
  */
-function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output)
-{
+function deleteTimepoint(
+    $CandID,
+    $sessionID,
+    $confirm,
+    $printToSQL,
+    $DB,
+    $output,
+    $lorisInstance
+) {
     echo "\n###############################################################\n";
     echo "Deleting timepoint data for candidate $CandID and session $sessionID.";
     echo "\n###############################################################\n";
@@ -173,21 +184,12 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         ['sid' => $sessionID]
     );
 
-    $loris = new \LORIS\LorisInstance(
-        \NDB_Factory::singleton()->database(),
-        \NDB_Factory::singleton()->config(),
-        [
-            "project/modules",
-            "modules",
-        ]
-    );
-
     // Print each instrument instance
     foreach ($instruments as $instrument) {
         try {
             $instr = \NDB_BVL_Instrument::factory(
-                $loris,
-                $instrument['Test_name'], 
+                $lorisInstance,
+                $instrument['Test_name'],
                 $instrument['CommentID']
             );
             echo "\n{$instrument['Test_name']}\n";
@@ -287,8 +289,8 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         foreach ($instruments as $instrument) {
             try {
                 $instr = \NDB_BVL_Instrument::factory(
-                    $loris,
-                    $instrument['Test_name'], 
+                    $lorisInstance,
+                    $instrument['Test_name'],
                     $instrument['CommentID']
                 );
             } catch (Exception $e) {
@@ -299,7 +301,10 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
                 $name = implode(" -> ", $instrument);
                 echo "\n-- Deleting Instrument $name.\n";
                 if (!$instr->usesJSONData()) {
-                    $DB->delete($instr->table, array('CommentID' => $instrument['CommentID']));
+                    $DB->delete(
+                        $instr->table,
+                        ['CommentID' => $instrument['CommentID']]
+                    );
                 }
                 $DB->delete(
                     $instrument['Test_name'],
@@ -362,8 +367,8 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         foreach ($instruments as $instrument) {
             try {
                 $instr = \NDB_BVL_Instrument::factory(
-                    $loris,
-                    $instrument['Test_name'], 
+                    $lorisInstance,
+                    $instrument['Test_name'],
                     $instrument['CommentID']
                 );
             } catch (Exception $e) {
@@ -374,7 +379,12 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
             $name    = implode(" -> ", $instrument);
             $output .= "\n-- Deleting Instrument $name.\n";
             if (!$instr->usesJSONData()) {
-                _printResultsSQL($instr->table, array('CommentID' => $instrument['CommentID']), $output, $DB);
+                _printResultsSQL(
+                    $instr->table,
+                    ['CommentID' => $instrument['CommentID']],
+                    $output,
+                    $DB
+                );
             }
 
             // Delete from conflicts

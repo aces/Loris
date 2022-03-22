@@ -417,7 +417,12 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         _printResultsSQL("issues", ["candID" => $CandID], $output, $DB);
 
         //delete from issues
-        _printResultsSQL("candidate_adverse_event", ["candID" => $CandID], $output, $DB);
+        _printResultsSQL(
+            "candidate_adverse_event",
+            ["candID" => $CandID],
+            $output,
+            $DB
+        );
 
         //delete from candidate
         _printResultsSQL("candidate", ["CandID" => $CandID], $output, $DB);
