@@ -75,7 +75,7 @@ scanner candidates. This prevents an error from being thrown in the candidate pa
 - Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
 - Partially fix instrument escaping issues by reloading instrument and its data upon successful save (PR #7776)
 - Fix recognition of null sessionID in NDB_BVL_Instrument (PR #8031)
-- Fix delete_candidate.php / delete_timepoint.php failing because of json instruments / instruments with different table name than test_name
+- Fix delete_candidate.php / delete_timepoint.php failing because of json instruments / instruments with different table name than test_name (PR #8070)
 
 
 ### Modules
