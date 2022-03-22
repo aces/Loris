@@ -75,7 +75,7 @@ scanner candidates. This prevents an error from being thrown in the candidate pa
 - Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
 - Partially fix instrument escaping issues by reloading instrument and its data upon successful save (PR #7776)
 - Fix recognition of null sessionID in NDB_BVL_Instrument (PR #8031)
-- Fix bug where users with `access_all_profiles` permission can not see profiles of candidates with visits from different sites (PR TODO)
+- Fix bug where users with `access_all_profiles` permission can not see profiles of candidates with visits from different sites (PR #8067)
 
 
 ### Modules
