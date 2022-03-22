@@ -4,6 +4,7 @@ namespace LORIS\behavioural_qc;
 
 use LORIS\behavioural_qc\Provisioners\BehaviouralProvisioner;
 use \LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\Data\Filters\UserProjectMatch;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -54,9 +55,11 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['access_all_profiles', 'behavioural_quality_control_view']
+            ['access_all_profiles']
         );
-        $provisioner = (new BehaviouralProvisioner())->filter($filter);
+        $provisioner = (new BehaviouralProvisioner())
+            ->filter($filter)
+            ->filter(new UserProjectMatch());
         $user        = $request->getAttribute('user');
         $data        = (new \LORIS\Data\Table())
             ->withDataFrom($provisioner)
@@ -70,6 +73,16 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Use project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Provide the field options for the behavioural form.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
@@ -79,8 +92,13 @@ class Behavioural extends \NDB_Page implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
+        $user         = $request->getAttribute('user');
+        $visit_array  = \Utility::getVisitList();
+        $userProjects = $user->getProjects();
+        $projects     = [];
+        foreach ($userProjects as $project) {
+            $projects[$project->getId()->__toString()] = $project->getName();
+        }
         // centerID
         $list_of_sites = $user->hasPermission('access_all_profiles')
             ? \Utility::getSiteList()
@@ -88,7 +106,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
         return (new \LORIS\behavioural_qc\Views\Behavioral(
             $visit_array,
             \Utility::getAllInstruments(),
-            \Utility::getProjectList(),
+            $projects,
             \Utility::getSubprojectList(),
             $list_of_sites
         ))->toArray();
