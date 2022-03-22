@@ -32,7 +32,14 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     protected $lorisinstance;
 
-    private $_instrumentnames = [];
+    /**
+     * Cache of instrument->getFullname returned value.
+     * Initializing empty keys to prevent instanciation of empty testnames.
+     */
+    private $_instrumentnames = [
+        null => '',
+        ''   => ''
+    ];
 
     /**
      * Create a MediaFileProvisioner, which gets files for the meida
