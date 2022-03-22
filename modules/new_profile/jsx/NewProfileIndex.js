@@ -160,7 +160,7 @@ class NewProfileIndex extends React.Component {
     let minYear = this.state.configData.minYear;
     let thisYear = (new Date()).getFullYear();
     let dobMaxYear = this.state.configData.maxYear;
-    if (isNaN(+dobMaxYear) || dobMaxYear > thisYear) {
+    if (!(dobMaxYear) || (dobMaxYear > thisYear)) {
       dobMaxYear = thisYear;
     }
     let dateFormat = this.state.configData.dobFormat;
