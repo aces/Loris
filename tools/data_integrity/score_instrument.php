@@ -192,6 +192,7 @@ foreach ($testNames as $test) {
     foreach ($instrumentMetaData as $record) {
         // make an instance of the instrument's object
         $instrument      = NDB_BVL_Instrument::factory(
+            $lorisInstance,
             $instrumentName,
             $record['CommentID'],
             '',
