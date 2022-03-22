@@ -287,15 +287,6 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
     );
     print_r($result);
 
-    // Print candidate adverse event
-    echo "\nCandidate Adverse Event\n";
-    echo "-----------\n";
-    $result = $DB->pselect(
-        'SELECT * FROM candidate_adverse_event WHERE CandID=:cid',
-        ['cid' => $CandID]
-    );
-    print_r($result);
-
     // Print candidate
     echo "\nCandidate\n";
     echo "-----------\n";
@@ -343,9 +334,6 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 
         //delete from issues
         $result = $DB->delete("issues", ["candID" => $CandID]);
-
-        //delete from candidate_adverse_event
-        $result = $DB->delete("candidate_adverse_event", ["candID" => $CandID]);
 
         //delete from candidate
         $DB->delete("candidate", ["CandID" => $CandID]);
@@ -415,14 +403,6 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 
         //delete from issues
         _printResultsSQL("issues", ["candID" => $CandID], $output, $DB);
-
-        //delete from issues
-        _printResultsSQL(
-            "candidate_adverse_event",
-            ["candID" => $CandID],
-            $output,
-            $DB
-        );
 
         //delete from candidate
         _printResultsSQL("candidate", ["CandID" => $CandID], $output, $DB);
