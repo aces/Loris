@@ -175,15 +175,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   const EpochsLayer = () => {
-    const fEpochs = [...Array(epochs.length).keys()].filter((i) =>
-      epochs[i].onset + epochs[i].duration > interval[0]
-      && epochs[i].onset < interval[1]
-    );
-
     return (
       <Group>
-        {fEpochs.length < MAX_RENDERED_EPOCHS &&
-          fEpochs.map((index) => {
+        {filteredEpochs.length < MAX_RENDERED_EPOCHS &&
+          filteredEpochs.map((index) => {
             return (
               <Epoch
                 {...epochs[index]}
