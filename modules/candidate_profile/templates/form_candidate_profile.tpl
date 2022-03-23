@@ -73,6 +73,12 @@ window.addEventListener('load', () => {
         );
     }
 
-    loadCandidate().then(loadVisits).then(loadCards).then(displayCards);
+    loadCandidate()
+      .then(loadVisits)
+      .then(loadCards)
+      .then(displayCards)
+      .catch(function (error) {
+        console.error(error);
+      });
 });
 </script>
