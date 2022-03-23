@@ -76,6 +76,8 @@ scanner candidates. This prevents an error from being thrown in the candidate pa
 - Partially fix instrument escaping issues by reloading instrument and its data upon successful save (PR #7776)
 - Fix recognition of null sessionID in NDB_BVL_Instrument (PR #8031)
 - Fix bug where server_processes_manager had a timeout (PR #8071)
+- Candidate profile page loads with only the visits listed that a user has access to 
+if a candidate has some visits that the user should not see. Fixes error where page was not loading for this use case (PR #8072)
 
 
 ### Modules
