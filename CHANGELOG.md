@@ -8,7 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 24.0 (Release Date: ??)
+## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
