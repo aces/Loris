@@ -12,8 +12,6 @@
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
-require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
 use \LORIS\Visit;
 //use \LORIS\VisitController;
@@ -57,11 +55,12 @@ class VisitTest extends TestCase
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
-        $this->DB     = Database::singleton(
+        putenv("LORIS_{$database['database']}_USERNAME={$database['username']}");
+        putenv("LORIS_{$database['database']}_PASSWORD={$database['password']}");
+        putenv("LORIS_{$database['database']}_HOST={$database['host']}");
+
+        $this->DB = \Database::singleton(
             $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
             true,
         );
         $this->visitController = new \Loris\VisitController($this->DB);

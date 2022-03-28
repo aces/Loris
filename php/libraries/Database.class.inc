@@ -68,14 +68,16 @@ class Database implements LoggerAwareInterface
     /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
-     * NOTE There is no return type declaration for this function as it returns
-     * the type `Database` which is not supported by PHPs built in return types.
+     *
+     * To avoid credentials being displayed in stack traces,
+     * credentials must be passed in environment variables.
+     *
+     * The caller must ensure there are variables named
+     * LORIS_$dbname_USERNAME, LORIS_$dbname_PASSWORD, and
+     * LORIS_$dbname_HOST with their respective values. This
+     * is usually done by NDB_Factory.
      *
      * @param string $database     the database to select
-     * @param string $username     the username with which to log into
-     *                             the database server
-     * @param string $password     the password that matches the username
-     * @param string $host         the name of the database server
      * @param bool   $trackChanges boolean determining if changes should be
      *                             logged to the history table
      *
@@ -84,12 +86,12 @@ class Database implements LoggerAwareInterface
      * @access public
      */
     static function &singleton(
-        string $database     = '',
-        string $username     = '',
-        string $password     = '',
-        string $host         = '',
+        string $database,
         bool $trackChanges = true
     ): \Database {
+        $username = getenv("LORIS_{$database}_USERNAME");
+        $password = getenv("LORIS_{$database}_PASSWORD");
+        $host     = getenv("LORIS_{$database}_HOST");
 
         static $connections = [];
 

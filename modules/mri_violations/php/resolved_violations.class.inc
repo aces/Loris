@@ -56,7 +56,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   =& \Database::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
         $user =& \User::singleton();
 
         foreach ($values AS $key=>$val) {
@@ -201,8 +201,9 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
         $siteClauseElements = [];
+        $db = $this->loris->getDatabaseConnection();
         foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+            $siteClauseElements[] = $db->quote($siteID);
         }
         $siteClause = sprintf(
             "(v.Site IS NULL OR v.Site IN (%s))",

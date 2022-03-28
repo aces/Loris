@@ -400,7 +400,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'session',
             $newData,
             [
@@ -741,7 +741,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setCurrentStage(): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // this class does not handle Subject & Recycling Bin stage at the moment
         if (in_array($this->getCurrentStage(), ['Subject', 'Recycling Bin'])) {
@@ -838,7 +838,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCType(string $type): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         if (!in_array($type, $this->bvlQcTypes)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -867,7 +867,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCStatus(string $status): void
     {
-        $db =& Database::singleton();
+        $db =& \NDB_Factory::singleton()->database();
 
         if (!in_array($status, $this->bvlQcStatuses)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -904,7 +904,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCExclusion(string $status): bool
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // check the status
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {

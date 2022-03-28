@@ -128,7 +128,7 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     protected function getExistingIDs(): array
     {
-        $ids = \Database::singleton()->pselectCol(
+        $ids = \NDB_Factory::singleton()->database()->pselectCol(
             "SELECT substring($this->kind, LENGTH('{$this->prefix}') +1)
             from candidate
             WHERE {$this->kind} LIKE '{$this->prefix}%'",

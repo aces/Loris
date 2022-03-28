@@ -64,7 +64,7 @@ class View_Project extends \NDB_Form
      */
     function _setupPage() : void
     {
-        $db      = \Database::singleton();
+        $db      = $this->loris->getDatabaseConnection();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
