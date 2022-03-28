@@ -12,6 +12,8 @@
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
+require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
 use \LORIS\Visit;
 //use \LORIS\VisitController;

@@ -290,7 +290,7 @@ class UserTest extends TestCase
         $this->_factory->reset();
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
         $database          = $this->_configMock->getSetting('database');
-        $this->_dbMock     = \Database::singleton(
+        $this->_dbMock     = $this->_factory->database(
             $database['database'],
             $database['username'],
             $database['password'],

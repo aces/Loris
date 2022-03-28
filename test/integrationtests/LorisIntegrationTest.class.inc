@@ -70,7 +70,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $database = $this->config->getSetting('database');
 
-        $this->DB = Database::singleton(
+        $this->DB = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
