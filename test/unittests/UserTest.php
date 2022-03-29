@@ -307,7 +307,7 @@ class UserTest extends TestCase
         $this->_mockDB      = $mockdb;
         $this->_mockConfig  = $mockconfig;
         $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($mockdb);
+        $this->_mockFactory->setDatabase($this->_dbMock);
 
         $this->_factory->setConfig($this->_mockConfig);
 
@@ -742,6 +742,7 @@ class UserTest extends TestCase
                 $this->stringContains("FROM user_login_history")
             )
             ->willReturn($count);
+        $this->_factory->setDatabase($this->_mockDB);
 
         $this->assertTrue($this->_user->hasLoggedIn());
     }
