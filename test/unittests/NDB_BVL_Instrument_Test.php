@@ -1597,6 +1597,22 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->onlyMethods(
                 ["getFullName", "getSubtestList", "getDataDictionary"]
             )->getMock();
+
+        // Use reflection to set the internal
+        // loris object that should have been
+        // set by the instrument constructor,
+        // if PHPunit hadn't disabled the constructor
+        $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $otherInstrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_mockConfig,
+                [],
+            )
+        );
+
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
@@ -1959,5 +1975,16 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_factoryForDB->setDatabase($this->_DB);
         $this->_factoryForDB->setConfig($this->_config);
+
+        $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $this->_instrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            )
+        );
     }
 }
