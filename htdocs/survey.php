@@ -134,7 +134,6 @@ class DirectDataEntryMainPage
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
         ];
-        print_r($this->tpl_data);
     }
 
 

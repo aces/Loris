@@ -36,6 +36,11 @@
             Date: {$smarty.now|date_format:"%B %e %Y"}
             {if $finalpage || $complete}
             {elseif $pageNum && $totalPages}
+		{if $pageNum === 'top'}
+		    {$pageNum=1}
+		{else}
+		    {$pageNum=$pageNum+1}
+		{/if}
                 Page {$pageNum} of {$totalPages}
             {/if}
         </td>
