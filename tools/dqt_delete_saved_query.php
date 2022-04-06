@@ -28,20 +28,19 @@ echo "Deleting a saved query in DQT.\n";
 
         $user = readline("Please input the author of the saved query:");
         $name = readline("Please input the name of the saved query:");
-	$global = readline("If the saved query is global then input 'y':");
-	if ($global) {
-		$docID       = urlencode("global:".$user."_".$name);
-	} else {
-		$docID       = urlencode($user."_".$name);
-	}
+    $global   = readline("If the saved query is global then input 'y':");
+if ($global) {
+    $docID = urlencode("global:".$user."_".$name);
+} else {
+    $docID = urlencode($user."_".$name);
+}
 $results = $cdb->deleteDoc(
     $docID
 );
 
 
-	if (json_encode($results) == "true")
-	{
-	   echo $name." has been deleted in DQT.\n";
-	} else {
-	   echo "There is no query named ".$name." in DQT.\n";
-	};
+if (json_encode($results) == "true") {
+       echo $name." has been deleted in DQT.\n";
+} else {
+       echo "There is no query named ".$name." in DQT.\n";
+};
