@@ -627,7 +627,7 @@ class Utility
         $query    = "SELECT count(*)
             FROM {$table_name}
             WHERE {$column} is NULL";
-        $DB       =& \Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $num_null = $DB->pselectOne(
             $query,
             []

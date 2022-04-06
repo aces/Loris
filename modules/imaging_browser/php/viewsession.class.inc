@@ -101,7 +101,7 @@ class ViewSession extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $this->_DB = \Database::singleton();
+        $this->_DB = $this->loris->getDatabaseConnection();
 
         $this->sessionID = $_REQUEST['sessionID'];
 

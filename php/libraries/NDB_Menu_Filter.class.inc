@@ -433,7 +433,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
         // add the base query
         $query  = '';

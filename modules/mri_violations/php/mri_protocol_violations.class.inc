@@ -165,7 +165,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      */
     function getMRIProtocolData()
     {
-        $db =& \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         // select all except Objective from mri_protocol
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type

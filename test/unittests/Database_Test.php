@@ -93,7 +93,7 @@ class Database_Test extends TestCase
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
-        $this->DB     = Database::singleton(
+        $this->DB     = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],

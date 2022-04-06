@@ -35,7 +35,7 @@ class MRIFile
      */
     function __construct(int $fileID)
     {
-        $db     = \Database::singleton();
+        $db     = \NDB_Factory::singleton()->database();
         $params = ['FID' => $fileID];
 
         $query    = "SELECT * FROM files WHERE FileID=:FID";
@@ -115,7 +115,7 @@ class MRIFile
             return null;
         }
 
-        return \Database::singleton()->pselectOne(
+        return \NDB_Factory::singleton()->database()->pselectOne(
             'SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID',
             ['ProtoID' => $this->fileData['AcquisitionProtocolID']]
         );

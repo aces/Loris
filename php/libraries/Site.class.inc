@@ -49,7 +49,7 @@ class Site implements
         $this->_siteInfo['CenterID'] = $centerID;
 
         // make a local reference to the Database object
-        $db = \Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc

@@ -59,7 +59,7 @@ class AddSurvey extends \NDB_Form
      */
     function _validateAddSurvey($values)
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Check that all required fields are present.
         if (!empty($values['Email']) ) {
@@ -188,7 +188,7 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $email = $values['Email'];
         unset($values['Email']);
         $SessionID = $db->pselectOne(

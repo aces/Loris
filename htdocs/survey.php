@@ -81,7 +81,7 @@ class DirectDataEntryMainPage
         }
         $this->key = $_REQUEST['key'];
 
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
@@ -167,7 +167,7 @@ class DirectDataEntryMainPage
 
         $nextPage = $currentPage+1;
         return intval(
-            \Database::singleton()->pselectOne(
+            \NDB_Factory::singleton()->database()->pselectOne(
                 "SELECT Order_number FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
                 [
@@ -188,7 +188,7 @@ class DirectDataEntryMainPage
      */
     function getPrevPageNum($currentPage): ?string
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if ($currentPage === null) {
             // On the top page or no page specified, do not include link
             return null;
@@ -240,7 +240,7 @@ class DirectDataEntryMainPage
      */
     function getCommentID(): ?string
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -285,7 +285,7 @@ class DirectDataEntryMainPage
      */
     function updateStatus($status): bool
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
@@ -320,7 +320,7 @@ class DirectDataEntryMainPage
      */
     function updateComments($ease, $comments)
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->update(
             "participant_accounts",
             [
@@ -338,7 +338,7 @@ class DirectDataEntryMainPage
      */
     function display()
     {
-        $DB       = Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $nextpage = null;
 
         if (isset($_REQUEST['nextpage'])) {

@@ -52,7 +52,7 @@ class UserPermissions
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = ['UName' => $username];
 
-        $userID = \Database::singleton()->pselectOne($query, $params);
+        $userID = \NDB_Factory::singleton()->database()->pselectOne($query, $params);
         if ($userID === null) {
             return false;
         }
@@ -74,7 +74,7 @@ class UserPermissions
     function setPermissions(): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
@@ -195,7 +195,7 @@ class UserPermissions
     function addPermissions(array $set): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // add the permissions
         foreach ($set as $value) {
@@ -224,7 +224,7 @@ class UserPermissions
     function removePermissions(?array $set = null): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if (is_null($set)) {
             // remove all permissions
             $DB->delete(
@@ -258,7 +258,7 @@ class UserPermissions
     function getPermissionIDs(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT permissions.permID
@@ -287,7 +287,7 @@ class UserPermissions
     function getPermissionsVerbose(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $query = "SELECT
                 p.permID,
@@ -343,7 +343,7 @@ class UserPermissions
     ): void {
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \NDB_Factory::singleton()->database();
 
         //insert into the login_history
         $DB->insert(

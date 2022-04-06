@@ -1234,7 +1234,7 @@ class UtilityTest extends TestCase
         $this->_mockFactory->reset();
         $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
         $database          = $this->_mockConfig->getSetting('database');
-        $this->_mockDB     = \Database::singleton(
+        $this->_mockDB     = $this->_mockFactory->database(
             $database['database'],
             $database['username'],
             $database['password'],
