@@ -70,7 +70,7 @@ class FeedbackMRI
     function clearAllComments(): bool
     {
         // create DB object
-        $DB = NDB_Factory::singleton()->database();
+        $DB = \NDB_Factory::singleton()->database();
 
         $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
