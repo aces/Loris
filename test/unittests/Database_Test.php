@@ -58,7 +58,6 @@ class FakeDatabase extends Database
         string $where,
         string $type='U'
     ) : void {
-        var_dump("In track changes (good)");
     }
 }
 
@@ -90,7 +89,6 @@ class Database_Test extends TestCase
      */
     protected function setUp(): void
     {
-        var_dump("SETTING UP NEXT TEST");
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
@@ -285,9 +283,7 @@ class Database_Test extends TestCase
         '@phan-var \Database $stub';
         '@phan-var \PDO $PDO';
         $stub->_PDO = $PDO;
-        var_dump("I AM IN THE TEST");
         $stub->unsafeinsert("test", ['field' => '<b>Hello</b>'], []);
-        var_dump("I AM SO DONE THIS TEST");
 
     }
 

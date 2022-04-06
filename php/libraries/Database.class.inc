@@ -599,14 +599,6 @@ class Database implements LoggerAwareInterface
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
-            /* var_dump($prep);
-            var_dump($prepQ);
-            var_dump($exec_params);
-            */
-            var_dump($this->_PDO);
-            var_dump($prepQ);
-            var_dump($prep);
-            var_dump($exec_params);
             throw new DatabaseException(
                 "Update statement did not execute successfully.",
                 $prepQ,
@@ -1162,8 +1154,6 @@ class Database implements LoggerAwareInterface
         string $where,
         string $type = 'U'
     ): void {
-        var_dump("IN TRACK CHANGES (BAD)");
-
         // Tracking changes on the history table would result in an
         // infinite loop
         if (!$this->_trackChanges || $table == 'history') {
