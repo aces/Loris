@@ -810,7 +810,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));
@@ -844,7 +844,7 @@ class Database_Test extends TestCase
 
         $stmt->expects($this->once())->method("execute")->with(
             $this->equalTo(['field' => '<b>Hello</b>'])
-        );
+        )->will($this->returnValue(true));
 
         $PDO->expects($this->once())
             ->method("prepare")->will($this->returnValue($stmt));

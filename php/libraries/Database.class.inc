@@ -431,6 +431,8 @@ class Database implements LoggerAwareInterface
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {
+            var_dump($prep);
+            var_dump($exec_params);
             throw new DatabaseException(
                 "Insert statement did not execute successfully: "
                 . $this->_createPDOErrorString(),
@@ -442,7 +444,7 @@ class Database implements LoggerAwareInterface
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $this->trackChanges($table, $set, '2=1', 'I');
+        // $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
