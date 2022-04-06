@@ -906,7 +906,7 @@ class Database_Test extends TestCase
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->_getAllMethodsExcept(['run']))->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')
+        $PDO = $this->getMockBuilder('FakePDO')
             ->onlyMethods(['lastInsertId'])->getMock();
 
         $PDO->expects($this->once())
@@ -1832,7 +1832,7 @@ class Database_Test extends TestCase
             ->getMock();
         '@phan-var \Database $stub';
 
-        $PDO  = $this->getMockBuilder('FakePDO')
+        $PDO = $this->getMockBuilder('FakePDO')
             ->onlyMethods(['query'])->getMock();
 
         $PDO->expects($this->once())

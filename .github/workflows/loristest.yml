@@ -10,9 +10,9 @@ jobs:
     strategy:
         matrix:
             testsuite:
-            # - static
+            - static
             - unit
-            # - integration
+            - integration
             php: ['8.0','8.1']
 
     steps:
