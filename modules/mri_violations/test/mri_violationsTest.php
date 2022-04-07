@@ -216,6 +216,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'PatientName' => '[Test]PatientName',
                 'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
                 'SeriesUID'   => '5558',
+                'Reason'      => 'Test Case'
             ]
         );
     }
@@ -670,12 +671,14 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
-        sleep(1);
-        $bodyText = $this->webDriver->executescript(
-            "return document.querySelector(
-                    '#datatable > div > div.table-header.panel-heading > div')
-                 .textContent"
+
+        $body     = $this->safeFindElement(
+            WebDriverby::CSSSelector(
+                '#datatable > div > div.table-header.panel-heading > div'
+            )
         );
+        $bodyText = $body->getText();
+
         $this->assertStringContainsString("1 rows displayed of 1", $bodyText);
         $this->safeFindElement(
             WebDriverBy::Name("reset")
