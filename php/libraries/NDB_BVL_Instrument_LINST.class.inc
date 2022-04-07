@@ -95,7 +95,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             ]
         );
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
