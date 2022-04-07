@@ -357,8 +357,13 @@ class Database implements LoggerAwareInterface
                 $retVal[$key] = '';
                 continue;
             }
+
             // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+            //
+            // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
+            // earlier versions, since the default flags changed in PHP 8.1.
+            $retVal[$key] = is_string($val)
+                ? htmlspecialchars($val, ENT_COMPAT) : $val;
         }
         return $retVal;
     }
