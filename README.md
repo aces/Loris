@@ -1,4 +1,4 @@
-<img src="./htdocs/images/LORIS_logo.svg" width="35%">
+<img src="./htdocs/images/LORIS_logo.svg" width="35%" >
 
 [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=main)](https://travis-ci.org/aces/Loris)
 [![Minimum PHP Version](https://img.shields.io/travis/php-v/aces/loris/main?color=787CB5)](https://php.net/)
