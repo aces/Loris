@@ -162,12 +162,12 @@ class EEGLabSeriesProvider extends Component<CProps> {
   render() {
     const [signalViewer, ...rest] = this.props.children;
     return (
-      <>
+      <div>
           <Provider store={this.store}>
             {(this.state.channels.length > 0) && signalViewer}
             {rest}
           </Provider>
-      </>
+      </div>
     );
   }
 
