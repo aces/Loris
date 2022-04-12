@@ -1,7 +1,13 @@
 import {useState} from 'react';
 import {get, post} from './helpers.js';
 
-export function useShipment(initShipment = {}) {
+/**
+ * React effect for creating a request to create a new
+ * shipment
+ *
+ * @return {Shipment}
+ */
+export function UseShipment(initShipment = {}) {
   const [init, setInit] = useState(initShipment);
   const [shipment, setShipment] = useState(new Shipment(init));
   const [errors, setErrors] = useState(new Shipment({}));
