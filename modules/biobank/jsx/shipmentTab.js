@@ -317,8 +317,11 @@ function ReceiveShipment({
     updateShipments(shipments);
     setData('containers', containers);
   };
+
   const onOpen = () => {
-    handler.addLog({status: 'received', centerId: shipment.destinationCenterId});
+    handler.addLog(
+      {status: 'received', centerId: shipment.destinationCenterId}
+    );
   };
 
   // TODO: At the top of this form, it wouldn't hurt to have a ShipmentSummary
@@ -342,6 +345,16 @@ function ReceiveShipment({
   );
 }
 
+/**
+ * Return a form for the shipment log
+ *
+ * @param {object} log - the log
+ * @param {callback} setLog - a callback for when the log is set
+ * @param {object} errors - a list of errors
+ * @param {object} users - a list of selectable users
+ *
+ * @return {ReactDOM[]}
+ */
 function ShipmentLogForm({
   log,
   setLog,
