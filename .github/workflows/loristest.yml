@@ -44,10 +44,9 @@ jobs:
       run: sudo apt-get install -y protobuf-compiler
     
     - name: Install EEG dependencies-1
-      run: cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+      run: cd modules/electrophysiology_browser/jsx/react-series-data-viewer/ && npm install
 
     - run: protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
-    - run: npm install --save redux
       
 
     - name: Install composer dependencies
