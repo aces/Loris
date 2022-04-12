@@ -41,13 +41,9 @@ jobs:
       run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install package dependencies
-      run: sudo apt-get install -y protobuf-compiler
-    
-    - name: Install EEG dependencies-1
-      run: cd modules/electrophysiology_browser/jsx/react-series-data-viewer/ && npm install
-
-    - run: protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
-      
+         run: sudo apt-get install -y protobuf-compiler 
+           && cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+           && protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
