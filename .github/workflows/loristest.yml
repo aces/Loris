@@ -43,7 +43,8 @@ jobs:
     - name: Install package dependencies
       run: sudo apt-get install -y protobuf-compiler 
            && cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
-           && npm install
+           && npm install redux
+           && npm install react-redux
            && protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
     - name: Install composer dependencies
