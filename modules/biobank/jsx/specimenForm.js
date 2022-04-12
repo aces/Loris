@@ -22,6 +22,9 @@ const initialState = {
  *
  * */
 class SpecimenForm extends React.Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
 
@@ -35,6 +38,11 @@ class SpecimenForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * React lifecycle method
+   *
+   * @param {object} prevProps - the prior react props
+   */
   componentDidUpdate(prevProps) {
     // If a parent specimen is provided, set the current global values.
     if (this.props.parent !== prevProps.parent) {
@@ -56,22 +64,51 @@ class SpecimenForm extends React.Component {
     }
   }
 
+  /**
+   * Set the current specimen
+   *
+   * @param {string} name - the name
+   * @param {string} value - the value
+   *
+   * @return {Promise}
+   */
   setCurrent(name, value) {
     const {current} = clone(this.state);
     current[name] = value;
     return new Promise((res) => this.setState({current}, res()));
   }
 
+  /**
+   * Set the current container
+   *
+   * @param {string} name - container name
+   * @param {string} value - container value
+   *
+   * @return {Promise}
+   */
   setContainer(name, value) {
     const {current} = clone(this.state);
     current.container[name] = value;
     return new Promise((res) => this.setState({current}, res()));
   };
 
+  /**
+   * Set a list in the object state?
+   *
+   * @param {object} list - a list of properties to set
+   */
   setList(list) {
     this.setState({list});
   }
 
+  /**
+   * Set the current project
+   *
+   * @param {string} name - project name
+   * @param {string} value - project value
+   *
+   * @return {Promise}
+   */
   setProject(name, value) {
     const {current} = clone(this.state);
     current[name] = [value];
@@ -92,6 +129,14 @@ class SpecimenForm extends React.Component {
     this.setState({current});
   }
 
+  /**
+   * Increment the current barcode
+   *
+   * @param {string} pscid - the PSCID
+   * @param {int} increment - the amount to increment
+   *
+   * @return {int}
+   */
   incrementBarcode(pscid, increment = 0) {
     increment++;
     const barcode = padBarcode(pscid, increment);
@@ -106,6 +151,9 @@ class SpecimenForm extends React.Component {
     return increment;
   };
 
+  /**
+   * Generate barcodes and store in the component state.
+   */
   generateBarcodes() {
     const {options} = this.props;
     let {list, current} = this.state;
@@ -124,6 +172,11 @@ class SpecimenForm extends React.Component {
     this.setState({list});
   };
 
+  /**
+  * Handle the submission of a form
+  *
+  * @return {Promise}
+  */
   handleSubmit() {
     const {list, current, printBarcodes} = this.state;
     return new Promise((resolve, reject) => {
@@ -132,6 +185,11 @@ class SpecimenForm extends React.Component {
     });
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {ReactDOM}
+   */
   render() {
     const {errors, current, list} = this.state;
     const {options, data, parent} = this.props;
@@ -141,9 +199,9 @@ class SpecimenForm extends React.Component {
         return (
           <StaticElement
             label='Note'
-            text='To create new aliquots, enter a Barcode, fill out the coresponding
-                  sub-form and press Submit. Press "New Entry" button to add
-                  another barcode field, or press for the "Copy" button to
+            text='To create new aliquots, enter a Barcode, fill out the
+            coresponding sub-form and press Submit. Press "New Entry" button
+            to add another barcode field, or press for the "Copy" button to
                   duplicate the previous entry.'
           />
         );
@@ -152,9 +210,10 @@ class SpecimenForm extends React.Component {
           <StaticElement
             label='Note'
             text='To create new specimens, first select a PSCID and Visit Label.
-                  Then, enter a Barcode, fill out the coresponding sub-form and press
-                  submit. Press "New Entry" button to add another barcode field,
-                  or press for the "Copy" button to duplicate the previous entry.'
+                  Then, enter a Barcode, fill out the coresponding sub-form and
+                  press submit. Press "New Entry" button to add another barcode
+                  field, or press for the "Copy" button to duplicate the
+                  previous entry.'
           />
         );
       }
@@ -162,7 +221,9 @@ class SpecimenForm extends React.Component {
 
     const renderGlobalFields = () => {
       if (parent && current.candidateId && current.sessionId) {
-        const parentBarcodes = Object.values(parent).map((item) => item.container.barcode);
+        const parentBarcodes = Object.values(parent).map(
+          (item) => item.container.barcode
+        );
         const parentBarcodesString = parentBarcodes.join(', ');
         return (
           <div>
@@ -215,8 +276,12 @@ class SpecimenForm extends React.Component {
 
     const renderRemainingQuantityFields = () => {
       if (parent) {
-        if (loris.userHasPermission('biobank_specimen_update') && parent.length === 1) {
-          const specimenUnits = mapFormOptions(this.props.options.specimen.units, 'label');
+        if (loris.userHasPermission('biobank_specimen_update')
+             && parent.length === 1) {
+          const specimenUnits = mapFormOptions(
+            this.props.options.specimen.units,
+            'label'
+          );
           return (
             <div>
               <TextboxElement
@@ -247,7 +312,10 @@ class SpecimenForm extends React.Component {
     if (container.parentContainerId) {
       container.coordinate = [];
       Object.keys(list).reduce((coord, key) => {
-        coord = this.props.increaseCoordinate(coord, container.parentContainerId);
+        coord = this.props.increaseCoordinate(
+          coord,
+          container.parentContainerId,
+        );
         const coordinates = [...container.coordinate, parseInt(coord)];
         container.coordinate = coordinates;
         return coord;
@@ -340,22 +408,42 @@ SpecimenForm.defaultProps = {
  *
  **/
 class SpecimenBarcodeForm extends React.Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.setContainer = this.setContainer.bind(this);
     this.setSpecimen = this.setSpecimen.bind(this);
   }
 
+  /**
+   * Set the current container.
+   *
+   * @param {string} name - the name
+   * @param {string} value - the value
+   */
   setContainer(name, value) {
     let container = this.props.item.container;
     container[name] = value;
     this.props.setListItem('container', container, this.props.itemKey);
   }
 
+  /**
+   * Set the specimen
+   *
+   * @param {string} name - a name
+   * @param {string} value - a value
+   */
   setSpecimen(name, value) {
     this.props.setListItem(name, value, this.props.itemKey);
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {ReactDOM}
+   */
   render() {
     const {options, errors, item} = this.props;
 
@@ -386,7 +474,10 @@ class SpecimenBarcodeForm extends React.Component {
 
       return mapFormOptions(specimenTypes, 'label');
     };
-    const containerTypesPrimary = mapFormOptions(options.container.typesPrimary, 'label');
+    const containerTypesPrimary = mapFormOptions(
+      options.container.typesPrimary,
+      'label',
+    );
 
     const validContainers = {};
     if (item.typeId && options.specimen.typeContainerTypes[item.typeId]) {

@@ -52,12 +52,26 @@ BiobankSpecimen.propTypes = {
   specimenPageDataURL: PropTypes.string.isRequired,
 };
 
+/**
+ * React component to display processes
+ *
+ * @param {object} props - React props
+ *
+ * @return {ReactDOM[]}
+ */
 function Processes(props) {
   return React.Children.map(props.children, (child) => {
     return React.cloneElement(child, {...props});
   });
 }
 
+/**
+ * React component to display a panel of processes
+ *
+ * @param {object} props - React props
+ *
+ * @return {ReactDOM}
+ */
 function ProcessPanel(props) {
   const {editable, process, current, specimen, options} = props;
 
