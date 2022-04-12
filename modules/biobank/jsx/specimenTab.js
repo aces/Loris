@@ -9,7 +9,14 @@ import BatchProcessForm from './batchProcessForm';
 import BatchEditForm from './batchEditForm';
 import Search from './search';
 
+/**
+ * JSX Component representing the specimen tab of the biobank
+ * module.
+ */
 class SpecimenTab extends Component {
+  /**
+   * Constructor for SpecimenTab
+   */
   constructor() {
     super();
     this.state = {editable: {}};
@@ -19,16 +26,34 @@ class SpecimenTab extends Component {
     this.formatSpecimenColumns = this.formatSpecimenColumns.bind(this);
   }
 
+  /**
+   * Make the form editable
+   *
+   * @param {object} stateKey - the key holding the state
+   *
+   * @return {Promise}
+   */
   edit(stateKey) {
     const {editable} = clone(this.state);
     editable[stateKey] = true;
     return new Promise((res) => this.setState({editable}, res()));
   }
 
+  /**
+   * Clear the editable state of this tab.
+   */
   clearEditable() {
     this.setState({editable: {}});
   }
 
+  /**
+   * Map a specimen id to a string value for display.
+   *
+   * @param {string} column - the column name being mapped
+   * @param {string} value - the value being mapped
+   *
+   * @return {string}
+   */
   mapSpecimenColumns(column, value) {
     const {options, data} = this.props;
     switch (column) {
@@ -57,6 +82,15 @@ class SpecimenTab extends Component {
     }
   }
 
+  /**
+   * Format columns for a specimen row
+   *
+   * @param {string} column - the column name being mapped
+   * @param {string} value - the value being mapped
+   * @param {array} row - an array of the row values
+   *
+   * @return {ReactDOM}
+   */
   formatSpecimenColumns(column, value, row) {
     const {options} = this.props;
     value = this.mapSpecimenColumns(column, value);
@@ -73,8 +107,11 @@ class SpecimenTab extends Component {
       case 'PSCID':
         return <td><a href={loris.BaseURL + '/' + candId}>{value}</a></td>;
       case 'Visit Label':
+        const ses = Object.values(options.sessions).find(
+          (sess) => sess.label == value
+        ).id;
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+candId+
-          '&sessionID='+Object.values(options.sessions).find((sess) => sess.label == value).id;
+          '&sessionID='+ses;
         return <td><a href={visitLabelURL}>{value}</a></td>;
       case 'Status':
         const style = {};
@@ -101,6 +138,12 @@ class SpecimenTab extends Component {
         return <td>{value}</td>;
      }
   }
+
+  /**
+   * Render the React component
+   *
+   * @return {ReactDOM}
+   */
   render() {
     const {editable} = this.state;
     const {data, options} = this.props;
@@ -112,21 +155,29 @@ class SpecimenTab extends Component {
         return result;
       }, {});
     const specimenTypes = mapFormOptions(options.specimen.types, 'label');
-    const containerTypesPrimary = mapFormOptions(options.container.typesPrimary, 'label');
+    const containerTypesPrimary = mapFormOptions(
+        options.container.typesPrimary, 'label'
+    );
     const stati = mapFormOptions(options.container.stati, 'label');
     const diagnoses = mapFormOptions(options.diagnoses, 'label');
     const specimenData = Object.values(data.specimens).map((specimen) => {
       const container = data.containers[specimen.containerId];
-      const parentContainer = data.containers[container.parentContainerId] || {};
+      const pID = container.parentContainerId;
+      const parentContainer = data.containers[pID] || {};
       let specimenAttributeData = [];
       Object.keys(options.specimen.processAttributes)
         .forEach((processId) => {
           Object.keys(options.specimen.processAttributes[processId])
             .forEach((attributeId) => {
-              const process = options.specimen.processes[processId].label.toLowerCase();
+              const sopt = options.specimen;
+              const process = sopt.processes[processId].label.toLowerCase();
               if ((specimen[process]||{}).data) {
-                if (options.specimen.processAttributes[processId][attributeId].protocolIds.includes(specimen[process].protocolId.toString())) {
-                  specimenAttributeData.push(specimen[process].data[attributeId]);
+                const processIdStr = specimen[process].protocolId.toString();
+                const attrs = options.specimen.processAttributes;
+                const protocols = attrs[processId][attributeId].protocolIds;
+                if (protocols.includes(processIdStr)) {
+                  const data = specimen[process].data[attributeId];
+                  specimenAttributeData.push(data);
                 } else {
                   specimenAttributeData.push(null);
                 }
@@ -165,7 +216,10 @@ class SpecimenTab extends Component {
         Object.keys(options.specimen.processAttributes[processId])
           .forEach((attributeId) => {
             specimenAttributeFields.push(
-              {label: options.specimen.attributes[attributeId].label, show: true}
+              {
+                label: options.specimen.attributes[attributeId].label,
+                show: true,
+              },
             );
           });
       });
@@ -268,10 +322,18 @@ class SpecimenTab extends Component {
     const openBatchProcessForm = () => this.edit('batchProcessForm');
     const openBatchEditForm = () => this.edit('batchEditForm');
     const actions = [
-      {name: 'goToSpecimen', label: 'Go To Specimen', action: openSearchSpecimen},
+      {
+        name: 'goToSpecimen',
+        label: 'Go To Specimen',
+        action: openSearchSpecimen,
+      },
       {name: 'addSpecimen', label: 'Add Specimen', action: openSpecimenForm},
       {name: 'poolSpecimen', label: 'Pool Specimens', action: openPoolForm},
-      {name: 'batchProcess', label: 'Process Specimens', action: openBatchProcessForm},
+      {
+        name: 'batchProcess',
+        label: 'Process Specimens',
+        action: openBatchProcessForm,
+      },
       {name: 'batchEdit', label: 'Edit Specimens', action: openBatchEditForm},
     ];
 
