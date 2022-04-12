@@ -36,7 +36,15 @@ const SpecimenProcessForm = (props) => {
     setProcess('data', data);
   };
 
-  const {specimen, process, processStage, typeId, options, errors, edit} = props;
+  const {
+      specimen,
+      process,
+      processStage,
+      typeId,
+      options,
+      errors,
+      edit,
+  } = props;
 
   const updateButton = specimen && (
     <ButtonElement
@@ -61,13 +69,12 @@ const SpecimenProcessForm = (props) => {
   const renderProtocolFields = () => {
     if (specimenProtocolAttributes[process.protocolId]) {
       if (process.data) {
-        return CustomFields({
-          options: options,
-          errors: errors.data || {},
-          fields: specimenProtocolAttributes[process.protocolId],
-          object: process.data,
-          setData: setData,
-        });
+        return <CustomFields
+            options={options}
+            errors={errors.data || {}}
+            fields={specimenProtocolAttributes[process.protocolId]}
+            object={process.data}
+            setData={setData} />;
       } else {
         setProcess('data', {});
       }
