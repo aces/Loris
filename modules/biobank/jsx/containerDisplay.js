@@ -3,17 +3,32 @@ import swal from 'sweetalert2';
 import {mapFormOptions} from './helpers.js';
 
 /**
- * ContainerDisplay
+ * React component to display a container
  *
- * @author Henri Rabalais
- * @version 1.0.0
+ * @param {object} props - React props
  *
+ * @return {JSX}
  **/
-
 function ContainerDisplay(props) {
-  const {barcodes, coordinates, current, data, dimensions, editable, options} = props;
+  const {
+      barcodes,
+      coordinates,
+      current,
+      data,
+      dimensions,
+      editable,
+      options,
+  } = props;
   const {history, select, container, selectedCoordinate} = props;
-  const {clearAll, editContainer, setContainer, updateContainer, setCurrent, setCheckoutList, edit} = props;
+  const {
+      clearAll,
+      editContainer,
+      setContainer,
+      updateContainer,
+      setCurrent,
+      setCheckoutList,
+      edit,
+  } = props;
 
   useEffect(() => {
     $('[data-toggle="tooltip"]').tooltip();
@@ -176,7 +191,8 @@ function ContainerDisplay(props) {
       <FormElement>
         <StaticElement
           label='Note'
-          text="Click, Select or Scan Containers to be Unloaded and Press 'Confirm'"
+          text="Click, Select or Scan Containers to be
+                Unloaded and Press 'Confirm'"
         />
         {barcodeField}
         <ButtonElement
@@ -214,6 +230,7 @@ function ContainerDisplay(props) {
         let onDragOver = allowDrop;
         let onDrop = drop;
         let onClick = null;
+        const optcon = options.container;
 
         if (!select) {
           if ((coordinates||{})[coordinate]) {
@@ -235,12 +252,14 @@ function ContainerDisplay(props) {
               dataPlacement = 'top';
               // This is to avoid a console error
               if (children[coordinates[coordinate]]) {
+                const coord = coordinates[coordinate];
                 tooltipTitle =
-                  '<h5>'+children[coordinates[coordinate]].barcode+'</h5>' +
-                  '<h5>'+options.container.types[children[coordinates[coordinate]].typeId].label+'</h5>' +
-                  '<h5>'+options.container.stati[children[coordinates[coordinate]].statusId].label+'</h5>';
+                  '<h5>'+children[coord].barcode+'</h5>' +
+                  '<h5>'+optcon.types[children[coord].typeId].label+'</h5>' +
+                  '<h5>'+optcon.stati[children[coord].statusId].label+'</h5>';
               }
-              draggable = !loris.userHasPermission('biobank_container_update') ||
+              draggable = !loris.userHasPermission(
+                 'biobank_container_update') ||
                           editable.loadContainer ||
                           editable.containerCheckout
                           ? 'false' : 'true';
@@ -291,16 +310,17 @@ function ContainerDisplay(props) {
                 .find((specimen) => specimen.containerId == childContainer.id);
               let quantity = '';
               if (specimen) {
-                quantity = `<h5>${specimen.quantity + ' '+options.specimen.units[specimen.unitId].label}</h5>`;
+                quantity = `<h5>${specimen.quantity +
+                    ' '+options.specimen.units[specimen.unitId].label}</h5>`;
               }
               dataHtml = 'true';
               dataToggle = 'tooltip';
               dataPlacement = 'top';
               tooltipTitle =
                 `<h5>${childContainer.barcode}</h5>` +
-                `<h5>${options.container.types[childContainer.typeId].label}</h5>` +
+                `<h5>${optcon.types[childContainer.typeId].label}</h5>` +
                 quantity +
-                `<h5>${options.container.stati[childContainer.statusId].label}</h5>`;
+                `<h5>${optcon.stati[childContainer.statusId].label}</h5>`;
             }
           }
         }
