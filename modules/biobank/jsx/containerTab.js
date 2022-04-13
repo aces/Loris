@@ -6,7 +6,13 @@ import Search from './search';
 import ContainerForm from './containerForm';
 import {mapFormOptions, clone} from './helpers.js';
 
+/**
+ * React component for the Container tab in the Biobank module
+ */
 class ContainerTab extends Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
 
@@ -17,16 +23,34 @@ class ContainerTab extends Component {
     this.formatContainerColumns = this.formatContainerColumns.bind(this);
   }
 
+  /**
+   * Mark a key as editable
+   *
+   * @param {string} stateKey - the key
+   *
+   * @return {Promise}
+   */
   edit(stateKey) {
     const {editable} = clone(this.state);
     editable[stateKey] = true;
     return new Promise((res) => this.setState({editable}, res()));
   }
 
+  /**
+   * Clear the editable state of this form.
+   */
   clearEditable() {
     this.setState({editable: {}});
   }
 
+  /**
+   * Map the columns for this container
+   *
+   * @param {string} column - the column name
+   * @param {string} value - the column value
+   *
+   * @return {string}
+   */
   mapContainerColumns(column, value) {
     switch (column) {
       case 'Type':
@@ -44,6 +68,15 @@ class ContainerTab extends Component {
     }
   }
 
+  /**
+   * Format the cells for a column in the container
+   *
+   * @param {string} column - the column name to format
+   * @param {string} value - the value of the column
+   * @param {object} row - the rest of the row
+   *
+   * @return {JSX} a table cell
+   */
   formatContainerColumns(column, value, row) {
     value = this.mapContainerColumns(column, value);
     switch (column) {
@@ -75,6 +108,11 @@ class ContainerTab extends Component {
     }
   }
 
+  /**
+   * Render React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {editable} = this.state;
 
@@ -89,7 +127,8 @@ class ContainerTab extends Component {
         // TODO: this check is necessary or else the page will go blank when the
         // first specimen is added.
         if (container) {
-          if (this.props.options.container.types[container.typeId].primary == 0) {
+          const tprops = this.props.options.container.types;
+          if (tprops[container.typeId].primary == 0) {
             result[container.id] = container;
           }
           return result;
@@ -146,8 +185,16 @@ class ContainerTab extends Component {
     const openSearchContainer = () => this.edit('searchContainer');
     const openContainerForm = () => this.edit('containerForm');
     const actions = [
-      {name: 'goToContainer', label: 'Go To Container', action: openSearchContainer},
-      {name: 'addContainer', label: 'Add Container', action: openContainerForm},
+      {
+        name: 'goToContainer',
+        label: 'Go To Container',
+        action: openSearchContainer,
+      },
+      {
+        name: 'addContainer',
+        label: 'Add Container',
+        action: openContainerForm,
+      },
     ];
 
     return (
