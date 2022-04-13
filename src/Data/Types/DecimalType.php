@@ -22,9 +22,9 @@ class DecimalType implements \LORIS\Data\Type
     /**
      * Convert the type to JSON by converting to a string
      *
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize() : string
     {
         return $this->__toString();
     }

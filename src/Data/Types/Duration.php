@@ -19,9 +19,9 @@ class Duration implements \LORIS\Data\Type
     /**
      * Serialize the type by converting to JSON
      *
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize() : string
     {
         return $this->__toString();
     }

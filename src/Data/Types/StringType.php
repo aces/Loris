@@ -34,9 +34,9 @@ class StringType implements \LORIS\Data\Type
     /**
      * Serialize to JSON by converting to a string.
      *
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize() : mixed
+    public function jsonSerialize() : string
     {
         return $this->__toString();
     }
