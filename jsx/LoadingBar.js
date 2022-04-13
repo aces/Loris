@@ -1,5 +1,12 @@
 import React from 'react';
 
+/**
+ * React component to display a loading bar with progress
+ *
+ * @param {object} props - React props
+ *
+ * @return {JSX}
+ */
 function LoadingBar(props) {
   const {progress} = props;
 

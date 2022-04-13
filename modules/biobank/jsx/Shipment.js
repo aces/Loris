@@ -5,6 +5,8 @@ import {get, post} from './helpers.js';
  * React effect for creating a request to create a new
  * shipment
  *
+ * @param {object} initShipment - the initial value for the shipment
+ *
  * @return {Shipment}
  */
 export function UseShipment(initShipment = {}) {
@@ -16,16 +18,25 @@ export function UseShipment(initShipment = {}) {
   this.setContainerIds = (value) => this.set('containerIds', value);
   this.addLog = (log) => this.setLogs(shipment.addLog(log));
   this.setLogs = (value) => this.set('logs', value);
-  this.setLog = (name, value, index) => this.setLogs(shipment.setLog(name, value, index));
+  this.setLog = (name, value, index) =>
+        this.setLogs(shipment.setLog(name, value, index));
   this.remove = (name) => setShipment(shipment.remove(name));
   this.clear = () => {
     setShipment(new Shipment(init));
     setErrors(new Shipment({}));
   };
-  this.post = async () => await post(shipment, `${loris.BaseURL}/biobank/shipments/`, 'POST')
-    .catch((e) => Promise.reject(setErrors(new Shipment(e))));
-  this.put = async () => await post(shipment, `${loris.BaseURL}/biobank/shipments/`, 'PUT')
-    .then((shipments) => {
+  this.post = async () =>
+    await post(
+        shipment,
+        `${loris.BaseURL}/biobank/shipments/`,
+        'POST'
+    ).catch((e) => Promise.reject(setErrors(new Shipment(e))));
+  this.put = async () =>
+    await post(
+        shipment,
+        `${loris.BaseURL}/biobank/shipments/`,
+        'PUT'
+    ).then((shipments) => {
       setInit(new Shipment(shipments[0]));
       setShipment(new Shipment(shipments[0]));
       return shipments;
@@ -37,7 +48,20 @@ export function UseShipment(initShipment = {}) {
   return this;
 }
 
+/**
+ * A Shipment of a container
+ */
 class Shipment {
+  /**
+   * Constructor
+   *
+   * @param {string} id - shipment id
+   * @param {string} barcode - shipment barcode
+   * @param {string} type - shipment type
+   * @param {int} destinationCenterId - shipment destination
+   * @param {array} logs - logs for this shipment
+   * @param {array} containerIds - containers in this shipment
+   */
   constructor({
     id = null,
     barcode = null,
@@ -54,23 +78,61 @@ class Shipment {
     this.containerIds = containerIds;
   }
 
+  /**
+   * Sets name to value in this shipment
+   *
+   * @param {string} name - the key
+   * @param {object} value - the value
+   *
+   * @return {Shipment}
+   */
   set(name, value) {
     return new Shipment({...this, [name]: value});
   }
 
+  /**
+   * ?
+   *
+   * @param {object} name - ?
+   *
+   * @return {Shipment}
+   */
   remove(name) {
     return new Shipment({name, ...this});
   }
 
+  /**
+   * Load a shipment from the server
+   *
+   * @param {string} id - the id of the shipment
+   *
+   * @return {Shipment}
+   */
   async load(id) {
    const shipment = await get(`${loris.BaseURL}/biobank/shipments/${id}`);
    return new Shipment(shipment);
   }
 
+  /**
+   * Adds a new log to this shipment
+   *
+   * @param {object} log - the log values
+   *
+   * @return {array}
+   */
   addLog(log) {
     return [...this.logs, new Log(log)];
   };
 
+  /**
+   * Sets the log at index i to name/value
+   *
+   * @param {string} name - the log name
+   * @param {?} value - the log value
+   * @param {int} index - the index
+   *
+   * @return {array}
+   */
   setLog(name, value, index) {
     return this.logs.map((log, i) => {
       if (i !== index) {
@@ -81,7 +143,15 @@ class Shipment {
   };
 }
 
+/**
+ * A log of shipments
+ */
 class Log {
+  /**
+   * Constructor
+   *
+   * @param {object} props - React props
+   */
   constructor(props = {}) {
     this.barcode = props.barcode || null;
     this.centerId = props.centerId || null;
@@ -93,6 +163,14 @@ class Log {
     this.comments = props.comments || null;
   }
 
+  /**
+   * Set a value
+   *
+   * @param {string} name - the key
+   * @param {?} value - the value
+   *
+   * @return {Log} - A new log object with the key set to value
+   */
   set(name, value) {
     return new Log({...this, [name]: value});
   }
