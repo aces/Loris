@@ -1,9 +1,24 @@
 import swal from 'sweetalert2';
 
+/**
+ * Clone an object
+ *
+ * @param {object} object - the object to clone
+ *
+ * @return {object}
+ */
 export function clone(object) {
   return JSON.parse(JSON.stringify(object));
 }
 
+/**
+ * Maps an object values
+ *
+ * @param {object} object - the object to map
+ * @param {?} attribute - the mapping
+ *
+ * @return {object}
+ */
 export function mapFormOptions(object, attribute) {
   return Object.keys(object).reduce((result, id) => {
     result[id] = object[id][attribute];
@@ -11,6 +26,13 @@ export function mapFormOptions(object, attribute) {
   }, {});
 }
 
+/**
+ * Check if an object is either null or an empty object
+ *
+ * @param {object} object - the variable to check
+ *
+ * @return {bool}
+ */
 export function isEmpty(object) {
   if (object == null) {
     return true;
@@ -25,17 +47,42 @@ export function isEmpty(object) {
   return JSON.stringify(object) === JSON.stringify({});
 }
 
+/**
+ * Pad a barcode
+ *
+ * @param {string} pscid - a pscid?
+ * @param {string} increment - the amount of padding
+ *
+ * @return {string}
+ */
 export function padBarcode(pscid, increment) {
   return pscid+padLeft(increment, 3);
 }
 
+/**
+ * Left pad. Without a library.
+ *
+ * @param {int} nr - the existing string
+ * @param {int} n  - the number to pad to
+ * @param {string} str - the string for padding
+ *
+ * @return {string}
+ */
 function padLeft(nr, n, str) {
     return Array(n-String(nr).length+1).join(str||'0')+nr;
 }
 
+/**
+ * Get data from a stream
+
+ * @param {string} url - the url
+ * @param {callback} setProgress - a callback for each chunk
+ */
 export async function getStream(url, setProgress) {
   const response = await fetch(url, {credentials: 'same-origin', method: 'GET'})
-  .catch((error, errorCode, errorMsg) => console.error(error, errorCode, errorMsg));
+  .catch(
+     (error, errorCode, errorMsg) =>
+        console.error(error, errorCode, errorMsg));
   const reader = response.body.getReader();
   const contentLength = response.headers.get('Content-Length');
 
@@ -43,7 +90,8 @@ export async function getStream(url, setProgress) {
   let receivedLength = 0; // received that many bytes at the moment
   let chunks = ''; // array of received binary chunks (comprises the body)
   let count = 0;
-  while (true) {
+  let done = false;
+  while (!done) {
     const {done, value} = await reader.read();
 
     if (done) {
@@ -65,9 +113,20 @@ export async function getStream(url, setProgress) {
   return JSON.parse(chunks);
 }
 
+/**
+ * Post a GET request to a URL and call a callback on success
+ *
+ * @param {string} url - the url
+ * @param {callback} callBack - the success callback
+ */
 export async function get(url, callBack) {
-  const response = await fetch(url, {credientials: 'same-origin', method: 'GET'})
-  .catch((error, errorCode, errorMsg) => console.error(error, errorCode, errorMsg));
+  const response = await fetch(
+     url,
+     {credientials: 'same-origin', method: 'GET'}
+  ).catch(
+     (error, errorCode, errorMsg) =>
+        console.error(error, errorCode, errorMsg)
+  );
 
   const values = response.json();
   if (callBack) {
@@ -89,6 +148,17 @@ export async function get(url, callBack) {
 //   return parsed;
 // }
 
+/**
+ * Post a request to a URL, and call a callback on success or
+ * raise a swal on error.
+ *
+ * @param {object} data - the data to post
+ * @param {string} url - the url
+ * @param {string} method - the method to use
+ * @param {callback} onSuccess - the success callback
+ *
+ * @return {Promise}
+ */
 export async function post(data, url, method, onSuccess) {
   const response = await fetch(url, {
     credentials: 'same-origin',
