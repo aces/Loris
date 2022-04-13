@@ -6,36 +6,77 @@
  *
  **/
 
-// TODO: revise this component once Shipments are enabled.
+/**
+ * LifeCycle component.
+ *
+ * TODO: revise this component once Shipments are enabled.
+ */
 class LifeCycle extends React.Component {
+  /**
+   * Handle a mouse hovering over a collection form.
+   *
+   * @param {event} e - the mouse event
+   */
   mouseOver(e) {
     // this isn't a very 'react' way of doing things, so consider revision
+    /*
       $('.collection').css({
         'border': '2px solid #093782',
-        'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+        'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), ' +
+                      '0 6px 20px 0 rgba(0, 0, 0, 0.19)',
       });
+    */
   }
 
+  /**
+   * Handle a mouse leaving a collection form.
+   *
+   * @param {event} e - the mouse event
+   */
   mouseLeave(e) {
     // this isn't a very 'react' way of doing things, so consider revision
+    /*
       $('.collection').css({
         'border': '2px solid #A6D3F5', 'box-shadow': 'none',
       });
+      */
   }
 
+  /**
+   * Handle a mouse hovering over a preparation form.
+   *
+   * @param {event} e - the mouse event
+   */
   mouseOverPreparation(e) {
     // this isn't a very 'react' way of doing things, so consider revision
+    /*
       $('.preparation').css({
         'border': '2px solid #093782',
-        'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+        'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), ' +
+                      '0 6px 20px 0 rgba(0, 0, 0, 0.19)',
       });
+      */
   }
 
+  /**
+   * Handle a mouse leaving a preparation form.
+   *
+   * @param {event} e - the mouse event
+   */
   mouseLeavePreparation(e) {
     // this isn't a very 'react' way of doing things, so consider revision
-      $('.preparation').css({'border': '2px solid #A6D3F5', 'box-shadow': 'none'});
+    /*
+      $('.preparation').css(
+        {'border': '2px solid #A6D3F5', 'box-shadow': 'none'}
+      );
+      */
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {JSX}
+   */
   render() {
     // Create Collection Node
     let collectionNode;
