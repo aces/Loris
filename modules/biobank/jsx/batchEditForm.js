@@ -29,7 +29,13 @@ const initialState = {
   show: {collection: false, preparation: false},
 };
 
+/**
+ * Biobank batch edit specimen form
+ */
 class BatchEditForm extends React.PureComponent {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
 
@@ -43,9 +49,22 @@ class BatchEditForm extends React.PureComponent {
     this.setPool = this.setPool.bind(this);
   };
 
-  // SHOULD LIKELY GO INTO A HIGHER LEVEL COMPONENT
+  /**
+   * Add a new list item to a container
+   *
+   * FIXME: SHOULD LIKELY GO INTO A HIGHER LEVEL COMPONENT
+   *
+   * @param {int} containerId - the container to add an item to
+   */
   addListItem(containerId) {
-    let {list, current, collection, preparation, count, show} = clone(this.state);
+    let {
+      list,
+      current,
+      collection,
+      preparation,
+      count,
+      show,
+    } = clone(this.state);
 
     // Increase count.
     count++;
@@ -71,7 +90,9 @@ class BatchEditForm extends React.PureComponent {
 
     // If so, set the collection protocolId.
     if (show.collection) {
-      collection.protocolId = list[Object.keys(list)[0]].specimen.collection.protocolId;
+      collection.protocolId = list[
+        Object.keys(list)[0]
+      ].specimen.collection.protocolId;
     }
 
     // This determines if every specimen in the list has the same preparation
@@ -85,7 +106,9 @@ class BatchEditForm extends React.PureComponent {
 
     // If so, set the preparation protocolId.
     if (show.preparation) {
-      preparation.protocolId = list[Object.keys(list)[0]].specimen.preparation.protocolId;
+      preparation.protocolId = list[
+        Object.keys(list)[0]
+      ].specimen.preparation.protocolId;
     }
 
     this.setState(
@@ -93,7 +116,13 @@ class BatchEditForm extends React.PureComponent {
     );
   }
 
-  // SHOULD LIKELY GO INTO A HIGHER LEVEL COMPONENT
+  /**
+   * Remove a list item from a container
+   *
+   * FIXME: SHOULD LIKELY GO INTO A HIGHER LEVEL COMPONENT
+   *
+   * @param {string} key - the key to remove
+   */
   removeListItem(key) {
     let {list, current} = clone(this.state);
     delete list[key];
@@ -101,6 +130,12 @@ class BatchEditForm extends React.PureComponent {
     this.setState({list, current});
   }
 
+  /**
+   * Set the current specimen being edited?
+   *
+   * @param {string} name - process name
+   * @param {object} value - value to set
+   */
   setSpecimen(name, value) {
     const specimen = clone(this.state.specimen);
     specimen[name] = value;
@@ -108,22 +143,48 @@ class BatchEditForm extends React.PureComponent {
     this.setState({specimen});
   }
 
+  /**
+   * Set the current container being edited?
+   *
+   * @param {string} name - process name
+   * @param {object} value - value to set
+   */
   setContainer(name, value) {
     const container = clone(this.state.container);
     container[name] = value;
     this.setState({container});
   }
 
+  /**
+   * Set the current specimen being edited?
+   *
+   * @param {string} name - process name
+   * @param {object} value - value to set
+   *
+   * @return {Promise}
+   */
   setCurrent(name, value) {
     const current = clone(this.state.current);
     current[name] = value;
     return new Promise((res) => this.setState({current}, res()));
   }
 
+  /**
+   * Sets the process being edited
+   *
+   * @param {string} name - process name
+   * @param {object} value - value to set
+   */
   setProcess(name, value) {
     this.setState({[name]: value});
   }
 
+  /**
+   * Set a pool?
+   *
+   * @param {string} name - the pool name
+   * @param {int} poolId - the pool id
+   */
   setPool(name, poolId) {
     const pool = clone(this.props.data.pools[poolId]);
 
@@ -140,18 +201,34 @@ class BatchEditForm extends React.PureComponent {
     .then(() => this.setState({loading: false}));
   }
 
+  /**
+   * Validate the list items for a container
+   *
+   * @param {int} containerId - the container to validate
+   *
+   * @return {Promise}
+   */
   validateListItem(containerId) {
     const {current, list} = clone(this.state);
     const container = this.props.data.containers[containerId];
     const specimen = this.props.data.specimens[container.specimenId];
     if (!isEmpty(list) &&
       (specimen.typeId !== current.typeId)) {
-      swal.fire('Oops!', 'Specimens must be of the same Type and Center', 'warning');
+      swal.fire(
+        'Oops!',
+        'Specimens must be of the same Type and Center',
+        'warning'
+      );
       return Promise.reject();
     }
     return Promise.resolve();
   }
 
+  /**
+   * Render the react component
+   *
+   * @return {JSX}
+   */
   render() {
     if (this.state.loading) {
       return <Loader/>;
@@ -165,7 +242,10 @@ class BatchEditForm extends React.PureComponent {
       'label'
     ) : {};
     const stati = mapFormOptions(options.container.stati, 'label');
-    const containerTypesPrimary = mapFormOptions(options.container.typesPrimary, 'label');
+    const containerTypesPrimary = mapFormOptions(
+      options.container.typesPrimary,
+      'label',
+    );
     const containerTypes = {};
     if (current.typeId && options.specimen.typeContainerTypes[current.typeId]) {
       Object.keys(containerTypesPrimary).forEach((id) => {
@@ -246,17 +326,17 @@ class BatchEditForm extends React.PureComponent {
           text={options.specimen.protocols[collection.protocolId].label}
         />
         <EditForm>
-          {SpecimenProcessForm({
-            edit: true,
-            errors: errors.specimen.collection || {},
-            options: options,
-            process: collection,
-            processStage: 'collection',
-            setParent: this.setProcess,
-            setCurrent: this.setCurrent,
-            typeId: current.typeId,
-            hideProtocol: true,
-          })}
+          <SpecimenProcessForm
+            edit={true}
+            errors={errors.specimen.collection || {}}
+            options={options}
+            process={collection}
+            processStage='collection'
+            setParent={this.setProcess}
+            setCurrent={this.setCurrent}
+            typeId={current.typeId}
+            hideProtocol={true}
+            />
         </EditForm>
       </div>
     ) : null;
@@ -268,17 +348,17 @@ class BatchEditForm extends React.PureComponent {
           text={options.specimen.protocols[preparation.protocolId].label}
         />
         <EditForm>
-          {SpecimenProcessForm({
-            edit: true,
-            errors: errors.specimen.preparation || {},
-            options: options,
-            process: preparation,
-            processStage: 'preparation',
-            setParent: this.setProcess,
-            setCurrent: this.setCurrent,
-            typeId: current.typeId,
-            hideProtocol: true,
-          })}
+          <SpecimenProcessForm
+            edit={true}
+            errors={errors.specimen.preparation || {}}
+            options={options}
+            process={preparation}
+            processStage='preparation'
+            setParent={this.setProcess}
+            setCurrent={this.setCurrent}
+            typeId={current.typeId}
+            hideProtocol={true}
+            />
         </EditForm>
       </div>
     ) : null;
@@ -307,12 +387,26 @@ class BatchEditForm extends React.PureComponent {
         );
       });
 
-    const tabList = [{id: 'global', label: 'Global', error: !isEmpty(errors.specimen) || !isEmpty(errors.container), content: globalForm}];
+    const tabList = [{
+      id: 'global',
+      label: 'Global',
+      error: !isEmpty(errors.specimen) || !isEmpty(errors.container),
+      content: globalForm,
+    }];
     if (this.state.show.collection) {
-      tabList.push({id: 'collection', label: 'Collection', error: !isEmpty(errors.specimen.collection), content: collectionForm});
+      tabList.push({
+        id: 'collection',
+        label: 'Collection',
+        error: !isEmpty(errors.specimen.collection),
+        content: collectionForm,
+      });
     }
     if (this.state.show.preparation) {
-      tabList.push({id: 'preparation', label: 'Preparation', content: preparationForm});
+      tabList.push({
+        id: 'preparation',
+        label: 'Preparation',
+        content: preparationForm,
+      });
     }
     const tabContent = tabList
     .map((tab, i) => <TabPane key={i} TabId={tab.id}>{tab.content}</TabPane>);
@@ -461,7 +555,15 @@ class BatchEditForm extends React.PureComponent {
 BatchEditForm.propTypes = {
 };
 
+/**
+ * Input form to enter a barcode
+ */
 class BarcodeInput extends React.PureComponent {
+  /**
+   * Constructor
+   *
+   * @param {object} props - React props
+   */
   constructor(props) {
     super(props);
 
@@ -484,6 +586,11 @@ class BarcodeInput extends React.PureComponent {
     };
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {addListItem} = this.props;
 
