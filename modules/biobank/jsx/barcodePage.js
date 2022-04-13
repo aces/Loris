@@ -41,12 +41,19 @@ const initialState = {
   },
 };
 
+/**
+ * A page with barcodes?
+ */
 class BarcodePage extends Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
 
     this.state = initialState;
-    this.getParentContainerBarcodes = this.getParentContainerBarcodes.bind(this);
+    this.getParentContainerBarcodes
+      = this.getParentContainerBarcodes.bind(this);
     this.getCoordinateLabel = this.getCoordinateLabel.bind(this);
     this.edit = this.edit.bind(this);
     this.clearEditable = this.clearEditable.bind(this);
@@ -61,6 +68,14 @@ class BarcodePage extends Component {
     this.getBarcodePathDisplay = this.getBarcodePathDisplay.bind(this);
   }
 
+  /**
+   * Get the barcodes from a parent container recursively
+   *
+   * @param {object} container - the container with siblings
+   * @param {array} barcodes - the initial list of barcodes
+   *
+   * @return {array}
+   */
   getParentContainerBarcodes(container, barcodes=[]) {
     barcodes.push(container.barcode);
 
@@ -72,14 +87,22 @@ class BarcodePage extends Component {
     return barcodes.slice(0).reverse();
   }
 
+  /**
+   * Get the label for a coordinate in a container
+   *
+   * @param {object} container
+   *
+   * @return {string}
+   */
   getCoordinateLabel(container) {
-    const parentContainer = this.props.data.containers[container.parentContainerId];
-    const dimensions = this.props.options.container.dimensions[parentContainer.dimensionId];
+    const optcontainer = this.props.options.container;
+    const datacontainers = this.props.data.containers;
+    const parentContainer = datacontainers[container.parentContainerId];
+    const dimensions = optcontainer.dimensions[parentContainer.dimensionId];
     let coordinate;
     let j = 1;
     outerloop:
     for (let y=1; y<=dimensions.y; y++) {
-      innerloop:
       for (let x=1; x<=dimensions.x; x++) {
         if (j == container.coordinate) {
           if (dimensions.xNum == 1 && dimensions.yNum == 1) {
@@ -97,6 +120,13 @@ class BarcodePage extends Component {
     return coordinate;
   }
 
+  /**
+   * Set a key as editable
+   *
+   * @param {string} stateKey - the key to edit
+   *
+   * @return {Promise}
+   */
   edit(stateKey) {
     return new Promise((resolve) => {
       this.clearEditable()
@@ -108,16 +138,31 @@ class BarcodePage extends Component {
     });
   }
 
+  /**
+   * Reset the editable state of the page
+   *
+   * @return {Promise}
+   */
   clearEditable() {
     const state = clone(this.state);
     state.editable = initialState.editable;
     return new Promise((res) => this.setState(state, res()));
   }
 
+  /**
+   * Reset the state of the page
+   *
+   * @return {Promise}
+   */
   clearAll() {
     return new Promise((res) => this.setState(initialState, res()));
   }
 
+  /**
+   * Set a list of containers to checkout?
+   *
+   * @param {object} container - a container to checkout?
+   */
   setCheckoutList(container) {
     // Clear current container field.
     this.setCurrent('containerId', 1)
@@ -127,32 +172,70 @@ class BarcodePage extends Component {
     this.setCurrent('list', list);
   }
 
+  /**
+   * Edit a specimen
+   *
+   * @param {object} specimen - specimen
+   *
+   * @return {Promise}
+   */
   editSpecimen(specimen) {
     specimen = clone(specimen);
     return this.setCurrent('specimen', specimen);
   }
 
+  /**
+   * Edit a container
+   *
+   * @param {object} container - container
+   *
+   * @return {Promise}
+   */
   editContainer(container) {
     container = clone(container);
     return this.setCurrent('container', container);
   }
 
+  /**
+   * Set current thing being edited?
+   *
+   * @param {string} name - the name to display
+   * @param {object} value - the error message
+   *
+   * @return {Promise}
+   */
   setCurrent(name, value) {
     const current = clone(this.state.current);
     current[name] = value;
     return new Promise((res) => this.setState({current}, res()));
   }
 
+  /**
+   * Set active errors to display
+   *
+   * @param {string} name - the key with an error
+   * @param {string} value - the error message
+   */
   setErrors(name, value) {
     const errors = this.state.errors;
     errors[name] = value;
     this.setState({errors});
   }
 
+  /**
+   * Get the path to display for a barcode
+   *
+   * @param {array} parentBarcodes - parent barcodes
+   *
+   * @return {JSX}
+   */
   getBarcodePathDisplay(parentBarcodes) {
     return Object.keys(parentBarcodes).map((i) => {
       const container = Object.values(this.props.data.containers)
-        .find((container) => container.barcode == parentBarcodes[parseInt(i)+1]);
+        .find(
+          (container) =>
+            container.barcode == parentBarcodes[parseInt(i)+1]
+        );
       let coordinateDisplay;
       if (container) {
         const coordinate = this.getCoordinateLabel(container);
@@ -161,13 +244,24 @@ class BarcodePage extends Component {
       return (
         <span className='barcodePath'>
           {i != 0 && ': '}
-          <Link key={i} to={`/barcode=${parentBarcodes[i]}`}>{parentBarcodes[i]}</Link>
+          <Link
+            key={i}
+            to={`/barcode=${parentBarcodes[i]}`}>{parentBarcodes[i]}
+          </Link>
           {coordinateDisplay}
         </span>
       );
     });
   }
 
+  /**
+   * Sets the current specimen
+   *
+   * @param {string} name - the specimen name
+   * @param {string} value - the specimen value
+   *
+   * @return {Promise}
+   */
   setSpecimen(name, value) {
     return new Promise((resolve) => {
       const specimen = clone(this.state.current.specimen);
@@ -177,6 +271,14 @@ class BarcodePage extends Component {
     });
   }
 
+  /**
+   * Sets the current container
+   *
+   * @param {string} name - the container name
+   * @param {string} value - the container value
+   *
+   * @return {Promise}
+   */
   setContainer(name, value) {
     return new Promise((resolve) => {
       const container = clone(this.state.current.container);
@@ -186,12 +288,19 @@ class BarcodePage extends Component {
     });
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {current, editable, errors} = clone(this.state);
     const {specimen, container, data, options} = this.props;
 
     // THIS IS A PLACE HOLDER FOR BETTER LAZY LOADING
-    if (isEmpty(data.containers) || isEmpty(data.specimens) || isEmpty(data.pools)) {
+    if (isEmpty(data.containers) ||
+        isEmpty(data.specimens) || isEmpty(data.pools)
+    ) {
       return <LoadingBar progress={this.props.loading}/>;
     }
 
@@ -275,7 +384,6 @@ class BarcodePage extends Component {
           setSpecimen={this.setSpecimen}
           createSpecimens={this.props.createSpecimens}
           updateContainer={updateContainer}
-          editContainer={this.editContainer}
           getParentContainerBarcodes={this.getParentContainerBarcodes}
           getBarcodePathDisplay={this.getBarcodePathDisplay}
           increaseCoordinate={this.props.increaseCoordinate}
