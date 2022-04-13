@@ -26,7 +26,13 @@ const initialState = {
   editable: {preparation: true},
 };
 
+/**
+ * A batch process form for specimens
+ */
 class BatchProcessForm extends React.PureComponent {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
 
@@ -38,10 +44,24 @@ class BatchProcessForm extends React.PureComponent {
     this.setPool = this.setPool.bind(this);
   };
 
+  /**
+   * Sets a process?
+   *
+   * @param {string} name - a name
+   * @param {?} value - the value
+   *
+   * @return {Promise}
+   */
   setProcess(name, value) {
     return new Promise((res) => this.setState({[name]: value}, res()));
   }
 
+  /**
+   * Add a list item to a container.
+   *
+   * @param {int} containerId - the container to add an item to
+   *
+   */
   addListItem(containerId) {
     let {list, current, preparation, count} = clone(this.state);
 
@@ -68,6 +88,12 @@ class BatchProcessForm extends React.PureComponent {
     );
   }
 
+  /**
+   * Set the current pool to display(?)
+   *
+   * @param {string} name - the name to display
+   * @param {int} poolId - the pool to display
+   */
   setPool(name, poolId) {
     const pool = clone(this.props.data.pools[poolId]);
 
@@ -82,6 +108,11 @@ class BatchProcessForm extends React.PureComponent {
     .then(() => this.setState({loading: false}));
   }
 
+  /**
+   * Remove a key from the list.
+   *
+   * @param {string} key - the key to remove
+   */
   removeListItem(key) {
     let {list, current} = clone(this.state);
     delete list[key];
@@ -90,6 +121,13 @@ class BatchProcessForm extends React.PureComponent {
     this.setState({list, current, containerId});
   }
 
+  /**
+   * Validate a container in a list
+   *
+   * @param {int} containerId - the container to validate
+   *
+   * @return {Promise}
+   */
   validateListItem(containerId) {
     const {current, list} = clone(this.state);
     const container = this.props.data.containers[containerId];
@@ -113,6 +151,13 @@ class BatchProcessForm extends React.PureComponent {
     return Promise.resolve();
   }
 
+  /**
+   * Validate a list of specimens
+   *
+   * @param {array} list - the list of specimens to validate
+   *
+   * @return {Promise}
+   */
   validateList(list) {
     return new Promise((resolve, reject) => {
       const barcodes = Object.values(list)
@@ -123,8 +168,8 @@ class BatchProcessForm extends React.PureComponent {
         return swal({
           title: 'Warning!',
           html: `Preparation for specimen(s) <b>${barcodes.join(', ')}</b> ` +
-            `already exists. By completing this form, the previous preparation ` +
-            `will be overwritten.`,
+            `already exists. By completing this form, the previous `
+            + `preparation will be overwritten.`,
           type: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Proceed'})
@@ -135,19 +180,39 @@ class BatchProcessForm extends React.PureComponent {
     });
   }
 
+  /**
+   * Set the current specimen(?) being processed
+   *
+   * @param {string} name - the name
+   * @param {string} value - the value
+   *
+   * @return {Promise}
+   */
   setCurrent(name, value) {
     const current = clone(this.state.current);
     current[name] = value;
     return new Promise((res) => this.setState({current}, res()));
   }
 
+  /**
+   * Render the React element
+   *
+   * @return {JSX}
+   */
   render() {
     if (this.state.loading) {
       return <Loader/>;
     }
 
     const {data, options} = this.props;
-    const {containerId, poolId, preparation, list, current, errors} = this.state;
+    const {
+      containerId,
+      poolId,
+      preparation,
+      list,
+      current,
+      errors,
+    } = this.state;
 
     const preparationForm = this.state.editable.preparation ? (
       <SpecimenProcessForm
@@ -283,7 +348,15 @@ class BatchProcessForm extends React.PureComponent {
 BatchProcessForm.propTypes = {
 };
 
+/**
+ * Component to read a barcode from the barcode scanner
+ */
 class BarcodeInput extends PureComponent {
+  /**
+   * Render the React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {data, options, list, containerId, addListItem} = this.props;
     // Create options for barcodes based on match typeId
