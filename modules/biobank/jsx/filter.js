@@ -8,7 +8,15 @@ import ContainerTab from './containerTab';
 import PoolTab from './poolTab';
 import ShipmentTab from './shipmentTab';
 
+/**
+ * Render a filter in the biobank.
+ */
 class BiobankFilter extends Component {
+  /**
+   * Render the component
+   *
+   * @return {JSX}
+   */
   render() {
     const specimenTab = (
       <SpecimenTab

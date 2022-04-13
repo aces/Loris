@@ -11,7 +11,9 @@ function CustomFields(props) {
   const {options, errors, fields, object} = props;
 
   return Object.keys(fields).map((attribute, key) => {
-    const datatype = options.specimen.attributeDatatypes[fields[attribute]['datatypeId']].datatype;
+    const datatype = options.specimen.attributeDatatypes[
+        fields[attribute]['datatypeId']
+      ].datatype;
     if (datatype === 'text' || datatype === 'number') {
       return (
         <TextboxElement
