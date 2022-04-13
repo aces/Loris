@@ -50,7 +50,8 @@ function ContainerParentForm(props) {
       ].dimensionId];
       const capacity = dimensions.x * dimensions.y * dimensions.z;
       const available = capacity - container.childContainerIds.length;
-      result[container.id] = container.barcode + ' ('+available+ ' Available Spots)';
+      result[container.id] = container.barcode +
+           ' (' +available + ' Available Spots)';
     }
     return result;
   }, {});
