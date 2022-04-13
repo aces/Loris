@@ -1,6 +1,12 @@
 import {clone, isEmpty} from './helpers.js';
 
+/**
+ * A form containing a list
+ */
 class ListForm extends React.Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.state = {
@@ -16,10 +22,16 @@ class ListForm extends React.Component {
     this.toggleCollapse = this.toggleCollapse.bind(this);
   }
 
+  /**
+   * React lifecycle method
+   */
   componentDidMount() {
     this.addListItem();
   }
 
+  /**
+   * React lifecycle method
+   */
   componentDidUpdate() {
     Object.keys(this.props.list).forEach((key) => {
       if (!isEmpty(this.props.errors[key]) && this.state.collapsed[key]) {
@@ -28,12 +40,22 @@ class ListForm extends React.Component {
     });
   }
 
+  /**
+   * Set the value of a list item
+   *
+   * @param {string} name - the item name
+   * @param {string} value - the item value
+   * @param {string} key - the key with the item
+   */
   setListItem(name, value, key) {
     const list = clone(this.props.list);
     list[key][name] = value;
     this.props.setList(list);
   }
 
+  /**
+   * Add an empty list item
+   */
   addListItem() {
     let {count, collapsed} = clone(this.state);
     const list = clone(this.props.list);
@@ -45,6 +67,11 @@ class ListForm extends React.Component {
     this.props.setList(list);
   }
 
+  /**
+   * Copy an item in a list
+   *
+   * @param {string} key - the key to copy
+   */
   copyListItem(key) {
     let {collapsed, count, multiplier} = clone(this.state);
     const list = clone(this.props.list);
@@ -62,24 +89,40 @@ class ListForm extends React.Component {
     this.props.setList(list);
   }
 
+  /**
+   * Remove a list item from the list
+   *
+   * @param {string} key - the key to remove
+   */
   removeListItem(key) {
     const list = clone(this.props.list);
     delete list[key];
     this.props.setList(list);
   }
 
+  /**
+   * Toggle whether a key is collapsed
+   *
+   * @param {string} key - the key to toggle
+   */
   toggleCollapse(key) {
     const collapsed = clone(this.state.collapsed);
     collapsed[key] = !collapsed[key];
     this.setState({collapsed});
   }
 
+  /**
+   * Render the React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {collapsed, multiplier} = this.state;
     const {errors, list} = this.props;
 
     return Object.entries(list).map(([key, item], i, list) => {
-      const handleRemoveItem = list.length > 1 ? () => this.removeListItem(key) : null;
+      const handleRemoveItem = list.length > 1 ?
+          () => this.removeListItem(key) : null;
       const handleCopyItem = () => this.copyListItem(key);
       const handleCollapse = () => this.toggleCollapse(key);
 
@@ -160,7 +203,16 @@ class ListForm extends React.Component {
   }
 }
 
+/**
+ * Display a list item
+ */
 class ListItem extends React.Component {
+  /**
+   * Render the component
+   *
+   * @return {JSX}
+   *
+   */
   render() {
     const children = React.Children.toArray(this.props.children);
     const firstChild = React.cloneElement(children[0], {
@@ -189,8 +241,17 @@ class ListItem extends React.Component {
         </div>
         <div className='col-xs-1' style={{paddingLeft: 0, marginTop: 10}}>
           <span
-            className= {this.props.collapsed ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-up'}
-            style={{cursor: 'pointer', fontSize: 15, position: 'relative', right: 40}}
+            className= {
+                this.props.collapsed
+                    ? 'glyphicon glyphicon-chevron-down'
+                    : 'glyphicon glyphicon-chevron-up'
+                }
+            style={{
+                   cursor: 'pointer',
+                   fontSize: 15,
+                   position: 'relative',
+                   right: 40,
+            }}
             onClick={this.props.handleCollapse}
           />
           {this.props.removeItem ? removeItemButton : null}
