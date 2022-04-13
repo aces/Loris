@@ -16,16 +16,29 @@ import ContainerDisplay from './containerDisplay';
  *
  * */
 class BiobankContainer extends Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.drag = this.drag.bind(this);
   }
 
+  /**
+   * Handle dragging of a container
+   *
+   * @param {Event} e - the drag event
+   */
   drag(e) {
     const container = JSON.stringify(this.props.data.containers[e.target.id]);
     e.dataTransfer.setData('text/plain', container);
   }
 
+  /**
+   * Render React component
+   *
+   * @return {JSX}
+   */
   render() {
     const {current, data, editable, options, container} = this.props;
 
@@ -56,7 +69,10 @@ class BiobankContainer extends Component {
     // delete values that are parents of the container
     Object.keys(parentBarcodes)
       .forEach((key) => Object.keys(barcodes)
-        .forEach((i) => (parentBarcodes[key] == barcodes[i]) && delete barcodes[i])
+        .forEach(
+           (i) => (parentBarcodes[key] == barcodes[i])
+                && delete barcodes[i]
+        )
     );
 
     const barcodePathDisplay = this.props.getBarcodePathDisplay(parentBarcodes);
@@ -111,7 +127,13 @@ class BiobankContainer extends Component {
         const child = data.containers[childId];
         if (child.coordinate) {
           listAssigned.push(
-            <div><Link key={childId} to={`/barcode=${child.barcode}`}>{child.barcode}</Link></div>
+            <div>
+               <Link
+                  key={childId}
+                  to={`/barcode=${child.barcode}`}>
+                    {child.barcode}
+               </Link>
+            </div>
           );
           const coordinate = this.props.getCoordinateLabel(child);
           coordinateList.push(<div>at {coordinate}</div>);
