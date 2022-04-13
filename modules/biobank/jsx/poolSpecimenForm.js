@@ -20,7 +20,13 @@ const initialState = {
   containerId: null,
 };
 
+/**
+ * React component with form for entering pool specimens
+ */
 class PoolSpecimenForm extends React.Component {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.state = initialState;
@@ -29,12 +35,23 @@ class PoolSpecimenForm extends React.Component {
     this.setPoolList = this.setPoolList.bind(this);
   }
 
+  /**
+   * Set the current pool.
+   *
+   * @param {string} name  - the pool name
+   * @param {string} value - the pool value
+   */
   setPool(name, value) {
     const pool = clone(this.state.pool);
     pool[name] = value;
     this.setState({pool});
   }
 
+  /**
+   * Sets the current pool list being displayed?
+   *
+   * @param {int} containerId - container with pool?
+   */
   setPoolList(containerId) {
     let {current, list, pool, count} = clone(this.state);
 
@@ -68,6 +85,11 @@ class PoolSpecimenForm extends React.Component {
     );
   }
 
+  /**
+   * Remove a list item
+   *
+   * @param {string} key - the key to be removed
+   */
   removeListItem(key) {
     let {pool, list, current} = clone(this.state);
     // remove specimenId from pool.
@@ -86,6 +108,13 @@ class PoolSpecimenForm extends React.Component {
     this.setState({pool, list, current, containerId});
   }
 
+  /**
+   * Validate a list item for a container
+   *
+   * @param {int} containerId - the container being validated
+   *
+   * @return {Promise} - a resolved or rejected promise
+   */
   validateListItem(containerId) {
     const {current, list} = clone(this.state);
     const container = this.props.data.containers[containerId];
@@ -100,7 +129,8 @@ class PoolSpecimenForm extends React.Component {
     ) {
       swal.fire({
         title: 'Oops!',
-        text: 'Specimens must be of the same PSCID, Visit Label, Type and Center',
+        text: 'Specimens must be of the same PSCID, ' +
+              'Visit Label, Type and Center',
         type: 'warning',
       });
       return Promise.reject();
@@ -263,7 +293,15 @@ class PoolSpecimenForm extends React.Component {
 PoolSpecimenForm.propTypes = {
 };
 
+/**
+ * React component to read input from a barcode
+ */
 class BarcodeInput extends PureComponent {
+  /**
+   * Render react component
+   *
+   * @return {JSX}
+   */
   render() {
     const {list, data, options, errors, containerId} = this.props;
 
