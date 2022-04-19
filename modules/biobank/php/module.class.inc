@@ -147,6 +147,12 @@ class Module extends \Module
 
         return $page->process($request, $page);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
     public function getLongName() : string
     {
         return "Biobank";
