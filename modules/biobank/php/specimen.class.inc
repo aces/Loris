@@ -286,7 +286,8 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * Sets the ID of the candidate's session/timepoint in which the specimen was collected
+     * Sets the ID of the candidate's session/timepoint in which the specimen
+     * was collected.
      *
      * @param int $sessionId the ID of the specimen's session of collection
      *
@@ -428,17 +429,39 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function fromArray(array $data) : Specimen
     {
-        isset($data['id'])                && $this->setId((int) $data['id']);
-        isset($data['containerId'])       && $this->setContainerId((int) $data['containerId']);
-        isset($data['typeId'])            && $this->setTypeId((int) $data['typeId']);
-        isset($data['quantity'])          && $this->setQuantity((string) $data['quantity']);
-        isset($data['unitId'])            && $this->setUnitId((int) $data['unitId']);
-        isset($data['fTCycle'])           && $this->setFTCycle((int) $data['fTCycle']);
-        isset($data['parentSpecimenIds']) && $this->setParentSpecimenIds($data['parentSpecimenIds']);
-        isset($data['candidateId'])       && $this->setCandidateId((int) $data['candidateId']);
-        isset($data['candidateAge'])      && $this->setCandidateAge((int) $data['candidateAge']);
-        isset($data['sessionId'])         && $this->setSessionId((int) $data['sessionId']);
-        isset($data['poolId'])            && $this->setPoolId((int) $data['poolId']);
+        if (isset($data['id'])) {
+            $this->setId((int) $data['id']);
+        }
+        if (isset($data['containerId'])) {
+            $this->setContainerId((int) $data['containerId']);
+        }
+        if (isset($data['typeId'])) {
+            $this->setTypeId((int) $data['typeId']);
+        }
+        if (isset($data['quantity'])) {
+            $this->setQuantity((string) $data['quantity']);
+        }
+        if (isset($data['unitId'])) {
+            $this->setUnitId((int) $data['unitId']);
+        }
+        if (isset($data['fTCycle'])) {
+            $this->setFTCycle((int) $data['fTCycle']);
+        }
+        if (isset($data['parentSpecimenIds'])) {
+            $this->setParentSpecimenIds($data['parentSpecimenIds']);
+        }
+        if (isset($data['candidateId'])) {
+            $this->setCandidateId((int) $data['candidateId']);
+        }
+        if (isset($data['candidateAge'])) {
+            $this->setCandidateAge((int) $data['candidateAge']);
+        }
+        if (isset($data['sessionId'])) {
+            $this->setSessionId((int) $data['sessionId']);
+        }
+        if (isset($data['poolId'])) {
+            $this->setPoolId((int) $data['poolId']);
+        }
 
         if (isset($data['collection'])) {
             $collection = (new Collection())->fromArray($data['collection']);
