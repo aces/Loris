@@ -245,7 +245,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the Barcodes of the container's shipments
      *
-     * @param array $projectBarocodes the IDs of the container's shipments
+     * @param array $shipmentBarcodes the IDs of the container's shipments
      *
      * @return void
      */
@@ -427,7 +427,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's status comments.
      *
-     * @param string $barcode the container's status comments
+     * @param string $comments the container's status comments
      *
      * @return void
      */
@@ -455,22 +455,54 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function fromArray(array $data) : Container
     {
-        isset($data['id'])                && $this->setId((int) $data['id']);
-        isset($data['barcode'])           && $this->setBarcode((string) $data['barcode']);
-        isset($data['specimenId'])        && $this->setSpecimenId((int) $data['specimenId']);
-        isset($data['typeId'])            && $this->setTypeId((int) $data['typeId']);
-        isset($data['dimensionId'])       && $this->setDimensionId((int) $data['dimensionId']);
-        isset($data['temperature'])       && $this->setTemperature((float) ($data['temperature']));
-        isset($data['statusId'])          && $this->setStatusId((int) $data['statusId']);
-        isset($data['projectIds'])        && $this->setProjectIds($data['projectIds']);
-        isset($data['shipmentBarcodes'])  && $this->setShipmentBarcodes($data['shipmentBarcodes']);
-        isset($data['centerId'])          && $this->setCenterId((int) $data['centerId']);
-        isset($data['parentContainerId']) && $this->setParentContainerId((int) $data['parentContainerId']);
-        isset($data['childContainerIds']) && $this->setChildContainerIds($data['childContainerIds']);
-        isset($data['coordinate'])        && $this->setCoordinate((int) $data['coordinate']);
-        isset($data['lotNumber'])         && $this->setLotNumber((string) $data['lotNumber']);
-        isset($data['expirationDate'])    && $this->setExpirationDate(new \DateTime($data['expirationDate']));
-        isset($data['comments'])          && $this->setComments((string) $data['comments']);
+        if (isset($data['id'])) {
+            $this->setId((int) $data['id']);
+        }
+        if (isset($data['barcode'])) {
+            $this->setBarcode((string) $data['barcode']);
+        }
+        if (isset($data['specimenId'])) {
+            $this->setSpecimenId((int) $data['specimenId']);
+        }
+        if (isset($data['typeId'])) {
+            $this->setTypeId((int) $data['typeId']);
+        }
+        if (isset($data['dimensionId'])) {
+            $this->setDimensionId((int) $data['dimensionId']);
+        }
+        if (isset($data['temperature'])) {
+            $this->setTemperature((float) ($data['temperature']));
+        }
+        if (isset($data['statusId'])) {
+            $this->setStatusId((int) $data['statusId']);
+        }
+        if (isset($data['projectIds'])) {
+            $this->setProjectIds($data['projectIds']);
+        }
+        if (isset($data['shipmentBarcodes'])) {
+            $this->setShipmentBarcodes($data['shipmentBarcodes']);
+        }
+        if (isset($data['centerId'])) {
+            $this->setCenterId((int) $data['centerId']);
+        }
+        if (isset($data['parentContainerId'])) {
+            $this->setParentContainerId((int) $data['parentContainerId']);
+        }
+        if (isset($data['childContainerIds'])) {
+            $this->setChildContainerIds($data['childContainerIds']);
+        }
+        if (isset($data['coordinate'])) {
+            $this->setCoordinate((int) $data['coordinate']);
+        }
+        if (isset($data['lotNumber'])) {
+            $this->setLotNumber((string) $data['lotNumber']);
+        }
+        if (isset($data['expirationDate'])) {
+            $this->setExpirationDate(new \DateTime($data['expirationDate']));
+        }
+        if (isset($data['comments'])) {
+            $this->setComments((string) $data['comments']);
+        }
 
         return $this;
     }
