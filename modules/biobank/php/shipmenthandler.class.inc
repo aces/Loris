@@ -45,6 +45,7 @@ class ShipmentHandler
     /**
      * Shipment Handler Class constructor
      *
+     * @param array    $data An array of data to initialize the instance with
      * @param Database $db   Database Instance.
      * @param User     $user User Instance.
      */
@@ -52,25 +53,19 @@ class ShipmentHandler
     {
         $this->db       = $db;
         $this->user     = $user;
-        $this->dao      = $this->getDataProvisioner();
+        $this->dao      = $this->_getDataProvisioner();
         $this->shipment = new Shipment($data);
-        $this->validate($this->shipment);
+        $this->_validate($this->shipment);
     }
 
     /**
-     * This method takes in a list of shipment and container arrays from the
-     * front-end. The shipments are validated while the containers are
-     * sent to their respective handler to be validated and saved. The ids of
-     * the saved containers are set to the shipment instances which are then
-     * sent to the DAO to be saved.
-     *
-     * @param array $shipmentArray a list of shipment and container arrays to be created.
+     * This method creates a new, empty instance of a shipment.
      *
      * @return array a list of shipment objects that were created.
      */
     public function createInstance() : array
     {
-        $this->validatePermission('create');
+        $this->_validatePermission('create');
         return $this->dao->saveInstance($this->shipment);
     }
 
@@ -85,7 +80,7 @@ class ShipmentHandler
      */
     public function updateInstance(array $shipmentArray) : array
     {
-        $this->validatePermission('update');
+        $this->_validatePermission('update');
         return $this->dao->saveInstance($this->shipment);
     }
 
@@ -95,7 +90,7 @@ class ShipmentHandler
      *
      * @return \LORIS\Data\Provisioner
      */
-    private function getDataProvisioner() : \LORIS\Data\Provisioner
+    private function _getDataProvisioner() : \LORIS\Data\Provisioner
     {
         $dao = new ShipmentDAO($this->db);
 
@@ -112,7 +107,7 @@ class ShipmentHandler
      *
      * @return void
      */
-    private function validatePermission(string $method) : void
+    private function _validatePermission(string $method) : void
     {
         // switch($method) {
         // case 'view':
@@ -133,11 +128,21 @@ class ShipmentHandler
         // }
     }
 
-    public function isValid()
+    /**
+     * Check if there's any validation errors for this shipment
+     *
+     * @return bool
+     */
+    public function isValid() : bool
     {
         return empty($this->errors);
     }
 
+    /**
+     * Get list of validation errors
+     *
+     * @return array
+     */
     public function getErrors()
     {
         return $this->errors;
@@ -146,37 +151,37 @@ class ShipmentHandler
     /**
      * Validates Shipment Data before being saved
      *
-     * @param Shipment $shipment
+     * @param Shipment $shipment The shipment to validate
      *
      * @return void
      */
-    private function validate(Shipment $shipment) : void
+    private function _validate(Shipment $shipment) : void
     {
         $errors       = [];
-        $errors       = $this->validateBarcode($shipment, $errors);
-        $errors       = $this->validateType($shipment, $errors);
-        $errors       = $this->validateDestinationCenterId($shipment, $errors);
-        $errors       = $this->validateLogs($shipment, $errors);
-        $errors       = $this->validateContainers($shipment, $errors);
+        $errors       = $this->_validateBarcode($shipment, $errors);
+        $errors       = $this->_validateType($shipment, $errors);
+        $errors       = $this->_validateDestinationCenterId($shipment, $errors);
+        $errors       = $this->_validateLogs($shipment, $errors);
+        $errors       = $this->_validateContainers($shipment, $errors);
         $this->errors = $errors;
     }
 
     /**
      * Validates Shipment Object Barcode.
      *
-     * @param Shipment $shipment
-     * @param array    $errors
+     * @param Shipment $shipment Shipment to validate
+     * @param array    $errors   List of errors to add to
      *
      * @return array
      */
-    private function validateBarcode(Shipment $shipment, array $errors) : array
+    private function _validateBarcode(Shipment $shipment, array $errors) : array
     {
         $error = '';
         if (empty($shipment->barcode)) {
             $error .= 'Barcode is required. ';
         }
         if (!$shipment->id) {
-            foreach($this->dao->selectInstances() as $shipmentComp) {
+            foreach ($this->dao->selectInstances() as $shipmentComp) {
                 if ($shipment->barcode === $shipmentComp->barcode) {
                     $error .= 'A shipment with this Barcode already exists. ';
                 }
@@ -191,12 +196,12 @@ class ShipmentHandler
     /**
      * Validates Shipment Object Type Id.
      *
-     * @param Shipment $shipment
-     * @param array    $errors
+     * @param Shipment $shipment Shipment to validate
+     * @param array    $errors   List of errors to add to
      *
      * @return array
      */
-    private function validateType(Shipment $shipment, array $errors) : array
+    private function _validateType(Shipment $shipment, array $errors) : array
     {
         $error = '';
         if (empty($shipment->type)) {
@@ -211,13 +216,15 @@ class ShipmentHandler
     /**
      * Validates Shipment Object Destination Center.
      *
-     * @param Shipment $shipment
-     * @param array    $errors
+     * @param Shipment $shipment Shipment to validate
+     * @param array    $errors   List of errors to add to
      *
      * @return array
      */
-    private function validateDestinationCenterId(Shipment $shipment, array $errors) : array
-    {
+    private function _validateDestinationCenterId(
+        Shipment $shipment,
+        array $errors,
+    ) : array {
         $error = '';
         if (empty($shipment->destinationCenterId)) {
             $error .= 'Destination Center is required.';
@@ -232,14 +239,15 @@ class ShipmentHandler
     }
 
     /**
-     * Validates Shipment Object Containers
+     * Validates Shipment Object Containers and store any failures
+     * in $errors.
      *
-     * @param Shipment $shipment
-     * @param array    $errors
+     * @param Shipment $shipment The shipment to validate
+     * @param array    $errors   The existing error list to add to
      *
      * @return array
      */
-    private function validateContainers(Shipment $shipment, array $errors) : array
+    private function _validateContainers(Shipment $shipment, array $errors) : array
     {
         $error = '';
         $field = 'containerIds';
@@ -251,9 +259,14 @@ class ShipmentHandler
         }
 
         $containerDAO = new ContainerDAO($this->db);
-        $container1   = $containerDAO->getInstanceFromId((int) $shipment->containerIds[0]);
+        $container1   = $containerDAO->getInstanceFromId(
+            (int) $shipment->containerIds[0]
+        );
+
         foreach ($shipment->containerIds as $containerId) {
-            $container = $containerDAO->getInstanceFromId((int) $containerId);
+            $container = $containerDAO->getInstanceFromId(
+                (int) $containerId
+            );
 
             // TODO: Re-Implement once integrity of Centers of Containers is
             // established in CBIGR. Currently, child containers are permitted
@@ -271,7 +284,9 @@ class ShipmentHandler
             // shipment.
             if (!$shipment->id) {
                 foreach ($container->getShipmentBarcodes() as $shipmentBarcode) {
-                    $containerShipment = $this->dao->getInstanceFromBarcode($shipmentBarcode);
+                    $containerShipment = $this->dao->getInstanceFromBarcode(
+                        $shipmentBarcode
+                    );
                     if ($containerShipment->getActive()) {
                         $errors[$field] = $container->getBarcode().' is already
                   associated with an active shipment';
@@ -300,22 +315,22 @@ class ShipmentHandler
     /**
      * Validates Shipment Object Logs.
      *
-     * @param Shipment $shipment
-     * @param array    $array
+     * @param Shipment $shipment The shipment to validate.
+     * @param array    $errors   List of errors to add to.
      *
      * @return array
      */
-    private function validateLogs(Shipment $shipment, array $errors) : array
+    private function _validateLogs(Shipment $shipment, array $errors) : array
     {
         $logsErrors = [];
         foreach ($shipment->logs as $i=>$log) {
             $logErrors = [];
-            $logErrors = $this->validateCenter($log, $logErrors);
-            $logErrors = $this->validateStatus($log, $logErrors);
-            $logErrors = $this->validateUser($log, $logErrors);
-            $logErrors = $this->validateTemperature($log, $logErrors);
-            $logErrors = $this->validateDate($log, $logErrors);
-            $logErrors = $this->validateTime($log, $logErrors);
+            $logErrors = $this->_validateCenter($log, $logErrors);
+            $logErrors = $this->_validateStatus($log, $logErrors);
+            $logErrors = $this->_validateUser($log, $logErrors);
+            $logErrors = $this->_validateTemperature($log, $logErrors);
+            $logErrors = $this->_validateDate($log, $logErrors);
+            $logErrors = $this->_validateTime($log, $logErrors);
             if (!empty($logErrors)) {
                 $logsErrors[$i] = $logErrors;
             }
@@ -332,11 +347,11 @@ class ShipmentHandler
      * Validates Shipment Log Center.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors list of errors to add to
      *
      * @return array
      */
-    private function validateCenter(Log $log, array $errors) : array
+    private function _validateCenter(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->centerId)) {
@@ -352,11 +367,11 @@ class ShipmentHandler
      * Validates Shipment Log Status.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors List of errors to add to.
      *
      * @return array
      */
-    private function validateStatus(Log $log, array $errors) : array
+    private function _validateStatus(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->status)) {
@@ -372,11 +387,11 @@ class ShipmentHandler
      * Validates Shipment Log Center.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors List of errors to add to
      *
      * @return array
      */
-    private function validateUser(Log $log, array $errors) : array
+    private function _validateUser(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->user)) {
@@ -392,11 +407,11 @@ class ShipmentHandler
      * Validates Shipment Log Temperature.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors List of errors to add to
      *
      * @return array
      */
-    private function validateTemperature(Log $log, array $errors) : array
+    private function _validateTemperature(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->temperature)) {
@@ -412,11 +427,11 @@ class ShipmentHandler
      * Validates Shipment Log Date.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors list of errors to add to
      *
      * @return array
      */
-    private function validateDate(Log $log, array $errors) : array
+    private function _validateDate(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->date)) {
@@ -432,11 +447,11 @@ class ShipmentHandler
      * Validates Shipment Log Time.
      *
      * @param Log   $log    Log to be validated.
-     * @param array $errors
+     * @param array $errors list of errors to add to
      *
      * @return array
      */
-    private function validateTime(Log $log, array $errors) : array
+    private function _validateTime(Log $log, array $errors) : array
     {
         $error = '';
         if (empty($log->time)) {
