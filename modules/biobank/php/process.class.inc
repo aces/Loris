@@ -249,15 +249,15 @@ abstract class Process implements \JsonSerializable
     {
         // TODO: Date and Time formats should be gotten from some sort of config
         // setting.
-        return array(
-                'protocolId' => $this->protocolId,
-                'centerId'   => $this->centerId,
-                'examinerId' => $this->examinerId,
-                'date'       => $this->date->format('Y-m-d'),
-                'time'       => $this->time->format('H:i'),
-                'comments'   => $this->comments,
-                'data'       => $this->data,
-               );
+        return [
+            'protocolId' => $this->protocolId,
+            'centerId'   => $this->centerId,
+            'examinerId' => $this->examinerId,
+            'date'       => $this->date->format('Y-m-d'),
+            'time'       => $this->time->format('H:i'),
+            'comments'   => $this->comments,
+            'data'       => $this->data,
+        ];
     }
 }
 

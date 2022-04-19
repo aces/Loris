@@ -71,7 +71,7 @@ class ContainerController
     public function getInstances() : array
     {
         $this->validatePermission('view');
-        $containers  = array();
+        $containers  = [];
         $containerIt = $this->dao->execute($this->user);
         foreach ($containerIt as $id => $container) {
             $containers[$id] = $container;
@@ -93,7 +93,7 @@ class ContainerController
     public function createInstances(array $list) : array
     {
         $this->validatePermission('create');
-        $containerList = array();
+        $containerList = [];
         foreach ($list as $i => $item) {
             $container = (new Container)->fromArray($item);
             $this->validateInstance($container);
@@ -103,7 +103,7 @@ class ContainerController
         $this->validateInstances($containerList);
 
         // Save Containers
-        $containers = array();
+        $containers = [];
         foreach ($containerList as $i => $container) {
             $containers[] = $this->dao->createInstance($container);
         }
@@ -123,8 +123,8 @@ class ContainerController
     public function updateInstance(array $containerArray) : array
     {
         $this->validatePermission('update');
-        $container = (new Container)->fromArray($containerArray);
-        $containerId = $container->getId();
+        $container    = (new Container)->fromArray($containerArray);
+        $containerId  = $container->getId();
         $oldContainer = $this->dao->getInstanceFromId($containerId);
 
         $this->validateInstance($container);
@@ -140,13 +140,13 @@ class ContainerController
     public function getOptions() : array
     {
         $this->validatePermission('view');
-        return array(
-                'types'           => $this->dao->getTypes(),
-                'typesPrimary'    => $this->dao->getTypes(['Primary' => 1]),
-                'typesNonPrimary' => $this->dao->getTypes(['Primary' => 0]),
-                'dimensions'      => $this->dao->getDimensions(),
-                'stati'           => $this->dao->getStati(),
-               );
+        return [
+            'types'           => $this->dao->getTypes(),
+            'typesPrimary'    => $this->dao->getTypes(['Primary' => 1]),
+            'typesNonPrimary' => $this->dao->getTypes(['Primary' => 0]),
+            'dimensions'      => $this->dao->getDimensions(),
+            'stati'           => $this->dao->getStati(),
+        ];
     }
 
     /**
@@ -258,14 +258,14 @@ class ContainerController
         $barcode       = $container->getBarcode();
         $containerList = $this->dao->selectInstances([['column'=>'bc.Barcode', 'value'=>$barcode]]);
         if (!empty($containerList)) {
-          foreach ($containerList as $c) {
-              $b = $c->getBarcode();
-              $i = $c->getId();
-              // If the barcodes are identical but the ids are not
-              if ($b === $barcode && $i !== $id) {
-                  throw new \BadRequest('Barcode must be unique.');
-              }
-          }
+            foreach ($containerList as $c) {
+                $b = $c->getBarcode();
+                $i = $c->getId();
+                // If the barcodes are identical but the ids are not
+                if ($b === $barcode && $i !== $id) {
+                    throw new \BadRequest('Barcode must be unique.');
+                }
+            }
         }
 
         if ($id) {
@@ -339,16 +339,18 @@ class ContainerController
     {
         if ($container->getId()) {
             $prevContainer = $this->dao->getInstanceFromId($container->getId());
-            $statusLabel = $this->dao->getStati()[$prevContainer->getStatusId()]['label'];
+            $statusLabel   = $this->dao->getStati()[$prevContainer->getStatusId()]['label'];
             if ($statusLabel == 'Dispensed') {
                 // TODO: figure out what else should not be changed if the container
                 // is dispensed. This should eventually be blocked in the front-end
-                // as well. These validations can wait until more testing has 
+                // as well. These validations can wait until more testing has
                 // been done on the module.
 
                 if ($prevContainer->getTemperature() != $container->getTemperature()) {
-                    throw new \BadRequest("Temperature cannot be changed if Container
-                                           is Dispensed.");
+                    throw new \BadRequest(
+                        "Temperature cannot be changed if Container
+                                           is Dispensed."
+                    );
                 }
             }
         }
@@ -372,28 +374,30 @@ class ContainerController
         $projectIds = $container->getProjectIds();
 
         if (empty($projectIds)) {
-          throw new \BadRequest("A Project must be assigned");
+            throw new \BadRequest("A Project must be assigned");
         }
 
         foreach($projectIds as $i => $id) {
-          if (empty($id)) {
-            throw new \BadRequest("All project values must be valid.");
-          }
+            if (empty($id)) {
+                throw new \BadRequest("All project values must be valid.");
+            }
         }
 
-        // Check that current container's projects are a subset of the parent 
+        // Check that current container's projects are a subset of the parent
         // Container's projects.
         $parentContainerId = $container->getParentContainerId();
         if (false) {
             $parentContainer  = $this->dao->getInstanceFromId($parentContainerId);
             $parentProjectIds = $parentContainer->getProjectIds();
             if (array_intersect($projectIds, $parentProjectIds) != $projectIds) {
-                $barcode = $container->getBarcode();
+                $barcode       = $container->getBarcode();
                 $parentBarcode = $parentContainer->getBarcode();
-                throw new \BadRequest("The Projects to which $barcode
+                throw new \BadRequest(
+                    "The Projects to which $barcode
                                       belongs must be a subset of the Projects to
                                       which $parentBarcode
-                                      belongs.");
+                                      belongs."
+                );
             }
         }
 
@@ -402,13 +406,15 @@ class ContainerController
         $childContainerIds = $container->getChildContainerIds();
         if ($childContainerIds) {
             forEach ($childContainerIds as $id) {
-                $childContainer = $this->dao->getInstanceFromId((int) $id);
+                $childContainer  = $this->dao->getInstanceFromId((int) $id);
                 $childProjectIds = $childContainer->getProjectIds();
                 if (array_intersect($childProjectIds, $projectIds) != $childProjectIds) {
                     $barcode = $container->getBarcode();
-                    throw new \BadRequest("The projects to which $barcode
+                    throw new \BadRequest(
+                        "The projects to which $barcode
                                            belongs must be a superset 
-                                           of it's child Containers' Projects");
+                                           of it's child Containers' Projects"
+                    );
                 }
             }
         }
@@ -425,15 +431,17 @@ class ContainerController
      */
     private function validateShipmentBarcodes(Container $container) : void
     {
-      $shipmentDAO = new ShipmentDAO($this->db);
-      $shipmentsBarcodes = $container->getShipmentBarcodes();
-      foreach($container->getShipmentBarcodes() as $barcode) {
-        $shipment = $shipmentDAO->getInstanceFromBarcode($barcode);
-        if ($shipment->getActive()) {
-          throw new \BadRequest("Container ".$container->getBarcode()." cannot
-          be manipulated while it is associated with an active shipment.");
+        $shipmentDAO       = new ShipmentDAO($this->db);
+        $shipmentsBarcodes = $container->getShipmentBarcodes();
+        foreach($container->getShipmentBarcodes() as $barcode) {
+            $shipment = $shipmentDAO->getInstanceFromBarcode($barcode);
+            if ($shipment->getActive()) {
+                throw new \BadRequest(
+                    "Container ".$container->getBarcode()." cannot
+          be manipulated while it is associated with an active shipment."
+                );
+            }
         }
-      }
     }
 
     /**
@@ -457,7 +465,7 @@ class ContainerController
             if ($container->getCenterID() !== $parentContainer->getCenterID()) {
                 $barcode = $container->getBarcode();
                 throw new \BadRequest(
-                        $container->getBarcode()." must be at the same location 
+                    $container->getBarcode()." must be at the same location 
                         as ".$parentContainer->getBarcode()." to execute this
                         action"
                 );
@@ -477,8 +485,9 @@ class ContainerController
         $parentContainerId = $container->getParentContainerId();
         if (isset($parentContainerId)) {
             $childContainerIds = $this->dao->getAllChildContainerIds($container);
-            if ($container->getId() == $parentContainerId ||
-                in_array($container->getId(), $childContainerIds)) {
+            if ($container->getId() == $parentContainerId
+                || in_array($container->getId(), $childContainerIds)
+            ) {
                 throw new \BadRequest(
                     'A container can not be placed within itself or
                     within one of its descendant containers.'
@@ -512,13 +521,13 @@ class ContainerController
                 );
             }
 
-            $parentContainer = $this->dao->getInstanceFromId($parentContainerId); 
+            $parentContainer = $this->dao->getInstanceFromId($parentContainerId);
             $dimensions      = $this->dao->getDimensions()[$parentContainer->getDimensionId()];
             $capacity        = $dimensions['x'] * $dimensions['y'] * $dimensions['z'];
             if ($container->getCoordinate() > $capacity) {
-               throw new \BadRequest(
-                   'Coordinate value exceeds the capacity of the Parent Container'
-               );
+                throw new \BadRequest(
+                    'Coordinate value exceeds the capacity of the Parent Container'
+                );
             }
         }
     }

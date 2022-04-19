@@ -108,10 +108,10 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
             }
             $query .= ' WHERE '.implode(" $operator ", $whereClause);
         }
-        $query .= ' GROUP BY bp.PoolID';
+        $query   .= ' GROUP BY bp.PoolID';
         $poolRows = $this->db->pselectWithIndexKey($query, [], 'PoolID');
 
-        $pools  = array();
+        $pools       = [];
         $specimenDAO = new SpecimenDAO($this->db);
         if (!empty($poolRows)) {
             foreach ($poolRows as $id => $poolRow) {
@@ -200,28 +200,28 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function getSQLFromInstance(Pool $pool) : array
     {
-        $poolData = array(
-                     'PoolID'   => $pool->getId(),
-                     'Label'    => $pool->getLabel(),
-                     'Quantity' => $pool->getQuantity(),
-                     'UnitID'   => $pool->getUnitId(),
-                     'CenterID' => $pool->getCenterId(),
-                     'Date'     => $pool->getDate()->format('Y-m-d'),
-                     'Time'     => $pool->getTime()->format('H:i'),
-                    );
+        $poolData = [
+            'PoolID'   => $pool->getId(),
+            'Label'    => $pool->getLabel(),
+            'Quantity' => $pool->getQuantity(),
+            'UnitID'   => $pool->getUnitId(),
+            'CenterID' => $pool->getCenterId(),
+            'Date'     => $pool->getDate()->format('Y-m-d'),
+            'Time'     => $pool->getTime()->format('H:i'),
+        ];
 
         $specimenIds = $pool->getSpecimenIds();
         foreach ($specimenIds as $id) {
-            $specimenPoolData[$id] = array(
-                                      'PoolID'     => $pool->getId(),
-                                      'SpecimenID' => $id,
-                                     );
+            $specimenPoolData[$id] = [
+                'PoolID'     => $pool->getId(),
+                'SpecimenID' => $id,
+            ];
         }
 
-        return array(
-                'biobank_pool'              => $poolData,
-                'biobank_specimen_pool_rel' => $specimenPoolData,
-               );
+        return [
+            'biobank_pool'              => $poolData,
+            'biobank_specimen_pool_rel' => $specimenPoolData,
+        ];
     }
 
     /**

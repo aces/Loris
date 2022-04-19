@@ -59,7 +59,7 @@ class PoolController
     public function getInstances() : array
     {
         $this->validatePermission('view');
-        $pools  = array();
+        $pools  = [];
         $poolIt = $this->dao->execute($this->user);
         foreach ($poolIt as $id => $pool) {
             $pools[$id] = $pool;

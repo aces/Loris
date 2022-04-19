@@ -68,7 +68,7 @@ class Analysis extends Process
         $parent = parent::jsonSerialize();
         return array_merge(
             $parent,
-            array()
+            []
         );
     }
 }

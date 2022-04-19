@@ -55,11 +55,11 @@ class Shipment implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     function __construct(array $data)
     {
-        $this->id = $data['id'] ?? null;
+        $this->id      = $data['id'] ?? null;
         $this->barcode = $data['barcode'] ?? null;
-        $this->type = $data['type'] ?? null;
+        $this->type    = $data['type'] ?? null;
         $this->destinationCenterId = $data['destinationCenterId'] ?? null;
-        $this->containerIds = $data['containerIds'] ?? null;
+        $this->containerIds        = $data['containerIds'] ?? null;
         $this->setLogs($data['logs']) ?? null;
     }
 
@@ -252,16 +252,16 @@ class Shipment implements \JsonSerializable, \LORIS\Data\DataInstance
         return $this->logs;
     }
 
-    /**                                                                         
-     * A wrapper function for the jsonSerialize method of the Shipment Instance 
-     * Class. This converts the Shipment Instance into an array.                
-     *                                                                          
-     * @return array Shipment Array.                                                
-     */                                                                         
-    public function toArray() : array                    
-    {                                                                           
-        return $this->jsonSerialize();                                          
-    }  
+    /**
+     * A wrapper function for the jsonSerialize method of the Shipment Instance
+     * Class. This converts the Shipment Instance into an array.
+     *
+     * @return array Shipment Array.
+     */
+    public function toArray() : array
+    {
+        return $this->jsonSerialize();
+    }
 
     /**
      * Returns an array representing the state of the Shipment
@@ -270,17 +270,17 @@ class Shipment implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        return array(
-                'id'                  => $this->id,
-                'barcode'             => $this->barcode,
-                'type'                => $this->type,
-                'originCenterId'      => $this->getOriginCenterId(),
-                'destinationCenterId' => $this->destinationCenterId,
-                'containerIds'        => $this->containerIds,
-                'status'              => $this->getStatus(),
-                'active'              => $this->getActive(),
-                'logs'                => $this->logs,
-               );
+        return [
+            'id'                  => $this->id,
+            'barcode'             => $this->barcode,
+            'type'                => $this->type,
+            'originCenterId'      => $this->getOriginCenterId(),
+            'destinationCenterId' => $this->destinationCenterId,
+            'containerIds'        => $this->containerIds,
+            'status'              => $this->getStatus(),
+            'active'              => $this->getActive(),
+            'logs'                => $this->logs,
+        ];
     }
 
     /**

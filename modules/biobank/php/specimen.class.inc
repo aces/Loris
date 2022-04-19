@@ -475,20 +475,20 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        $array = array(
-                'id'                => $this->id,
-                'containerId'       => $this->containerId,
-                'typeId'            => $this->typeId,
-                'quantity'          => $this->quantity,
-                'unitId'            => $this->unitId,
-                'fTCycle'           => $this->fTCycle,
-                'parentSpecimenIds' => $this->parentSpecimenIds,
-                'candidateId'       => $this->candidateId,
-                'candidateAge'      => $this->candidateAge,
-                'sessionId'         => $this->sessionId,
-                'poolId'            => $this->poolId,
-                'collection'        => $this->collection->jsonSerialize(),
-               );
+        $array = [
+            'id'                => $this->id,
+            'containerId'       => $this->containerId,
+            'typeId'            => $this->typeId,
+            'quantity'          => $this->quantity,
+            'unitId'            => $this->unitId,
+            'fTCycle'           => $this->fTCycle,
+            'parentSpecimenIds' => $this->parentSpecimenIds,
+            'candidateId'       => $this->candidateId,
+            'candidateAge'      => $this->candidateAge,
+            'sessionId'         => $this->sessionId,
+            'poolId'            => $this->poolId,
+            'collection'        => $this->collection->jsonSerialize(),
+        ];
         if ($this->preparation) {
             $array['preparation'] = $this->preparation->jsonSerialize();
         }

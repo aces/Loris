@@ -124,10 +124,10 @@ class Collection extends Process
         $parent = parent::jsonSerialize();
         return array_merge(
             $parent,
-            array(
-             'quantity' => $this->quantity,
-             'unitId'   => $this->unitId,
-            )
+            [
+                'quantity' => $this->quantity,
+                'unitId'   => $this->unitId,
+            ]
         );
     }
 }

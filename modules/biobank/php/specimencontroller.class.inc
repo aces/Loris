@@ -61,7 +61,7 @@ class SpecimenController
     public function getInstances() : array
     {
         $this->validatePermission('view');
-        $specimens  = array();
+        $specimens  = [];
         $specimenIt = $this->dao->execute($this->user);
         foreach ($specimenIt as $id => $specimen) {
             $specimens[$id] = $specimen;
@@ -85,8 +85,8 @@ class SpecimenController
     {
         $this->validatePermission('create');
 
-        $containerList = array();
-        $specimenList  = array();
+        $containerList = [];
+        $specimenList  = [];
         foreach ($list as $i => $specimen) {
             $containerList[] = $specimen['container'];
             $specimenList[]  = $this->prepare($specimen);
@@ -98,7 +98,7 @@ class SpecimenController
             $containers[] = $contController->dao->getInstanceFromId($containers[0]->getParentContainerId());
         }
 
-        $specimens = array();
+        $specimens = [];
         foreach ($specimenList as $i => $specimen) {
             $specimen->setContainerId($containers[$i]->getId());
             $specimens[] = $this->dao->saveInstance($specimen);
@@ -148,18 +148,18 @@ class SpecimenController
     public function getOptions() : array
     {
         $this->validatePermission('view');
-        return array(
-                'types'              => $this->dao->getTypes(),
-                'typeUnits'          => $this->dao->getTypeUnits(),
-                'typeContainerTypes' => $this->dao->getTypeContainerTypes(),
-                'protocols'          => $this->dao->getProtocols(),
-                'processes'          => $this->dao->getProcesses(),
-                'protocolAttributes' => $this->dao->getProtocolAttributes(),
-                'processAttributes'  => $this->dao->getProcessAttributes(),
-                'units'              => $this->dao->getUnits(),
-                'attributes'         => $this->dao->getAttributes(),
-                'attributeDatatypes' => $this->dao->getAttributeDatatypes(),
-               );
+        return [
+            'types'              => $this->dao->getTypes(),
+            'typeUnits'          => $this->dao->getTypeUnits(),
+            'typeContainerTypes' => $this->dao->getTypeContainerTypes(),
+            'protocols'          => $this->dao->getProtocols(),
+            'processes'          => $this->dao->getProcesses(),
+            'protocolAttributes' => $this->dao->getProtocolAttributes(),
+            'processAttributes'  => $this->dao->getProcessAttributes(),
+            'units'              => $this->dao->getUnits(),
+            'attributes'         => $this->dao->getAttributes(),
+            'attributeDatatypes' => $this->dao->getAttributeDatatypes(),
+        ];
     }
 
     /**
@@ -296,13 +296,14 @@ class SpecimenController
     {
         $fTCycle = $specimen->getFTCycle();
         if (isset($fTCycle)) {
-            if (strval($fTCycle) !== strval(intval($fTCycle)) ||
-                intval($fTCycle) < 0) {
+            if (strval($fTCycle) !== strval(intval($fTCycle))
+                || intval($fTCycle) < 0
+            ) {
                 throw new \BadRequest("F/T Cycle must be 0 or more");
             }
 
             if ($fTCycle > 100) {
-              throw \BadRequest("F/T Cycle value is too large");
+                throw \BadRequest("F/T Cycle value is too large");
             }
         }
     }
@@ -346,14 +347,20 @@ class SpecimenController
                 if (empty($specimenTypes[$specimen->getTypeId()]['parentTypeIds'])) {
                     $childType  = $specimenTypes[$specimen->getTypeId()]['label'];
                     $parentType = $specimenTypes[$parentSpecimen->getTypeId()]['label'];
-                    throw new \BadRequest("A specimen of type '$childType' cannot be derived
-                                           from a parent of type '$parentType'");
+                    throw new \BadRequest(
+                        "A specimen of type '$childType' cannot be derived
+                                           from a parent of type '$parentType'"
+                    );
                 }
-                if (!in_array($parentSpecimen->getTypeId(),
-                             $specimenTypes[$specimen->getTypeId()]['parentTypeIds'])
+                if (!in_array(
+                    $parentSpecimen->getTypeId(),
+                    $specimenTypes[$specimen->getTypeId()]['parentTypeIds']
+                )
                 ) {
-                    throw new \BadRequest('Parent Specimens must be of a type that
-                                           is a parent to the current Specimen type');
+                    throw new \BadRequest(
+                        'Parent Specimens must be of a type that
+                                           is a parent to the current Specimen type'
+                    );
                 }
             }
         }
@@ -510,9 +517,9 @@ class SpecimenController
 
     // XXX: Now that the DateTime object is used to store date and time,
     // I don't know if these checks are as important because the DateTime
-    // doesn't have a native format. As long as it can be converted to 
+    // doesn't have a native format. As long as it can be converted to
     // datetime properly, then there isn't really need for validation here.
-    // TODO: 
+    // TODO:
     /**
      * Validates Specimen Process Date.
      *
@@ -564,8 +571,8 @@ class SpecimenController
     {
         $protocolAttributes = $this->dao->getProtocolAttributes();
         $attributeDatatypes = $this->dao->getAttributeDatatypes();
-        $protocolId = $process->getProtocolId();
-        $attributes = $protocolAttributes[$protocolId] ?? [];
+        $protocolId         = $process->getProtocolId();
+        $attributes         = $protocolAttributes[$protocolId] ?? [];
         $data = $process->getData() ?? [];
 
         foreach ($attributes as $id => $attribute) {
@@ -578,7 +585,6 @@ class SpecimenController
 
         foreach ($data as $attributeId => $value) {
             $attribute = $attributes[$attributeId];
-             
 
             if (!isset($attribute)) {
                 $wrongAttribute = $this->dao->getAttributes()[$attributeId];
@@ -592,30 +598,30 @@ class SpecimenController
                 throw new \BadRequest(
                     "The attribute '".$attribute['label']."' must be a boolean"
                 );
-            } 
+            }
 
             if ($datatype === 'number' && !is_numeric($value)) {
                 throw new \BadRequest(
                     "The attribute '".$attribute['label']."' must be a number"
                 );
-            } 
+            }
 
             // TODO: This validation may not be necessary, but it may be good to
             // leave this if statement here just as a reminder that it exists.
             if ($datatype === 'text') {
-            } 
+            }
 
             // TODO: This can likely be validated through the DateTime Object.
             if ($datatype === 'date') {
-            } 
+            }
 
             // TODO: This can likely be validated through the DateTime Object.
             if ($datatype === 'time') {
-            } 
+            }
 
             // TODO: Set this validate when files start to get uploaded.
             if ($datatype === 'file') {
-            } 
+            }
         }
     }
 }

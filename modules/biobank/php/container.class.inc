@@ -445,16 +445,16 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         return $this->comments;
     }
-                                                                               
-    /**                                                                         
+
+    /**
      * Instatiates a Container Object using the information from the client-side
-     *                                                                          
-     * @param array $data Data to be used to instantiate the Container Object            
-     *                                                                          
-     * @return Container $container Instantiated Container Object               
-     */                                                                         
-    public function fromArray(array $data) : Container               
-    {                                                                           
+     *
+     * @param array $data Data to be used to instantiate the Container Object
+     *
+     * @return Container $container Instantiated Container Object
+     */
+    public function fromArray(array $data) : Container
+    {
         isset($data['id'])                && $this->setId((int) $data['id']);
         isset($data['barcode'])           && $this->setBarcode((string) $data['barcode']);
         isset($data['specimenId'])        && $this->setSpecimenId((int) $data['specimenId']);
@@ -471,20 +471,20 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
         isset($data['lotNumber'])         && $this->setLotNumber((string) $data['lotNumber']);
         isset($data['expirationDate'])    && $this->setExpirationDate(new \DateTime($data['expirationDate']));
         isset($data['comments'])          && $this->setComments((string) $data['comments']);
-                                                                                
+
         return $this;
-    }                                                                           
-                                                                                
-    /**                                                                         
-     * A wrapper function for the jsonSerialize method of the Container Instance 
-     * Class. This converts the Container Instance into an array.               
-     *                                                                          
+    }
+
+    /**
+     * A wrapper function for the jsonSerialize method of the Container Instance
+     * Class. This converts the Container Instance into an array.
+     *
      * @return array
-     */                                                                         
+     */
     public function toArray() : array
-    {                                                                           
-        return $this->jsonSerialize();                                     
-    } 
+    {
+        return $this->jsonSerialize();
+    }
 
     /**
      * Gets an array representing the state of the Container
@@ -498,24 +498,24 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
             $expirationDate = $this->expirationDate->format('Y-m-d');
         }
 
-        return array(
-                'id'                => $this->id,
-                'barcode'           => $this->barcode,
-                'specimenId'        => $this->specimenId,
-                'typeId'            => $this->typeId,
-                'dimensionId'       => $this->dimensionId,
-                'temperature'       => $this->temperature,
-                'statusId'          => $this->statusId,
-                'projectIds'        => $this->projectIds,
-                'shipmentBarcodes'  => $this->shipmentBarcodes,
-                'centerId'          => $this->centerId,
-                'parentContainerId' => $this->parentContainerId,
-                'childContainerIds' => $this->childContainerIds,
-                'coordinate'        => $this->coordinate,
-                'lotNumber'         => $this->lotNumber,
-                'expirationDate'    => $expirationDate,
-                'comments'          => $this->comments,
-               );
+        return [
+            'id'                => $this->id,
+            'barcode'           => $this->barcode,
+            'specimenId'        => $this->specimenId,
+            'typeId'            => $this->typeId,
+            'dimensionId'       => $this->dimensionId,
+            'temperature'       => $this->temperature,
+            'statusId'          => $this->statusId,
+            'projectIds'        => $this->projectIds,
+            'shipmentBarcodes'  => $this->shipmentBarcodes,
+            'centerId'          => $this->centerId,
+            'parentContainerId' => $this->parentContainerId,
+            'childContainerIds' => $this->childContainerIds,
+            'coordinate'        => $this->coordinate,
+            'lotNumber'         => $this->lotNumber,
+            'expirationDate'    => $expirationDate,
+            'comments'          => $this->comments,
+        ];
     }
 
     /**

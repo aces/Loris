@@ -49,10 +49,10 @@ class OptionsEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return array(
-                'GET',
-                'OPTIONS',
-               );
+        return [
+            'GET',
+            'OPTIONS',
+        ];
     }
 
     /**
@@ -113,7 +113,7 @@ class OptionsEndpoint implements RequestHandlerInterface
     {
         $contCont = new ContainerController($db, $user);
         $specCont = new SpecimenController($db, $user);
-        $shipDAO = new ShipmentDAO($db);
+        $shipDAO  = new ShipmentDAO($db);
 
         // XXX: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
@@ -125,35 +125,35 @@ class OptionsEndpoint implements RequestHandlerInterface
                        FROM candidate
                        LEFT JOIN candidate_diagnosis_rel USING (CandID)
                        GROUP BY CandID';
-        $candidates = $db->pselectWithIndexKey($query, array(), 'id');
+        $candidates = $db->pselectWithIndexKey($query, [], 'id');
         foreach($candidates as $id => $candidate) {
-          $candidate['diagnosisIds'] = $candidate['diagnosisIds'] ? explode(',', $candidate['diagnosisIds']) : [];
-          $candidates[$id] = $candidate;
+            $candidate['diagnosisIds'] = $candidate['diagnosisIds'] ? explode(',', $candidate['diagnosisIds']) : [];
+            $candidates[$id]           = $candidate;
         }
 
         // XXX: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to provide
         // Diagnosis Options.
-        $query    = 'SELECT DiagnosisID as id, Name as label FROM diagnosis';
-        $diagnoses = $db->pselectWithIndexKey($query, array(), 'id');
+        $query     = 'SELECT DiagnosisID as id, Name as label FROM diagnosis';
+        $diagnoses = $db->pselectWithIndexKey($query, [], 'id');
 
         // XXX: This should eventually be replaced by a call directly to a
         // Session endpoint or Session controller that will be able to provide
         // Session Objects.
         $query    = 'SELECT ID as id, Visit_label as label FROM session';
-        $sessions = $db->pselectWithIndexKey($query, array(), 'id');
+        $sessions = $db->pselectWithIndexKey($query, [], 'id');
 
         // XXX: This should eventually be replaced by a call directly to a
         // Examiner endpoint or Examiner controller that will be able to provide
         // Examiner Objects.
         $query     = 'SELECT examinerID as id, full_name as label FROM examiners';
-        $examiners = $db->pselectWithIndexKey($query, array(), 'id');
+        $examiners = $db->pselectWithIndexKey($query, [], 'id');
 
         // XXX: This should eventually be replaced by a call directly to a
         // User endpoint or Examiner controller that will be able to provide
         // User Objects.
-        $query     = 'SELECT ID as id, Real_name as label FROM users';
-        $users = $db->pselectWithIndexKey($query, array(), 'id');
+        $query = 'SELECT ID as id, Real_name as label FROM users';
+        $users = $db->pselectWithIndexKey($query, [], 'id');
 
         // XXX: This should eventually be replaced by a call directly to a
         // Center Endpoint or Center Controller that will be able to provide
@@ -175,9 +175,9 @@ class OptionsEndpoint implements RequestHandlerInterface
                  FROM candidate c                                               
                  LEFT JOIN session s                                            
                    USING(CandID)';
-        $result = $db->pselect($query, array());
-        $candidateSessions = array();
-        $sessionCenters    = array();
+        $result = $db->pselect($query, []);
+        $candidateSessions = [];
+        $sessionCenters    = [];
         foreach ($result as $row) {
             foreach ($row as $column=>$value) {
                 $candidateSessions[$row['candidateId']][$row['sessionId']]['label'] = $row['label'];
@@ -186,22 +186,22 @@ class OptionsEndpoint implements RequestHandlerInterface
         }
 
         $shipment = [
-          'statuses' => $shipDAO->getStatuses(),
-          'types'    => $shipDAO->getTypes(),
+            'statuses' => $shipDAO->getStatuses(),
+            'types'    => $shipDAO->getTypes(),
         ];
-        return array(
-                'candidates'        => $candidates,
-                'diagnoses'         => $diagnoses,
-                'sessions'          => $sessions,
-                'projects'          => \Utility::getProjectList(),
-                'centers'           => $centers,
-                'examiners'         => $examiners,
-                'users'             => $users,
-                'candidateSessions' => $candidateSessions,
-                'sessionCenters'    => $sessionCenters,
-                'container'         => $contCont->getOptions(),
-                'specimen'          => $specCont->getOptions(),
-                'shipment'          => $shipment,
-               );
+        return [
+            'candidates'        => $candidates,
+            'diagnoses'         => $diagnoses,
+            'sessions'          => $sessions,
+            'projects'          => \Utility::getProjectList(),
+            'centers'           => $centers,
+            'examiners'         => $examiners,
+            'users'             => $users,
+            'candidateSessions' => $candidateSessions,
+            'sessionCenters'    => $sessionCenters,
+            'container'         => $contCont->getOptions(),
+            'specimen'          => $specCont->getOptions(),
+            'shipment'          => $shipment,
+        ];
     }
 }

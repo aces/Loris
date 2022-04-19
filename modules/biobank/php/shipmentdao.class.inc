@@ -107,14 +107,14 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
         }
         $query .= " GROUP BY s.ShipmentID";
 
-        $shipments = [];
+        $shipments    = [];
         $shipmentRows = $this->db->pselectWithIndexKey($query, [], 'barcode');
-        $logs = $this->getLogs();
+        $logs         = $this->getLogs();
         foreach ($shipmentRows as $barcode => $shipmentRow) {
             $shipmentRow['containerIds'] = $shipmentRow['containerIds'] ?
               explode(',', $shipmentRow['containerIds']) : [];
-            $shipmentRow['logs'] = $logs[$barcode];
-            $shipment = new Shipment($shipmentRow);
+            $shipmentRow['logs']         = $logs[$barcode];
+            $shipment            = new Shipment($shipmentRow);
             $shipments[$barcode] = $shipment;
         }
 
@@ -123,7 +123,7 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
 
     public function getLogs() : array
     {
-        $query = "SELECT s.Barcode as barcode,
+        $query   = "SELECT s.Barcode as barcode,
                          sl.CenterID as centerId,
                          u.Real_name as user,
                          ss.Label as status,
@@ -226,30 +226,30 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
         foreach($containerIds as $containerId) {
             // TODO: Change to if "Final"
             if ($shipment->getId()) {
-              // places all containers at destination center
-              $container = $containerDAO->getInstanceFromId((int) $containerId);
-              $container->setCenterId((int) $shipment->destinationCenterId);
-              $updatedContainers = array_merge($updatedContainers, $containerDAO->updateInstance($container));
+                // places all containers at destination center
+                $container = $containerDAO->getInstanceFromId((int) $containerId);
+                $container->setCenterId((int) $shipment->destinationCenterId);
+                $updatedContainers = array_merge($updatedContainers, $containerDAO->updateInstance($container));
             }
             // TODO: Change to if "First"
             if (!$shipment->getId()) {
-              $this->db->insertOnDuplicateUpdate(
-                  'biobank_container_shipment_rel',
-                  ['ShipmentID' => $shipmentId, 'ContainerID' => $containerId]
-              );
-              $updatedContainers[] = $containerDAO->getInstanceFromId((int) $containerId);
+                $this->db->insertOnDuplicateUpdate(
+                    'biobank_container_shipment_rel',
+                    ['ShipmentID' => $shipmentId, 'ContainerID' => $containerId]
+                );
+                $updatedContainers[] = $containerDAO->getInstanceFromId((int) $containerId);
             }
         }
 
         return [
-          'shipments'  => [$this->getInstanceFromBarcode($shipment->barcode)],
-          'containers' => $updatedContainers,
+            'shipments'  => [$this->getInstanceFromBarcode($shipment->barcode)],
+            'containers' => $updatedContainers,
         ];
     }
 
     private function getAllContainerIds(Shipment $shipment) : array
     {
-        $containerDAO = new ContainerDAO($this->db);
+        $containerDAO      = new ContainerDAO($this->db);
         $childContainerIds = [];
         foreach($shipment->containerIds as $containerId) {
             $container = $containerDAO->getInstanceFromId((int) $containerId);
@@ -269,9 +269,9 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
 
     private function removeContainersFromParents($shipment) : void
     {
-      foreach($shipment->getContainerIds() as $containerId) {
+        foreach($shipment->getContainerIds() as $containerId) {
 
-      }
+        }
     }
 
     /**
@@ -287,14 +287,15 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
     private function getSQLFromInstance(Shipment $shipment) : array
     {
         $typeId = $this->db->pselectOne(
-            'SELECT ShipmentTypeID from shipment_type WHERE Label=:l', ['l' => $shipment->type]
+            'SELECT ShipmentTypeID from shipment_type WHERE Label=:l',
+            ['l' => $shipment->type]
         );
         return [
-                'ShipmentID'          => $shipment->id,
-                'Barcode'             => $shipment->barcode,
-                'ShipmentTypeID'      => $typeId,
-                'DestinationCenterID' => $shipment->destinationCenterId,
-               ];
+            'ShipmentID'          => $shipment->id,
+            'Barcode'             => $shipment->barcode,
+            'ShipmentTypeID'      => $typeId,
+            'DestinationCenterID' => $shipment->destinationCenterId,
+        ];
     }
 
     private function getLogSQLFromInstance(Log $log, string $shipmentId) : array
@@ -302,21 +303,23 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
         // TODO: These queries feel clumsy. There is likely a better way to get
         // the ID.
         $statusId = $this->db->pselectOne(
-            'SELECT StatusID from shipment_status WHERE Label=:l', ['l' => $log->status]
+            'SELECT StatusID from shipment_status WHERE Label=:l',
+            ['l' => $log->status]
         );
-        $userId = $this->db->pselectOne(
-            'SELECT ID FROM users WHERE Real_name=:u', ['u' => $log->user]
+        $userId   = $this->db->pselectOne(
+            'SELECT ID FROM users WHERE Real_name=:u',
+            ['u' => $log->user]
         );
 
         return [
-                'ShipmentID'  => $shipmentId,
-                'CenterID'    => $log->centerId,
-                'StatusID'    => $statusId,
-                'UserID'      => $userId,
-                'Temperature' => $log->temperature,
-                'Date'        => (new \DateTime($log->date))->format('Y-m-d H:i'),
-                'Time'        => (new \DateTime($log->time))->format('Y-m-d H:i'),
-                'Comments'    => $log->comments,
-               ];
+            'ShipmentID'  => $shipmentId,
+            'CenterID'    => $log->centerId,
+            'StatusID'    => $statusId,
+            'UserID'      => $userId,
+            'Temperature' => $log->temperature,
+            'Date'        => (new \DateTime($log->date))->format('Y-m-d H:i'),
+            'Time'        => (new \DateTime($log->time))->format('Y-m-d H:i'),
+            'Comments'    => $log->comments,
+        ];
     }
 }

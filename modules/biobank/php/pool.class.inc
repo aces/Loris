@@ -320,41 +320,41 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         return $this->time;
     }
-                                                                                
-    /**                                                                         
+
+    /**
      * Loads a Pool Object from an array.
-     *                                                                          
-     * @param array $data Data to be used to load the Pool Object.             
-     *                                                                          
-     * @return Pool                             
-     */                                                                         
-    public function fromArray(array $data) : Pool                    
-    {                                                                           
-        isset($data['id'])          && $this->setId((int) ($data['id']));                                              
-        isset($data['label'])       && $this->setLabel((string) $data['label']);                                        
-        isset($data['quantity'])    && $this->setQuantity((float) $data['quantity']);                            
-        isset($data['unitId'])      && $this->setUnitId((int) $data['unitId']);                            
-        isset($data['specimenIds']) && $this->setSpecimenIds($data['specimenIds']);                            
-        isset($data['candidateId']) && $this->setCandidateId((int) $data['candidateId']);                            
-        isset($data['sessionId'])   && $this->setSessionId((int) $data['sessionId']);                                
-        isset($data['typeId'])      && $this->setTypeId((int) $data['typeId']);                                
-        isset($data['centerId'])    && $this->setCenterId((int) $data['centerId']);                                  
-        isset($data['date'])        && $this->setDate(new \DateTime($data['date']));                           
-        isset($data['time'])        && $this->setTime(new \DateTime($data['time']));                           
-                                                                                
-        return $this;                                                           
-    }                                                                           
-                                                                                
-    /**                                                                         
-     * A wrapper function for the jsonSerialize method of the Pool Instance 
-     * Class. This converts the Pool Instance into an array.                
-     *                                                                          
-     * @return array Pool Array.                                                
-     */                                                                         
-    public function toArray() : array                    
-    {                                                                           
-        return $this->jsonSerialize();                                          
-    }  
+     *
+     * @param array $data Data to be used to load the Pool Object.
+     *
+     * @return Pool
+     */
+    public function fromArray(array $data) : Pool
+    {
+        isset($data['id'])          && $this->setId((int) ($data['id']));
+        isset($data['label'])       && $this->setLabel((string) $data['label']);
+        isset($data['quantity'])    && $this->setQuantity((float) $data['quantity']);
+        isset($data['unitId'])      && $this->setUnitId((int) $data['unitId']);
+        isset($data['specimenIds']) && $this->setSpecimenIds($data['specimenIds']);
+        isset($data['candidateId']) && $this->setCandidateId((int) $data['candidateId']);
+        isset($data['sessionId'])   && $this->setSessionId((int) $data['sessionId']);
+        isset($data['typeId'])      && $this->setTypeId((int) $data['typeId']);
+        isset($data['centerId'])    && $this->setCenterId((int) $data['centerId']);
+        isset($data['date'])        && $this->setDate(new \DateTime($data['date']));
+        isset($data['time'])        && $this->setTime(new \DateTime($data['time']));
+
+        return $this;
+    }
+
+    /**
+     * A wrapper function for the jsonSerialize method of the Pool Instance
+     * Class. This converts the Pool Instance into an array.
+     *
+     * @return array Pool Array.
+     */
+    public function toArray() : array
+    {
+        return $this->jsonSerialize();
+    }
 
     /**
      * Returns an array representing the state of the Pool.
@@ -365,19 +365,19 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     {
         // TODO: Date and Time formats should be gotten from some sort of
         // config setting.
-        return array(
-                'id'          => $this->id,
-                'label'       => $this->label,
-                'quantity'    => $this->quantity,
-                'unitId'      => $this->unitId,
-                'specimenIds' => $this->specimenIds,
-                'candidateId' => $this->candidateId,
-                'sessionId'   => $this->sessionId,
-                'typeId'      => $this->typeId,
-                'centerId'    => $this->centerId,
-                'date'        => $this->date->format('d-m-Y'),
-                'time'        => $this->time->format('H:i'),
-               );
+        return [
+            'id'          => $this->id,
+            'label'       => $this->label,
+            'quantity'    => $this->quantity,
+            'unitId'      => $this->unitId,
+            'specimenIds' => $this->specimenIds,
+            'candidateId' => $this->candidateId,
+            'sessionId'   => $this->sessionId,
+            'typeId'      => $this->typeId,
+            'centerId'    => $this->centerId,
+            'date'        => $this->date->format('d-m-Y'),
+            'time'        => $this->time->format('H:i'),
+        ];
     }
 
     /**

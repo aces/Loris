@@ -66,7 +66,7 @@ class Preparation extends Process
         $parent = parent::jsonSerialize();
         return array_merge(
             $parent,
-            array()
+            []
         );
     }
 }

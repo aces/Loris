@@ -49,12 +49,12 @@ class LabelEndpoint implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return array(
-                'GET',
-                'PUT',
-                'POST',
-                'OPTIONS',
-               );
+        return [
+            'GET',
+            'PUT',
+            'POST',
+            'OPTIONS',
+        ];
     }
 
     /**
@@ -83,7 +83,7 @@ class LabelEndpoint implements RequestHandlerInterface
      * @return ResponseInterface The outgoing PSR7 response
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
-    {   
+    {
         // TODO: Place a try catch here in case printing doesn't work for some
         // reason.
         switch($request->getMethod()) {
@@ -91,17 +91,17 @@ class LabelEndpoint implements RequestHandlerInterface
             $params = json_decode($request->getBody()->getContents(), true);;
             foreach ($params as $param) {
                 $barcode = $param['barcode'];
-                $type = $param['type'];
-                $zpl = "^XA,^FO330,80^BY1,^BCN,100,Y,Y,N,^CFA,20^A0N,30,29^BCN,100,Y,Y,N^FD$barcode^FS,^FO323,190,^CFA,20^A0N,30,29^FD$type^XZ";
-                $config = \NDB_Config::singleton();
-                $path   = $config->getSetting('labelPrintingPath');
-                $path = $path.'barcode.zpl'; 
-                $fp = fopen($path, 'w');
+                $type    = $param['type'];
+                $zpl     = "^XA,^FO330,80^BY1,^BCN,100,Y,Y,N,^CFA,20^A0N,30,29^BCN,100,Y,Y,N^FD$barcode^FS,^FO323,190,^CFA,20^A0N,30,29^FD$type^XZ";
+                $config  = \NDB_Config::singleton();
+                $path    = $config->getSetting('labelPrintingPath');
+                $path    = $path.'barcode.zpl';
+                $fp      = fopen($path, 'w');
                 fwrite($fp, $zpl);
                 fclose($fp);
                 $output = shell_exec('lp -d ZDesigner -o raw '.$path);
             }
-            return new \LORIS\Http\Response\OK(); 
+            return new \LORIS\Http\Response\OK();
         }
     }
 }

@@ -49,28 +49,28 @@ class Preparations implements RequestHandlerInterface
      */
     protected function allowedMethods() : array
     {
-        return array(
-                'DELETE',
-               );
+        return [
+            'DELETE',
+        ];
     }
 
-    /**                                                                            
-     * This function passes the request to the handler. This is necessary since 
-     * the Endpoint bypass the Module class.                                       
-     *                                                                             
-     * XXX: This function should be extracted to a parent class.                   
-     *                                                                             
-     * @param ServerRequestInterface  $request The PSR7 request.                   
-     * @param RequestHandlerInterface $handler The request handler.                
-     *                                                                             
-     * @return ResponseInterface The outgoing PSR7 response.                       
-     */                                                                            
-    public function process(                                                       
-        ServerRequestInterface $request,                                           
-        RequestHandlerInterface $handler                                           
-    ) : ResponseInterface {                                                        
-        return $handler->handle($request);                                         
-    } 
+    /**
+     * This function passes the request to the handler. This is necessary since
+     * the Endpoint bypass the Module class.
+     *
+     * XXX: This function should be extracted to a parent class.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request.
+     * @param RequestHandlerInterface $handler The request handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        return $handler->handle($request);
+    }
 
     /**
      * Handles endpoint requests.
@@ -81,18 +81,18 @@ class Preparations implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db       = \Database::singleton();
-        $user     = $request->getAttribute('user');
+        $db   = \Database::singleton();
+        $user = $request->getAttribute('user');
 
         try {
             $db->beginTransaction();
             switch($request->getMethod()) {
-                case 'DELETE':
-                    return $this->_handleDELETE($request);
-                case 'OPTIONS':
-                    return (new \LORIS\Http\Response())
-                        ->withHeader('Allow', $this->allowedMethods());
-                }
+            case 'DELETE':
+                return $this->_handleDELETE($request);
+            case 'OPTIONS':
+                return (new \LORIS\Http\Response())
+                    ->withHeader('Allow', $this->allowedMethods());
+            }
         } catch (\BadRequest $e) {
             $db->rollBack();
             return new \LORIS\Http\Response\BadRequest($e->getMessage());
@@ -121,8 +121,8 @@ class Preparations implements RequestHandlerInterface
      */
     private function _handleDELETE(ServerRequestInterface $request) : ResponseInterface
     {
-        $db = \Database::singleton();
-        $endpoint = $request->getURI()->getPath();
+        $db        = \Database::singleton();
+        $endpoint  = $request->getURI()->getPath();
         $pathparts = explode('/', $endpoint);
         $db->delete(
             'biobank_specimen_preparation',

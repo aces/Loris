@@ -50,11 +50,11 @@ class Shipments implements RequestHandlerInterface
     protected function allowedMethods() : array
     {
         return [
-                'GET',
-                'PUT',
-                'POST',
-                'OPTIONS',
-               ];
+            'GET',
+            'PUT',
+            'POST',
+            'OPTIONS',
+        ];
     }
 
     /**
@@ -84,8 +84,8 @@ class Shipments implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db       = \Database::singleton();
-        $this->user     = $request->getAttribute('user');
+        $this->db   = \Database::singleton();
+        $this->user = $request->getAttribute('user');
 
         $pathparts = $request->getAttribute('pathparts');
 
@@ -117,7 +117,7 @@ class Shipments implements RequestHandlerInterface
         //     throw new \Forbidden('Shipment: View Permission Denied');
         // }
         $shipments = [];
-        $dao = new ShipmentDAO($this->db);
+        $dao       = new ShipmentDAO($this->db);
         if ($this->user->hasPermission('access_all_profiles') === false) {
             $dao = $dao->filter(new \LORIS\Data\Filters\UserSiteMatch());
         }
@@ -138,7 +138,7 @@ class Shipments implements RequestHandlerInterface
         if (!$shipmentHandler->isValid()) {
             return new \LORIS\Http\Response\JsonResponse($shipmentHandler->getErrors(), 422);
         }
-        
+
         return new \LORIS\Http\Response\JsonResponse($shipmentHandler->createInstance(), 200);
     }
 
@@ -152,7 +152,7 @@ class Shipments implements RequestHandlerInterface
         if (!$shipmentHandler->isValid()) {
             return new \LORIS\Http\Response\JsonResponse($shipmentHandler->getErrors(), 422);
         }
-        
+
         return new \LORIS\Http\Response\JsonResponse($shipmentHandler->createInstance(), 200);
     }
 }

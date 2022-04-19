@@ -133,11 +133,13 @@ class ShipmentHandler
         // }
     }
 
-    public function isValid() {
+    public function isValid()
+    {
         return empty($this->errors);
     }
 
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
@@ -150,12 +152,12 @@ class ShipmentHandler
      */
     private function validate(Shipment $shipment) : void
     {
-        $errors = [];
-        $errors = $this->validateBarcode($shipment, $errors);
-        $errors = $this->validateType($shipment, $errors);
-        $errors = $this->validateDestinationCenterId($shipment, $errors);
-        $errors = $this->validateLogs($shipment, $errors);
-        $errors = $this->validateContainers($shipment, $errors);
+        $errors       = [];
+        $errors       = $this->validateBarcode($shipment, $errors);
+        $errors       = $this->validateType($shipment, $errors);
+        $errors       = $this->validateDestinationCenterId($shipment, $errors);
+        $errors       = $this->validateLogs($shipment, $errors);
+        $errors       = $this->validateContainers($shipment, $errors);
         $this->errors = $errors;
     }
 
@@ -249,11 +251,11 @@ class ShipmentHandler
         }
 
         $containerDAO = new ContainerDAO($this->db);
-        $container1 = $containerDAO->getInstanceFromId((int) $shipment->containerIds[0]);
+        $container1   = $containerDAO->getInstanceFromId((int) $shipment->containerIds[0]);
         foreach ($shipment->containerIds as $containerId) {
             $container = $containerDAO->getInstanceFromId((int) $containerId);
 
-            // TODO: Re-Implement once integrity of Centers of Containers is 
+            // TODO: Re-Implement once integrity of Centers of Containers is
             // established in CBIGR. Currently, child containers are permitted
             // at a different site than the parent. This should NOT be the case.
 
@@ -265,17 +267,16 @@ class ShipmentHandler
             //     return $errors;
             // }
 
-
             // Check that containers are not already associated with an active
             // shipment.
             if (!$shipment->id) {
-              foreach ($container->getShipmentBarcodes() as $shipmentBarcode) {
-                $containerShipment = $this->dao->getInstanceFromBarcode($shipmentBarcode);
-                if ($containerShipment->getActive()) {
-                  $errors[$field] = $container->getBarcode().' is already
+                foreach ($container->getShipmentBarcodes() as $shipmentBarcode) {
+                    $containerShipment = $this->dao->getInstanceFromBarcode($shipmentBarcode);
+                    if ($containerShipment->getActive()) {
+                        $errors[$field] = $container->getBarcode().' is already
                   associated with an active shipment';
-                }
-              };
+                    }
+                };
             }
         }
 
@@ -288,8 +289,7 @@ class ShipmentHandler
         // }
 
         // shipment
-       
-        
+
         if (!empty($error)) {
             $errors[$field] = $error;
         }
@@ -317,21 +317,21 @@ class ShipmentHandler
             $logErrors = $this->validateDate($log, $logErrors);
             $logErrors = $this->validateTime($log, $logErrors);
             if (!empty($logErrors)) {
-              $logsErrors[$i] = $logErrors;
+                $logsErrors[$i] = $logErrors;
             }
         }
 
         if (!empty($logsErrors)) {
             $errors['logs'] = $logsErrors;
         }
-        
+
         return $errors;
     }
 
     /**
      * Validates Shipment Log Center.
      *
-     * @param Log   $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array
@@ -351,7 +351,7 @@ class ShipmentHandler
     /**
      * Validates Shipment Log Status.
      *
-     * @param Log   $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array
@@ -371,7 +371,7 @@ class ShipmentHandler
     /**
      * Validates Shipment Log Center.
      *
-     * @param Log $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array
@@ -391,7 +391,7 @@ class ShipmentHandler
     /**
      * Validates Shipment Log Temperature.
      *
-     * @param Log $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array
@@ -411,7 +411,7 @@ class ShipmentHandler
     /**
      * Validates Shipment Log Date.
      *
-     * @param Log   $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array
@@ -431,7 +431,7 @@ class ShipmentHandler
     /**
      * Validates Shipment Log Time.
      *
-     * @param Log   $log Log to be validated.
+     * @param Log   $log    Log to be validated.
      * @param array $errors
      *
      * @return array

@@ -59,14 +59,14 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     function __construct(array $data)
     {
-        $this->barcode = $data['barcode'] ?? null;
-        $this->centerId = $data['centerId'] ?? null;
-        $this->status = $data['status'] ?? null;
-        $this->user = $data['user'] ?? null;
+        $this->barcode     = $data['barcode'] ?? null;
+        $this->centerId    = $data['centerId'] ?? null;
+        $this->status      = $data['status'] ?? null;
+        $this->user        = $data['user'] ?? null;
         $this->temperature = $data['temperature'] ?? null;
-        $this->date = $data['date'] ?? null;
-        $this->time = $data['time'] ?? null;
-        $this->comments = $data['comments'] ?? null;
+        $this->date        = $data['date'] ?? null;
+        $this->time        = $data['time'] ?? null;
+        $this->comments    = $data['comments'] ?? null;
     }
 
     /**
@@ -205,16 +205,16 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
         return $this->comments;
     }
 
-    /**                                                                         
-     * A wrapper function for the jsonSerialize method of the Log Instance 
-     * Class. This converts the Log Instance into an array.                
-     *                                                                          
-     * @return array Log Array.                                                
-     */                                                                         
-    public function toArray() : array                    
-    {                                                                           
-        return $this->jsonSerialize();                                          
-    }  
+    /**
+     * A wrapper function for the jsonSerialize method of the Log Instance
+     * Class. This converts the Log Instance into an array.
+     *
+     * @return array Log Array.
+     */
+    public function toArray() : array
+    {
+        return $this->jsonSerialize();
+    }
 
     /**
      * Returns an array representing the state of the Log
@@ -223,16 +223,16 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function jsonSerialize() : array
     {
-        return array(
-                'barcode'     => $this->barcode,
-                'centerId'    => $this->centerId,
-                'status'      => $this->status,
-                'user'        => $this->user,
-                'temperature' => $this->temperature,
-                'date'        => $this->date,
-                'time'        => $this->time,
-                'comments'    => $this->comments,
-               );
+        return [
+            'barcode'     => $this->barcode,
+            'centerId'    => $this->centerId,
+            'status'      => $this->status,
+            'user'        => $this->user,
+            'temperature' => $this->temperature,
+            'date'        => $this->date,
+            'time'        => $this->time,
+            'comments'    => $this->comments,
+        ];
     }
 
     /**
