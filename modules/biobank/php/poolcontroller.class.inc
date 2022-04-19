@@ -48,7 +48,7 @@ class PoolController
     {
         $this->db   = $db;
         $this->user = $user;
-        $this->dao  = $this->getDataProvisioner();
+        $this->dao  = $this->_getDataProvisioner();
     }
 
     /**
@@ -58,7 +58,7 @@ class PoolController
      */
     public function getInstances() : array
     {
-        $this->validatePermission('view');
+        $this->_validatePermission('view');
         $pools  = [];
         $poolIt = $this->dao->execute($this->user);
         foreach ($poolIt as $id => $pool) {
@@ -80,7 +80,7 @@ class PoolController
      */
     public function createInstance(array $poolArray)
     {
-        $this->validatePermission('create');
+        $this->_validatePermission('create');
         $pool = (new Pool())->fromArray($poolArray);
         $this->validateInstance($pool);
         return $this->dao->saveInstance($pool);
@@ -92,7 +92,7 @@ class PoolController
      *
      * @return \LORIS\Data\Provisioner
      */
-    private function getDataProvisioner() : \LORIS\Data\Provisioner
+    private function _getDataProvisioner() : \LORIS\Data\Provisioner
     {
         $dao = new PoolDAO($this->db);
         if ($this->user->hasPermission('access_all_profiles') == false) {
@@ -108,7 +108,7 @@ class PoolController
      *
      * @return void
      */
-    private function validatePermission(string $method) : void
+    private function _validatePermission(string $method) : void
     {
         switch ($method) {
         case 'view':
@@ -133,13 +133,13 @@ class PoolController
      */
     function validateInstance(Pool $pool) : void
     {
-        $this->validateLabel($pool);
-        $this->validateQuantity($pool);
-        $this->validateUnitId($pool);
-        $this->validateSpecimenIds($pool);
-        $this->validateCenterId($pool);
-        $this->validateDate($pool);
-        $this->validateTime($pool);
+        $this->_validateLabel($pool);
+        $this->_validateQuantity($pool);
+        $this->_validateUnitId($pool);
+        $this->_validateSpecimenIds($pool);
+        $this->_validateCenterId($pool);
+        $this->_validateDate($pool);
+        $this->_validateTime($pool);
     }
 
     /**
@@ -151,9 +151,13 @@ class PoolController
      *
      * @return void
      */
-    private function validateLabel(Pool $pool) : void
+    private function _validateLabel(Pool $pool) : void
     {
-        $poolList = $this->dao->selectInstances([['column' => 'bp.Label', 'value' => $pool->getLabel()]]);
+        $poolList = $this->dao->selectInstances(
+            [
+                ['column' => 'bp.Label', 'value' => $pool->getLabel()],
+            ],
+        );
         if (!empty($poolList)) {
             throw new \BadRequest('Pool Label must be unique');
         }
@@ -169,7 +173,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateQuantity(Pool $pool) : void
+    private function _validateQuantity(Pool $pool) : void
     {
         //TODO: Validate Quantity
     }
@@ -183,7 +187,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateUnitId(Pool $pool) : void
+    private function _validateUnitId(Pool $pool) : void
     {
         //TODO: Validate UnitId
     }
@@ -197,7 +201,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateSpecimenIds(Pool $pool) : void
+    private function _validateSpecimenIds(Pool $pool) : void
     {
         $specimenIds = $pool->getSpecimenIds();
         if (count($specimenIds) < 2) {
@@ -209,11 +213,15 @@ class PoolController
         $specimenDAO   = new SpecimenDAO($this->db);
         $containerDAO  = new ContainerDAO($this->db);
         $baseSpecimen  = $specimenDAO->getInstanceFromId($specimenIds[0]);
-        $baseContainer = $containerDAO->getInstanceFromId($baseSpecimen->getContainerId());
+        $baseContainer = $containerDAO->getInstanceFromId(
+            $baseSpecimen->getContainerId()
+        );
 
         foreach ($specimenIds as $specimenId) {
             $specimen  = $specimenDAO->getInstanceFromId($specimenId);
-            $container = $containerDAO->getInstanceFromId($specimen->getContainerId());
+            $container = $containerDAO->getInstanceFromId(
+                $specimen->getContainerId()
+            );
             $barcode   = $container->getBarcode();
 
             if ($baseSpecimen->getCandidateId() !== $specimen->getCandidateId()) {
@@ -223,7 +231,9 @@ class PoolController
             }
 
             if ($baseSpecimen->getSessionId() !== $specimen->getSessionId()) {
-                throw new \BadRequest('Pooled specimens must belong to the same Session');
+                throw new \BadRequest(
+                    'Pooled specimens must belong to the same Session'
+                );
             }
 
             if ($baseSpecimen->getTypeId() !== $specimen->getTypeId()) {
@@ -235,14 +245,19 @@ class PoolController
             }
 
             if ($specimen->getQuantity() === 0 ) {
-                throw new \BadRequest("Quantity of '$barcode' must be greater than '0'");
+                throw new \BadRequest(
+                    "Quantity of '$barcode' must be greater than '0'"
+                );
             }
 
             if ($specimen->getPoolId() !== null) {
-                throw new \BadRequest("Specimen '$barcode' already belongs to a Pool");
+                throw new \BadRequest(
+                    "Specimen '$barcode' already belongs to a Pool"
+                );
             }
 
-            if ($containerDAO->getStati()[$container->getStatusId()]['label'] !== 'Available') {
+            $stati = $containerDAO->getStati();
+            if ($stati[$container->getStatusId()]['label'] !== 'Available') {
                 throw new \BadRequest("Specimen '$barcode' is not 'Available'");
             }
         }
@@ -257,7 +272,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateCenterId(Pool $pool) : void
+    private function _validateCenterId(Pool $pool) : void
     {
         if (is_null($pool->getCenterId())) {
             throw new \BadRequest('Pool Center must be set');
@@ -273,7 +288,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateDate(Pool $pool) : void
+    private function _validateDate(Pool $pool) : void
     {
         // TODO: query date format from backend configuration.
         // $format = 'd-m-Y';
@@ -292,7 +307,7 @@ class PoolController
      *
      * @return void
      */
-    private function validateTime(Pool $pool) : void
+    private function _validateTime(Pool $pool) : void
     {
         // TODO: query time format from backend configuration.
         // $format = 'H:i';
