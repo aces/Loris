@@ -86,6 +86,11 @@ class Biobank extends \NDB_Menu_Filter
         );
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
     function getBreadcrumbs() : \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail();
