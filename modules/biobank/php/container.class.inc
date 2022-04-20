@@ -223,7 +223,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the ID of the container's current projects
      *
-     * @param int $projectIds the IDs of the container's current projects
+     * @param int[] $projectIds the IDs of the container's current projects
      *
      * @return void
      */
@@ -293,7 +293,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @param int $centerId the ID of the container's current centerId
      *
-     * @return none
+     * @return void
      */
     public function setCenterId(int $centerId) : void
     {
@@ -359,11 +359,11 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's current coordinate in storage
      *
-     * @param int $coordinate the container's current coordinate
+     * @param ?int $coordinate the container's current coordinate
      *
      * @return void
      */
-    public function setCoordinate(int $coordinate = null) : void
+    public function setCoordinate(?int $coordinate = null) : void
     {
         if ($coordinate > 0) {
             $this->coordinate = intval($coordinate);
@@ -383,11 +383,11 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the container's lot number
      *
-     * @param string $lotNumber the container's lot number.
+     * @param ?string $lotNumber the container's lot number.
      *
      * @return void
      */
-    public function setLotNumber(string $lotNumber = null) : void
+    public function setLotNumber(?string $lotNumber = null) : void
     {
         $this->lotNumber = $lotNumber;
     }
@@ -405,11 +405,11 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the expiration date
      *
-     * @param \DateTime $date the expiration date
+     * @param ?\DateTime $date the expiration date
      *
      * @return void
      */
-    public function setExpirationDate(\DateTime $date = null) : void
+    public function setExpirationDate(?\DateTime $date = null) : void
     {
         $this->expirationDate = $date;
     }
@@ -417,7 +417,7 @@ class Container implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the expiration date
      *
-     * @return \DateTime
+     * @return ?\DateTime
      */
     public function getExpirationDate() : ?\DateTime
     {
