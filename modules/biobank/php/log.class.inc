@@ -56,6 +56,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
 
     /**
      * Initiliazes a new instance of the Log Class
+     *
+     * @param array $data The data to initialize the log with
      */
     function __construct(array $data)
     {
@@ -70,18 +72,6 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * Sets the shipment's ID
-     *
-     * @param int $barcode the shipment's ID
-     *
-     * @return void
-     */
-    private function setBarcode(int $barcode) : void
-    {
-        $this->barcode = $barcode;
-    }
-
-    /**
      * Gets the shipment's ID
      *
      * @return ?int
@@ -92,16 +82,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param string $centerId
+     * Get the center for this log
      *
-     * @return void
-     */
-    private function setCenterId(string $centerId) : void
-    {
-        $this->centerId = $centerId;
-    }
-
-    /**
      * @return ?string
      */
     public function getCenterId() : ?string
@@ -110,16 +92,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param string $status
+     * Get the status of this shipment log
      *
-     * @return void
-     */
-    private function setStatus(string $status) : void
-    {
-        $this->status = $status;
-    }
-
-    /**
      * @return ?string
      */
     public function getStatus() : ?string
@@ -128,16 +102,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param string $user
+     * Get the user(?)
      *
-     * @return void
-     */
-    private function setUser(string $user) : void
-    {
-        $this->user = $user;
-    }
-
-    /**
      * @return ?string
      */
     public function getUser() : ?string
@@ -146,16 +112,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param string $temperature
+     * Get the temperature during this shipment log
      *
-     * @return void
-     */
-    private function setTemperature(string $temperature) : void
-    {
-        $this->temperature = $temperature;
-    }
-
-    /**
      * @return ?string
      */
     public function getTemperature() : ?string
@@ -164,16 +122,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param \DateTime $date
+     * Get the date (without time) for this log
      *
-     * @return void
-     */
-    private function setDate(\DateTime $date) : void
-    {
-        $this->date = $date;
-    }
-
-    /**
      * @return ?DateTime
      */
     public function getDate() : ?\DateTime
@@ -182,14 +132,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
-     * @param \DateTime $time
-     */
-    private function setTime(\DateTime $time) : void
-    {
-        $this->time = $time;
-    }
-
-    /**
+     * Get the time of this log
+     *
      * @return ?\DateTime
      */
     public function getTime() : ?\DateTime
@@ -198,6 +142,8 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     }
 
     /**
+     * Get the comments for this log
+     *
      * @return ?string
      */
     public function getComments() : ?string
