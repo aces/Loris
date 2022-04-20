@@ -41,7 +41,7 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Initializes a new instance of the ShipmentDAO Class
      *
-     * @param Database $db Instance of the LORIS Database class
+     * @param \Database $db Instance of the LORIS Database class
      */
     function __construct(\Database $db)
     {
@@ -84,7 +84,7 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
      * attribute values passed by $conditions and will return an array
      * of shipment objects.
      *
-     * @param array  $conditions Conditions to be met by the query
+     * @param ?array $conditions Conditions to be met by the query
      * @param string $operator   The operator to use to link the conditions
      *
      * @return array $shipments List of Shipment Objects that match the query
@@ -172,7 +172,7 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
      * Instantiates an ArrayIterator class that is composed of all the Shipment
      * Objects.
      *
-     * @return traversable Iterator of Shipment Objects
+     * @return \Traversable Iterator of Shipment Objects
      */
     protected function getAllInstances() : \Traversable
     {
