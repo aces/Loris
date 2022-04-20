@@ -36,9 +36,9 @@ class Preparation extends Process
      *
      * @param array $data Data to be used to instantiate the Preparation Object.
      *
-     * @return Preparation
+     * @return Process
      */
-    public function fromArray(array $data) : Preparation
+    public function fromArray(array $data) : Process
     {
         parent::fromArray($data);
 

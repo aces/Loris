@@ -92,9 +92,9 @@ class Collection extends Process
      *
      * @param array $data Data to be used to instantiate the Collection Object.
      *
-     * @return Collection
+     * @return Process
      */
-    public function fromArray(array $data) : Collection
+    public function fromArray(array $data) : Process
     {
         parent::fromArray($data);
         isset($data['quantity']) && $this->setQuantity((string) $data['quantity']);

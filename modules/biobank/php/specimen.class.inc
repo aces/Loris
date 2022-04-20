@@ -465,15 +465,18 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
 
         if (isset($data['collection'])) {
             $collection = (new Collection())->fromArray($data['collection']);
+            assert($collection instanceof Collection);
             $this->setCollection($collection);
         }
 
         if (isset($data['preparation'])) {
             $preparation = (new Preparation())->fromArray($data['preparation']);
+            assert($preparation instanceof Preparation);
             $this->setPreparation($preparation);
         }
         if (isset($data['analysis'])) {
             $analysis = (new Analysis())->fromArray($data['analysis']);
+            assert($analysis instanceof Analysis);
             $this->setAnalysis($analysis);
         }
 

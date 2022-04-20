@@ -34,20 +34,6 @@ namespace LORIS\biobank;
 class Analysis extends Process
 {
     /**
-     * Instatiates a Analysis Object using the values sent from the client-side.
-     *
-     * @param array $data Data to be used to instantiate the Analysis Object.
-     *
-     * @return Analysis
-     */
-    public function fromArray(array $data) : Analysis
-    {
-        parent::fromArray($data);
-
-        return $this;
-    }
-
-    /**
      * A wrapper function for the jsonSerialize method of the Analysis Instance
      * Class. This converts this Specimen Analysis into an array
      *
