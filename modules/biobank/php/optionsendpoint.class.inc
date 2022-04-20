@@ -126,8 +126,10 @@ class OptionsEndpoint implements RequestHandlerInterface
                        LEFT JOIN candidate_diagnosis_rel USING (CandID)
                        GROUP BY CandID';
         $candidates = $db->pselectWithIndexKey($query, [], 'id');
-        foreach($candidates as $id => $candidate) {
-            $candidate['diagnosisIds'] = $candidate['diagnosisIds'] ? explode(',', $candidate['diagnosisIds']) : [];
+        foreach ($candidates as $id => $candidate) {
+            $candidate['diagnosisIds'] = $candidate['diagnosisIds']
+                ? explode(',', $candidate['diagnosisIds'])
+                : [];
             $candidates[$id]           = $candidate;
         }
 
@@ -180,7 +182,10 @@ class OptionsEndpoint implements RequestHandlerInterface
         $sessionCenters    = [];
         foreach ($result as $row) {
             foreach ($row as $column=>$value) {
-                $candidateSessions[$row['candidateId']][$row['sessionId']]['label'] = $row['label'];
+                $ses =& $candidateSessions[$row['candidateId']][$row['sessionId']];
+
+                $ses['label'] = $row['label'];
+
                 $sessionCenters[$row['sessionId']]['centerId'] = $row['centerId'];
             }
         }
