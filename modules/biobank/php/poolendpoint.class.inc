@@ -92,27 +92,27 @@ class PoolEndpoint implements RequestHandlerInterface
             switch($request->getMethod()) {
             case 'GET':
                 $pools = $poolCont->getInstances();
-                return new \LORIS\Http\Response\OK($pools);
+                return new \LORIS\Http\Response\JSON\OK($pools);
             case 'POST':
                 $pool  = json_decode($request->getBody()->getContents(), true);
                 $pools = $poolCont->createInstance($pool);
-                return new \LORIS\Http\Response\OK([$pools]);
+                return new \LORIS\Http\Response\JSON\OK([$pools]);
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             }
-        } catch (\BadRequest $e) {
+        } catch (BadRequest $e) {
             $db->rollBack();
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
-        } catch (\Forbidden $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
+        } catch (Forbidden $e) {
             $db->rollBack();
-            return new \LORIS\Http\Response\Forbidden($e->getMessage());
+            return new \LORIS\Http\Response\JSON\Forbidden($e->getMessage());
         } catch (\TypeError $e) {
             $db->rollback();
-            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
         } catch (\DatabaseException $e) {
             $db->rollBack();
-            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
         } finally {
             if ($db->inTransaction()) {
                 $db->commit();
