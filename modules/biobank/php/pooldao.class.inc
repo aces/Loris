@@ -36,14 +36,14 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Private instance of the Database class.
      *
-     * @var \Dabatase $dao
+     * @var \Database $db
      */
     private $db;
 
     /**
      * Initializes a new instance of the PoolDAO Class
      *
-     * @param Database $db Instance of the LORIS Database class
+     * @param \Database $db Instance of the LORIS Database class
      */
     function __construct(\Database $db)
     {
@@ -71,7 +71,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      * attribute values passed through $poolData and will return an array
      * of pool objects.
      *
-     * @param array  $conditions Conditions to be met by the query
+     * @param ?array $conditions Conditions to be met by the query
      * @param string $operator   Operator to link conditions with
      *
      * @return array $pools      List of Pool Objects that match the query
@@ -131,7 +131,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
      * Instantiates an ArrayIterator class that is composed of all the Pool
      * Objects
      *
-     * @return traversable Iterator of Pool Objects
+     * @return \Traversable Iterator of Pool Objects
      */
     protected function getAllInstances() : \Traversable
     {
@@ -218,7 +218,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
 
         return [
             'biobank_pool'              => $poolData,
-            'biobank_specimen_pool_rel' => $specimenPoolData,
+            'biobank_specimen_pool_rel' => $specimenPoolData ?? '',
         ];
     }
 
