@@ -41,7 +41,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Initializes a new instance of the ContainerDAO Class
      *
-     * @param Database $db Instance of the LORIS Database class
+     * @param \Database $db Instance of the LORIS Database class
      */
     function __construct(\Database $db)
     {
@@ -125,7 +125,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * attribute values passed by $conditions and will return an array
      * of container objects.
      *
-     * @param array  $conditions Conditions to be met by the query
+     * @param ?array $conditions Conditions to be met by the query
      * @param string $operator   The operator to link the conditions
      *
      * @return array $containers List of Container Objects that match the query
@@ -208,7 +208,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * Instantiates an ArrayIterator class that is composed of all the Container
      * Objects.
      *
-     * @return traversable Iterator of Container Objects
+     * @return \Traversable Iterator of Container Objects
      */
     protected function getAllInstances() : \Traversable
     {
@@ -222,11 +222,11 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * array with the ID field as the index. Conditions may be passed to filter
      * the results
      *
-     * @param array $conditions Conditions to be met by the query
+     * @param ?array $conditions Conditions to be met by the query
      *
      * @return array $containerTypes All data concerning each container type
      */
-    public function getTypes(array $conditions = null) : array
+    public function getTypes(?array $conditions = null) : array
     {
         $query  = 'SELECT ContainerTypeID as id,
                           Brand as brand,
@@ -236,9 +236,11 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                           ContainerCapacityID as capacityId,
                           ContainerDimensionID as dimensionId
                    FROM biobank_container_type';
-        $query .= $conditions
-            ? ' WHERE ' . $this->db->_implodeWithKeys(' AND ', $conditions)
-            : null;
+        if($conditions != null) {
+            $query .= $conditions
+                ? ' WHERE ' . $this->db->_implodeWithKeys(' AND ', $conditions)
+                : null;
+        }
         $types  = $this->db->pselectWithIndexKey($query, [], 'id');
 
         return $types;
@@ -346,6 +348,9 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $result      = $this->db->pselect($query, []);
         $coordinates = [];
         foreach ($result as $row) {
+            if(!isset($coordinates[$row['parentContainerId']])) {
+                    $coordinates[$row['parentContainerId']] = [];
+            };
             $container =& $coordinates[$row['parentContainerId']];
             if (empty($row['coordinate'])) {
                 $container['Unassigned'][] = $row['childContainerId'];
@@ -390,7 +395,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         // container ID.
         $data['biobank_container_parent']['ContainerID'] = $container->getId();
         foreach ($data['biobank_container_project_rel'] as $id => $insert) {
-            $projdata &= $data['biobank_container_project_rel'][$id];
+            $projdata =& $data['biobank_container_project_rel'][$id];
             $projdata['ContainerID'] = $container->getId();
         }
         $this->saveParentContainer($container, $data);
@@ -527,7 +532,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * This recursive function cascades the $value to the specified $field of
      * all the children of the $container Object.
      *
-     * @param object $container Container Object from which to retrieve children
+     * @param Container $container Container Object from which to retrieve children
      * @param string $field     The field at which to associate the $value
      * @param mixed  $value     The value to assigned to the $field in question.
      *                          It is mixed since it may receive multiple types
@@ -562,7 +567,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * This function takes a Container Object and retrieves an array of ContainerIDs
      * representing all the descendant children of the Container.
      *
-     * @param object $container Container Object from which to retrieve
+     * @param Container $container Container Object from which to retrieve
      *                          all children
      *
      * @return array  $childContainers Array of child Container Ids
@@ -644,14 +649,16 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
              'Coordinate'        => $container->getCoordinate(),
          ];
 
-         foreach ($container->_getProjectIds() as $id) {
+         $containerProjectData = [];
+
+         foreach ($container->getProjectIds() as $id) {
              $containerProjectData[$id] = [
                  'ContainerID' => $container->getId(),
                  'ProjectID'   => $id,
              ];
          }
 
-         return $data = [
+         return [
              'biobank_container'             => $containerData,
              'biobank_container_parent'      => $parentData,
              'biobank_container_project_rel' => $containerProjectData,
