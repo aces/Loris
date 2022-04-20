@@ -12,8 +12,6 @@
  * @link       http://www.github.com/aces/Loris/
  */
 namespace LORIS\biobank;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 
 /**
  * This class features the code that enables access to the LORIS Biobank Module.
@@ -32,7 +30,7 @@ class Biobank extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page.
      *
-     * @param User $user to be checked.
+     * @param \User $user to be checked.
      *
      * @return bool whether the user has access.
      */
