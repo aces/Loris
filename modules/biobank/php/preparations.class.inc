@@ -119,8 +119,9 @@ class Preparations implements RequestHandlerInterface
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleDELETE(ServerRequestInterface $request) : ResponseInterface
-    {
+    private function _handleDELETE(
+        ServerRequestInterface $request
+    ) : ResponseInterface {
         $db        = \Database::singleton();
         $endpoint  = $request->getURI()->getPath();
         $pathparts = explode('/', $endpoint);
