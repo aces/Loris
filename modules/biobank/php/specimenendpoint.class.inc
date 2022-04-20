@@ -94,7 +94,7 @@ class SpecimenEndpoint implements RequestHandlerInterface
             switch($request->getMethod()) {
             case 'GET':
                 $specimens = $specCont->getInstances();
-                return new \LORIS\Http\Response\OK($specimens);
+                return new \LORIS\Http\Response\JSON\OK($specimens);
             case 'POST':
                 $specimenArray = json_decode(
                     $request->getBody()->getContents(),
@@ -109,46 +109,42 @@ class SpecimenEndpoint implements RequestHandlerInterface
                         return $response;
                     }
                 }
-                return new \LORIS\Http\Response\OK($specimens);
+                return new \LORIS\Http\Response\JSON\OK($specimens);
             case 'PUT':
                 $specimenArray = json_decode(
                     $request->getBody()->getContents(),
                     true
                 );
                 $specimen      = $specCont->updateInstance($specimenArray);
-                return new \LORIS\Http\Response\OK([$specimen]);
+                return new \LORIS\Http\Response\JSON\OK([$specimen]);
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             }
-        } catch (\BadRequest $e) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
-        } catch (\Forbidden $e) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\Forbidden($e->getMessage());
         } catch (\NotFound $e) {
             $db->rollBack();
-            return new \LORIS\Http\Response\NotFound($e->getMessage());
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         } catch (\DatabaseException $e) {
             $db->rollBack();
             $message = $e->getMessage().'. If this error occurs again, please 
                 contact your administrator.';
-            return new \LORIS\Http\Response\InternalServerError($message);
+            return new \LORIS\Http\Response\JSON\InternalServerError($message);
         } catch (\TypeError $e) {
             $db->rollBack();
             $message = $e->getMessage().'. If this error occurs again, please 
                 contact your administrator.';
-            return new \LORIS\Http\Response\InternalServerError($message);
+            return new \LORIS\Http\Response\JSON\InternalServerError($message);
         } catch (\Error $e) {
             $db->rollBack();
             $message = $e->getMessage().'. If this error occurs again, please 
                 contact your administrator.';
-            return new \LORIS\Http\Response\InternalServerError($message);
+            return new \LORIS\Http\Response\JSON\InternalServerError($message);
         } catch (\Exception $e) {
             $db->rollBack();
             // PUT SOMETHING HERE LATER
-            return new \LORIS\Http\Response\InternalServerError($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            );
         } finally {
             if ($db->inTransaction()) {
                 $db->commit();
