@@ -168,7 +168,7 @@ abstract class Process implements \JsonSerializable
     /**
      * Gets the time of processing
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getTime() : \DateTime
     {
