@@ -229,7 +229,7 @@ class PoolController
                 );
             }
 
-            $stati = $containerDAO->getStati();
+            $stati    = $containerDAO->getStati();
             $statusId = $container->getStatusId() ?? '';
             if ($stati[$statusId]['label'] !== 'Available') {
                 throw new BadRequest("Specimen '$barcode' is not 'Available'");

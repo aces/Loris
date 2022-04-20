@@ -81,7 +81,7 @@ class Preparations implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db   = \Database::singleton();
+        $db = \Database::singleton();
 
         try {
             $db->beginTransaction();
@@ -100,10 +100,14 @@ class Preparations implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\Forbidden($e->getMessage());
         } catch (\TypeError $e) {
             $db->rollback();
-            return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            );
         } catch (\DatabaseException $e) {
             $db->rollBack();
-            return new \LORIS\Http\Response\JSON\InternalServerError($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            );
         } finally {
             if ($db->inTransaction()) {
                 $db->commit();

@@ -123,7 +123,7 @@ class ContainerController
     public function updateInstance(array $containerArray) : array
     {
         $this->_validatePermission('update');
-        $container    = (new Container)->fromArray($containerArray);
+        $container = (new Container)->fromArray($containerArray);
         // $containerId  = $container->getId();
         // $oldContainer = $this->dao->getInstanceFromId($containerId);
 
@@ -453,7 +453,7 @@ class ContainerController
      */
     private function _validateShipmentBarcodes(Container $container) : void
     {
-        $shipmentDAO       = new ShipmentDAO($this->db);
+        $shipmentDAO = new ShipmentDAO($this->db);
         foreach ($container->getShipmentBarcodes() as $barcode) {
             $shipment = $shipmentDAO->getInstanceFromBarcode($barcode);
             if ($shipment->getActive()) {

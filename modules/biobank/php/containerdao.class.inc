@@ -228,7 +228,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     public function getTypes(?array $conditions = null) : array
     {
-        $query  = 'SELECT ContainerTypeID as id,
+        $query = 'SELECT ContainerTypeID as id,
                           Brand as brand,
                           ProductNumber as productNumber,
                           Label as label,
@@ -236,12 +236,12 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                           ContainerCapacityID as capacityId,
                           ContainerDimensionID as dimensionId
                    FROM biobank_container_type';
-        if($conditions != null) {
+        if ($conditions != null) {
             $query .= $conditions
                 ? ' WHERE ' . $this->db->_implodeWithKeys(' AND ', $conditions)
                 : null;
         }
-        $types  = $this->db->pselectWithIndexKey($query, [], 'id');
+        $types = $this->db->pselectWithIndexKey($query, [], 'id');
 
         return $types;
     }
@@ -297,7 +297,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      */
     public function getDimensions() : array
     {
-        $query      = "SELECT ContainerDimensionID as id,
+        $query = "SELECT ContainerDimensionID as id,
                          X as x,
                          XNumerical as xNum,
                          Y as y,
@@ -346,7 +346,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         $result      = $this->db->pselect($query, []);
         $coordinates = [];
         foreach ($result as $row) {
-            if(!isset($coordinates[$row['parentContainerId']])) {
+            if (!isset($coordinates[$row['parentContainerId']])) {
                     $coordinates[$row['parentContainerId']] = [];
             };
             $container =& $coordinates[$row['parentContainerId']];
@@ -531,10 +531,10 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * all the children of the $container Object.
      *
      * @param Container $container Container Object from which to retrieve children
-     * @param string $field     The field at which to associate the $value
-     * @param mixed  $value     The value to assigned to the $field in question.
-     *                          It is mixed since it may receive multiple types
-     *                          of data.
+     * @param string    $field     The field at which to associate the $value
+     * @param mixed     $value     The value to assigned to the $field in question.
+     *                             It is mixed since it may receive multiple types
+     *                             of data.
      *
      * @return array            Array of all child container objects that were
      *                          updated.
@@ -566,7 +566,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
      * representing all the descendant children of the Container.
      *
      * @param Container $container Container Object from which to retrieve
-     *                          all children
+     *                             all children
      *
      * @return array  $childContainers Array of child Container Ids
      */

@@ -64,7 +64,7 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
 
         assert($container instanceof Container);
         $typeId = $container->getTypeId();
-        if($typeId === null) {
+        if ($typeId === null) {
             return false;
         }
         $types = $containerTypes[$typeId];
