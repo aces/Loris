@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Loris/
  */
-class PoolEndpoint implements RequestHandlerInterface
+class PoolEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
     /**
      * Returns true if user has access to this endpoint.
@@ -83,13 +83,13 @@ class PoolEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db       = \Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $user     = $request->getAttribute('user');
-        $poolCont = new PoolController($db, $user);
+        $poolCont = new PoolController($this->loris, $user);
 
         try {
             $db->beginTransaction();
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'GET':
                 $pools = $poolCont->getInstances();
                 return new \LORIS\Http\Response\JSON\OK($pools);

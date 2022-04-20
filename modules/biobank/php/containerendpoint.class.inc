@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Loris/
  */
-class ContainerEndpoint implements RequestHandlerInterface
+class ContainerEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
     /**
      * Returns true if user has access to this endpoint.
@@ -84,13 +84,13 @@ class ContainerEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db       = \Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $user     = $request->getAttribute('user');
-        $contCont = new ContainerController($db, $user);
+        $contCont = new ContainerController($this->loris, $user);
 
         try {
             $db->beginTransaction();
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'GET':
                 $containers = $contCont->getInstances();
                 return new \LORIS\Http\Response\JSON\OK($containers);

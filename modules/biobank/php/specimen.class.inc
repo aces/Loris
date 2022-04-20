@@ -66,11 +66,15 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     private $preparation;
     private $analysis;
 
+    private $loris;
     /**
      * Initiliazes a new instance of the Specimen Class
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the specimen
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
+        $this->loris = $loris;
     }
 
     /**
@@ -413,7 +417,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function getCenterId()
     {
-        $db           = \Database::singleton();
+        $db           = $this->loris->getDatabaseConnection();
         $containerDAO = new ContainerDAO($db);
         $containerId  = $this->getContainerId();
         $container    = $containerDAO->getInstanceFromId($containerId);

@@ -32,10 +32,12 @@ class SpecimenController
     /**
      * Private instances of the Database, User and ContainerDAO classes
      *
+     * @var \LORIS\LorisInstance $loris
      * @var \Database   $db
      * @var \User       $user
      * @var SpecimenDAO $dao
      */
+    private $loris;
     private $db;
     private $user;
     private SpecimenDAO $dao;
@@ -43,14 +45,15 @@ class SpecimenController
     /**
      * Specimen Controller Class constructor
      *
-     * @param \Database $db   Database Instance.
-     * @param \User     $user User Instance.
+     * @param \LORIS\LorisInstance $loris Loris instance
+     * @param \User                $user  User Instance.
      */
-    function __construct(\Database $db, \User $user)
+    function __construct(\LORIS\LorisInstance $loris, \User $user)
     {
-        $this->db   = $db;
-        $this->user = $user;
-        $this->dao  = $this->_getDataProvisioner();
+        $this->loris = $loris;
+        $this->db    = $loris->getDatabaseConnection();
+        $this->user  = $user;
+        $this->dao   = $this->_getDataProvisioner();
     }
 
     /**
@@ -92,7 +95,7 @@ class SpecimenController
             $specimenList[]  = $this->_prepare($specimen);
         }
 
-        $contController = new ContainerController($this->db, $this->user);
+        $contController = new ContainerController($this->loris, $this->user);
         $containers     = $contController->createInstances($containerList);
         if ($containers[0]->getParentContainerId()) {
             $containers[] = $contController->dao->getInstanceFromId(
@@ -135,7 +138,7 @@ class SpecimenController
      */
     private function _prepare(array $specimenArray) : Specimen
     {
-        $specimen = (new Specimen)->fromArray($specimenArray);
+        $specimen = (new Specimen($this->loris))->fromArray($specimenArray);
         $this->_validateInstance($specimen);
 
         return $specimen;
@@ -172,7 +175,7 @@ class SpecimenController
      */
     private function _getDataProvisioner() : SpecimenDAO
     {
-        $dao = new SpecimenDAO($this->db);
+        $dao = new SpecimenDAO($this->loris);
 
         if ($this->user->hasPermission('access_all_profiles') === false) {
             $dao = $dao->filter(new \LORIS\Data\Filters\UserSiteMatch());
@@ -189,7 +192,7 @@ class SpecimenController
      */
     private function _validatePermission(string $method) : void
     {
-        switch($method) {
+        switch ($method) {
         case 'view':
             if (!$this->user->hasPermission('biobank_specimen_view')) {
                 throw new Forbidden('Specimen: View Permission Denied');

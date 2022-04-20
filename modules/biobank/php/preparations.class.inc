@@ -30,6 +30,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Preparations implements RequestHandlerInterface
 {
+    private \LORIS\LorisInstance $loris;
     /**
      * Returns true if user has access to this endpoint.
      *
@@ -81,11 +82,12 @@ class Preparations implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db = \Database::singleton();
+        $this->loris = $request->getAttribute("loris");
+        $db          = $this->loris->getDatabaseConnection();
 
         try {
             $db->beginTransaction();
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'DELETE':
                 return $this->_handleDELETE($request);
             case 'OPTIONS':
@@ -125,7 +127,9 @@ class Preparations implements RequestHandlerInterface
     private function _handleDELETE(
         ServerRequestInterface $request
     ) : ResponseInterface {
-        $db        = \Database::singleton();
+        $this->loris = $request->getAttribute("loris");
+
+        $db        = $this->loris->getDatabaseConnection();
         $endpoint  = $request->getURI()->getPath();
         $pathparts = explode('/', $endpoint);
         $db->delete(

@@ -35,20 +35,22 @@ class PoolController
      * @var \Database $db
      * @var \User     $user
      * @var PoolDAO   $dao
+     * @var \LORIS\LorisInstance $loris
      */
-    private $db, $user, $dao;
+    private $db, $user, $dao, $loris;
 
     /**
      * Pool Controller Class constructor.
      *
-     * @param \Database $db   Database Instance.
-     * @param \User     $user User Instance.
+     * @param \LORIS\LorisInstance $loris LORIS Instance.
+     * @param \User                $user  User Instance.
      */
-    function __construct(\Database $db, \User $user)
+    function __construct(\LORIS\LorisInstance $loris, \User $user)
     {
-        $this->db   = $db;
-        $this->user = $user;
-        $this->dao  = $this->_getDataProvisioner();
+        $this->loris = $loris;
+        $this->db    = $loris->getDatabaseConnection();
+        $this->user  = $user;
+        $this->dao   = $this->_getDataProvisioner();
     }
 
     /**
@@ -94,7 +96,7 @@ class PoolController
      */
     private function _getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $dao = new PoolDAO($this->db);
+        $dao = new PoolDAO($this->loris);
         if ($this->user->hasPermission('access_all_profiles') == false) {
             $dao = $dao->filter(new \LORIS\Data\Filters\UserSiteMatch());
         }
@@ -183,8 +185,8 @@ class PoolController
             );
         }
 
-        $specimenDAO   = new SpecimenDAO($this->db);
-        $containerDAO  = new ContainerDAO($this->db);
+        $specimenDAO   = new SpecimenDAO($this->loris);
+        $containerDAO  = new ContainerDAO($this->loris->getDatabaseConnection());
         $baseSpecimen  = $specimenDAO->getInstanceFromId($specimenIds[0]);
         $baseContainer = $containerDAO->getInstanceFromId(
             $baseSpecimen->getContainerId()

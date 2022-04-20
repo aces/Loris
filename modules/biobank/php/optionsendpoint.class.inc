@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Loris/
  */
-class OptionsEndpoint implements RequestHandlerInterface
+class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
     /**
      * Returns true if user has access to this endpoint.
@@ -82,11 +82,11 @@ class OptionsEndpoint implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db   = \Database::singleton();
+        $db   = $this->loris->getDatabaseConnection();
         $user = $request->getAttribute('user');
 
         try {
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'GET':
                 $options = $this->getOptions($db, $user);
                 return new \LORIS\Http\Response\JSON\OK($options);
@@ -109,8 +109,8 @@ class OptionsEndpoint implements RequestHandlerInterface
      */
     function getOptions(\Database $db, \User $user)
     {
-        $contCont = new ContainerController($db, $user);
-        $specCont = new SpecimenController($db, $user);
+        $contCont = new ContainerController($this->loris, $user);
+        $specCont = new SpecimenController($this->loris, $user);
         $shipDAO  = new ShipmentDAO($db);
 
         // XXX: This should eventually be replaced by a call directly to a
@@ -160,7 +160,7 @@ class OptionsEndpoint implements RequestHandlerInterface
         // Center Objects.
         $centers = \Utility::getSiteList();
         foreach ($centers as $id => $center) {
-            if ($user->hasCenter($id) === false) {
+            if ($user->hasCenter($center) === false) {
                 unset($centers[$id]);
             }
         }

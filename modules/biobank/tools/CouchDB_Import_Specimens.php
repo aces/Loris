@@ -19,13 +19,16 @@ class CouchDBSpecimenImporter
 
     /**
      * Constructor
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance object
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
         $this->factory = \NDB_Factory::singleton();
         $config        = \NDB_Config::singleton();
         $couchConfig   = $config->getSetting('CouchDB');
-        $this->SQLDB   = $this->factory->Database();
+        assert(is_array($couchConfig));
+        $this->SQLDB   = $loris->getDatabaseConnection();
         $this->user    = $this->factory->user();
         $this->CouchDB = $this->factory->couchDB(
             $couchConfig['dbName'],
@@ -37,11 +40,11 @@ class CouchDBSpecimenImporter
         // instanciate module to autoload classes;
         \Module::factory("biobank");
         $this->specimenController  = new \LORIS\biobank\SpecimenController(
-            $this->SQLDB,
+            $loris,
             $this->user
         );
         $this->containerController = new \LORIS\biobank\ContainerController(
-            $this->SQLDB,
+            $loris,
             $this->user
         );
 
@@ -218,7 +221,9 @@ class CouchDBSpecimenImporter
 
 // Don't run if we're doing the unit tests, the unit test will call run..
 if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBSpecimenImporter();
+    // lorisInstance comes from generic_includes
+    assert(isset($lorisInstance));
+    $Runner = new CouchDBSpecimenImporter($lorisInstance);
     $Runner->run();
 }
 

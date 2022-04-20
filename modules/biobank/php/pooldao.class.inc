@@ -36,18 +36,21 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Private instance of the Database class.
      *
+     * @var \LORIS\LorisInstance $loris
      * @var \Database $db
      */
+    private $loris;
     private $db;
 
     /**
      * Initializes a new instance of the PoolDAO Class
      *
-     * @param \Database $db Instance of the LORIS Database class
+     * @param \LORIS\LorisInstance $loris LORIS instance object
      */
-    function __construct(\Database $db)
+    function __construct(\LORIS\LorisInstance $loris)
     {
-        $this->db = $db;
+        $this->loris = $loris;
+        $this->db    = $loris->getDatabaseConnection();
     }
 
     /**
@@ -106,7 +109,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         $poolRows = $this->db->pselectWithIndexKey($query, [], 'PoolID');
 
         $pools       = [];
-        $specimenDAO = new SpecimenDAO($this->db);
+        $specimenDAO = new SpecimenDAO($this->loris);
         if (!empty($poolRows)) {
             foreach ($poolRows as $id => $poolRow) {
                 $specimenIds = explode(',', $poolRow['SpecimenIDs']);

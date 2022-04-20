@@ -32,20 +32,23 @@ namespace LORIS\biobank;
 class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
 {
     /**
-     * Private instance of the Database class.
+     * The LORIS instance
      *
-     * @var \Database $dao
+     * @var \LORIS\LORISInstance $loris
+     * @var \Database $db
      */
+    private $loris;
     private $db;
 
     /**
      * Initializes a new instance of the SpecimenDAO Class
      *
-     * @param \Database $db Instance of the LORIS Database class
+     * @param \LORIS\LorisInstance $loris Instance of the LORIS Database class
      */
-    function __construct(\Database $db)
+    function __construct(\LORIS\LORISInstance $loris)
     {
-        $this->db = $db;
+        $this->loris = $loris;
+        $this->db    = $loris->getDatabaseConnection();
     }
 
     /**
@@ -622,7 +625,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         array $data,
         array $parentSpecimenIds
     ) : Specimen {
-        $specimen = new Specimen();
+        $specimen = new Specimen($this->loris);
         if (isset($data['SpecimenID'])) {
             $specimen->setId((int) $data['SpecimenID']);
         }

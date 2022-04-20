@@ -28,7 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license    http://www.gnu.org/licenses/gpl-3.0.text GPLv3
  * @link       http://www.github.com/aces/Lors/
  */
-class SpecimenEndpoint implements RequestHandlerInterface
+class SpecimenEndpoint extends \NDB_Page implements RequestHandlerInterface
 {
     /**
      * Returns true if user has acces to this Endpoint.
@@ -85,13 +85,13 @@ class SpecimenEndpoint implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         ini_set('memory_limit', '-1');
-        $db       = \Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $user     = $request->getAttribute('user');
-        $specCont = new SpecimenController($db, $user);
+        $specCont = new SpecimenController($this->loris, $user);
 
         try {
             $db->beginTransaction();
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'GET':
                 $specimens = $specCont->getInstances();
                 return new \LORIS\Http\Response\JSON\OK($specimens);

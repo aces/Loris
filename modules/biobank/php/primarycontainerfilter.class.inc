@@ -36,14 +36,19 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
      */
     private $primary;
 
+    private $loris;
+
     /**
      * Class constructor.
      *
-     * @param int $primary A value of '0' or '1' which indicates if the
-     *                     container is primary.
+     * @param \LORIS\LorisInstance $loris   The LORIS instance
+     * @param int                  $primary A value of '0' or '1' which
+     *                                      indicates if the container is
+     *                                      primary.
      */
-    function __construct(int $primary)
+    function __construct(\LORIS\LorisInstance $loris, int $primary)
     {
+        $this->loris   = $loris;
         $this->primary = $primary;
     }
 
@@ -58,8 +63,7 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $container) : bool
     {
-        $db           = \Database::singleton();
-        $containerDAO = new ContainerDAO($db);
+        $containerDAO   = new ContainerDAO($this->loris->getDatabaseConnection());
         $containerTypes = $containerDAO->getTypes();
 
         assert($container instanceof Container);

@@ -31,6 +31,7 @@ use \Psr\Http\Message\ResponseInterface;
 class Shipments implements RequestHandlerInterface
 {
 
+    private \LORIS\LorisInstance $loris;
     private \Database $db;
     private \User $user;
 
@@ -88,13 +89,14 @@ class Shipments implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = \Database::singleton();
-        $this->user = $request->getAttribute('user');
+        $this->loris = $request->getAttribute('loris');
+        $this->db    = $this->loris->getDatabaseConnection();
+        $this->user  = $request->getAttribute('user');
 
         // TODO: This entire thing NEEDS to have a try block wrapped around it!
         try {
             $this->db->beginTransaction();
-            switch($request->getMethod()) {
+            switch ($request->getMethod()) {
             case 'GET':
                 return $this->_handleGET($request);
             case 'POST':

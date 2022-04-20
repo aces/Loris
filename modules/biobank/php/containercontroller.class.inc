@@ -39,10 +39,12 @@ class ContainerController
     /**
      * Private instances of the Database, User and ContainerDAO classes.
      *
+     * @var \LORIS\LorisInstance $loris
      * @var \Database    $db
      * @var \User        $user
      * @var ContainerDAO $dao
      */
+    private $loris;
     private $db;
     private $user;
     public ContainerDAO $dao;        // This should be made private but is being
@@ -53,14 +55,15 @@ class ContainerController
     /**
      * Class Constructor
      *
-     * @param \Database $db   Database Instance.
-     * @param \User     $user User Instance.
+     * @param \LORIS\LorisInstance $loris LORIS Instance.
+     * @param \User                $user  User Instance.
      */
-    function __construct(\Database $db, \User $user)
+    function __construct(\LORIS\LorisInstance $loris, \User $user)
     {
-        $this->db   = $db;
-        $this->user = $user;
-        $this->dao  = $this->_getDataProvisioner();
+        $this->loris = $loris;
+        $this->db    = $loris->getDatabaseConnection();
+        $this->user  = $user;
+        $this->dao   = $this->_getDataProvisioner();
     }
 
     /**
@@ -162,10 +165,10 @@ class ContainerController
             $dao = $dao->filter(new \LORIS\Data\Filters\UserSiteMatch());
         }
         if ($this->user->hasPermission('biobank_container_view') === false) {
-            $dao = $dao->filter(new PrimaryContainerFilter(0));
+            $dao = $dao->filter(new PrimaryContainerFilter($this->loris, 0));
         }
         if ($this->user->hasPermission('biobank_specimen_view') === false) {
-            $dao = $dao->filter(new PrimaryContainerFilter(1));
+            $dao = $dao->filter(new PrimaryContainerFilter($this->loris, 1));
         }
         return $dao;
     }
@@ -179,7 +182,7 @@ class ContainerController
      */
     private function _validatePermission(string $method) : void
     {
-        switch($method) {
+        switch ($method) {
         case 'view':
             if (!$this->user->hasPermission('biobank_container_view')) {
                 throw new Forbidden('Container: View Permission Denied');
