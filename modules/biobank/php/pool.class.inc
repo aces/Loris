@@ -330,17 +330,39 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      */
     public function fromArray(array $data) : Pool
     {
-        isset($data['id'])          && $this->setId((int) ($data['id']));
-        isset($data['label'])       && $this->setLabel((string) $data['label']);
-        isset($data['quantity'])    && $this->setQuantity((float) $data['quantity']);
-        isset($data['unitId'])      && $this->setUnitId((int) $data['unitId']);
-        isset($data['specimenIds']) && $this->setSpecimenIds($data['specimenIds']);
-        isset($data['candidateId']) && $this->setCandidateId((int) $data['candidateId']);
-        isset($data['sessionId'])   && $this->setSessionId((int) $data['sessionId']);
-        isset($data['typeId'])      && $this->setTypeId((int) $data['typeId']);
-        isset($data['centerId'])    && $this->setCenterId((int) $data['centerId']);
-        isset($data['date'])        && $this->setDate(new \DateTime($data['date']));
-        isset($data['time'])        && $this->setTime(new \DateTime($data['time']));
+        if (isset($data['id'])) {
+            $this->setId((int) ($data['id']));
+        }
+        if (isset($data['label'])) {
+            $this->setLabel((string) $data['label']);
+        }
+        if (isset($data['quantity'])) {
+            $this->setQuantity((float) $data['quantity']);
+        }
+        if (isset($data['unitId'])) {
+            $this->setUnitId((int) $data['unitId']);
+        }
+        if (isset($data['specimenIds'])) {
+            $this->setSpecimenIds($data['specimenIds']);
+        }
+        if (isset($data['candidateId'])) {
+            $this->setCandidateId((int) $data['candidateId']);
+        }
+        if (isset($data['sessionId'])) {
+            $this->setSessionId((int) $data['sessionId']);
+        }
+        if (isset($data['typeId'])) {
+            $this->setTypeId((int) $data['typeId']);
+        }
+        if (isset($data['centerId'])) {
+            $this->setCenterId((int) $data['centerId']);
+        }
+        if (isset($data['date'])) {
+            $this->setDate(new \DateTime($data['date']));
+        }
+        if (isset($data['time'])) {
+            $this->setTime(new \DateTime($data['time']));
+        }
 
         return $this;
     }
