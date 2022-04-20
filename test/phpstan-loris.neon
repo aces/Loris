@@ -1,4 +1,7 @@
 parameters:
+    scanFiles:
+        - %currentWorkingDirectory%/modules/biobank/php/specimencontroller.class.inc
+        - %currentWorkingDirectory%/modules/biobank/php/containercontroller.class.inc
     excludes_analyse:
         - %currentWorkingDirectory%/modules/*/ajax/*
         - %currentWorkingDirectory%/modules/*/test/*

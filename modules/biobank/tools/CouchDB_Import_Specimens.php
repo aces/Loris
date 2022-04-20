@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__.'/../../../../tools/generic_includes.php';
+require_once __DIR__.'/../php/specimencontroller.class.inc';
+require_once __DIR__.'/../php/containercontroller.class.inc';
 
 /**
  * Class to handle the importing of specimens to the DQT
@@ -8,12 +10,12 @@ require_once __DIR__.'/../../../../tools/generic_includes.php';
  */
 class CouchDBSpecimenImporter
 {
-    var $SQLDB; // reference to the database handler, store here instead
-    var $CouchDB; // reference to the CouchDB database handler
-    var $factory;
-    var $user;
-    var $specimenController;
-    var $containerController;
+    public \Database $SQLDB; // reference to the database handler, store here instead
+    public \CouchDB $CouchDB; // reference to the CouchDB database handler
+    public \NDB_Factory $factory;
+    public \User $user;
+    public \LORIS\biobank\SpecimenController $specimenController;
+    public \LORIS\biobank\ContainerController $containerController;
 
     /**
      * Constructor
@@ -24,7 +26,7 @@ class CouchDBSpecimenImporter
         $config        = \NDB_Config::singleton();
         $couchConfig   = $config->getSetting('CouchDB');
         $this->SQLDB   = $this->factory->Database();
-        $this->user    = $this->factory->user('admin');
+        $this->user    = $this->factory->user();
         $this->CouchDB = $this->factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -53,7 +55,7 @@ class CouchDBSpecimenImporter
     function run()
     {
         $this->updateDataDicts();
-        $results = $this->updateCandidateDocs();
+        $this->updateCandidateDocs();
     }
 
     /**
@@ -66,9 +68,13 @@ class CouchDBSpecimenImporter
     function cleanLabel(string $label)
     {
         $noSpaceLabel        = preg_replace('/\s/', '_', $label);
-        $noSpecialCharsLabel = preg_replace('/[^A-Za-z0-9\-_]/', '', $noSpaceLabel);
+        $noSpecialCharsLabel = preg_replace(
+            '/[^A-Za-z0-9\-_]/',
+            '',
+            $noSpaceLabel ?? '',
+        );
 
-        return $noSpecialCharsLabel;
+        return $noSpecialCharsLabel ?? '';
     }
 
     /**
