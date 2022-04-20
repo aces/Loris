@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__.'/../../../../tools/generic_includes.php';
 
+/**
+ * Class to handle the importing of specimens to the DQT
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
 class CouchDBSpecimenImporter
 {
     var $SQLDB; // reference to the database handler, store here instead
@@ -10,6 +15,9 @@ class CouchDBSpecimenImporter
     var $specimenController;
     var $containerController;
 
+    /**
+     * Constructor
+     */
     function __construct()
     {
         $this->factory = \NDB_Factory::singleton();
@@ -37,12 +45,24 @@ class CouchDBSpecimenImporter
 
     }
 
+    /**
+     * Begin the data import
+     *
+     * @return void
+     */
     function run()
     {
-        $this->UpdateDataDicts();
-        $results = $this->UpdateCandidateDocs();
+        $this->updateDataDicts();
+        $results = $this->updateCandidateDocs();
     }
 
+    /**
+     * Remove special characters in a label
+     *
+     * @param string $label The label
+     *
+     * @return string
+     */
     function cleanLabel(string $label)
     {
         $noSpaceLabel        = preg_replace('/\s/', '_', $label);
@@ -51,7 +71,12 @@ class CouchDBSpecimenImporter
         return $noSpecialCharsLabel;
     }
 
-    function UpdateDataDicts()
+    /**
+     * Update the data dictionary for specimens on the CouchDB server
+     *
+     * @return void
+     */
+    function updateDataDicts()
     {
         $specimenMetaData  = $this->specimenController->getOptions();
         $containerMetaData = $this->containerController->getOptions();
@@ -91,7 +116,12 @@ class CouchDBSpecimenImporter
         );
     }
 
-    function UpdateCandidateDocs()
+    /**
+     * Update the docs on the CouchDB server
+     *
+     * @return void
+     */
+    function updateCandidateDocs()
     {
         //        $specimens = $this->specimenController->getInstances();
         //        $containers = $this->containerController->getInstances();
@@ -104,7 +134,21 @@ class CouchDBSpecimenImporter
                st.Label as SpecimenType,
                cs.Label as Status,
                COUNT(c.Barcode) as count,
-               GROUP_CONCAT(CONCAT(c.Barcode,' [',s.Quantity,'(',u.Label,')',' @ ',psc.Name,'/',p.Name,']')) as list
+               GROUP_CONCAT(
+                CONCAT(
+                    c.Barcode,
+                    ' [',
+                    s.Quantity,
+                    '(',
+                    u.Label,
+                    ')',
+                    ' @ ',
+                    psc.Name,
+                    '/',
+                    p.Name,
+                    ']'
+                 )
+               ) as list
         FROM biobank_specimen s 
             JOIN biobank_specimen_type st USING(SpecimenTypeID)
             JOIN biobank_unit u USING(UnitID)
@@ -127,8 +171,12 @@ class CouchDBSpecimenImporter
 
             $derivedData[$id]["PSCID"]       = $row["PSCID"];
             $derivedData[$id]["Visit_label"] = $row["Visit_label"];
-            $derivedData[$id][$typeLabelClean."_".$statusLabelClean."_count"] = $row["count"];
-            $derivedData[$id][$typeLabelClean."_".$statusLabelClean."_list"]  = $row["list"];
+
+            $derivedData[$id][$typeLabelClean."_".$statusLabelClean."_count"]
+                = $row["count"];
+
+            $derivedData[$id][$typeLabelClean."_".$statusLabelClean."_list"]
+                = $row["list"];
 
             $derivedData[$id][$typeLabelClean."_total"] += $row["count"];
         }
