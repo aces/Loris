@@ -305,9 +305,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
                          Z as z,
                          ZNumerical as zNum
                   FROM biobank_container_dimension";
-        $dimensions = $this->db->pselectWithIndexKey($query, [], 'id');
-
-        return $dimensions;
+        return $this->db->pselectWithIndexKey($query, [], 'id');
     }
 
     /**
