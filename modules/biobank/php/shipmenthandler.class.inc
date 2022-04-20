@@ -29,10 +29,12 @@ namespace LORIS\biobank;
  */
 class ShipmentHandler
 {
+    private array $errors;
+
     /**
      * Private instances of the Database, User and ContainerDAO classes
      *
-     * @var \Shipment   $shipment
+     * @var Shipment   $shipment
      * @var \Database   $db
      * @var \User       $user
      * @var ShipmentDAO $dao
@@ -40,14 +42,14 @@ class ShipmentHandler
     private $shipment;
     private $db;
     private $user;
-    private $dao;
+    private ShipmentDAO $dao;
 
     /**
      * Shipment Handler Class constructor
      *
-     * @param array    $data An array of data to initialize the instance with
-     * @param Database $db   Database Instance.
-     * @param User     $user User Instance.
+     * @param array     $data An array of data to initialize the instance with
+     * @param \Database $db   Database Instance.
+     * @param \User     $user User Instance.
      */
     function __construct(array $data, \Database $db, \User $user)
     {
@@ -103,11 +105,9 @@ class ShipmentHandler
     /**
      * Checks User Permissions for creating or updating Shipment Objects.
      *
-     * @param string $method User requested action
-     *
      * @return void
      */
-    private function _validatePermission(string $method) : void
+    private function _validatePermission() : void
     {
         // switch($method) {
         // case 'view':
@@ -253,15 +253,15 @@ class ShipmentHandler
         $field = 'containerIds';
 
         // Check that there is atleast one container in the shipment.
-        if (empty($shipment->containerIds)) {
+        $containerIds = $shipment->containerIds;
+        if (empty($containerIds)) {
             $errors[$field] = 'Atleast 1 container must be selected.';
             return $errors;
         }
-
         $containerDAO = new ContainerDAO($this->db);
-        $container1   = $containerDAO->getInstanceFromId(
-            (int) $shipment->containerIds[0]
-        );
+        //$container1   = $containerDAO->getInstanceFromId(
+        //    (int) $containerIds[0]
+        //);
 
         foreach ($shipment->containerIds as $containerId) {
             $container = $containerDAO->getInstanceFromId(
