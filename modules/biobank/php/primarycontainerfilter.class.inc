@@ -60,6 +60,8 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
         $db           = \Database::singleton();
         $containerDAO = new ContainerDAO($db);
         $containerTypes = $containerDAO->getContainerTypes();
-        return $containerTypes[$container->getTypeId()]['primary'] === $this->primary;
+
+        $types = $containerTypes[$container->getTypeId()];
+        return $types['primary'] === $this->primary;
     }
 }
