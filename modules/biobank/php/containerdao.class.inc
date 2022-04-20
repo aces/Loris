@@ -678,7 +678,7 @@ class ContainerDAO extends \LORIS\Data\ProvisionerInstance
         array $data,
         ?array $childContainerIds,
         ?array $projectIds,
-        ?array $shipmentBarcodes,
+        ?array $shipmentBarcodes
     ) : Container {
         $container = $this->getInstance();
 

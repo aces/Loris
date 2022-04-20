@@ -223,7 +223,7 @@ class ShipmentHandler
      */
     private function _validateDestinationCenterId(
         Shipment $shipment,
-        array $errors,
+        array $errors
     ) : array {
         $error = '';
         if (empty($shipment->destinationCenterId)) {

@@ -620,7 +620,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      */
     private function _getInstanceFromSQL(
         array $data,
-        array $parentSpecimenIds,
+        array $parentSpecimenIds
     ) : Specimen {
         $specimen = new Specimen();
         if (isset($data['SpecimenID'])) {
