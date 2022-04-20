@@ -30,6 +30,10 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Shipments implements RequestHandlerInterface
 {
+
+    private \Database $db;
+    private \User $user;
+
     /**
      * Returns true if user has acces to this Endpoint.
      *
@@ -87,8 +91,6 @@ class Shipments implements RequestHandlerInterface
         $this->db   = \Database::singleton();
         $this->user = $request->getAttribute('user');
 
-        $pathparts = $request->getAttribute('pathparts');
-
         // TODO: This entire thing NEEDS to have a try block wrapped around it!
         try {
             $this->db->beginTransaction();
@@ -113,11 +115,9 @@ class Shipments implements RequestHandlerInterface
     /**
      * Handle the logic of an incoming HTTP GET request
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         // TODO: This needs to be checked but should probably go somewhere else...
         // if (!$this->user->hasPermission('biobank_shipment_view')) {
@@ -132,7 +132,7 @@ class Shipments implements RequestHandlerInterface
         foreach ($shipmentIterator as $barcode=>$shipment) {
             $shipments[$barcode] = $shipment;
         }
-        return new \LORIS\Http\Response\OK($shipments);
+        return new \LORIS\Http\Response\JSON\OK($shipments);
     }
 
     /**
@@ -169,7 +169,7 @@ class Shipments implements RequestHandlerInterface
     /**
      * Logic to handle an incoming HTTP PUT request
      *
-     * @param SeverRequestInterface $request the PSR7 request
+     * @param ServerRequestInterface $request the PSR7 request
      *
      * @return ResponseInterface
      */
