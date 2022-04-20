@@ -89,23 +89,23 @@ class OptionsEndpoint implements RequestHandlerInterface
             switch($request->getMethod()) {
             case 'GET':
                 $options = $this->getOptions($db, $user);
-                return new \LORIS\Http\Response\OK($options);
+                return new \LORIS\Http\Response\JSON\OK($options);
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
                     ->withHeader('Allow', $this->allowedMethods());
             }
         } catch (\Invalid $e) {
-            return new \LORIS\Http\Response\BadRequest($e->getMessage());
-        } catch (\Forbidden $e) {
-            return new \LORIS\Http\Response\Forbidden($e->getMessage());
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
+        } catch (Forbidden $e) {
+            return new \LORIS\Http\Response\JSON\Forbidden($e->getMessage());
         }
     }
 
     /**
      * Retrieves all options for populating forms and mapping front-end data.
      *
-     * @param Database $db   Database instance
-     * @param User     $user User instance
+     * @param \Database $db   Database instance
+     * @param \User     $user User instance
      *
      * @return array All options required by the Biobank Module
      */
@@ -181,13 +181,14 @@ class OptionsEndpoint implements RequestHandlerInterface
         $candidateSessions = [];
         $sessionCenters    = [];
         foreach ($result as $row) {
-            foreach ($row as $column=>$value) {
-                $ses =& $candidateSessions[$row['candidateId']][$row['sessionId']];
+            if (!isset($candidateSessions[$row['candidateId']][$row['sessionId']])) {
+                    $candidateSessions[$row['candidateId']][$row['sessionId']] = [];
+            };
+            $ses =& $candidateSessions[$row['candidateId']][$row['sessionId']];
 
-                $ses['label'] = $row['label'];
+            $ses['label'] = $row['label'];
 
-                $sessionCenters[$row['sessionId']]['centerId'] = $row['centerId'];
-            }
+            $sessionCenters[$row['sessionId']]['centerId'] = $row['centerId'];
         }
 
         $shipment = [
