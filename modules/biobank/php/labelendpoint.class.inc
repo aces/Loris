@@ -43,9 +43,9 @@ class LabelEndpoint implements RequestHandlerInterface
     }
 
     /**
-     * Methods allowed
+     * Return HTTP methods allowed at this endpoint
      *
-     * @return which methods are supported by this endpoint.
+     * @return string[]
      */
     protected function allowedMethods() : array
     {
@@ -101,9 +101,9 @@ class LabelEndpoint implements RequestHandlerInterface
                 $fp      = fopen($path, 'w');
                 fwrite($fp, $zpl);
                 fclose($fp);
-                $output = shell_exec('lp -d ZDesigner -o raw '.$path);
+                shell_exec('lp -d ZDesigner -o raw '.escapeshellarg($path));
             }
-            return new \LORIS\Http\Response\OK();
+            return new \LORIS\Http\Response\JSON\OK();
         }
     }
 }
