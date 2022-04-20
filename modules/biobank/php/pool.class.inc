@@ -36,7 +36,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * These properties describe a pool entity.
      *
-     * @var string    $id
+     * @var ?int      $id
      * @var string    $label
      * @var float     $quantity
      * @var int       $unitId
@@ -256,7 +256,7 @@ class Pool implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Sets the Center ID of the pool
      *
-     * @param array $centerId Center ID of the pool
+     * @param int $centerId Center ID of the pool
      *
      * @return void
      */
