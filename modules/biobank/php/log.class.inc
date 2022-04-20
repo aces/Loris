@@ -74,9 +74,9 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the shipment's ID
      *
-     * @return ?int
+     * @return ?string
      */
-    public function getBarcode() : ?int
+    public function getBarcode() : ?string
     {
         return $this->barcode;
     }
@@ -124,7 +124,7 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Get the date (without time) for this log
      *
-     * @return ?DateTime
+     * @return ?\DateTime
      */
     public function getDate() : ?\DateTime
     {
