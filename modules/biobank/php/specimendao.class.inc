@@ -41,7 +41,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     /**
      * Initializes a new instance of the SpecimenDAO Class
      *
-     * @param Database $db Instance of the LORIS Database class
+     * @param \Database $db Instance of the LORIS Database class
      */
     function __construct(\Database $db)
     {
@@ -85,7 +85,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      * attribute values passed by $conditions and will return an array
      * of specimen objects.
      *
-     * @param array  $conditions Conditions to be met by the query
+     * @param ?array $conditions Conditions to be met by the query
      * @param string $operator   Operator to link the conditions. "AND" or "OR".
      *
      * @return array $specimens List of Specimen Objects that match the query
@@ -184,7 +184,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
      * Instantiates an ArrayIterator class that is composed of all the Specimen
      * Objects.
      *
-     * @return traversable Iterator of Specimen Objects
+     * @return \Traversable Iterator of Specimen Objects
      */
     protected function getAllInstances() : \Traversable
     {
@@ -324,9 +324,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $result    = $this->db->pselect($query, []);
         $typeUnits = [];
         foreach ($result as $row) {
-            foreach ($row as $value) {
-                $typeUnits[$row['typeId']][$row['unitId']]['label'] = $row['label'];
-            }
+            $typeUnits[$row['typeId']][$row['unitId']]['label'] = $row['label'];
         }
 
         return $typeUnits;
@@ -379,14 +377,15 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $result = $this->db->pselect($query, []);
         $pA     = []; //protocolAttributes
         foreach ($result as $row) {
-            foreach ($row as $value) {
-                $attrib &= $pA[$row['protocolId']][$row['attributeId']];
-
-                $attrib['label']           = $row['label'];
-                $attrib['datatypeId']      = $row['datatypeId'];
-                $attrib['required']        = (int) $row['required'];
-                $attrib['showInDataTable'] = (int) $row['showInDataTable'];
+            if (!isset($pA[$row['protocolId']][$row['attributeId']])) {
+                $pA[$row['protocolId']][$row['attributeId']] = [];
             }
+            $attrib =& $pA[$row['protocolId']][$row['attributeId']];
+
+            $attrib['label']           = $row['label'];
+            $attrib['datatypeId']      = $row['datatypeId'];
+            $attrib['required']        = (int) $row['required'];
+            $attrib['showInDataTable'] = (int) $row['showInDataTable'];
         }
 
         return $pA;
@@ -419,7 +418,10 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         $pA     = []; //processAttributes
         foreach ($result as $row) {
             if ($row['showInDataTable']) {
-                $attrib =& $pA[$row['processId']][$row['attributeId']];
+                if (!isset($pA[$row['processId']][$row['attributeId']])) {
+                    $pA[$row['processId']][$row['attributeId']] = [];
+                }
+                $attrib =& $pA[$row['processId']][$row['attributeId']] ?? [];
                 $attrib['protocolIds'][] = $row['protocolId'];
             }
         }
@@ -598,7 +600,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                 json_encode($analysis->getData()) : null;
         }
 
-        return $data = [
+        return [
             'biobank_specimen'             => $specimenData,
             'biobank_specimen_freezethaw'  => $freezeThawData,
             'biobank_specimen_collection'  => $collectionData,
@@ -645,7 +647,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
         if (!empty($parentSpecimenIds)) {
             $specimen->setParentSpecimenIds($parentSpecimenIds);
         } else {
-            $specimen->setParentSpecimenIds(null);
+            $specimen->setParentSpecimenIds([]);
         }
 
         if (isset($data['CandidateID'])) {
