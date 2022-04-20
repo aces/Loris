@@ -50,8 +50,9 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
     /**
      * Implements the \LORIS\Data\Filter interface
      *
-     * @param User      $user      The user that the data is being filtered for.
-     * @param Container $container The container being filtered.
+     * @param \User                    $user      The user that the data is
+     *                                            being filtered for.
+     * @param \Loris\Data\DataInstance $container The container being filtered.
      *
      * @return bool true if the container is of type primary.
      */
@@ -59,9 +60,14 @@ class PrimaryContainerFilter implements \LORIS\Data\Filter
     {
         $db           = \Database::singleton();
         $containerDAO = new ContainerDAO($db);
-        $containerTypes = $containerDAO->getContainerTypes();
+        $containerTypes = $containerDAO->getTypes();
 
-        $types = $containerTypes[$container->getTypeId()];
+        assert($container instanceof Container);
+        $typeId = $container->getTypeId();
+        if($typeId === null) {
+            return false;
+        }
+        $types = $containerTypes[$typeId];
         return $types['primary'] === $this->primary;
     }
 }
