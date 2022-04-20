@@ -38,9 +38,9 @@ class Analysis extends Process
      *
      * @param array $data Data to be used to instantiate the Analysis Object.
      *
-     * @return Process
+     * @return Analysis
      */
-    public function fromArray(array $data) : Process
+    public function fromArray(array $data) : Analysis
     {
         parent::fromArray($data);
 

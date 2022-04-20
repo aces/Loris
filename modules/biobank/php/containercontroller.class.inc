@@ -45,10 +45,10 @@ class ContainerController
      */
     private $db;
     private $user;
-    public $dao;        // This should be made private but is being used by the
-                        // specimen controller. A new function should be made in
-                        // the container controller to request containers based
-                        // on parameter values.
+    public ContainerDAO $dao;        // This should be made private but is being
+                        // used by the specimen controller. A new function should
+                        // be made in the container controller to request
+                        // containers based on parameter values.
 
     /**
      * Class Constructor
@@ -153,9 +153,9 @@ class ContainerController
      * Treats the Container DAO as a Provisioner that can be iterated through
      * to provide the permissable Container Objects for the current User.
      *
-     * @return \LORIS\Data\Provisioner
+     * @return ContainerDAO
      */
-    private function _getDataProvisioner() : \LORIS\Data\Provisioner
+    private function _getDataProvisioner() : ContainerDAO
     {
         $dao = new ContainerDAO($this->db);
         if ($this->user->hasPermission('access_all_profiles') === false) {

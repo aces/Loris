@@ -90,7 +90,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the specimen's ID
      *
-     * @return int
+     * @return ?int
      */
     public function getId() : ?int
     {
@@ -114,7 +114,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the ID of the specimen's container
      *
-     * @return int
+     * @return ?int
      */
     public function getContainerId() : ?int
     {
@@ -208,7 +208,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the specimen's current Freeze-Thaw cycle
      *
-     * @return int
+     * @return ?int
      */
     public function getFTCycle() : ?int
     {
@@ -230,7 +230,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the parent specimen's ID
      *
-     * @return array
+     * @return ?array
      */
     public function getParentSpecimenIds() : ?array
     {
@@ -328,7 +328,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Gets the ID of the specimen's pool group.
      *
-     * @return int
+     * @return ?int
      */
     public function getPoolId() : ?int
     {
@@ -409,7 +409,7 @@ class Specimen implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Return Center ID of affiliated specimen container.
      *
-     * @return int
+     * @return ?int
      */
     public function getCenterId()
     {
