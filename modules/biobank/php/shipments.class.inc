@@ -110,6 +110,13 @@ class Shipments implements RequestHandlerInterface
         }
     }
 
+    /**
+     * Handle the logic of an incoming HTTP GET request
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         // TODO: This needs to be checked but should probably go somewhere else...
@@ -128,31 +135,66 @@ class Shipments implements RequestHandlerInterface
         return new \LORIS\Http\Response\OK($shipments);
     }
 
+    /**
+     * Handle the logic of an incoming HTTP POST request
+     *
+     * @param ServerRequestInterface $request The PSR7 request
+     *
+     * @return ResponseInterface
+     */
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         $shipmentArray   = json_decode($request->getBody()->getContents(), true);
-        $shipmentHandler = new ShipmentHandler($shipmentArray, $this->db, $this->user);
+        $shipmentHandler = new ShipmentHandler(
+            $shipmentArray,
+            $this->db,
+            $this->user,
+        );
 
         // TODO: A lot of what the handler does should ACTUALLY be done here.
         // Handlers should not know how operate multiple shipments, only 1 each!
         if (!$shipmentHandler->isValid()) {
-            return new \LORIS\Http\Response\JsonResponse($shipmentHandler->getErrors(), 422);
+            return new \LORIS\Http\Response\JsonResponse(
+                $shipmentHandler->getErrors(),
+                422
+            );
         }
 
-        return new \LORIS\Http\Response\JsonResponse($shipmentHandler->createInstance(), 200);
+        return new \LORIS\Http\Response\JsonResponse(
+            $shipmentHandler->createInstance(),
+            200
+        );
     }
 
-    private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
-    {
+    /**
+     * Logic to handle an incoming HTTP PUT request
+     *
+     * @param SeverRequestInterface $request the PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handlePUT(
+        ServerRequestInterface $request
+    ) : ResponseInterface {
         $shipmentArray   = json_decode($request->getBody()->getContents(), true);
-        $shipmentHandler = new ShipmentHandler($shipmentArray, $this->db, $this->user);
+        $shipmentHandler = new ShipmentHandler(
+            $shipmentArray,
+            $this->db,
+            $this->user,
+        );
 
         // TODO: A lot of what the handler does should ACTUALLY be done here.
         // Handlers should not know how operate multiple shipments, only 1 each!
         if (!$shipmentHandler->isValid()) {
-            return new \LORIS\Http\Response\JsonResponse($shipmentHandler->getErrors(), 422);
+            return new \LORIS\Http\Response\JsonResponse(
+                $shipmentHandler->getErrors(),
+                422,
+            );
         }
 
-        return new \LORIS\Http\Response\JsonResponse($shipmentHandler->createInstance(), 200);
+        return new \LORIS\Http\Response\JsonResponse(
+            $shipmentHandler->createInstance(),
+            200,
+        );
     }
 }
