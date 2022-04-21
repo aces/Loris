@@ -8,7 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 24.0 (Release Date: ??)
+## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
@@ -75,7 +75,10 @@ scanner candidates. This prevents an error from being thrown in the candidate pa
 - Download CSV fix to remove duplicates and entries that partially match the filtering criteria (PR #7242)
 - Partially fix instrument escaping issues by reloading instrument and its data upon successful save (PR #7776)
 - Fix recognition of null sessionID in NDB_BVL_Instrument (PR #8031)
-
+- Fix delete_candidate.php / delete_timepoint.php failing because of json instruments / instruments with different table name than test_name (PR #8070)
+- Fix bug where server_processes_manager had a timeout (PR #8071)
+- Candidate profile page loads with only the visits listed that a user has access to 
+if a candidate has some visits that the user should not see. Fixes error where page was not loading for this use case (PR #8072)
 
 ### Modules
 #### API
