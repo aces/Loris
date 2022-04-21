@@ -35,7 +35,10 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
-        $this->assertStringContainsString("Candidate Dashboard 900000 / TST0001", $bodyText);
+        $this->assertStringContainsString(
+            "Candidate Dashboard 900000 / TST0001",
+            $bodyText
+        );
     }
 
     /**
@@ -87,13 +90,20 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateProfileInstrumentLink1()
     {
         $this->safeGet($this->url . "/candidate_profile/900000/");
-        $this->safeFindElement(WebDriverBy::cssSelector("#card2 > div:nth-child(1) >".
-              "div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)".
-              " > div:nth-child(2) > h4:nth-child(1) > a:nth-child(1)"))->click();
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#card2 > div:nth-child(1) >".
+                "div:nth-child(1)>div:nth-child(1)>div:nth-child(1)>div:nth-".
+                "child(1)> div:nth-child(2) > h4:nth-child(1) > a:nth-child(1)"
+            )
+        )->click();
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringContainsString("Behavioural Battery of Instruments", $bodyText);
+        $this->assertStringContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
+        );
     }
     /**
      * Test that the page instrument link works on card 1 section
@@ -103,12 +113,19 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateProfileInstrumentLink2()
     {
         $this->safeGet($this->url . "/candidate_profile/900000/");
-        $this->safeFindElement(WebDriverBy::cssSelector("#card0 > div:nth-child(1) >".
-           "div:nth-child(1) > div:nth-child(1) > dl:nth-child(1) > div:nth-child(9) >".
-           "dd:nth-child(2) > div:nth-child(1) > a:nth-child(1)"))->click();
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#card0 > div:nth-child(1) >".
+                "div:nth-child(1)>div:nth-child(1)>dl:nth-child(1)>div:nth-".
+                "child(9)>dd:nth-child(2) > div:nth-child(1) > a:nth-child(1)"
+            )
+        )->click();
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertStringContainsString("Behavioural Battery of Instruments", $bodyText);
+        $this->assertStringContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
+        );
     }
 }
