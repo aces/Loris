@@ -63,7 +63,7 @@ class Token extends Endpoint
     private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         $user  = $request->getAttribute('user');
-        $token = $this->_getEncodedToken($user);
+        $token = $this->_getEncodedToken($user->getUsername());
         return new \LORIS\Http\Response\JsonResponse(
             [
                 'token' => $token
