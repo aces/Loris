@@ -72,6 +72,27 @@
         </div>
     </div>
     <br><br>
+    <div class="row">
+    <script>
+      function getToken() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+          document.getElementById("token-placeholder").innerHTML =
+          JSON.parse(this.responseText)['token'] || 'Unable to generated token.';
+        }
+        xhttp.open("GET", "/my_preferences/token");
+        xhttp.send();
+      }
+    </script>
+    <h3>API token</h3>
+    <div class="col-sm-12">
+    <div class="col-sm-6">
+    <p style="word-wrap: break-word;" id="token-placeholder"></p>
+    </div>
+    </div>
+    <button type="button" onclick="getToken()">Generate new token</button>
+    <br><br>
+    <div>
     <h3>Notifications</h3>
     <table class="table table-instrument" >
         <thead>
