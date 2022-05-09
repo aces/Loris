@@ -146,6 +146,7 @@ class ElectrophysiologySessionView extends Component {
           epochsURL: null,
           electrodesURL: null,
           // ##################### EEGNET OVERRIDE START ################## //
+          events: null,
           annotations: null,
           // ##################### EEGNET OVERRIDE END ################## //
           splitData: null,
@@ -223,6 +224,9 @@ class ElectrophysiologySessionView extends Component {
                       + group.links[1].file
               ),
             // ##################### EEGNET OVERRIDE START ################## //
+            events:
+              dbEntry
+              && dbEntry.file.events,
             annotations:
                 dbEntry
                 && dbEntry.file.annotations,
@@ -326,6 +330,7 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs,
           epochsURL,
           // ##################### EEGNET OVERRIDE START ################## //
+          events,
           annotations,
           // ##################### EEGNET OVERRIDE END ################## //
           electrodesURL,
@@ -358,6 +363,7 @@ class ElectrophysiologySessionView extends Component {
                   }
                   epochsURL={epochsURL}
                   // ##################### EEGNET OVERRIDE START ################## //
+                  events={events}
                   annotations={annotations}
                   // ##################### EEGNET OVERRIDE END ################## //
                   electrodesURL={electrodesURL}

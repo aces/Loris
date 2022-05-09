@@ -18,7 +18,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
-
+use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
@@ -476,6 +476,13 @@ class Sessions extends \NDB_Page
             intval($physioFileID)
         );
         $fileSummary['annotations'] = $annotations->getData();
+
+        // Get the task events data
+        $events = new ElectrophysioEvents(
+            intval($physioFileID)
+        );
+        $fileSummary['events'] = $events->getData();
+        
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath 
             FROM physiological_event_file

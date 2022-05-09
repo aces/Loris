@@ -29,6 +29,7 @@ export type Epoch = {
   type: 'Event' | 'Annotation',
   label: string,
   comment?: string,
+  hed?: string,
   channels: number[] | "all",
   // ##################### EEGNET OVERRIDE START ################## //
   annotationInstanceID?: number,
@@ -36,6 +37,10 @@ export type Epoch = {
 };
 
 // ##################### EEGNET OVERRIDE START ################## //
+export type EventMetadata = {
+  instances: any[],
+}
+
 export type AnnotationMetadata = {
   instances: any[],
   labels: any[],

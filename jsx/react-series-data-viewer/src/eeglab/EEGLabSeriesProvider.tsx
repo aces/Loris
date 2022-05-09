@@ -18,7 +18,7 @@ import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {Channel} from '../series/store/types';
 // ##################### EEGNET OVERRIDE START ################## //
-import {AnnotationMetadata} from '../series/store/types';
+import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 // ##################### EEGNET OVERRIDE END ################## //
 
 declare global {
@@ -32,6 +32,7 @@ type CProps = {
   epochsURL: string,
   electrodesURL: string,
   // ##################### EEGNET OVERRIDE START ################## //
+  events: EventMetadata,
   annotations: AnnotationMetadata,
   // ##################### EEGNET OVERRIDE END ################## //
   limit: number,
@@ -74,6 +75,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
       epochsURL,
       electrodesURL,
       // ##################### EEGNET OVERRIDE START ################## //
+      events,
       annotations,
       // ##################### EEGNET OVERRIDE END ################## //
       limit,
@@ -117,7 +119,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
       }
     )
   // ##################### EEGNET OVERRIDE START ################## //
-      .then(() => Promise.race(racers(fetchText, epochsURL))
+      /*.then(() => Promise.race(racers(fetchText, epochsURL))
       .then((text) => {
         if (!(typeof text.json === 'string'
           || text.json instanceof String)) return;
@@ -136,6 +138,25 @@ class EEGLabSeriesProvider extends Component<CProps> {
               annotationInstanceID: null,
             }
           });
+      })*/
+      .then(() => {
+        return events.instances.map(instance => {
+          const onset = parseFloat(instance.Onset);
+          const duration = parseFloat(instance.Duration);
+          const label = instance.TrialType && instance.TrialType !== 'n/a' ?
+            instance.TrialType : instance.EventValue;
+          const hed = instance.AssembledHED;
+          return {
+            onset: onset,
+            duration: duration,
+            type: 'Event',
+            label: label,
+            comment: null,
+            hed: hed,
+            channels: 'all',
+            annotationInstanceID: null,
+          }
+        });
       }).then(events => {
         let epochs = events;
         annotations.instances.map(instance => {
@@ -149,6 +170,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             type: 'Annotation',
             label: label,
             comment: instance.Description,
+            hed: null,
             channels: 'all',
             annotationInstanceID: instance.AnnotationInstanceID,
           });
@@ -167,7 +189,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   // ##################### EEGNET OVERRIDE END ################## //
         this.store.dispatch(updateFilteredEpochs());
       })
-    );
+    ;
 
     Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {

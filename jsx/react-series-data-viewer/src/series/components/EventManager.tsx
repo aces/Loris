@@ -47,6 +47,7 @@ const EventManager = ({
   const [activeEpochs, setActiveEpochs] = useState([]);
   const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
   const [visibleComments, setVisibleComments] = useState([]);
+  const [allCommentsVisible, setAllCommentsVisible] = useState(false);
 
   useEffect(() => {
     // Reset: turn all epochs on / off regardless of independent toggle state
@@ -65,6 +66,21 @@ const EventManager = ({
       });
     }
   }, [allEpochsVisible]);
+
+  useEffect(() => {
+    // Toggle comment section if in range and has a comment / tag
+    if (!allCommentsVisible) {
+      setVisibleComments([]);
+    } else {
+      const commentIndexes = [...Array(epochs.length).keys()].filter((index) =>
+        epochs[index].onset + epochs[index].duration > interval[0]
+        && epochs[index].onset < interval[1]
+        && epochs[index].type === epochType
+        && (epochs[index].hed || epochs[index].comment)
+      ).map((index) => index);
+      setVisibleComments([...commentIndexes]);
+    }
+  }, [allCommentsVisible]);
 
   useEffect(() => {
     setEpochType((rightPanel
@@ -97,6 +113,11 @@ const EventManager = ({
             }
             style={{padding: '0.5em'}}
             onClick={() => setAllEpochsVisibility(!allEpochsVisible)}
+          ></i>
+          <i
+            className={'glyphicon glyphicon-tags'}
+            style={{ padding: '0.5em' }}
+            onClick={() => setAllCommentsVisible(!allCommentsVisible)}
           ></i>
           <i
             className='glyphicon glyphicon-remove'
@@ -191,25 +212,25 @@ const EventManager = ({
                         + (visible ? 'open' : 'close')
                       }></i>
                     </button>
-                    {epoch.type === 'Annotation' && epoch.comment &&
+                    {(epoch.comment || epoch.hed) &&
                       <button
                         type="button"
                         className={'btn btn-xs btn-primary'}
                         onClick={() => handleCommentVisibilityChange()}
                       >
-                        <i className={
-                          'glyphicon glyphicon-chevron-'
-                          + (visibleComments.includes(index) ? 'up' : 'down')
-                        }></i>
+                        <i className={'glyphicon glyphicon-tags'}></i>
                       </button>
                     }
                   </div>
                 </div>
-                {visibleComments.includes(index) && epoch.comment &&
-                  <div
-                    className='list-group-item list-group-item-action'
-                  >
-                    <strong>Comment:</strong>  {epoch.comment}
+                {visibleComments.includes(index) &&
+                  <div className="epoch-tag">
+                    {epoch.type == 'Annotation' && epoch.comment &&
+                      <p><strong>Comment: </strong>{epoch.comment}</p>
+                    }
+                    {epoch.type == 'Event' && epoch.hed &&
+                      <p><strong>HED: </strong>{epoch.hed}</p>
+                    }
                   </div>
                 }
               </>
