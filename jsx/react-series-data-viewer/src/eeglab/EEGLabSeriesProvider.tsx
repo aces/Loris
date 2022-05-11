@@ -119,26 +119,6 @@ class EEGLabSeriesProvider extends Component<CProps> {
       }
     )
   // ##################### EEGNET OVERRIDE START ################## //
-      /*.then(() => Promise.race(racers(fetchText, epochsURL))
-      .then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
-        return tsvParse(text.json)
-          .map((eventRow, i) => {
-            // --- Fix related to Brock face-13 data
-            const label = (eventRow.trial_type === 'n/a' && 'sample' in eventRow) ?
-              eventRow.sample : eventRow.trial_type;
-            return {
-              onset: parseFloat(eventRow.onset),
-              duration: parseFloat(eventRow.duration),
-              type: 'Event',
-              label: label,
-              comment: null,
-              channels: 'all',
-              annotationInstanceID: null,
-            }
-          });
-      })*/
       .then(() => {
         return events.instances.map(instance => {
           const onset = parseFloat(instance.Onset);
