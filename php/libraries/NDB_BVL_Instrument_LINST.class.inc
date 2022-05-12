@@ -346,7 +346,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     //Check if element part of a group
-                    $errors[$elname] = "Required.";
+                    $errorElement = $this->GroupElements[$elname] ?? $elname;
+                    $errors[$errorElement] = "$elname is required.";
                     if ($this->XINDebug) {
                         echo "Required by default";
                     }
