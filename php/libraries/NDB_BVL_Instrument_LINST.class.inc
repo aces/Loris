@@ -563,7 +563,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'endgroup':
                     if ($addElements) {
                         $groupLabel = isset($pieces[2]) ? trim($pieces[2]) : null;
-                        $indicesForRules = $Group['numericFieldIndex'];
+                        $indicesForRules = $Group['numericFieldIndex'] ?? [];
                         unset($Group['numericFieldIndex']);
                         $this->addGroup(
                             $Group['Elements'],
@@ -576,7 +576,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         foreach ($indicesForRules as $indexForRule) {
                             $this->addGroupRule(
                                 $Group['Name'],
-                                [$indexForRule => [["One of the values in this row was expected to be numeric but is not.", 'numeric']]]
+                                [$indexForRule => [["The value for ".$Group['Elements'][$indexForRule]['name']." row was expected to be numeric.", 'numeric']]]
                             );
                         }
                         $Group['Name']     = null;
@@ -730,7 +730,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         if ($Group['Name'] != null) {
                             $indexForRule = count($Group['Elements']);
-                            $Group['Elements'][$indexForRule] = $this->createNumericElement($pieces[1], $pieces[2]);
+                            $Group['Elements'][$indexForRule] = $this->createText($pieces[1], $pieces[2]);
                             $Group['numericFieldIndex'][] = $indexForRule;
                         } else {
                             $this->addNumericElement($pieces[1], $pieces[2]);
@@ -1170,26 +1170,5 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function getSubtestList(): array
     {
         return $this->subtests;
-    }
-
-    /**
-     * Wrapper to create a field that only accepts a number, with an
-     * accompanying status field.
-     *
-     * @param string $field The database field in which the response
-     *                      will be stored
-     * @param string $label The question text to display
-     *
-     * @return void
-     */
-    function createNumericElement(
-        string $field,
-        string $label
-    )  {
-        $attr = ['class' => 'form-control input-sm'];
-        $numField = $this->form->createElement("numeric", $field, $label, [], $attr);
-        $this->WrapperNumericElements[$field] = $numField;
-
-        return $numField;
     }
 }

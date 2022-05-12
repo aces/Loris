@@ -1985,10 +1985,6 @@ class LorisForm
         $customs=[]
     ) {
         switch ($type) {
-        case 'numeric':
-            $el = $this->createText($elname, $label, $attribs);
-            $el['numeric'] = true;
-            break;
         case 'text':
             return $this->createText($elname, $label, $attribs);
         case 'select':
