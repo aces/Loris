@@ -41,6 +41,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $fullName;
     protected $dictionary = [];
 
+    // array of the format "field_name" => "group_name"
+    protected $GroupElements = [];
+
     /**
      * Sets up the variables required for a LINST instrument to load
      *
@@ -245,20 +248,24 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$elname]['options']['max']
                 );
 
+                //Check if element is part of a table row, if not element will be
+                //part of its own auto-generate Numeric group
+                $groupName = $this->GroupElements[$elname] ?? $elname. "_group";
+
                 // If the value is empty, XINRules handle required messages.
                 // "0" is empty in PHP. If the user entered 0 we still want to
                 // enforce the min/max.
                 if (!empty($value) || $elements[$elname] === '0') {
                     if (!empty($min)) {
                         if ($value < $min) {
-                            $errors[$elname . "_group"]
-                                = "Must be greater than $min.";
+                            $errors[$groupName ]
+                                = "The value for $elname must be greater than $min.";
                         }
                     }
                     if (!empty($max)) {
                         if ($value > $max) {
-                            $errors[$elname . "_group"]
-                                = "Must be less than $max.";
+                            $errors[$groupName]
+                                = "The value for $elname must be less than $max.";
                         }
                     }
                 }
@@ -338,6 +345,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
+                    //Check if element part of a group
                     $errors[$elname] = "Required.";
                     if ($this->XINDebug) {
                         echo "Required by default";
@@ -579,6 +587,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 [$indexForRule => [["The value for ".$Group['Elements'][$indexForRule]['name']." row was expected to be numeric.", 'numeric']]]
                             );
                         }
+
+                        // Track elements and their groups for XIN errors proper higlighting
+                        foreach ($Group['Elements'] as $element) {
+                            if (isset($element['name'])) {
+                                $this->GroupElements[$element['name']] = $Group['Name'];
+                            }
+                        }
+
                         $Group['Name']     = null;
                         $Group['Elements'] = [];
                     }
@@ -961,7 +977,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $pieces   = explode("{-}", trim($line));
                 $question = $pieces[0];
                 $message  = $pieces[1];
-                $rules    = array_slice($pieces, 2);
+                $rules    = [$pieces[2]];
+                $group    = $pieces[3] ?? $question;
 
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
@@ -989,7 +1006,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $question,
                             $rules,
                             $message,
-                            $question . "_group"
+                            $group . "_group"
                         );
                         break;
                     }
