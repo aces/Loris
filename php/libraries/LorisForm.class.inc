@@ -1270,7 +1270,6 @@ class LorisForm
                     // but don't call setElementError..
                     $errors[$el['name']] = "comparison fail";
                 }
-
                 if (isset($el['numeric'])
                     && $el['numeric'] === true
                     && !is_numeric($value)
@@ -1986,6 +1985,10 @@ class LorisForm
         $customs=[]
     ) {
         switch ($type) {
+        case 'numeric':
+            $el = $this->createText($elname, $label, $attribs);
+            $el['numeric'] = true;
+            break;
         case 'text':
             return $this->createText($elname, $label, $attribs);
         case 'select':
