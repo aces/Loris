@@ -579,6 +579,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
+                        $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
+
                         if ($dateFormat === 'MonthYear') {
                             // Shows date without day of month
                             $this->addMonthYear(
@@ -632,7 +634,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
-                    $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
                     break;
                 case 'numeric':
                     if ($addElements) {
@@ -683,7 +684,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                         $pieces[1],
                                         $pieces[2],
                                         $opt,
-                                        "multiple"
+                                        [ "multiple" => "multiple" ]
                                     );
                             } else {
                                 $Group['Elements'][]
@@ -729,7 +730,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                     if ($addElements) {
                         if ($Group['Name'] != null) {
-                            print "Creating $pieces[1] with label: $pieces[2]";
                             $Group['Elements'][]
                                 = $this->form->createElement(
                                     'static',
