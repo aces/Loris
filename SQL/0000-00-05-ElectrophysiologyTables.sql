@@ -220,6 +220,7 @@ CREATE TABLE `physiological_task_event` (
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
+  `AssembledHED`	     TEXT             DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
   CONSTRAINT `FK_phys_file_FileID_4`
@@ -271,17 +272,6 @@ CREATE TABLE `physiological_event_parameter_category_level` (
     PRIMARY KEY (`CategoricalLevelID`),
     KEY `FK_event_param_ID` (`EventParameterID`),
     CONSTRAINT `FK_event_param_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-;
-
--- Create `physiological_event_assembled_hed_tag` to store assembled HED Tags
-CREATE TABLE `physiological_event_assembled_hed_tag` (
-    `TaskEventID` int(10) unsigned NOT NULL,
-    `EventParameterID` int(10) unsigned NOT NULL,
-    `AssembledHED` text NOT NULL,
-    PRIMARY KEY (`TaskEventID`, `EventParameterID`),
-    CONSTRAINT `FK_task_event_ID` FOREIGN KEY (`TaskEventID`) REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`),
-    CONSTRAINT `FK_event_parameter_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
 

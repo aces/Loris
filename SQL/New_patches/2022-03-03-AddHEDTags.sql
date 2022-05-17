@@ -45,6 +45,11 @@ ALTER TABLE physiological_task_event
     ADD CONSTRAINT `FK_event_file` FOREIGN KEY (`EventFileID`) REFERENCES `physiological_event_file` (`EventFileID`)
 ;
 
+-- Create column for assembled HEd tags in `physiological_task_event` table
+ALTER TABLE physiological_task_event
+    ADD COLUMN `AssembledHED` text DEFAULT NULL
+;
+
 -- Insert files into `physiological_event_file` table
 INSERT INTO physiological_event_file (PhysiologicalFileID, FilePath, FileType)
     SELECT DISTINCT PhysiologicalFileID, FilePath, 'tsv' FROM physiological_task_event
@@ -101,16 +106,3 @@ CREATE TABLE `physiological_event_parameter_category_level` (
     CONSTRAINT `FK_event_param_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
-
-
--- ############################## STORE ASSEMBLED HED TAGS ########################## --
-CREATE TABLE `physiological_event_assembled_hed_tag` (
-    `TaskEventID` int(10) unsigned NOT NULL,
-    `EventParameterID` int(10) unsigned NOT NULL,
-    `AssembledHED` text NOT NULL,
-    PRIMARY KEY (`TaskEventID`, `EventParameterID`),
-    CONSTRAINT `FK_task_event_ID` FOREIGN KEY (`TaskEventID`) REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`),
-    CONSTRAINT `FK_event_parameter_ID` FOREIGN KEY (`EventParameterID`) REFERENCES `physiological_event_parameter` (`EventParameterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-;
-
