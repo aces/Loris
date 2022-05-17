@@ -318,7 +318,15 @@ class MediaUploadForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal.fire('Upload Successful!', '', 'success');
+        swal.fire(
+          'Success!',
+          'Upload of media file completed.',
+          'success'
+        ).then((result) => {
+          if (result.value) {
+            window.location.href = loris.BaseURL + '/media/';
+          }
+        });
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = 'Upload error!';
@@ -348,7 +356,6 @@ class MediaUploadForm extends Component {
       });
       swal.fire(msg, '', 'error');
     }, false);
-
     xhr.open('POST', this.props.action);
     xhr.send(formObject);
   }
