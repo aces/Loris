@@ -935,16 +935,7 @@ class Edit_User extends \NDB_Form
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
 
-        // get the editor's permissions
-        if ($editor->hasPermission('superuser')) {
-            $query = "SELECT p.permID, p.code, p.description, pc.Description as type
-            FROM permissions p
-                LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                ORDER BY p.categoryID, p.description";
-            $perms = $factory->database()->pselect($query, []);
-        } else {
-            $perms = $editor->getPermissionsVerbose($this->lorisinstance);
-        }
+        $perms = $editor->getPermissionsVerbose($this->lorisinstance);
 
         $lastRole = '';
         $group    = [];
