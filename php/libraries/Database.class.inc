@@ -121,9 +121,6 @@ class Database implements LoggerAwareInterface
                 $connections[$connection] = new Database();
                 $connections[$connection]->connect(
                     $database,
-                    $username,
-                    $password,
-                    $host,
                     $trackChanges
                 );
             }
@@ -138,24 +135,20 @@ class Database implements LoggerAwareInterface
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
-     * @param string      $database     the database to select
-     * @param string|null $username     the username with which to log into
-     *                                  the database server
-     * @param string|null $password     the password that matches the username
-     * @param string|null $host         the name of the database server
-     * @param bool        $trackChanges whether to use the trackChanges
-     *                                  mechanism on this connection
+     * @param string $database     the database to select
+     * @param bool   $trackChanges whether to use the trackChanges
+     *                             mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
      */
     function connect(
         string $database,
-        ?string $username,
-        ?string $password,
-        ?string $host,
         bool $trackChanges = true
     ): bool {
+        $username = getenv("LORIS_{$database}_USERNAME");
+        $password = getenv("LORIS_{$database}_PASSWORD");
+        $host     = getenv("LORIS_{$database}_HOST");
 
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
