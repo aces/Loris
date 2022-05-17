@@ -31,7 +31,6 @@ namespace LORIS\issue_tracker;
 class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     private array $allCenterIDs;
-    private $_siteList;
     private \LORIS\LorisInstance $lorisinstance;
 
     /**
@@ -41,10 +40,15 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     function __construct(\LORIS\LorisInstance $loris)
     {
-        $factory         = \NDB_Factory::singleton();
-        $user            = $factory->user();
-        $this->_siteList = array_keys(\Utility::getSiteList(false));
-        $userID          = $user->getUsername();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $this->allCenterIDs = array_map(
+            function ($center) {
+                return $center->getCenterID();
+            },
+            $loris->getAllSites()
+        );
+        $userID = $user->getUsername();
 
         $this->lorisinstance = $loris;
 
