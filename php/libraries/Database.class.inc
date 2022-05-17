@@ -186,7 +186,7 @@ class Database implements LoggerAwareInterface
                 . "and the supplied password."
             );
         }
-        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
@@ -357,8 +357,13 @@ class Database implements LoggerAwareInterface
                 $retVal[$key] = '';
                 continue;
             }
+
             // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+            //
+            // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
+            // earlier versions, since the default flags changed in PHP 8.1.
+            $retVal[$key] = is_string($val)
+                ? htmlspecialchars($val, ENT_COMPAT) : $val;
         }
         return $retVal;
     }
@@ -725,7 +730,20 @@ class Database implements LoggerAwareInterface
             return [];
         }
 
-        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        $rows = array_map(
+            function ($row) {
+                $strrow = [];
+                foreach ($row as $key => $val) {
+                    if ($val === null) {
+                        $strrow[$key] = null;
+                    } else {
+                        $strrow[$key] = strval($val);
+                    }
+                }
+                return $strrow;
+            },
+            $prepared->fetchAll(PDO::FETCH_ASSOC)
+        );
         // The fetchAll function will return an empty set if no results are
         // found and FALSE on "failure". We don't expect this case so an
         // exception is thrown.
@@ -992,7 +1010,10 @@ class Database implements LoggerAwareInterface
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        if ($result === null) {
+            return null;
+        }
+        return strval($result);
     }
 
     /**
@@ -1021,7 +1042,7 @@ class Database implements LoggerAwareInterface
             return null;
         }
 
-        return $result;
+        return intval($result);
     }
 
     /**
@@ -1138,7 +1159,6 @@ class Database implements LoggerAwareInterface
         string $where,
         string $type = 'U'
     ): void {
-
         // Tracking changes on the history table would result in an
         // infinite loop
         if (!$this->_trackChanges || $table == 'history') {
@@ -1521,9 +1541,9 @@ class Database implements LoggerAwareInterface
 
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
-            $error[0],
-            $error[1],
-            $error[2],
+            $error[0] ?? '',
+            $error[1] ?? '',
+            $error[2] ?? '',
         );
     }
 

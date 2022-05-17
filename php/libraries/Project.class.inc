@@ -464,9 +464,9 @@ class Project implements \JsonSerializable
      * any type other than a resource.
      *
      * @see    https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : string
     {
         return $this->_projectName;
     }

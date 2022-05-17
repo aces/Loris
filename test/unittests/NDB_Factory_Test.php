@@ -35,6 +35,7 @@ class NDB_Factory_Test extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        NDB_Config::$configInstance = null;
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->reset();
 

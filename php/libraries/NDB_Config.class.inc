@@ -46,6 +46,7 @@ class NDB_Config
      */
     var $configFilePath;
 
+    static $configInstance = null;
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -55,9 +56,8 @@ class NDB_Config
      */
     static function &singleton(?string $configFile = null): \NDB_Config
     {
-        static $config = null;
+        $config = self::$configInstance;
         if (is_null($config)) {
-
             $config = new NDB_Config();
 
             if ($configFile === null) {
@@ -76,6 +76,7 @@ class NDB_Config
                     $config->load($config->configFilePath($path));
                 }
             }
+            self::$configInstance = $config;
         }
 
         return $config;

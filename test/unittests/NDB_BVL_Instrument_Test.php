@@ -430,6 +430,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             ["value" => "Option"],
             "Rule_message"
         );
+        $this->_instrument->form->setDefaults(['hourMinField' => '0']);
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
