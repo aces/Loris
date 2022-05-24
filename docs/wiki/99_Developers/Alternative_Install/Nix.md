@@ -14,8 +14,8 @@ dependencies installed in the user's path.
 From the LORIS directory, run `nix-shell`.
 
 LORIS's development dependencies will be automatically installed (only available
-in the shell, although you can run `nix-shell` from multiple terminals). The
-the active version of PHP will be printed, as well as a command to start PHP's
+in the shell, although you can run `nix-shell` from multiple terminals).
+The active version of PHP will be printed, as well as a command to start PHP's
 built in development web server. For example:
 
 
