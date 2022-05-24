@@ -44,8 +44,15 @@ function should be replaced by the `TEST_NAME` value.
 quality assurance that is undergoes. Refer to the [Additional Configurations](# Additional Configurations) 
 section below for more information.
 
+The `getDataDictionary()` function must be defined and return an iterable list 
+of dictionary items for each of the instrument fields. Alternatively, the instrument 
+can use the `LorisFormDictionaryImpl` trait to auto-generate the data dictionary for the 
+instrument. (see Template instrument or raisinbread instruments for proper usage 
+of the trait)
+
 Finally, the `getFullName()` function must be changed to reflect the correct 
 full name of the instrument.
+
 
 #### Pages
 
