@@ -65,9 +65,9 @@ If your admin user has been deactivated due to inactivity, you can get past that
    use lorisdb;
    ```
 2.  Make sure the `Active` column in the `users` MySQL table is set to `Y` for this user, if not you can do so with the following command:
-   ```
-   UPDATE users SET active = "Y" WHERE UserID = "lorisadmin";
-   ```
+       ```
+       UPDATE users SET active = "Y" WHERE UserID = "lorisadmin";
+       ```
 3. Run the following command:
    ```
    DELETE FROM user_login_history WHERE UserID='lorisadmin';
