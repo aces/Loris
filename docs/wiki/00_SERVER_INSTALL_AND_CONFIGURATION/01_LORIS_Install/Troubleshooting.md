@@ -58,6 +58,21 @@ Active = 'Y'
 Pending_approval = 'N'
 Password_expiry column value is later than today's date
 ```
+If your admin user has been deactivated due to inactivity, you can get past that using the following steps:
+
+1. Enter `mysql` console with a root user and run the following command:
+   ```
+   use lorisdb;
+   ```
+2.  Make sure the `Active` column in the `users` MySQL table is set to `Y` for this user, if not you can do so with the following command:
+   ```
+   UPDATE users SET active = "Y" WHERE UserID = "lorisadmin";
+   ```
+3. Run the following command:
+   ```
+   DELETE FROM user_login_history WHERE UserID='lorisadmin';
+   ```
+   ***Note:** Using this command will wipe out your account's login history*
 
 You can also reset your admin password with the script [tools/resetpassword.php](https://github.com/aces/Loris/blob/main/tools/resetpassword.php).
 
