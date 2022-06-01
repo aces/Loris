@@ -55,6 +55,7 @@ const AnnotationForm = ({
   let [comment, setComment] = useState(currentAnnotation ? currentAnnotation.comment : '');
   let [isSubmitted, setIsSubmitted] = useState(false);
   let [isDeleted, setIsDeleted] = useState(false);
+  let [annoMessage, setAnnoMessage] = useState('');
   // ##################### EEGNET OVERRIDE END ################## //
 
   // Time Selection
@@ -216,12 +217,10 @@ const AnnotationForm = ({
       handleReset();
       
       // Disaply success message
-      const message = currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!';
-      swal.fire(
-        'Success',
-        message,
-        'success'
-      );
+      setAnnoMessage(currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!');
+      setTimeout(function () {
+        setAnnoMessage('');
+      }, 3000);
 
       // If in edit mode, switch back to annotation panel
       if (currentAnnotation !== null) {
@@ -386,6 +385,13 @@ const AnnotationForm = ({
               Delete
             </button>
           }
+          {annoMessage ? (
+            <div className="alert alert-success text-center" role="alert">
+              {annoMessage}
+            </div>
+          ):(
+            <div className="alert text-center hide" role="alert"></div>
+          )}
         </div>
       </div>
     </div>
