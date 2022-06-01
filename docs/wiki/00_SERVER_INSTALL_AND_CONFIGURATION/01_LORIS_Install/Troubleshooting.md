@@ -60,10 +60,7 @@ Password_expiry column value is later than today's date
 ```
 If your admin user has been deactivated due to inactivity, you can get past that using the following steps:
 
-1. Enter `mysql` console with a root user and run the following command:
-   ```
-   use lorisdb;
-   ```
+1. Log into the to mysql backend with your admin credential
 2.  Make sure the `Active` column in the `users` MySQL table is set to `Y` for this user, if not you can do so with the following command:
        ```
        UPDATE users SET active = "Y" WHERE UserID = "admin";
