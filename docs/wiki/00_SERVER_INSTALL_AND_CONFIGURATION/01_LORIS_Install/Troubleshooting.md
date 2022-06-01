@@ -67,7 +67,7 @@ If your admin user has been deactivated due to inactivity, you can get past that
        ```
 3. Run the following command:
    ```
-   DELETE FROM user_login_history WHERE UserID='lorisadmin';
+   DELETE FROM user_login_history WHERE UserID = "admin";
    ```
    ***Note:** Using this command will wipe out your account's login history*
 
