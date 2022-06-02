@@ -54,70 +54,48 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     {
         // set the class variables
         $this->columns      = [
-            'mpv.CandID',
-            'mpv.PSCID',
-            'mpv.time_run',
-            'mpv.series_description',
-            'mpv.minc_location',
-            'mpv.PatientName',
-            'mpg.Name',
-            'mpv.TR_range',
-            'mpv.TE_range',
-            'mpv.TI_range',
-            'mpv.slice_thickness_range',
-            'mpv.xspace_range',
-            'mpv.yspace_range',
-            'mpv.zspace_range',
-            'mpv.xstep_range',
-            'mpv.ystep_range',
-            'mpv.zstep_range',
-            'mpv.time_range',
-            'mpv.SeriesUID',
+            'stif.CandID',
+            'stif.PSCID',
+            'stif.TimeRun',
+            'stif.ScanLocation',
+            'stif.PatientName',
+            'stpg.ScanTypeParameterGroupName',
+            'stif.SeriesUID',
+            'stif.HeaderName',
+            'stif.Value',
             'tarchive.TarchiveID',
         ];
         $this->validFilters = [
-            'mpv.CandID',
-            'mpv.PSCID',
-            'mpv.PatientName',
-            'mpv.SeriesUID',
-            'mpv.series_description',
-            'mpv.time_run',
+            'stif.CandID',
+            'stif.PSCID',
+            'stif.PatientName',
+            'stif.SeriesUID',
+            'stif.TimeRun',
         ];
         $this->headers      = [
             'CandID',
             'PSCID',
             'Time_Run',
-            'Series_Description',
-            'Minc_Location',
+            'Scan_Location',
             'PatientName',
             'MRI_Protocol_Group',
-            'TR',
-            'TE',
-            'TI',
-            'Slice_Thickness',
-            'Xspace',
-            'Yspace',
-            'Zspace',
-            'Xstep',
-            'Ystep',
-            'Zstep',
-            'Time',
             'SeriesUID',
+            'Header_Name',
+            'Value',
             'TarchiveID',
         ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
-        $this->query        = " FROM mri_protocol_violated_scans mpv
-                 LEFT JOIN mri_protocol_group mpg ON
-                 (mpg.MriProtocolGroupID=mpv.MriProtocolGroupID)
+        $this->query        = " FROM scan_type_identification_failure stif
+                 LEFT JOIN scan_type_parameter_group stpg ON
+                 (stpg.ScanTypeParameterGroupID=stif.ScanTypeParameterGroupID)
                  LEFT JOIN tarchive ON
-                (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
+                (stif.PatientName = tarchive.PatientName) WHERE 1=1";
         $this->formToFilter = [
-            'CandID'            => 'mpv.CandID',
-            'PSCID'             => 'mpv.PSCID',
-            'PatientName'       => 'mpv.PatientName',
-            'SeriesUID'         => 'mpv.SeriesUID',
-            'SeriesDescription' => 'mpv.series_description',
-            'TimeRun'           => 'mpv.time_run',
+            'CandID'      => 'stif.CandID',
+            'PSCID'       => 'stif.PSCID',
+            'PatientName' => 'stif.PatientName',
+            'SeriesUID'   => 'stif.SeriesUID',
+            'TimeRun'     => 'stif.time_run',
         ];
         $this->tpl_data['mri_protocol_data'] = $this->getMRIProtocolData();
         $protocolGroupIDs = array_keys($this->tpl_data['mri_protocol_data']);
@@ -152,8 +130,55 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSC-ID:');
         $this->addBasicText('PatientName', 'Patient-Name:');
         $this->addBasicText('SeriesUID', 'SeriesUID:');
-        $this->addBasicText('SeriesDescription', 'Series Description:');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
+    }
+
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return array
+     */
+    function toArray()
+    {
+        // get list of distinct header to display
+        $headers_to_display = $this->getDistinctHeadersToDisplay();
+        $data_to_display    = $this->getViolationsToDisplay($headers_to_display);
+
+        $headers = [
+            'CandID',
+            'PSCID',
+            'PatientName',
+            'MRI_Protocol_Group',
+            'Scan_Location',
+            'SeriesUID',
+            'TarchiveID',
+            'Time_Run',
+        ];
+
+        $additionalHeaders = array_map(
+            function ($header) {
+                return ucwords(str_replace('_', ' ', $header['HeaderName']));
+            },
+            $headers_to_display
+        );
+        sort($additionalHeaders);
+        $headers = array_merge($headers, $additionalHeaders);
+
+        $MappedData = [];
+        foreach ($data_to_display as $row) {
+            $MappedData[] = array_values($row);
+        }
+
+        return [
+            'Headers'      => $headers,
+            'Data'         => $MappedData,
+            'fieldOptions' => $this->fieldOptions,
+        ];
     }
 
     /**
@@ -163,39 +188,196 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      *         is an MRI protocol group name and each value is the array of
      *         lines in the mri_protocol table for that protocol group.
      */
-    function getMRIProtocolData()
+    function getMRIProtocolData(): array
     {
         $db = $this->loris->getDatabaseConnection();
+
         // select all except Objective from mri_protocol
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
         $rows = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', psc.Name as Center_name,
-                    ScannerID, p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
-                    TI_max, slice_thickness_min, slice_thickness_max,
-                    xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
-                    zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-                    zstep_min, zstep_max, time_min, time_max,series_description_regex
-             FROM mri_protocol as p
-             LEFT JOIN mri_protocol_group mpg
-             ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
+            "SELECT s.Scan_type, stpg.ScanTypeParameterGroupName as 'Protocol Group',
+                    psc.Name as CenterName, ScannerID,
+                    p.ScanType, p.HeaderName, p.ValidMin, p.ValidMax, p.ValidRegex
+             FROM scan_type_parameter as p
+             LEFT JOIN scan_type_parameter_group stpg
+             ON (stpg.ScanTypeParameterGroupID=p.ScanTypeParameterGroupID)
+             LEFT JOIN scan_type_parameter_group_target gt
+             ON (gt.ScanTypeParameterGroupID=stpg.ScanTypeParameterGroupID)
              LEFT JOIN mri_scan_type as s
-             ON p.Scan_type=s.ID
-             LEFT JOIN psc ON psc.CenterID=p.CenterID
-             ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
+             ON p.ScanType=s.ID
+             LEFT JOIN psc ON psc.CenterID=gt.CenterID
+             ORDER BY stpg.ScanTypeParameterGroupID ASC, p.ScanType ASC",
             []
         );
 
-        $mri_protocols = [];
+        $tmp_prot = [];
         foreach ($rows as $protocol) {
+            $prot_grp    = $protocol['Protocol Group'];
+            $scan_type   = $protocol['Scan_type'];
+            $header_name = $protocol['HeaderName'];
+            $center_name = $protocol['CenterName'];
+            $scanner_id  = $protocol['ScannerID'];
+
             // Strip trailing zeros in each column
             foreach ($protocol as $k => $v) {
                 $protocol[$k] = preg_replace('/\.?0+$/', '', $v);
             }
-            $mri_protocols[$protocol['Protocol Group']][] = $protocol;
+            $tmp_prot[$prot_grp][$scan_type]['Center Name']    = $center_name;
+            $tmp_prot[$prot_grp][$scan_type]['Protocol Group'] = $prot_grp;
+            $tmp_prot[$prot_grp][$scan_type]['Scanner ID']     = $scanner_id;
+            $tmp_prot[$prot_grp][$scan_type]['Scan Type']      = $scan_type;
+            if ($protocol['ValidRegex']) {
+                $header = $header_name . "_regex";
+                $value  = $protocol['ValidRegex'];
+                $tmp_prot[$prot_grp][$scan_type][$header] = $value;
+            }
+            if ($protocol['ValidMin'] or $protocol['ValidMax']) {
+                $header_range = $header_name . "_range";
+                $value_min    = $protocol['ValidMin'];
+                $value_max    = $protocol['ValidMax'];
+                $value_range  = "$value_min - $value_max";
+                // If one min or max was set, then modify the range to be
+                // higher than or lower than value set
+                if (!$value_min and $value_max) {
+                    $value_range = "< $value_max";
+                } elseif ($value_min and !$value_max) {
+                    $value_range = "> $value_min";
+                }
+                $tmp_prot[$prot_grp][$scan_type][$header_range] = $value_range;
+            }
         }
 
-        return $mri_protocols;
+        $protocols          = [];
+        $headers_to_display = $this->getDistinctHeadersToDisplay();
+        foreach (array_keys($tmp_prot) as $prot_grp) {
+            foreach ($tmp_prot[$prot_grp] as $scan_type_info) {
+                foreach ($headers_to_display as $row) {
+                    $header = $row['HeaderNameType'];
+                    if (!in_array($header, array_keys($scan_type_info))) {
+                        $scan_type_info[$header] = null;
+                    }
+                }
+                ksort($scan_type_info);
+                $protocols[$prot_grp][] = $scan_type_info;
+            }
+        }
+
+        return $protocols;
+    }
+
+    /**
+     * Get the distinct headers present in scan_type_identification to display
+     * to the user.
+     *
+     * @return array containing the list of header to display with their type
+     *               (_range or _regex)
+     */
+    function getDistinctHeadersToDisplay(): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $rows = $db->pselect(
+            "SELECT DISTINCT(HeaderName) FROM scan_type_parameter",
+            []
+        );
+
+        $headers_list = [];
+        foreach ($rows as $header) {
+            $value_rows = $db->pselect(
+                "SELECT ValidMin, ValidMax, ValidRegex
+                FROM scan_type_parameter
+                WHERE HeaderName = :headerName LIMIT 1",
+                ['headerName' => $header['HeaderName']]
+            );
+            if ($value_rows[0]['ValidMin'] or $value_rows[0]['ValidMax']) {
+                array_push(
+                    $headers_list,
+                    [
+                        'HeaderName'     => $header['HeaderName'],
+                        'HeaderNameType' => $header['HeaderName'] . "_range"
+                    ]
+                );
+            } elseif ($value_rows[0]['ValidRegex']) {
+                array_push(
+                    $headers_list,
+                    [
+                        'HeaderName'     => $header['HeaderName'],
+                        'HeaderNameType' => $header['HeaderName'] . "_regex"
+                    ]
+                );
+            }
+        }
+
+        return $headers_list;
+    }
+
+    /**
+     * Get the violated scans present in scan_type_identification_failure
+     * to display to the user.
+     *
+     * @param array $headers_to_display list of header names that will be displayed
+     *
+     * @return array containing the list of violated scans and their header
+     *               values to be displayed
+     */
+    function getViolationsToDisplay($headers_to_display): array
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $rows = $db->pselect(
+            "SELECT stif.CandID, stif.PSCID, stif.TimeRun, stif.ScanLocation,
+                    stif.PatientName, stif.SeriesUID, tarchive.TarchiveID,
+                    stpg.ScanTypeParameterGroupName as 'Protocol Group',
+                    stif.HeaderName, stif.Value
+                FROM scan_type_identification_failure as stif
+                LEFT JOIN scan_type_parameter_group stpg
+                ON (stpg.ScanTypeParameterGroupID=stif.ScanTypeParameterGroupID)
+                LEFT JOIN tarchive ON (stif.PatientName = tarchive.PatientName)
+                WHERE HeaderName IN (
+                    SELECT DISTINCT(HeaderName) FROM scan_type_parameter
+                )
+            ORDER BY stif.ScanLocation ASC",
+            []
+        );
+
+        $tmp_data = [];
+        foreach ($rows as $row) {
+            $scanLocation = $row['ScanLocation'];
+            $headerName   = $row['HeaderName'];
+            $value        = $row['Value'];
+            $scanBaseData = [
+                'CandID'         => $row['CandID'],
+                'PSCID'          => $row['PSCID'],
+                'TimeRun'        => $row['TimeRun'],
+                'ScanLocation'   => $row['ScanLocation'],
+                'PatientName'    => $row['PatientName'],
+                'SeriesUID'      => $row['SeriesUID'],
+                'TarchiveID'     => $row['TarchiveID'],
+                'Protocol Group' => $row['Protocol Group'],
+            ];
+            if (!$tmp_data) {
+                $tmp_data[$scanLocation] = $scanBaseData;
+            } elseif (!array_key_exists($scanLocation, $tmp_data)) {
+                $tmp_data[$scanLocation] = $scanBaseData;
+            }
+            $tmp_data[$scanLocation][$headerName] = $value;
+        }
+
+        // Fill in missing headers with NULL value for the table display
+        $data = [];
+        foreach ($tmp_data as $scan_data) {
+            foreach ($headers_to_display as $header_info) {
+                $header = $header_info['HeaderName'];
+                if (!array_key_exists($header, $scan_data)) {
+                    $scan_data[$header] = null;
+                }
+            }
+            ksort($scan_data);
+            $data[] = $scan_data;
+        }
+
+        return $data;
     }
 
     /**
