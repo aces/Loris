@@ -219,14 +219,15 @@ const AnnotationForm = ({
       // Disaply success message
       setAnnoMessage(currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!');
       setTimeout(() => {
-        setAnnoMessage('');
+        setAnnoMessage(''); // Empty string will cause success div to hide
+
+        // If in edit mode, switch back to annotation panel
+        if (currentAnnotation !== null) {
+          setCurrentAnnotation(null);
+          setRightPanel('annotationList');
+        }
       }, 3000);
 
-      // If in edit mode, switch back to annotation panel
-      if (currentAnnotation !== null) {
-        setCurrentAnnotation(null);
-        setRightPanel('annotationList');
-      }     
     }).catch(error => {
       console.log(error);
       // Display error message
