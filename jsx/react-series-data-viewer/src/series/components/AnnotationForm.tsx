@@ -218,7 +218,7 @@ const AnnotationForm = ({
       
       // Disaply success message
       setAnnoMessage(currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!');
-      setTimeout(function () {
+      setTimeout(() => {
         setAnnoMessage('');
       }, 3000);
 
@@ -385,12 +385,10 @@ const AnnotationForm = ({
               Delete
             </button>
           }
-          {annoMessage ? (
+          {annoMessage && (
             <div className="alert alert-success text-center" role="alert">
               {annoMessage}
             </div>
-          ):(
-            <div className="alert text-center hide" role="alert"></div>
           )}
         </div>
       </div>
