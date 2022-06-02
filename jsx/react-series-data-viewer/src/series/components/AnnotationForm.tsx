@@ -387,7 +387,7 @@ const AnnotationForm = ({
             </button>
           }
           {annoMessage && (
-            <div className="alert alert-success text-center" role="alert">
+            <div className="alert alert-success text-center" role="alert" style={{margin: '5px'}}>
               {annoMessage}
             </div>
           )}
