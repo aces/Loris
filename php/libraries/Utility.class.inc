@@ -745,40 +745,26 @@ class Utility
      *                            to know the existing visit labels
      *
      * @return array Array of instruments which exist for the given visit label
-     *               array is of the form
-     *               array(0 => array('Test_name_display' => $TestName))?
-     *
-     * @note    Function comment written by Dave, not the author of this function.
-     *       The return value format seems weird. Should possibly be refactored.
-     * @note    Used in:
-     *      - behavioural_qc/php/NDB_Form_behavioural_qc.class.inc
-     *      - behavioural_qc/ajax/GetInstruments.php
-     * @cleanup
+     *               array is of the form [$Test_name => $Full_name]
      */
     static function getVisitInstruments(string $visit_label): array
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
-            $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery
-                WHERE Visit_label=:vl",
-                ['vl' => $visit_label]
-            );
-        } else {
-            $test_names = $DB->pselect(
-                "SELECT DISTINCT t.Full_name as Test_name_display FROM session s
-                JOIN candidate c ON (c.candid=s.candid)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                JOIN flag f ON (f.sessionid=s.id)
-                JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
-                AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
-                ORDER BY t.Full_name",
-                ['vl' => $visit_label]
-            );
-        }
+        $test_names = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT t.Test_name, t.Full_name
+            FROM session s
+            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN psc ON (s.CenterID=psc.CenterID)
+            JOIN flag f ON (f.sessionID=s.id)
+            JOIN test_names t ON (f.test_name=t.Test_name)
+            WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
+            AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+            ORDER BY t.Full_name",
+            ['vl' => $visit_label],
+            'Test_name'
+        );
 
         return $test_names;
     }
