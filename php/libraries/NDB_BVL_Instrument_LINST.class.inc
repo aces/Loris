@@ -41,6 +41,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $fullName;
     protected $dictionary = [];
 
+    // array of the format "field_name" => "group_name"
+    protected $GroupElements = [];
+
     /**
      * Sets up the variables required for a LINST instrument to load
      *
@@ -338,7 +341,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
-                    $errors[$elname] = "Required.";
+                    // Check if element part of a group.
+                    // If so, the error should be on the group to show up
+                    $errorEl          = $this->GroupElements[$elname] ?? $elname;
+                    $errors[$errorEl] = "$elname is required.";
+
                     if ($this->XINDebug) {
                         echo "Required by default";
                     }
@@ -554,7 +561,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'begingroup':
                     if ($addElements) {
-                        $Group['Name']      = $pieces[1] . '_group';
+                        $Group['Name']      = trim($pieces[1]) . '_group';
                         $Group['Delimiter'] = isset($pieces[2])
                             ? trim($pieces[2]) : $this->_GUIDelimiter;
                     }
@@ -568,6 +575,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $groupLabel,
                             $Group['Delimiter'],
                         );
+
+                        // Track elements and their groups for XIN errors proper
+                        // higlighting in the browser
+                        foreach ($Group['Elements'] as $el) {
+                            if (isset($el['name'])) {
+                                $this->GroupElements[$el['name']] = $Group['Name'];
+                            }
+                        }
 
                         $Group['Name']     = null;
                         $Group['Elements'] = [];
