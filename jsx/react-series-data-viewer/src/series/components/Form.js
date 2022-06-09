@@ -304,3 +304,79 @@ TextareaElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+/**
+ * TextboxElement - the input type='text' component.
+ * @param {object} props
+ * @return {JSX.Element}
+ */
+export const TextboxElement = (props) => {
+  /**
+   * handleChange - input change by user.
+   * @param {object} event - input event
+   */
+  const handleChange = (event) => {
+    const value = event.target.value;
+    if (props.bannedCharacters) {
+      for (const character of props.bannedCharacters) {
+        if (value.includes(character)) {
+          return;
+        }
+      }
+    }
+    props.onUserInput(props.id, value);
+  };
+  /**
+   * Renders the React component.
+   * @return {JSX.Element} - React markup for component.
+   */
+  return (
+    <>
+      {props.label &&
+        <label className="label" htmlFor={props.id}>
+          <b>
+            {props.label} {props.required ?
+              <span className="red">*</span> :
+              null
+            }
+            {props.help &&
+              <i className='fas fa-question-circle' data-tip={props.help}></i>
+            }
+          </b>
+        </label>
+      }
+      <input
+        type='text'
+        id={props.id}
+        name={props.name}
+        value={props.value}
+        onChange={handleChange}
+        className={props.readonly ? 'readonly' : null}
+        placeholder={props.placeholder}
+        readOnly={props.readonly}
+      />
+    </>
+  );
+};
+TextboxElement.defaultProps = {
+  readonly: false,
+  required: false,
+};
+TextboxElement.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string,
+  required: PropTypes.bool,
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  onUserInput: PropTypes.func,
+  placeholder: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  bannedCharacters: PropTypes.array,
+  readonly: PropTypes.bool,
+  help: PropTypes.string,
+};
