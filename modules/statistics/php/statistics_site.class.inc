@@ -169,7 +169,7 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return mixed
      */
     function _getInstrumentName($instrument)
     {
