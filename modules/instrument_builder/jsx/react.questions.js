@@ -996,12 +996,80 @@ class AddElement extends Component {
       });
     }
 
+    if(questionName.length > 64 && selected !== 'textbox' && selected !== 'textarea' &&
+      selected !== 'date' && selected !== 'numeric') {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Field length should be strictly less than 65 characters';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+    
+    if(questionText.length > 64) {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionText with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionText = 'Field length should be strictly less than 65 characters';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionText error flag if set
+      let temp = this.state.error;
+      delete temp.questionText;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
+    if(questionName.length > 57 && (selected === 'textbox' || selected === 'textarea' || 
+      selected === 'date' || selected === 'numeric')) {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Field length should be strictly less than 58 characters';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
     if (questionName === '' && selected !== 'header' && selected !== 'label' &&
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Must specifiy name for database to save value into';
+      temp.questionName = 'Must specify name for database to save value into';
       this.setState({
         error: temp,
       });
