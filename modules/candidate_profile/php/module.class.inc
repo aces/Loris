@@ -28,7 +28,9 @@ class Module extends \Module
             $candidate = \Candidate::singleton($candID);
 
             $request = $request->withAttribute('candidate', $candidate);
-            $page    = $this->loadPage("candidate_profile");
+            $loris   = $request->getAttribute("loris");
+            $page    = $this->loadPage($loris, "candidate_profile");
+
             return $page->process($request, $page);
         } catch (\DomainException | \LORISException $e) {
             // A LORISException means the \Candidate::singleton couldn't
@@ -64,7 +66,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case 'candidate':
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();

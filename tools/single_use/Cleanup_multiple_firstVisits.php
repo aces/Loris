@@ -27,7 +27,7 @@ $query_candID = "SELECT CandID
                   WHERE VisitNo=1 
                   GROUP BY CandID 
                   HAVING COUNT(CandID) > 1";
-$candIDs      = $db->pselect($query_candID, array());
+$candIDs      = $db->pselect($query_candID, []);
 
 if (empty($candIDs)) {
     echo "No multiple first visits.\n";
@@ -40,7 +40,7 @@ if (empty($candIDs)) {
                             FROM `session` 
                             WHERE CandID=:candID 
                             ORDER BY Date_visit";
-        $where           = array('candID' => $candID);
+        $where           = ['candID' => $candID];
         $sessionIDs      = $db->pselect($query_sessionID, $where);
 
         // Reset visit number in order of date of visit
@@ -48,8 +48,8 @@ if (empty($candIDs)) {
         foreach ($sessionIDs as $result) {
             echo "      Changing visit number: $result[VisitNo] to $visitNo\n";
             $sessionID = $result['ID'];
-            $set       = array('VisitNo' => $visitNo);
-            $where_sessionID = array('ID' => $sessionID);
+            $set       = ['VisitNo' => $visitNo];
+            $where_sessionID = ['ID' => $sessionID];
             if ($confirm) {
                 $db->update('session', $set, $where_sessionID);
             }

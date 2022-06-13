@@ -45,45 +45,38 @@ class Edit_Help_Content extends \NDB_Form
       */
     function _getDefaults()
     {
-        //Get the default values
-        $defaults = array();
-
         // Sanitize user input
-        $safeSection    = $_REQUEST['section'] ?
+        $safeSection    = isset($_REQUEST['section']) ?
             htmlspecialchars($_REQUEST['section']) : '';
-        $safeSubsection = $_REQUEST['subsection'] ?
+        $safeSubsection = isset($_REQUEST['subsection']) ?
             htmlspecialchars($_REQUEST['subsection']) : '';
 
-        $defaults = array();
+        $defaults = [];
 
+        $helpID = '';
         if (isset($_REQUEST['helpID'])) {
             $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
-        if (isset($_GET['parentID'])) {
-            $parentID = htmlspecialchars($_GET['parentID']);
-        }
-        if (!empty($_REQUEST['section'])) {
+        if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])) {
             try {
                 $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
             } catch (\NotFound $e) {
                 $helpID = '';
             }
         }
-        if (!empty($_REQUEST['section'])
+        if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])
+            && isset($_REQUEST['subsection'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
             try {
-                $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-                $parentID = HelpFile::hashToID(md5($_GET['section']));
+                $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
             } catch (\NotFound $e) {
-                $helpID   = '';
-                $parentID = '';
+                $helpID = '';
             }
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
         $this->tpl_data['helpID']     = $helpID ? $helpID : '';
-        $this->tpl_data['parentID']   = $parentID ? $parentID : '';
 
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
@@ -158,9 +151,9 @@ class Edit_Help_Content extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/help_editor/js/help_editor_helper.js",
-            )
+            ]
         );
     }
 }

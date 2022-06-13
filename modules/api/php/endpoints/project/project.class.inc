@@ -55,7 +55,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -66,10 +66,10 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'candidates':
             $handler = new Candidates($this->_project);
             break;
@@ -133,11 +133,9 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;

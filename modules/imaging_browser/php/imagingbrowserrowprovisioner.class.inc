@@ -102,10 +102,10 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =====================================================
         // Create Pending Fail and Pending New subquery
         // =====================================================
-        $case_desc     = array();
-        $qc            = array();
-        $pass          = array();
-        $coalesce_desc = array();
+        $case_desc     = [];
+        $qc            = [];
+        $pass          = [];
+        $coalesce_desc = [];
 
         foreach ($scan_id_types as $id => $type) {
             $pass[$id]          = $DB->escape($type);
@@ -181,7 +181,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               Project.Name as project,
               s.Visit_label as visitLabel,
               $PendingFailSubquery as Visit_QC_Status,
-              DATE_FORMAT(MIN(pf.Value), \"%Y-%m-%d\") as First_Acquisition,
+              DATE_FORMAT(MIN(f.AcquisitionDate), \"%Y-%m-%d\") as First_Acquisition,
               FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion,
               FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC,
               $NewDataSubquery as New_Data,
@@ -199,19 +199,16 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
               JOIN files f ON (f.SessionID=s.ID)
               LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-              JOIN parameter_file pf ON (f.FileID=pf.FileID)
-              JOIN parameter_type pt USING (ParameterTypeID)
               LEFT JOIN mri_scan_type modality ON
                 (f.AcquisitionProtocolID=modality.ID)
               $left_joins
             WHERE
               s.Active = 'Y' AND
-              f.FileType IN ('mnc', 'nii') AND
-              pt.Name='acquisition_date'
+              f.FileType IN ('mnc', 'nii')
             GROUP BY s.ID
             ORDER BY c.PSCID, s.Visit_label
             ",
-            array()
+            []
         );
     }
 
@@ -230,7 +227,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int )$row['CenterID'];
+        $cid = new \CenterID($row['CenterID']);
         $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
         unset($row['ProjectID']);

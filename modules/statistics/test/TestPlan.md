@@ -25,7 +25,7 @@
 8. Returning to the behavioural statistics page, check that the `View Details` links work in the Double Data Entry Statistics table.
 9. After following this link, check that the candidates requiring double data entry are correct in comparison to the forms requiring double data entry in the database.
 10. On the incomplete double data entry page, check that the candidate links take you to the appropriate data entry page for that candidate.
-11. Returning to the behavioral statistics tab, check that the "Click here for breakdown per participant for" link below the Double Data Entry Statistics table works.
+11. Returning to the behavioural statistics tab, check that the "Click here for breakdown per participant for" link below the Double Data Entry Statistics table works.
 12. Verify that this link takes you to page with double data entry statistics for all sites.
 13. Returning to the behavioural statistics page, verify that if you do not have the `access_all_profiles` permission you should not be able to click through to forms for candidates from other sites.
 14. Check the breadcrumbs from Completion stats page back to BVL stats tab within Statistics appear and allow you to use the `Back` button to previous pages (future feature).

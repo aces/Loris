@@ -51,16 +51,16 @@
         <label class="col-sm-2">
             {$form.Password_hash.label}
         </label>
-        <div class="col-sm-10">
-            {$form.Password_hash.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.Password_hash.name}" />
         </div>
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.__Confirm.label}
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -99,5 +99,5 @@
     </div>
 
 
-{$form.hidden}
+{$form.hidden|default}
 </form>

@@ -1,6 +1,6 @@
 # Reset Password Test Plan
 
-1. In the `users` table in the database, update the `Password_expiry` cell for a user you are testing to be a date in the past.
+1. In the `users` table in the database, set a user's `PasswordChangeRequired` value to `1`.
 2. Login as that user. You should see an update password page.
 3. Try using a very short password (e.g. "pass"). You should get an error.
 4. Try using a very weak password (e.g. "password"). You should get an error.

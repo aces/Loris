@@ -38,10 +38,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'violated_scans_view_allsites',
                 'violated_scans_view_ownsite'
-            )
+            ]
         );
     }
 
@@ -53,7 +53,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.time_run',
@@ -74,16 +74,16 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.time_range',
             'mpv.SeriesUID',
             'tarchive.TarchiveID',
-        );
-        $this->validFilters = array(
+        ];
+        $this->validFilters = [
             'mpv.CandID',
             'mpv.PSCID',
             'mpv.PatientName',
             'mpv.SeriesUID',
             'mpv.series_description',
             'mpv.time_run',
-        );
-        $this->headers      = array(
+        ];
+        $this->headers      = [
             'CandID',
             'PSCID',
             'Time_Run',
@@ -104,21 +104,21 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'Time',
             'SeriesUID',
             'TarchiveID',
-        );
+        ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->query        = " FROM mri_protocol_violated_scans mpv
                  LEFT JOIN mri_protocol_group mpg ON
                  (mpg.MriProtocolGroupID=mpv.MriProtocolGroupID)
                  LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'CandID'            => 'mpv.CandID',
             'PSCID'             => 'mpv.PSCID',
             'PatientName'       => 'mpv.PatientName',
             'SeriesUID'         => 'mpv.SeriesUID',
             'SeriesDescription' => 'mpv.series_description',
             'TimeRun'           => 'mpv.time_run',
-        );
+        ];
         $this->tpl_data['mri_protocol_data'] = $this->getMRIProtocolData();
         $protocolGroupIDs = array_keys($this->tpl_data['mri_protocol_data']);
         $this->tpl_data['mri_protocol_header'] = array_keys(
@@ -140,13 +140,13 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
         $maxYear     = $config->getSetting('endYear');
-        $dateOptions = array(
+        $dateOptions = [
             'language'       => 'en',
             'format'         => 'YMd',
             'addEmptyOption' => true,
             'minYear'        => $minYear,
             'maxYear'        => $maxYear,
-        );
+        ];
 
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
@@ -170,22 +170,23 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
         $rows = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
-                    p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+            "SELECT p.ID, mpg.Name as 'Protocol Group', psc.Name as Center_name,
+                    ScannerID, p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
                     zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
                     zstep_min, zstep_max, time_min, time_max,series_description_regex
              FROM mri_protocol as p
-             LEFT JOIN mri_protocol_group mpg 
+             LEFT JOIN mri_protocol_group mpg
              ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
              LEFT JOIN mri_scan_type as s
              ON p.Scan_type=s.ID
+             LEFT JOIN psc ON psc.CenterID=p.CenterID
              ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
-            array()
+            []
         );
 
-        $mri_protocols = array();
+        $mri_protocols = [];
         foreach ($rows as $protocol) {
             // Strip trailing zeros in each column
             foreach ($protocol as $k => $v) {
@@ -209,10 +210,10 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL .
                "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
-            )
+            ]
         );
     }
 }

@@ -9,7 +9,14 @@ import TriggerableModal from 'TriggerableModal';
 import MediaUploadForm from './uploadForm';
 import MediaEditForm from './editForm';
 
+/**
+ * Media Index component
+ */
 class MediaIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -23,8 +30,12 @@ class MediaIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.mapColumn = this.mapColumn.bind(this);
+    this.insertRow = this.insertRow.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -40,11 +51,27 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data: data.Data, fieldOptions: data.fieldOptions}))
+      .then((data) => this.setState({
+        data: data.Data,
+        fieldOptions: data.fieldOptions,
+      }))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
       });
+  }
+
+  /**
+   * Insert row of data into table after successful
+   * file upload and display recent data.
+   * @param {object} data - row to add to table
+   */
+  insertRow(data) {
+    let tableData = JSON.parse(JSON.stringify(this.state.data));
+    tableData.push(Object.values(data));
+    this.setState({
+      data: tableData,
+    });
   }
 
   /**
@@ -81,8 +108,9 @@ class MediaIndex extends Component {
     switch (column) {
     case 'File Name':
       if (this.props.hasPermission('media_write')) {
-        const downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' +
-          encodeURIComponent(row['File Name']);
+        const downloadURL = loris.BaseURL
+                            + '/media/ajax/FileDownload.php?File='
+                            + encodeURIComponent(row['File Name']);
         result = (
           <td className={style}>
             <a href={downloadURL} target="_blank" download={row['File Name']}>
@@ -103,7 +131,9 @@ class MediaIndex extends Component {
       result = <td className={style}>{cell}</td>;
       break;
     case 'Project':
-      result = <td className={style}>{this.state.fieldOptions.projects[cell]}</td>;
+      result = <td className={style}>
+        {this.state.fieldOptions.projects[cell]}
+      </td>;
       break;
     case 'Edit Metadata':
       if (!this.props.hasPermission('media_write')) {
@@ -111,9 +141,13 @@ class MediaIndex extends Component {
       }
       const editButton = (
             <TriggerableModal title="Edit Media File" label="Edit">
-                    <MediaEditForm
-                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
-                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+              <MediaEditForm
+                DataURL={loris.BaseURL
+                        + '/media/ajax/FileUpload.php'
+                        + '?action=getData&idMediaFile='
+                        + row['Edit Metadata']}
+                action={loris.BaseURL
+                       + '/media/ajax/FileUpload.php?action=edit'}
                 /* this should be passed to onSubmit function
                    upon refactoring editForm.js*/
                 fetchData={this.fetchData }
@@ -127,6 +161,11 @@ class MediaIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -209,9 +248,12 @@ class MediaIndex extends Component {
         return (
           <TabPane TabId={tabs[1].id}>
             <MediaUploadForm
-              DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
-              action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+              DataURL={loris.BaseURL
+                      + '/media/ajax/FileUpload.php?action=getData'}
+              action={loris.BaseURL
+                     + '/media/ajax/FileUpload.php?action=upload'}
               maxUploadSize={options.maxUploadSize}
+              insertRow={this.insertRow}
             />
           </TabPane>
         );

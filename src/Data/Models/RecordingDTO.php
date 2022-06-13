@@ -16,13 +16,15 @@ namespace LORIS\Data\Models;
  * This class defines a RecordingDTO which is an immutable representation of a
  * Recording object. Its purpose is to provide accessors to a Recording properties.
  *
- *  @category Imaging
- *  @package  Main
- *  @author   Cecile Madjar <cecile.madjar@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ * @category Imaging
+ * @package  Main
+ * @author   Cecile Madjar <cecile.madjar@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class RecordingDTO implements \LORIS\Data\DataInstance
+class RecordingDTO implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
 
     private $fileid;
@@ -37,7 +39,7 @@ class RecordingDTO implements \LORIS\Data\DataInstance
 
     private $filetype;
 
-    private $centerid;
+    private \CenterID $centerid;
 
     private $entitytype;
 
@@ -50,7 +52,7 @@ class RecordingDTO implements \LORIS\Data\DataInstance
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionmodality The aquisition modality
      * @param ?string $filetype            The file type
-     * @param ?int    $centerid            The image session's centerid
+     * @param \CenterID $centerid            The image session's centerid
      * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
@@ -60,7 +62,7 @@ class RecordingDTO implements \LORIS\Data\DataInstance
         ?string $outputtype,
         ?string $acquisitionmodality,
         ?string $filetype,
-        ?int $centerid,
+        \CenterID $centerid,
         ?string $entitytype
     ) {
         $this->fileid       = $fileid;
@@ -136,30 +138,28 @@ class RecordingDTO implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface.
      *
-     * @return string
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
-        return json_encode(
-            array(
-             'fileid'              => $this->fileid,
-             'filename'            => $this->filename,
-             'filelocation'        => $this->filelocation,
-             'outputtype'          => $this->outputtype,
-             'acquisitionmodality' => $this->acquisitionmodality,
-             'filetype'            => $this->filetype,
-            )
-        );
+        return [
+                'fileid'              => $this->fileid,
+                'filename'            => $this->filename,
+                'filelocation'        => $this->filelocation,
+                'outputtype'          => $this->outputtype,
+                'acquisitionmodality' => $this->acquisitionmodality,
+                'filetype'            => $this->filetype,
+               ];
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return intval($this->centerid);
+        return $this->centerid;
     }
 }

@@ -20,6 +20,11 @@ namespace LORIS\Data\Provisioners;
  * It also sets the fetch mode to PDO:FETCH_CLASS makes the statement
  * return an instance of a given class name for each row.
  *
+ * Note: PDO::FETCH_CLASS: returns a new instance of the requested class, mapping
+ * the columns of the result set to named properties in the class, bypassing the
+ * constructor. The constructor is called afterwards.
+ * (see: https://www.php.net/manual/en/pdostatement.fetch.php)
+ *
  * @category   Data
  * @package    Main
  * @subpackage Data

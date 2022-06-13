@@ -15,9 +15,8 @@ import PropTypes from 'prop-types';
  */
 class Panel extends Component {
   /**
-   * Construct the React component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);
@@ -40,7 +39,9 @@ class Panel extends Component {
    * Toggle whether this Panel is displayed as collapsed
    */
   toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
+    if (this.props.collapsing) {
+      this.setState({collapsed: !this.state.collapsed});
+    }
   }
 
   /**
@@ -56,24 +57,44 @@ class Panel extends Component {
         'glyphicon pull-right glyphicon-chevron-up'
     );
 
+    const title = this.props.bold ? (
+      <h3 className={'panel-title'}>
+        {this.props.title}
+      </h3>
+    ) : this.props.title;
+
     // Add panel header, if title is set
     const panelHeading = this.props.title ? (
       <div
         className="panel-heading"
         onClick={this.toggleCollapsed}
-        data-toggle="collapse"
+        data-toggle={this.props.collapsing ? 'collapse' : null}
         data-target={'#' + this.props.id}
-        style={{cursor: 'pointer', height: '3em'}}
+        data-parent={this.props.parentId ?
+          '#'+this.props.parentId :
+          false
+        }
+        style={{
+          cursor: this.props.collapsing ? 'pointer' : 'default',
+          height: '3em',
+          fontWeight: 'bold',
+        }}
       >
-        {this.props.title}
-        <span className={glyphClass}></span>
+        {title}
+        {this.props.collapsing ? <span className={glyphClass}/> : ''}
       </div>
     ) : '';
 
     return (
-      <div className="panel panel-primary" style={{height: this.props.panelSize}}>
+      <div className={'panel ' + this.props.class}
+           style={{height: this.props.panelSize}}
+      >
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel" style={{height: 'calc(100% - 3em)'}}>
+        <div id={this.props.id}
+             className={this.panelClass}
+             role='tabpanel'
+             style={this.props.collapsing ? {} : {height: 'calc(100% - 3em)'}}
+        >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
             {this.props.children}
@@ -85,14 +106,24 @@ class Panel extends Component {
 }
 
 Panel.propTypes = {
+  initCollapsed: PropTypes.bool,
+  parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
+  class: PropTypes.string,
+  collapsing: PropTypes.bool,
+  bold: PropTypes.bool,
 };
 Panel.defaultProps = {
   initCollapsed: false,
+  parentId: null,
   id: 'default-panel',
   height: '100%',
+  class: 'panel-primary',
+  collapsing: true,
+  bold: false,
+  title: '',
 };
 
 export default Panel;

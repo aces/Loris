@@ -12,7 +12,7 @@
      - Visits (the visits to display)
      - Data (the data that populates the table)
  *}
-<script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
+<script type="text/javascript" src="{$baseurl|default}/statistics/js/table_statistics.js"></script>
 <h2 class="statsH3">{$SectionHeader}</h2>
 <h3 class="statsH3">{$TableHeader}</h3>
 <p>{$Disclamer}</p>
@@ -92,10 +92,10 @@
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
-              {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]}
-              {assign var="subtotal" value={$data[$proj][$center.ID][$visit].total}}
+              {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]|default}
+              {assign var="subtotal" value={$data[$proj][$center.ID][$visit].total|default}}
               {if $subtotal > 0 and $Numerator > 0}
-                {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                {assign var="percent" value={($Numerator*100/$subtotal)|round:0}}
               {else}
                 {assign var="percent" value='0'}
               {/if}
@@ -108,10 +108,10 @@
         {* Totals for row *}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]}
-            {assign var="rowtotal" value=$data[$center.ID][$visit].total}
+            {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]|default}
+            {assign var="rowtotal" value=$data[$center.ID][$visit].total|default}
             {if $rowtotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$rowtotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$rowtotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -129,10 +129,10 @@
         {assign var="sitetotal" value="0"}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]}
+            {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]|default}
             {assign var="sitetotal" value=$data[$proj][$center.ID].total}
             {if $sitetotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$sitetotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$sitetotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -144,10 +144,10 @@
       {/foreach}
       {foreach key=sub item=subcat from=$Subcategories}
         {if $subcat@index eq 0}
-          {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]}
-          {assign var="totalsitetotal" value=$data[$center.ID].total}
+          {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]|default}
+          {assign var="totalsitetotal" value=$data[$center.ID].total|default}
           {if $totalsitetotal > 0 and $Numerator > 0}
-            {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totalsitetotal format="%.0f"}}
+            {assign var="percent" value={($Numerator*100/$totalsitetotal)|round:0}}
           {else}
             {assign var="percent" value='0'}
           {/if}
@@ -174,10 +174,10 @@
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
-              {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]}
-              {assign var="subtotal" value={$data[$proj][$visit].total}}
+              {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]|default}
+              {assign var="subtotal" value={$data[$proj][$visit].total|default}}
               {if $subtotal > 0 and $Numerator > 0}
-                {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
+                {assign var="percent" value={($Numerator*100/$subtotal)|round:0}}
               {else}
                 {assign var="percent" value='0'}
               {/if}
@@ -190,10 +190,10 @@
         {assign var="finaltotal" value="0" }
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$visit][$Subcategories.0]}
-            {assign var="finaltotal" value=$data[$visit].total}
+            {assign var="Numerator" value=$data[$visit][$Subcategories.0]|default}
+            {assign var="finaltotal" value=$data[$visit].total|default}
             {if $finaltotal > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$finaltotal format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$finaltotal)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -214,10 +214,10 @@
         {assign var="total" value="0"}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
-            {assign var="Numerator" value=$data[$proj][$Subcategories.0]}
-            {assign var="total" value=$data[$proj].total}
+            {assign var="Numerator" value=$data[$proj][$Subcategories.0]|default}
+            {assign var="total" value=$data[$proj].total|default}
             {if $total > 0 and $Numerator > 0}
-              {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$total format="%.0f"}}
+              {assign var="percent" value={($Numerator*100/$total)|round:0}}
             {else}
               {assign var="percent" value='0'}
             {/if}
@@ -230,10 +230,10 @@
       {* Totals for grand total *}
       {foreach key=sub item=subcat from=$Subcategories}
         {if $subcat@index eq 0}
-          {assign var="Numerator" value=$data[$Subcategories.0]}
-          {assign var="totaltotal" value=$data.total}
+          {assign var="Numerator" value=$data[$Subcategories.0]|default}
+          {assign var="totaltotal" value=$data.total|default}
           {if $totaltotal > 0 and $Numerator > 0}
-            {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totaltotal format="%.0f"}}
+            {assign var="percent" value={($Numerator*100/$totaltotal)|round:0}}
           {else}
             {assign var="percent" value='0'}
           {/if}

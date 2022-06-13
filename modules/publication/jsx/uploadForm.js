@@ -1,7 +1,15 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
+import swal from 'sweetalert2';
 
+/**
+ * Publication upload form component
+ */
 class PublicationUploadForm extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -25,29 +33,48 @@ class PublicationUploadForm extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        this.setState({
           loadError: 'An error occurred when loading the form!',
         });
-      },
+        return;
+      }
+
+      response.json().then(
+        (data) => this.setState({
+          Data: data,
+          isLoaded: true,
+        })
+      );
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Set file data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
     if (!this.state.formData[formElement]) {
@@ -57,6 +84,11 @@ class PublicationUploadForm extends React.Component {
     this.setFormData(formElement, value);
   }
 
+  /**
+   * Set form data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -65,6 +97,12 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Add list item
+   * @param {string} formElement
+   * @param {*} value
+   * @param {string} pendingValKey
+   */
   addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
@@ -76,6 +114,11 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  /**
+   * Remove list item
+   * @param {string} formElement
+   * @param {*} value
+   */
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -90,11 +133,15 @@ class PublicationUploadForm extends React.Component {
     }
   }
 
+  /**
+   * Handle submit
+   * @param {object} e - Event object
+   */
   handleSubmit(e) {
     e.preventDefault();
 
     if (Object.keys(this.state.formErrors).length > 0) {
-      swal(
+      swal.fire(
         'Please fix any remaining form errors before submission',
         '',
         'error'
@@ -116,42 +163,44 @@ class PublicationUploadForm extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        // reset form data
-        this.setState({
-          formData: {},
-          numFiles: 0,
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || '';
+          swal.fire('Something went wrong!', message, 'error');
         });
-        swal(
-          {
-            title: 'Submission Successful!',
-            type: 'success',
-          },
-          function() {
-            window.location.replace(loris.BaseURL + '/publication/');
-          }
-        );
-      }.bind(this),
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = '';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
-        }
-        swal('Something went wrong!', resp, 'error');
-      },
-    });
-  }
+        return;
+      }
 
+      // reset form data
+      this.setState({
+        formData: {},
+        numFiles: 0,
+      });
+
+      swal.fire(
+        {
+          title: 'Submission Successful!',
+          type: 'success',
+        }).then(function() {
+          window.location.replace(loris.BaseURL + '/publication/');
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      swal.fire('Something went wrong!', '', 'error');
+    });
+   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.loadError !== undefined) {

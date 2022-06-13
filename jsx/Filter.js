@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Filter component.
+ * Filter component
  * A wrapper for form elements inside a selection filter.
  *
  * Constructs filter fields based on this.props.fields configuration object
@@ -41,7 +41,7 @@ function Filter(props) {
     const exactMatch = (!(type === 'text' || type === 'date'));
 
     if (value === null || value === '' ||
-        (value.constructor === Array && value.length === 0)) {
+      (value.constructor === Array && value.length === 0)) {
       props.removeFilter(name);
     } else {
       props.addFilter(name, value, exactMatch);
@@ -59,37 +59,40 @@ function Filter(props) {
       if (filter && filter.hide !== true) {
         let element;
         switch (filter.type) {
-        case 'text':
-          element = <TextboxElement/>;
-          break;
-        case 'select':
-          element = (
-            <SelectElement
+          case 'text':
+            element = <TextboxElement/>;
+            break;
+          case 'select':
+            element = (
+              <SelectElement
+                options={filter.options}
+                sortByValue={filter.sortByValue}
+                autoSelect={false}
+              />
+            );
+            break;
+          case 'multiselect':
+            element = (
+              <SelectElement
+                options={filter.options}
+                multiple={true}
+                emptyOption={false}
+              />
+            );
+            break;
+          case 'numeric':
+            element = <NumericElement
               options={filter.options}
-              sortByValue={filter.sortByValue}
-            />
-          );
-          break;
-        case 'multiselect':
-          element = (
-            <SelectElement
-              options={filter.options}
-              multiple={true}
-              emptyOption={false}
-            />
-          );
-          break;
-        case 'numeric':
-          element = <NumericElement options={filter.options}/>;
-          break;
-        case 'date':
-          element = <DateElement/>;
-          break;
-        case 'checkbox':
-          element = <CheckboxElement/>;
-          break;
-        default:
-          element = <TextboxElement/>;
+            />;
+            break;
+          case 'date':
+            element = <DateElement/>;
+            break;
+          case 'checkbox':
+            element = <CheckboxElement/>;
+            break;
+          default:
+            element = <TextboxElement/>;
         }
 
         // The value prop has to default to false if the first two options
@@ -111,6 +114,40 @@ function Filter(props) {
     }, []);
   };
 
+  const filterPresets = () => {
+    if (props.filterPresets) {
+      const presets = props.filterPresets.map((preset) => {
+        const handleClick = () => props.updateFilters(preset.filter);
+        return <li><a onClick={handleClick}>{preset.label}</a></li>;
+      });
+      return (
+        <li className='dropdown'>
+          <a
+            className='dropdown-toggle'
+            data-toggle='dropdown'
+            role='button'
+          >
+            Load Filter Preset <span className='caret'/>
+          </a>
+          <ul className='dropdown-menu' role='menu'>
+            {presets}
+          </ul>
+        </li>
+      );
+    };
+  };
+
+  const filterActions = (
+    <ul className='nav nav-tabs navbar-right' style={{borderBottom: 'none'}}>
+      {filterPresets()}
+      <li>
+        <a role='button' name='reset' onClick={props.clearFilters}>
+          Clear Filter
+        </a>
+      </li>
+    </ul>
+  );
+
   return (
     <FormElement
       id={props.id}
@@ -120,12 +157,8 @@ function Filter(props) {
         columns={props.columns}
         legend={props.title}
       >
+        {filterActions}
         {renderFilterFields()}
-        <ButtonElement
-          label="Clear Filters"
-          type="reset"
-          onUserInput={props.clearFilters}
-        />
       </FieldsetElement>
     </FormElement>
   );

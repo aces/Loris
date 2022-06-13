@@ -34,13 +34,13 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $password = new \Password($this->validPassword);
         $this->DB->insert(
             "users",
-            array(
+            [
                 'ID'               => 999995,
                 'UserID'           => 'UnitTesterTwo',
                 'Real_name'        => 'Unit Tester 2',
@@ -51,25 +51,24 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
                 'Pending_approval' => 'N',
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999995,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999995,
                 'ProjectID' => 1,
-            )
+            ]
         );
     }
 
@@ -130,14 +129,14 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
         // Load the page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
 
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
 
         // Reload
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
 
         // Verify changes appear on the page
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
@@ -226,7 +225,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         // Try changing the password to the same value.
         $this->_sendPasswordValues($page, $userId, self::UNITTESTER_EMAIL_NEW);
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains('cannot be your email', $this->getBody());
+        $this->assertStringContainsString('cannot be your email', $this->getBody());
     }
 
     /**
@@ -249,7 +248,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             \Utility::randomString()
         );
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains('do not match', $this->getBody());
+        $this->assertStringContainsString('do not match', $this->getBody());
     }
 
     /**
@@ -278,7 +277,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             $newPassword
         );
         // This text comes from the class constants in Edit User/My Preferences
-        $this->assertContains(
+        $this->assertStringContainsString(
             'New and old passwords are identical',
             $this->getBody()
         );
@@ -303,7 +302,7 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         string $confirmPassword = ''
     ): void {
         // Go to page
-        $this->_accessUser($page, $userId);
+        $this->_accessUser();
         $this->setValue(
             self::FORM_FIELD_PASSWORD,
             $password
@@ -326,21 +325,31 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     function getBody(): string
     {
         return $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
     }
-
+    /**
+     * Accesses the current user.
+     *
+     * @return void
+     */
+    function _accessUser()
+    {
+        $this->safeGet(
+            $this->url . "/my_preferences/"
+        );
+    }
     /**
      * Performed after every test.
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
-        $this->DB->delete("user_project_rel", array("UserID" => 999995));
-        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
+        $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
+        $this->DB->delete("user_project_rel", ["UserID" => 999995]);
+        $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
         parent::tearDown();
     }
 }

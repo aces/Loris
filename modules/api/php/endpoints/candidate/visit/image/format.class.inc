@@ -49,7 +49,7 @@ class Format extends Endpoint
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -60,10 +60,10 @@ class Format extends Endpoint
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**

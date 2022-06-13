@@ -15,6 +15,10 @@ import Loader from 'Loader';
  *
  * */
 class DocUploadForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -32,18 +36,30 @@ class DocUploadForm extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+  /**
+   * Called by React when props are passed to the Component instance
+   *
+   * @param {object} nextProps
+   */
   componentWillReceiveProps(nextProps) {
     // Any time props.category changes, update state.
     if (nextProps.category) {
-        this.fetchData();
-      }
-   }
+      this.fetchData();
+    }
+  }
 
+  /**
+   * Fetch data
+   * @return {Promise<void>}
+   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -54,6 +70,11 @@ class DocUploadForm extends Component {
       });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Data loading error
     if (this.state.error) {
@@ -138,10 +159,13 @@ class DocUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
+  /** *******************************************************************************
+   *                      ******     Helper methods     *******
+   *********************************************************************************/
 
+  /**
+   * Upload file
+   */
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
@@ -158,9 +182,9 @@ class DocUploadForm extends Component {
       credentials: 'same-origin',
       body: formObject,
     })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data == 'uploaded successfully') {
+    .then((resp) => {
+      console.error(resp);
+      if (resp.ok) {
         swal.fire('Upload Successful!', '', 'success').then((result) => {
           if (result.value) {
             this.setState({formData: {}});
@@ -168,11 +192,17 @@ class DocUploadForm extends Component {
           }
         });
       } else {
-        swal.fire('Duplicate File Name!', '', 'error');
+        resp.json().then((data) => {
+          swal.fire('Could not upload file', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire(
+            'Unknown Error',
+            'Please report the issue or contact your administrator',
+            'error'
+          );
+        });
       }
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
 

@@ -37,12 +37,15 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("battery_manager_view"));
+        $this->setupPermissions(["battery_manager_view"]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -53,12 +56,15 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 

@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $scores = array(
                    "total_score_1_18"                                 => "",
@@ -45,10 +46,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any LorisForm date elements must be listed here
-        $this->dateTimeFields =array("Date_taken");
-
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->selectMultipleElements = array();
@@ -70,7 +67,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                                                     'Testdate',
                                                     'Window_Difference',
                                                     'Candidate_Age',
-                                                    'Data_entry_completion_status',
                                                     'free_play_period_1_notes_status',
                                                     'free_play_period_1_notes',
                                                     'free_play_period_2_notes_status',
@@ -533,7 +529,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
     function score(): void
     {
-        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+        if($this->_determineRequiredElementsCompletedFlag() == "N") {
             return;
         }
 
@@ -546,7 +542,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         // null scores
         $this->_nullScores($this->scores);
 
-        $score_record = NDB_BVL_Instrument::loadInstanceData($this);
+        $score_record = $this->getInstanceData();
         //Calculate first 6 item scores from their input grids
 
         //Question 1

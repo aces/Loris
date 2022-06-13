@@ -19,6 +19,10 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  */
 class ExaminerIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -43,6 +47,9 @@ class ExaminerIndex extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -153,10 +160,16 @@ class ExaminerIndex extends Component {
     return result;
   }
 
+  /**
+   * Executed when modal is opened.
+   */
   openModal() {
     this.setState({showModal: true});
   }
 
+  /**
+   * Executed when modal is closed.
+   */
   closeModal() {
     this.setState({
       formData: {},
@@ -164,6 +177,11 @@ class ExaminerIndex extends Component {
     });
   }
 
+  /**
+   * Render the AddExaminer form.
+   *
+   * @return {JSX} - React markup for the component
+   */
   renderAddExaminerForm() {
     return (
       <Modal
@@ -215,6 +233,11 @@ class ExaminerIndex extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.

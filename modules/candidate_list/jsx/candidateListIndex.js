@@ -16,6 +16,10 @@ import OpenProfileForm from './openProfileForm';
  * @author Cécile Madjar *
  */
 class CandidateListIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -32,18 +36,31 @@ class CandidateListIndex extends Component {
     this.toggleFilters = this.toggleFilters.bind(this);
   }
 
+  /**
+   * Show
+   *
+   * @param {string} state
+   */
   show(state) {
     let show = this.state.show;
     show[state] = true;
     this.setState({show});
   }
 
+  /**
+   * Hide
+   *
+   * @param {string} state
+   */
   hide(state) {
     let show = this.state.show;
     show[state] = false;
     this.setState({show});
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -81,7 +98,9 @@ class CandidateListIndex extends Component {
       });
   }
 
-  // Basic/Advanced toggle
+  /**
+   * Basic/Advanced toggle
+   */
   toggleFilters() {
     const hideFilter = !this.state.hideFilter;
     this.setState({hideFilter});
@@ -138,6 +157,11 @@ class CandidateListIndex extends Component {
     return <td>{cell}</td>;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -298,19 +322,16 @@ class CandidateListIndex extends Component {
           },
         },
       },
-
-    ];
-     fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
-          },
+      {
+        'label': 'Project',
+        'show': true,
+        'filter': {
+          name: 'project',
+          type: 'select',
+          options: options.project,
         },
-      );
+      },
+    ];
 
     if (options.useedc === 'true') {
       fields.push(
@@ -344,7 +365,9 @@ class CandidateListIndex extends Component {
     // FIXME: move toggle button in the filter component next to the clear button
     const actions = [
       {
-        label: this.state.hideFilter ? 'Show Advanced Filters' : 'Hide Advanced Filters',
+        label: this.state.hideFilter ?
+          'Show Advanced Filters' :
+          'Hide Advanced Filters',
         action: this.toggleFilters,
         name: 'advanced',
       },

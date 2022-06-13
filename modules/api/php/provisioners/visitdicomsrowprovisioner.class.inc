@@ -51,9 +51,9 @@ class VisitDicomsRowProvisioner extends DBRowProvisioner
                s.Active=\'Y\' AND
                s.ID = :v_sessionid
             ',
-            array(
+            [
                 'v_sessionid' => $timepoint->getSessionID(),
-            )
+            ]
         );
     }
 

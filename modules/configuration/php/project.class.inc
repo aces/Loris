@@ -52,11 +52,13 @@ class Project extends \NDB_Form
         $config         = $factory->config();
         $projectList    = \Utility::getProjectList();
         $subprojectList = \Utility::getSubprojectList();
-        $projects       = array();
+        $projects       = [];
         foreach (array_keys($projectList) as $ProjectID) {
             $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
             $projects[$ProjectID]['projectSubprojects']
-                = \Utility::getSubprojectsForProject($ProjectID);
+                = \Utility::getSubprojectsForProject(
+                    new \ProjectID(strval($ProjectID))
+                );
         }
         $this->tpl_data['projects']    = $projects;
         $this->tpl_data['subprojects'] = $subprojectList;

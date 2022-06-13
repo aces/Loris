@@ -40,11 +40,11 @@ class Data_Release extends \NDB_Menu_Filter
     {
         // check user permissions
         return $user->hasAnyPermission(
-            array(
+            [
                 'data_release_view',
                 'data_release_upload',
                 'data_release_edit_file_access'
-            )
+            ]
         );
     }
 
@@ -59,11 +59,12 @@ class Data_Release extends \NDB_Menu_Filter
         $DB   = \Database::singleton();
 
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
             'file_name AS fileName',
             'version',
             'upload_date AS uploadDate',
-        );
+            'dr.id as dataReleaseID',
+        ];
         $this->query   = " FROM data_release dr";
 
         if (!$user->hasPermission("superuser")) {
@@ -107,7 +108,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         return $DB->pselectColWithIndexKey(
             "SELECT ID, UserID FROM users",
-            array(),
+            [],
             "ID"
         );
     }
@@ -123,7 +124,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         $result = $DB->pselectWithIndexKey(
             "SELECT id, file_name, version FROM data_release",
-            array(),
+            [],
             "id"
         );
 
@@ -148,7 +149,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         $versions = $DB->pselectCol(
             "SELECT DISTINCT version FROM data_release",
-            array(),
+            [],
             "version"
         );
 
@@ -173,7 +174,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         $result = $db->pselect(
             "SELECT version, id FROM data_release",
-            array()
+            []
         );
 
         $versionFiles = [];
@@ -202,7 +203,7 @@ class Data_Release extends \NDB_Menu_Filter
              FROM users u
              LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid)
              LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
-            array()
+            []
         );
 
         $userFiles = [];
@@ -257,9 +258,9 @@ class Data_Release extends \NDB_Menu_Filter
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array(
+            [
                 $baseurl . "/data_release/js/dataReleaseIndex.js",
-            )
+            ]
         );
     }
 }

@@ -50,7 +50,7 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -61,10 +61,10 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -96,11 +96,9 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Creates a response with the thumbnail as body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         $info = $this->_image->getThumbnailFileInfo();
 
@@ -115,15 +113,21 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $filename = $info->getFilename();
-        $body     = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+
+        $realpath = $info->getRealPath();
+        if ($realpath === false) {
+            $realpath = $info->getPath() . "/" . $info->getFilename();
+        }
+
+        $body = new \LORIS\Http\FileStream($realpath, 'r');
 
         return new \LORIS\Http\Response(
             $body,
             200,
-            array(
+            [
                 'Content-Type'        => 'image/jpeg',
                 'Content-Disposition' => 'attachment; filename=' . $filename,
-            )
+            ]
         );
     }
 
@@ -142,11 +146,11 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return '';
         }
 
-        $signature = array(
+        $signature = [
             'filename' => $info->getFilename(),
             'size'     => $info->getSize(),
             'mtime'    => $info->getMTime(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

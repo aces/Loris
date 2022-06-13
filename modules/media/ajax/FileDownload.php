@@ -32,7 +32,7 @@ $filePath = $path . $file;
 $downloadNotifier = new NDB_Notifier(
     "media",
     "download",
-    array("file" => $file)
+    ["file" => $file]
 );
 
 if (!file_exists($filePath)) {

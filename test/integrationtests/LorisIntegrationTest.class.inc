@@ -50,7 +50,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected $validPassword = 'sufficient length and complexity';
 
-    private $_oldConfig = array();
+    private $_oldConfig = [];
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -59,30 +59,34 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
+        // test
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
+
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
             "users",
-            array(
+            [
                 'ID'               => 999990,
                 'UserID'           => 'UnitTester',
                 'Real_name'        => 'Unit Tester',
@@ -93,25 +97,24 @@ abstract class LorisIntegrationTest extends TestCase
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
-            )
+                'Pending_approval' => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999990,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999990,
                 'ProjectID' => 1,
-            )
+            ]
         );
 
         $this->resetPermissions();
@@ -177,17 +180,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**
@@ -197,17 +190,17 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
+            xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
         }
 
         // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
+        $this->DB->delete("user_login_history", ['userID' => 'UnitTester']);
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
+        $this->DB->delete("users", ["UserID" => 'UnitTester']);
         // Close the browser and end the session
         if ($this->webDriver) {
             $this->webDriver->quit();
@@ -231,7 +224,7 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array("configName" => $configName)
+            ["configName" => $configName]
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -241,18 +234,18 @@ abstract class LorisIntegrationTest extends TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array("confID" => $configID)
+            ["confID" => $configID]
         );
 
-        $this->_oldConfig[$configName] = array(
+        $this->_oldConfig[$configName] = [
             'ConfigID' => $configID,
             'OldValue' => $oldVal,
-        );
+        ];
 
         $this->DB->update(
             "Config",
-            array("Value" => $value),
-            array("ConfigID" => $configID)
+            ["Value" => $value],
+            ["ConfigID" => $configID]
         );
     }
 
@@ -271,8 +264,8 @@ abstract class LorisIntegrationTest extends TestCase
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value" => $this->_oldConfig[$configName]['OldValue']),
-                array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+                ["Value" => $this->_oldConfig[$configName]['OldValue']],
+                ["ConfigID" => $this->_oldConfig[$configName]['ConfigID']]
             );
         }
     }
@@ -288,7 +281,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupPermissions($permissions)
     {
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
         $prepare = $this->DB->prepare(
             "INSERT INTO user_perm_rel
                 SELECT 999990, PermID
@@ -298,8 +291,8 @@ abstract class LorisIntegrationTest extends TestCase
         foreach ($permissions as $value) {
             $this->DB->execute(
                 $prepare,
-                array("perm" => $value),
-                array('nofetch' => true)
+                ["perm" => $value],
+                ['nofetch' => "true"]
             );
         }
     }
@@ -324,11 +317,11 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->insert("psc", ["CenterID" => 99, "Alias" => "BBQ"]);
         $this->DB->update(
             "user_psc_rel",
-            array("CenterID" => 99),
-            array("UserID" => 999990)
+            ["CenterID" => 99],
+            ["UserID" => 999990]
         );
     }
 
@@ -342,10 +335,42 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->update(
             "user_psc_rel",
-            array("CenterID" => 1),
-            array("UserID" => 999990)
+            ["CenterID" => 1],
+            ["UserID" => 999990]
         );
-        $this->DB->delete("psc", array("CenterID" => 99));
+        $this->DB->delete("psc", ["CenterID" => 99]);
+        $this->DB->run('SET foreign_key_checks =1');
+    }
+
+    /**
+     * Helper function to change the users Project
+     *
+     * @return void
+     */
+    function changeUserProject()
+    {
+        $this->DB->insert("Project", ["ProjectID" => 99, "Alias" => "BBQ"]);
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 99],
+            ["UserID" => 999990]
+        );
+    }
+
+    /**
+     * Helper function to reset the users Project
+     *
+     * @return void
+     */
+    function resetUserProject()
+    {
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 1],
+            ["UserID" => 999990]
+        );
+        $this->DB->delete("Project", ["ProjectID" => 99]);
         $this->DB->run('SET foreign_key_checks =1');
     }
 
@@ -361,12 +386,12 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->DB->insert(
             "subproject",
-            array(
+            [
                 "SubprojectID"      => $SubprojectID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
-            )
+            ]
         );
     }
 
@@ -381,11 +406,11 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->DB->delete(
             "subproject",
-            array(
+            [
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
-            )
+            ]
         );
     }
 
@@ -429,7 +454,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function deleteCandidate($pscid)
     {
-        $this->DB->delete("candidate", array("PSCID" => $pscid));
+        $this->DB->delete("candidate", ["PSCID" => $pscid]);
     }
 
     /**
@@ -471,7 +496,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url,$waitPeriod=15)
     {
-        $newWebDriver = null;
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -548,20 +572,20 @@ abstract class LorisIntegrationTest extends TestCase
         try {
             $webElement->click();
             $clickException = null;
-        } catch(ElementNotVisibleException $e) {
+        } catch (ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceException $e) {
+        } catch (StaleElementReferenceException $e) {
             $clickException = $e;
         }
 
         if (!is_null($clickException)) {
             if (!$allowJavascriptClick) {
-                throw $e;
+                throw $clickException;
             }
 
             $this->webDriver->executeScript(
                 "arguments[0].click();",
-                array($webElement)
+                [$webElement]
             );
         }
     }
@@ -620,12 +644,17 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @param string $needle   This string should be in $haystack.
      * @param string $haystack The HTML body of the page.
+     * @param string $jsError  React render error message.
      *
      * @return void
      */
-    private function _verifyPermission(string $needle, string $haystack): void
-    {
-        $this->assertContains($needle, $haystack);
+    private function _verifyPermission(
+        string $needle,
+        string $haystack,
+        string $jsError= "An error occured while loading the page."
+    ): void {
+        $this->assertStringContainsString($needle, $haystack);
+        $this->assertStringNotContainsString($jsError, $haystack);
         $this->resetPermissions();
     }
 
@@ -643,16 +672,17 @@ abstract class LorisIntegrationTest extends TestCase
         string $path,
         string $permission = ''
     ): string {
-        $this->setupPermissions(array($permission));
+        $this->setupPermissions([$permission]);
         $this->safeGet($this->url . $path);
         return $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
     }
+
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
-     * @param string $element        The input element loaction (css selector)
+     * @param string $element        The input element location (css selector)
      * @param string $row            React Table row number
      * @param string $btn            clear filter button
      * @param string $test_value     The test value
@@ -663,7 +693,6 @@ abstract class LorisIntegrationTest extends TestCase
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
     {
         // get element from the page
-
         if (strpos($element, "select") === false) {
             $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
             $el->sendKeys($test_value);
@@ -673,13 +702,39 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("$row")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertContains($expect_records, $bodyText);
-            //test clear filter
-            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$row")
+        )->getText();
+        // 4 means there are 4 records under this site.
+        $this->assertStringContainsString($expect_records, $bodyText);
+        //test clear filter
+        $this->safeClick(WebDriverBy::cssSelector("$btn"));
+    }
+
+    /**
+     * Testing filter function and clear button
+     *
+     * @param string  $element    The input element location (css selector)
+     * @param string  $test_value The test value
+     * @param boolean $contains   Test for presence/absence
+     *
+     * @return void
+     */
+    function _filterOptionsTest($element,$test_value,$contains=true): void
+    {
+        // get element from the page
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$element")
+        )->getText();
+
+        if (!$contains) {
+            $this->assertThat(
+                $bodyText,
+                $this->logicalNot($this->stringContains($test_value))
+            );
+        } else {
+            $this->assertStringContainsString($test_value, $bodyText);
+        }
     }
 
     /**
@@ -697,7 +752,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->safeGet($this->url . '/dashboard/');
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
         $this->webDriver->wait(3, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -705,6 +760,6 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         $pageSource = $this->webDriver->getPageSource();
-        $this->assertContains($label, $pageSource);
+        $this->assertStringContainsString($label, $pageSource);
     }
 }

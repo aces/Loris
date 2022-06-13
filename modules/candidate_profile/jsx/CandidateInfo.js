@@ -166,7 +166,7 @@ export class CandidateInfo extends Component {
 
             return (
                 <div style={cardStyle} key={label}>
-                    <dt style={{whiteSpace: 'nowrap'}}>{label}</dt>
+                    <dt>{label}</dt>
                     <dd style={valueStyle}>{value}</dd>
                 </div>
             );

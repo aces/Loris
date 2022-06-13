@@ -43,13 +43,16 @@ class IssueWatcherMapper implements Mapper
         \User $user,
         DataInstance $resource
     ) : DataInstance {
+        $res = $resource;
+        assert($res instanceof IssueRow);
 
         static $config = null;
         if ($config === null) {
-            $config = \NDB_Config::singleton()->getSetting("imaging_modules");
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->config()->getSetting("imaging_modules");
         }
 
-        $newrow = json_decode($resource->toJSON(), true);
+        $newrow = json_decode(json_encode($resource), true);
         if (isset($newrow['userId'])
             && $newrow['userId'] === $user->getUsername()
         ) {
@@ -60,8 +63,8 @@ class IssueWatcherMapper implements Mapper
 
         return new IssueRow(
             $newrow,
-            $resource->getCenterIDs(),
-            $resource->getModule()
+            $res->getCenterIDs(),
+            $res->getModule()
         );
     }
 }

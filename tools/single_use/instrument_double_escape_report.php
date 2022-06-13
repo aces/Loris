@@ -19,8 +19,7 @@ $dir = __DIR__ . "/../logs/";
 if (!is_dir($dir)) {
     mkdir($dir);
 }
-$today   = getdate();
-$date    = strftime("%Y-%m-%d_%H:%M");
+$date = date("Y-m-d_h:i");
 $logPath = "$dir/instrument_double_escape_report_$date.log";
 $logfp   = fopen($logPath, 'a');
 
@@ -95,7 +94,7 @@ foreach($instrumentNames as $instrumentName) {
         }
         foreach ($instrumentCIDs as $cid) {
             $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
-            $instrumentCandData = \NDB_BVL_Instrument::loadInstanceData($instrumentInstance);
+            $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ
             $tableName = $instrumentInstance->table;

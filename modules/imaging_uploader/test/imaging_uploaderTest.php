@@ -27,100 +27,100 @@ require_once __DIR__ .
 class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
-    private $_loadingBrowseUI = array(
-        array(
+    private $_loadingBrowseUI = [
+        [
             "label"    => "CandID",
             "selector" => "#imaging_filter>div",
-        ),
-        array(
+        ],
+        [
             "label"    => "PSCID",
             "selector" => "#imaging_filter>div",
-        ),
-        array(
+        ],
+        [
             "label"    => "Visit Label",
             "selector" => "#imaging_filter>div",
-        ),
-        array(
+        ],
+        [
             "label"    => "Logs to display",
             "selector" => "#log_panel>div>form>div",
-        ),
+        ],
                                  // expected_headers
-        array(
+        [
             "label"    => "No.",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "UploadID",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "Progress",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "CandID",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "PSCID",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "Visit Label",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "UploadLocation",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "UploadDate",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "UploadedBy",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "Tarchive Info",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "Number Of MincCreated",
             "selector" => "#dynamictable > thead",
-        ),
-        array(
+        ],
+        [
             "label"    => "Number Of MincInserted",
             "selector" => "#dynamictable > thead",
-        ),
-    );
+        ],
+    ];
     // expect UIs for Upload Tab
-    private $_loadingUploadUI = array(
-        array(
+    private $_loadingUploadUI = [
+        [
             "label"    => "Upload an imaging scan",
             "selector" => "#upload",
-        ),
-        array(
+        ],
+        [
             "label"    => "Phantom Scans",
             "selector" => "#upload",
-        ),
-        array(
+        ],
+        [
             "label"    => "CandID",
             "selector" => "#upload",
-        ),
-        array(
+        ],
+        [
             "label"    => "PSCID",
             "selector" => "#upload",
-        ),
-        array(
+        ],
+        [
             "label"    => "Visit Label",
             "selector" => "#upload",
-        ),
-        array(
+        ],
+        [
             "label"    => "File to Upload",
             "selector" => "#upload",
-        ),
-    );
+        ],
+    ];
 
     /**
      * Tests that, when loading the Imaging_uploader module, some
@@ -131,10 +131,13 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
-        $this->assertContains("Imaging Upload", $bodyText);
+        $this->assertStringContainsString(
+            "Imaging Upload",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the Imaging_uploader module without permission,
@@ -144,12 +147,15 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingUploaderLoadWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the Imaging_uploader module with permission,
@@ -159,12 +165,15 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingUploaderLoadWithPermission()
     {
-        $this->setupPermissions(array("imaging_uploader"));
+        $this->setupPermissions(["imaging_uploader"]);
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -180,22 +189,22 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 
         $this->safeGet($this->url . '/imaging_uploader/');
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("CandID")
         )->sendKeys("test");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("PSCID")
         )->sendKeys("test");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::name("reset")
         )->click();
 
-        $bodyText1 = $this->webDriver->findElement(
+        $bodyText1 = $this->safeFindElement(
             WebDriverBy::name("CandID")
         )->getText();
-        $bodyText2 = $this->webDriver->findElement(
+        $bodyText2 = $this->safeFindElement(
             WebDriverBy::name("PSCID")
         )->getText();
 
@@ -226,7 +235,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $this->markTestSkipped("This method isn't working properly on travis.");
             $this->safeGet($this->url . '/imaging_uploader/');
         if ($url == "/imaging_uploader/#upload") {
-            $this->webDriver->findElement(
+            $this->safeFindElement(
                 WebDriverBy::ID("tab-upload")
             )->click();
         }
@@ -236,7 +245,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             $text     = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
             );
-            $this->assertContains($ui['label'], $text);
+            $this->assertStringContainsString($ui['label'], $text);
         }
     }
 }

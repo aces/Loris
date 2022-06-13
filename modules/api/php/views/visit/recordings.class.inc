@@ -46,25 +46,25 @@ class Recordings
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
-        );
+        ];
 
         $recordingsdata = array_map(
             function ($recording) {
-                return array(
+                return [
                     'OutputType'          => $recording->getOutputType(),
                     'Filename'            => $recording->getFilename(),
                     'AcquisitionModality' => $recording->getAcquisitionmodality(),
-                );
+                ];
             },
             $this->_recordings
         );
 
-        return array(
+        return [
             'Meta'  => $meta,
             'Files' => $recordingsdata,
-        );
+        ];
     }
 }

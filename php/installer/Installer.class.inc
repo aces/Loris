@@ -29,8 +29,8 @@ class Installer
     private $_lastErr;
 
     private const SCHEMA_FILES = ['00-schema.sql',
-        '01-Permission.sql',
-        '02-Modules.sql',
+        '01-Modules.sql',
+        '02-Permission.sql',
         '03-ConfigTables.sql',
         '04-Help.sql',
         '05-ElectrophysiologyTables.sql'
@@ -539,8 +539,7 @@ class Installer
              SET
                UserID=:q_userID,
                Password_hash=:q_password,
-               Active='Y',
-               Password_expiry=DATE_ADD(NOW(),INTERVAL 30 DAY)
+               Active='Y'
              WHERE ID=1"
         );
         return $stmt->execute(

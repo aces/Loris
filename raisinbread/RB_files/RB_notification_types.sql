@@ -15,5 +15,6 @@ INSERT INTO `notification_types` (`NotificationTypeID`, `Type`, `private`, `Desc
 INSERT INTO `notification_types` (`NotificationTypeID`, `Type`, `private`, `Description`) VALUES (22,'mri upload runner',1,'Validation of DICOMS before uploading');
 INSERT INTO `notification_types` (`NotificationTypeID`, `Type`, `private`, `Description`) VALUES (23,'mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader');
 INSERT INTO `notification_types` (`NotificationTypeID`, `Type`, `private`, `Description`) VALUES (24,'imaging non minc file insertion',1,'Insertion of a non-MINC file into the MRI tables (files/parameter_file)');
+INSERT INTO `notification_types` (`NotificationTypeID`, `Type`, `private`, `Description`) VALUES (25,'hrrt pet new series',0,'New HRRT PET studies inserted into the database');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

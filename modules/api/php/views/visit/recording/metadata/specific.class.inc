@@ -68,10 +68,10 @@ class Specific
      */
     public function toArray(): array
     {
-        return  array(
+        return  [
             'Meta'  => $this->_formatMeta(),
             'Value' => $this->_recording->getMetadata($this->_headername),
-        );
+        ];
     }
 
     /**
@@ -85,12 +85,12 @@ class Specific
         $visitlabel = $this->_visit->getVisitLabel();
         $filename   = $this->_recording->getFileInfo()->getFilename();
 
-        return array(
+        return [
             'CandID' => $candid,
             'Visit'  => $visitlabel,
             'File'   => $filename,
             'Header' => $this->_headername,
-        );
+        ];
     }
 }
 

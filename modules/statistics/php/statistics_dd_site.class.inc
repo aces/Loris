@@ -27,7 +27,7 @@ class Statistics_DD_Site extends statistics_site
 {
 
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * Notexcluded function
@@ -58,19 +58,19 @@ class Statistics_DD_Site extends statistics_site
 
         $this->instruments = array_filter(
             $this->instruments,
-            array(
+            [
                 &$this,
                 'notexcluded',
-            )
+            ]
         );
     }
 
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -99,9 +99,9 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */

@@ -68,10 +68,10 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
                f.InsertTime > :v_time
              ORDER BY f.InsertTime ASC
             ',
-            array(
+            [
                 'v_projectname' => $project->getName(),
                 'v_time'        => $since->getTimestamp(),
-            )
+            ]
         );
     }
 

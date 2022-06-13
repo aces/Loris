@@ -29,11 +29,26 @@ use \Laminas\Diactoros\ServerRequest;
 class LoginTest extends TestCase
 {
     /**
+     * A PSR Request object representing the incoming request
+     * to test.
+     *
+     * @var \Psr\Http\Message\ServerRequestInterface
+     */
+    private $_request;
+
+    /**
+     * A SinglePointLogin instances used for authentication
+     *
+     * @var \SinglePointLogin
+     */
+    private $_authenticator;
+
+    /**
      * Provide an autoloader for the api module namespace.
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         spl_autoload_register(
             function ($class) {
@@ -59,10 +74,13 @@ class LoginTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
-        $this->_request       = new ServerRequest();
-        $this->_authenticator = $this->createMock('\SinglePointLogin');
+        $this->_request = new ServerRequest();
+
+        $authenticator = $this->createMock('\SinglePointLogin');
+        '@phan-var \SinglePointLogin $authenticator';
+        $this->_authenticator = $authenticator;
     }
 
     /**
@@ -73,25 +91,29 @@ class LoginTest extends TestCase
      */
     public function testLoginSuccess(): void
     {
-        $this->_authenticator->expects($this->once())
+        $authenticator = $this->_authenticator;
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $authenticator';
+
+        $authenticator->expects($this->once())
             ->method('passwordAuthenticate')
             ->with('test_username', 'test_password')
             ->willReturn(true);
 
         $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
-            ->setMethods(['getLoginAuthenticator', 'getEncodedToken'])
+            ->addMethods(['getLoginAuthenticator', 'getEncodedToken'])
             ->getMock();
 
         $handler->expects($this->once())
             ->method('getLoginAuthenticator')
-            ->willReturn($this->_authenticator);
+            ->willReturn($authenticator);
 
         $handler->expects($this->once())
             ->method('getEncodedToken')
             ->willReturn('jwt_token');
+        '@phan-var \LORIS\api\Endpoints\Login $handler';
 
         $request = $this->_request
-            ->withAttribute('pathparts', array('login'))
+            ->withAttribute('pathparts', ['login'])
             ->withAttribute('LORIS-API-Version', 'v0.0.3')
             ->withAttribute('user', new \LORIS\AnonymousUser())
             ->withMethod('POST')
@@ -109,7 +131,7 @@ class LoginTest extends TestCase
         );
 
         $this->assertEquals(
-            array('token' => 'jwt_token'),
+            ['token' => 'jwt_token'],
             json_decode((string) $response->getBody(), true)
         );
     }

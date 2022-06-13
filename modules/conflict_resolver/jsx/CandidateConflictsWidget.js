@@ -63,8 +63,14 @@ function CandidateConflictsWidget(props) {
     return <div>
         <div id='conflictschart' />
         <ul>
-            <li>Click on instrument in legend to visit conflict resolver for that instrument across all visits.</li>
-            <li>Click on bar in graph to visit conflict resolver for that visit and instrument combination.</li>
+            <li>
+              {'Click on instrument in legend to visit conflict resolver '
+                + 'for that instrument across all visits.'}
+            </li>
+            <li>
+              {'Click on bar in graph to visit conflict resolver '
+                + 'for that visit and instrument combination.'}
+            </li>
         </ul>
     </div>;
 }

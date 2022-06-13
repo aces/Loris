@@ -45,18 +45,18 @@ class Channels
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
             'File'   => $this->_recording->getFileInfo()->getFilename(),
-        );
+        ];
 
         $channels = array_map(
             function ($chanL) {
                 $channelfileinfo = $chanL->getFileInfo();
                 $filename        = $channelfileinfo->getFilename();
 
-                return array(
+                return [
                     'ChannelName'            => $chanL->getChannelName(),
                     'ChannelDescription'     => $chanL->getChannelDescription(),
                     'ChannelType'            => $chanL->getChannelType(),
@@ -71,14 +71,14 @@ class Channels
                     'Reference'              => $chanL->getReference(),
                     'Unit'                   => $chanL->getUnit(),
                     'ChannelFilePath'        => $filename,
-                );
+                ];
             },
             $this->_recording->getChannels()
         );
 
-        return array(
+        return [
             'Meta'     => $meta,
             'Channels' => $channels,
-        );
+        ];
     }
 }

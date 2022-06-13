@@ -1,6 +1,6 @@
 # Survey Module Test Plan
 
-1.  Check user permission: User Management.
+1.  Check user permission: Survey Accounts: view module [survey_account_view].
     [Automation Testing]
 2.  Selection Filter:  try filtering by PSCID, Visit, and Instrument.
     [Automation Testing]

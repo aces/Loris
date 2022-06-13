@@ -1,8 +1,9 @@
 <?php
 /**
-  * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script. It took 14 hours to run the script on the CCNA DB during testing.
-  *
-  * This script is intended for a one-time use only to restore the value of the
+ * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script.
+ * It took 14 hours to run the script on the CCNA DB during testing.
+ *
+ * This script is intended for a one-time use only to restore the value of the
  * `UserID` column of instrument tables and the `UserID` key of the instrument
  * JSON `Data` in the flag table.
  *
@@ -31,7 +32,7 @@ echo "\n\nQuerying data...\n\n";
 
 // Get history DB
 $DBInfo = $config->getSetting('database');
-$hDB = isset($DBInfo['historydb']) ? $DBInfo['historydb'] : $DBInfo['database'];
+$hDB    = isset($DBInfo['historydb']) ? $DBInfo['historydb'] : $DBInfo['database'];
 
 $result_count = 1;
 
@@ -53,7 +54,7 @@ $history = $DB->pselect(
             GROUP BY primaryVals
         ) h2 USING (primaryVals, changeDate)
             GROUP BY CommentID, h1.userID",
-    array()
+    []
 );
 // Loop and index results from history by testname
 $idxHist = [];
@@ -61,7 +62,7 @@ foreach ($history as $entry) {
     $idxHist[$entry['Test_name']][] = $entry;
 }
 
-foreach(\Utility::getAllInstruments() as $testname => $fullName) {
+foreach (\Utility::getAllInstruments() as $testname => $fullName) {
     // Instantiate instrument object to get information
     try {
         $instrument = \NDB_BVL_Instrument::factory($testname, '', '');
@@ -72,14 +73,16 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
 
     // Check if instrument saves data in JSON format i.e. no-SQL table
     $JSONData = $instrument->usesJSONData();
-    $table = null;
+    $table    = null;
     if ($JSONData === false) {
         $table = $instrument->table;
         if (!$table) {
-            echo "\n\nERROR: The table name for instrument $testname cannot be found.\n";
+            echo "\n\nERROR: The table name for instrument ".
+                "$testname cannot be found.\n";
             continue;
         } else if (!$DB->tableExists($table)) {
-            echo "Table $table for instrument $testname does not exist in the Database.\n";
+            echo "Table $table for instrument $testname does not ".
+                "exist in the Database.\n";
             continue;
         } else if (!$DB->columnExists($table, 'UserID')) {
             echo "Column 'UserID' does not exist in the $table table.\n";
@@ -94,7 +97,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
         echo "\n\nThe following data can be imported into $testname:\n\n";
         foreach ($idxHist[$testname] as $row) {
             $commentID = $row['CommentID'];
-            $userID = $row['userID'];
+            $userID    = $row['userID'];
             echo "\nResult $result_count: $commentID userID: $userID\n";
             $result_count++;
         }
@@ -108,7 +111,7 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
         // use _save() function
         foreach ($idxHist[$testname] as $row) {
             $commentID = $row['CommentID'];
-            $userID = $row['userID'];
+            $userID    = $row['userID'];
 
             try {
                 $sessionInst = \NDB_BVL_Instrument::factory(
@@ -126,18 +129,19 @@ foreach(\Utility::getAllInstruments() as $testname => $fullName) {
 
             if (!$sessionInst) {
                 // instrument does not exist
-                echo "\t$testname for CommentID: $CommentID could not be instantiated.\n";
+                echo "\t$testname for CommentID: $CommentID could ".
+                    "not be instantiated.\n";
                 continue;
             }
 
             // Save userID
             echo "\tSaving userID $userID for CommentID: $commentID\n\n";
             $sessionInst->_save(
-                array(
+                [
                     'UserID' => $userID
-                )
+                ]
             );
-        } 
+        }
     }
 }
 

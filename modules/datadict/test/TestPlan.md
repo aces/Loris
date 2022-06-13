@@ -2,14 +2,14 @@
 
 1. Check that you have access to the Data Dictionary if the user has one or more of 
 these permissions: 
-   - data_dict
-   - data_dict_edit or superuser.
+   - data_dict (_"Data Dictionary: View Parameter Type Descriptions"_)
+   - data_dict_edit (_"Data Dictionary: Edit Parameter Type Descriptions"_) or superuser (_"Superuser - supersedes all permissions"_).
   [Automation Testing]
-2. Check that the instruments combo box contains all the instrument names.
+2. Check that the 'Source From' multiselect filter field contains all the instrument names.
   [Automation Testing]
 3. Perform various searches and validate the results. 
  - Use any combination of the available search criteria. 
- - Make sure that when you choose "Empty" in the Description combo box, all the rows 
+ - Make sure that when you choose "Empty" in the 'Description Status' filter dropdown, all the rows 
  returned have an empty description.
   [Automation Testing]
 4. Check that selecting multiple instruments returns all relevant results.
@@ -18,7 +18,7 @@ these permissions:
 6. Check that pushing the "Clear Filter" button sets resets all filters to empty
   [Automation Testing]
 7. Check that if (and only if) you have the 'data_dict_edit' permission you can edit 
-the Description field. Edit a description, access the Candidate Profile page and 
+the Description field (by clicking on the text of the description). Edit a description, access the Candidate Profile page and 
 access the Data Dictionary page again. Make sure the edit was saved.
   [Automation Testing]
 8. Check that you can navigate through the search result pages (both by clicking on

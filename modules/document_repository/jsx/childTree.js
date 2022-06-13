@@ -51,14 +51,32 @@ const headerRow = {
   textAlign: 'justify',
 };
 
+/**
+ * Child tree component
+ */
 class ChildTree extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.action = this.action.bind(this);
   }
+
+  /**
+   * Action
+   * @param {object} obj
+   */
   action(obj) {
     this.props.action(obj);
   }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let childList = null;
     let childrenNode = this.props.childrenNode;
@@ -81,8 +99,9 @@ class ChildTree extends Component {
               </div>
                 {
                   Object.values(node)[2] !== null &&
-                    <div style={commentStyle} className="tip">{Object.values(node)[2]}</div>
-
+                    <div style={commentStyle}
+                         className="tip">{Object.values(node)[2]}
+                    </div>
                 }
             </div>
           </td>

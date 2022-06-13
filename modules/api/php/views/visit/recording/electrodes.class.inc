@@ -45,18 +45,18 @@ class Electrodes
      */
     public function toArray(): array
     {
-        $meta = array(
+        $meta = [
             'CandID' => $this->_timepoint->getCandID(),
             'Visit'  => $this->_timepoint->getVisitLabel(),
             'File'   => $this->_recording->getFileInfo()->getFilename(),
-        );
+        ];
 
         $electrodes = array_map(
             function ($electrode) {
                 $fileinfo = $electrode->getFileInfo();
                 $filename = $fileinfo->getFilename();
 
-                return array(
+                return [
                     'ElectrodeName'     => $electrode->getElectrodeName(),
                     'ElectrodeType'     => $electrode->getElectrodeType(),
                     'ElectrodeMaterial' => $electrode->getElectrodeMaterial(),
@@ -65,14 +65,14 @@ class Electrodes
                     'Z'                 => $electrode->getZ(),
                     'Impedance'         => $electrode->getImpedance(),
                     'ElectrodeFilePath' => $filename,
-                );
+                ];
             },
             $this->_recording->getElectrodes()
         );
 
-        return array(
+        return [
             'Meta'       => $meta,
             'Electrodes' => $electrodes,
-        );
+        ];
     }
 }

@@ -4,7 +4,14 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+/**
+ * Issue Tracker Index component
+ */
 class IssueTrackerIndex extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -18,6 +25,9 @@ class IssueTrackerIndex extends Component {
     this.formatColumn = this.formatColumn.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
@@ -96,10 +106,17 @@ class IssueTrackerIndex extends Component {
       break;
     case 'Site':
       // if cell is an array containing all sites values
-      if (JSON.stringify(Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)) {
+      if (
+          JSON.stringify(
+              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+      ) {
         result = <td>All Sites</td>;
       } else {
-        result = <td>{cell.map((v) => this.state.data.fieldOptions.sites[v]).filter((v) => v != undefined).join(', ')}</td>;
+        result = <td>
+              {cell.map((v) =>
+                  this.state.data.fieldOptions.sites[v]).filter(
+                      (v) => v != undefined).join(', ')}
+        </td>;
       }
       break;
     case 'PSCID':
@@ -128,6 +145,11 @@ class IssueTrackerIndex extends Component {
     return result;
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -213,9 +235,22 @@ class IssueTrackerIndex extends Component {
 
     const filterPresets = [
       {label: 'All Issues', filter: {}},
-      {label: 'Active Issues', filter: {status: {value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved']}}},
-      {label: 'Closed Issues', filter: {status: {value: ['closed'], exactMatch: true}}},
-      {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
+      {label: 'Active Issues', filter: {
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
+      {label: 'Closed Issues', filter: {
+        status: {value: ['closed'], exactMatch: true},
+      }},
+      {label: 'My Issues', filter: {
+        assignee: {
+          value: this.state.data.fieldOptions.userID, exactMatch: true,
+        },
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
     ];
 
     const addIssue = () => {

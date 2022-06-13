@@ -39,10 +39,10 @@ class Examiner extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'examiner_view',
                 'examiner_multisite',
-            )
+            ]
         );
     }
 
@@ -64,32 +64,32 @@ class Examiner extends \NDB_Menu_Filter_Form
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
-                $query = " 
-                        FROM examiners e 
-                            LEFT JOIN examiners_psc_rel epr ON 
+                $query = "
+                        FROM examiners e
+                            LEFT JOIN examiners_psc_rel epr ON
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
-                            LEFT JOIN certification c ON 
-                                (c.examinerID=e.examinerID and c.pass = 'certified') 
-                            LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+                            LEFT JOIN certification c ON
+                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
                             LEFT JOIN users u ON u.ID=e.userID
                         WHERE 1=1 ";
         } else {
 
               $query = "
-                        FROM examiners e 
-                            LEFT JOIN examiners_psc_rel epr ON 
+                        FROM examiners e
+                            LEFT JOIN examiners_psc_rel epr ON
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
-                            LEFT JOIN certification c ON 
-                                (c.examinerID=e.examinerID and c.pass = 'certified') 
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+                            LEFT JOIN certification c ON
+                                (c.examinerID=e.examinerID and c.pass = 'certified')
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
                             LEFT JOIN users u ON u.ID=e.userID
                         WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
             'e.full_name as Examiner',
             'u.Email',
             'e.examinerID as ID',
@@ -97,29 +97,29 @@ class Examiner extends \NDB_Menu_Filter_Form
             'e.radiologist as Radiologist',
             "GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
                                 Certification",
-        );
+        ];
         $this->group_by     = "e.full_name,psc.Name,e.examinerID";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
-        $this->headers      = array(
+        $this->headers      = [
             'Examiner',
             'Email',
             'ID',
             'Site',
             'Radiologist',
             'Certification',
-        );
-        $this->validFilters = array(
+        ];
+        $this->validFilters = [
             'e.full_name',
             'epr.centerID',
             'COALESCE(e.radiologist, 0)',
-        );
+        ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
             'examiner'    => 'e.full_name',
             'site'        => 'epr.centerID',
             'radiologist' => 'COALESCE(e.radiologist, 0)',
-        );
+        ];
     }
 
     /**
@@ -150,17 +150,17 @@ class Examiner extends \NDB_Menu_Filter_Form
         }
 
         // Radiologist options
-        $radiologist = array(
+        $radiologist = [
             '1' => 'Yes',
             '0' => 'No',
-        );
+        ];
 
-        $this->fieldOptions = array(
+        $this->fieldOptions = [
             'sites'        => $sites,
             'radiologists' => $radiologist,
-        );
+        ];
 
-        $this->form->addFormRule(array(&$this, '_validateAddExaminer'));
+        $this->form->addFormRule([&$this, '_validateAddExaminer']);
     }
 
     /**
@@ -229,31 +229,31 @@ class Examiner extends \NDB_Menu_Filter_Form
              FROM examiners
              WHERE full_name=:fullName
              AND userID IS NULL",
-            array('fullName' => $fullName)
+            ['fullName' => $fullName]
         );
 
         if (empty($examinerID)) {
             $DB->insert(
                 'examiners',
-                array(
+                [
                     'full_name'   => $fullName,
                     'radiologist' => $radiologist
-                )
+                ]
             );
         } else {
             $DB->update(
                 'examiners',
-                array('radiologist' => $radiologist),
-                array('examinerID' => $examinerID)
+                ['radiologist' => $radiologist],
+                ['examinerID' => $examinerID]
             );
         }
 
         $DB->insert(
             'examiners_psc_rel',
-            array(
+            [
                 'examinerID' => $this->getExaminerID($fullName),
                 'centerID'   => $siteID,
-            )
+            ]
         );
 
         header("Location: {$baseurl}/examiner/", true, 303);
@@ -275,13 +275,13 @@ class Examiner extends \NDB_Menu_Filter_Form
             "SELECT e.examinerID
              FROM examiners e
                   LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-             WHERE e.full_name=:fullName 
-             AND epr.centerID=:siteID 
+             WHERE e.full_name=:fullName
+             AND epr.centerID=:siteID
              AND e.userID IS NULL",
-            array(
+            [
                 'fullName' => $fullName,
                 'siteID'   => $siteID,
-            )
+            ]
         );
 
         if (empty($examinerID)) {
@@ -296,20 +296,17 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param string $fullName name associated to examiner in the DB table
      *
-     * @return string   ID of the examiner
+     * @return ?string   ID of the examiner
      */
-    function getExaminerID($fullName)
+    function getExaminerID($fullName): ?string
     {
-        $DB         = \NDB_Factory::singleton()->database();
-        $examinerID = $DB->pselectOne(
+        $DB = \NDB_Factory::singleton()->database();
+        return $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
              WHERE full_name=:fullName AND userID IS NULL",
-            array('fullName' => $fullName)
+            ['fullName' => $fullName]
         );
-
-        //returned as a string
-        return $examinerID;
     }
 
     /**
@@ -317,19 +314,17 @@ class Examiner extends \NDB_Menu_Filter_Form
      *
      * @param string $siteName name of the site
      *
-     * @return string ID of the site
+     * @return ?int
      */
-    function getCenterID($siteName)
+    function getCenterID($siteName): ?int
     {
-        $DB     = \NDB_Factory::singleton()->database();
-        $siteID = $DB->pselectOne(
+        $DB = \NDB_Factory::singleton()->database();
+        return $DB->pselectOneInt(
             "SELECT CenterID
              FROM psc
              WHERE Name=:siteName",
-            array('siteName' => $siteName)
+            ['siteName' => $siteName]
         );
-        //returned as a string
-        return $siteID;
     }
 
     /**
@@ -361,9 +356,9 @@ class Examiner extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/examiner/js/examinerIndex.js",
-            )
+            ]
         );
     }
 }

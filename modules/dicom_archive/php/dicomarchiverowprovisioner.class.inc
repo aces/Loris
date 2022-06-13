@@ -58,7 +58,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
                   LEFT JOIN psc ON (psc.CenterID=s.CenterID)
                   LEFT JOIN mri_upload m ON (m.TarchiveID=t.TarchiveID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
-            array()
+            []
         );
     }
 
@@ -72,8 +72,12 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            $cid = (int) $row['CenterID'];
+        if ($row['CenterID'] !== null) {
+            $cid = new \CenterID($row['CenterID']);
             unset($row['CenterID']);
-            return new DICOMArchiveRow($row, $cid);
+            return new DICOMArchiveRowWithSession($row, $cid);
+        }
+        unset($row['CenterID']);
+        return new DICOMArchiveRowWithoutSession($row);
     }
 }

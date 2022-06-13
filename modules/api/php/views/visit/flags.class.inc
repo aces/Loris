@@ -50,26 +50,23 @@ class Flags
     public function toArray(): array
     {
         $instrumentname = $this->_instrument->testName;
-
-        $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
-            $this->_instrument
-        );
+        $instrumentdata = $this->_instrument->getInstanceData();
 
         $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
 
-        $meta = array(
+        $meta = [
             'Candidate'  => $this->_timepoint->getCandID(),
             'Visit'      => $this->_timepoint->getVisitLabel(),
             'DDE'        => $isDDE,
             'Instrument' => $instrumentname,
-        );
+        ];
 
         $flags = $this->_instrument->getFlags()->toArray();
 
-        return array(
+        return [
             'Meta'  => $meta,
             'Flags' => $flags,
-        );
+        ];
     }
 }
 

@@ -7,6 +7,10 @@ import React, {Component} from 'react';
  *
  */
 class OpenProfileForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -23,12 +27,21 @@ class OpenProfileForm extends Component {
     this.validateAndSubmit = this.validateAndSubmit.bind(this);
   }
 
+  /**
+   * Update Form Element
+   *
+   * @param {string} formElement
+   * @param {*} value
+   */
   updateFormElement(formElement, value) {
     let state = this.state;
     state[formElement] = value;
     this.setState(state);
   }
 
+  /**
+   * Validate and Submit
+   */
   validateAndSubmit() {
     let state = this.state;
     if (this.state.CandID === '') {
@@ -57,12 +70,22 @@ class OpenProfileForm extends Component {
     };
     this.setState(state);
 
-    $.get(loris.BaseURL + '/candidate_list/validateIDs',
-      {
-        CandID: state.CandID,
-        PSCID: state.PSCID,
-      },
-        function(data) {
+    let url = new URL(loris.BaseURL + '/candidate_list/validateIDs');
+    const params = {CandID: state.CandID, PSCID: state.PSCID};
+    Object.keys(params).forEach(
+      (key) => url.searchParams.append(key, params[key])
+    );
+
+    fetch(url, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        return;
+      }
+
+      response.text().then(
+        (data) => {
           // ids are valid, submit accessProfileForm form
           if (data === '1') {
             state.error = {
@@ -70,9 +93,11 @@ class OpenProfileForm extends Component {
               className: 'alert alert-info text-center',
             };
             if (this.props.betaProfileLink) {
-                window.location.href = loris.BaseURL + '/candidate_profile/' + state.CandID;
+              window.location.href = loris.BaseURL
+                + '/candidate_profile/'
+                + state.CandID;
             } else {
-                window.location.href = loris.BaseURL + '/' + state.CandID;
+              window.location.href = loris.BaseURL + '/' + state.CandID;
             }
           } else {
             // display error message
@@ -82,9 +107,18 @@ class OpenProfileForm extends Component {
             };
           }
           this.setState(state);
-        }.bind(this));
+        }
+      );
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let warning;
 
@@ -115,7 +149,6 @@ class OpenProfileForm extends Component {
         <ButtonElement
           name='Open Profile'
           label='Open Profile'
-          onUserInput={this.validateAndSubmit}
         />
         </FormElement>
     );

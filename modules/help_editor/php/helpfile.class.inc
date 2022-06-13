@@ -30,7 +30,7 @@ class HelpFile
     /**
      * Identifies the help file
      *
-     * @var    array
+     * @var    ?int
      * @access private
      */
     var $helpID;
@@ -62,13 +62,12 @@ class HelpFile
         // set the help ID
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
-            "SELECT helpID, parentID, hash, topic,
-             content,
+            "SELECT helpID, hash, topic, content,
              created, updated FROM help WHERE helpID = :HID",
-            array('HID' => $helpID)
+            ['HID' => $helpID]
         );
         // set the help file
-        $obj->data = $result;
+        $obj->data = $result ?? [];
 
         return $obj;
     }
@@ -104,193 +103,11 @@ class HelpFile
     {
         // update the help file
         \NDB_Factory::singleton()->database()
-            ->update('help', $set, array('helpID' => $this->helpID));
+            ->update('help', $set, ['helpID' => $this->helpID]);
 
         return true;
     }
 
-    /**
-     * Returns whether or not the topic has subtopics
-     *
-     * @return bool
-     */
-    function hasChild()
-    {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM help WHERE parentID = :HID",
-            array('HID' => $this->helpID)
-        );
-        return ($result > 0);
-    }
-
-
-    /**
-     * Returns an array of its subtopics' IDs
-     *
-     * @param int $stopat Stop at this depth
-     * @param int $level  Depth
-     *
-     * @return array
-     */
-    function childIDs($stopat = 1, $level = 1)
-    {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        // see if it has a child
-        $hasChild = $this->hasChild();
-
-        $childIDs = array();
-
-        // get its children
-        if ($hasChild) {
-            $result = $DB->pselect(
-                "SELECT helpID FROM help WHERE parentID = :HID",
-                array('HID' => $this->helpID)
-            );
-            // add the children to the array
-            $childIDs = $result;
-
-            // check if we're done recursing
-            if ($level != $stopat) {
-                // check all the children for more children
-                foreach ($childIDs as $childID) {
-                    // make the child
-                    $child =& HelpFile::factory($childID);
-                    // get the child's children
-                    $grandChildIDs = $child->childIDs($stopat, $level + 1);
-
-                    // add the children to the array
-                    $childIDs = array_merge($childIDs, $grandChildIDs);
-                }
-            }
-        }
-
-        return $childIDs;
-    }
-
-
-    /**
-     * Returns an array of its subtopics's IDs and topics
-     *
-     * @param int $stopat Stop at this depth
-     * @param int $level  Depth
-     *
-     * @return array
-     */
-    function childData($stopat = 1, $level = 1)
-    {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        // see if it has a child
-        $hasChild = $this->hasChild();
-
-        $childData = array();
-
-        // get its children
-        if ($hasChild) {
-            $result = $DB->pselect(
-                "SELECT helpID, topic, $level as level
-                FROM help
-                WHERE parentID = :HID",
-                array('HID' => $this->helpID)
-            );
-
-            // add the children to the array
-            $childData = $result;
-
-            // check if we're done recursing
-            if ($level !== $stopat) {
-                // check all the children for more children
-                foreach ($childData as $row) {
-                    // make the child
-                    $child =& HelpFile::factory($row['helpID']);
-                    // get the child's children
-                    $grandChildData = $child->childData($stopat, $level + 1);
-
-                    // add the children to the array
-                    $childData = array_merge($childData, $grandChildData);
-                }
-            }
-        }
-
-        return $childData;
-    }
-
-
-    /**
-     * Returns an array of its parent's IDs
-     *
-     * @param int $stopat Stop at this depth
-     * @param int $level  Depth
-     *
-     * @return array
-     */
-    function parentIDs($stopat = 1, $level = 1)
-    {
-        $parentIDs = array();
-
-        if ($this->data['parentID'] > 0) {
-            // add the parent to the array
-            $parentIDs[] = $this->data['parentID'];
-
-            // check if we're done recursing
-            if ($level != $stopat) {
-                // make the parent
-                $parent =& HelpFile::factory($this->data['parentID']);
-                // get the parent's parent
-                $grandParentIDs = $parent->parentIDs($stopat, $level + 1);
-
-                // add the parents to the array
-                $parentIDs = array_merge($parentIDs, $grandParentIDs);
-            }
-        }
-
-        return $parentIDs;
-    }
-
-
-    /**
-     * Returns an array of its parent's IDs and topics
-     *
-     * @param int $stopat Stop at this depth
-     * @param int $level  Depth
-     *
-     * @return array
-     */
-    function parentData($stopat = 1, $level = 1)
-    {
-        // create DB object
-        $DB = \Database::singleton();
-
-        $parentData = array();
-
-        if ($this->data['parentID'] > 0) {
-            $parentData = $DB->pselectRow(
-                "SELECT helpID, topic, $level as level
-                 FROM help
-                 WHERE helpID = :HID",
-                array('HID' => $this->data['parentID'])
-            );
-
-            // check if we're done recursing
-            if (is_array($parentData) && $level != $stopat) {
-                // make the parent
-                $parent =& HelpFile::factory($this->data['parentID']);
-
-                // get the parent's parent
-                $grandParentData = $parent->parentData($stopat, $level + 1);
-
-                $parentData = array_merge($parentData, $grandParentData);
-            }
-        }
-
-        return $parentData ?? array();
-    }
 
     /**
      * Dumps the HelpFile as an array
@@ -315,16 +132,15 @@ class HelpFile
      *
      * @return integer of HelpID
      */
-    static function hashToID($hash)
+    static function hashToID($hash): int
     {
-        // create DB object
-        $DB =& \Database::singleton();
-
-        $helpID = $DB->pselectOne(
+        $id = \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT helpID FROM help WHERE hash = :HID",
-            array('HID' => $hash)
+            ['HID' => $hash]
         );
-
-        return $helpID;
+        if (is_null($id)) {
+            throw new \NotFound();
+        }
+        return $id;
     }
 }

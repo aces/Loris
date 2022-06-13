@@ -7,51 +7,58 @@ namespace LORIS\user_accounts;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class UserAccountRow implements \LORIS\Data\DataInstance
+class UserAccountRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
+    protected $ProjectIDs;
+
+    private array $_centerIDs;
+    private array $_projectIDs;
 
      /**
       * Create a new ModuleRow Instance.
       *
-      * @param array $row  The ModuleRow Instance
-      * @param array $cids The CenterIDs
-      * @param array $pids The ProjectIDs
+      * @param array        $row  The ModuleRow Instance
+      * @param \CenterID[]  $cids The CenterIDs
+      * @param \ProjectID[] $pids The ProjectIDs
       */
     public function __construct(array $row, array $cids, array $pids)
     {
-        $this->CenterIDs  = $cids;
-        $this->ProjectIDs = $pids;
-        $this->DBRow      = $row;
+        $this->_centerIDs  = $cids;
+        $this->_projectIDs = $pids;
+
+        $this->DBRow = $row;
     }
 
     /**
      * Returns the CenterIDs for this row.
      *
-     * @return array The CenterIDs
+     * @return \CenterID[] The CenterIDs
      */
     public function getCenterIDs() : array
     {
-        return $this->CenterIDs;
+        return $this->_centerIDs;
     }
 
     /**
      * Returns the ProjectID for this row.
      *
-     * @return array The ProjectIds
+     * @return \ProjectID[] The ProjectIds
      */
     public function getProjectIDs() : array
     {
-        return $this->ProjectIDs;
+        return $this->_projectIDs;
     }
 
-     /**
-      * Implements \LORIS\Data\DataInstance interface for this row.
-      *
-      * @return string the instance data.
-      */
-    public function toJSON(): string
+    /**
+     * Implements \LORIS\Data\DataInstance interface for this row.
+     *
+     * @return array which can be serialized by json_encode()
+     */
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 }

@@ -59,7 +59,7 @@ class Datadict extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         $instruments     = \Utility::getAllInstruments();
-        $dictInstruments = array();
+        $dictInstruments = [];
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // database we need to instantiate the object to get the table name
@@ -88,9 +88,9 @@ class Datadict extends \DataFrameworkMenu
             }
             $dictInstruments[$key] = $otherNames . $name;
         }
-        return array(
+        return [
             'sourceFrom' => $dictInstruments,
-        );
+        ];
     }
 
     /**
@@ -116,9 +116,9 @@ class Datadict extends \DataFrameworkMenu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/datadict/js/dataDictIndex.js",
-            )
+            ]
         );
     }
 

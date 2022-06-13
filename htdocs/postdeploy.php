@@ -26,11 +26,11 @@ $path_to_file = '../SQL/0000-00-00-schema.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$path_to_file = '../SQL/0000-00-01-Permission.sql';
+$path_to_file = '../SQL/0000-00-01-Menus.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$path_to_file = '../SQL/0000-00-02-Menus.sql';
+$path_to_file = '../SQL/0000-00-02-Permission.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
@@ -50,7 +50,7 @@ $pw = password_hash($password, PASSWORD_DEFAULT);
 
 $conn->query(
     "UPDATE users SET Password_hash=" . $conn->quote($pw) .
-    ", Password_expiry='2020-01-01', Pending_approval='N' WHERE ID=1"
+    ", Pending_approval='N' WHERE ID=1"
 );
 $RootDir = dirname(getcwd());
 $conn->query(

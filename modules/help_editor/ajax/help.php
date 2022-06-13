@@ -19,10 +19,10 @@ try {
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
-    $help = array(
+    $help = [
         'content' => $m->getHelp($subpageName ?? $moduleName),
         'format'  => 'markdown',
-    );
+    ];
     print json_encode($help);
     ob_end_flush();
     exit;

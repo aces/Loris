@@ -28,8 +28,8 @@ class Stats_Behavioural extends \NDB_Form
     /**
      * The default params
      */
-    protected $siteParams    = array();
-    protected $projectParams = array();
+    protected $siteParams    = [];
+    protected $projectParams = [];
 
     /**
      * Checking user's permission
@@ -73,37 +73,67 @@ class Stats_Behavioural extends \NDB_Form
         $DB      = $factory->database();
         $user    = $factory->user();
 
+        // SITES
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+        $sitesString = implode(",", array_keys($list_of_sites));
+
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+                    CenterID as NumericID,
+                    IFNULL(PSCArea,Name) as LongName,
+                    Name as ShortName
+              FROM psc
+              WHERE CenterID <> '1'
+                    AND Study_site = 'Y'
+	            AND CenterID IN (" . $sitesString . ")",
+            []
+        );
+
+        $this->tpl_data['Centers'] = $centers;
+
         // PROJECTS
-
         $allProjectList = \Utility::getProjectList();
-        $projects       = array();
+        $projects       = [];
         $projects['']   = 'All Projects';
-        $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if (isset($_REQUEST['site'])
+                && $_REQUEST['site'] == $row['NumericID']
+            ) {
+                $this->tpl_data['CurrentSite'] = [
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                ];
+            }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
+        }
 
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
+            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
-                );
-            $Param_Project ='AND (s.ProjectID IS NULL 
-                                   OR c.RegistrationProjectID=:pid)';
+                    'Name' => $projects["$currentProject"],
+                ];
+            $Param_Project ='AND (s.ProjectID IS NULL
+                               OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
-
-            $currentProject = '';
-            $paramProjects  = array();
+            $currentProject = null;
+            $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
                 $paramProjects[] = ":paramProjectID$key";
                 $this->projectParams["paramProjectID$key"] = $projectID;
@@ -113,30 +143,28 @@ class Stats_Behavioural extends \NDB_Form
                                        (" . implode(',', $paramProjects) . ")
                                  )";
         } else {
-            $currentProject = '';
+            $currentProject = null;
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
         //
         //SUBPROJECTS
         $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+        if ($currentProject !== null) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
-            $Visits = \Utility::getExistingVisitLabels($currentProject);
+            $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getExistingVisitLabels();
+            $Visits = \Utility::getVisitList();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';
 
         //SITES
 
-        $Param_Centers = '';
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
@@ -144,7 +172,7 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         if (!empty($list_of_sites)) {
-            $paramCenters      = array();
+            $paramCenters      = [];
             $list_of_sites_ids = array_keys($list_of_sites);
             foreach ($list_of_sites_ids as $key => $siteID) {
                 $paramCenters[] = ":paramSiteID$key";
@@ -167,7 +195,7 @@ class Stats_Behavioural extends \NDB_Form
               WHERE s.CenterID <> '1'
                     AND s.Study_site = 'Y'
                     $Param_Centers",
-            $this->siteParams ?? array()
+            $this->siteParams ?? []
         );
 
         $this->tpl_data['Centers'] = $centers;
@@ -177,10 +205,10 @@ class Stats_Behavioural extends \NDB_Form
             if (isset($_REQUEST['site'])
                 && $_REQUEST['site'] == $row['NumericID']
             ) {
-                $this->tpl_data['CurrentSite'] = array(
+                $this->tpl_data['CurrentSite'] = [
                     'ID'   => $row['NumericID'],
                     'Name' => $row['LongName'],
-                );
+                ];
             }
 
         }
@@ -202,7 +230,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Centers
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            array_merge($this->projectParams, $this->siteParams) ?? array()
+            array_merge($this->projectParams, $this->siteParams) ?? []
         );
 
         foreach ($result as $row) {
@@ -211,28 +239,32 @@ class Stats_Behavioural extends \NDB_Form
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
-            $c      =& $this->tpl_data['behaviour']['C' . $center];
+            $value  = intval($row['val']);
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += intval($row['val']);
+            $this->tpl_data['behaviour']['C' . $center][$vl]
+                = $this->tpl_data['behaviour']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['behaviour']['C' . $center];
+
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = intval($row['val']);
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -275,34 +307,38 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Centers
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            array_merge($this->projectParams, $this->siteParams) ?? array()
+            array_merge($this->projectParams, $this->siteParams) ?? []
         );
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
-            $c      =& $this->tpl_data['dde']['C' . $center];
+            $value  = intval($row['val']);
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += intval($row['val']);
+            $this->tpl_data['dde']['C' . $center][$vl]
+                = $this->tpl_data['dde']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['dde']['C' . $center];
+
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = intval($row['val']);
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -342,9 +378,9 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/statistics/js/form_stats_behavioural.js",
-            )
+            ]
         );
     }
 
@@ -360,7 +396,7 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

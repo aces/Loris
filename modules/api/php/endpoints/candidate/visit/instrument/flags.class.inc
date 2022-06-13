@@ -35,6 +35,13 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_instrument;
 
     /**
+     * The current flag status
+     *
+     * @var \NDB_BVL_InstrumentStatus
+     */
+    private $_instrumentStatus;
+
+    /**
      * The visit from which the instrument is filled
      *
      * @var \Timepoint
@@ -60,11 +67,11 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'PUT',
             'PATCH',
-        );
+        ];
     }
 
     /**
@@ -75,10 +82,10 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -95,9 +102,10 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return $this->_handleGET($request);
 
         case 'PUT':
+            return $this->_handlePUT($request);
+
         case 'PATCH':
-            // TODO :: I don`t think this was working in v0.0.3
-            return new \LORIS\Http\Response\JSON\NotImplemented();
+            return $this->_handlePATCH($request);
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
@@ -113,11 +121,9 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a GET request
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         $body = (new \LORIS\api\Views\Visit\Flags(
             $this->_visit,
@@ -128,6 +134,133 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $body
         );
     }
+
+    /**
+     * Handles a PUT request.
+     * Creates or updates all statuses for a given instrument with new values.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        if (!$user->_hasPermission('data_entry')) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user does not have data_entry permission'
+            );
+        }
+
+        $loris = $request->getAttribute("loris");
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus($loris);
+        $this->_instrumentStatus->select($this->_instrument->commentID);
+
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
+
+        try {
+
+            $requiredfields = [
+                'Data_entry',
+                'Administration',
+                'Validity',
+            ];
+
+            $diff = array_diff($requiredfields, array_keys($data['Flags']));
+            if (!empty($diff)) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Field(s) missing in Flags: ' . implode(', ', $diff)
+                );
+            }
+            $this->_instrumentStatus->setDataEntryStatus(
+                $data['Flags']['Data_entry']
+            );
+            $this->_instrumentStatus->setAdministrationStatus(
+                $data['Flags']['Administration']
+            );
+            $this->_instrumentStatus->setValidityStatus(
+                $data['Flags']['Validity']
+            );
+
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
+    /**
+     * Handles a PATCH request.
+     * Creates or updates some or all statuses for a given instrument. If all
+     * statuses are requested to be changed, this method is equivalent to handlePUT.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
+    {
+        $user = $request->getAttribute('user');
+        if (!$this->_instrument->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user can not update this instrument'
+            );
+        }
+
+        $loris = $request->getAttribute("loris");
+        $this->_instrumentStatus = new \NDB_BVL_InstrumentStatus($loris);
+        $this->_instrumentStatus->select($this->_instrument->commentID);
+
+        if (!$this->_instrument->determineDataEntryAllowed()) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Can not update instruments that are flagged as complete.'
+            );
+        }
+
+        $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
+
+        if (!$this->_instrument->validate($data)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Could not update.'
+            );
+        }
+
+        try {
+            if (array_key_exists('Data_entry', $data['Flags'])) {
+                $this->_instrumentStatus->setDataEntryStatus(
+                    $data['Flags']['Data_entry']
+                );
+            }
+            if (array_key_exists('Administration', $data['Flags'])) {
+                $this->_instrumentStatus->setAdministrationStatus(
+                    $data['Flags']['Administration']
+                );
+            }
+            if (array_key_exists('Validity', $data['Flags'])) {
+                $this->_instrumentStatus->setValidityStatus(
+                    $data['Flags']['Validity']
+                );
+            }
+        } catch (\Throwable $e) {
+            error_log($e->getMessage());
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+        return (new \LORIS\Http\Response())
+            ->withStatus(204);
+    }
+
 
     /**
      * Implements the ETagCalculator interface

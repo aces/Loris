@@ -50,8 +50,10 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-        $newrow = json_decode($resource->toJSON(), true);
-        $cid    = $resource->getCenterID();
+        $newrow = json_decode(json_encode($resource), true);
+        if (!is_array($newrow)) {
+            throw new \Exception("Error converting DataInstance to array");
+        }
 
         // escape any forward slashes
         $pNameRegex      = preg_replace(
@@ -94,6 +96,12 @@ class DICOMArchiveAnonymizer implements Mapper
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {
             $newrow['patientID'] = 'INVALID - HIDDEN';
         }
-        return new DICOMArchiveRow($newrow, $cid);
+
+        if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
+            return new DICOMArchiveRowWithoutSession($newrow);
+        } else {
+            $cid = $resource->getCenterID();
+            return new DICOMArchiveRowWithSession($newrow, $cid);
+        }
     }
 }

@@ -26,10 +26,10 @@ namespace LORIS\statistics;
 class Statistics_Site extends \NDB_Menu
 {
 
-    var $instruments    = array();
-    var $issues         = array();
+    var $instruments    = [];
+    var $issues         = [];
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     /**
      * Checking user's permission
@@ -40,16 +40,57 @@ class Statistics_Site extends \NDB_Menu
      */
     function _hasAccess(\User $user) : bool
     {
-        //TODO: To create a permission specific to statistics
-        return(   $user->hasPermission('access_all_profiles')
-               || $user->hasPermission('data_entry'));
+        //TODO: Create a permission specific to statistics
+        $hasAccessToAllProfiles = $user->hasAllPermissions(
+            [
+                'access_all_profiles',
+                'data_entry',
+            ]
+        );
+
+        $hasCenterPermission = false;
+
+        // TODO: There are no means of set permissions per site
+        // for a given user right now: (e.g.) The user X can have
+        // the permission data_entry on site Y but not on site Z.
+        // Currently, hasCenterPermission() function is only checking
+        // if the user have a given center AND a given permission
+        // not if it have the permission for this specific center.
+        // This logic will be implemented in hasCenterPermission()
+        // in near versions when the permission framework allow it.
+
+        // If a CenterID is passed in the request, check if the user has the
+        // data_entry permission at the site/center specified by CenterID.
+        if (!empty($_REQUEST['CenterID'])) {
+            $hasCenterPermission = $user->hasCenterPermission(
+                'data_entry',
+                new \CenterID($_REQUEST['CenterID'])
+            );
+        } else {
+            // For the short term the user we'll be granted access
+            // if at least have permission AND one of the centers
+            // The filter _checkCriteria() (please see bellow)
+            // takes care of restricting access to sites the user belongs to.
+            // When logic reimplemented on hasCenterPermission(),
+            // _checkCriteria() will take care of retriving information
+            // only for those centers the user has the specific permission.
+            // (please see notes about hasCenterPermission() above)
+            foreach ($user->getCenterIDs() as $centerID) {
+                if ($user->hasCenterPermission('data_entry', $centerID)) {
+                    $hasCenterPermission = true;
+                    break;
+                }
+            }
+        }
+
+        return $hasAccessToAllProfiles || $hasCenterPermission;
     }
 
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param \CenterID  $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -65,8 +106,6 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = array();
-
             if ($user->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
@@ -74,8 +113,8 @@ class Statistics_Site extends \NDB_Menu
             }
 
             if (!empty($list_of_permitted_sites)) {
-                $paramCenters = array();
-                $centerIDs    = array();
+                $paramCenters = [];
+                $centerIDs    = [];
                 foreach ($list_of_permitted_sites as $key => $siteID) {
                     $paramCenters[] = ":paramSiteID$key";
                     $centerIDs["paramSiteID$key"] = $siteID;
@@ -96,10 +135,10 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
-            $userProjectsIDs = $user->getData('ProjectIDs');
+            $userProjectsIDs = $user->getProjectIDs();
             if (!empty($userProjectsIDs)) {
-                $paramProjects = array();
-                $projectsIDs   = array();
+                $paramProjects = [];
+                $projectsIDs   = [];
                 foreach ($userProjectsIDs as $key => $projectID) {
                     $paramProjects[] = ":paramProjectID$key";
                     $projectsIDs["paramProjectID$key"] = $projectID;
@@ -139,9 +178,9 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -151,16 +190,16 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB    =& \Database::singleton();
         $count = $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, 
-                candidate c, flag f, {$instrument} i 
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
-                AND s.CenterID <> '1' 
-                $this->query_criteria 
-                AND f.Data_entry='Complete' 
+            "SELECT count(s.CandID)  FROM session s,
+                candidate c, flag f, {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                $this->query_criteria
+                AND f.Data_entry='Complete'
                 AND s.Current_stage <> 'Recycling Bin'
-                AND f.Administration='All' 
+                AND f.Administration='All'
                 AND i.CommentID NOT LIKE 'DDE%'",
             $this->query_vars
         );
@@ -170,9 +209,9 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */
@@ -208,11 +247,12 @@ class Statistics_Site extends \NDB_Menu
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow(
+            $center = $DB->pselectRow(
                 $sqlRow,
-                array('cid' => $_REQUEST['CenterID'])
+                ['cid' => $_REQUEST['CenterID']]
             );
-            $centerID = $center['ID'] ?? '';
+
+            $centerID = new \CenterID($center['ID'] ?? '');
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
@@ -227,10 +267,10 @@ class Statistics_Site extends \NDB_Menu
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given instrument in the
         // template
-        $visits = array();
+        $visits = [];
 
         $this->_setInstrumentName();
-        $data = array();
+        $data = [];
         foreach ($this->instruments as $instrument=>$label) {
 
             if ($DB->tableExists($instrument)) {
@@ -249,23 +289,23 @@ class Statistics_Site extends \NDB_Menu
                 $test_url = $instrument;
 
                 foreach ($results as $row) {
-                    if (!in_array($row['Visit_label'], $visits)) {
+                    if (!in_array($row['Visit_label'] ?? [], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
-                    $arrayVar = array(
+                    $arrayVar = [
                         'test_url'  => $test_url,
                         'CandID'    => $row['CandID'],
                         'SessionID' => $row['SessionID'],
                         'CommentID' => $row['CommentID'],
                         'PSCID'     => $row['PSCID'],
-                    );
+                    ];
                     $results[$row['Visit_label']][] = $arrayVar;
                 }
-                $data[] = array(
+                $data[] = [
                     'name'        => $label,
                     'count'       => $complete_count,
                     'incompletes' => $results,
-                );
+                ];
             }
         }
 
@@ -288,7 +328,7 @@ class Statistics_Site extends \NDB_Menu
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

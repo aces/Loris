@@ -15,27 +15,22 @@ This module is used primarily by study coordinators/administrators who share stu
 
 ## Permissions
 
- A user that has "document_repository_view" permission can view and upload files in Document Repository.
+ A user that has "document_repository_view" permission can view files in Document Repository.
+ A user that has "document_repository_edit" permission can upload and edit files in Document Repository.
  A user that has "document_repository_delete" permission can delete files in Document Repository.
 
 ## Configurations
 
 - The Document Repository enables users to upload and organize project files of any type (PDF,Photo,Txt...) that can easily be viewable for users with appropriate permissions ("document_repository_view").
 
-- Check that the following settings are in the php.ini file. 
-```
-session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
-max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
-max_execution_time = 10800      // Maximum execution time of each script (in seconds)
-upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
-post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
-```
+The `documentRepositoryPath` configuration setting is the path to the folder on the
+uploaded file system where new files will be written.
 
 - A mail server is required to send out email notification regarding the Document Repository updates.
 
 ## Interactions with LORIS
 
-Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following event occurs:
+Users can enable notifications for the document_repository in the "My Preferences" module. Permissions required in order to be able to change notification settings for this module are dictated by the `notification_modules_perm_rel` table of the database. Once activated, users receive an email each time one of the following events occurs:
 * Addition, deletion or modification of a file (by another user)
 * Addition of a category (by another user)
 

@@ -57,7 +57,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -68,10 +68,10 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -84,6 +84,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $pathparts = $request->getAttribute('pathparts');
+        $loris     = $request->getAttribute("loris");
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -124,6 +125,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         try {
             $instrument = \NDB_BVL_Instrument::factory(
+                $loris,
                 $instrumentname,
                 $commentid,
                 '',
@@ -142,11 +144,9 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array representation of this endpoint's response body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;

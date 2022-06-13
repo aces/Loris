@@ -26,17 +26,17 @@ class Notify
      * Spools a new notification message for sending, unless the exact
      * same message (including type) is already in the spool.
      *
-     * @param string   $type     The name of the notification type
-     * @param string   $message  The message itself
-     * @param int|null $centerID CenterID of the target recipients
-     *                           (if null, goes to all users)
+     * @param string    $type     The name of the notification type
+     * @param string    $message  The message itself
+     * @param ?CenterID $centerID CenterID of the target recipients
+     *                            (if null, goes to all users)
      *
      * @return void
      */
     static function spool(
         string $type,
         string $message,
-        ?int $centerID=null
+        ?CenterID $centerID=null
     ): void {
 
         $typeID = Notify::getTypeID($type);
@@ -46,12 +46,12 @@ class Notify
             );
         }
 
-        $setArray = array(
+        $setArray = [
             'NotificationTypeID' => $typeID,
             'TimeSpooled'        => date("Y-m-d H:i:s"),
             'Message'            => $message,
             'CenterID'           => $centerID,
-        );
+        ];
         \Database::singleton()->insert('notification_spool', $setArray);
     }
 
@@ -64,10 +64,13 @@ class Notify
      */
     static function getTypeID(string $type): int
     {
-        $typeID = \Database::singleton()->pselectOne(
+        $result = \NDB_Factory::singleton()->database()->pselectOneInt(
             "SELECT NotificationTypeID FROM notification_types WHERE Type=:TP",
-            array('TP' => $type)
+            ['TP' => $type]
         );
-        return $typeID;
+        if (is_null($result)) {
+            throw new \NotFound();
+        }
+        return $result;
     }
 }

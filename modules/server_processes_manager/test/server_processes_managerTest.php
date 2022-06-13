@@ -41,7 +41,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      * Table headers
      */
     private $_loadingUI
-        =  array(
+        =  [
             'Server Processes Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
             'No.'                      => '#dynamictable > thead > tr',
@@ -54,7 +54,16 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             'User ID'                  => '#dynamictable > thead > tr',
             'Start Time'               => '#dynamictable > thead > tr',
             'End Time'                 => '#dynamictable > thead > tr',
-        );
+        ];
+
+    //Filter locations
+    static $pid    = 'input[name="pid"]';
+    static $type   = 'input[name="type"]';
+    static $userid = 'input[name="userid"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+
     /**
      * Tests that the page does not load if config setting mriCodePath has
      * not been set.
@@ -64,12 +73,12 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     function testDoesNotLoadWithoutMRICodePath()
     {
         $this->setupConfigSetting('mriCodePath', null);
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains('Cannot continue', $bodyText);
+        $this->assertStringContainsString('Cannot continue', $bodyText);
         $this->resetPermissions();
     }
 
@@ -83,12 +92,15 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     {
         // This function sets mriCodePath for all future functions
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -99,12 +111,15 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithPermission()
     {
-        $this->setupPermissions(array("server_processes_manager"));
+        $this->setupPermissions(["server_processes_manager"]);
         $this->safeGet($this->url . "/server_processes_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 
@@ -115,14 +130,12 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testPageUIs()
     {
-        $this->markTestSkipped("Skipping long test");
         $this->safeGet($this->url . "/server_processes_manager/");
-        sleep(1);
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertContains($key, $text);
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector("$value")
+            )->getText();
+            $this->assertStringContainsString($key, $text);
         }
     }
     /**
@@ -132,43 +145,28 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     function testFilters()
     {
-        $this->markTestSkipped("Skipping long test");
-        return;
-    }
-    /**
-     * This function could test filter function in each Tabs.
-     *
-     * @param string $url            this is for the url which needs to be tested.
-     * @param string $filter         the filter which needs to be tested.
-     * @param string $testData       the test data.
-     * @param string $expectDataRows the expect rows in the table.
-     *
-     * @return void
-     */
-    function _testFilter($url,$filter,$testData,$expectDataRows)
-    {
-        $this->safeGet($this->url . $url);
-        sleep(1);
-        $this->safeFindElement(
-            WebDriverBy::Name($filter)
-        )->sendKeys($testData);
-        //click show data button
-        $this->webDriver->executescript(
-            "document.querySelector('#filter').click()"
+        $this->safeGet($this->url . "/server_processes_manager/");
+        $this->_filterTest(
+            self::$pid,
+            self::$display,
+            self::$clearFilter,
+            '317',
+            '1 row'
         );
-        sleep(1);
-        $this->webDriver->getPageSource();
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#datatable > div >".
-            " div.table-header.panel-heading').textContent"
+        $this->_filterTest(
+            self::$type,
+            self::$display,
+            self::$clearFilter,
+            'mri_upload',
+            '51'
         );
-        //click clear form
-        $this->webDriver->executescript(
-            "document.querySelector('#server_processes > div:nth-child(3)".
-            " > div > div:nth-child(2) > input').click()"
+        $this->_filterTest(
+            self::$userid,
+            self::$display,
+            self::$clearFilter,
+            'admin',
+            '51'
         );
-
-        $this->assertContains($expectDataRows, $text);
     }
 }
 

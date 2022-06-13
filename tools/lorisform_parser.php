@@ -17,12 +17,13 @@
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/generic_includes.php";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize("../project/config.xml");
 
-$instrumentsToSkip = array();
+$instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
@@ -38,7 +39,7 @@ while ($file=fgets(STDIN)) {
 }
 
 //Process the files
-foreach ($files AS $file) {
+foreach ($files as $file) {
     echo "\n";
     $fp   =fopen($file, "r");
     $data =fread($fp, filesize($file));
@@ -54,7 +55,7 @@ foreach ($files AS $file) {
     echo "Requiring file...\n";
     include_once $file;
     echo "Instantiating new object...\n";
-    $obj =new $className(new NullModule(), "", "", "", "");
+    $obj =new $className($lorisInstance, new NullModule(), "", "", "", "");
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 
@@ -110,12 +111,12 @@ if (empty($output)) {
  *
  * @return string LINST formated element.
  */
-function parseElements($elements, $groupLabel="")
+function parseElements($elements, $groupLabel = "")
 {
     global $obj;
     $output = '';
-    foreach ($elements AS $element) {
-        if ($element['label'] != "" ) {
+    foreach ($elements as $element) {
+        if ($element['label'] != "") {
             $label = str_replace("&nbsp;", "", $element['label']);
             $label = trim(preg_replace('/\s+/', ' ', $label));
         } else {
@@ -130,7 +131,7 @@ function parseElements($elements, $groupLabel="")
             }
             $output       .="{@}".$element['name']."{@}".$label."{@}";
             $optionsOutput ="";
-            foreach ($element['options'] AS $key => $option) {
+            foreach ($element['options'] as $key => $option) {
                 if (!empty($optionsOutput)) {
                     $optionsOutput .="{-}";
                 }
@@ -159,8 +160,8 @@ function parseElements($elements, $groupLabel="")
                 && isset($el['options']['maxYear'])
             ) {
                 $options = $element['options']['minYear']
-                    ."{@}"
-                    .$element['options']['maxYear'];
+                ."{@}"
+                .$element['options']['maxYear'];
             }
             $output .="date{@}".$element['name']."{@}".$label."{@}".$options."\n";
             break;
@@ -207,7 +208,7 @@ function parseElements($elements, $groupLabel="")
                 $output .= $mainquestion . "{@}";
             }
             $output .= "'" . $element->_attributes['value']
-                   . "'=>'" . $optionfield . "'";
+               . "'=>'" . $optionfield . "'";
             if ($element->_attributes['position'] == "last") {
                 $output .="\n";
             } else {
@@ -220,8 +221,8 @@ function parseElements($elements, $groupLabel="")
         case "html":
         case "file":
         case "hidden":
-                // skip because it's useless
-                echo "SKIP: skipping quickform element type: ".$element['type']."\n";
+            // skip because it's useless
+            echo "SKIP: skipping quickform element type: ".$element['type']."\n";
             break;
 
         default:
@@ -244,12 +245,11 @@ function getExcludedInstruments()
     $config =& NDB_Config::singleton();
     $excluded_instruments = $config->getSetting('excluded_instruments');
 
-    $ex_instruments =array();
+    $ex_instruments = [];
     foreach ($excluded_instruments as $instruments) {
         foreach (Utility::asArray($instruments) as $instrument) {
             $ex_instruments[$instrument] = $instrument;
         }
-
     }
     return $ex_instruments;
 }

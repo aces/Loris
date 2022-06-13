@@ -13,7 +13,7 @@
             <th>Output Type</th>
             <th>Scanner</th>
             <th>Subproject</th>
-            {if $useEDC}
+            {if $useEDC|default}
             <th>EDC</th>
             {/if}
         </tr>
@@ -32,7 +32,7 @@
             <td>{$outputType|escape}</td>
             <td>{$subject.scanner|escape}</td>
             <td>{$subject.SubprojectTitle|escape}</td>
-            {if $useEDC}
+            {if $useEDC|default}
             <td>{$subject.edc|escape}</td>
             {/if}
         </tr>

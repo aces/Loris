@@ -33,10 +33,14 @@ class Recording
 
     private $_filetype;
 
-    private $_centerid;
+    private \CenterID $_centerid;
 
     private $_entitytype;
 
+    private ?string $_channel_file_path;
+    private ?string $_electrode_file_path;
+    private ?string $_event_file_path;
+    private ?string $_archive_file_path;
     /**
      * Constructor
      *
@@ -96,7 +100,7 @@ class Recording
                        ON (pa.PhysiologicalFileID = f.PhysiologicalFileID)
                      WHERE f.PhysiologicalFileID = :v_fileid
                     ',
-                    array('v_fileid' => $fileid)
+                    ['v_fileid' => $fileid]
                 );
             if (empty($dbrow)) {
                 throw new \NotFound('There is no file with that FileID');
@@ -107,7 +111,7 @@ class Recording
             $this->_outputtype   = $dbrow['outputtype'];
             $this->_acquisitionmodality = $dbrow['acquisitionmodality'];
             $this->_filetype            = $dbrow['filetype'];
-            $this->_centerid            = (int) $dbrow['centerid'];
+            $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
             $this->_channel_file_path   = $dbrow['channel_file_path'];
             $this->_electrode_file_path = $dbrow['electrode_file_path'];
@@ -141,10 +145,10 @@ class Recording
                          )
                          AND PhysiologicalFileID = :v_fileid
                       ',
-                array(
+                [
                     'v_fileid'     => $this->_fileid,
                     'v_headername' => $headername,
-                )
+                ]
             );
         return $dbrow['Value'] ?? '';
     }
@@ -171,7 +175,7 @@ class Recording
                        WHERE
                          pf.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_reduce(
             $dbrows,
@@ -179,7 +183,7 @@ class Recording
                 $carry[$row['name']] = $row['value'];
                 return $carry;
             },
-            array()
+            []
         );
     }
 
@@ -309,7 +313,7 @@ class Recording
                        WHERE
                          pc.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {
@@ -350,7 +354,7 @@ class Recording
                        WHERE
                          pe.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {
@@ -387,7 +391,7 @@ class Recording
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',
-                array('v_fileid' => $this->_fileid)
+                ['v_fileid' => $this->_fileid]
             );
         return array_map(
             function ($row) {

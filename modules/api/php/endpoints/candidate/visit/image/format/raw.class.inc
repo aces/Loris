@@ -50,7 +50,7 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array('GET');
+        return ['GET'];
     }
 
     /**
@@ -61,10 +61,10 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
-            'v0.0.2',
+        return [
             'v0.0.3',
-        );
+            'v0.0.4-dev',
+        ];
     }
 
     /**
@@ -96,11 +96,9 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Create an array representation of this endpoint's reponse body
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request): ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         $info = $this->_image->getFileInfo();
 
@@ -116,6 +114,13 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $mincpath = \NDB_Factory::singleton()->config()
             ->getSetting('MINCToolsPath');
+
+        if ($mincpath === null) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Invalid MINCToolsPath configuration setting: ' .
+                'MINCToolsPath is null'
+            );
+        }
 
         $minctooldir = new \SPLFileInfo($mincpath);
         if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
@@ -158,11 +163,11 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         exec("minctoraw -v 2>&1", $output);
 
-        $signature = array(
+        $signature = [
             'minctoraw' => $output,
             'mtime'     => $info->getMTime(),
             'fullpath'  => $info->getPathname(),
-        );
+        ];
 
         return md5(json_encode($signature));
     }

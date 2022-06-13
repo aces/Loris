@@ -38,10 +38,10 @@ class CandidateParametersTestIntegrationTest
             $this->url
             . "/candidate_parameters/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Candidate Parameters", $bodyText);
+        $this->assertStringContainsString("Candidate Parameters", $bodyText);
     }
 
 }

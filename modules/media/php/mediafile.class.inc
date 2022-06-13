@@ -25,7 +25,8 @@ namespace LORIS\media;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class MediaFile implements \LORIS\Data\DataInstance
+class MediaFile implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     protected $DBRow;
     protected $CenterID;
@@ -43,22 +44,22 @@ class MediaFile implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the instance data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON(): string
+    public function jsonSerialize() : array
     {
-        return json_encode($this->DBRow);
+        return $this->DBRow;
     }
 
     /**
      * Returns the CenterID for this instance, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return $this->DBRow['centerId'];
+        return new \CenterID($this->DBRow['centerId']);
     }
 
     /**

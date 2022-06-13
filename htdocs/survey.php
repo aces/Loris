@@ -47,12 +47,16 @@ class DirectDataEntryMainPage
      */
     var $Subtest;
 
+    public $CommentID;
+
     var $NumPages;
     var $NextPageNum;
     var $PrevPageNum;
 
     var $tpl_data;
     var $caller;
+
+    private $loris;
 
     /**
      * Initialize all of the class variables and things required from the
@@ -78,19 +82,25 @@ class DirectDataEntryMainPage
         $this->key = $_REQUEST['key'];
 
         $DB = Database::singleton();
+
+        $this->loris     = new \LORIS\LorisInstance(
+            $DB,
+            $config,
+            []
+        );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
         $this->CommentID = $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
         $this->NumPages  = $DB->pselectOne(
             "SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN",
-            array('TN' => $this->TestName)
+            ['TN' => $this->TestName]
         );
 
         if (empty($this->TestName) && empty($this->CommentID)) {
@@ -109,22 +119,22 @@ class DirectDataEntryMainPage
                 "SELECT Subtest_name
                 FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
-                array(
+                [
                     'TN' => $this->TestName,
                     'PN' => $pageNum,
-                )
+                ]
             );
         }
 
         $totalPages        = $DB->pselectOne(
             "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
-            array('TN' => $this->TestName)
+            ['TN' => $this->TestName]
         );
         $this->NextPageNum = $this->getNextPageNum($pageNum);
         $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
         $this->CommentID = $this->getCommentID();
-        $this->tpl_data  = array(
+        $this->tpl_data  = [
             'nextpage'    => $this->NextPageNum,
             'prevpage'    => $this->PrevPageNum,
             'pageNum'     =>
@@ -133,7 +143,7 @@ class DirectDataEntryMainPage
             'totalPages'  => $totalPages,
             'key'         => $this->key,
             'study_title' => $config->getSetting('title'),
-        );
+        ];
     }
 
 
@@ -141,7 +151,7 @@ class DirectDataEntryMainPage
     /**
      * Get the page which follows this page
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return int The page which preceeded this one
      */
@@ -160,10 +170,10 @@ class DirectDataEntryMainPage
             \Database::singleton()->pselectOne(
                 "SELECT Order_number FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
-                array(
+                [
                     'TN' => $this->TestName,
                     'PN' => $nextPage,
-                )
+                ]
             )
         );
     }
@@ -171,7 +181,7 @@ class DirectDataEntryMainPage
     /**
      * Get the previous page number
      *
-     * @param integer $currentPage The current page number
+     * @param string|integer $currentPage The current page number
      *
      * @return string|null the previous page number or "top" if the user is on
      *         the top page
@@ -194,17 +204,17 @@ class DirectDataEntryMainPage
                 "SELECT MAX(Order_number)
                 FROM instrument_subtests
                 WHERE Test_name=:TN",
-                array('TN' => $this->TestName)
+                ['TN' => $this->TestName]
             );
         }
         $prevPage = $currentPage-1;
         return $DB->pselectOne(
             "SELECT Order_number FROM instrument_subtests
             WHERE Test_name=:TN AND Order_number=:PN",
-            array(
+            [
                 'TN' => $this->TestName,
                 'PN' => $prevPage,
-            )
+            ]
         );
     }
 
@@ -218,7 +228,7 @@ class DirectDataEntryMainPage
         try {
             $this->initialize();
             $this->display();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->displayError($e);
         }
     }
@@ -226,17 +236,17 @@ class DirectDataEntryMainPage
     /**
      * Get the CommentID associated with the current page's key
      *
-     * @return string a valid CommentID for this page
+     * @return ?string a valid CommentID for this page
      */
-    function getCommentID()
+    function getCommentID(): ?string
     {
         $DB = Database::singleton();
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array(
+            [
                 'key' => $this->key,
-            )
+            ]
         );
     }
 
@@ -249,8 +259,7 @@ class DirectDataEntryMainPage
      */
     function displayError($e)
     {
-        switch($e->getCode())
-        {
+        switch ($e->getCode()) {
         case 404:
             header("HTTP/1.1 404 Not Found");
             break;
@@ -281,7 +290,7 @@ class DirectDataEntryMainPage
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
             WHERE OneTimePassword=:key',
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
 
         if ($currentStatus === 'Complete') {
@@ -292,8 +301,8 @@ class DirectDataEntryMainPage
 
         $DB->update(
             "participant_accounts",
-            array('Status' => $status),
-            array('OneTimePassword' => $this->key)
+            ['Status' => $status],
+            ['OneTimePassword' => $this->key]
         );
 
         return true;
@@ -314,11 +323,11 @@ class DirectDataEntryMainPage
         $DB = Database::singleton();
         $DB->update(
             "participant_accounts",
-            array(
+            [
                 'UserEaseRating' => $ease,
                 'UserComments'   => $comments,
-            ),
-            array('OneTimePassword' => $this->key)
+            ],
+            ['OneTimePassword' => $this->key]
         );
     }
 
@@ -340,12 +349,13 @@ class DirectDataEntryMainPage
             // Comments is too comment of an instrument fieldname,
             // so just check if ease is set
             $this->updateComments(
-                $_POST['ease'],
+                intval($_POST['ease']),
                 $_POST['comments']
             );
         }
 
         $workspace = $this->caller->load(
+            $this->loris,
             $this->TestName,
             $this->Subtest ?? '',
             $this->CommentID,
@@ -379,22 +389,22 @@ class DirectDataEntryMainPage
             $this->updateStatus('Complete');
             $DB->update(
                 $this->TestName,
-                array(
+                [
                     'Date_taken' => date('Y-m-d'),
-                ),
-                array(
+                ],
+                [
                     'CommentID' => $this->CommentID,
-                )
+                ]
             );
             $DB->update(
                 'flag',
-                array(
+                [
                     'Data_entry'     => 'Complete',
                     'Administration' => 'All',
-                ),
-                array(
+                ],
+                [
                     'CommentID' => $this->CommentID,
-                )
+                ]
             );
 
         } else {
