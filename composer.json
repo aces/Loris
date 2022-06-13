@@ -13,7 +13,8 @@
         "laminas/laminas-diactoros" : "^2.5",
         "ext-json": "*",
         "bjeavons/zxcvbn-php": "^1.0",
-        "aws/aws-sdk-php": "^3.209"
+        "aws/aws-sdk-php": "^3.209",
+        "psr/log": "^1.1"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "^3.5",
