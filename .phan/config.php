@@ -30,6 +30,7 @@ return [
     "unused_variable_detection" => true,
     "suppress_issue_types" => [
         "PhanUnusedPublicNoOverrideMethodParameter",
+        "PhanTypeInvalidArrayKeyLiteral",
         "PhanTypePossiblyInvalidDimOffset",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
