@@ -34,6 +34,9 @@ return [
         "PhanTypePossiblyInvalidDimOffset",
         "PhanDeprecatedPartiallySupportedCallable",
         "PhanTypeMismatchArgumentReal",
+        "PhanTypeMismatchReturnNullable",
+        "PhanTypeMismatchReturn",
+        "PhanUnusedVariable",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
