@@ -996,8 +996,8 @@ class AddElement extends Component {
       });
     }
 
-    if (questionName.length > 64 && selected !== 'textbox' 
-        && selected !== 'textarea' && selected !== 'date' 
+    if (questionName.length > 64 && selected !== 'textbox'
+        && selected !== 'textarea' && selected !== 'date'
         && selected !== 'numeric') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
@@ -1042,8 +1042,8 @@ class AddElement extends Component {
       return;
     }
 
-    if (questionName.length > 57 && (selected === 'textbox' 
-      || selected === 'textarea' || selected === 'date' 
+    if (questionName.length > 57 && (selected === 'textbox'
+      || selected === 'textarea' || selected === 'date'
       || selected === 'numeric')) {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
