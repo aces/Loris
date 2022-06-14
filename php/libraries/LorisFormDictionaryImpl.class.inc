@@ -111,7 +111,7 @@ trait LorisFormDictionaryImpl
                 break;
             case 'text':
                 $t = new \LORIS\Data\Types\StringType(255);
-		        break;
+                break;
             case 'file':
                 $t = new \LORIS\Data\Types\URI();
                 break;
