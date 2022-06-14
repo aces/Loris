@@ -49,7 +49,7 @@ class ImagingQCIntegrationTest extends LorisIntegrationTest
             "An error occurred while loading the page.",
             $bodyText
         );
-print_r($bodyText);
+        print_r($bodyText);
 
     }
 }
