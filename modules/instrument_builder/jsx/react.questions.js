@@ -1007,7 +1007,7 @@ class AddElement extends Component {
       });
       hasError = true;
     } else if (this.state.error) {
-      // No error, remove the elememt's questionName error flag if set
+      // No error, remove the element's questionName error flag if set
       let temp = this.state.error;
       delete temp.questionName;
       this.setState({
