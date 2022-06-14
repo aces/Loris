@@ -112,7 +112,7 @@ trait LorisFormDictionaryImpl
             case 'text':
                 $t = new \LORIS\Data\Types\StringType(255);
 		        break;
-	        case 'file':
+            case 'file':
                 $t = new \LORIS\Data\Types\URI();
                 break;
             case 'textarea':
