@@ -111,6 +111,9 @@ trait LorisFormDictionaryImpl
                 break;
             case 'text':
                 $t = new \LORIS\Data\Types\StringType(255);
+		break;
+	    case 'file':
+                $t = new \LORIS\Data\Types\URI();
                 break;
             case 'textarea':
                 $t = new \LORIS\Data\Types\StringType();
