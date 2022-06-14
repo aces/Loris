@@ -49,6 +49,10 @@ class ImagingQCIntegrationTest extends LorisIntegrationTest
             "An error occurred while loading the page.",
             $bodyText
         );
+        sleep(10);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#lorisworkspace")
+        )->getText();
         print_r($bodyText);
 
     }
