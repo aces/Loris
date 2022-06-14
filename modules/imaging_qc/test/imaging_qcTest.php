@@ -29,4 +29,26 @@ class ImagingQCIntegrationTest extends LorisIntegrationTest
             "Imaging Quality Control"
         );
     }
+    /**
+     * Tests that, the homepage should not have "You do not have access
+     * to this page." on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithoutPermissionsAccessAllProfiles()
+    {
+        $this->safeGet($this->url . "/imaging_qc/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "Something went wrong."
+            $bodyText
+        );
+
+    }
 }
