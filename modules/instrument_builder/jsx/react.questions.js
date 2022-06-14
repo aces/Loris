@@ -996,8 +996,9 @@ class AddElement extends Component {
       });
     }
 
-    if(questionName.length > 64 && selected !== 'textbox' && selected !== 'textarea' &&
-      selected !== 'date' && selected !== 'numeric') {
+    if (questionName.length > 64 && selected !== 'textbox' 
+        && selected !== 'textarea' && selected !== 'date' 
+        && selected !== 'numeric') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
@@ -1018,8 +1019,8 @@ class AddElement extends Component {
       // An error is present, return
       return;
     }
-    
-    if(questionText.length > 64) {
+
+    if (questionText.length > 64) {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
@@ -1041,8 +1042,9 @@ class AddElement extends Component {
       return;
     }
 
-    if(questionName.length > 57 && (selected === 'textbox' || selected === 'textarea' || 
-      selected === 'date' || selected === 'numeric')) {
+    if (questionName.length > 57 && (selected === 'textbox' 
+      || selected === 'textarea' || selected === 'date' 
+      || selected === 'numeric')) {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
