@@ -1001,7 +1001,7 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Field length should be strictly less than 65 characters';
+      temp.questionName = 'Please shorten to 64 characters maximum';
       this.setState({
         error: temp,
       });
