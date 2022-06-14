@@ -46,7 +46,7 @@ class ImagingQCIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "Something went wrong.",
+            "An error occurred while loading the page.",
             $bodyText
         );
 
