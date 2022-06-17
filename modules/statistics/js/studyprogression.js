@@ -38,7 +38,27 @@ $(document).ready(function() {
             dataset.push(data.datasets[i].name);
             processedData.push(dataset.concat(data.datasets[i].data));
         }
+        var totals = new Array();
+        totals.push("Total");
+        for(var j=0; j<data.datasets[0].data.length; j++){
+            var total=0;
+            for(var i=0;i<data.datasets.length;i++){
+                total+=parseInt(data.datasets[i].data[j]);
+            }
+            totals.push(total);
+        }
+        processedData.push(totals);
         return processedData;
+    }
+
+    function maxY(data){
+        var maxi=0;
+        for(var j=0; j<data.datasets[0].data.length; j++){
+            for(var i=0;i<data.datasets.length;i++){
+                maxi=Math.max(maxi,parseInt(data.datasets[i].data[j]));
+            }
+        }
+        return maxi;
     }
 
 
@@ -74,6 +94,7 @@ $(document).ready(function() {
                         }
                     },
                     y: {
+                        max: maxY(data),
                         label: 'Scans'
                     }
                 },
@@ -146,6 +167,7 @@ $(document).ready(function() {
                         }
                     },
                     y: {
+                        max: maxY(data),
                         label: 'Candidates registered'
                     }
                 },
