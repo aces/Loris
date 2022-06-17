@@ -108,7 +108,7 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "mri_protocol_group",
+            "scan_type_parameter_group",
             [
                 'MriProtocolGroupID' => 11,
                 'Name'               => 'test',
@@ -277,7 +277,7 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->delete(
-            "mri_protocol_group",
+            "scan_type_parameter_group",
             ['Name' => 'test']
         );
         $this->DB->delete(
