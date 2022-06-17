@@ -67,9 +67,9 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/scans_bymonth',
         type: 'get',
         success: function(data) {
-            let lengendNames = [];
+            let legendNames = [];
             for (let j=0; j<data.datasets.length; j++) {
-                lengendNames.push(data.datasets[j].name);
+                legendNames.push(data.datasets[j].name);
             }
             let scanLineData = formatLineData(data);
             scanLineChart = c3.generate({
@@ -108,7 +108,7 @@ $(document).ready(function() {
             d3.select('.scanChartLegend')
               .insert('div', '.scanChart')
               .attr('class', 'legend')
-              .selectAll('div').data(lengendNames).enter()
+              .selectAll('div').data(legendNames).enter()
               .append('div')
               .attr('data-id', function(id) {
                 return id;
@@ -140,9 +140,9 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/siterecruitment_line',
         type: 'get',
         success: function(data) {
-            let lengendNames = [];
+            let legendNames = [];
             for (let j=0; j<data.datasets.length; j++) {
-                lengendNames.push(data.datasets[j].name);
+                legendNames.push(data.datasets[j].name);
             }
             let recruitmentLineData = formatLineData(data);
             recruitmentLineChart = c3.generate({
@@ -181,7 +181,7 @@ $(document).ready(function() {
             d3.select('.recruitmentChartLegend')
               .insert('div', '.recruitmentChart')
               .attr('class', 'legend')
-              .selectAll('div').data(lengendNames).enter()
+              .selectAll('div').data(legendNames).enter()
               .append('div')
               .attr('data-id', function(id) {
                 return id;
