@@ -15,7 +15,6 @@
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . '/../generic_includes.php';
-require_once 'Database.class.inc';
 
 // Select all entries present in the mri_protocol table
 $protocols_list = [];
