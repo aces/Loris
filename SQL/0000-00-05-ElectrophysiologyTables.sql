@@ -180,15 +180,6 @@ CREATE TABLE `physiological_electrode` (
   REFERENCES `physiological_electrode_material` (`PhysiologicalElectrodeMaterialID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Create `physiological_event_file_type` table
-CREATE TABLE `physiological_event_file_type` (
-    `FileType` varchar(20) NOT NULL,
-    `Description` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`FileType`),
-    UNIQUE KEY `FileType` (`FileType`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-;
-
 -- Create `physiological_event_file` table
 CREATE TABLE `physiological_event_file` (
     `EventFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -200,7 +191,7 @@ CREATE TABLE `physiological_event_file` (
     PRIMARY KEY (`EventFileID`),
     KEY `FK_physio_file_ID` (`PhysiologicalFileID`),
     KEY `FK_event_file_type` (`FileType`),
-    CONSTRAINT `FK_event_file_type` FOREIGN KEY (`FileType`) REFERENCES `physiological_event_file_type` (`FileType`),
+    CONSTRAINT `FK_event_file_type` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes` (`type`),
     CONSTRAINT `FK_physio_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
@@ -494,10 +485,4 @@ INSERT INTO physiological_annotation_label
     (21, 'sleep_spindle',       'sleep spindle'),
     (22, 'sleep_k-complex',     'sleep K-complex'),
     (23, 'scorelabeled',        'a global label indicating that the EEG has been annotated with SCORE.');
-
--- Insert file types (json, tsv)
-INSERT INTO physiological_event_file_type (FileType, Description) VALUES
-    ('json', 'JSON File Type, sidecar for event metadata'),
-    ('tsv', 'TSV File Type, contains information about each event')
-;
 
