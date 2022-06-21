@@ -44,13 +44,35 @@ $(document).ready(function() {
         "use strict";
         var processedData = new Array();
         if (data.datasets) {
+            var m=data.datasets.male;
+            var f=data.datasets.female;
             var females = ['Female'];
-            processedData.push(females.concat(data.datasets.female));
+            processedData.push(females.concat(f));
             var males = ['Male'];
-            processedData.push(males.concat(data.datasets.male));
+            processedData.push(males.concat(m));
+            var totals=['Total'];
+            for(var j=0; j<m.length; j++){
+                var total=parseInt(m[j])+parseInt(f[j]);
+                totals.push(total);
+            }
+            console.log(data)
+            console.log(processedData)
+            processedData.push(totals);
         }
         return processedData;
     }
+
+    function maxYBar(data){
+        var maxi=0;
+        var m=data.datasets.male;
+        var f=data.datasets.female;
+        for(var j=0; j<m.length; j++){
+            
+            maxi=Math.max(parseInt(m[j])+parseInt(f[j]), maxi);
+        }
+        return maxi;
+    }
+
     // AJAX to get pie chart data
     $.ajax({
         url: loris.BaseURL + '/statistics/charts/siterecruitment_pie',
@@ -85,7 +107,8 @@ $(document).ready(function() {
                 bindto: '#recruitmentBarChart',
                 data: {
                     columns: recruitmentBarData,
-                    type: 'bar'
+                    type: 'bar',
+                    groups: ['Male', 'Female', 'Total']
                 },
                 axis: {
                     x: {
@@ -93,6 +116,7 @@ $(document).ready(function() {
                         categories: recruitmentBarLabels
                     },
                     y: {
+                        max: maxYBar(data),
                         label: 'Candidates registered'
                     }
                 },

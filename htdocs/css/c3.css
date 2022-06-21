@@ -108,6 +108,10 @@
     fill-opacity: 0.75;
 }
 
+.c3-chart-bar.c3-target.c3-target-Total{
+    display: none;
+}
+
 /*-- Arc --*/
 
 .c3-chart-arcs-title {
