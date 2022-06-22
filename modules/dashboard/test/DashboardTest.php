@@ -110,8 +110,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "scan_type_parameter_group",
             [
-                'MriProtocolGroupID' => 11,
-                'Name'               => 'test',
+                'ScanTypeParameterGroupID' => 11,
+                'Name'                     => 'test',
             ]
         );
 
