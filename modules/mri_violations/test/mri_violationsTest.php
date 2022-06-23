@@ -165,54 +165,54 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->DB->insert(
-            "mri_protocol_group",
+            "scan_type_parameter_group",
             [
-                'MriProtocolGroupID' => 11,
-                'Name'               => 'test',
+                'ScanTypeParameterGroupID'   => 11,
+                'ScanTypeParameterGroupName' => 'test',
             ]
         );
 
         $this->DB->insert(
-            "mri_protocol_violated_scans",
+            "scan_type_identification_failure",
             [
-                'ID'                 => '1001',
-                'CandID'             => '999888',
-                'PatientName'        => '[Test]PatientName_Test1',
-                'time_run'           => '2009-06-29 04:00:44',
-                'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-                'series_description' => 'Test Description',
-                'SeriesUID'          => '5555',
-                'TarchiveID'         => '263',
-                'MriProtocolGroupID' => 11,
+                'ScanTypeIdentificationFailureID' => '100001',
+                'CandID'                   => '999888',
+                'PatientName'              => '[Test]PatientName_Test1',
+                'TimeRun'                  => '2009-06-29 04:00:44',
+                'ScanLocation'             => 'assembly/test/test/mri/test/test.mnc',
+                'HeaderName'               => 'series_description',
+                'SeriesUID'                => '5555',
+                'TarchiveID'               => '263',
+                'ScanTypeParameterGroupID' => 11,
             ]
         );
         $this->DB->insert(
-            "mri_protocol_violated_scans",
+            "scan_type_identification_failure",
             [
-                'ID'                 => '1002',
-                'CandID'             => '999777',
-                'PatientName'        => '[name]test_Test2',
-                'time_run'           => '2008-06-29 04:00:44',
-                'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
-                'series_description' => 'Test Series Description',
-                'SeriesUID'          => '5556',
-                'TarchiveID'         => '264',
-                'MriProtocolGroupID' => 11,
+                'ScanTypeIdentificationFailureID' => '100002',
+                'CandID'                   => '999777',
+                'PatientName'              => '[name]test_Test2',
+                'TimeRun'                  => '2008-06-29 04:00:44',
+                'ScanLocation'             => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'HeaderName'               => 'series_description',
+                'SeriesUID'                => '5556',
+                'TarchiveID'               => '264',
+                'ScanTypeParameterGroupID' => 11,
             ]
         );
         $this->DB->insert(
             "violations_resolved",
             [
-                'ExtID'     => '1001',
+                'ExtID'     => '100001',
                 'hash'      => '123456',
-                'TypeTable' => 'mri_protocol_violated_scans',
+                'TypeTable' => 'scan_type_identification_failure',
                 'Resolved'  => 'other',
             ]
         );
         $this->DB->insert(
             "MRICandidateErrors",
             [
-                'ID'          => '1002',
+                'ID'          => '100002',
                 'PatientName' => '[Test]PatientName',
                 'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
                 'SeriesUID'   => '5558',
@@ -229,15 +229,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "MRICandidateErrors",
-            ['ID' => '1002']
+            ['ID' => '100002']
         );
         $this->DB->delete(
-            "mri_protocol_violated_scans",
-            ['ID' => '1001']
+            "scan_type_identification_failure",
+            ['ID' => '100001']
         );
         $this->DB->delete(
-            "mri_protocol_violated_scans",
-            ['ID' => '1002']
+            "scan_type_identification_failure",
+            ['ID' => '100002']
         );
         $this->DB->delete(
             "tarchive",
@@ -278,13 +278,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "violations_resolved",
             [
-                'ExtID'     => '1001',
-                'TypeTable' => 'mri_protocol_violated_scans',
+                'ExtID'     => '100001',
+                'TypeTable' => 'scan_type_identification_failure',
             ]
         );
         $this->DB->delete(
             "violations_resolved",
-            ['ExtID' => '1002']
+            ['ExtID' => '100002']
         );
         $this->DB->delete(
             "subproject",
@@ -305,8 +305,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->delete(
-            "mri_protocol_group",
-            ['Name' => 'test']
+            "scan_type_parameter_group",
+            ['ScanTypeParameterGroupName' => 'test']
         );
         parent::tearDown();
     }
@@ -512,11 +512,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "Filename",
             "assembly/test2/test2/mri/test2/test2.mnc"
         );
-        //testing search by Description
-        $this->_searchTest(
-            "Description",
-            "Test Series Description"
-        );
         //testing search by SeriesUID
         $this->_searchTest(
             "SeriesUID",
@@ -577,11 +572,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->_searchTest(
             "Filename",
             "assembly/test/test/mri/test/test.mnc"
-        );
-        //testing search by Description
-        $this->_searchTest(
-            "Description",
-            "Test Description"
         );
         //testing search by SeriesUID
         // $this->_searchTest(
