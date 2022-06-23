@@ -110,8 +110,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "scan_type_parameter_group",
             [
-                'ScanTypeParameterGroupID' => 11,
-                'Name'                     => 'test',
+                'ScanTypeParameterGroupID'   => 11,
+                'ScanTypeParameterGroupName' => 'test',
             ]
         );
 
@@ -278,7 +278,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "scan_type_parameter_group",
-            ['Name' => 'test']
+            ['ScanTypeParameterGroupName' => 'test']
         );
         $this->DB->delete(
             "psc",
