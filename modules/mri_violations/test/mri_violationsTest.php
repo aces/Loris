@@ -179,7 +179,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'CandID'                          => '999888',
                 'PatientName'                     => '[Test]PatientName_Test1',
                 'TimeRun'                         => '2009-06-29 04:00:44',
-                'ScanLocation'                    => 'assembly/test/test/mri/test/test.mnc',
+                'ScanLocation'                    =>
+                    'assembly/test/test/mri/test/test.mnc',
                 'HeaderName'                      => 'series_description',
                 'SeriesUID'                       => '5555',
                 'TarchiveID'                      => '263',
@@ -193,7 +194,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'CandID'                          => '999777',
                 'PatientName'                     => '[name]test_Test2',
                 'TimeRun'                         => '2008-06-29 04:00:44',
-                'ScanLocation'                    => 'assembly/test2/test2/mri/test2/test2.mnc',
+                'ScanLocation'                    =>
+                    'assembly/test2/test2/mri/test2/test2.mnc',
                 'HeaderName'                      => 'series_description',
                 'SeriesUID'                       => '5556',
                 'TarchiveID'                      => '264',
