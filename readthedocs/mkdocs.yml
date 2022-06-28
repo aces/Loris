@@ -31,8 +31,8 @@ nav:
                 - PHP: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/02_instrument_format/PHP_instrument.md
             - Installation: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/03_instrument_install.md
             - Additional Configurations: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/04_instrument_additional_configurations.md
-            - Testing and Troubleshooting: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/05_instrument_testing_and_troubleshooting.md
-            - Quality Asssurance: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/06_instrument_quality_assurance.md
+            - Testing and Troubleshooting: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/06_instrument_testing_and_troubleshooting.md
+            - Quality Asssurance: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/05_instrument_quality_assurance.md
             - Test Batteries: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/07_clinical_test_battery.md
             - Annexe A - XIN Rules: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/Annexe_A_XIN-Rules.md
         - Modules: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
