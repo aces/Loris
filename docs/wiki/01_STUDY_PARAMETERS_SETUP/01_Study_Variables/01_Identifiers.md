@@ -63,6 +63,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  > Example PSCID generated: PREFIX3994
  
  Options for the `type` element of the `<seq>` tag are:
+ 
   - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
   field of the `psc` table in the database.
   - `projectAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
