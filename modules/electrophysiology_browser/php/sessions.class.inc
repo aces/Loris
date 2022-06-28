@@ -460,6 +460,13 @@ class Sessions extends \NDB_Page
 
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath 
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID 
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
 
         $fileOutput = $db->pselectone(
             'SELECT pot.OutputTypeName
@@ -548,7 +555,7 @@ class Sessions extends \NDB_Page
         $queries = [
             'physiological_electrode'          => 'physiological_electrode_file',
             'physiological_channel'            => 'physiological_channel_file',
-            'physiological_task_event'         => 'physiological_task_event_file',
+            'physiological_event_archive'      => 'physiological_event_files',
             'physiological_annotation_archive' => 'physiological_annotation_files',
             'physiological_archive'            => 'all_files',
         ];
@@ -556,7 +563,7 @@ class Sessions extends \NDB_Page
         $labels = [
             'physiological_electrode_file'   => 'Electrodes',
             'physiological_channel_file'     => 'Channels',
-            'physiological_task_event_file'  => 'Events',
+            'physiological_event_files'      => 'Events',
             'physiological_annotation_files' => 'Annotations',
             'all_files'                      => 'All Files',
         ];

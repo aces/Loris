@@ -206,13 +206,10 @@ class ElectrophysiologySessionView extends Component {
                 ),
             epochsURL:
                 dbEntry
-                && dbEntry.file.downloads.map(
-                  (group) =>
-                    group.links[3]?.file
-                    && loris.BaseURL
-                      + '/electrophysiology_browser/file_reader/?file='
-                      + group.links[3].file
-                ),
+                && dbEntry.file?.epochsURL
+                && [loris.BaseURL
+                  + '/electrophysiology_browser/file_reader/?file='
+                  + dbEntry.file.epochsURL],
             electrodesURL:
                 dbEntry
                 && dbEntry.file.downloads.map(
