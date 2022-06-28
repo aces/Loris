@@ -40,7 +40,7 @@ nav:
     - Help and Troubleshooting: 'docs/wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
     - REST API:
         - 'Stable' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.2.md'
-        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md'
+        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.4-dev.md'
     - Developers:
         - Overview: 'docs/wiki/99_Developers/README.md'
         - 'Coding Standards': 'docs/CodingStandards.md'
