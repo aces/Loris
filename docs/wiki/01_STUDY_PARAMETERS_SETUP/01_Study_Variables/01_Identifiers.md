@@ -25,28 +25,28 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
 
 1. ***sequential*** generates PSCIDs sequentially for each new candiddate registered. **(default)**
 
- ```xml
- <PSCID>
-     <generation>sequential</generation> 
-     <structure>
-         <seq type="siteAbbrev"/>
-         <seq type="numeric" length="4" min="10" max="9999"/>
-     </structure>
- </PSCID>
- ```
+```xml
+<PSCID>
+    <generation>sequential</generation> 
+    <structure>
+        <seq type="siteAbbrev"/>
+        <seq type="numeric" length="4" min="10" max="9999"/>
+    </structure>
+</PSCID>
+```
  > Example PSCID generated: MTL1234
  > Where the site's alias is MTL
 
 2. ***manual*** asks the user to enter the PSCID when registering a new candidate.
 
- ```xml
- <PSCID> 
-     <generation>user</generation> 
-     <structure>
-         <seq type="alphanumeric" length="2"/>
-     </structure>
- </PSCID>
- ```
+```xml
+<PSCID> 
+    <generation>user</generation> 
+    <structure>
+        <seq type="alphanumeric" length="2"/>
+    </structure>
+</PSCID>
+```
   > Example PSCID accepted: A1
 
 3. ***random*** generates PSCIDs with a random numerical value for each new participant registered.
