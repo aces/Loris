@@ -51,15 +51,15 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
 
 3. ***random*** generates PSCIDs with a random numerical value for each new participant registered.
 
- ```xml
- <PSCID>
-     <generation>random</generation> 
-     <structure>
-         <seq type="static">PREFIX</seq>
-         <seq type="numeric" length="4" min="1" max="9999"/>
-     </structure>
- </PSCID>
- ```
+    ```xml
+    <PSCID>
+        <generation>random</generation> 
+        <structure>
+             <seq type="static">PREFIX</seq>
+            <seq type="numeric" length="4" min="1" max="9999"/>
+        </structure>
+    </PSCID>
+    ```
  > Example PSCID generated: PREFIX3994
  
  Options for the `type` element of the `<seq>` tag are:
@@ -72,7 +72,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
   - `numeric`: An integer value generated dynamically in accordance to the generation method defined.
   - `alphanumeric`: An alphanumeric string value generated dynamically in accordance to the generation method defined. 
   - `alpha`: An alphabetic string value generated dynamically in accordance to the generation method defined.
-  
+
  **Note:** The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
   a `length` attribute. The length defaults to `4` when not specified.
   
