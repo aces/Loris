@@ -63,7 +63,7 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
  > Example PSCID generated: PREFIX3994
  
  Options for the `type` element of the `<seq>` tag are:
- 
+
   - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
   field of the `psc` table in the database.
   - `projectAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
@@ -72,11 +72,11 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
   - `numeric`: An integer value generated dynamically in accordance to the generation method defined.
   - `alphanumeric`: An alphanumeric string value generated dynamically in accordance to the generation method defined. 
   - `alpha`: An alphabetic string value generated dynamically in accordance to the generation method defined.
- 
-  > Note: The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
+  
+ **Note:** The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
   a `length` attribute. The length defaults to `4` when not specified.
   
-  > Note: The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
+ **Note:** The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
   minimum `min` and maximum `max` values for sequentially and randomly generated PSCIDs. 
   By default sequence will start at the lowest possible values (i.e.: 0000, AAAA).
 
