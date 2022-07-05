@@ -100,6 +100,7 @@ $parameterNames = [];
 foreach ($instruments AS $instrument) {
     $catId = "";
     $table = "";
+    $testname = "";
     $items = explode("\n", trim($instrument));
     foreach ($items AS $item) {
         $paramId = "";
@@ -230,13 +231,13 @@ foreach ($instruments AS $instrument) {
         }
     }
 
-    if (empty($table)) {
+    if (empty($testname)) {
         continue;
     }
 
     // INSTRUMENT VALIDITY
-    print "\tInserting validity for $table\n";
-    $Name = $table . "_Validity";
+    print "\tInserting validity for $testname\n";
+    $Name = $testname . "_Validity";
 
     if (in_array($Name, $parameterNames, true)) {
         // this specific table_validity combination was already inserted, skip.
@@ -248,9 +249,9 @@ foreach ($instruments AS $instrument) {
     $query_params = [
         "Name"        => $Name,
         "Type"        => $_type_enum,
-        "Description" => "Validity of $table",
+        "Description" => "Validity of $testname",
         "SourceField" => "Validity",
-        "SourceFrom"  => $table,
+        "SourceFrom"  => $testname,
         "Queryable"   => "1",
     ];
 
@@ -280,8 +281,8 @@ foreach ($instruments AS $instrument) {
     );
 
     // INSTRUMENT ADMINISTRATION
-    print "\tInserting administration for $table\n";
-    $Name = $table . "_Administration";
+    print "\tInserting administration for $testname\n";
+    $Name = $testname . "_Administration";
     if (in_array($Name, $parameterNames, true)) {
         // this specific table__Administration combination
         // was already inserted, skip.
@@ -292,9 +293,9 @@ foreach ($instruments AS $instrument) {
     $query_params = [
         "Name"        => $Name,
         "Type"        => $_type_enum,
-        "Description" => "Administration for $table",
+        "Description" => "Administration for $testname",
         "SourceField" => "Administration",
-        "SourceFrom"  => $table,
+        "SourceFrom"  => $testname,
         "Queryable"   => "1",
     ];
 
@@ -352,12 +353,12 @@ echo "\n\nData Dictionary generation complete:  $tblCount new categories added"
  * enums
  *
  * @param string $options The line of the ip_output.txt to enumize
- * @param string $table   The table containing this line
+ * @param string $testname   The table containing this line
  * @param string $name    The name of the field being enumized
  *
  * @return string A valid MySQL format enum field string
  */
-function enumizeOptions($options, $table, $name)
+function enumizeOptions($options, $testname, $name)
 {
     $options =explode("{-}", $options);
     foreach ($options as $option) {
@@ -367,7 +368,7 @@ function enumizeOptions($options, $table, $name)
         }
     }
     if (!is_array($enum)) {
-        echo "$table $name $options\n";
+        echo "$testname $name $options\n";
     }
     $enum =implode(",", $enum);
     return "enum($enum)";
