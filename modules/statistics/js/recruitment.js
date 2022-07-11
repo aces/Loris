@@ -25,6 +25,9 @@ $(document).ready(function() {
         if (typeof recruitmentPieChart !== 'undefined') {
             recruitmentPieChart.resize();
         }
+        if(typeof recruitmentAgePieChart!== 'undefined') {
+            recruitmentAgePieChart.resize();
+        }
         if (typeof recruitmentBarChart !== 'undefined') {
             recruitmentBarChart.resize();
         }
@@ -39,6 +42,16 @@ $(document).ready(function() {
         }
         return processedData;
     }
+
+    function formatAgePieData(data) {
+        "use strict";
+        var processedData = new Array();
+        for (var i in data) {
+            var ageData = [data[i][0], data[i][1]];
+            processedData.push(ageData);
+        }
+        return processedData;
+    }	
 
     function formatBarData(data) {
         "use strict";
@@ -61,6 +74,29 @@ $(document).ready(function() {
                 bindto: '#recruitmentPieChart',
                 data: {
                     columns: recruitmentPieData,
+                    type : 'pie'
+                },
+                color: {
+                    pattern: siteColours
+                }
+            });
+        },
+        error: function(xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    });
+
+    //AJAX to get age pie chart data
+    $.ajax({
+        url: loris.BaseURL + '/statistics/charts/agerecruitment_pie',
+        type: 'get',
+        success: function(jsonData) {
+            var recruitmentAgePieData = formatAgePieData(jsonData);
+            recruitmentAgePieChart = c3.generate({
+                bindto: '#recruitmentAgePieChart',
+                data: {
+                    columns: recruitmentAgePieData,
                     type : 'pie'
                 },
                 color: {
