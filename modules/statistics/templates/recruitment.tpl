@@ -9,10 +9,16 @@
                 <div id="recruitmentPieChart"></div>
             </div>
         </div>
-        <div class="col-lg-8 col-md-8 col-sm-8">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <div>
                 <h5 class="chart-title">Biological sex breakdown by site</h5>
                 <div id="recruitmentBarChart"></div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <div>
+                <h5 class="chart-title">Total recruitment by Age</h5>
+                <div id="recruitmentAgePieChart"></div>
             </div>
         </div>
     {else}
