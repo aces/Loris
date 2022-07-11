@@ -139,42 +139,43 @@ class Charts extends \NDB_Page
     private function _handleAgePieData()
     {
         $DB = \NDB_Factory::singleton()->database();
-	    $Dates=$DB->pselect("SELECT c.DoB, c.Date_registered
-		                    FROM candidate c
-			                WHERE c.DoB IS NOT NULL
-                            AND c.Date_registered IS NOT NULL", []);
-        
-        $sixty=$sixtyFour=$sixtyNine=$seventyFour=0;
-        $seventyNine=$eightyFive=$eightySix=0;
+	    $Dates = $DB->pselect(
+            "SELECT c.DoB, c.Date_registered
+            FROM candidate c
+            WHERE c.DoB IS NOT NULL
+            AND c.Date_registered IS NOT NULL",
+            []
+        );
+        $sixty = $sixtyFour = $sixtyNine = $seventyFour = 0;
+        $seventyNine = $eightyFive = $eightySix = 0;
 
-	    foreach($Dates as $key=>$value){
-		    $ageOb= \Utility::calculateAge($value['DoB'],$value['Date_registered']);
-		    $age=$ageOb['year'];
-	        if($age<60){
+	    foreach ($Dates as $key=>$value) {
+            $ageOb = \Utility::calculateAge($value['DoB'], $value['Date_registered']);
+            $age = $ageOb['year'];
+	        if ($age<60) {
                 ++$sixty;
-            } elseif(($age>=60) && ($age<=64)){
+            } elseif (($age>=60) && ($age<=64)) {
                 ++$sixtyFour;
-            } elseif(($age>=65) &&($age<=69)){
+            } elseif (($age>=65) &&($age<=69)) {
                 ++$sixtyNine;
-            } elseif(($age>=70) && ($age<=74)){
+            } elseif (($age>=70) && ($age<=74)) {
                 ++$seventyFour;
-            } elseif(($age>=75) &&($age<=79)){
+            } elseif (($age>=75) &&($age<=79)) {
                 ++$seventyNine;
-            } elseif(($age>=80) && ($age<=85)){
+            } elseif (($age>=80) && ($age<=85)) {
                 ++$eightyFive;
-            } else{
+            } else {
                 ++$eightySix;
             }
 	    }
 
-        $recruitmentByAgeData = [
-            ["less than 60", $sixty], 
-            ["60-64", $sixtyFour], 
+        $recruitmentByAgeData = [["less than 60", $sixty],
+            ["60-64", $sixtyFour],
             ["65-69", $sixtyNine],
-            ["70-74", $seventyFour], 
-            ["75-79", $seventyNine], 
+            ["70-74", $seventyFour],
+            ["75-79", $seventyNine],
             ["80-85", $eightyFive],
-	    ["86 or more", $eightySix]];
+            ["86 or more", $eightySix]];
 
         return new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData);
     }
