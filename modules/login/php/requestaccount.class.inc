@@ -133,6 +133,12 @@ class RequestAccount extends \NDB_Form
         }
         if (empty($values['from'])) {
             $errors['from'] = "Please provide a valid email!";
+        } else if (preg_match('/(<|>|"|&)/', $_REQUEST['from'])) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            $errors['from'] =  'Email address can not contain the following' .
+                ' characters: <,>,& and "';
         } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
             $errors['from'] = 'Please provide a valid email!';
         }
@@ -142,22 +148,6 @@ class RequestAccount extends \NDB_Form
         }
         if (empty($values['project'])) {
             $errors['project'] = "Please choose a project!";
-        }
-
-        // I don't think this is required because insert uses prepared statements,
-        // but I'm keeping it for now because it doesn't do any harm (unlike the
-        // len > 3 check). Little Bobby Tables will just have to sign
-        // up using a table alias. - Dave
-        //
-        // For each fields, check if quotes or if some HTML/PHP
-        // tags have been entered
-        foreach ($values as $field => $value) {
-            if (preg_match('/["]/', html_entity_decode($value))) {
-                $errors[$field] = "You can't use quotes in $field";
-            }
-            if (strlen($value) > strlen(strip_tags($value))) {
-                $errors[$field] = "You can't use tags in $field";
-            }
         }
 
         return $errors;
