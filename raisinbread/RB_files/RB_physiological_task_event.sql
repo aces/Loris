@@ -2,7 +2,6 @@ SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `physiological_task_event`;
 LOCK TABLES `physiological_task_event` WRITE;
 
-
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(1, 1, 1, '2019-08-21 15:09:58', '11.734000', '0.000000', NULL, NULL, NULL, NULL, 'checker-right', NULL, NULL);
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(2, 1, 1, '2019-08-21 15:09:58', '12.533000', '0.000000', NULL, NULL, NULL, NULL, 'house-upright', NULL, NULL);
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(3, 1, 1, '2019-08-21 15:09:58', '13.332000', '0.000000', NULL, NULL, NULL, NULL, 'face-upright', NULL, NULL);
@@ -12,3 +11,7 @@ INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `Physiologic
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(7, 1, 1, '2019-08-21 15:09:58', '15.796000', '0.000000', NULL, NULL, NULL, NULL, 'house-inverted', NULL, NULL);
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(8, 1, 1, '2019-08-21 15:09:58', '16.596000', '0.000000', NULL, NULL, NULL, NULL, 'house-inverted', NULL, NULL);
 INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(9, 1, 1, '2019-08-21 15:09:58', '17.478000', '0.000000', NULL, NULL, NULL, NULL, 'face-inverted', NULL, NULL);
+INSERT INTO `physiological_task_event` (`PhysiologicalTaskEventID`, `PhysiologicalFileID`, `EventFileID`, `InsertTime`, `Onset`, `Duration`, `EventCode`, `EventValue`, `EventSample`, `EventType`, `TrialType`, `ResponseTime`, `AssembledHED`) VALUES(10, 1, 1, '2019-08-21 15:09:58', '18.243000', '0.000000', NULL, NULL, NULL, NULL, 'face-upright', NULL, NULL);
+
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;
