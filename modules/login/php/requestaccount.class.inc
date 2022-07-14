@@ -135,6 +135,12 @@ class RequestAccount extends \NDB_Form
             $errors['from'] = "Please provide a valid email!";
         } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
             $errors['from'] = 'Please provide a valid email!';
+        } else if (preg_match('[<|>|"|&]', $_REQUEST['from'])) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            $errors['from'] =  'Email address can not contain any the following' .
+                ' characters: <, >, & and "';
         }
 
         if (empty($values['site'])) {
