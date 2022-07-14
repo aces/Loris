@@ -1289,7 +1289,7 @@ class Edit_User extends \NDB_Form
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return "Invalid email addrezz";
+            return "Invalid email address";
         } elseif (preg_match('[<|>|"|&]', $email)) {
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
