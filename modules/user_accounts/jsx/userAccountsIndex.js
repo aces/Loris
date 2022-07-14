@@ -77,15 +77,25 @@ class UserAccountsIndex extends Component {
             .join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
+        }
         break;
       case 'Project':
-        // If user has multiple projectss, join array of sites into string
+        // If user has multiple projects, join array of sites into string
         result = (
           <td>{cell
             .map((projectId) => this.state.data.fieldOptions.projects[projectId])
             .join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no project affiliations</td>
+          );
+        }
         break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
