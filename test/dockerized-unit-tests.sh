@@ -7,5 +7,5 @@ then
 else
     CONTAINER=unit-tests
 fi
+docker-compose up --build db
 
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests $*
