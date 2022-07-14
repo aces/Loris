@@ -1287,15 +1287,15 @@ class Edit_User extends \NDB_Form
      */
     private function _getEmailError(\Database $DB, string $email): ?string
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
-        } elseif (preg_match('/(<|>|"|&)/', $email)) {
+        if (preg_match('/(<|>|"|&)/', $email)) {
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
             // addresses containing them
             return 'Email address can not contain any the following '.
                 'characters: <, >, & and "';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // If email not syntactically valid
+            return "Invalid email address";
         }
 
         // check email address' uniqueness
