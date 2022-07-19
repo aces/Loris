@@ -173,7 +173,8 @@ class Charts extends \NDB_Page
             ["70-74", $seventyFour],
             ["75-79", $seventyNine],
             ["80-85", $eightyFive],
-        ["86 or more", $eightySix]];
+            ["86 or more", $eightySix]
+        ];
 
         return new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData);
     }
