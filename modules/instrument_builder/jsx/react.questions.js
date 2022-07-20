@@ -1020,7 +1020,7 @@ class AddElement extends Component {
       return;
     }
 
-    if (questionText.length > 64) {
+    if (questionText.length > 64 && selected !=='label') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
