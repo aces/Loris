@@ -138,19 +138,22 @@ class Charts extends \NDB_Page
      */
     private function _handleAgePieData()
     {
-        $DB = \NDB_Factory::singleton()->database();
-        $Dates=$DB->pselect(
+        $DB          = \NDB_Factory::singleton()->database();
+        $Dates       =$DB->pselect(
             "SELECT c.DoB, c.Date_registered 
                            FROM candidate c
                            WHERE c.DoB IS NOT NULL
-                           AND c.Date_registered IS NOT NULL", []
+                           AND c.Date_registered IS NOT NULL",
+            []
         );
-        $sixty=$sixtyFour=$sixtyNine=$seventyFour=0;
-        $seventyNine=$eightyFive=$eightySix=0;
-        foreach ($Dates as $key=>$value) {
-            $ageOb= \Utility::calculateAge($value['DoB'], 
-            $value['Date_registered']);
-            $age=$ageOb['year'];
+        $sixty       =$sixtyFour=$sixtyNine=$seventyFour=0;
+        $seventyNine =$eightyFive=$eightySix=0;
+        foreach ($Dates as $key => $value) {
+            $ageOb = \Utility::calculateAge(
+                $value['DoB'],
+                $value['Date_registered']
+            );
+            $age   =$ageOb['year'];
             if ($age<60) {
                 ++$sixty;
             } elseif (($age>=60) && ($age<=64)) {
@@ -174,7 +177,8 @@ class Charts extends \NDB_Page
             ["70-74", $seventyFour],
             ["75-79", $seventyNine],
             ["80-85", $eightyFive],
-        ["86 or more", $eightySix]];
+            ["86 or more", $eightySix]
+        ];
 
         return new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData);
     }
