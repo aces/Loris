@@ -149,6 +149,7 @@ class Charts extends \NDB_Page
         $sixty       =$sixtyFour=$sixtyNine=$seventyFour=0;
         $seventyNine =$eightyFive=$eightySix=0;
         foreach ($Dates as $key => $value) {
+            $key=$key;
             $ageOb = \Utility::calculateAge(
                 $value['DoB'],
                 $value['Date_registered']
