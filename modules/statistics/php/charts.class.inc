@@ -149,12 +149,12 @@ class Charts extends \NDB_Page
         $sixty       =$sixtyFour=$sixtyNine=$seventyFour=0;
         $seventyNine =$eightyFive=$eightySix=0;
         foreach ($Dates as $key => $value) {
-            $key=$key;
-            $ageOb = \Utility::calculateAge(
+            $key        =$key;
+            $ageOb      = \Utility::calculateAge(
                 $value['DoB'],
                 $value['Date_registered']
             );
-            $age   =$ageOb['year'];
+                   $age =$ageOb['year'];
             if ($age<60) {
                 ++$sixty;
             } elseif (($age>=60) && ($age<=64)) {
