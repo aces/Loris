@@ -143,11 +143,12 @@ class Charts extends \NDB_Page
             "SELECT c.DoB, c.Date_registered 
                            FROM candidate c
                            WHERE c.DoB IS NOT NULL
-                           AND c.Date_registered IS NOT NULL", []
+                           AND c.Date_registered IS NOT NULL",
+            []
         );
         $sixty=$sixtyFour=$sixtyNine=$seventyFour=0;
         $seventyNine=$eightyFive=$eightySix=0;
-        foreach ($Dates as $key=>$value) {
+        foreach ($Dates as $key => $value) {
             $ageOb= \Utility::calculateAge($value['DoB'], $value['Date_registered']);
             $age=$ageOb['year'];
             if ($age<60) {
@@ -173,11 +174,11 @@ class Charts extends \NDB_Page
             ["70-74", $seventyFour],
             ["75-79", $seventyNine],
             ["80-85", $eightyFive],
-            ["86 or more", $eightySix]
-        ];
+        ["86 or more", $eightySix]];
 
         return new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData);
     }
+
 
     /**
      * Handle an incoming request for site sex breakdown.
