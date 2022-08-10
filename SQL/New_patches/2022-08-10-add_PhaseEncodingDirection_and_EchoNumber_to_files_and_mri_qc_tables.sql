@@ -29,6 +29,4 @@ INSERT INTO parameter_type SET
   Name        = 'PhaseEncodingDirection',
   Type        = 'text',
   Description = 'BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)',
-  SourceFrom  = 'parameter_file',
-  Queryable   = 1,
-  IsFile      = 0;
+  SourceFrom  = 'parameter_file';
