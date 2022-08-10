@@ -8,6 +8,13 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+### Core
+#### Updates and Improvements
+- Addition of `PhaseEncodingDirection` and `ScanOptions` columns to the `mri_protocol` 
+  and `mri_protocol_violated_scans` tables to allow for better discrimination between some
+  MRI sequences.
+
+
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features
