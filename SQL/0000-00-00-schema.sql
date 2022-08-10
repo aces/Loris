@@ -1719,7 +1719,8 @@ INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
   ('fov_dimensions','FieldOfViewDimensions','text','Dimensions of the field of view, in mm. If Field of View Shape (0018,1147) is: RECTANGLE: row dimension followed by column. ROUND: diameter. HEXAGONAL: diameter of a circumscribed circle. DICOM:0018_1149','parameter_file'),
   ('laterality','Laterality','text','Laterality of (paired) body part examined. Required if the body part examined is a paired structure and Image Laterality (0020,0062) or Frame Laterality (0020,9072) are not sent. DICOM:0020_0060','parameter_file'),
   ('position_reference_indicator','PositionReferenceIndicator','text','Part of the imaging target used as a reference. DICOM:0020_1040','parameter_file'),
-  ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file');
+  ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file'),
+  ('PhaseEncodingDirection',NULL,'text','BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)','parameter_file');
 
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,

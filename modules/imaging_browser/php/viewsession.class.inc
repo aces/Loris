@@ -344,7 +344,6 @@ class ViewSession extends \NDB_Form
                 'QCDate'                     => $QCDate,
                 'Caveat'                     => $caveat,
                 'SNR'                        => $SNR,
-                'SeriesUID'                  => $SeriesUID,
                 'XMLreport'                  => $XMLreport,
                 'XMLprotocol'                => $XMLprotocol,
                 'NrrdFile'                   => $NrrdFile,
@@ -490,8 +489,12 @@ class ViewSession extends \NDB_Form
                     $updateSet['SeriesUID'] = $file->getParameter(
                         'series_instance_uid'
                     );
-                    $updateSet['EchoTime']  = $file->getParameter('echo_time');
-                    $updateSet['FileID']    = $curFileID;
+                    $updateSet['PhaseEncodingDirection'] = $file->getParameter(
+                        'PhaseEncodingDirection'
+                    );
+                    $updateSet['EchoTime']   = $file->getParameter('echo_time');
+                    $updateSet['EchoNumber'] = $file->getParameter('echo_numbers');
+                    $updateSet['FileID']     = $curFileID;
                     $this->_DB->insert("files_qcstatus", $updateSet);
                 }
             }
@@ -530,6 +533,11 @@ class ViewSession extends \NDB_Form
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
                     );
+                    $insertSet['PhaseEncodingDirection'] = $file->getParameter(
+                        'PhaseEncodingDirection'
+                    );
+                    $insertSet['EchoTime']    = $file->getParameter('echo_time');
+                    $insertSet['EchoNumber']  = $file->getParameter('echo_numbers');
                     $insertSet['TarchiveID']  = $file->getParameter(
                         'TarchiveSource'
                     );
@@ -650,6 +658,12 @@ class ViewSession extends \NDB_Form
                 $params      = ['FID' => $curFileID];
                 $updateWhere = ['FileID' => $curFileID];
 
+                $file          = new \MRIFile($curFileID);
+                $seriesUID     = $file->getParameter('series_instance_uid');
+                $phase_enc_dir = $file->getParameter('PhaseEncodingDirection');
+                $echo_time     = $file->getParameter('echo_time');
+                $echo_number   = $file->getParameter('echo_numbers');
+
                 if ($curSelected == 'Unselected') {
                     if ($this->_DB->pselectOne(
                         "SELECT COUNT(*)
@@ -679,10 +693,15 @@ class ViewSession extends \NDB_Form
                             $updateWhere
                         );
                     } else {
+
                         $insertSet = [
-                            'FileID'            => $curFileID,
-                            'Selected'          => $curSelected,
-                            'QCFirstChangeTime' => time(),
+                            'FileID'                 => $curFileID,
+                            'Selected'               => $curSelected,
+                            'SeriesUID'              => $seriesUID,
+                            'EchoTime'               => $echo_time,
+                            'EchoNumber'             => $echo_number,
+                            'PhaseEncodingDirection' => $phase_enc_dir,
+                            'QCFirstChangeTime'      => time(),
                         ];
                         $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
                         $this->_DB->insert('files_qcstatus', $insertSet);
