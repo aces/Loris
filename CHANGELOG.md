@@ -10,7 +10,7 @@ changes in the following format: PR #1234***
 
 ### Core
 #### Updates and Improvements
-- Addition of `PhaseEncodingDirection` and `ScanOptions` columns to the `mri_protocol`
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
   and `mri_protocol_violated_scans` tables to allow for better discrimination between some
   MRI sequences.
 
