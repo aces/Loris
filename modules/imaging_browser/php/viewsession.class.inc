@@ -108,11 +108,19 @@ class ViewSession extends \NDB_Form
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
             $user = \User::singleton();
             if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
+                error_log(print_r("before updateStatus"));
                 $this->_updateStatus($_POST);
+                error_log(print_r("before updateSelected"));
                 $this->_updateSelected();
+                error_log(print_r("before updateVisitStatus"));
                 $this->_updateVisitStatus();
+                error_log(print_r("after updateVisitStatus"));
+
             }
+            error_log(print_r("before setFilesData"));
             $this->_setFilesData();
+            error_log(print_r("after setFilesData"));
+
 
             $this->tpl_data['headerTable'] = $this->getHeaderTable();
 
@@ -530,7 +538,7 @@ class ViewSession extends \NDB_Form
                     //----------------------------------------------------------//
                     $insertSet = [];
                     $file      = new \MRIFile($curFileID);
-                    $insertSet['SeriesUID']   = $file->getParameter(
+                    $insertSet['SeriesUID'] = $file->getParameter(
                         'series_instance_uid'
                     );
                     $insertSet['PhaseEncodingDirection'] = $file->getParameter(

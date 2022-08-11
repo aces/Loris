@@ -222,7 +222,7 @@ class FeedbackMRI
 
         // create DB object
         $database = \NDB_Factory::singleton()->database();
-        $DB =& $database;
+        $DB       =& $database;
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
@@ -418,10 +418,12 @@ class FeedbackMRI
             // per-volume
             $set['FileID'] = $this->fileID;
             $file          = new MRIFile($this->fileID);
-            $set['SeriesUID']              = $file->getParameter('series_instance_uid');
-            $set['EchoTime']               = $file->getParameter('echo_time');
-            $set['PhaseEncodingDirection'] = $file->getParameter('PhaseEncodingDirection');
-            $set['EchoNumber']             = $file->getParameter('echo_numbers');
+            $set['SeriesUID'] = $file->getParameter('series_instance_uid');
+            $set['EchoTime']  = $file->getParameter('echo_time');
+            $set['PhaseEncodingDirection'] = $file->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $set['EchoNumber'] = $file->getParameter('echo_numbers');
         } else {
             // per-visit
             $set['SessionID'] = $this->sessionID;
