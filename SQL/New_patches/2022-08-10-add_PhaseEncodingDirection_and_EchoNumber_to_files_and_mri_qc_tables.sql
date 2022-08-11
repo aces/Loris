@@ -25,8 +25,6 @@ ALTER TABLE mri_violations_log ADD COLUMN `EchoNumber`             VARCHAR(20) D
 -- ---------------------------------------------------------------------------------------------
 -- add an entry in parameter_type table to for the BIDS PhaseEncodingDirection parameter
 -- ---------------------------------------------------------------------------------------------
-INSERT INTO parameter_type SET
-  Name        = 'PhaseEncodingDirection',
-  Type        = 'text',
-  Description = 'BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)',
-  SourceFrom  = 'parameter_file';
+INSERT INTO parameter_type (Name, Type, Description, SourceFrom)
+SELECT 'PhaseEncodingDirection', 'text', 'BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)', 'parameter_file'
+WHERE NOT EXISTS (SELECT * FROM parameter_type where Name='PhaseEncodingDirection');
