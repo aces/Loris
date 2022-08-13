@@ -123,6 +123,25 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 }) => {
   if (channels.length === 0) return null;
 
+  const memoizedCallback = useCallback(
+    () => {
+      console.log('inside the callback: ', cursor);
+    },
+    [cursor],
+  );
+
+  useEffect(() => {
+    const someFunction = (e) => {
+      console.log('inside the useffect: ', cursor);
+      console.log(e);
+    }
+
+    window.addEventListener('keydown', someFunction);
+    return function cleanUp() { //don't forget to clean up
+      window.removeEventListener('keydown', someFunction);
+    }
+  }, [memoizedCallback]);
+
   useEffect(() => {
     setViewerHeight(viewerHeight);
   }, [viewerHeight]);
