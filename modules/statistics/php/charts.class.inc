@@ -138,47 +138,80 @@ class Charts extends \NDB_Page
      */
     private function _handleAgePieData()
     {
-        $DB          = \NDB_Factory::singleton()->database();
-        $Dates       =$DB->pselect(
+        $DB     = \NDB_Factory::singleton()->database();
+        $config = \NDB_Config::singleton();
+        $Dates  =$DB->pselect(
             "SELECT c.DoB, c.Date_registered 
                            FROM candidate c
                            WHERE c.DoB IS NOT NULL
                            AND c.Date_registered IS NOT NULL",
             []
         );
-        $sixty       =$sixtyFour=$sixtyNine=$seventyFour=0;
-        $seventyNine =$eightyFive=$eightySix=0;
+        $ages   =[];
         foreach ($Dates as $value) {
             $ageOb      = \Utility::calculateAge(
                 $value['DoB'],
                 $value['Date_registered']
             );
                    $age =$ageOb['year'];
-            if ($age<60) {
-                ++$sixty;
-            } elseif (($age>=60) && ($age<=64)) {
-                ++$sixtyFour;
-            } elseif (($age>=65) && ($age<=69)) {
-                ++$sixtyNine;
-            } elseif (($age>=70) && ($age<=74)) {
-                ++$seventyFour;
-            } elseif (($age>=75) && ($age<=79)) {
-                ++$seventyNine;
-            } elseif (($age>=80) && ($age<=85)) {
-                ++$eightyFive;
-            } else {
-                ++$eightySix;
+            array_push($ages, $age);
+        }
+        sort($ages);
+        $min                  =$config->getSetting('ageMin');
+        $max                  =$config->getSetting('ageMax');
+        $min                  =+$min;
+        $max                  =+$max;
+        $recruitmentByAgeData =[];
+        $start                =-1;
+        $val                  =0;
+        for ($i = 0; $i < sizeof($ages); $i++) {
+            if ($ages[$i]<$min) {
+                $val++;
+            }
+            if ($ages[$i]>=$min) {
+                $start =$i;
+                break;
             }
         }
-        $recruitmentByAgeData = [
-            ["less than 60", $sixty],
-            ["60-64", $sixtyFour],
-            ["65-69", $sixtyNine],
-            ["70-74", $seventyFour],
-            ["75-79", $seventyNine],
-            ["80-85", $eightyFive],
-            ["86 or more", $eightySix]
-        ];
+
+        $minLabel = "Less than ".$min;
+        if ($val>0) {
+            array_push($recruitmentByAgeData, [$minLabel, $val]);
+        }
+        $low  =$min;
+        $high =$min+4;
+        $val  =0;
+        for ($i=$start; $i< sizeof($ages); $i++) {
+            if ($ages[$i]>=$low && $ages[$i]<=$high) {
+                $val++;
+            }
+            if ($ages[$i]>$high && $ages[$i]<=$high+5) {
+                if ($high>=$max || $low>=$max) {
+                    break;
+                }
+                if ($high-$low<4) {
+                    break;
+                }
+                $label =$low."-".$high;
+                array_push($recruitmentByAgeData, [$label, $val]);
+                $low  =$low+5;
+                $high =$high+5;
+                if ($max-$low<10) {
+                    $high =$max-1;
+                }
+                $val =1;
+            }
+        }
+        $val =0;
+        for ($i = 0; $i < sizeof($ages); $i++) {
+            if ($ages[$i]>=$max) {
+                $val++;
+            }
+        }
+        $maxLabel =$max." or more";
+        if ($val>0) {
+            array_push($recruitmentByAgeData, [$maxLabel, $val]);
+        }
 
         return new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData);
     }
