@@ -128,12 +128,22 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
       if (cursor) { // Cursor not null implies on page / focus
-        console.log('inside the useffect: ', cursor);
-        console.log(e);
-
-        // Prevent the arrow key scroll, followed by handling the key
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-          e.preventDefault();
+          switch(e.code){
+            case "ArrowUp":
+              setOffsetIndex(offsetIndex - limit);
+              break;
+            case "ArrowDown":
+              setOffsetIndex(offsetIndex + limit);
+              break;
+            default:
+              console.log('Keyboard event handler error.');
+              break;
+              // case "ArrowLeft":
+              // case "ArrowRight":
+          }
+
+          e.preventDefault(); // Make sure arrows don't scroll
         }
       }
 
