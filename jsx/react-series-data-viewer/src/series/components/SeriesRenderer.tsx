@@ -124,9 +124,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   if (channels.length === 0) return null;
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [cursor]);
+  const memoizedCallback = useCallback(() => {}, [cursor, offsetIndex]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
+      console.log(cursor);
       if (cursor) { // Cursor not null implies on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
           switch(e.code){
