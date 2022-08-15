@@ -32,6 +32,7 @@ import {
 import {
   setViewerWidth,
   setViewerHeight,
+  setInterval,
 } from '../store/state/bounds';
 import {
   continueDragSelection,
@@ -54,6 +55,7 @@ type CProps = {
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
+  domain: number,
   amplitudeScale: number,
   rightPanel: RightPanel,
   cursor?: number,
@@ -79,6 +81,7 @@ type CProps = {
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
   limit: number,
+  setInterval: (_: [number, number]) => void,
   // ##################### EEGNET OVERRIDE START ################## //
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
@@ -90,6 +93,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
   interval,
+  setInterval,
+  domain,
   amplitudeScale,
   cursor,
   rightPanel,
@@ -124,10 +129,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   if (channels.length === 0) return null;
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [cursor, offsetIndex]);
+  const memoizedCallback = useCallback(() => {}, [cursor, offsetIndex, interval]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
-      console.log(cursor);
       if (cursor) { // Cursor not null implies on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
           switch(e.code){
@@ -137,11 +141,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             case "ArrowDown":
               setOffsetIndex(offsetIndex + limit);
               break;
+            case "ArrowRight":
+              if (interval[1] !== domain[1]) { // Bounds check
+                setInterval([interval[0] + 50, interval[1] + 50]);
+              } else {
+                setInterval([interval[0] + 50, interval[1]]);
+              }
+              break;
+            case "ArrowLeft":
+              if (interval[0] !== domain[0]) { // Bounds check
+                setInterval([interval[0] - 50, interval[1] - 50]);
+              } else {
+                setInterval([interval[0], interval[1] - 50]);
+              }
+              break;
             default:
               console.log('Keyboard event handler error.');
               break;
-              // case "ArrowLeft":
-              // case "ArrowRight":
           }
 
           e.preventDefault(); // Make sure arrows don't scroll
@@ -790,11 +806,16 @@ export default connect(
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
+    domain: state.bounds.domain,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(
       dispatch,
       setOffsetIndex
+    ),
+    setInterval: R.compose(
+      dispatch,
+      setInterval
     ),
     setCursor: R.compose(
       dispatch,
