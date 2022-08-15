@@ -123,22 +123,32 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 }) => {
   if (channels.length === 0) return null;
 
-  const memoizedCallback = useCallback(
-    () => {
-      console.log('inside the callback: ', cursor);
-    },
-    [cursor],
-  );
+  // Memoized to singal which vars are to be read from
+  const memoizedCallback = useCallback(() => {}, [cursor]);
+  useEffect(() => { // Keypress handler
+    const keybindHandler = (e) => {
+      if (cursor) { // Cursor not null implies on page / focus
+        console.log('inside the useffect: ', cursor);
+        console.log(e);
 
-  useEffect(() => {
-    const someFunction = (e) => {
-      console.log('inside the useffect: ', cursor);
-      console.log(e);
+        // Prevent the arrow key scroll, followed by handling the key
+        if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+          e.preventDefault();
+        }
+      }
+
+      // Generic keybinds that don't require focus
+      if (e.code === 'KeyC' && e.shiftKey) { // Close all right panels
+        setRightPanel(null);
+      }
+      if (e.code === 'KeyA' && e.shiftKey) { // Open annotation form
+        setRightPanel('annotationForm');
+      }
     }
 
-    window.addEventListener('keydown', someFunction);
-    return function cleanUp() { //don't forget to clean up
-      window.removeEventListener('keydown', someFunction);
+    window.addEventListener('keydown', keybindHandler);
+    return function cleanUp() { // Prevent multiple listeners
+      window.removeEventListener('keydown', keybindHandler);
     }
   }, [memoizedCallback]);
 
