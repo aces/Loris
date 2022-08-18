@@ -13,6 +13,9 @@ changes in the following format: PR #1234***
 - Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
   and `mri_protocol_violated_scans` tables to allow for better discrimination between some
   MRI sequences.
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `files`, `files_qcstatus`
+  and `feedback_mri_comments` tables to ensure uniqueness keys for specific GE sequences for
+  which the `SeriesUID/EchoTime` combination is not enough (PR #8152).
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
