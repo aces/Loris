@@ -22,7 +22,9 @@ changes in the following format: PR #1234***
 #### Bug Fixes
 - Bug fix to the imaging uploader so that when clicking on an upload row, the row is 
   highlighted and the proper log is being displayed in the log viewer (PR #8154)
-  
+- Remove SNR label from the image panel of the imaging browser when no SNR values can
+be found for the image (PR #8155)
+
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
