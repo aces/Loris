@@ -228,11 +228,9 @@ class ViewSession extends \NDB_Form
 
             $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
-            $Pipeline   = $FileObj->getParameter('Pipeline');
             $OutputType = $FileObj->getParameter('OutputType');
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
-            $Algorithm           = $FileObj->getParameter('Algorithm');
             $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
             $ProcDate            = $this->_getDate(
                 $FileObj,
@@ -243,6 +241,10 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
+                2
+            );
+            $InversionTime       = number_format(
+                (float)$FileObj->getParameter('inversion_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
@@ -257,6 +259,13 @@ class ViewSession extends \NDB_Form
                 intval($FileObj->getParameter('time')),
                 2
             );
+            $ImageType              = $FileObj->getParameter(
+                'dicominfo:image_type'
+            );
+            $PhaseEncodingDirection = $FileObj->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $EchoNumber             = $FileObj->getParameter('echo_numbers');
             $Comment = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
@@ -314,11 +323,9 @@ class ViewSession extends \NDB_Form
                 'APIFile'                    => $APIFile,
                 'FullFilename'               => $FullFilename,
                 'New'                        => $New,
-                'Pipeline'                   => $Pipeline,
                 'OutputType'                 => $OutputType,
                 'AcquisitionProtocol'        => $AcquisitionProtocol,
                 'CoordinateSpace'            => $CoordinateSpace,
-                'Algorithm'                  => $Algorithm,
                 'AcquisitionDate'            => $AcquisitionDate,
                 'ProcDate'                   => $ProcDate,
                 'FileInsertDate'             => $FileInsertDate,
@@ -326,9 +333,13 @@ class ViewSession extends \NDB_Form
                 'SeriesNumber'               => $SeriesNumber,
                 'SeriesUID'                  => $SeriesUID,
                 'EchoTime'                   => $EchoTime,
+                'InversionTime'              => $InversionTime,
                 'RepetitionTime'             => $RepetitionTime,
                 'SliceThickness'             => $SliceThickness,
                 'Time'                       => $Time,
+                'ImageType'                  => $ImageType,
+                'PhaseEncodingDirection'     => $PhaseEncodingDirection,
+                'EchoNumber'                 => $EchoNumber,
                 'Comment'                    => $Comment,
                 'ProcessingPipeline'         => $ProcessingPipeline,
                 'TotalRejected'              => $TotalRejected,
