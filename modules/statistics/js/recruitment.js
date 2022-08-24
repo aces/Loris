@@ -25,9 +25,6 @@ $(document).ready(function() {
         if (typeof recruitmentPieChart !== 'undefined') {
             recruitmentPieChart.resize();
         }
-        if (typeof recruitmentBarChart !== 'undefined') {
-            recruitmentBarChart.resize();
-        }
     });
 
     function formatPieData(data) {
