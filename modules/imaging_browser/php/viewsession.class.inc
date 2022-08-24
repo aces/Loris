@@ -255,18 +255,18 @@ class ViewSession extends \NDB_Form
                 intval($FileObj->getParameter('slice_thickness')),
                 2
             );
-            $Time    = number_format(
+            $Time      = number_format(
                 intval($FileObj->getParameter('time')),
                 2
             );
-            $ImageType              = $FileObj->getParameter(
+            $ImageType = $FileObj->getParameter(
                 'dicominfo:image_type'
             );
             $PhaseEncodingDirection = $FileObj->getParameter(
                 'PhaseEncodingDirection'
             );
-            $EchoNumber             = $FileObj->getParameter('echo_numbers');
-            $Comment = $FileObj->getParameter('Comment');
+            $EchoNumber         = $FileObj->getParameter('echo_numbers');
+            $Comment            = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
                 'processing:total_rejected'
