@@ -95,7 +95,15 @@ $(document).ready(function() {
                 },
                 color: {
                     pattern: siteColours
-                }
+                },
+                pie: {
+                    label: {
+                      format: function(value, ratio, id) {
+                            ratioPrec=ratio.toPrecision(3);
+                            return value+"("+100*ratioPrec+"%)";
+                        }
+                    }
+                },
             });
         },
         error: function(xhr, desc, err) {
