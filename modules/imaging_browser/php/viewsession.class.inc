@@ -308,6 +308,9 @@ class ViewSession extends \NDB_Form
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
             $XMLprotocol = $FileObj->getParameter('ProtocolFile');
             $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
+            $BvalFile    = $FileObj->getParameter('check_bval_filename');
+            $BvecFile    = $FileObj->getParameter('check_bvec_filename');
+            $JsonFile    = $FileObj->getParameter('bids_json_file');
             $OtherTimepoints = $this->_getFilesAcrossTimepoints(
                 (int)$FileObj->getParameter('SessionID'),
                 (int)$FileObj->getParameter('AcquisitionProtocolID')
@@ -358,6 +361,9 @@ class ViewSession extends \NDB_Form
                 'XMLreport'                  => $XMLreport,
                 'XMLprotocol'                => $XMLprotocol,
                 'NrrdFile'                   => $NrrdFile,
+                'BvalFile'                   => $BvalFile,
+                'BvecFile'                   => $BvecFile,
+                'JsonFile'                   => $JsonFile,
                 'OtherTimepoints'            => $OtherTimepoints,
                 'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
             ];

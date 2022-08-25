@@ -24,6 +24,9 @@ changes in the following format: PR #1234***
   highlighted and the proper log is being displayed in the log viewer (PR #8154)
 - Remove SNR label from the image panel of the imaging browser when no SNR values can
 be found for the image (PR #8155)
+- Add the missing download buttons for BVAL, BVEC and JSON files that comes with BIDS/NIfTI
+  dataset/images. In addition, the "Download MINC" button has been renamed to a more generic
+  label "Download Image" (PR #8159)
 
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
