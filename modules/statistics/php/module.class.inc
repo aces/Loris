@@ -144,6 +144,7 @@ class Module extends \Module
                         [
                             $baseURL. '/js/d3.min.js',
                             $baseURL . '/js/c3.min.js',
+                            $baseURL . '/js/chart.min.js',
                             $baseURL . "/statistics/js/recruitment.js"
                         ],
                     )
@@ -175,6 +176,7 @@ class Module extends \Module
                         [
                             $baseURL . '/js/d3.min.js',
                             $baseURL . '/js/c3.min.js',
+                            $baseURL . '/js/chart.min.js',
                             $baseURL . "/statistics/js/studyprogression.js"
                         ],
                     )

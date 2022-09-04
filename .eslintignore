@@ -18,6 +18,7 @@ htdocs/js/modules/*
 htdocs/js/react/*
 htdocs/js/shims/*
 htdocs/js/c3.min.js
+htdocs/js/chart.min.js
 htdocs/js/d3.min.js
 htdocs/js/FileSaver.min.js
 htdocs/vendor/

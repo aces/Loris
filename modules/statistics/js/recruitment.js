@@ -80,26 +80,55 @@ $(document).ready(function() {
         type: 'get',
         success: function(data) {
             var recruitmentBarData = formatBarData(data);
-            var recruitmentBarLabels = data.labels;
-            recruitmentBarChart = c3.generate({
-                bindto: '#recruitmentBarChart',
-                data: {
-                    columns: recruitmentBarData,
-                    type: 'bar'
-                },
-                axis: {
-                    x: {
-                        type : 'categorized',
-                        categories: recruitmentBarLabels
+                var recruitmentBarLabels = data.labels;
+                var branches_canvas = document.getElementById('#recruitmentBarChart')
+                                              .getContext('2d');
+                var branches = new Chart(branches_canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: recruitmentBarLabels,
+                        datasets: [
+                        {
+                            label: recruitmentBarData[1][0],
+                            data: recruitmentBarData[1].slice(1),
+                            backgroundColor: sexColours[1],
+                            categoryPercentage: 0.6
+
+                        },
+                        {
+                            label: recruitmentBarData[0][0],
+                            data: recruitmentBarData[0].slice(1),
+                            backgroundColor: sexColours[0],
+                            categoryPercentage: 0.8
+                        }
+                    ],
                     },
-                    y: {
-                        label: 'Candidates registered'
+                    options: {
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    afterBody: 
+                                    (ttItem) => (`Total: 
+                                        ${ttItem.reduce((acc, val) => 
+                                            ((acc-'0') + (val.raw-'0')), 0)}`)
+                                },
+                                mode: 'index'
+                            },
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                            },
+                            y: {
+                                ticks: { beginAtZero:false },
+                                stacked: false,
+                                autoSkip:true,
+                                lineHeight:2
+                            }
+                        },
+                        aspectRatio: 0.9
                     }
-                },
-                color: {
-                    pattern: sexColours
-                }
-            });
+                });
         },
         error: function(xhr, desc, err) {
             console.log(xhr);
