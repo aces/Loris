@@ -146,7 +146,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         // Get Name and MRI Alias from sites table for select options
 
         $query    = "SELECT Name, CenterID FROM psc";
-        $db       = Database::singleton();
+        $db       = \NDB_Factory::singleton()->database();
         $sitesRaw = $db->pselect($query, array());
         $sites    = array(null => '');
         foreach ($sitesRaw as $i) {
