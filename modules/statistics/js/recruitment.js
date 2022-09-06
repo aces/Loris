@@ -52,8 +52,6 @@ $(document).ready(function() {
                 var total=parseInt(m[j])+parseInt(f[j]);
                 totals.push(total);
             }
-            console.log(data)
-            console.log(processedData)
             processedData.push(totals);
         }
         return processedData;
@@ -64,7 +62,6 @@ $(document).ready(function() {
         var m=data.datasets.male;
         var f=data.datasets.female;
         for(var j=0; j<m.length; j++){
-            
             maxi=Math.max(parseInt(m[j])+parseInt(f[j]), maxi);
         }
         return maxi;
@@ -100,12 +97,13 @@ $(document).ready(function() {
         success: function(data) {
             var recruitmentBarData = formatBarData(data);
             var recruitmentBarLabels = data.labels;
+            recruitmentBarLabels.push('Total');
             recruitmentBarChart = c3.generate({
                 bindto: '#recruitmentBarChart',
                 data: {
                     columns: recruitmentBarData,
                     type: 'bar',
-                    groups: ['Male', 'Female', 'Total']
+                    groups: [['Male', 'Female', 'Total']]
                 },
                 axis: {
                     x: {
