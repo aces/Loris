@@ -996,30 +996,6 @@ class AddElement extends Component {
       });
     }
 
-    if (questionName.length > 64 && selected !== 'textbox'
-        && selected !== 'textarea' && selected !== 'date'
-        && selected !== 'numeric') {
-      // Error, question name is needed for the desired type. Set the element
-      // error flag for the questionName with message. Set the hasError flag
-      let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Please shorten to 64 characters maximum';
-      this.setState({
-        error: temp,
-      });
-      hasError = true;
-    } else if (this.state.error) {
-      // No error, remove the element's questionName error flag if set
-      let temp = this.state.error;
-      delete temp.questionName;
-      this.setState({
-        error: temp,
-      });
-    }
-    if (hasError) {
-      // An error is present, return
-      return;
-    }
-
     if (questionText.length > 64 && selected !=='label') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionText with message. Set the hasError flag
@@ -1033,30 +1009,6 @@ class AddElement extends Component {
       // No error, remove the elememt's questionText error flag if set
       let temp = this.state.error;
       delete temp.questionText;
-      this.setState({
-        error: temp,
-      });
-    }
-    if (hasError) {
-      // An error is present, return
-      return;
-    }
-
-    if (questionName.length > 57 && (selected === 'textbox'
-      || selected === 'textarea' || selected === 'date'
-      || selected === 'numeric')) {
-      // Error, question name is needed for the desired type. Set the element
-      // error flag for the questionName with message. Set the hasError flag
-      let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Please shorten to 57 characters maximum';
-      this.setState({
-        error: temp,
-      });
-      hasError = true;
-    } else if (this.state.error) {
-      // No error, remove the elememt's questionName error flag if set
-      let temp = this.state.error;
-      delete temp.questionName;
       this.setState({
         error: temp,
       });
