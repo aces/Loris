@@ -157,11 +157,11 @@ class Charts extends \NDB_Page
             array_push($ages, $age);
         }
         sort($ages);
-        $min =$config->getSetting('ageMin');
-        $max =$config->getSetting('ageMax');
-        $step=$config->getSetting('ageStep');
-        $min =+$min;
-        $max =+$max;
+        $min  =$config->getSetting('ageMin');
+        $max  =$config->getSetting('ageMax');
+        $step =$config->getSetting('ageStep');
+        $min  =+$min;
+        $max  =+$max;
         $recruitmentByAgeData =[];
         $start =-1;
         $val   =0;
