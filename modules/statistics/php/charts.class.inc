@@ -159,6 +159,7 @@ class Charts extends \NDB_Page
         sort($ages);
         $min =$config->getSetting('ageMin');
         $max =$config->getSetting('ageMax');
+        $step=$config->getSetting('ageStep');
         $min =+$min;
         $max =+$max;
         $recruitmentByAgeData =[];
@@ -179,7 +180,7 @@ class Charts extends \NDB_Page
             array_push($recruitmentByAgeData, [$minLabel, $val]);
         }
         $low  =$min;
-        $high =$min+4;
+        $high =$min+$step-1;
         $val  =0;
         for ($i=$start; $i< sizeof($ages); $i++) {
             if ($ages[$i]>=$low && $ages[$i]<=$high) {
@@ -189,14 +190,14 @@ class Charts extends \NDB_Page
                 if ($high>=$max || $low>=$max) {
                     break;
                 }
-                if ($high-$low<4) {
+                if ($high-$low<$step-1) {
                     break;
                 }
                 $label =$low."-".$high;
                 array_push($recruitmentByAgeData, [$label, $val]);
-                $low  =$low+5;
-                $high =$high+5;
-                if ($max-$low<10) {
+                $low  =$low+$step;
+                $high =$high+$step;
+                if ($max-$low<(2)*$step) {
                     $high =$max-1;
                 }
                 $val =1;

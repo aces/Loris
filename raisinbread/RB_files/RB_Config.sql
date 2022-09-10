@@ -8,6 +8,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (4,4,'images/LORIS_logo.
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (5,5,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (6,6,'5');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (7,7,'99');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (8,8,'5');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (9,9,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (10,10,'2016');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (11,11,'2028');
