@@ -307,6 +307,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
         $attemptcount = 0;
+
+        $db = \NDB_Factory::singleton()->database();
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -314,7 +316,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             try {
-                \Database::singleton()->insert('candidate', $setArray);
+                $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
                 // Occurs in the case of a race condition where another CandID
                 // with the same value has been inserted into the DB before this
@@ -844,7 +846,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusOptions(): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -868,7 +870,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusSubOptions(int $parentID): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options

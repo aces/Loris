@@ -19,7 +19,7 @@ if ($client->initialize() == false) {
 }
 
 // create DB object
-$DB = \Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 
 // user is logged in, let's continue with the show...
 $user = \User::singleton($_SESSION['State']->getUsername());

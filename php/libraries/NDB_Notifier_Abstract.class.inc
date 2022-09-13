@@ -197,7 +197,7 @@ abstract class NDB_Notifier_Abstract
      */
     private function _getAdminUser(): array
     {
-        $result = \Database::singleton()->pselectRow(
+        $result = \NDB_Factory::singleton()->database()->pselectRow(
             "SELECT ID, Real_name, Email, UserID FROM users WHERE UserID='admin'",
             []
         );
@@ -258,7 +258,7 @@ abstract class NDB_Notifier_Abstract
 
         }
 
-        $result = \Database::singleton()->pselect($query, $params);
+        $result = \NDB_Factory::singleton()->database()->pselect($query, $params);
 
         //parse $result and create 2D array
         $n_list = [];
@@ -281,7 +281,7 @@ abstract class NDB_Notifier_Abstract
      */
     private function _hasNotificationPermission(int $uid): bool
     {
-        $DB      = Database::singleton();
+        $DB      = \NDB_Factory::singleton()->database();
         $current = $DB->pselect(
             "SELECT * FROM user_perm_rel WHERE userID=:uid",
             ["uid" => $uid]
@@ -319,7 +319,7 @@ abstract class NDB_Notifier_Abstract
      */
     protected function getEmail(int $uid): ?string
     {
-        return \Database::singleton()->pselectOne(
+        return \NDB_Factory::singleton()->database()->pselectOne(
             "SELECT Email FROM users WHERE ID=:uid",
             ["uid" => $uid]
         );
@@ -334,7 +334,7 @@ abstract class NDB_Notifier_Abstract
      */
     protected function getPhone(int $uid): ?string
     {
-        return \Database::singleton()->pselectOne(
+        return \NDB_Factory::singleton()->database()->pselectOne(
             "SELECT Phone FROM users WHERE ID=:uid",
             ["uid" => $uid]
         );
@@ -363,7 +363,7 @@ abstract class NDB_Notifier_Abstract
         string $service
     ): void {
 
-        \Database::singleton()->insert(
+        \NDB_Factory::singleton()->database()->insert(
             'notification_history',
             [
                 "module_id"    => $this->getNotificationModuleID(
@@ -387,7 +387,7 @@ abstract class NDB_Notifier_Abstract
      */
     public static function getNotificationModuleServices(): array
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $query  = "
             SELECT 
@@ -430,7 +430,7 @@ abstract class NDB_Notifier_Abstract
      */
     public static function getNotificationServices(): array
     {
-        $result = \Database::singleton()->pselect(
+        $result = \NDB_Factory::singleton()->database()->pselect(
             'SELECT * FROM notification_services',
             []
         );
@@ -450,7 +450,7 @@ abstract class NDB_Notifier_Abstract
      */
     public static function getNotificationModules() :array
     {
-        $result = \Database::singleton()->pselect(
+        $result = \NDB_Factory::singleton()->database()->pselect(
             'SELECT * FROM notification_modules',
             []
         );
@@ -488,7 +488,10 @@ abstract class NDB_Notifier_Abstract
             "mn" => $module,
             "ot" => $operation_type,
         ];
-        return intval(\Database::singleton()->pselectOne($query, $params));
+        return intval(
+            \NDB_Factory::singleton()->database()
+                ->pselectOne($query, $params)
+        );
     }
 
     /**
@@ -505,7 +508,10 @@ abstract class NDB_Notifier_Abstract
                   WHERE service=:serv
                     ";
         $params = ["serv" => $service];
-        return intval(\Database::singleton()->pselectOne($query, $params));
+        return intval(
+            \NDB_Factory::singleton()->database()
+                ->pselectOne($query, $params)
+        );
     }
 
     /**
@@ -534,7 +540,7 @@ abstract class NDB_Notifier_Abstract
                                                       )
                       ";
         $params = ["uid" => $uid];
-        $result = \Database::singleton()->pselect($query, $params);
+        $result = \NDB_Factory::singleton()->database()->pselect($query, $params);
 
         $user_n_list =[];
         foreach ($result as $row) {

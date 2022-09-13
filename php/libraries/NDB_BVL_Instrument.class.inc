@@ -645,7 +645,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _saveCandidateAge(array &$values): void
     {
         if (!empty($values['Date_taken'])) {
-            $DB  = Database::singleton();
+            $DB  = $this->loris->getDatabaseConnection();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
@@ -823,7 +823,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _save(array $values): void
     {
-        $db = Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -1005,7 +1005,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return [];
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -1543,7 +1543,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getRequiredElementsCompletedFlag(): string
     {
-        $db     = Database::singleton();
+        $db     = $this->loris->getDatabaseConnection();
         $status = $db->pselectOne(
             "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
@@ -1574,7 +1574,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Y' or 'N'<br>\n"
             );
         }
-        $DB = Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $DB->update(
             "flag",
             ["Required_elements_completed" => $status],
@@ -1604,7 +1604,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             [
-                null           => '',
+                ''             => '',
                 'yes'          => 'Yes',
                 'no'           => 'No',
                 'not_answered' => 'Not Answered',
@@ -1693,7 +1693,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null             => '',
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => 'Not Answered',
@@ -1740,7 +1740,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null           => '',
+                ''             => '',
                 'not_answered' => 'Not Answered',
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1791,7 +1791,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             "",
             [
-                null           => '',
+                ''             => null,
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
@@ -1844,7 +1844,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1911,7 +1911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 '88_refused'     => "88 Refused",
                 '99_do_not_know' => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -1962,7 +1962,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1998,7 +1998,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -2108,7 +2108,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return $this->instanceData;
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         if ($this->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2145,7 +2145,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Warning: loadInstanceData($inst) is deprecated and will be removed'
             . ' in a future version of LORIS. Use $inst->getInstanceData() instead.'
         );
-        $db = \Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         if ($instrumentInstance->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2180,7 +2180,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "Must bulk load from instrument loaded without commentID"
             );
         }
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $prepBindings = [];
         $prepValues   = [];
@@ -2273,7 +2273,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDoB(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $dob = $db->pselectOne(
@@ -2293,7 +2293,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDoD(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
         $dod       = $db->pselectOne(
             "SELECT c.DoD FROM flag f
@@ -2312,7 +2312,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getPSCID(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
@@ -2333,7 +2333,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function clearInstrument(): void
     {
         $config   = NDB_Config::singleton();
-        $db       = Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $dbconfig = $config->getSetting('database');
 
         if (!$this->jsonData) {
@@ -2741,7 +2741,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function determineDataEntryAllowed(): bool
     {
-        $DB    = Database::singleton();
+        $DB    = $this->loris->getDatabaseConnection();
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentId()]

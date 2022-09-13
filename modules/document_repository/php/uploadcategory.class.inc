@@ -79,7 +79,7 @@ class UploadCategory extends \NDB_Page
      */
     function uploadDocCategory($request): bool
     {
-        $DB  = \Database::singleton();
+        $DB  = $this->loris->getDatabaseConnection();
         $req = $request->getParsedBody();
         if (!is_array($req)) {
             throw new \LorisException("Invalid JSON");

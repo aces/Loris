@@ -19,7 +19,7 @@ $client->makeCommandLine();
 $client->initialize();
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = \NDB_Factory::singleton()->database();
 
 $publication_date = $_GET["date"];
 

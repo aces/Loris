@@ -38,7 +38,7 @@ class NDB_BVL_Battery_Test extends TestCase
         $client->makeCommandLine();
         $client->initialize();
 
-        $this->DB = Database::singleton();
+        $this->DB = \NDB_Factory::singleton()->database();
 
         $this->DB->setFakeTableData(
             "test_names",
