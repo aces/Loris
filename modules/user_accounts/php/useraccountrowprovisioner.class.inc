@@ -44,19 +44,24 @@ class UserAccountRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $pids = array_map(
-            function (string $pid) : \ProjectID {
-                return new \ProjectID($pid);
-            },
-            explode(',', $row['projectIds']),
-        );
-
-        $cids = array_map(
-            function (string $cid) : \CenterID {
-                return new \CenterID($cid);
-            },
-            explode(',', $row['centerIds']),
-        );
+        $cids = [];
+        $pids = [];
+        if (isset($row['centerIds'])) {
+            $cids = array_map(
+                function (string $cid) : \CenterID {
+                    return new \CenterID($cid);
+                },
+                explode(',', $row['centerIds'])
+            );
+        }
+        if (isset($row['projectIds'])) {
+            $pids = array_map(
+                function (string $pid) : \ProjectID {
+                    return new \ProjectID($pid);
+                },
+                explode(',', $row['projectIds'])
+            );
+        }
 
         $row['centerIds']  = $cids;
         $row['projectIds'] = $pids;
