@@ -387,6 +387,11 @@ true of all of the API hierarchy under /candidates/$CandID (which
 may all use PSCID in place of CandID, as long as there is a single
 unique PSCID with that identifier in the database.)
 
+Note that it's theoretically possible that a study may have a PSCID that
+is the same value as a different CandID (ie. PSCID=123456 for one candidate, but
+CandID=123456 for a different candidate.) The caller should verify the candidate
+object in the Meta key to ensure the correct candidate was retrieved.
+
 ### 3.2 Getting Candidate visit data
 
 A GET request of the form:

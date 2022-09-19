@@ -237,7 +237,7 @@ paths:
     get:
       tags:
         - Candidates
-      summary: Get a JSON object representing that candidate
+      summary: Get a JSON object representing that candidate. Note that the caller should validate the correct candidate was returned if the PSCID format is configured such that it's possible for a CandID to be the same as a PSCID of a different candidate.
       parameters:
         - name: id
           in: path
