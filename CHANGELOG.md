@@ -31,6 +31,7 @@ be found for the image (PR #8155)
 - Fix PHP fatal error when running the LORIS installation script (PR #8108)
 - Add psr/log to composer (PR #8109)
 - Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
+- Add support for PHP 8.1 (PR #7989)
 ### Modules
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
