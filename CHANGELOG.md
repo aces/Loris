@@ -27,7 +27,15 @@ be found for the image (PR #8155)
 - Add the missing download buttons for BVAL, BVEC and JSON files that comes with BIDS/NIfTI
   dataset/images. In addition, the "Download MINC" button has been renamed to a more generic
   label "Download Image" (PR #8159)
+- Fix ConfigurationException bug (PR #8107)
+- Fix PHP fatal error when running the LORIS installation script (PR #8108)
+- Add psr/log to composer (PR #8109)
+- Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
+### Modules
+#### API
+- Use PSCID instead of the CandID in the candidates API (PR #8138)
 
+#### Bug Fixes  
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
