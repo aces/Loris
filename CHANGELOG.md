@@ -33,7 +33,7 @@ be found for the image (PR #8155)
 - Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
 ### Modules
 #### API
-- Use PSCID instead of the CandID in the candidates API (PR #8138)
+- Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
 
 #### Bug Fixes  
 
