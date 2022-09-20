@@ -8,6 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 24.1 (Release Date: 2022-09-XX)
 ### Core
 #### Updates and Improvements
 - Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
