@@ -35,7 +35,6 @@ be found for the image (PR #8155)
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
 
-#### Bug Fixes  
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
