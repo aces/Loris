@@ -672,10 +672,11 @@ class ImageQCCommentsButton extends Component {
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
-      this.props.BaseURL + '/feedback_mri_popup.php?fileID=' +
+      this.props.BaseURL +
+      '/imaging_browser/feedback_mri_popup/fileID=' +
       this.props.FileID,
       'feedback_mri',
-      'width=500,height=800,toolbar=no,location=no,' +
+      'width=700,height=800,toolbar=no,location=no,' +
       'status=yes,scrollbars=yes,resizable=yes'
     );
   }
