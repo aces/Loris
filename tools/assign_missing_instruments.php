@@ -15,12 +15,12 @@
  * Usage: php assign_missing_instruments.php [Visit_label] [confirm]
  *
  * Example: php assign_missing_instruments.php 18month
- * (Will use regular mode and print the missing instruments)
+ * (Will use regular mode and print the missing instruments
+ * for the specified timepoint)
  *
  * Example: php assign_missing_instruments.php 18month confirm
- * (Will use confirm mode and assign the missing instruments)
- *
- * Note:  As per ... only timepoints in the 'Visit' stage are examined.
+ * (Will use confirm mode and assign the missing instruments
+ * for the specified timepoint)
  *
  * Note: This tool will NOT remove instruments that do exist in the
  * assigned battery but have been removed from the battery lookup table (or
@@ -60,7 +60,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB = Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $visit_label = $argv[1];
 } else {
@@ -91,8 +91,7 @@ function populateVisitLabel($result, $visit_label)
     $battery->selectBattery($sessionID);
     $timePoint = TimePoint::singleton($sessionID);
 
-    $DB        = Database::singleton();
-    $candidate = Candidate::singleton(new CandID($result['CandID']));
+    $candidate         = Candidate::singleton(new CandID($result['CandID']));
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
     if ($result_firstVisit == $visit_label) {

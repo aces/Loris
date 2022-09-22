@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import swal from 'sweetalert2';
 
 /**
  * Request account form.
@@ -96,7 +97,11 @@ class RequestAccount extends Component {
           response.json().then((data) => {
             if (data.error) {
               console.error(data.error);
-              this.setState({request: true});
+              if (data.error === 'Please provide a valid email address!') {
+                swal.fire('Error!', data.error, 'error');
+              } else {
+                this.setState({request: true});
+              }
             }
           });
         }

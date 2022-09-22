@@ -113,7 +113,13 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $filename = $info->getFilename();
-        $body     = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+
+        $realpath = $info->getRealPath();
+        if ($realpath === false) {
+            $realpath = $info->getPath() . "/" . $info->getFilename();
+        }
+
+        $body = new \LORIS\Http\FileStream($realpath, 'r');
 
         return new \LORIS\Http\Response(
             $body,

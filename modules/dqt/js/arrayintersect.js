@@ -102,12 +102,15 @@ export const getSessions = function(group) {
 };
 
 export const enumToArray = function(enumString) {
-    let tempArray = enumString.split('(')[1].split('\'');
-    let array = [];
-    for (let i = 1; i < tempArray.length; i += 2) {
-        array.push(tempArray[i]);
-    }
-    return array;
+  enumString = enumString.substring('enum(\''.length); // remove 'enum('
+  enumString = enumString.slice(0, -2); // remove last 2 characters `')`
+  const tempArray = enumString.split(/\'\s*,\s*\'/);
+  let array = [];
+  for (let i = 0; i < tempArray.length; i++) {
+    // remove "'" from beginning and end of string
+    array.push(tempArray[i]);
+  }
+  return array;
 };
 
 /*

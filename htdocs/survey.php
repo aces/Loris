@@ -81,7 +81,7 @@ class DirectDataEntryMainPage
         }
         $this->key = $_REQUEST['key'];
 
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
@@ -154,7 +154,6 @@ class DirectDataEntryMainPage
         if (intval($currentPage)+1 === $this->NumPages) {
             return 0;
         }
-
         return intval($currentPage)+1;
     }
 
@@ -206,7 +205,7 @@ class DirectDataEntryMainPage
      */
     function getCommentID(): ?string
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -251,7 +250,7 @@ class DirectDataEntryMainPage
      */
     function updateStatus($status): bool
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
@@ -286,7 +285,7 @@ class DirectDataEntryMainPage
      */
     function updateComments($ease, $comments)
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->update(
             "participant_accounts",
             [
@@ -304,7 +303,7 @@ class DirectDataEntryMainPage
      */
     function display()
     {
-        $DB       = Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $nextpage = null;
 
         if (isset($_REQUEST['nextpage'])) {

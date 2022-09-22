@@ -3,8 +3,8 @@
 	.table-instrument>tbody>tr>th{
 		color: black;
 	}
-	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  { 
-	     border-top: none; 
+	.table-instrument>tbody>tr>th, .table-instrument>tbody>tr>td  {
+	     border-top: none;
 	 }
 </style>
 
@@ -260,7 +260,7 @@
                                 {else}
                                     {assign var="itemError" value=""}
                                 {/if}
-                                {if $gitem.type == 'date'}
+                                {if $gitem.type == 'date' || $gitem.type == 'time' }
                                     <td class="element form-inline{$itemError}">{$gitem.html}</td>
                                 {elseif $gitem.type == 'checkbox'}
                                     <td class="form-inline{$itemError}">{$gitem.html}</td>
@@ -417,7 +417,7 @@
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
-							{$element.label}  
+							{$element.label}
 						</label>
 						<div class="col-sm-8">
 							<div class="col-xs-12 element">

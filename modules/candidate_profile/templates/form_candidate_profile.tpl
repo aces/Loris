@@ -21,10 +21,20 @@ window.addEventListener('load', () => {
         let visits = candidate.Visits.map(async function(visit) {
             // FIXME: This shouldn't use the dev version. See #6058
             let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/' + candidate.Meta.CandID + '/' + visit);
-            let data = await response.json();
-            return data;
+            if (!response.ok) {
+              return new Error('Permission denied');
+            } else {
+              let data = await response.json();
+              return data;
+            }
         });
         return Promise.all(visits);
+    }
+
+    async function filterVisits(visits) {
+      return visits.filter(function(v) {
+        return !(v instanceof Error);
+      });
     }
 
     async function loadCards(visits) {
@@ -73,6 +83,6 @@ window.addEventListener('load', () => {
         );
     }
 
-    loadCandidate().then(loadVisits).then(loadCards).then(displayCards);
+    loadCandidate().then(loadVisits).then(filterVisits).then(loadCards).then(displayCards);
 });
 </script>

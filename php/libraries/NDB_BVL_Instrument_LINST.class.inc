@@ -41,6 +41,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $fullName;
     protected $dictionary = [];
 
+    // array of the format "field_name" => "group_name"
+    protected $GroupElements = [];
+
     /**
      * Sets up the variables required for a LINST instrument to load
      *
@@ -95,7 +98,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             ]
         );
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
@@ -338,7 +341,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
-                    $errors[$elname] = "Required.";
+                    // Check if element part of a group.
+                    // If so, the error should be on the group to show up
+                    $errorEl          = $this->GroupElements[$elname] ?? $elname;
+                    $errors[$errorEl] = "$elname is required.";
+
                     if ($this->XINDebug) {
                         echo "Required by default";
                     }
@@ -554,7 +561,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'begingroup':
                     if ($addElements) {
-                        $Group['Name']      = $pieces[1] . '_group';
+                        $Group['Name']      = trim($pieces[1]) . '_group';
                         $Group['Delimiter'] = isset($pieces[2])
                             ? trim($pieces[2]) : $this->_GUIDelimiter;
                     }
@@ -568,6 +575,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $groupLabel,
                             $Group['Delimiter'],
                         );
+
+                        // Track elements and their groups for XIN errors proper
+                        // higlighting in the browser
+                        foreach ($Group['Elements'] as $el) {
+                            if (isset($el['name'])) {
+                                $this->GroupElements[$el['name']] = $Group['Name'];
+                            }
+                        }
 
                         $Group['Name']     = null;
                         $Group['Elements'] = [];
@@ -657,6 +672,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
+                        // The question should be added to the LinstQuestions in this
+                        // order, before the _date is stripped below for standard
+                        // dates to allow XINValidation to recognize the field name
+                        $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
+
                         if ($dateFormat === 'MonthYear') {
                             // Shows date without day of month
                             $this->addMonthYear(
@@ -710,7 +730,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
-                    $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
                     break;
                 case 'numeric':
                     if ($addElements) {

@@ -2,7 +2,6 @@
 
 namespace LORIS\issue_tracker;
 
-use Email;
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -433,6 +432,9 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueValues['lastUpdatedBy'] = $user->getUsername();
 
         $validatedInput = $this->validateInput($validateValues, $user);
+        if (!is_array($validatedInput)) { // Error exists.
+            return $validatedInput;
+        }
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
@@ -458,7 +460,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Attachment for new issue.
         $uploadedFiles = $request->getUploadedFiles();
-        if (isset($uploadedFiles)) {
+        if (!empty($uploadedFiles)) {
             $attachment = new \LORIS\issue_tracker\UploadHelper();
             $success    = $attachment->setupUploading(
                 $user,
@@ -473,7 +475,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     $attachment->errorMessage
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     $attachment->errorMessage
                 );
             }
@@ -565,9 +567,14 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         if (isset($changed_assignee)) {
             $issueChangeEmailsAssignee = $db->pselect(
-                "SELECT u.Email as Email, u.First_name as firstname " .
-                "FROM users u WHERE u.UserID=:assignee
-                AND u.UserID<>:currentUser",
+                "SELECT
+                            u.Email AS Email,
+                            u.First_name AS firstname
+                        FROM
+                            users u
+                        WHERE
+                            u.UserID = :assignee
+                            AND u.UserID != :currentUser",
                 [
                     'assignee'    => $changed_assignee,
                     'currentUser' => $user->getUserName(),
@@ -577,7 +584,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (isset($issueChangeEmailsAssignee[0])) {
                 $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
 
-                Email::send(
+                \Email::send(
                     $issueChangeEmailsAssignee[0]['Email'],
                     'issue_assigned.tpl',
                     $msg_data
@@ -594,11 +601,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                         u.First_name AS firstname
                     FROM
                         users u
-                        INNER JOIN issues_watching w ON (w.userID = u.userID)
+                        INNER JOIN issues_watching w ON (w.userID = u.UserID)
                     WHERE
                         w.issueID = :issueID
-                        AND u.UserID <> :uid
-                        AND u.UserID <> :assignee",
+                        AND w.userID = :uid
+                        AND u.UserID = :assignee",
             [
                 'issueID'  => $issueID,
                 'uid'      => $user->getUsername(),
@@ -613,7 +620,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         foreach ($issue_change_emails as $email) {
             $msg_data['firstname'] = $email['firstname'];
-            Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+            \Email::send($email['Email'], 'issue_change.tpl', $msg_data);
         }
     }
 
@@ -623,7 +630,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param array $values values to be validated
      * @param \User $user   the user requesting the change
      *
-     * @return array|\LORIS\Http\Response\JSON\InternalServerError
+     * @return \LORIS\Http\Response\JSON\Conflict|array
      */
     function validateInput(array $values, \User $user)
     {
@@ -682,10 +689,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
             if (!$validCenter) {
                 $this->logger->log(
-                    \Psr\Log\LogLevel::ERROR,
+                    \Psr\Log\LogLevel::WARNING,
                     'PSCID and Center ID do not match a valid session!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID and Center ID do not match a valid session!'
                 );
             }
@@ -710,7 +717,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
             }
@@ -735,7 +742,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     \Psr\Log\LogLevel::ERROR,
                     'PSCID does not match a valid candidate!'
                 );
-                return new \LORIS\Http\Response\JSON\InternalServerError(
+                return new \LORIS\Http\Response\JSON\Conflict(
                     'PSCID does not match a valid candidate!'
                 );
             }
@@ -749,7 +756,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 \Psr\Log\LogLevel::ERROR,
                 'Visit Label must be accompanied by a PSCID'
             );
-            return new \LORIS\Http\Response\JSON\InternalServerError(
+            return new \LORIS\Http\Response\JSON\Conflict(
                 'Visit Label must be accompanied by a PSCID'
             );
         }

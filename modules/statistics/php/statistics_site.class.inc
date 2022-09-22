@@ -169,7 +169,7 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return string
      */
     function _getInstrumentName($instrument)
     {
@@ -188,7 +188,7 @@ class Statistics_Site extends \NDB_Menu
     {
 
         $this->_checkCriteria($centerID, $projectID);
-        $DB    =& \Database::singleton();
+        $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
             "SELECT count(s.CandID)  FROM session s,
                 candidate c, flag f, {$instrument} i
@@ -218,7 +218,7 @@ class Statistics_Site extends \NDB_Menu
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB     =& \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
                 s.Visit_label
@@ -243,7 +243,7 @@ class Statistics_Site extends \NDB_Menu
      */
     function setup()
     {
-        $DB     =& \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {

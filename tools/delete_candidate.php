@@ -363,7 +363,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
             "candidate_consent_rel",
             ["CandidateID" => $CandID],
             $output,
-            DB
+            $DB
         );
 
         //delete from parameter_candidate

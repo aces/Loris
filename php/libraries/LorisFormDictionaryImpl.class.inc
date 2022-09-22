@@ -35,7 +35,7 @@ trait LorisFormDictionaryImpl
      * Variable from NDB_Page. Must be included in trait
      * to avoid PhanUndeclaredProperty errors.
      */
-    protected $lorisinstance;
+    protected $loris;
 
     /**
      * Recursively extract non-group elements from $elements, and
@@ -112,6 +112,9 @@ trait LorisFormDictionaryImpl
             case 'text':
                 $t = new \LORIS\Data\Types\StringType(255);
                 break;
+            case 'file':
+                $t = new \LORIS\Data\Types\URI();
+                break;
             case 'textarea':
                 $t = new \LORIS\Data\Types\StringType();
                 break;
@@ -155,7 +158,7 @@ trait LorisFormDictionaryImpl
         // Create new instance of the same instrument to avoid altering variables
         // in $this instrument
         $instrument = \NDB_BVL_Instrument::factory(
-            $this->lorisinstance,
+            $this->loris,
             $this->testName
         );
         $subtests   = array_merge(

@@ -1295,6 +1295,7 @@ class EmailElement extends Component {
         <div className={inputClass}>
           <input
             type="email"
+            title="Please provide a valid email address!"
             className="form-control"
             name={this.props.name}
             id={this.props.id}

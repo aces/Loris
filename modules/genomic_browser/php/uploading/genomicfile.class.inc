@@ -127,7 +127,7 @@ class Genomicfile
      */
     function begin() : void
     {
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->beginTransaction();
     }
 
@@ -138,7 +138,7 @@ class Genomicfile
      */
     function endWithFailure() : void
     {
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->rollBack();
     }
 
@@ -149,7 +149,7 @@ class Genomicfile
      */
     function endWithSuccess() : void
     {
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->commit();
     }
 
@@ -221,7 +221,7 @@ class Genomicfile
      */
     function createCandidateFileRelations(&$fileToUpload) : void
     {
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $f = fopen(
             $fileToUpload->tmp_name,
@@ -285,7 +285,7 @@ class Genomicfile
         // Assuming genomic_cpg_annotation have already been created.
         // see: /module/genomic_browser/tool/human...
 
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $f = fopen(
             $fileToUpload->tmp_name,
@@ -376,7 +376,7 @@ class Genomicfile
     {
         $this->reportProgress(85, 'Creating sample-candidate relations');
 
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $f = fopen(
             $fileToUpload->tmp_name,
@@ -448,7 +448,7 @@ class Genomicfile
      */
     function candidateExists($pscid) : bool
     {
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $CandID = $DB->pselectOne(
             "SELECT CandID from candidate WHERE PSCID = :pscid",
@@ -495,7 +495,7 @@ class Genomicfile
      */
     function registerFile(&$fileToUpload) : void
     {
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $values = [
             'FileName'         => $fileToUpload->full_path,

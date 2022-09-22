@@ -125,11 +125,6 @@ class CreateTimepoint extends React.Component {
       if (response.ok) {
         response.json().then((data) => {
           const state = Object.assign({}, this.state);
-          // Populate the select options for subproject.
-          if (data.hasOwnProperty('subproject')) {
-            state.form.options.subproject = data.subproject;
-            state.form.display.subproject = true;
-          }
           // Populate the select options for psc.
           if (data.psc) {
             state.form.options.psc = data.psc;
@@ -140,10 +135,17 @@ class CreateTimepoint extends React.Component {
             state.form.options.project = data.project;
             state.form.display.project = true;
           }
-          // Populate the select options for visit.
-          if (data.visit) {
+          // Populate the select options for subproject.
+          if (data.hasOwnProperty('subprojectGroups')) {
             // Store the (complete) visit selection information.
-            state.storage.visit = data.visit;
+            state.storage.subproject = data.subprojectGroups;
+            // Handle subproject selection.
+            this.handleSubproject();
+          }
+          // Populate the select options for visit.
+          if (data.hasOwnProperty('visitGroups')) {
+            // Store the (complete) visit selection information.
+            state.storage.visit = data.visitGroups;
             // Handle visit selection.
             this.handleVisitLabel();
           }
@@ -171,14 +173,72 @@ class CreateTimepoint extends React.Component {
   }
 
   /**
+   * Subproject refreshes when Project changes.
+   */
+  handleSubproject() {
+    const state = Object.assign({}, this.state);
+    if (Array.isArray(state.storage.subproject[state.form.value.project])) {
+      // Display error message to user.
+      const errorMessage = `No subprojects defined for project: ${
+        this.state.form.options.project[
+          this.state.form.value.project
+      ]}`;
+      state.messages = [errorMessage];
+      swal.fire(errorMessage, '', 'error');
+      state.form.options.subproject = {};
+      state.form.options.visit = {};
+    } else {
+      state.form.options.subproject = state.storage.subproject[
+        state.form.value.project
+      ];
+      state.form.value.subproject = null;
+      state.form.value.visit = null;
+      // Remove existing error messages.
+      state.messages = [];
+    }
+    state.form.display.subproject = true;
+    if (Array.isArray(state.storage.subproject)
+      && !state.storage.subproject.length
+    ) {
+      state.form.display.subproject = false;
+    }
+    this.setState(state);
+  }
+
+  /**
    * Visit Labels refreshes when Subproject changes.
    */
   handleVisitLabel() {
     const state = Object.assign({}, this.state);
-    state.form.options.visit = state.storage.visit[
-      state.form.value.subproject
-      ];
+    if (state.storage.visit[
+        state.form.value.project
+      ] !== undefined) {
+      if (Array.isArray(state.storage.visit[
+        state.form.value.project][state.form.value.subproject])
+      ) {
+        const errorMessage = `No visit labels defined for 
+        combination of project: ${
+          this.state.form.options.project[
+            this.state.form.value.project
+          ]
+        } and subproject: ${
+          this.state.form.options.subproject[
+            this.state.form.value.subproject
+        ]}`;
+        state.messages = [errorMessage];
+        swal.fire(errorMessage, '', 'error');
+        state.form.options.visit = {};
+      } else {
+        state.form.options.visit = state.storage.visit[
+          state.form.value.project
+        ][state.form.value.subproject];
+        state.form.value.visit = null;
+      }
+    }
     state.form.display.visit = true;
+    if (Array.isArray(state.storage.visit) && !state.storage.visit.length) {
+      state.form.display.visit = false;
+    }
     this.setState(state);
   }
 
@@ -192,7 +252,9 @@ class CreateTimepoint extends React.Component {
     const state = Object.assign({}, this.state);
     state.form.value[formElement] = value;
     this.setState(state);
-    if (formElement === 'subproject') {
+    if (formElement === 'project') {
+      this.handleSubproject();
+    } else if (formElement === 'subproject') {
       this.handleVisitLabel();
     }
   }
@@ -366,9 +428,9 @@ class CreateTimepoint extends React.Component {
             label={'DCCID'}
             text={this.state.data.dccid}
           />
-          {subproject}
           {psc}
           {project}
+          {subproject}
           {visit}
           {languages}
           <ButtonElement
@@ -381,10 +443,8 @@ class CreateTimepoint extends React.Component {
     );
   }
 }
-
 CreateTimepoint.propTypes = {
   baseURL: PropTypes.string.isRequired,
-  dataURL: PropTypes.string.isRequired,
 };
 
 /**
@@ -394,7 +454,6 @@ window.addEventListener('load', () => {
   ReactDOM.render(
     <CreateTimepoint
       baseURL={loris.BaseURL}
-      dataURL={`${loris.BaseURL}/create_timepoint/AjaxTimepoint`}
     />,
     document.getElementById('lorisworkspace')
   );

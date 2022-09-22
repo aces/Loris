@@ -536,9 +536,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         //holds raw question values
         $score_record = array();
 
-        //holds calculated
-        $db =& Database::singleton();
-
         // null scores
         $this->_nullScores($this->scores);
 

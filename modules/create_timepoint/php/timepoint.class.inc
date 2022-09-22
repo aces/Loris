@@ -3,6 +3,7 @@
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\VisitController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -64,43 +65,39 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         // Setup variables
-        $conflict       = []; // conflict messages.
-        $candidate      = \Candidate::singleton(new CandID($values['candID']));
-        $allSubprojects = \Utility::getSubprojectList();
+        $conflict = []; // conflict messages.
 
-        // All subprojects from config file (error).
-        if (empty($allSubprojects)) {
-            $conflict['subprojectID'] = 'No subprojects have been defined
-            for this study. If you are an administrator, please use the
-            Configuration module to add new subprojects.';
+        //Projects and sites should be limited to the logged in user's affiliations
+        $user           = $request->getAttribute("user");
+        $userProjects   = $user->getProjects();
+        $projectOptions = [];
+        foreach ($userProjects as $project) {
+            $projectOptions[$project->getId()->__toString()] = $project->getName();
         }
+        $values['project'] = $projectOptions;
+        $values['psc']     = \Utility::getSiteNameListByIDs($user->getCenterIDs());
 
-        // List of valid subprojects for a given project
-        $subprojList    = $candidate->getValidSubprojects();
-        $allSubprojects = \Utility::getSubprojectList();
-        if (empty($subprojList)) {
-            $conflict['subprojectID'] = 'No subprojects have been
-            defined for the project this candidate is affiliated with.
-            If you are an administrator, please use the Configuration module to
-            add new subprojects and associate them with projects.';
+        //Subprojects should be determined by project options
+        //Nested array of valid suprojects grouped by projects
+        $subprojectGroups = [];
+        foreach ($projectOptions as $pid=>$pname) {
+            $subprojectGroups[$pid] = \Utility::getSubprojectList(
+                new \ProjectID(strval($pid))
+            );
         }
-        $values['subproject'] = array_intersect_key(
-            $allSubprojects,
-            $candidate->getValidSubprojects()
-        );
+        $values['subprojectGroups'] = $subprojectGroups;
 
-        // Retrieve visit labels.
-        $visit_options = [];
-        foreach ($allSubprojects as $sid=>$title) {
-            $visit_options[$sid] = \Utility::getVisitsForSubproject($sid);
+        //Visits are determined by subproject-project associations.
+        $visitGroups = [];
+        foreach ($subprojectGroups as $pid=>$subprojectList) {
+            foreach ($subprojectList as $sid=>$title) {
+                $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectSubproject(
+                    new \ProjectID(strval($pid)),
+                    $sid
+                );
+            }
         }
-        $values['visit'] = $visit_options;
-
-        // List sites
-        $values['psc'] = array_intersect(
-            \Utility::getSiteList(),
-            \User::singleton()->getSiteNames()
-        );
+        $values['visitGroups'] = $visitGroups;
 
         // List languages
         $languages = \Utility::getLanguageList();
@@ -108,16 +105,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $languages = [null] + $languages;
         }
         $values['languages'] = $languages;
-
-        // List projects
-        $user = \User::singleton();
-        $user_list_of_projects = $user->getProjectIDs();
-        $projectOptions        = [];
-        foreach ($user_list_of_projects as $projectID) {
-            $project = \Project::getProjectFromID($projectID);
-            $projectOptions["$projectID"] = $project->getName();
-        }
-        $values['project'] = $projectOptions;
 
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
@@ -187,10 +174,21 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 json_encode($values['conflict'])
             );
         }
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectSubproject(
+            $project->getId(),
+            intval($values['subproject'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
+
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
             intval($values['subproject']),
-            $values['visit'] ?? null,
+            $visitName,
             $site,
             $project,
             intval($values['languages']) ?? null
@@ -267,13 +265,24 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         $candid       = $values['candID'];
         $subprojectID = intval($values['subproject']);
-        $visitLabel   = $values['visit'] ?? '';
+        $projectID    = new \ProjectID($values['project']);
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectSubproject(
+            $projectID,
+            intval($values['subproject'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->lorisinstance->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
+                $projectID,
                 $subprojectID,
-                $visitLabel
+                $visitName,
             );
         } catch (\LorisException $exception) {
             $conflict['visitLabel'] = $exception->getMessage();

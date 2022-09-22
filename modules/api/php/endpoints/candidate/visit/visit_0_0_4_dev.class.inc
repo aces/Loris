@@ -326,6 +326,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
+                $this->_project->getId(),
                 $subprojectid,
                 $visitinfo['Visit']
             );
