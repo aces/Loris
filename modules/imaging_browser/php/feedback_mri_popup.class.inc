@@ -12,11 +12,8 @@
  */
 namespace LORIS\imaging_browser;
 
-use LORIS\Http\Response;
-use LORIS\StudyEntities\Candidate\ValidatableIdentifier;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Imaging browser MRI Feedback class
