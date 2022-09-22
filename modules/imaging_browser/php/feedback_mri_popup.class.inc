@@ -106,21 +106,22 @@ class Feedback_MRI_Popup extends \NDB_Page
     /**
      * Determine whether the user has permission to view the imaging_browser page
      *
+     * @param \User $user User object
+     *
      * @return bool whether the user hass access
      */
     function _hasAccess(\User $user): bool
     {
         return $user->hasAnyPermission(
-                [
-                    'imaging_browser_view_allsites',
-                    'imaging_browser_phantom_allsites',
-                    'imaging_browser_phantom_ownsite',
-                ]
-            )
-            || (
-                $user->hasStudySite()
-                && $user->hasPermission('imaging_browser_view_site')
-            );
+            [
+                'imaging_browser_view_allsites',
+                'imaging_browser_phantom_allsites',
+                'imaging_browser_phantom_ownsite',
+            ]
+        ) || (
+            $user->hasStudySite()
+            && $user->hasPermission('imaging_browser_view_site')
+        );
     }
 
     /**
@@ -142,17 +143,17 @@ class Feedback_MRI_Popup extends \NDB_Page
             isset($this->session_id) ? new \SessionID($this->session_id) : null,
         );
 
-
         // get identifier of subject/volume
         if ($feedbackObj->fileID) {
-            $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label, s.SubprojectID,
-                    f.File AS File_name, st.Scan_type
-                FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st
-                WHERE f.FileID=:FID
-                    AND f.SessionID=s.ID
-                    AND s.CandID=c.CandID
-                    AND f.AcquisitionProtocolID=st.ID
-                    AND s.Active='Y'";
+            $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label,
+                             s.SubprojectID, f.File AS File_name, st.Scan_type
+                      FROM files AS f, session AS s, candidate AS c,
+                           mri_scan_type AS st
+                      WHERE f.FileID=:FID
+                          AND f.SessionID=s.ID
+                          AND s.CandID=c.CandID
+                          AND f.AcquisitionProtocolID=st.ID
+                          AND s.Active='Y'";
 
             $qparams = ['FID' => $feedbackObj->file_id];
         } elseif ($feedbackObj->sessionID) {
@@ -190,7 +191,8 @@ class Feedback_MRI_Popup extends \NDB_Page
             $CommentTpl =& $tpl_data['comment'][$i];
 
             // get the status select field value if it exists
-            if (!empty($comment_array['field']) && ($feedbackObj->objectType == 'volume')) {
+            if (!empty($comment_array['field'])
+                && ($feedbackObj->objectType == 'volume')) {
                 if ($user->hasPermission('imaging_browser_qc')) {
                     $CommentTpl['select_name']        = $comment_array['field'];
                     $CommentTpl['select_value_array'] = $comment_array['values'];
@@ -206,7 +208,9 @@ class Feedback_MRI_Popup extends \NDB_Page
             }
 
             // get the list of predefined feedbackObj for the current type
-            $predefined_comments = $feedbackObj->getAllPredefinedComments($comment_type_id);
+            $predefined_comments = $feedbackObj->getAllPredefinedComments(
+                $comment_type_id
+            );
 
             // loop through the predefined feedbackObj
             $j = 0;
@@ -217,7 +221,8 @@ class Feedback_MRI_Popup extends \NDB_Page
                 $PredefinedTpl =& $CommentTpl['predefined'][$j];
                 // print a form element
                 $PredefinedTpl['id'] = $predefined_comment_id;
-                $PredefinedTpl['predefined_text'] = $predefined_comment_text['Comment'];
+                $PredefinedTpl['predefined_text'] =
+                    $predefined_comment_text['Comment'];
 
                 // print the comment text
                 $Saved = $saved_comments[$comment_type_id] ?? [];
@@ -229,7 +234,8 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             // print a form element for a free-form comment
             $CommentTpl['type']       = $comment_type_id;
-            $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'] ?? '';
+            $CommentTpl['saved_text'] =
+                $saved_comments[$comment_type_id]['text'] ?? '';
             $i++;
         }
 
@@ -241,7 +247,7 @@ class Feedback_MRI_Popup extends \NDB_Page
      *
      * @return void
      */
-    public function saveData($values)
+    public function saveData()
     {
         // instantiate feedback mri object
         $feedbackObj = new \FeedbackMRI(
