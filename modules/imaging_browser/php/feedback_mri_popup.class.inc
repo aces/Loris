@@ -192,7 +192,8 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             // get the status select field value if it exists
             if (!empty($comment_array['field'])
-                && ($feedbackObj->objectType == 'volume')) {
+                && ($feedbackObj->objectType == 'volume')
+            ) {
                 if ($user->hasPermission('imaging_browser_qc')) {
                     $CommentTpl['select_name']        = $comment_array['field'];
                     $CommentTpl['select_value_array'] = $comment_array['values'];
@@ -221,8 +222,8 @@ class Feedback_MRI_Popup extends \NDB_Page
                 $PredefinedTpl =& $CommentTpl['predefined'][$j];
                 // print a form element
                 $PredefinedTpl['id'] = $predefined_comment_id;
-                $PredefinedTpl['predefined_text'] =
-                    $predefined_comment_text['Comment'];
+                $PredefinedTpl['predefined_text']
+                    = $predefined_comment_text['Comment'];
 
                 // print the comment text
                 $Saved = $saved_comments[$comment_type_id] ?? [];
@@ -234,8 +235,8 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             // print a form element for a free-form comment
             $CommentTpl['type']       = $comment_type_id;
-            $CommentTpl['saved_text'] =
-                $saved_comments[$comment_type_id]['text'] ?? '';
+            $CommentTpl['saved_text']
+                = $saved_comments[$comment_type_id]['text'] ?? '';
             $i++;
         }
 
