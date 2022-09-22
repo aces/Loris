@@ -55,7 +55,7 @@
                           "EchoNumber" : "{$files[file].EchoNumber}",
                           "NumVolumes" : "{$files[file].Time}",
                           "ProcessingPipeline": "{$files[file].ProcessingPipeline}",
-                          "ProcDate": "{$files[file].ProcDate}",
+                          "ProcDate": "{$files[file].ProcDate|date_format}",
                           "TotalRejected" : "{$files[file].TotalRejected}",
                           "InterlaceRejected" : "{$files[file].InterlaceRejected}",
                           "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
