@@ -138,7 +138,8 @@ class Feedback_MRI_Popup extends \NDB_Page
         // instantiate feedback mri object
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID(strval($this->session_id)) : null,
+            isset($this->session_id)
+                ? new \SessionID(strval($this->session_id)) : null,
         );
 
         // get identifier of subject/volume
@@ -244,15 +245,19 @@ class Feedback_MRI_Popup extends \NDB_Page
     /**
      * Saves data from the feedback popup
      *
+     * @param array $values values of the POST request
+     *
      * @return void
      */
-    public function saveData($values)
+    public function saveData(array $values)
     {
         // instantiate feedback mri object
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID(strval($this->session_id)) : null,
-        );        // clear all predefined comments
+            isset($this->session_id)
+                ? new \SessionID(strval($this->session_id)) : null,
+        );
+        // clear all predefined comments
         $feedbackObj->clearAllComments();
 
         // set selected predefined comments
