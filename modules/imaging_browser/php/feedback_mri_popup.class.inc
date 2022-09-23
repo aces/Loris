@@ -33,6 +33,7 @@ class Feedback_MRI_Popup extends \NDB_Page
     public $skipTemplate = true;
     private int $file_id;
     private int $session_id;
+    private \User $user;
 
     /**
      * Load the required variables in order to check that the  user
@@ -75,6 +76,7 @@ class Feedback_MRI_Popup extends \NDB_Page
             throw new \NotFound("Invalid Parameters");
         }
 
+        $this->user = $user;
     }
 
     /**
@@ -129,16 +131,14 @@ class Feedback_MRI_Popup extends \NDB_Page
     function getData() : array
     {
         $DB       = $this->loris->getDatabaseConnection();
-        $user     = \User::singleton($_SESSION['State']->getUsername());
         $tpl_data = [
-            'has_permission' => $user->hasPermission('imaging_browser_qc')
+            'has_permission' => $this->user->hasPermission('imaging_browser_qc')
         ];
 
         // instantiate feedback mri object
-        $sid         = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID($sid) : null,
+            isset($this->session_id) ? new \SessionID(strval($this->session_id)) : null,
         );
 
         // get identifier of subject/volume
@@ -192,7 +192,7 @@ class Feedback_MRI_Popup extends \NDB_Page
             if (!empty($comment_array['field'])
                 && ($feedbackObj->objectType == 'volume')
             ) {
-                if ($user->hasPermission('imaging_browser_qc')) {
+                if ($this->user->hasPermission('imaging_browser_qc')) {
                     $CommentTpl['select_name']        = $comment_array['field'];
                     $CommentTpl['select_value_array'] = $comment_array['values'];
                 }
@@ -246,29 +246,28 @@ class Feedback_MRI_Popup extends \NDB_Page
      *
      * @return void
      */
-    public function saveData()
+    public function saveData($values)
     {
         // instantiate feedback mri object
-        $sid         = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID($sid) : null,
+            isset($this->session_id) ? new \SessionID(strval($this->session_id)) : null,
         );        // clear all predefined comments
         $feedbackObj->clearAllComments();
 
         // set selected predefined comments
-        if (isset($_POST['savecomments']['predefined'])) {
+        if (isset($values['savecomments']['predefined'])) {
             $predefined = array_map(
                 function ($row) {
                     return intval($row);
                 },
-                \Utility::asArray($_POST['savecomments']['predefined']),
+                \Utility::asArray($values['savecomments']['predefined']),
             );
             $feedbackObj->setPredefinedComments($predefined);
         }
 
         // save all textual comments but only if there is an entry [sebas]
-        foreach (\Utility::asArray($_POST['savecomments']['text'])
+        foreach (\Utility::asArray($values['savecomments']['text'])
             as $comment_type_id => $comment_message
         ) {
             if (trim($comment_message)) {
@@ -280,10 +279,10 @@ class Feedback_MRI_Popup extends \NDB_Page
         }
 
         // save all comment status fields
-        if (isset($_POST['saveCommentStatusField'])
-            && is_array($_POST['saveCommentStatusField'])
+        if (isset($values['saveCommentStatusField'])
+            && is_array($values['saveCommentStatusField'])
         ) {
-            foreach ($_POST['saveCommentStatusField'] as $status_field => $value) {
+            foreach ($values['saveCommentStatusField'] as $status_field => $value) {
                 $feedbackObj->setMRIValue($status_field, $value);
             }
         }
