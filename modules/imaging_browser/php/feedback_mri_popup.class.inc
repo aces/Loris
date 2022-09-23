@@ -135,9 +135,10 @@ class Feedback_MRI_Popup extends \NDB_Page
         ];
 
         // instantiate feedback mri object
+        $sid = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID($this->session_id) : null,
+            isset($this->session_id) ? new \SessionID($sid) : null,
         );
 
         // get identifier of subject/volume
@@ -152,7 +153,7 @@ class Feedback_MRI_Popup extends \NDB_Page
                           AND f.AcquisitionProtocolID=st.ID
                           AND s.Active='Y'";
 
-            $qparams = ['FID' => $feedbackObj->file_id];
+            $qparams = ['FID' => $feedbackObj->fileID];
         } elseif ($feedbackObj->sessionID) {
             $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID
                 FROM session AS s, candidate AS c
@@ -248,9 +249,10 @@ class Feedback_MRI_Popup extends \NDB_Page
     public function saveData()
     {
         // instantiate feedback mri object
+        $sid = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
-            isset($this->session_id) ? new \SessionID($this->session_id) : null,
+            isset($this->session_id) ? new \SessionID($sid) : null,
         );        // clear all predefined comments
         $feedbackObj->clearAllComments();
 
