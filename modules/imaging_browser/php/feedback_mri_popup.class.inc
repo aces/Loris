@@ -135,7 +135,7 @@ class Feedback_MRI_Popup extends \NDB_Page
         ];
 
         // instantiate feedback mri object
-        $sid = strval($this->session_id);
+        $sid         = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
             isset($this->session_id) ? new \SessionID($sid) : null,
@@ -249,7 +249,7 @@ class Feedback_MRI_Popup extends \NDB_Page
     public function saveData()
     {
         // instantiate feedback mri object
-        $sid = strval($this->session_id);
+        $sid         = strval($this->session_id);
         $feedbackObj = new \FeedbackMRI(
             $this->file_id ?? null,
             isset($this->session_id) ? new \SessionID($sid) : null,
