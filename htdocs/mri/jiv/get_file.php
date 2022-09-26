@@ -156,7 +156,7 @@ case 'bval':
     break;
 case 'json':
     $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'apllication/json';
+    $MimeType         = 'application/json';
     $DownloadFilename = basename($File);
     break;
 case 'DICOMTAR':
