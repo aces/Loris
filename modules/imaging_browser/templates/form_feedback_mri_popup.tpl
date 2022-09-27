@@ -51,7 +51,7 @@
             class='input-sm'
         }
     {else}
-        {$curr_comment.selected|default}
+        {if $curr_comment.selected}({$curr_comment.selected}){/if}
     {/if}
 </h3>
 
