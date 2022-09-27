@@ -549,9 +549,13 @@ class ImagePanelQCSNRValue extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    let label = null;
+    if (this.props.SNR) {
+      label = 'SNR';
+    }
     return (
       <ImageQCStatic
-        Label="SNR"
+        Label={label}
         FormName="snr"
         FileID={this.props.FileID}
         defaultValue={this.props.SNR}
