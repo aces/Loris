@@ -19,6 +19,10 @@ changes in the following format: PR #1234***
 - Addition of `image_type`, `PhaseEncodingDirection` and `EchoNumber` fields to the tables
   present in the "Could not identify scan" page of the MRI violation module (PR #8156)
 - Modification of the list of headers displayed in the image panel headers table (PR #8157)
+#### Bug Fixes
+- Bug fix to the imaging uploader so that when clicking on an upload row, the row is 
+  highlighted and the proper log is being displayed in the log viewer (PR #8154)
+  
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
