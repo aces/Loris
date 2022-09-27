@@ -66,6 +66,9 @@
                       "XMLProtocol" : "{$files[file].XMLprotocol}",
                       "XMLReport" : "{$files[file].XMLreport}",
                       "NrrdFile" : "{$files[file].NrrdFile}",
+                      "BvalFile" : "{$files[file].BvalFile}",
+                      "BvecFile" : "{$files[file].BvecFile}",
+                      "JsonFile" : "{$files[file].JsonFile}",
                       "OtherTimepoints" : "{$files[file].OtherTimepoints}",
                       "SeriesUID": "{$files[file].SeriesUID}"
                   }),

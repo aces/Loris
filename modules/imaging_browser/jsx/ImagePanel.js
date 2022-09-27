@@ -810,7 +810,7 @@ class ImageDownloadButtons extends Component {
                                BaseURL={this.props.BaseURL}
         />
         <DownloadButton URL={this.props.APIFile}
-                        Label="Download Minc"
+                        Label='Download Image'
                         BaseURL={this.props.BaseURL}
         />
         <DownloadButton FileName={this.props.XMLProtocol}
@@ -824,6 +824,18 @@ class ImageDownloadButtons extends Component {
         <DownloadButton FileName={this.props.NrrdFile}
                         BaseURL={this.props.BaseURL}
                         Label="Download NRRD"
+        />
+        <DownloadButton FileName={this.props.BvalFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BVAL"
+        />
+        <DownloadButton FileName={this.props.BvecFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BVEC"
+        />
+        <DownloadButton FileName={this.props.JsonFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BIDS JSON"
         />
         <LongitudinalViewButton FileID={this.props.FileID}
                                 BaseURL={this.props.BaseURL}
@@ -841,6 +853,9 @@ ImageDownloadButtons.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
 };
 
@@ -905,6 +920,9 @@ class ImagePanelBody extends Component {
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
+          BvalFile={this.props.BvalFile}
+          BvecFile={this.props.BvecFile}
+          JsonFile={this.props.JsonFile}
           OtherTimepoints={this.props.OtherTimepoints}
         />
         {this.props.HeadersExpanded ? <ImagePanelHeadersTable
@@ -928,6 +946,9 @@ ImagePanelBody.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
@@ -1013,6 +1034,9 @@ class ImagePanel extends Component {
               XMLProtocol={this.props.XMLProtocol}
               XMLReport={this.props.XMLReport}
               NrrdFile={this.props.NrrdFile}
+              BvalFile={this.props.BvalFile}
+              BvecFile={this.props.BvecFile}
+              JsonFile={this.props.JsonFile}
               OtherTimepoints={this.props.OtherTimepoints}
               SeriesUID={this.props.SeriesUID}
             />}
@@ -1035,6 +1059,9 @@ ImagePanel.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
