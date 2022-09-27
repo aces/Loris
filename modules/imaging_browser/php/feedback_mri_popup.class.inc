@@ -79,9 +79,14 @@ class Feedback_MRI_Popup extends \NDB_Page
         $this->user = $user;
     }
 
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $pageID    = isset($this->file_id)
+        $pageID = isset($this->file_id)
             ? "fileID=$this->file_id" : "sessionID=$this->session_id";
 
         return new \LORIS\BreadcrumbTrail(
