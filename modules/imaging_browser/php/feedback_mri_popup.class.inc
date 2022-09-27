@@ -79,6 +79,19 @@ class Feedback_MRI_Popup extends \NDB_Page
         $this->user = $user;
     }
 
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $pageID    = isset($this->file_id)
+            ? "fileID=$this->file_id" : "sessionID=$this->session_id";
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                "Feedback MRI Popup",
+                "/imaging_browser/$this->page/$pageID"
+            )
+        );
+    }
+
     /**
      * An NDB_Page can act as both a middleware, or a handler, depending on the
      * context. When treated as a handler, an NDB_Page calls display() and
@@ -132,7 +145,7 @@ class Feedback_MRI_Popup extends \NDB_Page
     {
         $DB       = $this->loris->getDatabaseConnection();
         $tpl_data = [
-            'has_permission' => $this->user->hasPermission('imaging_browser_qc')
+            'has_permission' => $this->user->hasPermission('imaging_browser_qc'),
         ];
 
         // instantiate feedback mri object
