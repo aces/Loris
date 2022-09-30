@@ -1061,13 +1061,13 @@ class Utility
             $sep = null;
             if ($is_int($seph)) {
                 $sep = '-';
-            } 
+            }
             if ($is_int($seps)) {
                 $sep = '/';
-            } 
+            }
             if ($is_int($sepd)) {
                 $sep = '.';
-            } 
+            }
             if (is_null($sep)) {
                 throw new \Exception("Invalid date");
             }
