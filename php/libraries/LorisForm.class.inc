@@ -1320,9 +1320,9 @@ class LorisForm
                     if (empty($date)) {
                         continue;
                     }
-                    $dt          = DateTime::createFromFormat('Y-m-d', $date);
-                    $isValidDate = $dt && $dt->format('Y-m-d') == $date;
-                    if (!$isValidDate) {
+                    try {
+                        $dt = \Utility::parseDate($date);
+                    } catch (\LorisException $e){
                         $this->setElementError(
                             $el['name'],
                             "Please input a valid date in '" . $el['label'] . "'!"
@@ -2109,7 +2109,7 @@ class LorisForm
                         && strlen($value) === 7
                         && strpos(strtolower($key), 'date')
                     ) {
-                        $value = sprintf("%s-01", $value);
+                        $value = \Utility::parseDate($value)->format('Y-m-d');
                     }
                     $arr[$key] = $value;
                     continue;

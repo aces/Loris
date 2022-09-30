@@ -1020,4 +1020,100 @@ class Utility
         }
         return $formData;
     }
+
+    /**
+     * Try to detect and apply several predefined date formats 
+     * from a string. Accepts hyphen-, slash- and dot-based dates.
+     *
+     * @param string $strDate A 7- or 10-digits string date.
+     *
+     * @return DateTime The parsed date, error else.
+     * 
+     * @throws LorisException.
+     */
+    public static function parseDate(string $strDate) : DateTime
+    {
+        if (strlen($strDate) !== 10 && strlen($strDate) !== 7) {
+            throw new \LorisException("Invalid date");
+        }
+        // separator checks
+        $seph = strpos($strDate, '-');
+        $seps = strpos($strDate, '/');
+        $sepd = strpos($strDate, '.');
+        // no known separators
+        if ($seph === false && $seps === false && $sepd === false ) {
+            throw new \LorisException("Invalid date");
+        }
+        // if multiple separators
+        $is_int = function ($s) {
+            return gettype($s) === "integer"; 
+        };
+        if (($is_int($seph) && ($is_int($seps) || $is_int($sepd))) 
+            || ($is_int($seps) && ($is_int($seph) || $is_int($sepd))) 
+            || ($is_int($sepd) && ($is_int($seps) || $is_int($seph)))
+        ) {
+            throw new \LorisException("Invalid date");
+        }
+        // if 7-digits, normalize to 10-digits
+        if (strlen($strDate) === 7) {
+            // get separator
+            $sep = '';
+            if ($is_int($seph)) {
+                $sep = '-';
+            } elseif ($is_int($seps)) {
+                $sep = '/';
+            } elseif ($is_int($sepd)) {
+                $sep = '.';
+            } else {
+                throw new \Exception("Invalid date");
+            }
+            //
+            $seppos = strpos($strDate, $sep);
+            if ($seppos !== 2 && $seppos !== 4) {
+                throw new \LorisException("Invalid date");
+            }
+            if ($seppos === 2) {
+                // [mm sep yyyy] format
+                $month = substr($strDate, 0, 2);
+                $year = substr($strDate, $seppos+1);
+            } else {
+                // [yyyy sep mm] format
+                $year = substr($strDate, 0, 4);
+                $month = substr($strDate, $seppos+1);
+            }
+            if ($year <= 0 || $month < 1 || $month > 12) {
+                throw new \LorisException("Invalid date");
+            }
+            // format to yyyy-mm-01
+            $normalizedDate = $year ."-". $month ."-01";
+        } else {
+            // already 10-digits
+            $normalizedDate = $strDate;
+        }
+        // transform to hyphen-only separator (SQL compatible)
+        $normalizedDate = str_replace("/", "-", $normalizedDate);
+        $normalizedDate = str_replace(".", "-", $normalizedDate); 
+        // pattern check
+        $patterns = array(
+            '/\b\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\b/' => 'Y-m-d',
+            '/\b\d{4}-(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])\b/' => 'Y-d-m',
+            '/\b(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-\d{4}\b/' => 'd-m-Y',
+            '/\b(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-\d{4}\b/' => 'm-d-Y'
+        );
+        $dateFmt = preg_replace(
+            array_keys($patterns), 
+            array_values($patterns), 
+            $normalizedDate
+        );
+        // cannot find format
+        if (preg_match('/\d/', $dateFmt)) {
+            throw new \LorisException("Invalid date");
+        }
+        // convert to DateTime
+        $parsedDate = DateTime::createFromFormat($dateFmt, $normalizedDate);
+        if ($parsedDate === false) {
+            throw new \LorisException("Invalid date");
+        }
+        return $parsedDate;
+    }
 }

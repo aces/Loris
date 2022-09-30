@@ -1187,6 +1187,248 @@ class UtilityTest extends TestCase
     }
 
     /**
+     * Test attribute types.
+     *
+     * @covers Utility::parseDate
+     * @expectedException TypeError
+     * @return void
+     */
+    public function testParseDateAttrTypes()
+    {
+        $this->expectException(TypeError::class);
+        Utility::parseDate(NULL);
+        Utility::parseDate(123);
+        Utility::parseDate(1.123);
+        Utility::parseDate(true);
+        Utility::parseDate(function(){ return "nope"; });
+        $a = [
+            "foo" => "bar",
+            "bar" => "foo",
+        ];
+        Utility::parseDate($a);
+    }
+
+    /**
+     * Test attribute length.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateAttrLength()
+    {
+        $this->expectException(LorisException::class);
+        $this->expectExceptionMessage("Invalid date");
+        Utility::parseDate("1");
+        Utility::parseDate("22");
+        Utility::parseDate("333");
+        Utility::parseDate("4444");
+        Utility::parseDate("55555");
+        Utility::parseDate("666666");
+        // 7 is good
+        Utility::parseDate("88888888");
+        Utility::parseDate("999999999");
+        // 10 is good
+        Utility::parseDate("aaaaaaaaaaa");
+    }
+
+    /**
+     * Test 7- and 10-digit length return.
+     *
+     * @covers Utility::parseDate
+     * @return void
+     */
+    public function testParseDateRightLength()
+    {
+        $d = "2010-01-01";
+        // 10-digits
+        $this->assertEquals(Utility::parseDate($d)->format('Y-m-d'), $d);
+        // 7-digits
+        $this->assertEquals(Utility::parseDate(substr($d, 0, 7))->format('Y-m-d'), $d);
+    }
+
+    /**
+     * Test separators for 7-digits dates.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateBadSeparator()
+    {
+        $this->expectException(LorisException::class);
+        $this->expectExceptionMessage("Invalid date");
+        // yyyy-mm
+        Utility::parseDate("2010;01");
+        Utility::parseDate("2010501");
+        Utility::parseDate("2010*01");
+        Utility::parseDate("2010_01");
+        Utility::parseDate("2010+01");
+        Utility::parseDate("2010=01");
+        Utility::parseDate("2010%01");
+        Utility::parseDate("2010$01");
+        Utility::parseDate("2010#01");
+        Utility::parseDate("2010@01");
+        Utility::parseDate("2010!01");
+        Utility::parseDate("2010:01");
+        Utility::parseDate("2010,01");
+        Utility::parseDate("2010?01");
+        Utility::parseDate("2010!01");
+        // mm-yyyy
+        Utility::parseDate("01;2010");
+        Utility::parseDate("0152010");
+        Utility::parseDate("01*2010");
+        Utility::parseDate("01_2010");
+        Utility::parseDate("01+2010");
+        Utility::parseDate("01=2010");
+        Utility::parseDate("01%2010");
+        Utility::parseDate("01$2010");
+        Utility::parseDate("01#2010");
+        Utility::parseDate("01@2010");
+        Utility::parseDate("01!2010");
+        Utility::parseDate("01:2010");
+        Utility::parseDate("01,2010");
+        Utility::parseDate("01?2010");
+        Utility::parseDate("01!2010");
+    }
+
+    /**
+     * Test separators position for 7-digits dates.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateBadSeparatorPosition()
+    {
+        $this->expectException(LorisException::class);
+        $this->expectExceptionMessage("Invalid date");
+        // 
+        Utility::parseDate("201001-");
+        Utility::parseDate("20100-1");
+        // Utility::parseDate("2010-01"); correct position
+        Utility::parseDate("201-001");
+        // Utility::parseDate("20-1001"); correct position
+        Utility::parseDate("2-01001");
+        Utility::parseDate("-201001");
+    }
+
+    /**
+     * Test year 0000.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateZeros()
+    {
+        $this->expectException(LorisException::class);
+        $this->expectExceptionMessage("Invalid date");
+        // 
+        Utility::parseDate("0000-00");
+        Utility::parseDate("0000-00-00");
+        
+    }
+
+    /**
+     * Test multiple separators.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateMultipleseparators()
+    {
+        $this->expectException(LorisException::class);
+        $this->expectExceptionMessage("Invalid date");
+        // 
+        Utility::parseDate("2010-01/01");
+        Utility::parseDate("2010/01-01");
+        Utility::parseDate("2010-01.01");
+        Utility::parseDate("2010.01-01");
+        Utility::parseDate("2010.01/01");
+        Utility::parseDate("2010/01.01");   
+    }
+
+    /**
+     * Test 7-digit nominative behavior.
+     *
+     * @covers Utility::parseDate
+     * @return void
+     */
+    public function testParseDate7DigitsNominal()
+    {
+        // hyphens
+        $this->assertEquals(Utility::parseDate("2010-01")->format('Y-m-d'), "2010-01-01");
+        $this->assertEquals(Utility::parseDate("2010-12")->format('Y-m-d'), "2010-12-01");
+        // slashes
+        $this->assertEquals(Utility::parseDate("2010/01")->format('Y-m-d'), "2010-01-01");
+        $this->assertEquals(Utility::parseDate("2010/12")->format('Y-m-d'), "2010-12-01");
+        // dots
+        $this->assertEquals(Utility::parseDate("2010.01")->format('Y-m-d'), "2010-01-01");
+        $this->assertEquals(Utility::parseDate("2010.12")->format('Y-m-d'), "2010-12-01");
+    }
+
+    /**
+     * Test 10-digit nominative behavior.
+     *
+     * @covers Utility::parseDate
+     * @return void
+     */
+    public function testParseDate10DigitsNominal()
+    {
+        // hyphens
+        $this->assertEquals(Utility::parseDate("2010-01-13")->format('Y-m-d'), "2010-01-13");
+        $this->assertEquals(Utility::parseDate("2010-12-13")->format('Y-m-d'), "2010-12-13");
+        // slashes
+        $this->assertEquals(Utility::parseDate("2010/01/13")->format('Y-m-d'), "2010-01-13");
+        $this->assertEquals(Utility::parseDate("2010/12/13")->format('Y-m-d'), "2010-12-13");
+        // dots
+        $this->assertEquals(Utility::parseDate("2010.01.13")->format('Y-m-d'), "2010-01-13");
+        $this->assertEquals(Utility::parseDate("2010.12.13")->format('Y-m-d'), "2010-12-13");
+    }
+
+    /**
+     * Test 7-digit month error.
+     *
+     * @covers Utility::parseDate
+     * @expectedException LorisException
+     * @return void
+     */
+    public function testParseDateMonthError()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Invalid date");
+        Utility::parseDate("2010-13");
+        Utility::parseDate("2010/13");
+        Utility::parseDate("2010.13");
+    }
+
+    /**
+     * Test parsing 7- or 10-digits.
+     *
+     * @covers Utility::parseDate
+     * @return void
+     */
+    public function testParseDate7or10digits()
+    {
+        $this->assertEquals(
+            Utility::parseDate("2010-12-01"), 
+            Utility::parseDate("2010-12")
+        );
+
+        $this->assertEquals(
+            Utility::parseDate("2010/10/01"), 
+            Utility::parseDate("2010/10")
+        );
+
+        $this->assertEquals(
+            Utility::parseDate("2010.10.01"), 
+            Utility::parseDate("2010.10")
+        );
+    }
+
+    /**
      * Set up a mock database for some of the tests above
      *
      * @return void

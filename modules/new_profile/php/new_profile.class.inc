@@ -68,7 +68,7 @@ class New_Profile extends \NDB_Form
          */
         $dob = null;
         if (isset($values['dobDate'])) {
-            $dob = (new \DateTime($values['dobDate']))->format('Y-m-d');
+            $dob = (\Utility::parseDate($values['dobDate']))->format('Y-m-d');
         }
         $edc = $values['edcDate'] ?? null;
         if (!is_null($edc)) {
@@ -206,12 +206,14 @@ class New_Profile extends \NDB_Form
         }
         // Validate DOB fields
         try {
-            if (isset($values['dobDate'])
-                && (new \DateTime($values['dobDate'])) > new \DateTime('now')
-            ) {
+            $parsedDoB = \Utility::parseDate($values['dobDate']);
+            if ($parsedDoB > new \DateTime('now')) {
                 $errors['dobDate'] = 'Date of Birth cannot be set in the future.';
             }
-        } catch (\Exception $e) {
+            if ($parsedDoB < new \DateTime('1900-01-01')) {
+                $errors['dobDate'] = 'Date of Birth cannot be set before 1900.';
+            }
+        } catch (\LorisException | \Exception $e) {
             $errors['dobDate'] = 'Date of Birth is not a valid date.';
         }
 

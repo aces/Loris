@@ -18,6 +18,9 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
+define('DOB_FUTURE', 8);
+define('DOB_TOO_OLD', 9);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -240,13 +243,30 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 EDC_NOT_SPECIFIED
             );
         }
-        if ($dateOfBirth !== null
-            && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
-            || empty($dateOfBirth))
-        ) {
+        if (empty($dateOfBirth)) {
             throw new InvalidArgumentException(
                 "Date of Birth must be specified",
                 DOB_NOT_SPECIFIED
+            );
+        }
+        try {
+            $dob = \Utility::parseDate($dateOfBirth);
+        } catch (\Lorisexception $e) {
+            throw new \LorisException(
+                "Date of Birth is not valid",
+                DOB_INVALID
+            );
+        }
+        if ($dob > new \DateTime('now')) {
+            throw new \LorisException(
+                "Date of Birth cannot be set in the future",
+                DOB_FUTURE
+            );
+        }
+        if ($dob < new \DateTime('1900-01-01')) {
+            throw new \LorisException(
+                "Date of Birth cannot be set before 1900",
+                DOB_TOO_OLD
             );
         }
 
@@ -284,7 +304,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $setArray = [
             'RegistrationCenterID'  => $centerID,
             'PSCID'                 => $PSCID,
-            'DoB'                   => $dateOfBirth,
+            'DoB'                   => $dob->format('Y-m-d'),
             'EDC'                   => $edc,
             'Sex'                   => $sex,
             'RegistrationProjectID' => $registrationProjectID,
