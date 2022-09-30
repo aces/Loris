@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -146,13 +147,13 @@ class Utility
         $whereElements = [];
 
         if ($study_site) {
-                $whereElements[] = "Study_site='Y'";
+            $whereElements[] = "Study_site='Y'";
         }
         if (!$DCC) {
-                $whereElements[] = "CenterID <> 1";
+            $whereElements[] = "CenterID <> 1";
         }
         if (!empty($whereElements)) {
-            $query .= "WHERE ".implode(" AND ", $whereElements);
+            $query .= "WHERE " . implode(" AND ", $whereElements);
         }
         $result = $DB->pselect($query, []);
 
@@ -186,7 +187,7 @@ class Utility
 
         return $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
-            implode(', ', $params) . ")",
+                implode(', ', $params) . ")",
             $values,
             'ID'
         );
@@ -212,7 +213,7 @@ class Utility
     ): array {
         throw new \DeprecatedException(
             ' This function is deprecated. Please use \Utility::getSiteList()'
-            . ' instead.'
+                . ' instead.'
         );
     }
 
@@ -225,7 +226,7 @@ class Utility
      * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      */
-    static function getVisitList(?ProjectID $projectID = null) : array
+    static function getVisitList(?ProjectID $projectID = null): array
     {
         $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
@@ -236,7 +237,7 @@ class Utility
                 = ' AND (s.ProjectID IS NULL OR s.ProjectID=:ProjectID)';
             $qparams["ProjectID"]  = $projectID;
         } else {
-            $ExtraProject_Criteria ='';
+            $ExtraProject_Criteria = '';
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
@@ -343,7 +344,7 @@ class Utility
                 JOIN subproject s USING(SubprojectID)
             WHERE SubprojectID = :sid
             ORDER BY VisitLabel",
-            ["sid"=>$subprojectID],
+            ["sid" => $subprojectID],
             "VisitName"
         );
 
@@ -376,7 +377,7 @@ class Utility
 	    WHERE SubprojectID = :sid
 		AND ProjectID = :pid
             ORDER BY VisitLabel",
-            ["sid"=>$subprojectID, "pid"=>$projectID],
+            ["sid" => $subprojectID, "pid" => $projectID],
             "VisitID"
         );
 
@@ -420,7 +421,7 @@ class Utility
         $rows  = $DB->pselect($query, $params);
 
         // repackage the array
-        foreach ($rows AS $row) {
+        foreach ($rows as $row) {
             $tests[] = $row['Test_name'];
         }
 
@@ -465,8 +466,8 @@ class Utility
     {
         throw new \DeprecatedException(
             'Utility::toArray() is deprecated and should not be used. ' .
-            'Instead use Utility::associativeToNumericArray() for converting ' .
-            'arrays. Scalar values cannot be passed to this function.'
+                'Instead use Utility::associativeToNumericArray() for converting ' .
+                'arrays. Scalar values cannot be passed to this function.'
         );
     }
 
@@ -523,9 +524,9 @@ class Utility
     static function getAllInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getAllInstruments() function of ".
-            "the Utility class has been deprecated. This function does not load ".
-            "the most accurate Full_name value and should be replaced by ".
+            "LORIS Deprecation Warning: The getAllInstruments() function of " .
+            "the Utility class has been deprecated. This function does not load " .
+            "the most accurate Full_name value and should be replaced by " .
             "getInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
         $Factory       = \NDB_Factory::singleton();
@@ -537,7 +538,7 @@ class Utility
         $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
+                $instruments[$row['Test_name']] = $row['Full_name'];
             }
         }
 
@@ -605,7 +606,7 @@ class Utility
             []
         );
         foreach ($instruments_q as $key) {
-            $instruments[$key['Test_name']] =$key['Full_name'];
+            $instruments[$key['Test_name']] = $key['Full_name'];
         }
 
         return $instruments;
@@ -651,7 +652,7 @@ class Utility
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $query = "select DISTINCT Current_stage from session where ".
+        $query = "select DISTINCT Current_stage from session where " .
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage[0]['Current_stage'];
@@ -733,7 +734,7 @@ class Utility
     {
         throw new \DeprecatedException(
             'This function is deprecated. Please use Utility::getVisitList() '
-            . 'instead.'
+                . 'instead.'
         );
     }
 
@@ -823,10 +824,10 @@ class Utility
      *
      * @note taken from http://php.net/manual/en/function.ini-get.php
      */
-    static function returnBytes(string $val) : int
+    static function returnBytes(string $val): int
     {
         $val  = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
 
         switch ($last) {
         case 'g':
@@ -879,7 +880,7 @@ class Utility
         ?string $keyspace = null
     ): string {
         $keyspace = $keyspace
-        ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            ?? '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         if ($length < 1) {
             throw new \RangeException("Length must be a positive integer");
         }
@@ -912,20 +913,20 @@ class Utility
         $factory = \NDB_Factory::singleton();
         return $dt->format(
             $factory->config()->getSetting('dateDisplayFormat')
-            ?? DateTime::ATOM
+                ?? DateTime::ATOM
         );
     }
 
-     /**
-      * Takes an argument and determine whether it is a positive integer
-      * i.e. > 0.
-      *
-      * @param mixed $value The value to check. Intentionally not type hinted as
-      *                     this function is meant to assist in cases where the type
-      *                     is unknown, e.g. when a parameter is sent via a form.
-      *
-      * @return bool Whether $value is a positive int.
-      */
+    /**
+     * Takes an argument and determine whether it is a positive integer
+     * i.e. > 0.
+     *
+     * @param mixed $value The value to check. Intentionally not type hinted as
+     *                     this function is meant to assist in cases where the type
+     *                     is unknown, e.g. when a parameter is sent via a form.
+     *
+     * @return bool Whether $value is a positive int.
+     */
     public static function valueIsPositiveInteger($value): bool
     {
 
@@ -971,7 +972,7 @@ class Utility
      *
      * @return string
      */
-    static function appendForwardSlash(string $path) : string
+    static function appendForwardSlash(string $path): string
     {
         return rtrim($path, '/\\') . '/';
     }
@@ -1011,7 +1012,7 @@ class Utility
      *
      * @return array The parsed FormData object.
      */
-    public static function parseFormData(array $formData) : array
+    public static function parseFormData(array $formData): array
     {
         foreach ($formData as $key => $val) {
             if ($formData[$key] === 'null') {
@@ -1022,16 +1023,16 @@ class Utility
     }
 
     /**
-     * Try to detect and apply several predefined date formats 
+     * Try to detect and apply several predefined date formats
      * from a string. Accepts hyphen-, slash- and dot-based dates.
      *
      * @param string $strDate A 7- or 10-digits string date.
      *
      * @return DateTime The parsed date, error else.
-     * 
+     *
      * @throws LorisException.
      */
-    public static function parseDate(string $strDate) : DateTime
+    public static function parseDate(string $strDate): DateTime
     {
         if (strlen($strDate) !== 10 && strlen($strDate) !== 7) {
             throw new \LorisException("Invalid date");
@@ -1041,15 +1042,15 @@ class Utility
         $seps = strpos($strDate, '/');
         $sepd = strpos($strDate, '.');
         // no known separators
-        if ($seph === false && $seps === false && $sepd === false ) {
+        if ($seph === false && $seps === false && $sepd === false) {
             throw new \LorisException("Invalid date");
         }
         // if multiple separators
         $is_int = function ($s) {
-            return gettype($s) === "integer"; 
+            return gettype($s) === "integer";
         };
-        if (($is_int($seph) && ($is_int($seps) || $is_int($sepd))) 
-            || ($is_int($seps) && ($is_int($seph) || $is_int($sepd))) 
+        if (($is_int($seph) && ($is_int($seps) || $is_int($sepd)))
+            || ($is_int($seps) && ($is_int($seph) || $is_int($sepd)))
             || ($is_int($sepd) && ($is_int($seps) || $is_int($seph)))
         ) {
             throw new \LorisException("Invalid date");
@@ -1075,34 +1076,34 @@ class Utility
             if ($seppos === 2) {
                 // [mm sep yyyy] format
                 $month = substr($strDate, 0, 2);
-                $year = substr($strDate, $seppos+1);
+                $year  = substr($strDate, $seppos + 1);
             } else {
                 // [yyyy sep mm] format
-                $year = substr($strDate, 0, 4);
-                $month = substr($strDate, $seppos+1);
+                $year  = substr($strDate, 0, 4);
+                $month = substr($strDate, $seppos + 1);
             }
             if ($year <= 0 || $month < 1 || $month > 12) {
                 throw new \LorisException("Invalid date");
             }
             // format to yyyy-mm-01
-            $normalizedDate = $year ."-". $month ."-01";
+            $normalizedDate = $year . "-" . $month . "-01";
         } else {
             // already 10-digits
             $normalizedDate = $strDate;
         }
         // transform to hyphen-only separator (SQL compatible)
         $normalizedDate = str_replace("/", "-", $normalizedDate);
-        $normalizedDate = str_replace(".", "-", $normalizedDate); 
+        $normalizedDate = str_replace(".", "-", $normalizedDate);
         // pattern check
-        $patterns = array(
+        $patterns = [
             '/\b\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\b/' => 'Y-m-d',
             '/\b\d{4}-(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])\b/' => 'Y-d-m',
             '/\b(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-\d{4}\b/' => 'd-m-Y',
             '/\b(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])-\d{4}\b/' => 'm-d-Y'
-        );
-        $dateFmt = preg_replace(
-            array_keys($patterns), 
-            array_values($patterns), 
+        ];
+        $dateFmt  = preg_replace(
+            array_keys($patterns),
+            array_values($patterns),
             $normalizedDate
         );
         // cannot find format

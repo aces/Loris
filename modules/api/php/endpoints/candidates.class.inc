@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /**
  * This implements the Candidates endpoint class
  *
@@ -10,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
 namespace LORIS\api\Endpoints;
 
 use LORIS\StudyEntities\Candidate\Sex;
@@ -45,8 +48,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _hasAccess(\User $user)
     {
-        return (
-            $user->hasPermission('access_all_profiles') ||
+        return ($user->hasPermission('access_all_profiles') ||
             ($user->hasStudySite() && $user->hasPermission('data_entry'))
         );
     }
@@ -56,7 +58,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return array supported HTTP methods
      */
-    protected function allowedMethods() : array
+    protected function allowedMethods(): array
     {
         return [
             'GET',
@@ -70,7 +72,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return array a list of supported API versions.
      */
-    protected function supportedVersions() : array
+    protected function supportedVersions(): array
     {
         return [
             "v0.0.3",
@@ -85,7 +87,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute('user');
         if ($user instanceof \LORIS\AnonymousUser) {
@@ -223,7 +225,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $candidate = \NDB_Factory::singleton()->candidate($candid);
 
         $body = (new \LORIS\api\Views\Candidate($candidate))->toArray()['Meta'];
-        $link = '/'. $request->getURI()->getPath() . '/' . $candid;
+        $link = '/' . $request->getURI()->getPath() . '/' . $candid;
 
         return (new \LORIS\Http\Response\JsonResponse($body))
             ->withStatus(201)
@@ -237,7 +239,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return string etag summarizing value of this request.
      */
-    public function ETag(ServerRequestInterface $request) : string
+    public function ETag(ServerRequestInterface $request): string
     {
         return md5(json_encode($this->_handleGet($request)->getBody()));
     }

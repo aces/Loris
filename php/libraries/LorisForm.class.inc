@@ -1322,7 +1322,7 @@ class LorisForm
                     }
                     try {
                         $dt = \Utility::parseDate($date);
-                    } catch (\LorisException $e){
+                    } catch (\LorisException $e) {
                         $this->setElementError(
                             $el['name'],
                             "Please input a valid date in '" . $el['label'] . "'!"

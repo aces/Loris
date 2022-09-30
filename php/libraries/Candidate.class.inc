@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
@@ -34,7 +36,8 @@ define('DOB_TOO_OLD', 9);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate implements \LORIS\StudyEntities\AccessibleResource,
+class Candidate implements
+    \LORIS\StudyEntities\AccessibleResource,
     \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
@@ -53,7 +56,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static public function &singleton(CandID $candID)
     {
-        $candidateList =& $GLOBALS['__candidateObjects'];
+        $candidateList = &$GLOBALS['__candidateObjects'];
         if (!isset($candidateList[strval($candID)])) {
             $candidateList[strval($candID)] = new Candidate();
             $candidateList[strval($candID)]->select($candID);
@@ -103,7 +106,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // store user data in object property
-        foreach ($row as $key=>$value) {
+        foreach ($row as $key => $value) {
             switch ($key) {
             case 'Sex':
                 $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
@@ -168,7 +171,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // the test_name matches before throwing the error.
         if (isset($_REQUEST['PSCID'])
             && (isset($_REQUEST['test_name'])
-            && $_REQUEST['test_name']=='timepoint_list')
+            && $_REQUEST['test_name'] == 'timepoint_list')
         ) {
             if (strtolower(
                 trim($_REQUEST['PSCID'])
@@ -291,7 +294,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     PSCID_INVALID_STRUCTURE
                 );
             }
-
         } else {
             $PSCID = (new \PSCIDGenerator(
                 $site->getSiteAlias(),
@@ -407,8 +409,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getSessionID(int $visitNo): ?int
     {
-        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
-            return intval($this->listOfTimePoints[$visitNo-1]);
+        if (isset($this->listOfTimePoints[$visitNo - 1])) {
+            return intval($this->listOfTimePoints[$visitNo - 1]);
         }
 
         return null;
@@ -663,7 +665,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             ->pselect($query, $params);
 
         foreach ($subproj as $row) {
-            foreach ($row as $key =>$val) {
+            foreach ($row as $key => $val) {
                 if ($key == 'SubprojectID') {
                     $subprojList[$val] = $val;
                 }
@@ -719,8 +721,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $result = $db->pselectOne($query, $where);
         } catch (DomainException $ex) {
             throw new LorisException(
-                "CandID: $candID has multiple first visits ".
-                "recorded whereas only 1 is expected."
+                "CandID: $candID has multiple first visits " .
+                    "recorded whereas only 1 is expected."
             );
         }
         return $result ?? '';
@@ -732,7 +734,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @return int The next visit number
      */
-    public function getNextVisitNo() : int
+    public function getNextVisitNo(): int
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -950,7 +952,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @return string
      */
-    public function getParticipantStatusDescription(\Database $db) : string
+    public function getParticipantStatusDescription(\Database $db): string
     {
         $res = $db->pselectRow(
             "SELECT pso.Description
@@ -987,7 +989,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $seqs = [$seqs];
         }
         $regex = "";
-        foreach ($seqs AS $seq) {
+        foreach ($seqs as $seq) {
             $unit = "";
 
             switch ($seq['@']['type']) {
@@ -1004,14 +1006,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 break;
 
             case 'static':
-                $unit .= '('.$seq['#'].')';
+                $unit .= '(' . $seq['#'] . ')';
                 break;
 
             case 'set':
                 if (strpos($seq['#'], '|') !== false) {
-                    $unit .= '('.$seq['#'].')';
+                    $unit .= '(' . $seq['#'] . ')';
                 } else {
-                    $unit .= '['.$seq['#'].']';
+                    $unit .= '[' . $seq['#'] . ']';
                 }
                 break;
 
@@ -1044,10 +1046,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $length .= '1';
             }
 
-            $regex .= $unit.'{'.$length.'}';
-
+            $regex .= $unit . '{' . $length . '}';
         } // end foreach seq
 
-        return '/^'.$regex.'$/i';
+        return '/^' . $regex . '$/i';
     }
 }
