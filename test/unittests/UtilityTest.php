@@ -1187,32 +1187,6 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test attribute types.
-     *
-     * @covers            Utility::parseDate
-     * @expectedException TypeError
-     * @return            void
-     */
-    public function testParseDateAttrTypes()
-    {
-        $this->expectException(TypeError::class);
-        Utility::parseDate(null);
-        Utility::parseDate(123);
-        Utility::parseDate(1.123);
-        Utility::parseDate(true);
-        Utility::parseDate(
-            function () {
-                return "nope";
-            }
-        );
-        $a = [
-            "foo" => "bar",
-            "bar" => "foo",
-        ];
-        Utility::parseDate($a);
-    }
-
-    /**
      * Test attribute length.
      *
      * @covers            Utility::parseDate

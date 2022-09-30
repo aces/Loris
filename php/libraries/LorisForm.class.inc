@@ -1321,7 +1321,7 @@ class LorisForm
                         continue;
                     }
                     try {
-                        $dt = \Utility::parseDate($date);
+                        \Utility::parseDate($date);
                     } catch (\LorisException $e) {
                         $this->setElementError(
                             $el['name'],

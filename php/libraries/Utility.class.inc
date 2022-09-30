@@ -1058,14 +1058,17 @@ class Utility
         // if 7-digits, normalize to 10-digits
         if (strlen($strDate) === 7) {
             // get separator
-            $sep = '';
+            $sep = null;
             if ($is_int($seph)) {
                 $sep = '-';
-            } elseif ($is_int($seps)) {
+            } 
+            if ($is_int($seps)) {
                 $sep = '/';
-            } elseif ($is_int($sepd)) {
+            } 
+            if ($is_int($sepd)) {
                 $sep = '.';
-            } else {
+            } 
+            if (is_null($sep)) {
                 throw new \Exception("Invalid date");
             }
             //
