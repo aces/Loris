@@ -59,7 +59,7 @@ npm run compile
 This will change several configurations in your LORIS project to allow for more verbose error reporting, which is useful for debugging.
 
 ### Helpful commands to run before pushing new code:
-Travis is our continuous integration which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the Travis build to fail.
+GitHub Actions is our continuous integration suite which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the GitHub Actions build to fail.
 
     make checkstatic  # includes these 3 commands: 
                       # npm run lint:php, npm run lint:javascript, vendor/bin/phan
@@ -80,8 +80,8 @@ Running unit or integration tests (useful if making significant changes to any m
     npm run tests:unit -- --filter CandidateTest::someTest
     npm run tests:integration
 
-### Good practice for Travis CI
-As you get more comfortable with commits and PRs, to save time and Travis errors you can configure your setup so that `make checkstatic` must complete successfully 
+### Good practice for GitHub Actions
+As you get more comfortable with commits and PRs, to save time and GitHub Actions errors you can configure your setup so that `make checkstatic` must complete successfully 
 before any git push can be done. To do this, run 
 
     git config core.hooksPath .githooks (git v2.9 or up)
@@ -137,8 +137,8 @@ Be sure to observe and follow team conventions for how PRs should be named and d
 **Reviewers/Assignees:** Reviewers are people that you would like to ping specifically, but are not the same as assignees.
 Be sure to consult the Contributing and Code Review guidelines. For example, 2 reviewers must approve the PR and any code change must be pulled and tested by a developer before a PR is marked as `Passed Manual Tests`. 
 
-**Travis:** The Travis build status and results are linked near the bottom of your PR in GitHub. 
-You can restart Travis if it gives error messages that seem inappropriate, or if the build stalls (for longer than 1h).
+**GitHub Actions:** The GitHub Actions build status and results are linked near the bottom of your PR in GitHub. 
+You can restart GitHub Actions if it gives error messages that seem inappropriate, or if the build stalls (for longer than 1h).
 
 **Documentation PRs:** If working specifically on markdown files or other documentation, be sure to check the actual look of the document once you have pushed your PR and fix any formatting errors. You can do this by going to “Files Changed” and viewing how your markdown file will actually appear in GitHub. Don’t forget to click all links to make sure they won't be broken when the document is rendered. 
 
