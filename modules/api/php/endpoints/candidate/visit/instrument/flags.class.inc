@@ -168,6 +168,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
             );
+        }
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Could not update.'
