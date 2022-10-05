@@ -42,7 +42,7 @@ class FilterableDataTable extends Component {
     this.updateQueryParams(filters);
     this.setState({filters});
     if (this.props.updateFilterCallback) {
-      this.props.updateFilterCallback(filter);
+      this.props.updateFilterCallback(filters);
     }
   }
 
