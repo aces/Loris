@@ -410,7 +410,7 @@ class LorisForm
         $customs=[]
     ) {
         $el = null;
-        switch($type)  {
+        switch ($type) {
         case 'select':
             $el = $this->addSelect($name, $label, $options, $attribs);
             break;
@@ -1512,7 +1512,7 @@ class LorisForm
      */
     function renderElement(&$el)
     {
-        switch($el['type']) {
+        switch ($el['type']) {
         case 'date':
             return $this->dateHTML($el);
         case 'select':
@@ -1601,9 +1601,16 @@ class LorisForm
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+        /// XXX: There seems to be a problem when using &nbsp; to separate the
+        //  checkbox from the label. Both Firefox and Chrome will still put a
+        //  linebreak between the space and the checkbox. Instead, we wrap use
+        //  CSS to wrap the tag which avoids the label from being separated from the
+        //  checkbox. We don't wrap the whole label in it because if it's a long
+        //  label it's still allowed to have linebreaks.
+        return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\""
+            . " type=\"checkbox\" $checked $value "
             . "$disabled/>"
-            . " $el[label]";
+            . " </span>$el[label]";
     }
 
     /**
@@ -1978,7 +1985,7 @@ class LorisForm
         $attribs=[],
         $customs=[]
     ) {
-        switch($type) {
+        switch ($type) {
         case 'text':
             return $this->createText($elname, $label, $attribs);
         case 'select':
@@ -2388,4 +2395,3 @@ class LorisFormFileElement extends LorisFormElement
         return $_FILES[$this->el['name']];
     }
 }
-

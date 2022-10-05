@@ -82,11 +82,21 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      */
     protected function createLorisDBConnection()
     {
+        $dbname = $this->factory->settings()->dbName();
+        putenv(
+            "LORIS_{$dbname}_USERNAME="
+            . $this->factory->settings()->dbUserName()
+        );
+        putenv(
+            "LORIS_{$dbname}_PASSWORD="
+            . $this->factory->settings()->dbPassword()
+        );
+        putenv(
+            "LORIS_{$dbname}_HOST="
+            . $this->factory->settings()->dbHost()
+        );
         $this->database = Database::singleton(
             $this->factory->settings()->dbName(),
-            $this->factory->settings()->dbUserName(),
-            $this->factory->settings()->dbPassword(),
-            $this->factory->settings()->dbHost()
         );
     }
 

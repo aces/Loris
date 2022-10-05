@@ -52,7 +52,8 @@
 
 8. Once all the values in the form have been validated, ensure that you can upload a `.zip` file and a `.tgz` file
    [Manual Testing]
-9. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column. 
+9. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column.
+   Ensure the file exists in the location specified in the Upload Location column. 
    Ensure you get the Warning message 'Are you sure? A file with this name already exists! Would you like to override 
    existing file?'. Ensure the correct behaviour of the two possible actions by the user: 'Yes, I am sure!' or 'No, cancel it!'.  
    [Manual Testing]      

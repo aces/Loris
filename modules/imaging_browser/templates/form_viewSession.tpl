@@ -25,7 +25,7 @@
                       'FileID'   : "{$files[file].FileID}",
                       'Filename' : "{$files[file].Filename}",
                       'QCStatus' : "{$files[file].QCStatus}",
-                      'Checkpic' : "{$files[file].CheckPic}",
+                      'APIFile' : "{$files[file].APIFile}",
 
                       'HasQCPerm': {if $has_qc_permission}true{else}false{/if},
                       'FileNew'  : {if $files[file].New}true{else}false{/if},

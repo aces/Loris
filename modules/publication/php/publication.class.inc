@@ -157,7 +157,7 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $rawStatus = $db->pselectCol(
             'SELECT Label FROM publication_status',
             []

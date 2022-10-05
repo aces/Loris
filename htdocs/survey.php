@@ -16,6 +16,8 @@
  */
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
+ini_set('session.use_strict_mode', '1');
+
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'NDB_Config.class.inc';
 require_once 'Smarty_hook.class.inc';
@@ -79,7 +81,7 @@ class DirectDataEntryMainPage
         }
         $this->key = $_REQUEST['key'];
 
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
@@ -165,7 +167,7 @@ class DirectDataEntryMainPage
 
         $nextPage = $currentPage+1;
         return intval(
-            \Database::singleton()->pselectOne(
+            \NDB_Factory::singleton()->database()->pselectOne(
                 "SELECT Order_number FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
                 [
@@ -186,7 +188,7 @@ class DirectDataEntryMainPage
      */
     function getPrevPageNum($currentPage): ?string
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if ($currentPage === null) {
             // On the top page or no page specified, do not include link
             return null;
@@ -226,7 +228,7 @@ class DirectDataEntryMainPage
         try {
             $this->initialize();
             $this->display();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->displayError($e);
         }
     }
@@ -238,7 +240,7 @@ class DirectDataEntryMainPage
      */
     function getCommentID(): ?string
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -257,8 +259,7 @@ class DirectDataEntryMainPage
      */
     function displayError($e)
     {
-        switch($e->getCode())
-        {
+        switch ($e->getCode()) {
         case 404:
             header("HTTP/1.1 404 Not Found");
             break;
@@ -284,7 +285,7 @@ class DirectDataEntryMainPage
      */
     function updateStatus($status): bool
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
@@ -319,7 +320,7 @@ class DirectDataEntryMainPage
      */
     function updateComments($ease, $comments)
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         $DB->update(
             "participant_accounts",
             [
@@ -337,7 +338,7 @@ class DirectDataEntryMainPage
      */
     function display()
     {
-        $DB       = Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $nextpage = null;
 
         if (isset($_REQUEST['nextpage'])) {

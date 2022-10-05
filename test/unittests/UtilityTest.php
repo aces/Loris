@@ -609,52 +609,15 @@ class UtilityTest extends TestCase
     {
 
         $this->_dbMock->expects($this->any())
-            ->method('pselect')
+            ->method('pselectColWithIndexKey')
             ->willReturn(
                 [
-                    ['Test_name_display' => 'display1',
-                        'TestName'          => 'name1',
-                        'Visit_label'       => 'V1'
-                    ]
+                    'name1' => 'display1'
                 ]
             );
 
         $this->assertEquals(
-            [0 => ['Test_name_display' => 'display1',
-                'TestName'          => 'name1',
-                'Visit_label'       => 'V1'
-            ]
-            ],
-            Utility::getVisitInstruments('V1')
-        );
-    }
-
-    /**
-     * Test an edge case of getVisitInstruments() where there is no
-     * 'Test_name_display' column in the given table
-     *
-     * @covers Utility::getVisitInstruments
-     * @return void
-     */
-    public function testGetVisitInstrumentsWithoutTestNameDisplay()
-    {
-
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                [
-                    ['Full_name' => 'display1',
-                        'TestName'    => 'name1',
-                        'Visit_label' => 'V1'
-                    ]
-                ]
-            );
-
-        $this->assertEquals(
-            [0 => ['Full_name' => 'display1',
-                'TestName'    => 'name1',
-                'Visit_label' => 'V1'
-            ]
+            ['name1' => 'display1'
             ],
             Utility::getVisitInstruments('V1')
         );
@@ -1234,7 +1197,7 @@ class UtilityTest extends TestCase
         $this->_mockFactory->reset();
         $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
         $database          = $this->_mockConfig->getSetting('database');
-        $this->_mockDB     = \Database::singleton(
+        $this->_mockDB     = $this->_mockFactory->database(
             $database['database'],
             $database['username'],
             $database['password'],

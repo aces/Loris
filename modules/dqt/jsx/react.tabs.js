@@ -10,6 +10,8 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
+import StaticDataTable from '../../../jsx/StaticDataTable';
+const {jStat} = require('jstat');
 
 /**
  * Loading Component
@@ -144,6 +146,8 @@ let FilterSelectTabPane = (props) => {
                      filter={props.filter}
                      Visits={props.Visits}
                      Active={props.Active}
+                     loadImportedCSV={props.loadImportedCSV}
+                     getAllSessions={props.getAllSessions}
       />
     </TabPane>
   );
@@ -165,17 +169,32 @@ class ViewDataTabPane extends Component {
     super(props);
     this.state = {
       sessions: [],
-      dataDisplay: 'Cross-sectional',
+      dataDisplay: 'Longitudinal',
       runQueryClicked: false,
+      dataRequestPrompt: false,
+      sessionsLoaded: this.props.AllSessions.length > 0,
     };
+    this.handleDataDisplay = this.handleDataDisplay.bind(this);
     this.runQuery = this.runQuery.bind(this);
     this.changeDataDisplay = this.changeDataDisplay.bind(this);
     this.getOrCreateProgressElement
       = this.getOrCreateProgressElement.bind(this);
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
-    this.handleDataDisplay = this.handleDataDisplay.bind(this);
     this.downloadDataCSV = this.downloadDataCSV.bind(this);
+  }
+
+  /**
+   * Called by React when the component has updated.
+   * @param {object} prevProps - Previous component properties
+   * @param {object} prevState - Previous component state
+   */
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.AllSessions.length > 0 &&
+      this.state.sessionsLoaded === false
+    ) {
+      this.setState({sessionsLoaded: true});
+    }
   }
 
   /**
@@ -284,26 +303,36 @@ class ViewDataTabPane extends Component {
   downloadData() {
     // Download the downloadable fields into a ZIP folder
     // Makes use of a web worker to format and download the data
+    // eslint-disable-next-line no-unused-vars
+    let zip = new JSZip();
     let FileList = this.props.FileData;
     let saveworker;
     let dataURLs = [];
-    let downloadLink = document.getElementById('DownloadLink');
-    let dv = new DataView(buffer);
-    let blb = new Blob([dv], {type: 'application/zip'});
+    // eslint-disable-next-line no-unused-vars
+    let multiLinkHandler = (buffer) => {
+      return ((ce) => {
+        let downloadLink = document.getElementById('DownloadLink');
+          let dv = new DataView(buffer);
+          let blb;
 
-    downloadLink.href = window.URL.createObjectURL(blb);
-    downloadLink.download = this.download;
-    downloadLink.type = 'application/zip';
-    downloadLink.click();
+        ce.preventDefault();
+        blb = new Blob([dv], {type: 'application/zip'});
 
-    window.URL.revokeObjectURL(downloadLink.href);
+        downloadLink.href = window.URL.createObjectURL(blb);
+        downloadLink.download = this.download;
+        downloadLink.type = 'application/zip';
+        downloadLink.click();
+
+        window.URL.revokeObjectURL(downloadLink.href);
+      });
+    };
 
     // Does this work if we hold a global reference instead of a closure
     // to the object URL?
     window.dataBlobs = [];
 
     if (FileList.length === 0) {
-      alert('No Imaging Files to download');
+      alert('No files to download');
     }
 
     if (FileList.length < 100
@@ -396,12 +425,13 @@ class ViewDataTabPane extends Component {
     let otherButtons = this.state.runQueryClicked ? (
       <>
         <div className='flex-row-item'>
-          <button className='visualized-data'
+          <button className='action-btn visualized-data'
                   onClick={this.props.displayVisualizedData}>
             <span className='glyphicon glyphicon-picture'/>
-            &nbsp;&nbsp;Visualized Data
+            &nbsp;Visualized Data
           </button>
         </div>
+
         <div className='flex-row-item'>
           <div style={{
             width: 'auto',
@@ -415,7 +445,7 @@ class ViewDataTabPane extends Component {
                     style={{minWidth: '200px',
                       minHeight: '30px',
                       alignSelf: 'center',
-                      margin: '10px 0 10px 0',
+                      margin: '5px 0 5px 0',
                     }}>
               Download Table as CSV
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
@@ -425,9 +455,10 @@ class ViewDataTabPane extends Component {
                       minWidth: '200px',
                       minHeight: '30px',
                       alignSelf: 'center',
+                      margin: '5px 0 5px 0',
                     }}
                     onClick={this.downloadData}>
-              Download Imaging Files
+              Download Files
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
             </button>
           </div>
@@ -435,22 +466,56 @@ class ViewDataTabPane extends Component {
       </>
     ) : null;
 
+    let sessionsEmpty = this.props.filter.session.length === 0;
+    if (this.state.sessionsLoaded) {
+      sessionsEmpty = false;
+    }
+
+    let disabledMessage = this.props.Fields === undefined ||
+                      this.props.Fields.length === 0 ?
+      'Define Field or load an existing query before query can run' : null;
+    if (!disabledMessage && sessionsEmpty) {
+      disabledMessage =
+        'Data Query Tool is retrieving sessions before query can run';
+    }
+    let animationloading = disabledMessage
+    === 'Data Query Tool is retrieving sessions before query can run' ? (
+      <div className='spinner' style={{margin: '10px auto 0'}}>
+        <div className='bounce1'/>
+        <div className='bounce2'/>
+        <div className='bounce3'/>
+      </div>
+    ) : null;
+
     let buttons = (
       <>
         <div className='flex-row-container'>
           <div className='flex-row-item'>
-            <button className='run-query'
+            {sessionsEmpty ||
+            this.props.Fields === undefined ||
+            this.props.Fields.length === 0 ? (
+              <div style={{
+                color: '#0b4681',
+                textAlign: 'center',
+                fontWeight: 'bolder',
+              }}>
+                {animationloading}{disabledMessage}
+              </div>
+            ) : null}
+            <button className='action-btn run-query'
                     onClick={this.runQuery}
-                    disabled={(this.props.Fields === undefined
-                      || this.props.Fields.length === 0) ?? true}
+                    disabled={(sessionsEmpty ||
+                      this.props.Fields === undefined ||
+                      this.props.Fields.length === 0
+                    )}
             >
               <span className='glyphicon glyphicon-play'/>
-              &nbsp;&nbsp;Run Query
+              &nbsp;Run Query
             </button>
           </div>
           {otherButtons}
         </div>
-      <div className='row'>
+        <div className='row'>
           <div id='progress' className='col-xs-12'/>
           <div id='downloadlinks' className='col-xs-12'>
             <ul id='downloadlinksUL'/>
@@ -480,13 +545,13 @@ class ViewDataTabPane extends Component {
         );
       }
     }
-
     const queryTable = this.state.runQueryClicked ? (
       <StaticDataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>
@@ -528,11 +593,7 @@ class ViewDataTabPane extends Component {
 }
 
 ViewDataTabPane.propTypes = {
-  Data: PropTypes.array,
   runQuery: PropTypes.func.isRequired,
-};
-ViewDataTabPane.defaultProps = {
-  Data: [],
 };
 
 /**
@@ -924,8 +985,8 @@ let SaveQueryDialog = (props) => {
   };
 
   return (
-    <div className='modal show' style={{marginTop: '100px'}}>
-      <div className='modal-dialog'>
+    <div className='modal show'>
+      <div className='modal-dialog-save-query'>
         <div className='modal-content'>
           <div className='modal-header'>
             <button type='button'
@@ -1080,7 +1141,11 @@ class ManageSavedQueryRow extends Component {
     let filters;
     if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
       for (let i = 0; i < this.props.Query.Fields.length; i += 1) {
-        fields.push(<li key={i}>{this.props.Query.Fields[i]}</li>);
+        fields.push(
+          <li key={i}>
+            {this.props.Query.Fields[i]}
+          </li>
+        );
       }
     } else if (this.props.Query.Fields) {
       for (let instrument in this.props.Query.Fields) {
@@ -1090,7 +1155,9 @@ class ManageSavedQueryRow extends Component {
               && field !== 'allVisits'
             ) {
               fields.push(
-                <li key={instrument + field}>{instrument},{field}</li>
+                <li key={instrument + field}>
+                  {instrument},{field}
+                </li>
               );
             }
           }
@@ -1156,11 +1223,21 @@ class ManageSavedQueryRow extends Component {
     }
     return (
       <tr>
-        <td>{this.props.Name}</td>
         <td>
-          <ul>{fields}</ul>
+          <div className={'tableNamesCell'}>
+            {this.props.Name}
+          </div>
         </td>
-        <td>{filters}</td>
+        <td>
+          <div className={'tableFieldsCell'}>
+            <ul>{fields}</ul>
+          </div>
+        </td>
+        <td>
+          <div className={'tableFiltersCell'}>
+            {filters}
+          </div>
+        </td>
       </tr>
     );
   }

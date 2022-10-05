@@ -104,7 +104,7 @@ class NDB_BVL_InstrumentStatus
         // set the _commentID property
         $this->_commentID = $commentID;
 
-        $db = Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // get candidate data from database
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion

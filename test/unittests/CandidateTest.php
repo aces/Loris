@@ -1328,7 +1328,7 @@ class CandidateTest extends TestCase
         $this->_factoryForDB->reset();
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
         $database      = $this->_config->getSetting('database');
-        $this->_DB     = Database::singleton(
+        $this->_DB     = $this->_factoryForDB->database(
             $database['database'],
             $database['username'],
             $database['password'],

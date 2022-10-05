@@ -46,6 +46,7 @@ class NDB_Config
      */
     var $configFilePath;
 
+    static $configInstance = null;
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -55,9 +56,8 @@ class NDB_Config
      */
     static function &singleton(?string $configFile = null): \NDB_Config
     {
-        static $config = null;
+        $config = self::$configInstance;
         if (is_null($config)) {
-
             $config = new NDB_Config();
 
             if ($configFile === null) {
@@ -76,6 +76,7 @@ class NDB_Config
                     $config->load($config->configFilePath($path));
                 }
             }
+            self::$configInstance = $config;
         }
 
         return $config;
@@ -265,7 +266,7 @@ class NDB_Config
     function getSettingFromDB(string $name, ?int $id = null)
     {
         // These should never come from the DB
-        switch($name) {
+        switch ($name) {
         case 'database':
         case 'sandbox':
         case 'showDatabaseQueries':
@@ -402,7 +403,7 @@ class NDB_Config
             if ($XMLValue !== null) {
                 return $XMLValue;
             }
-        } catch(ConfigurationException $e) {
+        } catch (ConfigurationException $e) {
             // There was no config in the database with this
             // name. It may exist in the XML, so we handle this
             // silently.

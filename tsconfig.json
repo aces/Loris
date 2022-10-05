@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*", "jsx/*"]
+    },
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "lib": [
+      "es6", "dom", "es2017"
+    ],
+  }
+}

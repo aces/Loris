@@ -151,7 +151,7 @@
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
         "modules/dqt/**",
-        "modules/imaging_uploader/**"
+        "modules/configuration/jsx/configuration_helper.js"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",

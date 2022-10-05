@@ -1,0 +1,3 @@
+-- Add UNIQUE key to ConflictID so we can use REPLACE INTO ...
+ALTER TABLE conflicts_resolved ADD UNIQUE KEY (ConflictID);
+

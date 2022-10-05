@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import swal from 'sweetalert2';
 
 /**
  * Request account form.
@@ -96,7 +97,11 @@ class RequestAccount extends Component {
           response.json().then((data) => {
             if (data.error) {
               console.error(data.error);
-              this.setState({request: true});
+              if (data.error === 'Please provide a valid email address!') {
+                swal.fire('Error!', data.error, 'error');
+              } else {
+                this.setState({request: true});
+              }
             }
           });
         }
@@ -176,7 +181,7 @@ class RequestAccount extends Component {
             type={'text'}
             placeholder={'Last name'}
           />
-          <TextboxElement
+          <EmailElement
             name={'email'}
             value={this.state.form.value.email}
             onUserInput={this.setForm}
@@ -192,6 +197,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your site:'}
           />
           <SelectElement
             name={'project'}
@@ -200,6 +206,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your project:'}
           />
           <CheckboxElement
             name={'examiner'}

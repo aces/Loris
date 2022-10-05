@@ -115,7 +115,7 @@ class NewProfileIndex extends React.Component {
           resp.json().then((message) => {
             // enable button for form resubmission.
             this.setState({submitDisabled: false});
-            swal.fire('Error!', message, 'error');
+            swal.fire('Error!', message.error, 'error');
           });
         }
       })
@@ -159,8 +159,10 @@ class NewProfileIndex extends React.Component {
     let site = null;
     let minYear = this.state.configData.minYear;
     let thisYear = (new Date()).getFullYear();
-    let dobMaxYear = (this.state.configData.maxYear > thisYear)
-      ? thisYear : this.state.configData.maxYear;
+    let dobMaxYear = this.state.configData.maxYear;
+    if (!(dobMaxYear) || (dobMaxYear > thisYear)) {
+      dobMaxYear = thisYear;
+    }
     let dateFormat = this.state.configData.dobFormat;
     let requireBirthDate = true;
 

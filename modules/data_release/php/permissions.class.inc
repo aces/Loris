@@ -83,7 +83,7 @@ class Permissions extends \NDB_Page
         if (empty($action)) {
             return new \LORIS\Http\Response\JSON\BadRequest("Missing action");
         }
-        switch($action) {
+        switch ($action) {
         case 'add':
             return $this->_addPermission($request);
         case 'manage':
@@ -148,7 +148,8 @@ class Permissions extends \NDB_Page
             if ($version == 'Unversioned') {
                 $IDs = $DB->pselectCol(
                     "SELECT id FROM data_release WHERE
-                        version IS NULL OR version=''"[],
+                        version IS NULL OR version=''",
+                    []
                 );
             } else {
                 $IDs = $DB->pselectCol(
