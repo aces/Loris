@@ -4,7 +4,8 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 
-$options = getopt("f:", 
+$options = getopt(
+    "f:",
     [
         "output-dir:",
         "file:",
@@ -33,9 +34,9 @@ if ($fp === false) {
     exit(1);
 }
 
-$headers = fgetcsv($fp);
+$headers     = fgetcsv($fp);
 $instruments = [];
-while($row = fgetcsv($fp)) {
+while ($row = fgetcsv($fp)) {
     $inst = $row[1];
     if (!isset($instruments[$inst])) {
         $instruments[$inst] = [];
@@ -49,6 +50,17 @@ fclose($fp);
 
 outputFiles($outputDir, $instruments);
 
+/**
+ * Take a single line from the redcap dictionary and returns the
+ * closest LINST equivalent.
+ *
+ * @param string $redcaptype      The type from REDCap
+ * @param string $redcapfieldname The fieldname from REDCap
+ * @param string $redcaplabel     The label from REDCap
+ * @param string $redcapChoices   The choices columnfrom REDCap
+ *
+ * @return string
+ */
 function toLINST(
     string $redcaptype,
     string $redcapfieldname,
@@ -57,41 +69,52 @@ function toLINST(
 ) : string {
     $label = str_replace($redcaplabel, "\n", "<br /><br />");
     switch ($redcaptype) {
-        case 'text':
-            // text maps directly to LORIS
-            return "text{@}$redcapfieldname{@}$label";
-        case 'descriptive':
-            // descriptive maps to label with no field.
-            return "static{@}{@}$label";
-        case 'radio':
-        case 'dropdown':
-            // Radio or dropdown maps to a select and the options are in the
-            // same format in the dictionary.
-            // select{@}fieldname{@}fieldlabel{@}NULL=>''{-}'a'=>'a'{-}'b'=>'b'{-}'c'=>'c'{-}'not_answered'=>'Not Answered'
-            return "select{@}$redcapfieldname{@}$label{@}" . optionsToLINST($redcapChoices);
-        case 'checkbox':
-            // checkboxes are the same format as radios but allow multiple options, so map to a
-            // selectmultiple instead of a select
-            return "selectmultiple{@}$redcapfieldname{@}$label{@}" . optionsToLINST($redcapChoices);
-        case 'yesno':
-            // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$redcapfieldname{@}$label{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
-        case 'calc':
-            // Calc maps to a score field. We create the DB field but don't do the score.
-            return "static{@}$redcapfieldname{@}$label";
-        case 'sql':
-            // The "SQL" data type seems to just be for presentation? I hope?
-            return "";
-        case 'notes':
-            // REDCap calls textareas notes
-            return "textarea{@}$redcapfieldname{@}$label";
-        default:
-            throw new \LorisException("Unhandled REDCap type $redcaptype");
+    case 'text':
+        // text maps directly to LORIS
+        return "text{@}$redcapfieldname{@}$label";
+    case 'descriptive':
+        // descriptive maps to label with no field.
+        return "static{@}{@}$label";
+    case 'radio':
+    case 'dropdown':
+        // Radio or dropdown maps to a select and the options are in the
+        // same format in the dictionary.
+        return "select{@}$redcapfieldname{@}$label{@}"
+            . optionsToLINST($redcapChoices);
+    case 'checkbox':
+        // checkboxes are the same format as radios but allow multiple options,
+        // so map to a selectmultiple instead of a select
+        return "selectmultiple{@}$redcapfieldname{@}$label{@}"
+            . optionsToLINST($redcapChoices);
+    case 'yesno':
+        // Map yes/no fields to dropdowns with yes and no options.
+        return "select{@}$redcapfieldname{@}$label{@}"
+            . "NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+    case 'calc':
+        // Calc maps to a score field. We create the DB field but don't do the score.
+        return "static{@}$redcapfieldname{@}$label";
+    case 'sql':
+        // The "SQL" data type seems to just be for presentation? I hope?
+        return "";
+    case 'notes':
+        // REDCap calls textareas notes
+        return "textarea{@}$redcapfieldname{@}$label";
+    default:
+        throw new \LorisException("Unhandled REDCap type $redcaptype");
     }
 }
 
-function optionsToLINST(string $dictionary) {
-    $choices = explode(' | ', $dictionary);
+/**
+ * Take the options column from a dictionary line and convert it to the
+ * linst format for select/multiselect
+ *
+ * @param string $dictionary The dictionary from REDCap
+ *
+ * @return string
+ */
+function optionsToLINST(string $dictionary) : string
+{
+    $choices      = explode(' | ', $dictionary);
     $linstChoices = [];
     foreach ($choices as $choice) {
         $matches = [];
@@ -99,20 +122,39 @@ function optionsToLINST(string $dictionary) {
             throw new \DomainException("Could not parse radio option: $choice");
 
         }
-        $backend = $matches[2] . '_' . preg_replace("/\s+/", "_", trim($matches[4]));
-        $linstFormat = "'$backend'=>'" . trim(strtolower($matches[4])) . '\'';
+        $backend        = $matches[2] . '_'
+                . preg_replace("/\s+/", "_", trim($matches[4]));
+        $linstFormat    = "'$backend'=>'" . trim(strtolower($matches[4])) . '\'';
         $linstChoices[] = $linstFormat;
 
     }
     return join('{-}', $linstChoices);
 }
 
-function showHelp() {
+/**
+ * Prints usage instruction to stderr
+ *
+ * @return void
+ */
+function showHelp()
+{
     global $argv;
-    fprintf(STDERR, "Usage: $argv[0] --file=filename --output-dir=instrumentdirectory\n");
+    fprintf(
+        STDERR,
+        "Usage: $argv[0] --file=filename --output-dir=instrumentdirectory\n"
+    );
 }
 
-function outputFiles(string $outputDir, array $instruments) {
+/**
+ * Write the files to the filesystem after having parsed them.
+ *
+ * @param string     $outputDir   The directory to write the files
+ * @param string[][] $instruments An array of fields for each instrument
+ *
+ * @return void
+ */
+function outputFiles(string $outputDir, array $instruments)
+{
     foreach ($instruments as $instname => $instrument) {
         $fp = fopen("$outputDir/$instname.linst", "w");
         foreach ($instrument as $field) {
