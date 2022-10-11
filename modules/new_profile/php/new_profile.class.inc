@@ -199,7 +199,6 @@ class New_Profile extends \NDB_Form
         $user         = $factory->user();
         $db           = $factory->database();
 
-
         // Validate DOB fields
         if (isset($values['dobDate'])) {
             // $dob = new \DateTime($values['dobDate']);
