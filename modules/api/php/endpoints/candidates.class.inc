@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 /**
  * This implements the Candidates endpoint class
  *
@@ -218,7 +216,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $pscid,
                 $project->getId()
             );
-        } catch (\LorisException $e) {
+        } catch (\LorisException | \InvalidArgumentException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 

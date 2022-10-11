@@ -68,8 +68,9 @@ class New_Profile extends \NDB_Form
          */
         $dob = null;
         if (isset($values['dobDate'])) {
-            $dob = (\Utility::parseDate($values['dobDate']))->format('Y-m-d');
+            $dob = (new \DateTime($values['dobDate']))->format('Y-m-d');
         }
+
         $edc = $values['edcDate'] ?? null;
         if (!is_null($edc)) {
             $edc = (new \DateTime($edc))->format('Y-m-d');
@@ -198,6 +199,20 @@ class New_Profile extends \NDB_Form
         $user         = $factory->user();
         $db           = $factory->database();
 
+
+        // Validate DOB fields
+        if (isset($values['dobDate'])) {
+            // $dob = new \DateTime($values['dobDate']);
+            $dob = \DateTime::createFromFormat('Y-m-d', $values['dobDate']);
+            if (is_bool($dob) && $dob === false) {
+                $errors['dobDate'] = 'Date of Birth is not a valid date.';
+            } elseif (is_object($dob)
+                && ($dob->getLastErrors()['warning_count'] > 0
+                || $dob->getLastErrors()['error_count'] > 0)
+            ) {
+                $errors['dobDate'] = 'Date of Birth is not a valid date.';
+            }
+        }
         // Validate DOB fields
         if (isset($values['dobDate'], $values['dobDateConfirm'])
             && $values['dobDate'] != $values['dobDateConfirm']
@@ -206,14 +221,12 @@ class New_Profile extends \NDB_Form
         }
         // Validate DOB fields
         try {
-            $parsedDoB = \Utility::parseDate($values['dobDate']);
-            if ($parsedDoB > new \DateTime('now')) {
+            if (isset($values['dobDate'])
+                && (new \DateTime($values['dobDate'])) > new \DateTime('now')
+            ) {
                 $errors['dobDate'] = 'Date of Birth cannot be set in the future.';
             }
-            if ($parsedDoB < new \DateTime('1900-01-01')) {
-                $errors['dobDate'] = 'Date of Birth cannot be set before 1900.';
-            }
-        } catch (\LorisException | \Exception $e) {
+        } catch (\Exception $e) {
             $errors['dobDate'] = 'Date of Birth is not a valid date.';
         }
 

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
@@ -21,8 +19,6 @@ define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
 define('DOB_INVALID', 7);
-define('DOB_FUTURE', 8);
-define('DOB_TOO_OLD', 9);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -252,24 +248,19 @@ class Candidate implements
                 DOB_NOT_SPECIFIED
             );
         }
-        try {
-            $dob = \Utility::parseDate($dateOfBirth);
-        } catch (\Lorisexception $e) {
-            throw new \LorisException(
-                "Date of Birth is not valid",
+        $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
+        if (is_bool($dob) && $dob === false) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid",
                 DOB_INVALID
             );
-        }
-        if ($dob > new \DateTime('now')) {
-            throw new \LorisException(
-                "Date of Birth cannot be set in the future",
-                DOB_FUTURE
-            );
-        }
-        if ($dob < new \DateTime('1900-01-01')) {
-            throw new \LorisException(
-                "Date of Birth cannot be set before 1900",
-                DOB_TOO_OLD
+        } elseif (is_object($dob)
+            && ($dob->getLastErrors()['error_count'] > 0
+            || $dob->getLastErrors()['warning_count'] > 0)
+        ) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid",
+                DOB_INVALID
             );
         }
 
