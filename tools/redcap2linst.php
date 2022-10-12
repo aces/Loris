@@ -67,7 +67,7 @@ function toLINST(
     string $redcaplabel,
     string $redcapChoices,
 ) : string {
-    $label = str_replace($redcaplabel, "\n", "<br /><br />");
+    $label = str_replace("\n", "<br /><br />", $redcaplabel);
     switch ($redcaptype) {
     case 'text':
         // text maps directly to LORIS
