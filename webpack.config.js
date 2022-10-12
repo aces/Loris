@@ -1,21 +1,22 @@
 const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 
 const optimization = {
   minimizer: [
-    new TerserPlugin({
-      cache: true,
-      parallel: true,
-      terserOptions: {
-        compress: false,
-        ecma: 6,
-        mangle: false,
-      },
-      sourceMap: true,
-    }),
+    (compiler) => {
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: false,
+        },
+      }).apply(compiler);
+    },
   ],
 };
 
@@ -44,6 +45,10 @@ const resolve = {
     Card: path.resolve(__dirname, './jsx/Card'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  fallback: {
+     fs: false,
+     path: false,
+   },
 };
 
 const mod = {
@@ -91,6 +96,19 @@ mod.rules.push(
   },
 );
 
+let mode = 'production';
+try {
+  const configFile = fs.readFileSync('project/config.xml', 'latin1');
+  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
+              .exec(configFile);
+  if (res && parseInt(res[1]) == 1) mode = 'development';
+} catch (error) {
+  console.error(
+    'Error - Can\'t read config.xml file. '
+    + 'Webpack mode set to production.'
+  );
+}
+
 /**
  * Creates a webpack config entry for a LORIS module named
  * mname.
@@ -125,30 +143,18 @@ function lorisModule(mname, entries, override=false) {
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
-    plugins: [],
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': `"${mode}"`,
+      }),
+    ],
     optimization: optimization,
     resolve: resolve,
     module: mod,
     mode: 'none',
     stats: 'errors-warnings',
   };
-}
-
-let mode = 'production';
-try {
-  const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
-  if (res && parseInt(res[1]) == 1) mode = 'development';
-} catch (error) {
-  console.error(
-    'Error - Can\'t read config.xml file. '
-    + 'Webpack mode set to production.'
-  );
 }
 
 const config = [
@@ -174,9 +180,6 @@ const config = [
     externals: {
       'react': 'React',
       'react-dom': 'ReactDOM',
-    },
-    node: {
-      fs: 'empty',
     },
     devtool: 'source-map',
     plugins: [
