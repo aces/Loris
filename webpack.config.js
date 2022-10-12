@@ -153,7 +153,7 @@ function lorisModule(mname, entries, override=false) {
     resolve: resolve,
     module: mod,
     mode: 'none',
-    stats: 'errors-warnings',
+    stats: 'errors-only',
   };
 }
 
