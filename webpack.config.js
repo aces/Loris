@@ -198,7 +198,6 @@ const config = [
           {
             from: path.resolve(__dirname, 'node_modules/react/umd'),
             to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
             force: true,
             globOptions: {
               ignore: ['react.profiling.min.js'],
@@ -215,7 +214,6 @@ const config = [
           {
             from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
             to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
             force: true,
             filter: async (path) => {
               const file = path.split('\\').pop().split('/').pop();
