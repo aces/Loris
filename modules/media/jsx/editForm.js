@@ -198,14 +198,6 @@ class MediaEditForm extends Component {
     e.preventDefault();
 
     let xhr = new XMLHttpRequest();
-    xhr.upload.addEventListener('progress', (evt) => {
-      if (evt.lengthComputable) {
-        let percent = Math.round((evt.loaded / evt.total) * 100);
-        // eslint-disable-next-line no-undef
-        progressbar.attr('aria-valuenow', percent);
-      }
-    }, false);
-
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
         swal.fire('Upload Successful!', '', 'success');
