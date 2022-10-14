@@ -57,7 +57,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                max(s.Current_stage) AS LatestVisitStatus,
                 p.Name AS RegistrationProject,
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
