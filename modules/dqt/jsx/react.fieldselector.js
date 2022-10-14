@@ -3,14 +3,13 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://github.com/mohadesz/Loris-Trunk
  */
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
 import SearchableDropdown from './components/searchabledropdown';
 
 /**
@@ -40,10 +39,10 @@ class CategoryItem extends Component {
       classList += ' active';
     }
     if (this.props.count >= 0) {
-      badge = <span className='badge'>{this.props.count}</span>;
+      badge = <span className="badge">{this.props.count}</span>;
     }
     return (
-      <a href='#' className={classList} onClick={this.props.onClick}>
+      <a href="#" className={classList} onClick={this.props.onClick}>
         {this.props.name}
         {badge}
       </a>
@@ -93,7 +92,7 @@ class CategoryList extends Component {
    */
   render() {
     let items = [];
-    this.selectCategory(name);
+    this.selectCategoryHandler(name);
     for (let i = 0; i < this.props.items.length; i += 1) {
       let selected = false;
       if (this.props.items[i].category == this.state.selectedCategory) {
@@ -107,7 +106,7 @@ class CategoryList extends Component {
         onClick={this.selectCategoryHandler(this.props.items[i].category)}/>);
     }
     return (
-      <div className='list-group col-md-3 col-sm-12'>{items}</div>
+      <div className="list-group col-md-3 col-sm-12">{items}</div>
     );
   }
 }
@@ -124,8 +123,11 @@ class FieldItem extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      visitsVisible: false,
+    };
     this.visitSelect = this.visitSelect.bind(this);
+    this.rowClickHandler = this.rowClickHandler.bind(this);
   }
 
   /**
@@ -146,6 +148,14 @@ class FieldItem extends Component {
   }
 
   /**
+   * rowClickHandler
+   */
+  rowClickHandler() {
+    this.props.onClick();
+    this.setState({visitsVisible: !this.state.visitsVisible});
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -155,20 +165,23 @@ class FieldItem extends Component {
     let downloadIcon = '';
     let criteria;
     let multiselect;
+    let visitsVisible = this.state.visitsVisible;
 
     if (this.props.selected) {
       // If field is selected, add active class and visits
       classList += ' active';
+      visitsVisible = true;
+
       multiselect = Object.keys(this.props.Visits).map((visit) => {
         let checked = false;
         if (this.props.selectedVisits[visit]) {
           checked = true;
         }
         return (
-          <div key={visit} className='checkbox'>
+          <div key={visit} className="checkbox">
             <label>
               <input
-                type='checkbox'
+                type="checkbox"
                 value={visit}
                 checked={checked}
                 onChange={this.visitSelect}
@@ -183,24 +196,34 @@ class FieldItem extends Component {
     if (this.props.downloadable) {
       // Add download icon if field is downloadable
       downloadIcon = (
-        <span className='glyphicon glyphicon-download-alt pull-right'
-              title='Downloadable File'/>
+        <span className="glyphicon glyphicon-download-alt pull-right"
+              title="Downloadable File"/>
       );
     }
     // Don't display the category in the field selector
     let displayName = this.props.FieldName;
+    // todo delete the following code after couchdb cleanup
+    displayName = this.props.FieldName;
 
     return (
       <div className={classList}
-           onClick={this.props.onClick}
-           style={{cursor: 'pointer'}}>
-        <div className='col-xs-8'>
-          <h4 className='list-group-item-heading col-xs-12'>
+           onClick={this.rowClickHandler}
+           style={{
+             cursor: 'pointer',
+             maxHeight: '200px',
+           }}>
+        <div className="col-xs-8">
+          <h4 className="list-group-item-heading col-xs-12">
             {displayName}{criteria}{downloadIcon}
           </h4>
-          <span className='col-xs-12'>{this.props.Description}</span>
+          <span className="col-xs-12">{this.props.Description}</span>
         </div>
-        <div className='col-xs-4 fieldVisitsRow'
+        <div className="col-xs-4 fieldVisitsRow"
+             style={{
+               maxHeight: '180px',
+               overflowY: 'scroll',
+               visibility: visitsVisible ? 'visible' : 'hidden',
+             }}
              onClick={(e) => e.stopPropagation()}>
           {multiselect}
         </div>
@@ -297,15 +320,15 @@ class FieldList extends Component {
                    Visits={this.props.Visits}
                    selectedVisits={selectedFields}
                    fieldVisitSelect={this.props.fieldVisitSelect}
-        />
+        />,
       );
-      if (fields.length > rowsPerPage) {
+      if (fields.length >= rowsPerPage) {
         break;
       }
     }
 
     return (
-      <div className='list-group col-md-9 col-sm-12'>
+      <div className="list-group col-md-11 col-sm-12">
         <PaginationLinks Total={filteredItems.length}
                          Active={this.props.PageNumber}
                          onChangePage={this.props.changePage}
@@ -328,15 +351,11 @@ class FieldSelector extends Component {
    */
   constructor(props) {
     super(props);
-    let instruments = {};
-    for (let i = 0; i < this.props.items.length; i++) {
-      instruments[this.props.items[i].category] = this.props.items[i].category;
-    }
     this.state = {
       filter: '',
+      filteredFields: [],
       selectedCategory: '',
       categoryFields: {},
-      instruments: instruments,
       PageNumber: 1,
     };
     this.onFieldSelect = this.onFieldSelect.bind(this);
@@ -346,6 +365,7 @@ class FieldSelector extends Component {
     this.deleteAll = this.deleteAll.bind(this);
     this.modifyCategoryFieldVists = this.modifyCategoryFieldVists.bind(this);
     this.changePage = this.changePage.bind(this);
+    this.resetFilter = this.resetFilter.bind(this);
   }
 
   /**
@@ -368,14 +388,14 @@ class FieldSelector extends Component {
     } else {
       // Retrieve the data dictionary
       $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dataquery&script=datadictionary.php',
+        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
         {category: category}, (data) => {
-        let cf = this.state.categoryFields;
-        cf[category] = data;
-        this.setState({
-          categoryFields: cf,
-        });
-      }, 'json');
+          let cf = this.state.categoryFields;
+          cf[category] = data;
+          this.setState({
+            categoryFields: cf,
+          });
+        }, 'json');
     }
     this.setState({
       selectedCategory: category,
@@ -388,8 +408,18 @@ class FieldSelector extends Component {
    * @param {object} evt - An event
    */
   filterChange(evt) {
+    let filter = evt.currentTarget.value.toLowerCase();
+    let filteredItems = this.state.categoryFields[
+      this.state.selectedCategory
+      ].filter((item) => {
+      let fieldName = item.key[1];
+      let desc = item.value.Description;
+      return (fieldName.toLowerCase().indexOf(filter) != -1 ||
+        desc.toLowerCase().indexOf(filter) != -1);
+    });
     this.setState({
-      filter: evt.currentTarget.value,
+      filter: filter,
+      filteredFields: filteredItems,
     });
   }
 
@@ -401,26 +431,23 @@ class FieldSelector extends Component {
     let isFile;
     let fieldName;
     let category;
-    for (i in this.state.categoryFields[this.state.selectedCategory]) {
-      if (this.state.categoryFields[
-        this.state.selectedCategory
-        ].hasOwnProperty(i)) {
-        fieldName = this.state.categoryFields[
-          this.state.selectedCategory
-          ][i].key[1];
-        category = this.state.categoryFields[
-          this.state.selectedCategory
-          ][i].key[0];
+    let selectedCategory = this.state.selectedCategory;
+    let categoryFields = this.state.categoryFields;
+    if (this.state.filteredFields.length) {
+      categoryFields = {
+        [selectedCategory]: this.state.filteredFields,
+      };
+    }
+    for (i in categoryFields[this.state.selectedCategory]) {
+      if (categoryFields[this.state.selectedCategory].hasOwnProperty(i)) {
+        fieldName = categoryFields[this.state.selectedCategory][i].key[1];
+        category = categoryFields[this.state.selectedCategory][i].key[0];
         if (this.props.selectedFields[category]
           && this.props.selectedFields[category][fieldName]
         ) {
           // Do nothing, already added
         } else {
-          isFile = (this.state.categoryFields[
-            category
-            ][i].value.isFile)
-            ? true
-            : false;
+          isFile = !!(categoryFields[category][i].value.IsFile);
           this.props.onFieldChange(fieldName, category, isFile);
         }
       }
@@ -447,7 +474,7 @@ class FieldSelector extends Component {
           ][i].key[0];
         if (this.props.selectedFields[category]
           && this.props.selectedFields[category][fieldName]) {
-          isFile = (this.state.categoryFields[category][i].value.isFile)
+          isFile = (this.state.categoryFields[category][i].value.IsFile)
             ? true
             : false;
           this.props.onFieldChange(fieldName, category, isFile);
@@ -487,7 +514,7 @@ class FieldSelector extends Component {
               this.props.fieldVisitSelect(
                 action,
                 visit,
-                {instrument: this.state.selectedCategory, field: field}
+                {instrument: this.state.selectedCategory, field: field},
               );
             } else if (action === 'uncheck'
               && this.props.selectedFields[
@@ -497,7 +524,7 @@ class FieldSelector extends Component {
               this.props.fieldVisitSelect(
                 action,
                 visit,
-                {instrument: this.state.selectedCategory, field: field}
+                {instrument: this.state.selectedCategory, field: field},
               );
             }
           }
@@ -517,30 +544,61 @@ class FieldSelector extends Component {
   }
 
   /**
+   * reset filter
+   */
+  resetFilter() {
+    this.setState({
+      filter: '',
+    });
+  }
+
+  /**
+   * onFocus for search within fields
+   * @param {object} e - an event
+   */
+  onFocus(e) {
+    e.persist();
+    this.searchFieldsInputField.setSelectionRange(
+      0,
+      this.searchFieldsInputField.value.length,
+    );
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
+    let instruments = {};
+    if (this.props.items) {
+      for (let i = 0; i < this.props.items.length; i++) {
+        instruments[
+          this.props.items[i].category
+          ] = this.props.items[i].category;
+      }
+    }
     let categoryVisits = {};
     let selectedFieldsCount;
     if (this.state.selectedCategory != '') {
       if (this.props.selectedFields[this.state.selectedCategory]) {
         selectedFieldsCount = Object.keys(
-          this.props.selectedFields[this.state.selectedCategory]
+          this.props.selectedFields[this.state.selectedCategory],
         ).length - 1;
       }
       for (let key in this.props.Visits) {
-        if (this.props.selectedFields[this.state.selectedCategory]
-          && this.props.selectedFields[
-            this.state.selectedCategory
-            ].allVisits[key]
-          && this.props.selectedFields[
-            this.state.selectedCategory
-            ].allVisits[key] == selectedFieldsCount) {
-          categoryVisits[key] = true;
-        } else {
-          categoryVisits[key] = false;
+        if (this.props.Visits.hasOwnProperty(key)) {
+          if (this.props.selectedFields[this.state.selectedCategory]
+            && this.props.selectedFields[
+              this.state.selectedCategory
+              ].allVisits[key]
+            && this.props.selectedFields[
+              this.state.selectedCategory
+              ].allVisits[key] == selectedFieldsCount) {
+            categoryVisits[key] = true;
+          } else {
+            categoryVisits[key] = false;
+          }
         }
       }
     }
@@ -548,27 +606,29 @@ class FieldSelector extends Component {
     return (
       <>
         <div style={{margin: '0 auto', maxWidth: '1300px'}}>
-          <h1 className='col-xs-12' style={{color: '#0A3572'}}>
+          <h1 className="col-xs-12" style={{color: '#0A3572'}}>
             The Query's Fields
           </h1>
         </div>
-        <div className='row' style={{marginTop: '20px'}}>
+        <div className="row" style={{marginTop: '20px'}}>
           <SearchableDropdown
-            name='fieldsDropdown'
-            options={this.state.instruments}
+            id={'fieldsDropdown'}
+            name="fieldsDropdown"
+            resetFilter={this.resetFilter}
+            options={instruments}
             onUserInput={this.onCategorySelect}
-            placeHolder='Select a Category or Instrument'
+            placeHolder="Select a Category or Instrument"
           />
         </div>
-        <div className='container-fluid'
+        <div className="container-fluid"
              style={{
                visibility: this.state.selectedCategory ? 'visible' : 'hidden',
                margin: '0 auto',
                maxWidth: '800px',
              }}>
-          <div className='form-group has-feedback'>
-            <div className='input-group'>
-            <span className='input-group-addon'
+          <div className="form-group has-feedback">
+            <div className="input-group">
+            <span className="input-group-addon"
                   style={{
                     height: '40px',
                     backgroundColor: '#FFFFFF',
@@ -576,11 +636,16 @@ class FieldSelector extends Component {
                     borderBottomLeftRadius: '20px',
                   }}
             >
-              <span className='glyphicon glyphicon-search'/>
+              <span className="glyphicon glyphicon-search"/>
             </span>
-              <input type='text'
-                     className='form-control'
+              <input type="text"
+                     className="form-control"
                      onChange={this.filterChange}
+                     value={this.state.filter}
+                     ref={(ref) => this.searchFieldsInputField = ref}
+                     onFocus={(event) => {
+                       setTimeout(() => this.onFocus(event), 0);
+                     }}
                      style={{
                        height: '40px',
                        borderLeft: '0',
@@ -593,34 +658,39 @@ class FieldSelector extends Component {
             </div>
           </div>
         </div>
-        <div className='row form-group' style={{
+        <div className="row form-group" style={{
           visibility: this.state.selectedCategory
             ? 'visible'
             : 'hidden',
+          margin: '10px auto',
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          position: 'relative',
         }}>
-          <div className='col-md-8 col-sm-8'>
-            <div style={{position: 'absolute', right: '0'}}>
-              <button type='button'
-                      className='btn btn-primary'
-                      onClick={this.addAll}>
-                Add All
-              </button>
-              <button type='button'
-                      className='btn btn-primary'
-                      onClick={this.deleteAll}>
-                Remove All
-              </button>
-            </div>
-          </div>
-          <div className={'col-md-4 col-sm-4'}>
+          <div className={'col-md-3 col-sm-3'}>
             <SelectDropdown
               multi={true}
               options={categoryVisits}
               onFieldClick={this.modifyCategoryFieldVists}
             />
           </div>
+          <div className="col-md-4 col-sm-3">
+            <div style={{position: 'absolute'}}>
+              <button type="button"
+                      className="btn btn-primary"
+                      onClick={this.addAll}>
+                Add All
+              </button>
+              <button type="button"
+                      className="btn btn-primary"
+                      onClick={this.deleteAll}>
+                Remove All
+              </button>
+            </div>
+          </div>
         </div>
-        <div className='row'>
+        <div className="row">
           <FieldList
             items={this.state.categoryFields[this.state.selectedCategory]}
             category={this.state.selectedCategory}

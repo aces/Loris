@@ -20,13 +20,6 @@ class ImagePanelHeader extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $('.panel-title').tooltip();
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -117,23 +110,6 @@ class ImagePanelHeadersTable extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $(ReactDOM.findDOMNode(this)).DynamicTable();
-  }
-
-  /**
-   * Invoked immediately before a component is unmounted and destroyed.
-   */
-  componentWillUnmount() {
-    // Remove wrapper nodes so React is able to remove component
-    $(ReactDOM.findDOMNode(this)).DynamicTable({
-      removeDynamicTable: true,
-    });
   }
 
   /**
@@ -648,15 +624,20 @@ class DownloadButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    if (!this.props.FileName || this.props.FileName === '') {
+    const empty = (prop) => {
+        return !prop || prop == '';
+    };
+    if (empty(this.props.FileName) && empty(this.props.URL)) {
       return <span/>;
     }
     let style = {
       margin: 6,
     };
+    const url = this.props.URL ||
+        (this.props.BaseURL
+           + '/mri/jiv/get_file.php?file=' + this.props.FileName);
     return (
-      <a href={this.props.BaseURL + '/mri/jiv/get_file.php?file=' +
-      this.props.FileName}
+      <a href={url}
          className="btn btn-default" style={style}>
         <span className="glyphicon glyphicon-download-alt"></span>
         <span className="hidden-xs">{this.props.Label}</span>
@@ -806,7 +787,7 @@ class ImageDownloadButtons extends Component {
         <ImageQCCommentsButton FileID={this.props.FileID}
                                BaseURL={this.props.BaseURL}
         />
-        <DownloadButton FileName={this.props.Fullname}
+        <DownloadButton URL={this.props.APIFile}
                         Label="Download Minc"
                         BaseURL={this.props.BaseURL}
         />
@@ -833,6 +814,7 @@ class ImageDownloadButtons extends Component {
 ImageDownloadButtons.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
+  APIFile: PropTypes.string,
   Fullname: PropTypes.string,
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
@@ -877,7 +859,7 @@ class ImagePanelBody extends Component {
           <div className="col-xs-9 imaging_browser_pic">
             <a href="#noID" onClick={this.openWindowHandler}>
               <img className="img-checkpic img-responsive"
-                   src={this.props.Checkpic}/>
+                   src={this.props.APIFile + '/format/thumbnail'}/>
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">
@@ -897,7 +879,7 @@ class ImagePanelBody extends Component {
         <ImageDownloadButtons
           BaseURL={this.props.BaseURL}
           FileID={this.props.FileID}
-          Fullname={this.props.Fullname}
+          APIFile={this.props.APIFile}
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
@@ -920,12 +902,12 @@ ImagePanelBody.propTypes = {
   SeriesUID: PropTypes.string,
   BaseURL: PropTypes.string,
   Fullname: PropTypes.string,
+  APIFile: PropTypes.string,
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
-  Checkpic: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
 };
 
@@ -992,7 +974,7 @@ class ImagePanel extends Component {
 
               FileID={this.props.FileID}
               Filename={this.props.Filename}
-              Checkpic={this.props.Checkpic}
+              APIFile={this.props.APIFile}
               HeadersExpanded={!this.state.HeadersCollapsed}
 
               HeaderInfo={this.props.HeaderInfo}
@@ -1034,7 +1016,7 @@ ImagePanel.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
-  Checkpic: PropTypes.string,
+  APIFile: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
 };
 

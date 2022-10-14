@@ -32,14 +32,24 @@ class Visit
     protected $name;
 
     /**
+     * The visit label displayed in the browser
+     *
+     * @var ?string
+     */
+    protected $label;
+
+    /**
      * The contructor
      *
-     * @param ?string $name The visit name
+     * @param ?string $name  The visit name
+     * @param ?string $label The visit label (Front-end)
      */
     public function __construct(
-        ?string $name = null
+        ?string $name = null,
+        ?string $label = null
     ) {
-        $this->name = $name;
+        $this->name  = $name;
+        $this->label = $label;
     }
 
     /**
@@ -53,5 +63,18 @@ class Visit
             throw new \LorisException("No name defined for Visit");
         }
         return $this->name;
+    }
+
+    /**
+     * Getter for visit label
+     *
+     * @return string The visit's label
+     */
+    public function getLabel(): string
+    {
+        if ($this->label === null) {
+            throw new \LorisException("No label defined for Visit");
+        }
+        return $this->label;
     }
 }

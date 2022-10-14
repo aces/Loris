@@ -192,7 +192,7 @@ class NDB_BVL_Battery
      */
     function addInstrument($loris, $testName)
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
@@ -281,7 +281,7 @@ class NDB_BVL_Battery
      */
     function getBattery()
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
@@ -313,19 +313,19 @@ class NDB_BVL_Battery
      */
     function getBatteryVerbose()
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
         // craft the select query
-        $query = "SELECT DISTINCT f.Test_name,
+        $query = "SELECT f.Test_name,
                       t.Full_name,
                       f.CommentID,
                       CONCAT('DDE_', f.CommentID) AS DDECommentID,
                       ts.Subgroup_name as Sub_group,
                       ts.group_order as Subgroup_order,
                       t.isDirectEntry,
-                      b.instr_order as instrument_order
+                      MAX(b.instr_order) as instrument_order
                   FROM flag f
             	      JOIN test_names t ON (f.Test_name=t.Test_name)
             	      JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
@@ -336,7 +336,14 @@ class NDB_BVL_Battery
        	                AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
        	                AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
        	          WHERE f.SessionID=:SID
-                      AND LEFT(f.CommentID, 4) != 'DDE_' ";
+                      AND LEFT(f.CommentID, 4) != 'DDE_'
+                  GROUP BY f.Test_name,
+                           t.Full_name,
+                           f.CommentID,
+                           DDECommentID,
+                           Sub_group,
+                           Subgroup_order,
+                           isDirectEntry";
         if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
@@ -426,18 +433,18 @@ class NDB_BVL_Battery
         $center_ID=null,
         $firstVisit=null
     ) {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if (empty($this->age)) {
             $this->age = $age;
         }
         $qparams = [
-            'vAge'      => $this->age,
+            'vAge'      => $age,
             'SubprojID' => $SubprojectID,
         ];
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
         $query = "
-            SELECT t.Test_name
+            SELECT DISTINCT t.Test_name
                 FROM test_battery AS b, test_names AS t
                 WHERE
                     t.Test_name=b.Test_name
@@ -564,7 +571,7 @@ class NDB_BVL_Battery
      */
     static function generateCommentID($SessionID, $Test_name)
     {
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $SessionID = $SessionID->__toString();
 
@@ -617,7 +624,7 @@ class NDB_BVL_Battery
      */
     function _assertValidInstrument($testName)
     {
-        $DB    = Database::singleton();
+        $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, ['TN' => $testName]);
 

@@ -307,22 +307,6 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'Latest Visit Status',
-        'show': true,
-        'filter': {
-          name: 'latestVisitStatus',
-          type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            'Not Started': 'Not Started',
-            'Screening': 'Screening',
-            'Visit': 'Visit',
-            'Approval': 'Approval',
-            'Recycling Bin': 'Recycling Bin',
-          },
-        },
-      },
-      {
         'label': 'Project',
         'show': true,
         'filter': {

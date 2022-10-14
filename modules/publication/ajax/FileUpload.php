@@ -57,8 +57,14 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc            = $_POST['description'] ?? null;
-    $leadInvest      = $_POST['leadInvestigator'] ?? null;
+    $desc    = $_POST['description'] ?? null;
+    $project = $_POST['project'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
+    $doi        = $_POST['doi'] ?? null;
+    $link       = $_POST['link'] ?? null;
+    $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
@@ -68,8 +74,8 @@ function uploadPublication() : void
         'FROM publication_collaborator '.
         'WHERE Name = :n AND Email = :e',
         [
-            'n' => $leadInvest,
             'e' => $leadInvestEmail,
+            'n' => $leadInvest,
         ]
     );
     if (empty($leadInvID)) {
@@ -94,6 +100,12 @@ function uploadPublication() : void
         'UserID'             => $uid,
         'Title'              => $title,
         'Description'        => $desc,
+        'project'            => $project,
+        'publishingStatus'   => $publishingStatus,
+        'datePublication'    => $datePublication,
+        'journal'            => $journal,
+        'doi'                => $doi,
+        'link'               => $link,
         'LeadInvestigatorID' => $leadInvID,
         'DateProposed'       => $today,
     ];
@@ -203,7 +215,7 @@ function insertCollaborators(int $pubID) : void
     if (!isset($_POST['collaborators'])) {
         return;
     }
-    $db = Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $collaborators = json_decode($_POST['collaborators'], true);
     foreach ($collaborators as $c) {
@@ -255,7 +267,7 @@ function insertEditors(int $pubID) : void
         return;
     }
 
-    $db = Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $usersWithEditPerm = json_decode($_POST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $uid) {
         $insert = [
@@ -282,7 +294,7 @@ function insertKeywords(int $pubID) : void
     if (empty($_POST['keywords'])) {
         return;
     }
-    $db       = Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $keywords = json_decode($_POST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -329,7 +341,7 @@ function insertVOIs(int $pubID) : void
     if (empty($_POST['voiFields'])) {
         return;
     }
-    $db        = Database::singleton();
+    $db        = \NDB_Factory::singleton()->database();
     $testNames = $db->pselectColWithIndexKey(
         'SELECT ID, Test_name FROM test_names',
         [],
@@ -379,7 +391,7 @@ function insertVOIs(int $pubID) : void
  */
 function cleanup(int $pubID) : void
 {
-    $db    = Database::singleton();
+    $db    = \NDB_Factory::singleton()->database();
     $where = ['PublicationID' => $pubID];
 
     $tables = [
@@ -498,7 +510,7 @@ function notify($pubID, $type) : void
  */
 function editProject() : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
     if (isset($id)) {
@@ -533,7 +545,13 @@ function editProject() : void
     $statusID         = $_POST['status'] ?? null;
     $rejectedReason   = $_POST['rejectedReason'] ?? null;
     $description      = $_POST['description'] ?? null;
-    $leadInvestigator = $_POST['leadInvestigator'] ?? null;
+    $project          = $_POST['project'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
+    $doi  = $_POST['doi'] ?? null;
+    $link = $_POST['link'] ?? null;
+    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
@@ -565,6 +583,24 @@ function editProject() : void
     }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
+    }
+    if ($pubData['project'] !== $project) {
+        $toUpdate['project'] = $project;
+    }
+    if ($pubData['publishingStatus'] !== $publishingStatus) {
+        $toUpdate['publishingStatus'] = $publishingStatus;
+    }
+    if ($pubData['datePublication'] !== $datePublication) {
+        $toUpdate['datePublication'] = $datePublication;
+    }
+    if ($pubData['journal'] !== $journal) {
+        $toUpdate['journal'] = $journal;
+    }
+    if ($pubData['doi'] !== $doi) {
+        $toUpdate['doi'] = $doi;
+    }
+    if ($pubData['link'] !== $link) {
+        $toUpdate['link'] = $link;
     }
     if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
         $leadInvToUpdate['Name'] = $leadInvestigator;
@@ -611,7 +647,7 @@ function editProject() : void
  */
 function editEditors($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $usersWithEditPerm = isset($_POST['usersWithEditPerm'])
         ? json_decode($_POST['usersWithEditPerm']) : null;
 
@@ -654,7 +690,7 @@ function editEditors($id) : void
  */
 function editCollaborators($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $submittedCollaborators = isset($_POST['collaborators'])
         ? json_decode($_POST['collaborators'], true) : null;
 
@@ -739,7 +775,7 @@ function editCollaborators($id) : void
  */
 function editKeywords($id) : void
 {
-    $db       = \Database::singleton();
+    $db       = \NDB_Factory::singleton()->database();
     $keywords = isset($_POST['keywords'])
         ? json_decode($_POST['keywords']) : null;
 
@@ -788,7 +824,7 @@ function editKeywords($id) : void
  */
 function editVOIs($id) : void
 {
-    $db  = \Database::singleton();
+    $db  = \NDB_Factory::singleton()->database();
     $voi = isset($_POST['voiFields'])
         ? json_decode($_POST['voiFields']) : null;
 
@@ -858,7 +894,7 @@ function editVOIs($id) : void
  */
 function editUploads($id) : void
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     $pubUploads = $db->pselectWithIndexKey(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',

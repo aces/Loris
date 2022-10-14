@@ -59,7 +59,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/".
             "?candID=900000&identifier=900000&subprojectID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Create Time Point", $bodyText);
@@ -73,9 +73,13 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better.'
-        );
+        $this->_createTimepoint("900000", "Stale", "V2");
+        $this->safeGet($this->url . "/900000/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("900000", $bodyText);
+
     }
 
     /**
@@ -93,16 +97,15 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-        $select  = $this->safeFindElement(WebDriverBy::Name("#subproject"));
+        $select  = $this->safeFindElement(WebDriverBy::Name("subproject"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("#visit")
+        $this->safeFindElement(
+            WebDriverBy::Name("visit")
         )->sendKeys($visitlabel);
-        $this->webDriver->findElement(
-            WebDriverBy::Name(".col-sm-9 > .btn")
-        )->click();
-        sleep(1);
+        $this->safeClick(
+            WebDriverBy::Name("fire_away")
+        );
     }
 
 
@@ -136,7 +139,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
 

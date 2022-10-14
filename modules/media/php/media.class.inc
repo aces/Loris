@@ -76,7 +76,7 @@ class Media extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $user = \User::singleton();
-        $db   = \Database::singleton();
+        $db   = $this->loris->getDatabaseConnection();
 
         $siteList  = [];
         $visitList = \Utility::getVisitList();
@@ -101,7 +101,16 @@ class Media extends \DataFrameworkMenu
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
+            try {
+                $instrumentName = \NDB_BVL_Instrument::factory(
+                    $this->lorisinstance,
+                    $instrument["Test_name"],
+                )->getFullname();
+            } catch (\Exception $e) {
+                $instrumentName = $instrument['Full_name'];
+            }
+
+            $instrumentList[$instrumentName] = $instrumentName;
         }
 
         $fileTypeList  = [];
@@ -144,7 +153,7 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new MediaFileProvisioner();
+        return new MediaFileProvisioner($this->lorisinstance);
     }
 
     /**

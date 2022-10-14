@@ -23,18 +23,19 @@ set_include_path(
 require_once __DIR__ . "/../../../vendor/autoload.php";
 
 $username = \User::singleton()->getUsername();
+$data     = \Utility::parseFormData($_POST);
 
-if (isset($_POST['candID']) && !empty($_POST['candID'])) {
-    $candID    = new CandID($_POST['candID']);
+if (isset($data['candID']) && !empty($data['candID'])) {
+    $candID    = new CandID($data['candID']);
     $sessionID = null;
     $commentID = null;
 
-    if (isset($_POST['sessionID']) && !empty($_POST['sessionID'])) {
-        $sessionID = new \SessionID($_POST['sessionID']);
+    if (isset($data['sessionID']) && !empty($data['sessionID'])) {
+        $sessionID = new \SessionID($data['sessionID']);
     }
 
-    if (isset($_POST['commentID']) && !empty($_POST['commentID'])) {
-        $commentID = $_POST['commentID'];
+    if (isset($data['commentID']) && !empty($data['commentID'])) {
+        $commentID = $data['commentID'];
     }
 
     $feedbackThread =& \NDB_BVL_Feedback::Singleton(

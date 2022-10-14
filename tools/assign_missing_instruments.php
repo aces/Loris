@@ -15,12 +15,12 @@
  * Usage: php assign_missing_instruments.php [Visit_label] [confirm]
  *
  * Example: php assign_missing_instruments.php 18month
- * (Will use regular mode and print the missing instruments)
+ * (Will use regular mode and print the missing instruments
+ * for the specified timepoint)
  *
  * Example: php assign_missing_instruments.php 18month confirm
- * (Will use confirm mode and assign the missing instruments)
- *
- * Note:  As per ... only timepoints in the 'Visit' stage are examined.
+ * (Will use confirm mode and assign the missing instruments
+ * for the specified timepoint)
  *
  * Note: This tool will NOT remove instruments that do exist in the
  * assigned battery but have been removed from the battery lookup table (or
@@ -116,9 +116,17 @@ function populateVisitLabel($result, $visit_label)
         $timePoint->getVisitLabel()."\nMissing Instruments:\n";
         print_r($diff);
     }
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
+        );
     if ($confirm === true) {
         foreach ($diff as $test_name) {
-            $battery->addInstrument($test_name);
+            $battery->addInstrument($lorisinstance, $test_name);
         }
     }
 

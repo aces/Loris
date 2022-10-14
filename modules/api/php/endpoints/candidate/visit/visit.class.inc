@@ -77,7 +77,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
          return [
              'v0.0.3',
-             'v0.0.4-dev',
          ];
     }
 
@@ -125,7 +124,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'instruments':
             $handler = new Instruments($this->_visit);
             break;
@@ -215,7 +214,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID do not match this candidate'
+                'CandID does not match this candidate'
             );
         }
 
@@ -288,6 +287,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
+                $project->getId(),
                 $subprojectid,
                 $visitinfo['Visit']
             );

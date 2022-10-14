@@ -84,7 +84,7 @@ class NDB_BVL_Instrument_Testtest extends NDB_BVL_Instrument
             "text_input",
             ["class" => "encrypt required"]
         );
-        $yesNo   = [null=>"", 'yes'=>"Yes", 'no'=>"No"];
+        $yesNo   = ['yes'=>"Yes", 'no'=>"No"];
         $group   = [];
         $group[] = $this->form->createElement("select", "consent", "", $yesNo);
         $this->XINRegisterRule(

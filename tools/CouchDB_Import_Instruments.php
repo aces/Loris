@@ -31,16 +31,22 @@ class CouchDBInstrumentImporter
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
+    var $loris; // reference to the LorisInstance object
 
     /**
      * Create new instance.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance that data is being
+     *                                    imported from.
      */
-    function __construct()
+    function __construct(\LORIS\LorisInstance $loris)
     {
+        $this->loris = $loris;
+        $config      = $this->loris->getConfiguration();
+        $couchConfig = $config->getSetting('CouchDB');
+        $this->SQLDB = $this->loris->getDatabaseConnection();
+
         $factory       = \NDB_Factory::singleton();
-        $config        = \NDB_Config::singleton();
-        $couchConfig   = $config->getSetting('CouchDB');
-        $this->SQLDB   = $factory->Database();
         $this->CouchDB = $factory->couchDB(
             $couchConfig['dbName'],
             $couchConfig['hostname'],
@@ -180,17 +186,26 @@ class CouchDBInstrumentImporter
      */
     function updateCandidateDocs($Instruments)
     {
-        $results = [
+        $results       = [
             'new'       => 0,
             'modified'  => 0,
             'unchanged' => 0,
         ];
+        $lorisinstance = new \LORIS\LorisInstance(
+            \NDB_Factory::singleton()->database(),
+            \NDB_Factory::singleton()->config(),
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
+        );
         foreach ($Instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // the database, we need to instantiate the object to get the
             // table name.
             // We need to check if it is a JSONData instrument or SQL data
             $instrumentObj = \NDB_BVL_Instrument::factory(
+                $lorisinstance,
                 $instrument,
                 '',
                 ''
@@ -198,7 +213,7 @@ class CouchDBInstrumentImporter
             $JSONData      = $instrumentObj->usesJSONData();
             $tableName     = "";
             if ($JSONData === false) {
-                $tableName = $instrumentObj->table;
+                $tableName = $instrumentObj->table ?? "";
             }
 
             $this->CouchDB->beginBulkTransaction();
@@ -248,6 +263,10 @@ class CouchDBInstrumentImporter
                 $success = $this->CouchDB->replaceDoc($CommentID, $doc);
                 print "$row[PSCID] $row[Visit_label] $instrument: $success\n";
 
+                if (!isset($results[$success])) {
+                    $results[$success] = 0;
+                }
+
                 $results[$success] += 1;
 
                 // Count every 200 //
@@ -269,7 +288,7 @@ class CouchDBInstrumentImporter
      */
     function getInstruments()
     {
-        return \Utility::getAllInstruments();
+        return \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
     }
 
     /**
@@ -311,7 +330,7 @@ class CouchDBInstrumentImporter
 }
     // Don't run if we're doing the unit tests, the unit test will call run..
 if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBInstrumentImporter();
+    $Runner = new CouchDBInstrumentImporter($lorisInstance);
     $Runner->run();
 }
 ?>
