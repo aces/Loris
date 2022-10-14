@@ -157,7 +157,7 @@ function lorisModule(mname, entries, override=false) {
   };
 }
 
-const config = [
+let config = [
   // Core components
   {
     mode: mode,
@@ -232,37 +232,39 @@ const config = [
     module: mod,
     stats: 'errors-warnings',
   },
-  // Modules
-  lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
-  lorisModule('issue_tracker', [
+];
+
+const lorisModules = {
+  media: ['CandidateMediaWidget', 'mediaIndex'],
+  issue_tracker: [
     'issueTrackerIndex',
     'index',
     'CandidateIssuesWidget',
-  ]),
-  lorisModule('login', ['loginIndex']),
-  lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
-  lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-  lorisModule('candidate_parameters', [
+  ],
+  login: ['loginIndex'],
+  publication: ['publicationIndex', 'viewProjectIndex'],
+  document_repository: ['docIndex', 'editFormIndex'],
+  candidate_parameters: [
     'CandidateParameters',
     'ConsentWidget',
-  ]),
-  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
-  lorisModule('conflict_resolver', ['conflict_resolver']),
-  lorisModule('battery_manager', ['batteryManagerIndex']),
-  lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-  lorisModule('behavioural_qc', ['behaviouralQCIndex']),
-  lorisModule('create_timepoint', ['createTimepointIndex']),
-  lorisModule('candidate_list', [
+  ],
+  configuration: ['SubprojectRelations', 'configuration_helper'],
+  conflict_resolver: ['conflict_resolver'],
+  battery_manager: ['batteryManagerIndex'],
+  bvl_feedback: ['react.behavioural_feedback_panel'],
+  behavioural_qc: ['behaviouralQCIndex'],
+  create_timepoint: ['createTimepointIndex'],
+  candidate_list: [
     'openProfileForm',
     'onLoad',
     'candidateListIndex',
-  ]),
-  lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('data_release', [
+  ],
+  datadict: ['dataDictIndex'],
+  data_release: [
     'dataReleaseIndex',
-  ]),
-  lorisModule('dictionary', ['dataDictIndex']),
-  lorisModule('dqt', [
+  ],
+  dictionary: ['dataDictIndex'],
+  dqt: [
     'components/expansionpanels',
     'components/searchabledropdown',
     'components/stepper',
@@ -274,44 +276,52 @@ const config = [
     'react.savedqueries',
     'react.sidebar',
     'react.tabs',
-  ]),
-  lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['genomicBrowserIndex']),
-  lorisModule('electrophysiology_browser', [
+  ],
+  dicom_archive: ['dicom_archive'],
+  genomic_browser: ['genomicBrowserIndex'],
+  electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
-  ]),
-  lorisModule('imaging_browser', [
+  ],
+  imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
     'CandidateScanQCSummaryWidget',
-  ]),
-  lorisModule('instrument_builder', [
+  ],
+  instrument_builder: [
     'react.instrument_builder',
     'react.questions',
-  ]),
-  lorisModule('instrument_manager', ['instrumentManagerIndex']),
-  lorisModule('survey_accounts', ['surveyAccountsIndex']),
-  lorisModule('mri_violations', [
+  ],
+  instrument_manager: ['instrumentManagerIndex'],
+  survey_accounts: ['surveyAccountsIndex'],
+  mri_violations: [
     'mri_protocol_check_violations_columnFormatter',
     'columnFormatter',
     'columnFormatterUnresolved',
     'mri_protocol_violations_columnFormatter',
-  ]),
-  lorisModule('user_accounts', ['userAccountsIndex']),
-  lorisModule('examiner', ['examinerIndex']),
-  lorisModule('help_editor', ['help_editor']),
-  lorisModule('brainbrowser', ['Brainbrowser']),
-  lorisModule('imaging_uploader', ['index']),
-  lorisModule('acknowledgements', ['acknowledgementsIndex']),
-  lorisModule('new_profile', ['NewProfileIndex']),
-  lorisModule('module_manager', ['modulemanager']),
-  lorisModule('imaging_qc', ['imagingQCIndex']),
-  lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-  lorisModule('instruments', ['CandidateInstrumentList']),
-  lorisModule('candidate_profile', ['CandidateInfo']),
-  lorisModule('api_docs', ['swagger-ui_custom']),
-];
+  ],
+  user_accounts: ['userAccountsIndex'],
+  examiner: ['examinerIndex'],
+  help_editor: ['help_editor'],
+  brainbrowser: ['Brainbrowser'],
+  imaging_uploader: ['index'],
+  acknowledgements: ['acknowledgementsIndex'],
+  new_profile: ['NewProfileIndex'],
+  module_manager: ['modulemanager'],
+  imaging_qc: ['imagingQCIndex'],
+  server_processes_manager: ['server_processes_managerIndex'],
+  instruments: ['CandidateInstrumentList'],
+  candidate_profile: ['CandidateInfo'],
+  api_docs: ['swagger-ui_custom'],
+};
+for (const [key] of Object.entries(lorisModules)) {
+  const target = process.env.target;
+  if (target && target !== key) {
+    // continue loop if target exists && module key doesn't match
+    continue;
+  }
+  config.push(lorisModule(key, lorisModules[key]));
+}
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
