@@ -235,6 +235,7 @@
     "ReactDOM": true,
     "loris": true,
     "QueryString": true,
-    "swal": true
+    "swal": true,
+    "schema_urls": true
   }
 }

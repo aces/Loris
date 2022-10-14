@@ -3,7 +3,6 @@ import 'swagger-ui-dist/swagger-ui.css';
 
 window.addEventListener('load', () => {
   const ui = new SwaggerUIBundle({
-    // eslint-disable-next-line no-undef
     urls: schema_urls,
     dom_id: '#swagger-ui',
     deepLinking: true,
