@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
@@ -216,11 +217,11 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-      <DataDictIndex
-        dataURL={`${loris.BaseURL}/datadict/?format=binary`}
-        fieldsURL={`${loris.BaseURL}/datadict/fields`}
-      />,
-      document.getElementById('lorisworkspace')
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
+    <DataDictIndex
+      dataURL={`${loris.BaseURL}/datadict/?format=binary`}
+      fieldsURL={`${loris.BaseURL}/datadict/fields`}
+    />
   );
 });

@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -383,13 +384,13 @@ CandidateListIndex.propTypes = {
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}
       baseURL={loris.BaseURL}
       betaProfileLink={args['betaprofile']}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

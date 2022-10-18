@@ -1,5 +1,7 @@
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * New Profile Form
@@ -320,12 +322,12 @@ class NewProfileIndex extends React.Component {
   }
 }
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <NewProfileIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
       submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
       hasPermission = {loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

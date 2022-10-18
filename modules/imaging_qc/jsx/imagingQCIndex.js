@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -227,12 +228,12 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <ImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 
