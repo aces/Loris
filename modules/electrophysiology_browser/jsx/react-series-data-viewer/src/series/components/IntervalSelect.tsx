@@ -175,13 +175,11 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             setIsDragging(false);
           }}
         >
-          {/* @ts-ignore */}
           <Rail>
             {({getRailProps}) => (
               <div style={railStyle} {...getRailProps()} />
             )}
           </Rail>
-          {/* @ts-ignore */}
           <Handles>
             {({handles, getHandleProps}) => (
               <div className="slider-handles">
