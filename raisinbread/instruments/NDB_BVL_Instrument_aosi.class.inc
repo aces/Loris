@@ -5,24 +5,24 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
     use \LorisFormDictionaryImpl;
 
     var $scores = array(
-                   "total_score_1_18"                                 => "",
-                   "total_score_1_18_override"                        => "",
-                   "number_of_markers"                                => "",
-                   "number_of_markers_override"                       => "",
-                   "q1_visual_tracking_score"                         => "",
-                   "q2_disengagement_of_attention_score"              => "",
-                   "q3_orients_to_name_score"                         => "",
-                   "q4_differential_response_to_facial_emotion_score" => "",
-                   "q5_anticipatory_response_score"                   => "",
-                   "q6_imitation_of_actions_score"                    => "",
-                  );
+        "total_score_1_18"                                 => "",
+        "total_score_1_18_override"                        => "",
+        "number_of_markers"                                => "",
+        "number_of_markers_override"                       => "",
+        "q1_visual_tracking_score"                         => "",
+        "q2_disengagement_of_attention_score"              => "",
+        "q3_orients_to_name_score"                         => "",
+        "q4_differential_response_to_facial_emotion_score" => "",
+        "q5_anticipatory_response_score"                   => "",
+        "q6_imitation_of_actions_score"                    => "",
+    );
 
     var $questions = array(
-                      "q1_visual_tracking_score",
-                      "q2_disengagement_of_attention_score",
-                      "q3_orients_to_name_score",
-                      "q6_imitation_of_actions_score",
-                     );
+        "q1_visual_tracking_score",
+        "q2_disengagement_of_attention_score",
+        "q3_orients_to_name_score",
+        "q6_imitation_of_actions_score",
+    );
 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
@@ -52,31 +52,31 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
-                                    'examiner_location',
-                                    'q1_visual_tracking_press_1',
-                                    'q7_social_babbling',
-                                   );
+            'Examiner',
+            'examiner_location',
+            'q1_visual_tracking_press_1',
+            'q7_social_babbling',
+        );
 
         /**
          * Array of column names to be ignored by the double data entry conflict detector.
          */
         $this->_doubleDataEntryDiffIgnoreColumns = array(
-                                                    'CommentID',
-                                                    'UserID',
-                                                    'Testdate',
-                                                    'Window_Difference',
-                                                    'Candidate_Age',
-                                                    'free_play_period_1_notes_status',
-                                                    'free_play_period_1_notes',
-                                                    'free_play_period_2_notes_status',
-                                                    'free_play_period_2_notes',
-                                                    'number_of_markers_override',
-                                                    'number_of_markers',
-                                                    'q1_visual_tracking_notes_status',
-                                                    'q1_visual_tracking_notes',
-                                                    'q1_visual_tracking_score',
-                                                   );
+            'CommentID',
+            'UserID',
+            'Testdate',
+            'Window_Difference',
+            'Candidate_Age',
+            'free_play_period_1_notes_status',
+            'free_play_period_1_notes',
+            'free_play_period_2_notes_status',
+            'free_play_period_2_notes',
+            'number_of_markers_override',
+            'number_of_markers',
+            'q1_visual_tracking_notes_status',
+            'q1_visual_tracking_notes',
+            'q1_visual_tracking_score',
+        );
 
         // setup the form
         $this->_setupForm();
@@ -122,12 +122,12 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "examiner_location",
             "Examiner location",
             array(
-             null               => '',
-             "examiner"         => "Examiner",
-             "in_room_observer" => "In-Room Observer",
-             "behind_mirror"    => "Behind Mirror",
-             "videotape"        => "Videotape",
-             "not_answered"     => "Not Answered",
+                null               => '',
+                "examiner"         => "Examiner",
+                "in_room_observer" => "In-Room Observer",
+                "behind_mirror"    => "Behind Mirror",
+                "videotape"        => "Videotape",
+                "not_answered"     => "Not Answered",
             )
         );
         $this->addScoreColumn(
@@ -172,12 +172,12 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         );
 
         $q1_opts = array(
-                    null           => "",
-                    0              => "0 = Pass",
-                    1              => "1 = Delayed/Interupted",
-                    2              => "2 = Partial or No Tracking",
-                    "not_answered" => "Not Answered",
-                   );
+            null           => "",
+            0              => "0 = Pass",
+            1              => "1 = Delayed/Interupted",
+            2              => "2 = Partial or No Tracking",
+            "not_answered" => "Not Answered",
+        );
 
         //Question 1
         $this->addLabel("1. Visual Tracking");
@@ -190,12 +190,12 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         }
 
         $q1_opts_2 = array(
-                      null => '',
-                      0    => "0 = Smoothly tracks",
-                      1    => "1 = Delayed or interrupted",
-                      2    => "2 = Partial",
-                      8    => "8 = Not applicable",
-                     );
+            null => '',
+            0    => "0 = Smoothly tracks",
+            1    => "1 = Delayed or interrupted",
+            2    => "2 = Partial",
+            8    => "8 = Not applicable",
+        );
         $this->addSelect(
             "q1_visual_tracking_score_override",
             "Override score (required):",
@@ -219,11 +219,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                 "q2_disengagement_of_attention_press_$press",
                 "Press #$press",
                 array(
-                 null           => "",
-                 0              => "0 = Pass (<1 sec)",
-                 1              => "1 = Delayed (1-2 sec)",
-                 2              => "2 = Stuck (>2 sec)",
-                 "not_answered" => "Not Answered",
+                    null           => "",
+                    0              => "0 = Pass (<1 sec)",
+                    1              => "1 = Delayed (1-2 sec)",
+                    2              => "2 = Stuck (>2 sec)",
+                    "not_answered" => "Not Answered",
                 )
             );
         }
@@ -232,11 +232,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q2_disengagement_of_attention_score_override",
             "Override score (required):",
             array(
-             null => '',
-             0    => "0 = Immediately moves attention",
-             1    => "1 = Delayed movement of attention",
-             2    => "2 = Fails to move attention",
-             8    => "8 = Not applicable",
+                null => '',
+                0    => "0 = Immediately moves attention",
+                1    => "1 = Delayed movement of attention",
+                2    => "2 = Fails to move attention",
+                8    => "8 = Not applicable",
             )
         );
 
@@ -264,11 +264,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                     "q3_orients_to_name_press_{$press}_trial_{$trial}",
                     "Press #$press, Trial #$trial $parents",
                     array(
-                     null                          => "",
-                     "orients_with_eye_contact"    => "Orients with eye contact",
-                     "orients_without_eye_contact" => "Orients without eye contact",
-                     "fail_to_orient"              => "Fail to orient",
-                     "not_answered"                => "Not Answered",
+                        null                          => "",
+                        "orients_with_eye_contact"    => "Orients with eye contact",
+                        "orients_without_eye_contact" => "Orients without eye contact",
+                        "fail_to_orient"              => "Fail to orient",
+                        "not_answered"                => "Not Answered",
                     )
                 );
             }
@@ -277,11 +277,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q3_orients_to_name_score_override",
             "Override score (required):",
             array(
-             null => '',
-             0    => "0 = Orients",
-             1    => "1 = Inconsistent orienting",
-             2    => "2 = Does not orient",
-             8    => "8 = Not applicable",
+                null => '',
+                0    => "0 = Orients",
+                1    => "1 = Inconsistent orienting",
+                2    => "2 = Does not orient",
+                8    => "8 = Not applicable",
             )
         );
 
@@ -302,12 +302,12 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q4_differential_response_to_facial_emotion",
             "Score: ",
             array(
-             null           => "",
-             0              => "0 = Clear change",
-             1              => "1 = Questionable change",
-             2              => "2 = Does not show change",
-             8              => "8 = Not Applicable",
-             "not_answered" => "Not Answered",
+                null           => "",
+                0              => "0 = Clear change",
+                1              => "1 = Questionable change",
+                2              => "2 = Does not show change",
+                8              => "8 = Not Applicable",
+                "not_answered" => "Not Answered",
             )
         );
         $this->addScoreColumn(
@@ -327,13 +327,13 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q5_anticipatory_response",
             "Score: ",
             array(
-             null           => "",
-             0              => "0 = Clear anticipatory response",
-             1              => "1 = Subtle/Questionable response",
-             2              => "2 = Only during game or routine",
-             3              => "3 = Does not show response",
-             8              => "8 = Not Applicable",
-             "not_answered" => "Not Answered",
+                null           => "",
+                0              => "0 = Clear anticipatory response",
+                1              => "1 = Subtle/Questionable response",
+                2              => "2 = Only during game or routine",
+                3              => "3 = Does not show response",
+                8              => "8 = Not Applicable",
+                "not_answered" => "Not Answered",
             )
         );
         $this->addScoreColumn(
@@ -372,11 +372,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                     "q6_imitation_of_actions_act_{$activity}_att_{$attempt}",
                     "",
                     array(
-                     null           => "",
-                     0              => "0 = Clear imitation",
-                     1              => "1 = Equivocal imitation",
-                     2              => "2 = Does not imitate",
-                     "not_answered" => "Not Answered",
+                        null           => "",
+                        0              => "0 = Clear imitation",
+                        1              => "1 = Equivocal imitation",
+                        2              => "2 = Does not imitate",
+                        "not_answered" => "Not Answered",
                     )
                 );
                 $this->XINRegisterRule(
@@ -406,11 +406,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q6_imitation_of_actions_score_override",
             "Override score (required):",
             array(
-             null => '',
-             0    => "0 = Clear imitation",
-             1    => "1 = Equivocal imitation",
-             2    => "2 = Does not imitate",
-             8    => "8 = Not applicable",
+                null => '',
+                0    => "0 = Clear imitation",
+                1    => "1 = Equivocal imitation",
+                2    => "2 = Does not imitate",
+                8    => "8 = Not applicable",
             )
         );
 
@@ -438,65 +438,65 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
         //array of questions
         $questions = array(
-                      "q7_social_babbling"                      => "7. Social babbling",
-                      "q8_eye_contact"                          => "8. Eye contact",
-                      "q9_reciprocal_social_smile"              => "9.Reciprocal social smile",
-                      "q10_coordination_of_eye_gaze_and_action" => "10. Coordination of eye gaze and action",
-                      "q11_reactivity"                          => "11. Reactivity",
-                      "q14_social_interest"                     => "14. Social interest and shared affect",
-                      "q15_transitions"                         => "15. Transitions",
-                      "q16_motor_control_and_behaviour"         => "16. Motor control and behaviour",
-                      "q17_atypical_motor"                      => "17. Atypical motor behaviours",
-                      "q18_atypical_sensory"                    => "18. Atypical sensory behaviours",
-                      "q19_engagement_of_attention"             => "19. Engagement of attention",
-                      "q20_insistence_on_particular_objects"    => "20. Insistence on having or playing with particular objects",
-                      "q21_social_referencing"                  => "21. Social Referencing",
-                     );
+            "q7_social_babbling"                      => "7. Social babbling",
+            "q8_eye_contact"                          => "8. Eye contact",
+            "q9_reciprocal_social_smile"              => "9.Reciprocal social smile",
+            "q10_coordination_of_eye_gaze_and_action" => "10. Coordination of eye gaze and action",
+            "q11_reactivity"                          => "11. Reactivity",
+            "q14_social_interest"                     => "14. Social interest and shared affect",
+            "q15_transitions"                         => "15. Transitions",
+            "q16_motor_control_and_behaviour"         => "16. Motor control and behaviour",
+            "q17_atypical_motor"                      => "17. Atypical motor behaviours",
+            "q18_atypical_sensory"                    => "18. Atypical sensory behaviours",
+            "q19_engagement_of_attention"             => "19. Engagement of attention",
+            "q20_insistence_on_particular_objects"    => "20. Insistence on having or playing with particular objects",
+            "q21_social_referencing"                  => "21. Social Referencing",
+        );
         //answer arrays
         $zeroOneTwoThree = array(
-                            null           => "",
-                            0              => "0",
-                            1              => "1",
-                            2              => "2",
-                            3              => "3",
-                            8              => "8 = Not Applicable",
-                            "not_answered" => "Not Answered",
-                           );
+            null           => "",
+            0              => "0",
+            1              => "1",
+            2              => "2",
+            3              => "3",
+            8              => "8 = Not Applicable",
+            "not_answered" => "Not Answered",
+        );
         $zeroTwo         = array(
-                            null           => "",
-                            0              => "0",
-                            2              => "2",
-                            8              => "8 = Not Applicable",
-                            "not_answered" => "Not Answered",
-                           );
+            null           => "",
+            0              => "0",
+            2              => "2",
+            8              => "8 = Not Applicable",
+            "not_answered" => "Not Answered",
+        );
         $zeroOneTwo      = array(
-                            null           => "",
-                            0              => "0",
-                            1              => "1",
-                            2              => "2",
-                            8              => "8 = Not Applicable",
-                            "not_answered" => "Not Answered",
-                           );
+            null           => "",
+            0              => "0",
+            1              => "1",
+            2              => "2",
+            8              => "8 = Not Applicable",
+            "not_answered" => "Not Answered",
+        );
 
         $_0123 = array(
-                  "q7_social_babbling",
-                  "q9_reciprocal_social_smile",
-                  "q10_coordination_of_eye_gaze_and_action",
-                  "q11_reactivity",
-                  "q14_social_interest",
-                 );
+            "q7_social_babbling",
+            "q9_reciprocal_social_smile",
+            "q10_coordination_of_eye_gaze_and_action",
+            "q11_reactivity",
+            "q14_social_interest",
+        );
         $_02   = array(
-                  "q8_eye_contact",
-                  "q17_atypical_motor",
-                  "q18_atypical_sensory",
-                 );
+            "q8_eye_contact",
+            "q17_atypical_motor",
+            "q18_atypical_sensory",
+        );
         $_012  = array(
-                  "q15_transitions",
-                  "q16_motor_control_and_behaviour",
-                  "q19_engagement_of_attention",
-                  "q20_insistence_on_particular_objects",
-                  "q21_social_referencing",
-                 );
+            "q15_transitions",
+            "q16_motor_control_and_behaviour",
+            "q19_engagement_of_attention",
+            "q20_insistence_on_particular_objects",
+            "q21_social_referencing",
+        );
 
         foreach($questions as $field=>$label) {
             if(in_array($field, $_0123)) {
@@ -587,20 +587,20 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             $this->scores["q2_disengagement_of_attention_score"] = 2;
             //1 = Two 1 scores recorded
         } elseif(($score_record["q2_disengagement_of_attention_press_1"] == 1
-            && $score_record["q2_disengagement_of_attention_press_2"] == 1)
+                && $score_record["q2_disengagement_of_attention_press_2"] == 1)
             || ($score_record["q2_disengagement_of_attention_press_1"] == 1
-            && $score_record["q2_disengagement_of_attention_press_3"] == 1)
+                && $score_record["q2_disengagement_of_attention_press_3"] == 1)
             || ($score_record["q2_disengagement_of_attention_press_2"] == 1
-            && $score_record["q2_disengagement_of_attention_press_3"] == 1)
+                && $score_record["q2_disengagement_of_attention_press_3"] == 1)
         ) {
             $this->scores["q2_disengagement_of_attention_score"] = 1;
             //0 = Two 0 scores recorded
         } elseif(($score_record["q2_disengagement_of_attention_press_1"] == '0'
-            && $score_record["q2_disengagement_of_attention_press_2"] == '0')
+                && $score_record["q2_disengagement_of_attention_press_2"] == '0')
             || ($score_record["q2_disengagement_of_attention_press_1"] == '0'
-            && $score_record["q2_disengagement_of_attention_press_3"] == '0')
+                && $score_record["q2_disengagement_of_attention_press_3"] == '0')
             || ($score_record["q2_disengagement_of_attention_press_2"] == '0'
-            && $score_record["q2_disengagement_of_attention_press_3"] == '0')
+                && $score_record["q2_disengagement_of_attention_press_3"] == '0')
         ) {
             $this->scores["q2_disengagement_of_attention_score"] = 0;
         }
@@ -632,11 +632,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             }
             //0
             elseif(($score_record["q3_orients_to_name_press_1_trial_1"] == "orients_with_eye_contact"
-                || $score_record["q3_orients_to_name_press_1_trial_2"] == "orients_with_eye_contact")
+                    || $score_record["q3_orients_to_name_press_1_trial_2"] == "orients_with_eye_contact")
                 && ($score_record["q3_orients_to_name_press_2_trial_1"] == "orients_with_eye_contact"
-                || $score_record["q3_orients_to_name_press_2_trial_2"] == "orients_with_eye_contact")
+                    || $score_record["q3_orients_to_name_press_2_trial_2"] == "orients_with_eye_contact")
                 && ($score_record["q3_orients_to_name_press_1_trial_1"] == "orients_with_eye_contact"
-                || $score_record["q3_orients_to_name_press_2_trial_1"] == "orients_with_eye_contact")
+                    || $score_record["q3_orients_to_name_press_2_trial_1"] == "orients_with_eye_contact")
             ) {
                 $this->scores["q3_orients_to_name_score"] = 0;
             }
@@ -711,40 +711,44 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         //Summary scores
         //build array of all scorable fields
         $overrideables = array(
-                          "q1_visual_tracking_score",
-                          "q2_disengagement_of_attention_score",
-                          "q3_orients_to_name_score",
-                          "q6_imitation_of_actions_score",
-                         );
+            "q1_visual_tracking_score",
+            "q2_disengagement_of_attention_score",
+            "q3_orients_to_name_score",
+            "q6_imitation_of_actions_score",
+        );
 
         $scorables = array(
-                      'q1_visual_tracking_score'                         => $this->scores["q1_visual_tracking_score"],
-                      'q2_disengagement_of_attention_score'              => $this->scores["q2_disengagement_of_attention_score"],
-                      'q3_orients_to_name_score'                         => $this->scores["q3_orients_to_name_score"],
-                      'q4_differential_response_to_facial_emotion_score' => $this->scores["q4_differential_response_to_facial_emotion_score"],
-                      'q5_anticipatory_response_score'                   => $this->scores["q5_anticipatory_response_score"],
-                      'q6_imitation_of_actions_score'                    => $this->scores["q6_imitation_of_actions_score"],
-                      'q7_social_babbling'                               => $score_record["q7_social_babbling"],
-                      'q8_eye_contact'                                   => $score_record["q8_eye_contact"],
-                      'q9_reciprocal_social_smile'                       => $score_record["q9_reciprocal_social_smile"],
-                      'q10_coordination_of_eye_gaze_and_action'          => $score_record["q10_coordination_of_eye_gaze_and_action"],
-                      'q11_reactivity'                                   => $score_record["q11_reactivity"],
-                      'q14_social_interest'                              => $score_record["q14_social_interest"],
-                      'q15_transitions'                                  => $score_record["q15_transitions"],
-                      'q16_motor_control_and_behaviour'                  => $score_record["q16_motor_control_and_behaviour"],
-                      'q17_atypical_motor'                               => $score_record["q17_atypical_motor"],
-                      'q18_atypical_sensory'                             => $score_record["q18_atypical_sensory"],
-                     );
+            'q1_visual_tracking_score'                         => $this->scores["q1_visual_tracking_score"],
+            'q2_disengagement_of_attention_score'              => $this->scores["q2_disengagement_of_attention_score"],
+            'q3_orients_to_name_score'                         => $this->scores["q3_orients_to_name_score"],
+            'q4_differential_response_to_facial_emotion_score' => $this->scores["q4_differential_response_to_facial_emotion_score"],
+            'q5_anticipatory_response_score'                   => $this->scores["q5_anticipatory_response_score"],
+            'q6_imitation_of_actions_score'                    => $this->scores["q6_imitation_of_actions_score"],
+            'q7_social_babbling'                               => $score_record["q7_social_babbling"],
+            'q8_eye_contact'                                   => $score_record["q8_eye_contact"],
+            'q9_reciprocal_social_smile'                       => $score_record["q9_reciprocal_social_smile"],
+            'q10_coordination_of_eye_gaze_and_action'          => $score_record["q10_coordination_of_eye_gaze_and_action"],
+            'q11_reactivity'                                   => $score_record["q11_reactivity"],
+            'q14_social_interest'                              => $score_record["q14_social_interest"],
+            'q15_transitions'                                  => $score_record["q15_transitions"],
+            'q16_motor_control_and_behaviour'                  => $score_record["q16_motor_control_and_behaviour"],
+            'q17_atypical_motor'                               => $score_record["q17_atypical_motor"],
+            'q18_atypical_sensory'                             => $score_record["q18_atypical_sensory"],
+        );
+
         $this->scores["number_of_markers"]          = 0;  //initialize
         $this->scores["number_of_markers_override"] = 0;  //initialize
+        $this->scores['total_score_1_18_override']  = 0;
+        $this->scores["total_score_1_18"]           = 0;
         foreach($scorables as $key =>$value) {
             //change 8's to 0's for scoring purposes
+            $value = intval($value);
 
             if($value == 8) { $value = 0;
             }
             //Calculate final score values
             if(in_array($key, $overrideables)) {
-                $ov = $score_record[$key . "_override"];
+                $ov = intval($score_record[$key . "_override"]);
                 if($ov == 8) {
                     $ov = 0;
                 }
@@ -754,9 +758,11 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             $this->scores['total_score_1_18_override'] += $ov;
             $this->scores["total_score_1_18"]          += $value;
             //increment markers count if non-zero
-            if($ov != 0) { $this->scores["number_of_markers_override"]++;
+            if($ov != 0) {
+                $this->scores["number_of_markers_override"]++;
             }
-            if($value != 0) { $this->scores["number_of_markers"]++;
+            if($value != 0) {
+                $this->scores["number_of_markers"]++;
             }
         }
 
