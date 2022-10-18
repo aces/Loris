@@ -194,7 +194,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               </div>
             )}
           </Handles>
-          {/* @ts-ignore */}
           <Ticks count={10}>
             {({ticks}) => (
               <div
