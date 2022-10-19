@@ -55,3 +55,22 @@ In order to automatically generate the protoc compiled files, add the following 
 ```
 and run `make dev` or 'npm install && npm run compile' from the loris root directory.
 
+### Troubleshooting: error when trying to use Protobuf v21 and higher
+
+As of June 2022, there are errors when trying to use Protobuf. In Loris, it translates by an error during `make` or `make install` saying:
+
+```bash
+...
+protoc-gen-js: program not found or is not executable
+Please specify a program using absolute path or make sure the program is available in your PATH system variable
+--js_out: protoc-gen-js: Plugin failed with status code 1.
+...
+```
+
+The process [described here](https://github.com/protocolbuffers/protobuf-javascript/issues/127#issuecomment-1204202870) makes it run nicely.
+
+At the end of this process, to avoid calling `protoc-gen-js` everytime, you can copy it to a better place already referenced in the `PATH`, such as `/usr/local/bin`.
+
+```bash
+cp /path/to/bazel-bin/generator/protoc-gen-js /usr/local/bin
+```
