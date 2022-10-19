@@ -144,6 +144,7 @@ class Charts extends \NDB_Page
             "SELECT c.DoB, c.Date_registered 
                            FROM candidate c
                            WHERE c.DoB IS NOT NULL
+                           AND c.Active='Y'
                            AND c.Date_registered IS NOT NULL",
             []
         );
