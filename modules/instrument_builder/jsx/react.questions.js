@@ -995,7 +995,7 @@ class AddElement extends Component {
         error: temp,
       });
     }
-    
+
     if (questionName.length > 64 && selected !== 'textbox'
         && selected !== 'textarea' && selected !== 'date'
         && selected !== 'numeric') {
@@ -1019,7 +1019,7 @@ class AddElement extends Component {
       // An error is present, return
       return;
     }
-    
+
     if (questionName.length > 57 && (selected === 'textbox'
       || selected === 'textarea' || selected === 'date'
       || selected === 'numeric')) {
