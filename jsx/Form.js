@@ -937,7 +937,7 @@ class TextboxElement extends Component {
             name={this.props.name}
             id={this.props.id}
             value={this.props.value || ''}
-            datarequired={required}
+            required={required}
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
