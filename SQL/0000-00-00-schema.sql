@@ -615,73 +615,63 @@ CREATE TABLE `files_qcstatus` (
       FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_protocol_group` (
-    `MriProtocolGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `Name`                 VARCHAR(255)    NOT NULL UNIQUE,
-    PRIMARY KEY (`MriProtocolGroupID`)
+CREATE TABLE `scan_type_parameter_group` (
+    `ScanTypeParameterGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `ScanTypeParameterGroupName` VARCHAR(255)    NOT NULL UNIQUE,
+    PRIMARY KEY (ScanTypeParameterGroupID)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
+INSERT INTO scan_type_parameter_group (ScanTypeParameterGroupName) VALUES('Default MRI protocol group');
 
-CREATE TABLE `mri_protocol` (
-  `ID` int(11) unsigned NOT NULL auto_increment,
-  `CenterID` integer unsigned DEFAULT NULL,
-  `ScannerID` int(10) unsigned DEFAULT NULL,
-  `Scan_type` int(10) unsigned NOT NULL default '0',
-  `TR_min` DECIMAL(10,4) DEFAULT NULL,
-  `TR_max` DECIMAL(10,4) DEFAULT NULL,
-  `TE_min` DECIMAL(10,4) DEFAULT NULL,
-  `TE_max` DECIMAL(10,4) DEFAULT NULL,
-  `TI_min` DECIMAL(10,4) DEFAULT NULL,
-  `TI_max` DECIMAL(10,4) DEFAULT NULL,
-  `slice_thickness_min` DECIMAL(9,4) DEFAULT NULL,
-  `slice_thickness_max` DECIMAL(9,4) DEFAULT NULL,
-  `xspace_min` int(4) DEFAULT NULL,
-  `xspace_max` int(4) DEFAULT NULL,
-  `yspace_min` int(4) DEFAULT NULL,
-  `yspace_max` int(4) DEFAULT NULL,
-  `zspace_min` int(4) DEFAULT NULL,
-  `zspace_max` int(4) DEFAULT NULL,
-  `xstep_min` DECIMAL(9,4) DEFAULT NULL,
-  `xstep_max` DECIMAL(9,4) DEFAULT NULL,
-  `ystep_min` DECIMAL(9,4) DEFAULT NULL,
-  `ystep_max` DECIMAL(9,4) DEFAULT NULL,
-  `zstep_min` DECIMAL(9,4) DEFAULT NULL,
-  `zstep_max` DECIMAL(9,4) DEFAULT NULL,
-  `time_min` int(4) DEFAULT NULL,
-  `time_max` int(4) DEFAULT NULL,
-  `image_type` varchar(255) default NULL,
-  `series_description_regex` varchar(255) default NULL,
-  `MriProtocolGroupID` INT(4) UNSIGNED NOT NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `FK_mri_protocol_1` (`ScannerID`),
-  CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
-  CONSTRAINT `FK_mri_protocol_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_mri_protocol_group_ID_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
+CREATE TABLE `scan_type_parameter` (
+  `ScanTypeParameterID`      INT(11) UNSIGNED NOT NULL auto_increment,
+  `ScanTypeParameterGroupID` INT(4)  UNSIGNED NOT NULL,
+  `ScanType`   INT(10) UNSIGNED NOT NULL,
+  `HeaderName` VARCHAR(255)  NOT NULL,
+  `ValidMin`   DECIMAL(10,4) DEFAULT NULL,
+  `ValidMax`   DECIMAL(10,4) DEFAULT NULL,
+  `ValidRegex` VARCHAR(244)  DEFAULT NULL,
+  PRIMARY KEY  (ScanTypeParameterID),
+  KEY `FK_scan_type_parameter_group_ID_1` (`ScanTypeParameterGroupID`),
+  CONSTRAINT FK_scan_type_parameter_group_ID_1 FOREIGN KEY (ScanTypeParameterGroupID) REFERENCES scan_type_parameter_group (ScanTypeParameterGroupID)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (CenterID,Scan_type,TR_min,TR_max,TE_min,
- TE_max,time_min,time_max,MriProtocolGroupID) VALUES
-   (NULL,48,8000,14000,80,130,0,200,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   (NULL,40,1900,2700,10,30,0,500,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   (NULL,44,2000,2500,2,5,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group')),
-   (NULL,45,3000,9000,100,550,NULL,NULL,(SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'));
+INSERT INTO scan_type_parameter
+    (ScanType, HeaderName, ValidMin, ValidMax, ValidRegex, ScanTypeParameterGroupID)
+    VALUES
+    (48, "repetition_time", 8000, 14000, NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (48, "echo_time",       80,   130,   NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (48, "inversion_time",  0,    200,   NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (40, "repetition_time", 1900, 2700,  NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (40, "echo_time",       10,   30,    NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (40, "inversion_time",  0,    500,   NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (44, "repetition_time", 2000, 2500,  NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (44, "echo_time",       2,    5,     NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (45, "repetition_time", 3000, 9000,  NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group')),
+    (45, "echo_time",       100,  550,   NULL, (SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group'));
 
-CREATE TABLE `mri_protocol_group_target` (
-     `MriProtocolGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-     `MriProtocolGroupID`       INT(4) UNSIGNED  NOT NULL,
-     `ProjectID`                INT(10) UNSIGNED DEFAULT NULL,
-     `SubprojectID`             INT(10) UNSIGNED DEFAULT NULL,
-     `Visit_label`              VARCHAR(255)     DEFAULT NULL,
-     PRIMARY KEY (`MriProtocolGroupTargetID`),
-     CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
-     CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
-     CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
+
+CREATE TABLE `scan_type_parameter_group_target` (
+     `ScanTypeParameterGroupTargetID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+     `ScanTypeParameterGroupID`       INT(4) UNSIGNED  NOT NULL,
+     `ProjectID`     INT(10) UNSIGNED DEFAULT NULL,
+     `SubprojectID`  INT(10) UNSIGNED DEFAULT NULL,
+     `Visit_label`   VARCHAR(255)     DEFAULT NULL,
+     `ScannerID`     INT(10) UNSIGNED DEFAULT NULL,
+     `CenterID`      INT(10) UNSIGNED DEFAULT NULL,
+     PRIMARY KEY (ScanTypeParameterGroupTargetID),
+     CONSTRAINT `FK_scan_type_parameter_group_target_1` FOREIGN KEY (ScanTypeParameterGroupID) REFERENCES scan_type_parameter_group (ScanTypeParameterGroupID),
+     CONSTRAINT `FK_scan_type_parameter_group_target_2` FOREIGN KEY (`ProjectID`)                   REFERENCES `Project` (`ProjectID`),
+     CONSTRAINT `FK_scan_type_parameter_group_target_3` FOREIGN KEY (`SubprojectID`)                REFERENCES `subproject` (`SubprojectID`),
+     CONSTRAINT `FK_scan_type_parameter_group_target_4` FOREIGN KEY (`ScannerID`)                   REFERENCES `mri_scanner` (`ID`),
+     CONSTRAINT `FK_scan_type_parameter_group_target_5` FOREIGN KEY (`CenterID`)                    REFERENCES `psc` (`CenterID`)
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
-    VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
+INSERT INTO scan_type_parameter_group_target
+    (ScanTypeParameterGroupID, `ProjectID`, `SubprojectID`, `Visit_label`, `CenterID`, `ScannerID`)
+    VALUES
+    ((SELECT ScanTypeParameterGroupID FROM scan_type_parameter_group WHERE ScanTypeParameterGroupName='Default MRI protocol group'), NULL, NULL, NULL, NULL, NULL);
 
 
 
@@ -974,36 +964,27 @@ CREATE TABLE `violations_resolved` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_protocol_violated_scans` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6),
-  `PSCID` varchar(255),
-  `TarchiveID` int(11),
-  `time_run` datetime,
-  `series_description` varchar(255) DEFAULT NULL,
-  `minc_location` varchar(255),
-  `PatientName` varchar(255) DEFAULT NULL,
-  `TR_range` varchar(255) DEFAULT NULL,
-  `TE_range` varchar(255) DEFAULT NULL,
-  `TI_range` varchar(255) DEFAULT NULL,
-  `slice_thickness_range` varchar(255) DEFAULT NULL,
-  `xspace_range` varchar(255) DEFAULT NULL,
-  `yspace_range` varchar(255) DEFAULT NULL,
-  `zspace_range` varchar(255) DEFAULT NULL,
-  `xstep_range` varchar(255) DEFAULT NULL,
-  `ystep_range` varchar(255) DEFAULT NULL,
-  `zstep_range` varchar(255) DEFAULT NULL,
-  `time_range` varchar(255)  DEFAULT NULL,
-  `SeriesUID` varchar(64) DEFAULT NULL,
-  `image_type` varchar(255) default NULL,
-  `MriProtocolGroupID` INT(4) UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`ID`),
+CREATE TABLE scan_type_identification_failure (
+  `ScanTypeIdentificationFailureID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ScanTypeParameterGroupID`        INT(4)  UNSIGNED DEFAULT NULL,
+  `TarchiveID`      INT(11)        DEFAULT NULL,
+  `CandID`          INT(6)         DEFAULT NULL,
+  `PSCID`           VARCHAR(255)   DEFAULT NULL,
+  `SeriesUID`       VARCHAR(64)    DEFAULT NULL,
+  `TimeRun`         DATETIME       DEFAULT NULL,
+  `ScanLocation`    VARCHAR(255)   DEFAULT NULL,
+  `PatientName`     VARCHAR(255)   DEFAULT NULL,
+  `HeaderName`      VARCHAR(255)   DEFAULT NULL,
+  `Value`           VARCHAR(255)   DEFAULT NULL,
+  PRIMARY KEY (`ScanTypeIdentificationFailureID`),
   KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_mri_violated_2` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
+  KEY `FK_scan_type_identification_failure_2` (`ScanTypeParameterGroupID`),
+  CONSTRAINT `FK_scan_type_identification_failure_1`
+      FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_scan_type_identification_failure_2`
+      FOREIGN KEY (`ScanTypeParameterGroupID`)
+          REFERENCES `scan_type_parameter_group` (`ScanTypeParameterGroupID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1018 DEFAULT CHARSET=utf8mb4;
 -- ********************************
 -- document_repository tables
 -- ********************************

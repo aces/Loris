@@ -8,6 +8,41 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 25.0
+### Core
+#### Features
+
+#### Updates and Improvements
+
+#### Bug Fixes
+
+### Modules
+#### MRI violations
+- The module's queries have been adapted to the new layout of the scan_type_parameter
+and scan_type_identification_failure tables.
+
+### Tools
+
+### Clean Up
+
+### Notes For Existing Projects
+- `mri_protocol`, `mri_protocol_group`, `mri_protocol_group_target` and `mri_protocol_violated_scans`
+  have been redesigned and renamed to `scan_type_parameter`, `scan_type_parameter_group`,
+  `scan_type_parameter_group_target` and `scan_type_identification_failure` respectively. To
+  upgrade to the new structure, follow the following steps:
+    1) run SQL patch `SQL/New_patches/2022-05-17-add-scan_type_identification-table-refactor-mri_protocol-part-1.sql`
+    2) run `tools/single_use/populate_scan_type_parameter_table_based_on_mri_protocol_table.php` 
+       to populate `scan_type_parameter` based on the entries present in `mri_protocol`
+    3) run `tools/single_use/populate_scan_type_identification_failure_table_based_on_mri_protocol_violated_scans_table.php`
+       to populate `scan_type_identification_failure` based on the entries present in `mri_protocol_violated_scans`
+    4) optionally, run the two SQL clean up patches to remove `mri_protocol` and `mri_protocol_violated_scans`
+       after ensuring there are proper backups of those tables. (Clean up patches are: 
+       `SQL/Cleanup_patches/2022-05-17-remove-mri_protocol.sql` and 
+       `SQL/Cleanup_patches/2022-05-17-remove-mri_protocol_violated_scans.sql`)
+
+### Notes For Developers
+
+
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features
