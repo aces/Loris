@@ -366,7 +366,16 @@ class FieldSelector extends Component {
     this.modifyCategoryFieldVists = this.modifyCategoryFieldVists.bind(this);
     this.changePage = this.changePage.bind(this);
     this.resetFilter = this.resetFilter.bind(this);
+    this.setSearchableDropdown = this.setSearchableDropdown.bind(this);
   }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+     console.log('componentDidMount in FieldSelector has ran');
+     this.props.setFieldSearch(this.setSearchableDropdown);
+   }
 
   /**
    * Wrapper function for field changes
@@ -384,6 +393,15 @@ class FieldSelector extends Component {
    * @param {string} category
    */
   onCategorySelect(elementName, category) {
+    console.log('onCategorySelect has ran');
+     if (category === undefined || category === '') {
+       // Prevent unnecessary GET request.
+       this.setState({
+         selectedCategory: null,
+         PageNumber: 1,
+       });
+       return;
+     }
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
@@ -565,6 +583,22 @@ class FieldSelector extends Component {
   }
 
   /**
+   * Set searchable dropdown filter
+   * @param {string} field
+   */
+  setSearchableDropdown(field) {
+     console.log('setSearchableDropdown has ran!');
+     this.onCategorySelect('fieldsDropdown', field[0]);
+     console.log('field is ');
+     console.log(field);
+     this.setFieldFilter(field[0]);
+     this.setState({
+       selectedCategory: field[0],
+       filter: field[1],
+     });
+   }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -614,6 +648,7 @@ class FieldSelector extends Component {
           <SearchableDropdown
             id={'fieldsDropdown'}
             name="fieldsDropdown"
+            setFieldFilter={(field) => this.setFieldFilter = field}
             resetFilter={this.resetFilter}
             options={instruments}
             onUserInput={this.onCategorySelect}
@@ -641,7 +676,7 @@ class FieldSelector extends Component {
               <input type="text"
                      className="form-control"
                      onChange={this.filterChange}
-                     value={this.state.filter}
+                     value={this.state.filter || ''}
                      ref={(ref) => this.searchFieldsInputField = ref}
                      onFocus={(event) => {
                        setTimeout(() => this.onFocus(event), 0);

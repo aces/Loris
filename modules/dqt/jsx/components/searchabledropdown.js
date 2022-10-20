@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -9,6 +9,14 @@ import PropTypes from 'prop-types';
  */
 const SearchableDropdown = (props) => {
   const [currentInput, setCurrentInput] = useState();
+
+  useEffect(() => {
+     props.setFieldFilter(setSearch);
+   }, []);
+
+   const setSearch = (value) => {
+     setCurrentInput(value);
+   };
 
   const getKeyFromValue = (value) => {
     const options = props.options;
@@ -59,15 +67,10 @@ const SearchableDropdown = (props) => {
     errorMessage = <span>{strictMessage}</span>;
   }
 
-  // determine value to place into text input
-  let value = '';
   // use value in options if valid
   if (props.value !== undefined &&
     Object.keys(options).indexOf(props.value) > -1) {
-    value = options[props.value];
-    // else, use input text value
-  } else if (currentInput) {
-    value = currentInput;
+    setCurrentInput(options[props.value]);
   }
 
   let newOptions = {};
@@ -109,7 +112,7 @@ const SearchableDropdown = (props) => {
             </span>
             <input type='text'
                    name={props.name + '_input'}
-                   value={value}
+                   value={currentInput || ''}
                    id={props.id}
                    list={props.name + '_list'}
                    className='form-control'

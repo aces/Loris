@@ -78,6 +78,8 @@ class FilterRule extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      key: this.uuid(),
+      selected: false,
       operators: {
         equal: '=',
         notEqual: '!=',
@@ -96,7 +98,17 @@ class FilterRule extends Component {
     this.valueChange = this.valueChange.bind(this);
     this.valueSet = this.valueSet.bind(this);
     this.updateVisit = this.updateVisit.bind(this);
+    this.setRuleClicked = this.setRuleClicked.bind(this);
+    this.setRule = this.setRule.bind(this);
   }
+
+  /**
+   * Component did mount
+   */
+   componentDidMount() {
+     console.log('componentDidMount in FilterRule has ran!');
+     this.props.setRule(this.setRule);
+   }
 
   /**
    * Component will mount
@@ -104,6 +116,63 @@ class FilterRule extends Component {
   componentWillMount() {
     this.valueSet = loris.debounce(this.valueSet, 1000);
   }
+
+  /**
+   * Called by React when the component is updated.
+   *
+   * @param {object} prevProps - Previous React Component properties
+   */
+  componentDidUpdate(prevProps) {
+     console.log('componentDidUpdate in FilterRule has ran!');
+     if (prevProps.rulesUpdate !== this.props.rulesUpdate) {
+       this.setRule({
+         field: this.props.field,
+       });
+     }
+   }
+
+   /**
+   * UUID for key.
+    * @return {string} uuid.
+   */
+   uuid() {
+     console.log('uuid has ran!');
+     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
+       function(c) {
+       let r = Math.random() * 16 | 0;
+       let v = c === 'x' ? r : (r & 0x3 | 0x8);
+       return v.toString(16);
+     });
+   }
+
+   /**
+   * Set the rule
+   * @param {string} rule
+   */
+   setRule(rule) {
+     console.log('setRule has ran!');
+     if (!this.props.selectedRules[this.state.key]) {
+       return;
+     }
+     let newRule = JSON.parse(JSON.stringify(this.props.rule));
+     newRule.instrument = rule.field[0];
+     $.get(loris.BaseURL + '/dqt/ajax/datadictionary.php',
+       {category: newRule.instrument},
+       (data) => {
+         newRule.fields = data;
+         for (const property in data) {
+           if (data.hasOwnProperty(property)) {
+             if (data[property].key[1] === rule.field[1]) {
+               const index = Object.keys(data).indexOf(property);
+               newRule.field = newRule.fields[index].key[1];
+               newRule.fieldType = newRule.fields[index].value.Type;
+               this.props.updateRule(this.props.index, newRule); // todo might need to store index in state.
+             }
+           }
+         }
+       }, 'json'
+     );
+   }
 
   /**
    * Update the rules instrument, getting the instruments available fields
@@ -269,6 +338,19 @@ class FilterRule extends Component {
   }
 
   /**
+   * Set the rule that's clicked.
+   * @param {object} e
+   */
+  setRuleClicked(e) {
+     console.log('setRuleClicked has ran!');
+     e.stopPropagation();
+     if (e.target.tagName === 'DIV') {
+       this.setState({selected: !this.state.selected});
+       this.props.ruleClicked(this.state.key);
+     }
+   }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -414,9 +496,14 @@ class FilterRule extends Component {
         );
       }
     }
+    const styleSelectedRule = this.props.selectedRules[this.state.key]
+       ? {backgroundColor: '#4a85cb', color: '#fff'} : null;
     return (
       <div className='panel panel-default'>
-        <div className='panel-body'>
+        <div className='panel-body'
+             onClick={(e) => this.setRuleClicked(e)}
+              style={styleSelectedRule}
+         >
           {rule}
           <div className='col-xs-2'>
             <button className='btn btn-danger btn-sm pull-right'
@@ -442,12 +529,45 @@ class FilterGroup extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+       selectedRules: {},
+       field: this.props.field
+         ? this.props.field
+         : null,
+       rulesUpdate: this.props.rulesUpdate
+         ? this.props.rulesUpdate
+         : (new Date()).getMilliseconds(),
+     };
     this.updateChild = this.updateChild.bind(this);
     this.updateGroupOperator = this.updateGroupOperator.bind(this);
     this.updateSessions = this.updateSessions.bind(this);
     this.addChild = this.addChild.bind(this);
     this.deleteChild = this.deleteChild.bind(this);
+    this.ruleClicked = this.ruleClicked.bind(this);
+    this.setRuleSelected = this.setRuleSelected.bind(this);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    console.log('componentDidMount in FilterGroup has ran!');
+    this.props.setRuleSelected(this.setRuleSelected);
+  }
+
+  /**
+   * Called by React when the component is updated.
+   *
+   * @param {object} prevProps - Previous React Component properties
+   */
+  componentDidUpdate(prevProps) {
+    if (prevProps.rulesUpdate !== this.props.rulesUpdate) {
+      console.log('componentDidUpdate in FilterGroup has ran!');
+      this.setState({
+        rulesUpdate: this.props.rulesUpdate,
+        field: this.props.field,
+      });
+    }
   }
 
   /**
@@ -554,6 +674,10 @@ class FilterGroup extends Component {
 
     // Update the groups sessions by calling the arrayintersect.js functions
     group.session = getSessions(group);
+
+    // correct selectedRules
+    this.setState({selectedRules: {}});
+
     if (this.props.index) {
       // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
@@ -562,6 +686,41 @@ class FilterGroup extends Component {
       this.props.updateFilter(group);
     }
   }
+
+  /**
+   * set rule selected.
+   * @param {string} field
+   */
+  setRuleSelected(field) {
+     console.log('setRuleSelected has ran!');
+     for (const property in this.state.selectedRules) {
+       if (this.state.selectedRules.hasOwnProperty(property)) {
+         this.setState({
+           field: field,
+           rulesUpdate: (new Date()).getMilliseconds(),
+         });
+         // this[`setRuleFor${property}`]({
+         //   field: field,
+         //   index: property,
+         // });
+       }
+     }
+   }
+
+   /**
+    * User clicked rule of filter.
+    * @param {string} key
+    */
+   ruleClicked(key) {
+     console.log('ruleClicked has ran!');
+     let selectedRules = JSON.parse(JSON.stringify(this.state.selectedRules));
+     if (selectedRules[key]) { // todo set as group or single rule
+       delete selectedRules[key];
+     } else {
+       selectedRules[key] = true;
+     }
+     this.setState({selectedRules: selectedRules});
+   }
 
   /**
    * Renders the React component.
@@ -580,7 +739,8 @@ class FilterGroup extends Component {
     let children = this.props.group.children.map((child, index) => {
       if (child.type === 'rule') {
         return (
-          <li key={index}>
+          <li key={index}
+              id={'filter_rule_' + index}>
             <FilterRule rule={child}
                         items={this.props.items}
                         index={index}
@@ -588,12 +748,19 @@ class FilterGroup extends Component {
                         updateSessions={this.updateSessions}
                         deleteRule={this.deleteChild}
                         Visits={this.props.Visits}
+                        ruleClicked={this.ruleClicked}
+                        // uniqueKey={key}
+                        rulesUpdate={this.state.rulesUpdate}
+                        field={this.state.field}
+                        setRule={(rule) => this[`setRuleFor${index}`] = rule}
+                        selectedRules={this.state.selectedRules}
             />
           </li>
         );
       } else if (child.type === 'group') {
         return (
-          <li key={index}>
+          <li key={index}
+              id={'filter_group_' + index}>
             <FilterGroup group={child}
                          items={this.props.items}
                          index={index}
@@ -602,6 +769,11 @@ class FilterGroup extends Component {
                          updateSessions={this.updateSessions}
                          deleteGroup={this.deleteChild}
                          Visits={this.props.Visits}
+                         setRuleSelected={(field) =>
+                           this.setRuleSelected = field
+                         }
+                         rulesUpdate={this.state.rulesUpdate}
+                         field={this.state.field}
             />
           </li>
         );
@@ -668,10 +840,28 @@ class FilterBuilder extends Component {
     this.state = {
       showModalCSV: false,
     };
+    this.setFilterRule = this.setFilterRule.bind(this);
     this.openModalCSV = this.openModalCSV.bind(this);
     this.closeModalCSV = this.closeModalCSV.bind(this);
     this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
     this.requestSessions = this.requestSessions.bind(this);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    console.log('componentDidMount in FilterBuilder has ran!');
+    this.props.setFilterRule(this.setFilterRule);
+  }
+
+  /**
+   * Set Filter rule
+   * @param {array} field
+   */
+  setFilterRule(field) {
+    console.log('setFilterRule in FilterBuilder has ran!');
+    this.setRuleSelected(field);
   }
 
   /**
@@ -797,7 +987,7 @@ class FilterBuilder extends Component {
    */
   render() {
     return (
-      <div>
+      <>
         <ModalImportCSV
           showModalCSV={this.state.showModalCSV}
           closeModalCSV={this.closeModalCSV}
@@ -819,11 +1009,15 @@ class FilterBuilder extends Component {
                            items={this.props.items}
                            updateFilter={this.props.updateFilter}
                            Visits={this.props.Visits}
+                           setRuleSelected={(field) =>
+                             this.setRuleSelected = field
+                           }
+                           keyForNewRule={this.state.keyForNewRule}
               />
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }

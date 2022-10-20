@@ -98,6 +98,7 @@ class FieldsSidebar extends Component {
                  color: '#fff',
                  backgroundColor: '#4c8ad5',
                }}
+               onClick={() => this.props.fieldClickedFromSidebar(fieldInfo)}
                key={this.props.Fields[i]}>
             <h4 className='list-group-item-heading col-xs-12'
                 style={{color: '#fff'}}

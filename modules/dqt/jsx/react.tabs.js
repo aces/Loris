@@ -125,6 +125,7 @@ let FieldSelectTabPane = (props) => {
         onFieldChange={props.onFieldChange}
         selectedFields={props.selectedFields}
         Visits={props.Visits}
+        setFieldSearch={props.setFieldSearch}
         fieldVisitSelect={props.fieldVisitSelect}
       />
     </TabPane>
@@ -146,6 +147,7 @@ let FilterSelectTabPane = (props) => {
                      filter={props.filter}
                      Visits={props.Visits}
                      Active={props.Active}
+                     setFilterRule={props.setFilterRule}
                      loadImportedCSV={props.loadImportedCSV}
                      getAllSessions={props.getAllSessions}
       />

@@ -95,6 +95,7 @@ class DataQueryApp extends Component {
     this.overrideQuery = this.overrideQuery.bind(this);
     this.loadFilterRule = this.loadFilterRule.bind(this);
     this.loadFilterGroup = this.loadFilterGroup.bind(this);
+    this.fieldClickedFromSidebar = this.fieldClickedFromSidebar.bind(this);
     this.loadSavedQuery = this.loadSavedQuery.bind(this);
     this.fieldVisitSelect = this.fieldVisitSelect.bind(this);
     this.fieldChange = this.fieldChange.bind(this);
@@ -946,6 +947,23 @@ class DataQueryApp extends Component {
   }
 
   /**
+    * field clicked from sidebar
+    * @param {object} field
+    */
+   fieldClickedFromSidebar(field) {
+     console.log('fieldClickedFromSidebar has ran!');
+     let state = JSON.parse(JSON.stringify(this.state));
+     console.log(state);
+     if (this.state.ActiveTab === 'DefineFields') {
+       // Set Query Fields Search.
+       this.setFieldSearch(field);
+     } else if (this.state.ActiveTab === 'DefineFilters') {
+       // Set Filter Rule.
+       this.setFilterRule(field);
+     }
+   }
+
+  /**
    * Build the queried data to be displayed in the data table
    * @param {number} displayID
    * @return {object}
@@ -1359,6 +1377,7 @@ class DataQueryApp extends Component {
             Visits={this.state.Visits}
             fieldVisitSelect={this.fieldVisitSelect}
             Loading={this.state.loading}
+            setFieldSearch={(field) => this.setFieldSearch = field}
             Active={this.state.ActiveTab === 'DefineFields'}
           />
         )}
@@ -1374,6 +1393,7 @@ class DataQueryApp extends Component {
           <FilterSelectTabPane
             key='DefineFilters'
             TabId='DefineFilters'
+            setFilterRule={(field) => this.setFilterRule = field}
             categories={this.state.categories}
             filter={this.state.filter}
             updateFilter={this.updateFilter}
@@ -1440,6 +1460,7 @@ class DataQueryApp extends Component {
             Fields={this.state.fields}
             Criteria={this.state.criteria}
             resetQuery={this.resetQuery}
+            fieldClickedFromSidebar={this.fieldClickedFromSidebar}
           />
         </div>
       )
