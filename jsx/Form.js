@@ -1626,13 +1626,21 @@ class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type={inputType}
             className="form-control"
@@ -1717,19 +1725,28 @@ class TimeElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let label;
+    let classSz;
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
+    if (this.props.label) {
+        label = <label className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+            </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={classSz}>
           <input
             type="time"
             className="form-control"
@@ -1811,13 +1828,22 @@ class NumericElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type="number"
             className="form-control"
@@ -1965,13 +1991,21 @@ class FileElement extends Component {
       );
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label">
+    let labelHTML;
+    let classSz;
+    if (this.props.label) {
+        labelHTML = <label className="col-sm-3 control-label">
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <div className="input-group">
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
