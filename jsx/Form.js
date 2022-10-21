@@ -1839,8 +1839,8 @@ class NumericElement extends Component {
 
 NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
-  min: PropTypes.number.isRequired,
-  max: PropTypes.number.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
