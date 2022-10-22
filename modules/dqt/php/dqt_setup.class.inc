@@ -164,8 +164,9 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
             return $row['id'];
         };
 
-        $usersavedNames   = array_map($IDMapCallback, $usersaved);
-        $globalsavedNames = array_map($IDMapCallback, $globalsaved);
+        $usersavedNames       = array_map($IDMapCallback, $usersaved);
+        $globalsavedNames     = array_map($IDMapCallback, $globalsaved);
+        
         $data['savedqueries'] = [
             'user'   => $usersavedNames,
             'shared' => $globalsavedNames,
