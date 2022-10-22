@@ -75,7 +75,7 @@ const ManageSavedQueryRow = (props) => {
    * @deleteclick
    */
 function publicquerydelete() {
-           let id = props.Query['_id'];
+           const id = props.Query['_id'];
           swal.fire({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this!',
