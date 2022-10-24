@@ -39,6 +39,6 @@ if ($doc_author == $user->getUsername()) {
 if ($user->hasPermission('superuser') || $is_author) {
     $results = $cdb->deleteDoc($docID);
     print json_encode($results);
-) else {
-   print json_encode("false");
+} else {
+    print json_encode("false");
 }
