@@ -10,10 +10,12 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once __DIR__ . '/../../../vendor/autoload.php';
+// ########################## IBIS OVERRIDE START #######################
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
-$client->initialize(__DIR__ . "/../../../project/config.xml");
+$client->initialize(__DIR__ . "/../../../../project/config.xml");
+// ########################## IBIS OVERRIDE END #######################
 header("Content-Type: application/json");
 $config      = \NDB_Config::singleton();
 $couchConfig = $config->getSetting('CouchDB');
@@ -24,10 +26,19 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
+$is_author = false;
 $docID       = urlencode($_REQUEST['DocID']);
+$user        = User::singleton();
 
-$results = $cdb->deleteDoc(
-    $docID
-);
-print json_encode($results);
+$tmp_author=explode("_",$docID);
+$doc_author = str_replace("global:", '', $tmp_author[0]) ;
+if ($doc_author == $user->getUsername()) {
+   $is_author = true;
+}
 
+if ($user->hasPermission('superuser') || $is_author) {
+    $results = $cdb->deleteDoc($docID);
+    print json_encode($results);
+) else {
+   print json_encode("false");
+}
