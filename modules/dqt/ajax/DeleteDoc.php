@@ -26,14 +26,13 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['admin'],
     $couchConfig['adminpass']
 );
-$is_author = false;
+$is_author   = false;
 $docID       = urlencode($_REQUEST['DocID']);
 $user        = User::singleton();
-
-$tmp_author=explode("_",$docID);
-$doc_author = str_replace("global:", '', $tmp_author[0]) ;
+$tmp_author  = explode("_", $docID);
+$doc_author  = str_replace("global:", '', $tmp_author[0]);
 if ($doc_author == $user->getUsername()) {
-   $is_author = true;
+    $is_author = true;
 }
 
 if ($user->hasPermission('superuser') || $is_author) {
