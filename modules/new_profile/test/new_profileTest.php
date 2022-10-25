@@ -93,12 +93,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->sendKeys("2015-01-01");
         $this->safeClick(WebDriverBy::cssSelector($this->btn));
 
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                '#lorisworkspace > fieldset > div > div > p:nth-child(1)'
-            )
+        $swalTitle = $this->safeFindElement(
+            WebDriverBy::Id("swal2-title")
         )->getText();
-        $this->assertStringContainsString("New candidate created.", $bodyText);
+        $this->assertEquals("New Candidate Created", $swalTitle);
     }
 
 }
