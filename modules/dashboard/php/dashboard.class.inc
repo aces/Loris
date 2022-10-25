@@ -79,7 +79,6 @@ class Dashboard extends \NDB_Form
         // calculating the body.
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
-
         $modules = $loris->getActiveModules();
 
         $this->_smallwidgets = [];

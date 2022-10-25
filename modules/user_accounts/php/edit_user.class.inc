@@ -935,8 +935,7 @@ class Edit_User extends \NDB_Form
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
 
-        // get the editor's permissions
-        $perms = $editor->getPermissionsVerbose();
+        $perms = $editor->getPermissionsVerbose($this->lorisinstance);
 
         $lastRole = '';
         $group    = [];
