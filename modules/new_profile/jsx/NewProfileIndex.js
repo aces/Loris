@@ -87,18 +87,18 @@ class NewProfileIndex extends React.Component {
     const configData = this.state.configData;
 
     let candidateObject = {
-        'Candidate': {
-            'Project': configData.project[formData.project],
-            // 'PSCID' : conditionally included below
-            // 'EDC' : conditionally included below
-            'DoB': formData.dobDate,
-            'Sex': formData.sex,
-            'Site': configData.site[formData.site],
-        },
+      'Candidate': {
+        'Project': configData.project[formData.project],
+        // 'PSCID' : conditionally included below
+        // 'EDC' : conditionally included below
+        'DoB': formData.dobDate,
+        'Sex': formData.sex,
+        'Site': configData.site[formData.site],
+      },
     };
 
     if (this.state.configData['edc'] === 'true') {
-        candidateObject.Candidate.EDC = formData.edc;
+      candidateObject.Candidate.EDC = formData.edc;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
@@ -116,40 +116,41 @@ class NewProfileIndex extends React.Component {
     .then((resp) => {
       if (resp.ok && resp.status === 201) {
         resp.json().then((data) => {
-            swal.fire({
-                type: 'success',
-                title: 'New Candidate Created',
-                html: 'DCCID: ' + data.CandID + ' '
-                      + 'PSCID: ' + data.PSCID + ' ',
-                confirmButtonText: 'Access Profile',
-                // Repurpose "cancel" as "recruit another candidate".
-                // Use the same colour for both buttons, since one
-                // isn't more "right" than the other.
-                showCancelButton: true,
-                cancelButtonColor: '#3085d6',
-                cancelButtonText: 'Recruit another candidate',
-            }).then((result) => {
-                if (result.value === true) {
-                    window.location.href = '/' + data.CandID;
-                } else {
-                   this.setState({
-                       formData: {},
-                       submitDisabled: false,
-                   });
-                }
-            });
+          swal.fire({
+            type: 'success',
+            title: 'New Candidate Created',
+            html: 'DCCID: ' + data.CandID + ' '
+                  + 'PSCID: ' + data.PSCID + ' ',
+            confirmButtonText: 'Access Profile',
+            // Repurpose "cancel" as "recruit another candidate".
+            // Use the same colour for both buttons, since one
+            // isn't more "right" than the other.
+            showCancelButton: true,
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Recruit another candidate',
+          }).then((result) => {
+            if (result.value === true) {
+              window.location.href = '/' + data.CandID;
+            } else {
+              this.setState({
+                formData: {},
+                submitDisabled: false,
+              });
+            }
           });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({submitDisabled: false});
-            swal.fire('Error!', message.error, 'error');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        });
+      } else {
+        resp.json().then((message) => {
+          // enable button for form resubmission.
+          this.setState({submitDisabled: false});
+          swal.fire('Error!', message.error, 'error');
+        });
+      }
+    })
+    .catch((error) => {
+      swal.fire('Error!', error, 'error');
+      console.error(error);
+    });
   }
 
   /**
