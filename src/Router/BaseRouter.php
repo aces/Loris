@@ -144,7 +144,17 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
                 $module  = \Module::factory("timepoint_list");
-                $mr      = new ModuleRouter($module);
+
+                $requestloglevel = $logSettings->getRequestLogLevel();
+                if ($requestloglevel != "none") {
+                    $module->setLogger(
+                        new \LORIS\Log\ErrorLogLogger($requestloglevel)
+                    );
+                } else {
+                    $module->setLogger(new \PSR\Log\NullLogger);
+                }
+
+                $mr = new ModuleRouter($module);
                 return $ehandler->process($request, $mr);
             }
         }
