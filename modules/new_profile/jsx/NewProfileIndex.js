@@ -138,17 +138,36 @@ class NewProfileIndex extends React.Component {
               });
             }
           });
+        } )
+        .catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
         });
       } else {
         resp.json().then((message) => {
           // enable button for form resubmission.
           this.setState({submitDisabled: false});
           swal.fire('Error!', message.error, 'error');
+        }).catch((error) => {
+          swal.fire({
+            type: 'error',
+            title: 'Error!',
+            text: error,
+          });
+          console.error(error);
         });
       }
     })
     .catch((error) => {
-      swal.fire('Error!', error, 'error');
+      swal.fire({
+        type: 'error',
+        title: 'Error!',
+        text: error,
+      });
       console.error(error);
     });
   }
