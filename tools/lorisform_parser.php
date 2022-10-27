@@ -55,7 +55,14 @@ foreach ($files as $file) {
     echo "Requiring file...\n";
     include_once $file;
     echo "Instantiating new object...\n";
-    $obj =new $className($lorisInstance, new NullModule($lorisInstance), "", "", "", "");
+    $obj =new $className(
+        $lorisInstance,
+        new NullModule($lorisInstance),
+        "",
+        "",
+        "",
+        ""
+    );
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 
