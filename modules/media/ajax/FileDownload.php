@@ -26,7 +26,9 @@ if (!$user->hasPermission('media_write')) {
 // by using a relative filename.
 $file     = html_entity_decode(basename($_GET['File']));
 $config   =& NDB_Config::singleton();
-$path     = $config->getSetting('mediaPath');
+$path = $DB->pselectOne(
+      "SELECT data_dir FROM media WHERE file_name =:filename",
+      ['filename' => $file]);
 $filePath = $path . $file;
 
 $downloadNotifier = new NDB_Notifier(
