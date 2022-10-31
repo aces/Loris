@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 namespace LORIS\schedule_module;
  /**
   *      For MRI,
