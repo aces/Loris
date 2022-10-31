@@ -33,5 +33,5 @@ if ($user->hasPermission('superuser') || $is_author) {
     $results = $cdb->deleteDoc($docID);
     print json_encode($results);
 } else {
-    header("HTTP/1.1 404 Not Found");
+    header("HTTP/1.1 403 Forbidden");
 }
