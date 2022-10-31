@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../vendor/autoload.php';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize(__DIR__ . "/../project/config.xml");
 header("Content-Type: application/json");
 $config      = \NDB_Config::singleton();
 $couchConfig = $config->getSetting('CouchDB');
