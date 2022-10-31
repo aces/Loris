@@ -10,12 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-// ########################## IBIS OVERRIDE START #######################
-require_once __DIR__ . '/../../../../vendor/autoload.php';
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize(__DIR__ . "/../../../../project/config.xml");
-// ########################## IBIS OVERRIDE END #######################
 header("Content-Type: application/json");
 $config      = \NDB_Config::singleton();
 $couchConfig = $config->getSetting('CouchDB');
