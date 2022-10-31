@@ -11,7 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 ini_set("max_input_vars", '4000');
 $user =& User::singleton();
 if (!$user->hasPermission('dataquery_view')) {
@@ -34,6 +33,7 @@ $cdb         = \NDB_Factory::singleton()->couchDB(
     $couchConfig['adminpass']
 );
 $qid         = $user->getUserName() . "_" . $_REQUEST['QueryName'];
+$qid         = rawurlencode($qid);
 
 if ($_REQUEST['SharedQuery'] === "true") {
     $qid = "global:" . $qid;
@@ -69,7 +69,7 @@ if ($_REQUEST['SharedQuery'] === "true") {
                                     ': ' .
                                     $_REQUEST['QueryName'];
 }
-$fields = $_REQUEST['Fields'];
+$fields = json_decode($_REQUEST['Fields']);
 $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
@@ -81,6 +81,7 @@ if ($_REQUEST['OverwriteQuery'] === "true") {
     $query['id'] = $qid;
     print json_encode($query);
 } else {
-    print $cdb->postDoc($baseDocument);
+    $response = $cdb->postDoc($baseDocument);
+    print json_encode($response);
 }
 

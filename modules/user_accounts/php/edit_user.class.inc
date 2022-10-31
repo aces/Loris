@@ -272,14 +272,40 @@ class Edit_User extends \NDB_Form
         // multi-site UPDATE
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
+        $userNewCenterIDs = array_map(
+            function ($val) {
+                return new \CenterID($val);
+            },
+            $values['CenterIDs']
+        );
         if (!$this->isCreatingNewUser()) {
+            // Prevent deletion of rules/sites editor may not have access to edit.
+            if (!$editor->hasPermission('user_accounts_multisite')) {
+                // Collect CenterID(s) of user being modified.
+                $userCenterIDs = $user->getCenterIDs();
+                // Collect CenterID(s) of the editor modifying sites.
+                $editorCenterIDs = $editor->getCenterIDs();
+                // If the editor does not have access to all of the
+                // user's sites the difference between the two arrays
+                // will be the sites we additionally need to add to
+                // the user being modified.
+                $differenceOfCenterIDs = array_diff(
+                    $userCenterIDs,
+                    $editorCenterIDs
+                );
+                $userNewCenterIDs      = array_merge(
+                    array_intersect($userNewCenterIDs, $editorCenterIDs),
+                    $differenceOfCenterIDs
+                );
+            }
+
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($us_curr_sites as $site) {
+            foreach ($userNewCenterIDs as $centerID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
                         "UserID"   => $uid,
-                        "CenterID" => $site,
+                        "CenterID" => $centerID,
                     ]
                 );
             }
@@ -310,7 +336,6 @@ class Edit_User extends \NDB_Form
             $ex_curr_sites  = [];
             $ex_prev_sites  = [];
             $ex_radiologist = 'N';
-            $ex_pending     = 'Y';
 
             foreach ($values as $k => $v) {
                 //examiner fields
@@ -323,17 +348,65 @@ class Edit_User extends \NDB_Form
                 if ($k === 'examiner_radiologist') {
                     $ex_radiologist = $v;
                 }
-                if ($k === 'examiner_pending') {
-                    $ex_pending = $v;
-                }
             }
+            foreach ($ex_curr_sites as $k => $v) {
+                unset($values[$k]);
+            }
+        }
+        unset($values['examiner_radiologist']);
+        unset($values['examiner_pending']);
+        // END SETUP EXAMINER VALUES
+
+        // make the set
+        $set = [];
+        foreach ($values as $key => $value) {
+            // Password updates are handled separately
+            if (!empty($value) && $key != 'Password_hash') {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
+        }
+        // update the user
+        if ($this->isCreatingNewUser()) {
+            // insert a new user
+            \User::insert($set);
+            $user = \User::factory($set['UserID']);
+            $uid  = $user->getData('ID');
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    [
+                        "UserID"   => $uid,
+                        "CenterID" => $site,
+                    ]
+                );
+            }
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    [
+                        "UserID"    => $uid,
+                        "ProjectID" => $project,
+                    ]
+                );
+            }
+        } else {
+            // update the user
+            $user = \User::factory($this->identifier);
+            $user->update($set);
+        }
+
+        // START EXAMINER UPDATE
+        if ($editor->hasPermission('examiner_multisite')) {
+            $ex_pending = 'Y';
 
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
-             WHERE e.full_name=:fn",
+             WHERE e.userID=:uid",
                 [
-                    "fn" => $values['Real_name'],
+                    "uid" => $uid,
                 ]
             );
 
@@ -357,8 +430,8 @@ class Edit_User extends \NDB_Form
                 $examinerID = $DB->pselectOne(
                     "SELECT examinerID
                             FROM examiners
-                            WHERE full_name=:fullName",
-                    ['fullName' => $values['Real_name']]
+                            WHERE userID=:uid",
+                    ['uid' => $uid]
                 );
             } elseif (!empty($examinerID)
                 && ((!empty($ex_radiologist)
@@ -374,10 +447,10 @@ class Edit_User extends \NDB_Form
                     'examiners',
                     [
                         'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                        'full_name'   => $values['Real_name']
                     ],
                     [
-                        "full_name" => $values['Real_name'],
+                        'userID' => $uid
                     ]
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -395,101 +468,64 @@ class Edit_User extends \NDB_Form
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
-            foreach ($ex_curr_sites as $k => $v) {
+            if (!empty($ex_curr_sites)) {
+                foreach ($ex_curr_sites as $v) {
 
-                //Check if examiner already in db for site
-                $result = $DB->pselectRow(
-                    "SELECT epr.centerID
-                           FROM examiners_psc_rel epr
-                           WHERE epr.examinerID=:eid AND epr.centerID=:cid",
-                    [
-                        "eid" => $examinerID,
-                        "cid" => $v,
-                    ]
-                );
-
-                // examiner was not previously added, add and set to active
-                if (empty($result)) {
-                    $DB->insert(
-                        'examiners_psc_rel',
+                    //Check if examiner already in db for site
+                    $result = $DB->pselectRow(
+                        "SELECT epr.centerID
+                               FROM examiners_psc_rel epr
+                               WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                         [
-                            'examinerID'       => $examinerID,
-                            'centerID'         => $v,
-                            'active'           => 'Y',
-                            'pending_approval' => $ex_pending,
+                            "eid" => $examinerID,
+                            "cid" => $v,
                         ]
                     );
-                } else {
+
+                    // examiner was not previously added, add and set to active
+                    if (empty($result)) {
+                        if (!empty($examinerID)) {
+                            $DB->insert(
+                                'examiners_psc_rel',
+                                [
+                                    'examinerID'       => $examinerID,
+                                    'centerID'         => $v,
+                                    'active'           => 'Y',
+                                    'pending_approval' => $ex_pending,
+                                ]
+                            );
+                        }
+                    } else {
+                        $DB->update(
+                            'examiners_psc_rel',
+                            [
+                                'active'           => 'Y',
+                                'pending_approval' => $ex_pending,
+                            ],
+                            [
+                                'examinerID' => $examinerID,
+                                'centerID'   => $v,
+                            ]
+                        );
+                    }
+                }
+            }
+            //de-activate examiner if sites where no longer checked
+            if (!empty($ex_prev_sites)) {
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+            }
+            if (!empty($ex_inactive)) {
+                foreach ($ex_inactive as $cid) {
                     $DB->update(
                         'examiners_psc_rel',
-                        [
-                            'active'           => 'Y',
-                            'pending_approval' => $ex_pending,
-                        ],
+                        ["active" => 'N'],
                         [
                             'examinerID' => $examinerID,
-                            'centerID'   => $v,
+                            'centerID'   => $cid,
                         ]
                     );
                 }
-                unset($values[$k]);
             }
-
-            //de-activate examiner if sites where no longer checked
-            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
-            foreach ($ex_inactive as $cid) {
-                $DB->update(
-                    'examiners_psc_rel',
-                    ["active" => 'N'],
-                    [
-                        'examinerID' => $examinerID,
-                        'centerID'   => $cid,
-                    ]
-                );
-            }
-        }
-        unset($values['examiner_radiologist']);
-        unset($values['examiner_pending']);
-        //END EXAMINER UPDATE
-
-        // make the set
-        $set = [];
-        foreach ($values as $key => $value) {
-            // Password updates are handled separately
-            if (!empty($value) && $key != 'Password_hash') {
-                $set[$key] = $value;
-            } else {
-                $set[$key] = null;
-            }
-        }
-        // update the user
-        if ($this->isCreatingNewUser()) {
-            // insert a new user
-            \User::insert($set);
-            $user = \User::factory($set['UserID']);
-            $uid  = $user->getId();
-            foreach ($us_curr_sites as $site) {
-                $DB->insert(
-                    'user_psc_rel',
-                    [
-                        "UserID"   => $uid,
-                        "CenterID" => $site,
-                    ]
-                );
-            }
-            foreach ($us_curr_projects as $project) {
-                $DB->insert(
-                    'user_project_rel',
-                    [
-                        "UserID"    => $uid,
-                        "ProjectID" => $project,
-                    ]
-                );
-            }
-        } else {
-            // update the user
-            $user = \User::factory($this->identifier);
-            $user->update($set);
         }
 
         // Now set the password. Note that this field is named incorrectly
@@ -622,6 +658,8 @@ class Edit_User extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
+     * @suppress PhanTypeInvalidArrayKeyLiteral
+     *
      * @return void
      */
     function setup()
@@ -636,29 +674,22 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // it is a new user
-        $group = [];
         if ($this->identifier == '') {
             // user name
-            $group[] = $this->createText('UserID', 'User name');
-            $group[] = $this->createCheckbox(
+            $this->addBasicText('UserID', 'User name', ['required' => true]);
+            $this->addCheckbox(
                 'NA_UserID',
-                'Make user name match email address'
+                'Make user name match email address',
+                []
             );
-            $this->addGroup(
-                $group,
-                'UserID_Group',
-                'User name',
-                $this->_GUIDelimiter,
-                ['required' => true]
-            );
-            unset($group);
 
         } else {
             // It is an existing user:
             //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
-            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
+        // Account Request Date - always displayed
+        $this->addScoreColumn('account_request_date', 'Account Request Date');
 
         // password
         if ($this->isCreatingNewUser()) {
@@ -710,7 +741,7 @@ class Edit_User extends \NDB_Form
 
         // extra info
 
-        ////if the option is not set or if it's and it's true then display it
+        // if the option is not set or if it's and it's true then display it
 
         if ($additional_user_info) {
             $this->addBasicText('Degree', 'Degree');
@@ -726,17 +757,8 @@ class Edit_User extends \NDB_Form
         }
 
         // email address
-        $group   = [];
-        $group[] = $this->createText('Email', 'Email address');
-        $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
-        $this->addGroup(
-            $group,
-            'Email_Group',
-            'Email address',
-            $this->_GUIDelimiter,
-            ['required' => true]
-        );
-        unset($group);
+        $this->addBasicText('Email', 'Email address', ['required' => true]);
+        $this->addCheckbox('SendEmail', 'Send email to user', []);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
@@ -765,8 +787,8 @@ class Edit_User extends \NDB_Form
             // allow only to add to their own site
             $site_arr = $editor->getCenterIDs();
             foreach ($site_arr as $key => $val) {
-                $site[$key]        =& \Site::singleton($val);
-                $siteOptions[$val] = $site[$key]->getCenterName();
+                $site["$key"]        =& \Site::singleton($val);
+                $siteOptions["$val"] = $site["$key"]->getCenterName();
             }
         }
 
@@ -823,9 +845,9 @@ class Edit_User extends \NDB_Form
                 "examiner_radiologist",
                 "Radiologist: ",
                 [
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
 
@@ -836,9 +858,9 @@ class Edit_User extends \NDB_Form
                 "examiner_pending",
                 "Pending Approval: ",
                 [
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addGroup(
@@ -849,8 +871,8 @@ class Edit_User extends \NDB_Form
             );
             $this->addGroup(
                 $groupB,
-                'examiner_group',
-                'Examiner Status',
+                "examiner_group",
+                "Examiner Status",
                 $this->_GUIDelimiter
             );
             unset($groupA);
@@ -862,8 +884,8 @@ class Edit_User extends \NDB_Form
         // Darwinian self-lockout. Let us help those who cannot help themselves.
         if (!$this->_isEditingOwnAccount()) {
             $this->addSelect(
-                'Pending_approval',
-                'Pending approval',
+                "Pending_approval",
+                "Pending approval",
                 [
                     'Y' => 'Yes',
                     'N' => 'No',
@@ -912,9 +934,9 @@ class Edit_User extends \NDB_Form
             $this->tpl_data['can_reject']
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
-        // get the editor's permissions
 
-        $perms    = $editor->getPermissionsVerbose();
+        $perms = $editor->getPermissionsVerbose($this->lorisinstance);
+
         $lastRole = '';
         $group    = [];
         foreach ($perms as $row) {
@@ -1077,7 +1099,6 @@ class Edit_User extends \NDB_Form
                     $errors['UserID_Group']
                         = 'The user name must not exceed 255 characters';
                 }
-
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
@@ -1170,7 +1191,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email_Group']
+            $errors['Email']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
@@ -1198,7 +1219,7 @@ class Edit_User extends \NDB_Form
         if (!empty($values['Email'])) {
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
-                $errors['Email_Group'] = $emailError;
+                $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
                     $errors['__ConfirmEmail'] = 'Email and confirmed email '
@@ -1207,7 +1228,7 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // No email entered: error
-            $errors['Email_Group'] = 'You must enter an email address';
+            $errors['Email'] = 'You must enter an email address';
         }
 
         //======================================

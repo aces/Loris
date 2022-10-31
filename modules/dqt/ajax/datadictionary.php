@@ -43,18 +43,21 @@ if (isset($_REQUEST['category']) && $_REQUEST['category']) {
             "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
         ]
     );
-} else if (isset($_REQUEST['key']) && $_REQUEST['key']) {
-    $key = explode('%2C', urlencode($_REQUEST['key']));
+} else if (isset($_REQUEST['keys']) && $_REQUEST['keys']) {
+    $keys = json_decode($_REQUEST['keys']);
+    foreach (array_keys($keys) as $index) {
+        $key   = explode('%2C', urlencode($keys[$index] ?? ''));
+        $query = $cdb->queryView(
+            "DQG-2.0",
+            "datadictionary",
+            [
+                "reduce" => "false",
+                "key"    => "[\"$key[0]\",\"$key[1]\"]",
+            ]
+        );
 
-    $results = $cdb->queryView(
-        "DQG-2.0",
-        "datadictionary",
-        [
-            "reduce" => "false",
-            "key"    => "[\"$key[0]\",\"$key[1]\"]",
-        ]
-    );
+        array_push($results, $query[0]);
+    }
 }
 
 print json_encode($results);
-

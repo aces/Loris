@@ -101,15 +101,18 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         // store user data in object property
         foreach ($row as $key=>$value) {
-            switch ($key){
+            switch ($key) {
             case 'Sex':
-                $this->candidateInfo[$key] = new Sex($value);
+                $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
                 break;
             case 'Entity_type':
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
                 $this->candidateInfo[$key] = new \ProjectID($value);
+                break;
+            case 'RegistrationCenterID':
+                $this->candidateInfo[$key] = new \CenterID($value);
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -193,7 +196,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
+     * @param CenterID    $centerID              centerID of the site to which the
      *                                           candidate will belong
      * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
@@ -211,7 +214,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @static
      */
     static public function createNew(
-        int $centerID,
+        CenterID $centerID,
         ?string $dateOfBirth,
         ?string $edc,
         Sex $sex,
@@ -304,6 +307,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
         $attemptcount = 0;
+
+        $db = \NDB_Factory::singleton()->database();
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -311,7 +316,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             try {
-                \Database::singleton()->insert('candidate', $setArray);
+                $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
                 // Occurs in the case of a race condition where another CandID
                 // with the same value has been inserted into the DB before this
@@ -498,11 +503,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the ID of this candidate's site
      *
-     * @return integer The numeric ID of the candidate's site
+     * @return CenterID The numeric ID of the candidate's site
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
-        return intval($this->candidateInfo["RegistrationCenterID"]);
+        return $this->candidateInfo["RegistrationCenterID"];
     }
 
     /**
@@ -841,7 +846,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusOptions(): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -865,7 +870,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function getParticipantStatusSubOptions(int $parentID): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -890,10 +895,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
-
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $centerMatch = $user->hasCenter($this->getCenterID());
 
         // The candidate is accessible based on its registration
         // project/center
@@ -909,6 +912,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $timepoint = \TimePoint::singleton(
                 new \SessionID(strval($sessionID))
             );
+
             if ($timepoint->isAccessibleBy($user)) {
                 // There's at least one, we don't need to check
                 // any more.
@@ -966,7 +970,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($seqs AS $seq) {
             $unit = "";
 
-            switch($seq['@']['type']) {
+            switch ($seq['@']['type']) {
             case 'alpha':
                 $unit .= '[a-z]';
                 break;

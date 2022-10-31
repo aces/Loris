@@ -50,7 +50,7 @@ class MapIterator extends \IteratorIterator
      *
      * @return DataInstance
      */
-    public function current()
+    public function current() : DataInstance
     {
         $row = parent::current();
         return $this->mapper->Map($this->user, $row);

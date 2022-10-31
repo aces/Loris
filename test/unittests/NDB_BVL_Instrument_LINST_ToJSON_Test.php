@@ -158,8 +158,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $instrument .= "text{@}FieldName{@}Field Description\n";
         $instrument .= "select{@}texbox_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
-        $instrument .= "textarea{@}FieldName{@}"
-                       . "Field Description\n";
+        $instrument .= "textarea{@}FieldName{@}Field Description\n";
         $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}"
                        . "'not_answered'=>'Not Answered'\n";
         $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}"

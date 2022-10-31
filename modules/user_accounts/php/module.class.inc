@@ -35,7 +35,8 @@ class Module extends \Module
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
-            $page = $this->loadPage("edit_user");
+            $loris = $request->getAttribute("loris");
+            $page  = $this->loadPage($loris, "edit_user");
             return $page->process($request, $page);
         }
         return parent::handle($request);
@@ -73,7 +74,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();

@@ -20,6 +20,25 @@
         </properties>
     </rule>
 
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="print" value="(PSR-3 logger)"/>
+                <element key="echo" value="(PSR-3 logger)"/>
+                <element key="print_r" value="null"/>
+                <element key="var_dump" value="null"/>
+                <element key="die" value="null" />
+                <element key="exit" value="null" />
+                <element key="create_function" value="null"/>
+                <element key="http_response_code" value="(PSR-7)"/>
+                <element key="header" value="(PSR-7)"/>
+                <element key="ini_set" value="null"/>
+                <element key="ini_alter" value="null"/>
+                <!-- element key="error_log" value="(PSR-3 logger)"/ -->
+            </property>
+        </properties>
+    </rule>
+
     <!-- Make sure there aren't extra parameters in function docs -->
     <rule ref="PEAR.Commenting.FunctionComment.ExtraParamComment"/>
 

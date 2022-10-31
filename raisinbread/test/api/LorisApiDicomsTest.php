@@ -237,7 +237,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
             $this->markTestIncomplete(
                 "Endpoint not found: " .
                 "candidates/$this->candidTest/$this->visitTest/dicoms/" .
-                "$this->frecordTest"
+                "$this->tarfileTest"
             );
         }
  

@@ -34,15 +34,15 @@ class CNV
      * Constructor
      *
      * @param array $platform_options The platform_options for form element
-     * @param array $subprojects      The subprojects for form element
      * @param array $sites            The sites for form element
+     * @param array $subprojects      The subprojects for form element
      */
-    public function __construct($platform_options, $subprojects, $sites)
+    public function __construct($platform_options, $sites, $subprojects)
     {
         $this->_formElement = [
-            'Sites'        => $sites,
-            'SubprojectID' => $subprojects,
-            'Platform'     => $platform_options,
+            'Sites'       => $sites,
+            'Subprojects' => $subprojects,
+            'Platform'    => $platform_options,
         ];
     }
 

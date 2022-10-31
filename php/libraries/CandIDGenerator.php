@@ -53,6 +53,7 @@ class CandIDGenerator extends IdentifierGenerator
      */
     public function generate(): CandID
     {
+        $db = \NDB_Factory::singleton()->database();
         do {
             $this->checkIDRangeFull();
             $id = new CandID(
@@ -62,11 +63,10 @@ class CandIDGenerator extends IdentifierGenerator
             );
             // Check if the ID is in use. If so, the loop will continue and a new
             // ID will be generated.
-            $validID = \Database::singleton()
-                ->pselectOne(
-                    "SELECT count(CandID) FROM candidate WHERE CandID=:id",
-                    ['id' => (string) $id]
-                ) == 0;
+            $validID = $db->pselectOne(
+                "SELECT count(CandID) FROM candidate WHERE CandID=:id",
+                ['id' => (string) $id]
+            ) == 0;
         } while (! $validID);
 
         return $id;
@@ -81,7 +81,7 @@ class CandIDGenerator extends IdentifierGenerator
     {
         // CandIDs have no prefix so the result of the query can be returned
         // immediately.
-        return \Database::singleton()->pselectCol(
+        return \NDB_Factory::singleton()->database()->pselectCol(
             'SELECT CandID from candidate',
             []
         );

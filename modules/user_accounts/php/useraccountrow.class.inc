@@ -20,9 +20,9 @@ class UserAccountRow implements
      /**
       * Create a new ModuleRow Instance.
       *
-      * @param array $row  The ModuleRow Instance
-      * @param array $cids The CenterIDs
-      * @param array $pids The ProjectIDs
+      * @param array        $row  The ModuleRow Instance
+      * @param \CenterID[]  $cids The CenterIDs
+      * @param \ProjectID[] $pids The ProjectIDs
       */
     public function __construct(array $row, array $cids, array $pids)
     {
@@ -35,7 +35,7 @@ class UserAccountRow implements
     /**
      * Returns the CenterIDs for this row.
      *
-     * @return array The CenterIDs
+     * @return \CenterID[] The CenterIDs
      */
     public function getCenterIDs() : array
     {

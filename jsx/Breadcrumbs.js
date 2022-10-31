@@ -92,17 +92,24 @@ class Breadcrumbs extends Component {
     for (let i = 0; i < this.props.breadcrumbs.length; i++) {
       const element = this.props.breadcrumbs[i];
       const url = baseURL + element.query;
+      const onClick=this.props.breadcrumbs[i].onClick
+        ? this.props.breadcrumbs[i].onClick
+        : () => {};
+
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
           <li key={'drop_' + i}>
-            <a href={url}>
+            <a href={url} onClick={onClick}>
               {element.text}
             </a>
           </li>
         );
       } else {
         breadcrumbs.push(
-          <a key={'crumb_' + i} href={url} className='btn btn-primary'>
+          <a key={'crumb_' + i}
+             href={url}
+             className='btn btn-primary'
+             onClick={onClick}>
             <div>
               {element.text}
             </div>
@@ -140,6 +147,7 @@ class Breadcrumbs extends Component {
     );
   }
 }
+
 Breadcrumbs.propTypes = {
   baseURL: PropTypes.string,
   breadcrumbs: PropTypes.array,

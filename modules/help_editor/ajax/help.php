@@ -13,9 +13,19 @@
  */
 
 try {
+    $factory = \NDB_Factory::singleton();
+    $loris   = new \LORIS\LorisInstance(
+        $factory->database(),
+        $factory->config(),
+        [
+            __DIR__ . "/../../",
+            __DIR__ . "/../../../project/modules"
+        ],
+    );
+
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
-    $m           = Module::factory($moduleName);
+    $m           = Module::factory($loris, $moduleName);
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
@@ -24,7 +34,9 @@ try {
         'format'  => 'markdown',
     ];
     print json_encode($help);
-    ob_end_flush();
+    if (ob_get_level() > 0) {
+        ob_end_flush();
+    }
     exit;
 } catch (Exception $e) {
 
@@ -32,20 +44,30 @@ try {
     include_once "helpfile.class.inc";
 
     if (!empty($moduleName)) {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(
-            md5($subpageName ?? $moduleName)
-        );
-    }
+        try {
+            $helpID    = \LORIS\help_editor\HelpFile::hashToID(
+                md5($subpageName ?? $moduleName)
+            );
+            $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
+            $data      = $help_file->toArray();
+        } catch (\NotFound $e) {
+            // Send data with empty strings so that the content can be edited
+            $data = [
+                'content' => '',
+                'topic'   => '',
+                'updated' => ''
+            ];
+        }
 
-    $help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
-    $data            = $help_file->toArray();
-    $data['content'] = trim($data['content']);
+        $data['content'] = trim($data['content']);
 
-    if (empty($data['updated'])) {
-        $data['updated'] = "-";
-        // if document was never updated should display date created
-        if (!empty($data['created'])) {
-            $data['updated'] = $data['created'];
+        if (empty($data['updated'])) {
+            // if document was never updated should display date created
+            if (!empty($data['created']) && isset($data['created'])) {
+                $data['updated'] = $data['created'];
+            } else {
+                $data['updated'] = "-";
+            }
         }
     }
     print json_encode($data);

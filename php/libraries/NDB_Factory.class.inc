@@ -165,15 +165,31 @@ class NDB_Factory
 
         $settings = $this->settings();
 
+        // Pass the credentials in environment variables, so that they
+        // don't potentially show up in a stack trace if something goes
+        // wrong.
+        $dbname = $settings->dbName();
+        putenv("LORIS_{$dbname}_USERNAME=" . $settings->dbUserName());
+        putenv("LORIS_{$dbname}_PASSWORD=" . $settings->dbPassword());
+        putenv("LORIS_{$dbname}_HOST=" . $settings->dbHost());
+
         $db_ref = \Database::singleton(
             $settings->dbName(),
-            $settings->dbUserName(),
-            $settings->dbPassword(),
-            $settings->dbHost(),
             true
         );
 
+        // Unset the variables now that they're no longer needed.
+        putenv("LORIS_{$dbname}_USERNAME=");
+        putenv("LORIS_{$dbname}_PASSWORD=");
+        putenv("LORIS_{$dbname}_HOST=");
+
         self::$db = $db_ref;
+
+        $config   = \NDB_Config::singleton();
+        $loglevel = $config->getLogSettings()->getDatabaseLogLevel();
+        if ($loglevel !== "none") {
+            $db_ref->setLogger(new \LORIS\Log\ErrorLogLogger($loglevel));
+        }
         return $db_ref;
     }
 
@@ -307,7 +323,9 @@ class NDB_Factory
      */
     public function setBaseURL(string $baseURL)
     {
-        $this->_baseURL = $baseURL;
+        // Reset static settings object so that the base URL can be properly set
+        self::$_settings = null;
+        $this->_baseURL  = $baseURL;
     }
     /**
      * Returns a singleton settings object

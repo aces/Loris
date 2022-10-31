@@ -64,16 +64,10 @@ class User extends UserPermissions implements
         };
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get user data from database
-        $query = "SELECT users.*,
-            GROUP_CONCAT(psc.Name ORDER BY psc.Name SEPARATOR ';') AS Sites
-            FROM users
-            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
-            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
-            WHERE users.UserID = :UID
-            GROUP BY users.ID";
+        $query = "SELECT * FROM users WHERE UserID = :UID";
 
         $row = $DB->pselectRow($query, ['UID' => $username]);
 
@@ -87,15 +81,29 @@ class User extends UserPermissions implements
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
-            "SELECT CenterID FROM user_psc_rel upr
-                        WHERE upr.UserID= :UID",
+            "
+             SELECT
+               upr.CenterID,
+               psc.Name
+             FROM
+               user_psc_rel upr
+             LEFT JOIN
+               psc
+               ON (upr.CenterID = psc.CenterID)
+             WHERE
+               upr.UserID= :UID
+            ",
             ['UID' => $row['ID']]
         );
-        $user_cid            = [];
+
+        $user_cid  = [];
+        $sitenames = [];
         foreach ($user_centerID_query as $key=>$val) {
             // Convert string representation of ID to int
-            $user_cid[$key] = intval($val['CenterID']);
+            $user_cid[$key] = new \CenterID($val['CenterID']);
+            $sitenames[]    = $val['Name'];
         }
+        $row['Sites'] = implode(';', $sitenames);
 
         $user_pid = $DB->pselectCol(
             "SELECT ProjectID FROM user_project_rel upr WHERE upr.UserId=:uid",
@@ -175,7 +183,7 @@ class User extends UserPermissions implements
      */
     public static function insert(array $set): void
     {
-        \Database::singleton()->insert('users', $set);
+        \NDB_Factory::singleton()->database()->insert('users', $set);
     }
 
 
@@ -189,7 +197,7 @@ class User extends UserPermissions implements
      */
     public function update(array $set): void
     {
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'users',
             $set,
             ['UserID' => $this->userInfo['UserID']]
@@ -289,7 +297,7 @@ class User extends UserPermissions implements
     /**
      * Get the user's sites' ID numbers
      *
-     * @return array
+     * @return CenterID[]
      */
     function getCenterIDs(): array
     {
@@ -297,7 +305,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the user's projects' ID numbers
      *
      * @return ProjectID[]
      */
@@ -307,11 +315,24 @@ class User extends UserPermissions implements
     }
 
     /**
+     * Get the user's projects
+     *
+     * @return Project[]
+     */
+    function getProjects(): array
+    {
+        return array_map(
+            fn($projectID) => \Project::getProjectFromID($projectID),
+            $this->getProjectIDs()
+        );
+    }
+
+    /**
      * Get the user's language preference
      *
-     * @return int
+     * @return ?int
      */
-    function getLanguagePreference(): int
+    function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'];
     }
@@ -343,7 +364,8 @@ class User extends UserPermissions implements
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
-                $user_study_sites[$val] = $site[$key]->getCenterName();
+                $user_study_sites[$val->__toString()]
+                    = $site[$key]->getCenterName();
             }
         }
         natcasesort($user_study_sites);
@@ -398,23 +420,19 @@ class User extends UserPermissions implements
     function isUserDCC(): bool
     {
         //DCC site = 1 by LORIS convention
-        return (in_array(1, $this->userInfo['CenterIDs']));
+        return (in_array(new \CenterID("1"), $this->getCenterIDs()));
     }
 
     /**
      * Determines if the user has a center
      *
-     * @param int $center_id The center id
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenter(int $center_id) : bool
+    public function hasCenter(CenterID $center_id) : bool
     {
-        return in_array(
-            $center_id,
-            $this->getCenterIDs(),
-            true
-        );
+        return in_array($center_id, $this->getCenterIDs());
     }
 
     /**
@@ -436,12 +454,12 @@ class User extends UserPermissions implements
      * Determines if the user has a permission
      * for a center
      *
-     * @param string $code      The permission code
-     * @param int    $center_id The center id
+     * @param string   $code      The permission code
+     * @param CenterID $center_id The center id
      *
      * @return bool
      */
-    public function hasCenterPermission(string $code, int $center_id): bool
+    public function hasCenterPermission(string $code, CenterID $center_id): bool
     {
         if ($this->hasPermission("superuser")) {
             return true;
@@ -490,6 +508,10 @@ class User extends UserPermissions implements
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
                 'Password cannot be set to email'
+            );
+        } else if (password_verify($this->userInfo['UserID'], (string) $password)) {
+            throw new \InvalidArgumentException(
+                'Password cannot be set to username'
             );
         }
 

@@ -150,7 +150,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             // MRI archive is now in the mri_upload table. If there are existing
             // records in table notification_spool for that upload (i.e a re-upload
             // of a scan that the MRI pipeline failed to process), inactivate them
-            $db = \Database::singleton();
+            $db = $this->loris->getDatabaseConnection();
             $db->update(
                 'notification_spool',
                 ['Active' => 'N'],
@@ -275,7 +275,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         // creates associative array to store error messages for each form element
         $errors = [
             'IsPhantom'  => [],
@@ -475,7 +475,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $db         = \Database::singleton();
+        $db         = $this->loris->getDatabaseConnection();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = isset($args['values']['overwrite'])

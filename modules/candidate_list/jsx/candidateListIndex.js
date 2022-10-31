@@ -307,34 +307,15 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'Latest Visit Status',
+        'label': 'Project',
         'show': true,
         'filter': {
-          name: 'latestVisitStatus',
+          name: 'project',
           type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            'Not Started': 'Not Started',
-            'Screening': 'Screening',
-            'Visit': 'Visit',
-            'Approval': 'Approval',
-            'Recycling Bin': 'Recycling Bin',
-          },
+          options: options.project,
         },
       },
-
     ];
-     fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
-          },
-        },
-      );
 
     if (options.useedc === 'true') {
       fields.push(

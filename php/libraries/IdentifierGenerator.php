@@ -191,6 +191,7 @@ abstract class IdentifierGenerator
         $this->checkIDRangeFull();
 
         $id = '';
+        assert(count($this->alphabet) >= 1);
         while (strlen($id) < $this->length) {
             $id .= $this->alphabet[random_int(0, count($this->alphabet) - 1)];
         }

@@ -5,13 +5,6 @@
  * electrophysiology browser module.
  *
  * PHP version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Electrophysiology
- * @author     Loris team <info-loris.mni@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://github.com/aces/Loris
  */
 namespace LORIS\electrophysiology_browser;
 /**
@@ -73,43 +66,26 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions(): array
     {
-        // create user object
-        $user          = \NDB_Factory::singleton()->user();
-        $list_of_sites = [];
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
 
-        // grep the sites available to the user
-        if ($user->hasPermission('electrophysiology_browser_view_allsites')) {
-            // get the list of study sites - to be replaced by the Site object
-            $siteNames     = array_values(\Utility::getSiteList());
-            $list_of_sites = array_combine($siteNames, $siteNames);
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getCenterIDs();
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteIDs as $val) {
-                $site = \Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $list_of_sites[$site->getCenterName()] = $site->getCenterName();
-                }
-            }
-        }
-
-        // get list of projects
-        $list_of_projects = [];
-        $projectList      = \Utility::getProjectList();
-        foreach ($projectList as $key => $project) {
-            unset($projectList[$key]);
-            $list_of_projects[$project] = $project;
+        // get list of types
+        $list_of_types = [];
+        $typeList      = $db->pselect(
+            "SELECT OutputTypeName FROM physiological_output_type",
+            []
+        );
+        foreach ($typeList as $row) {
+            $list_of_types[$row['OutputTypeName']] = ucfirst($row['OutputTypeName']);
         }
 
         return [
-            'sites'    => $list_of_sites,
-            'projects' => $list_of_projects,
+            'sites'    => $this->getSiteOptions($user, false),
+            'projects' => $this->getProjectOptions($user, false),
+            'types'    => $list_of_types
         ];
-
     }
-
-
 
     /**
      * Gets the data source for this menu filter.

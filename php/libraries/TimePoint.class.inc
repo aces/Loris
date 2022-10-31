@@ -74,6 +74,22 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
 
     /**
+     * A DTO for TimePoint related data
+     */
+    protected ?TimePointData $data;
+
+    /**
+     * Construct a TimePoint object seeded with the data
+     * from the given DTO.
+     *
+     * @param ?TimePointData $data The Timepoint DTO
+     */
+    public function __construct(?TimePointData $data=null)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
      *
@@ -86,20 +102,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         // instantiate new TimePoint object
         static $timePointList = [];
-        if (!isset($timePointList[(string) $sessionID])) {
+        if (!isset($timePointList["$sessionID"])) {
             try {
-                $timePointList[(string) $sessionID] = new TimePoint();
+                $timePointList["$sessionID"] = new TimePoint();
 
-                $timePointList[(string) $sessionID]->select($sessionID);
+                $timePointList["$sessionID"]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
-                unset($timePointList[(string) $sessionID]);
+                unset($timePointList["$sessionID"]);
                 throw $e;
             }
         }
 
-        return $timePointList[(string) $sessionID];
+        return $timePointList["$sessionID"];
     }
 
 
@@ -141,6 +157,16 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             ['SID' => $sessionID]
         );
 
+        $this->data = new TimePointData(
+            $sessionID,
+            isset($row['ProjectID'])
+                ? new ProjectID($row['ProjectID'])
+                : null,
+            isset($row['CenterID'])
+                ? new \CenterID($row['CenterID'])
+                : null,
+        );
+
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
@@ -149,12 +175,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
             $title = $subprojectSettings['title'] ?? '';
             $this->_timePointInfo['SubprojectTitle'] = $title;
-
-            if ($this->_timePointInfo['ProjectID'] !== null) {
-                $this->_timePointInfo['ProjectID'] = new \ProjectID(
-                    $this->_timePointInfo['ProjectID']
-                );
-            }
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -262,7 +282,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             'SubprojectID'    => $SubprojectID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
-            'CenterID'        => $psc->getCenterID(),
+            'CenterID'        => $psc->getCenterID()->__toString(),
             'ProjectID'       => $project->getId(),
             'Current_stage'   => 'Not Started',
             'Submitted'       => 'N',
@@ -281,9 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID  $candid       The candidate identifier
-     * @param integer $subprojectID The subprojectID
-     * @param string  $visitLabel   The visit label
+     * @param CandID     $candid       The candidate identifier
+     * @param \ProjectID $projectID    The Project identifier
+     * @param integer    $subprojectID The subprojectID
+     * @param string     $visitName    The visit name
      *
      * @throws LorisException
      *
@@ -291,37 +312,27 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function isValidVisitLabel(
         CandID $candid,
+        \ProjectID $projectID,
         int $subprojectID,
-        string $visitLabel
+        string $visitName
     ): void {
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
-        if (empty($visitLabel)) {
+        if (empty($visitName)) {
             throw new \LorisException(
                 'A visit label is required.'
             );
         }
 
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $isValid            = false;
-        foreach (\Utility::associativeToNumericArray($visitLabelSettings)
-            as $visitLabelSetting) {
-            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
-                $items = \Utility::associativeToNumericArray(
-                    $visitLabelSetting['labelSet']['item']
-                );
-                foreach ($items as $item) {
-                    if ($item['@']['value'] == $visitLabel) {
-                        $isValid = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if (!$isValid) {
+        // Check if visit label exists for this subproject
+        if (!array_key_exists(
+            $visitName,
+            \Utility::getVisitsForSubproject(
+                $subprojectID
+            )
+        )
+        ) {
             throw new \LorisException(
                 'This visit label is not valid for this subproject.'
             );
@@ -329,11 +340,12 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $candidate =& \Candidate::singleton($candid);
 
+        // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
 
         //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($visitLabel, $used_label) == 0) {
+        foreach ($timePointArray AS $used_name) {
+            if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
                     'This visit label is not unique.'
                 );
@@ -388,7 +400,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        \Database::singleton()->update(
+        \NDB_Factory::singleton()->database()->update(
             'session',
             $newData,
             [
@@ -421,7 +433,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getSessionID(): SessionID
     {
-        return (new SessionID($this->_timePointInfo["SessionID"]));
+        return $this->data->getSessionID();
     }
 
     /**
@@ -437,15 +449,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Returns the CenterID for this visit.
      *
-     * @return integer the ID representing the PSC for this visit
+     * @return \CenterID
      */
-    function getCenterID(): int
+    function getCenterID(): \CenterID
     {
-        /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
-         */
-        return intval($this->_timePointInfo['CenterID']);
+        return $this->data->getCenterID();
     }
 
     /**
@@ -733,7 +741,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setCurrentStage(): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // this class does not handle Subject & Recycling Bin stage at the moment
         if (in_array($this->getCurrentStage(), ['Subject', 'Recycling Bin'])) {
@@ -830,7 +838,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCType(string $type): void
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         if (!in_array($type, $this->bvlQcTypes)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -859,7 +867,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCStatus(string $status): void
     {
-        $db =& Database::singleton();
+        $db =& \NDB_Factory::singleton()->database();
 
         if (!in_array($status, $this->bvlQcStatuses)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -896,7 +904,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     function setBVLQCExclusion(string $status): bool
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // check the status
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
@@ -1204,7 +1212,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getProjectID() : \ProjectID
     {
-        return $this->getData('ProjectID');
+        return $this->data->getProjectID();
     }
 
     /**
@@ -1220,7 +1228,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $centers = $user->getCenterIDs();
 
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
     }
 }

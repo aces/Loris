@@ -38,7 +38,27 @@ $(document).ready(function() {
             dataset.push(data.datasets[i].name);
             processedData.push(dataset.concat(data.datasets[i].data));
         }
+        var totals = new Array();
+        totals.push("Total");
+        for(var j=0; j<data.datasets[0].data.length; j++){
+            var total=0;
+            for(var i=0;i<data.datasets.length;i++){
+                total+=parseInt(data.datasets[i].data[j]);
+            }
+            totals.push(total);
+        }
+        processedData.push(totals);
         return processedData;
+    }
+
+    function maxY(data){
+        var maxi=0;
+        for(var j=0; j<data.datasets[0].data.length; j++){
+            for(var i=0;i<data.datasets.length;i++){
+                maxi=Math.max(maxi,parseInt(data.datasets[i].data[j]));
+            }
+        }
+        return maxi;
     }
 
 
@@ -47,14 +67,24 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/scans_bymonth',
         type: 'get',
         success: function(data) {
-            var scanLineData = formatLineData(data);
+            let legendNames = [];
+            for (let j=0; j<data.datasets.length; j++) {
+                legendNames.push(data.datasets[j].name);
+            }
+            let scanLineData = formatLineData(data);
             scanLineChart = c3.generate({
+                size: {
+                    height: '100%',
+                },
                 bindto: '#scanChart',
                 data: {
                     x: 'x',
                     xFormat: '%m-%Y',
                     columns: scanLineData,
                     type: 'area-spline'
+                },
+                legend: {
+                    show: false,
                 },
                 axis: {
                     x: {
@@ -64,6 +94,7 @@ $(document).ready(function() {
                         }
                     },
                     y: {
+                        max: maxY(data),
                         label: 'Scans'
                     }
                 },
@@ -74,6 +105,30 @@ $(document).ready(function() {
                     pattern: siteColours
                 }
             });
+            d3.select('.scanChartLegend')
+              .insert('div', '.scanChart')
+              .attr('class', 'legend')
+              .selectAll('div').data(legendNames).enter()
+              .append('div')
+              .attr('data-id', function(id) {
+                return id;
+              })
+              .html(function(id) {
+                return '<span></span>' + id;
+              })
+              .each(function(id) {
+                d3.select(this).select('span').style('background-color', scanLineChart.color(id));
+              })
+              .on('mouseover', function(id) {
+                scanLineChart.focus(id);
+              })
+              .on('mouseout', function(id) {
+                scanLineChart.revert();
+              })
+              .on('click', function(id) {
+                $(this).toggleClass("c3-legend-item-hidden")
+                scanLineChart.toggle(id);
+              });
         },
         error: function(xhr, desc, err) {
             console.log(xhr);
@@ -85,14 +140,24 @@ $(document).ready(function() {
         url: loris.BaseURL + '/statistics/charts/siterecruitment_line',
         type: 'get',
         success: function(data) {
-            var recruitmentLineData = formatLineData(data);
+            let legendNames = [];
+            for (let j=0; j<data.datasets.length; j++) {
+                legendNames.push(data.datasets[j].name);
+            }
+            let recruitmentLineData = formatLineData(data);
             recruitmentLineChart = c3.generate({
+                size: {
+                    height: '100%',
+                },
                 bindto: '#recruitmentChart',
                 data: {
                     x: 'x',
                     xFormat: '%m-%Y',
                     columns: recruitmentLineData,
                     type: 'area-spline'
+                },
+                legend: {
+                    show: false,
                 },
                 axis: {
                     x: {
@@ -102,6 +167,7 @@ $(document).ready(function() {
                         }
                     },
                     y: {
+                        max: maxY(data),
                         label: 'Candidates registered'
                     }
                 },
@@ -112,11 +178,35 @@ $(document).ready(function() {
                     pattern: siteColours
                 }
             });
+            d3.select('.recruitmentChartLegend')
+              .insert('div', '.recruitmentChart')
+              .attr('class', 'legend')
+              .selectAll('div').data(legendNames).enter()
+              .append('div')
+              .attr('data-id', function(id) {
+                return id;
+              })
+              .html(function(id) {
+                return '<span></span>' + id;
+              })
+              .each(function(id) {
+                d3.select(this).select('span').style('background-color', recruitmentLineChart.color(id));
+              })
+              .on('mouseover', function(id) {
+                recruitmentLineChart.focus(id);
+              })
+              .on('mouseout', function(id) {
+                recruitmentLineChart.revert();
+              })
+              .on('click', function(id) {
+                $(this).toggleClass("c3-legend-item-hidden")
+                recruitmentLineChart.toggle(id);
+              });
         },
         error: function(xhr, desc, err) {
             console.log(xhr);
             console.log("Details: " + desc + "\nError:" + err);
         }
     });
-});
 
+});

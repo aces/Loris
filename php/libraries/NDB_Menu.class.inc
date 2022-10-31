@@ -42,18 +42,23 @@ class NDB_Menu extends NDB_Page
     /**
      * Create a new NDB_Menu page
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS Instance that the page is
+     *                                         serving serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be
+     *                                         null)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     public function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        parent::__construct($module, $page, $identifier, $commentID);
+        parent::__construct($loris, $module, $page, $identifier, $commentID);
         $this->menu = $module->getName();
     }
 

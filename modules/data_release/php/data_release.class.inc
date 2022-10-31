@@ -56,13 +56,14 @@ class Data_Release extends \NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& \User::singleton();
-        $DB   = \Database::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
 
         // set the class variables
         $this->columns = [
             'file_name AS fileName',
             'version',
             'upload_date AS uploadDate',
+            'dr.id as dataReleaseID',
         ];
         $this->query   = " FROM data_release dr";
 
@@ -86,7 +87,7 @@ class Data_Release extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $this->fieldOptions = [
             'users'     => $this->getUsersList($db),

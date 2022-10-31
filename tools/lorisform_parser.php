@@ -17,6 +17,7 @@
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/generic_includes.php";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -54,7 +55,7 @@ foreach ($files as $file) {
     echo "Requiring file...\n";
     include_once $file;
     echo "Instantiating new object...\n";
-    $obj =new $className(new NullModule(), "", "", "", "");
+    $obj =new $className($lorisInstance, new NullModule(), "", "", "", "");
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 
@@ -72,7 +73,7 @@ foreach ($files as $file) {
     }
 
     if (is_array($obj->getFullName())) {
-        echo "Could not find row for $matches[1] in table test_names, 
+        echo "Could not find row for $matches[1] in table test_names,
         please populate test_names, instrument_subtests\n";
         continue;
     }
@@ -85,6 +86,7 @@ foreach ($files as $file) {
 
     echo "Parsing instrument object...\n";
 
+    $output .="testname{@}".$obj->testName."\n";
     $output .="table{@}".$obj->table."\n";
 
     $output .="title{@}".$obj->getFullName()."\n";

@@ -28,7 +28,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance,
     private $_entitytype;
     private $_visitlabel;
     private $_visitdate;
-    private $_centerid;
+    private \CenterID $_centerid;
     private $_centername;
     private $_filename;
     private $_inserttime;
@@ -48,7 +48,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance,
         $this->_entitytype = $row['Entity_type'] ?? null;
         $this->_visitlabel = $row['Visit'] ?? null;
         $this->_visitdate  = $row['Visit_date'] ?? null;
-        $this->_centerid   = $row['CenterID'] ?? null;
+        $this->_centerid   = new \CenterID($row['CenterID']);
         $this->_centername = $row['Site'] ?? null;
         $this->_filename   = $row['File'] ?? null;
         $this->_inserttime = $row['InsertTime'] ?? null;
@@ -89,11 +89,11 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance,
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return intval($this->_centerid);
+        return $this->_centerid;
     }
 
     /**

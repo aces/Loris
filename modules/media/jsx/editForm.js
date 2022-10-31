@@ -41,10 +41,18 @@ class MediaEditForm extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        this.setState({
+          error: 'An error occurred when loading the form!',
+        });
+        return;
+      }
+
+      response.json().then((data) => {
         let formData = {
           idMediaFile: data.mediaData.id,
           dateTaken: data.mediaData.dateTaken,
@@ -53,19 +61,18 @@ class MediaEditForm extends Component {
           language: data.mediaData.language,
         };
 
-        self.setState({
+        this.setState({
           Data: data,
           isLoaded: true,
           mediaData: data.mediaData,
           formData: formData,
         });
-      },
-      error: function(error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -190,44 +197,41 @@ class MediaEditForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    let self = this;
-    let myFormData = this.state.formData;
+    let xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', (evt) => {
+      if (evt.lengthComputable) {
+        let percent = Math.round((evt.loaded / evt.total) * 100);
+        progressbar.attr('aria-valuenow', percent);
+      }
+    }, false);
 
-    $('#mediaEditEl').hide();
-    $('#file-progress').removeClass('hide');
-
-    $.ajax({
-      type: 'POST',
-      url: self.props.action,
-      data: JSON.stringify(myFormData),
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let progressbar = $('#progressbar');
-            let progresslabel = $('#progresslabel');
-            let percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + '%');
-            $(progresslabel).html(percent + '%');
-            progressbar.attr('aria-valuenow', percent);
-          }
-        }, false);
-        return xhr;
-      },
-      success: (data) => {
-        $('#file-progress').addClass('hide');
+    xhr.addEventListener('load', () => {
+      if (xhr.status < 400) {
         swal.fire('Upload Successful!', '', 'success');
         this.props.fetchData();
-      },
-      error: function(err) {
-        let msg = err.responseJSON.message || 'Error updating file';
+      } else {
+        console.error(xhr.status + ': ' + xhr.statusText);
+        let msg = 'Error updating file';
+        if (xhr.response) {
+          const resp = JSON.parse(xhr.response);
+          if (resp.message) {
+            msg = resp.message;
+          }
+        }
+        console.error(msg);
         swal.fire(msg, '', 'error');
-        console.error(err);
-      },
-    });
+      }
+    }, false);
+
+    xhr.addEventListener('error', () => {
+      console.error(xhr.status + ': ' + xhr.statusText);
+      let msg = xhr.response.message || 'Error updating file';
+      console.error(msg);
+      swal.fire(msg, '', 'error');
+    }, false);
+
+    xhr.open('POST', this.props.action);
+    xhr.send(JSON.stringify(this.state.formData));
   }
 
   /**

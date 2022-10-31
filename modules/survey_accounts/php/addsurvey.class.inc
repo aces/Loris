@@ -59,7 +59,7 @@ class AddSurvey extends \NDB_Form
      */
     function _validateAddSurvey($values)
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Check that all required fields are present.
         if (!empty($values['Email']) ) {
@@ -152,6 +152,7 @@ class AddSurvey extends \NDB_Form
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 $instrument_instance = \NDB_BVL_Instrument::factory(
+                    $this->loris,
                     $instrument['Test_name']
                 );
                 return [
@@ -187,7 +188,9 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db        = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
+        $email = $values['Email'];
+        unset($values['Email']);
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
@@ -208,20 +211,20 @@ class AddSurvey extends \NDB_Form
         if ($InstrumentExists == 'x') {
             return;
         }
-        $battery = new \NDB_BVL_Battery();
+        $battery = new \NDB_BVL_Battery($this->loris);
         $battery->selectBattery(
             new \SessionID($SessionID)
         );
 
-        $commentID = $battery->addInstrument($values['Test_name']);
+        $commentID = $battery->addInstrument($this->loris, $values['Test_name']);
 
         $key = $this->_generateSurveyKey();
 
-        $email = false;
+        $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
-            $email = true;
+            $sendEmail = true;
         }
-        if ($email) {
+        if ($sendEmail) {
             $status = 'Sent';
         } else {
             $status = 'Created';
@@ -233,29 +236,27 @@ class AddSurvey extends \NDB_Form
                 [
                     'SessionID'       => $SessionID,
                     'Test_name'       => $values['Test_name'],
-                    'Email'           => $values['Email'],
                     'Status'          => $status,
                     'OneTimePassword' => $key,
                     'CommentID'       => $commentID,
                 ]
             );
-        } catch(\DatabaseException $e) {
+        } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
         $this->tpl_data['success'] = true;
 
-        if ($email) {
-            $config  = \NDB_Config::singleton();
-            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-
+        if ($email && ($values['send_email'] == 'true')) {
+            $config   = \NDB_Config::singleton();
+            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [
                 'study'     => $config->getSetting("title"),
                 'url'       => $baseURL . '/survey.php?key=' .
-                                         urlencode($key),
+                        urlencode($key),
                 'EmailForm' => $values['email_dialog'],
             ];
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($email, 'new_survey.tpl', $msg_data);
         }
     }
 

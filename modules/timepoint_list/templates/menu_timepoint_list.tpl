@@ -155,7 +155,7 @@
             </td>
         </tr>
     {sectionelse}
-        <tr><td colspan="10">No timepoints have been registered yet.</td></tr>
+        <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>
     {/section}
     </tbody>
 </table>

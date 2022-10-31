@@ -118,6 +118,7 @@ class Next_Stage extends \NDB_Form
 
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
+            $this->loris,
             $timePoint->getSubprojectID(),
             $newStage,
             $timePoint->getVisitLabel(),
@@ -168,9 +169,9 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 [
-                    null => null,
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => null,
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');

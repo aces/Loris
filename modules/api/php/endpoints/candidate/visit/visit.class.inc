@@ -77,7 +77,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
          return [
              'v0.0.3',
-             'v0.0.4-dev',
          ];
     }
 
@@ -125,7 +124,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'instruments':
             $handler = new Instruments($this->_visit);
             break;
@@ -198,6 +197,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Project',
         ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
+
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
@@ -214,14 +214,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID do not match this candidate'
+                'CandID does not match this candidate'
             );
         }
-
-        $sessionid = array_search(
-            $visitinfo['Visit'],
-            $this->_candidate->getListOfVisitLabels()
-        );
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -231,16 +226,27 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
-        if (!in_array($centerid, $user->getCenterIDs())) {
+        if ($centerid === false
+            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
+        ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create  or modify candidates visit for the site " .
+                "You can't create or modify candidates visit for the site " .
                 $centerid
             );
         }
 
+        // \Utility::getSiteList key was a string. Now that the
+        // validation is done, convert to an object.
+        $centerid = new \CenterID("$centerid");
+
         $subprojectid = array_search(
             $visitinfo['Battery'],
             \Utility::getSubprojectList()
+        );
+
+        $sessionid = array_search(
+            $visitinfo['Visit'],
+            $this->_candidate->getListOfVisitLabels()
         );
 
         if ($sessionid !== false) {
@@ -281,6 +287,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
+                $project->getId(),
                 $subprojectid,
                 $visitinfo['Visit']
             );

@@ -1,5 +1,5 @@
 /* exported FormElement, FieldsetElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
-TextboxElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
+TextboxElement, PasswordElement, DateElement, NumericElement, FileElement, StaticElement, HeaderElement, LinkElement,
 CheckboxElement, ButtonElement, LorisElement
 */
 
@@ -518,7 +518,7 @@ class SelectElement extends Component {
       }
     }
 
-    this.props.onUserInput(this.props.name, value, e.target.id, 'select');
+    this.props.onUserInput(this.props.name, value);
   }
 
   /**
@@ -532,6 +532,7 @@ class SelectElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let sortByValue = this.props.sortByValue;
     let options = this.props.options;
+    let disabledOptions = this.props.disabledOptions;
     let errorMessage = null;
     let emptyOptionHTML = null;
     let requiredHTML = null;
@@ -564,18 +565,36 @@ class SelectElement extends Component {
         }
       }
       optionList = Object.keys(newOptions).sort().map(function(option) {
+        let isDisabled = (newOptions[option] in disabledOptions);
         return (
-          <option value={newOptions[option]} key={newOptions[option]}>
+          <option
+            value={newOptions[option]}
+            key={newOptions[option]}
+            disabled={isDisabled}
+          >
             {option}
           </option>
         );
       });
     } else {
       optionList = Object.keys(options).map(function(option) {
+        let isDisabled = (option in disabledOptions);
         return (
-          <option value={option} key={option}>{options[option]}</option>
+          <option
+            value={option}
+            key={option}
+            disabled={isDisabled}
+          >
+            {options[option]}
+          </option>
         );
       });
+    }
+
+    if (this.props.placeholder !== '') {
+      optionList.unshift(<option value={''} selected={true}>
+        {this.props.placeholder}
+      </option>);
     }
 
     // Default to empty string for regular select and to empty array for 'multiple' select
@@ -624,6 +643,7 @@ class SelectElement extends Component {
 SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
+  disabledOptions: PropTypes.object,
   label: PropTypes.string,
   value: PropTypes.oneOfType([
     PropTypes.string,
@@ -639,11 +659,13 @@ SelectElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
+  placeholder: PropTypes.string,
 };
 
 SelectElement.defaultProps = {
   name: '',
   options: {},
+  disabledOptions: {},
   value: undefined,
   id: null,
   multiple: false,
@@ -658,6 +680,7 @@ SelectElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
   noMargins: false,
+  placeholder: '',
 };
 
 /**
@@ -1122,7 +1145,7 @@ class TextboxElement extends Component {
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = 'col-sm-12';
+    let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
@@ -1147,6 +1170,8 @@ class TextboxElement extends Component {
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
+            placeholder={this.props.placeholder}
           />
           {errorMessage}
         </div>
@@ -1160,6 +1185,9 @@ TextboxElement.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
+  class: PropTypes.string,
+  placeholder: PropTypes.string,
+  autoComplete: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1171,8 +1199,307 @@ TextboxElement.defaultProps = {
   name: '',
   value: '',
   id: null,
+  class: 'col-sm-12',
+  placeholder: '',
+  autoComplete: null,
   disabled: false,
   required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  },
+};
+
+/**
+ * EmailElement Component
+ * React wrapper for a <input type="email"> element.
+ */
+class EmailElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id, 'textbox',
+    );
+  }
+
+  /**
+   * Handle blur
+   *
+   * @param {object} e - Event
+   */
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <TextboxElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = this.props.class;
+    if (this.props.label || this.props.label == '') {
+      label = (
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
+          <input
+            type="email"
+            pattern={'/^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[' +
+              'a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-' +
+              ']{0,61}[a-zA-Z0-9])?)*$/'}
+            title="Please provide a valid email address!"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            value={this.props.value || ''}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
+            placeholder={this.props.placeholder}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+EmailElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  id: PropTypes.string,
+  class: PropTypes.string,
+  placeholder: PropTypes.string,
+  autoComplete: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+};
+EmailElement.defaultProps = {
+  name: '',
+  value: '',
+  id: null,
+  class: 'col-sm-12',
+  placeholder: '',
+  autoComplete: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  },
+};
+
+/**
+ * Password Component
+ * React wrapper for a <input type="password"> element.
+ */
+class PasswordElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      on: { // password is visible.
+        icon: 'close',
+        type: 'text',
+      },
+      off: { // password hidden.
+        icon: 'open',
+        type: 'password',
+      },
+      active: false, // is password visible.
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    // callback called to toogle the visibility
+    this.toggleVisibility = this.toggleVisibility.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      e.target.value,
+      e.target.id,
+      this.state.active ? this.state.on.type : this.state.off.type,
+    );
+  }
+
+  /**
+   * Handle blur
+   *
+   * @param {object} e - Event
+   */
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  /**
+   * Toggle visibility
+   *
+   */
+  toggleVisibility() {
+    this.setState({active: !this.state.active});
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className='text-danger'>*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    let label = null;
+    if (this.props.label) {
+      label = (
+        <label className='col-sm-3 control-label' htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+      );
+    }
+    const passwordDisplayType = this.state.active
+      ? this.state.on.type
+      : this.state.off.type;
+    const passwordDisplayIcon = this.state.active
+      ? this.state.on.icon
+      : this.state.off.icon;
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.class}>
+          <input
+            type={passwordDisplayType}
+            className='form-control'
+            name={this.props.name}
+            id={this.props.id}
+            value={this.props.value || ''}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            autoComplete={this.props.autoComplete}
+            placeholder={this.props.placeholder}
+          />
+          <span
+            className={'form-control-feedback glyphicon glyphicon-eye-'
+            + passwordDisplayIcon}
+            style={{marginRight: '15px'}}
+            onClick={this.toggleVisibility}
+          />
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+PasswordElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  class: PropTypes.string,
+  type: PropTypes.string,
+  placeholder: PropTypes.string,
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  autoComplete: PropTypes.string,
+  errorMessage: PropTypes.string,
+  onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
+};
+
+PasswordElement.defaultProps = {
+  id: null,
+  label: '',
+  value: '',
+  type: 'text',
+  class: 'col-sm-9',
+  placeholder: '',
+  disabled: false,
+  required: false,
+  autoComplete: null,
   errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -1254,10 +1581,20 @@ class DateElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let errorMessage = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.hasError
+       || (this.props.required && this.props.value === '')
+    ) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = elementClass + ' has-error';
     }
 
     // Check if props minYear and maxYear are valid values if supplied
@@ -1289,13 +1626,21 @@ class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type={inputType}
             className="form-control"
@@ -1308,6 +1653,7 @@ class DateElement extends Component {
             required={required}
             disabled={disabled}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1324,19 +1670,23 @@ DateElement.propTypes = {
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  hasError: PropTypes.bool,
+  errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
 };
 
 DateElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: undefined,
   id: null,
   maxYear: '9999',
   minYear: '1000',
   dateFormat: 'YMd',
   disabled: false,
   required: false,
+  hasError: false,
+  errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1375,19 +1725,28 @@ class TimeElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let label;
+    let classSz;
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
+    if (this.props.label) {
+        label = <label className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+            </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={classSz}>
           <input
             type="time"
             className="form-control"
@@ -1469,13 +1828,22 @@ class NumericElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type="number"
             className="form-control"
@@ -1497,8 +1865,8 @@ class NumericElement extends Component {
 
 NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
-  min: PropTypes.number.isRequired,
-  max: PropTypes.number.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
@@ -1553,7 +1921,23 @@ class FileElement extends Component {
    */
   render() {
     const required = this.props.required ? 'required' : null;
-    const fileName = this.props.value ? this.props.value.name : undefined;
+
+    let fileName = undefined;
+    if (this.props.value) {
+      switch (typeof this.props.value) {
+        case 'string':
+          fileName = this.props.value;
+          break;
+
+        case 'object':
+          fileName = this.props.value.name;
+          break;
+
+        default:
+          break;
+      }
+    }
+
     let requiredHTML = null;
     let errorMessage = '';
     let elementClass = 'row form-group';
@@ -1607,13 +1991,21 @@ class FileElement extends Component {
       );
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label">
+    let labelHTML;
+    let classSz;
+    if (this.props.label) {
+        labelHTML = <label className="col-sm-3 control-label">
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <div className="input-group">
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
@@ -1701,13 +2093,21 @@ class StaticElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    return (
-      <div className="row form-group">
+    let label = null;
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
-          <p className={this.props.class}>{this.props.text}</p>
+      );
+    }
+    return (
+      <div className="row form-group">
+        {label}
+        <div className={this.props.class}>
+          <p className={this.props.textClass}>
+            {this.props.text}
+          </p>
         </div>
       </div>
     );
@@ -1716,6 +2116,8 @@ class StaticElement extends Component {
 
 StaticElement.propTypes = {
   label: PropTypes.string,
+  class: PropTypes.string,
+  textClass: PropTypes.string,
   text: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
@@ -1725,7 +2127,8 @@ StaticElement.propTypes = {
 StaticElement.defaultProps = {
   label: '',
   text: null,
-  class: 'form-control-static',
+  class: 'col-sm-9',
+  textClass: 'form-control-static',
 };
 
 /**
@@ -1852,8 +2255,10 @@ class CheckboxElement extends React.Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
-    let label = null;
+    let elementClass = this.props.class + ' ' + this.props.offset;
+    const divStyle = this.props.class === 'checkbox-inline'
+      ? {paddingRight: '5px'}
+      : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (required) {
@@ -1863,25 +2268,29 @@ class CheckboxElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = elementClass + ' has-error';
     }
 
     return (
       <div className={elementClass}>
-        <label htmlFor={this.props.id}>
-          <input
-            type="checkbox"
-            name={this.props.name}
-            id={this.props.id}
-            checked={this.props.value}
-            required={required}
-            disabled={disabled}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-          {this.props.label}
-          {requiredHTML}
-        </label>
+        <div className={'col-sm-12'}>
+          <label htmlFor={this.props.id}>
+            <div style={divStyle}>
+              <input
+                type="checkbox"
+                name={this.props.name}
+                id={this.props.id}
+                checked={this.props.value}
+                required={required}
+                disabled={disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            {errorMessage}
+            {this.props.label}
+            {requiredHTML}
+          </label>
+        </div>
       </div>
     );
   }
@@ -1892,6 +2301,8 @@ CheckboxElement.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
+  class: PropTypes.string,
+  offset: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -1904,6 +2315,8 @@ CheckboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  offset: 'col-sm-offset-3',
+  class: 'checkbox-inline',
   elementClass: 'checkbox-inline col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
@@ -1942,9 +2355,11 @@ class ButtonElement extends Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            id={this.props.id}
             name={this.props.name}
             type={this.props.type}
             className={this.props.buttonClass}
+            style={this.props.style}
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
@@ -1957,10 +2372,12 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+  style: PropTypes.object,
   onUserInput: PropTypes.func,
 };
 
@@ -2039,6 +2456,12 @@ class LorisElement extends Component {
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
+      case 'email':
+       elementHtml = (<EmailElement {...elementProps} />);
+       break;
+      case 'password':
+       elementHtml = (<PasswordElement {...elementProps} />);
+       break;
       case 'tags':
         elementHtml = (<TagsElement {...elementProps} />);
         break;
@@ -2405,6 +2828,8 @@ window.TagsElement = TagsElement;
 window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
+window.EmailElement = EmailElement;
+window.PasswordElement = PasswordElement;
 window.DateElement = DateElement;
 window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
@@ -2427,6 +2852,7 @@ export default {
   SearchableDropdown,
   TextareaElement,
   TextboxElement,
+  PasswordElement,
   DateElement,
   TimeElement,
   NumericElement,

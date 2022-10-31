@@ -45,6 +45,10 @@ if ($projectID == 'new') {
     }
 
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
+    $db->insert(
+        'user_project_rel',
+        ["UserID"=>$user->getId(),"ProjectID"=>$project->getId()]
+    );
 } else {
     // Update Project fields
     $project = \Project::getProjectFromID(new \ProjectID($projectID));

@@ -68,16 +68,21 @@ class NDB_Caller
     /**
      * Renders the called menu, form or the instrument into html
      *
-     * @param string      $test_name The object type to load.  The test_name of the
-     *                               menu, form or instrument
-     * @param string      $subtest   The subpage of the module to load
-     * @param string      $CommentID The CommentID identifier to load the page with
-     * @param string|null $nextpage  The page to go to after submitting this
-     * @param bool        $anonymous True if the user has not logged in.
+     * @param \LORIS\LorisInstance $loris     The LORIS instance the call is being
+     *                                        handled for.
+     * @param string               $test_name The object type to load.  The test_name
+     *                                        of the menu, form or instrument
+     * @param string               $subtest   The subpage of the module to load
+     * @param string               $CommentID The CommentID identifier to load the
+     *                                        page with
+     * @param ?string              $nextpage  The page to go to after submitting
+     *                                        this
+     * @param bool                 $anonymous True if the user has not logged in
      *
      * @return string rendered object, as html
      */
     function load(
+        \LORIS\LorisInstance $loris,
         $test_name,
         $subtest,
         $CommentID='',
@@ -94,6 +99,7 @@ class NDB_Caller
         $linstfile = $base."project/instruments/$test_name.linst";
         if ($this->existsAndRequire($phpfile)) {
             $html       = $this->loadInstrumentDirect(
+                $loris,
                 $test_name,
                 $subtest,
                 $CommentID,
@@ -103,6 +109,7 @@ class NDB_Caller
             return $html;
         } else if (file_exists($linstfile)) {
             $html       = $this->loadInstrumentDirect(
+                $loris,
                 $test_name,
                 $subtest,
                 $CommentID
@@ -117,15 +124,22 @@ class NDB_Caller
     /**
      * Renders html for a direct data entry Instrument
      *
-     * @param string      $instrumentName      Name of the instrument to load
-     * @param string      $page                Page (subtest) of the instrument
-     * @param string      $commentID           CommentID of the instrument to load
-     * @param string|null $redirectToOnSuccess URL to redirect to if the page is
-     *                                         loaded successfully.
+     * @param \LORIS\LorisInstance $loris               The LORIS instance the
+     *                                                  survey is being loaded
+     *                                                  for
+     * @param string               $instrumentName      Name of the instrument to
+     *                                                  load
+     * @param string               $page                Page (subtest) of the
+     *                                                  instrument
+     * @param string               $commentID           CommentID of the instrument
+     *                                                  to load
+     * @param string|null          $redirectToOnSuccess URL to redirect to if the
+     *                                                  page is loaded successfully.
      *
      * @return string HTML of the page to render.
      */
     function loadInstrumentDirect(
+        \LORIS\LorisInstance $loris,
         string $instrumentName,
         string $page,
         string $commentID,
@@ -133,6 +147,7 @@ class NDB_Caller
     ): string {
         if ($page === 'finalpage') {
             $instrument = NDB_BVL_Instrument::factory(
+                $loris,
                 $instrumentName,
                 $commentID,
                 $page
@@ -149,6 +164,7 @@ class NDB_Caller
 
         // make an instance of the instrument's object
         $instrument = NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentID,
             $page
@@ -161,7 +177,7 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status = new NDB_BVL_InstrumentStatus;
+        $status = new NDB_BVL_InstrumentStatus($loris);
         $status->select($commentID);
 
         $this->page = $instrument;

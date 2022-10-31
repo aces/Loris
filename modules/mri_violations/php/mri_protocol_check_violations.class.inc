@@ -62,8 +62,9 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
         // that will be used to restrict the search to the data associated
         // to sites the user has access to
         $siteClauseElements = [];
+        $db = $this->loris->getDatabaseConnection();
         foreach (array_keys($accessibleSites) as $siteID) {
-            $siteClauseElements[] = \Database::singleton()->quote($siteID);
+            $siteClauseElements[] = $db->quote($siteID);
         }
         $siteClause = sprintf(
             "(p.CenterID IS NULL OR p.CenterID IN (%s))",
