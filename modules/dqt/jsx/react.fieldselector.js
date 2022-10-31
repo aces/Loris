@@ -11,6 +11,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import SearchableDropdown from './components/searchabledropdown';
+import PaginationLinks from 'jsx/PaginationLinks';
 
 /**
  * CategoryItem Component
