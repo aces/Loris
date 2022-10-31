@@ -1258,7 +1258,9 @@ class ManageSavedQueryRow extends Component {
         <td>
           <div className={'tableNamesCell'}>
            <button className='btn btn-danger'
-             onClick={()=> {this.deleteclick();}}
+             onClick={()=> {
+              this.deleteclick();
+             }}
            >
             delete
           </button>
