@@ -41,8 +41,8 @@ class DataEntrySelectClause
      */
     private function _getColumn(string $columnName, callable $getExpression) : string
     {
-        $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $factory    = \NDB_Factory::singleton();
+        $DB         = $factory->database();
         $columnName = $DB->escape($columnName);
 
         $parts = [];
