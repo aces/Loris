@@ -1258,10 +1258,7 @@ class ManageSavedQueryRow extends Component {
         <td>
           <div className={'tableNamesCell'}>
            <button className='btn btn-danger'
-             onClick={()=> { // eslint-disable-line
-                      this.deleteclick(); // eslint-disable-line
-                           } // eslint-disable-line
-	     } // eslint-disable-line
+             onClick={()=> {this.deleteclick();}}
            >
             delete
           </button>
