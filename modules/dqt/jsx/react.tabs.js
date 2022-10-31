@@ -1139,14 +1139,19 @@ class ManageSavedQueryRow extends Component {
               fetch(deleteurl, {
               cache: 'no-cache',
               credentials: 'same-origin',
-              }).then((resp) => resp.json())
+              }).then((resp) => {
+                    if (resp.status == 200) {
+                           swal.fire('delete Successful!', '', 'success');
+                      } else {
+                           swal.fire('delete Not Successful!', '', 'error');
+                      }
+                })
                 .then(()=>{
                   location.reload();
-                  swal.fire('delete Successful!', '', 'success');
                 });
            }
           });
-        }
+         }
 
   /**
    * Renders the React component.
