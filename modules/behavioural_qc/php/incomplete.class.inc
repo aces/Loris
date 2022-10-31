@@ -4,6 +4,7 @@ namespace LORIS\behavioural_qc;
 
 use LORIS\behavioural_qc\Provisioners\IncompleteProvisioner;
 use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
+use LORIS\Data\Filters\UserProjectMatch;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -54,9 +55,11 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['access_all_profiles', 'behavioural_quality_control_view']
+            ['access_all_profiles']
         );
-        $provisioner = (new IncompleteProvisioner())->filter($filter);
+        $provisioner = (new IncompleteProvisioner())
+            ->filter($filter)
+            ->filter(new UserProjectMatch());
 
         $user = $request->getAttribute('user');
 
@@ -72,6 +75,16 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Use project for filtering projects.
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
      * Provide the field options for the incomplete form.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
@@ -81,9 +94,13 @@ class Incomplete extends \NDB_Page implements ETagCalculator
     private function _getFieldOptions(
         ServerRequestInterface $request
     ) : array {
-        $user        = $request->getAttribute('user');
-        $visit_array = \Utility::getVisitList();
-        $projects    = \Utility::getProjectList();
+        $user         = $request->getAttribute('user');
+        $visit_array  = \Utility::getVisitList();
+        $userProjects = $user->getProjects();
+        $projects     = [];
+        foreach ($userProjects as $project) {
+            $projects[$project->getId()->__toString()] = $project->getName();
+        }
         // centerID
         $list_of_sites = $user->hasPermission('access_all_profiles')
             ? \Utility::getSiteList()

@@ -70,7 +70,7 @@ class FeedbackMRI
     function clearAllComments(): bool
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
@@ -141,7 +141,7 @@ class FeedbackMRI
     function getComments(): ?array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // start building the query
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
@@ -181,7 +181,7 @@ class FeedbackMRI
     function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the query
         $query = "SELECT PredefinedCommentID, Comment
@@ -221,7 +221,7 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \NDB_Factory::singleton()->database();
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
@@ -267,7 +267,7 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
@@ -326,7 +326,7 @@ class FeedbackMRI
     function getAllCommentTypes(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the array
         $query = "SELECT CommentTypeID, CommentName, CommentStatusField
@@ -409,7 +409,7 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // object identifier
         $set = [];

@@ -67,6 +67,7 @@ class Module extends \Module
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
+        $this->logger->debug("Loading $instrumentName $page");
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
@@ -110,7 +111,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();

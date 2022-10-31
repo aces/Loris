@@ -8,37 +8,38 @@ appropriate page.
   [Manual Testing]
 3. Ensure that the DCCID field displays the correct candidate's identifier.
   [Manual Testing]
-4. Choose a subproject from dropdown and ensure that the page reloads with 
-subproject selected and also a list of visitlabels if <labelSet> is set in the config.xml.
+4. Ensure user can only choose from Projects and sites they are affiliated with
+5. Ensure the Subproject dropdown is dynamically populated once a site and 
+project are selected.
   [Manual Testing]
-   - Ensure that if the `config.xml` file contains a `<visitLabel subprojectID="X">` 
-   matching the subproject ID selected, a list of visits defined in the same file 
-   under the `<labelSet>` tag) should be displayed.
-   - Ensure that if the `config.xml` file does not contain a matching `<visitLabel>` entry, an 
-   error message should be displayed to the user. 
-   - Ensure that if the logged in user has only 1 site affiliation, that site is
-   auto-selected in the site dropdown and the form can be submitted without any errors.
-   - Ensure that if the logged in user has only 1 project affiliation, that project 
-   is auto-selected in the project dropdown and the form can be submitted without any 
-   errors.
-   - Ensure that if the logged in user has multiple site affiliations, the site 
-   dropdown appears on the page and only displays the sites with which the user is 
-   affiliated and the form can be submitted without any errors.
-   - Ensure that if the logged in user has multiple project affiliations, the project 
-   dropdown appears on the page and only displays the projects with which the user is 
-   affiliated and the form can be submitted without any errors.
-5. Ensure that submitting the page with any of the site, project or visit label 
-options empty gives an error.
+6. Ensure the Visit label dropdown is dynamically populated once the Subproject 
+selection is done.
   [Manual Testing]
-6. choose a site and project (if dropdowns are displayed) and make sure to select a 
-visit which the candidate already has. Ensure that an error appears stating that the 
+7. Confirm that options displayed for subprojects and visit labels fields match 
+the content of the `project_subproject_rel` table and the 
+`visit_project_subproject_rel` table respectively.
+  [Manual Testing]
+8. Ensure that a popup error is displayed when a project with no subproject 
+associations is selected.
+  [Manual Testing]
+9. Ensure that a popup error is displayed when a subproject is selected, in 
+combination with a project, where no visitlabels are defined for that 
+project-subproject combination.
+  [Manual Testing] 
+10. Ensure that if the user is affiliated with a single project and/or a single 
+site, the Project/site dropdowns are auto-populated with the sole available option
+  [Manual Testing]  
+11. Ensure that if the subproject and/or visit label dropdowns contain a single 
+option only, the option is auto-selected by default
+  [Manual Testing] 
+12. choose a site, project and subproject, make sure to select a visit which the 
+candidate already has. Ensure that an error appears stating that the 
 visit label already exists for the candidate.
   [Manual Testing]
-7. Choose visit label to be created and click "Create Time Point".
-Ensure that you get an alert saying: Success! Time Point Created.
-Click on "Ok" button and ensure that it brings you back
-to timepoint list page for that candidate (with new timepoint created)
+13. Ensure that you get an alert saying: Success! Time Point Created upon a 
+successful form submission. Click on "Ok" button and ensure that it brings you back
+to timepoint list page for that candidate and confirm that the new timepoint appears in the list.
   [Manual Testing]
-8. Check that page is inaccessible if either the user does not have data_entry
+14. Check that page is inaccessible if either the user does not have data_entry
 permission or the user and candidate are not the same site.
   [Manual Testing]

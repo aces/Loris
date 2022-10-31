@@ -57,7 +57,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                max(s.Current_stage) AS LatestVisitStatus,
                 p.Name AS RegistrationProject,
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
@@ -73,6 +72,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
                 WHERE c.Active = 'Y'
+                AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
                 ORDER BY c.PSCID ASC
             ",

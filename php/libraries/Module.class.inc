@@ -14,6 +14,9 @@
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+
+use \Psr\Log\LoggerAwareInterface;
+
 /**
  * The Module class encapsulates all details of a module which are not specific
  * to a certain page.
@@ -25,8 +28,10 @@ use \Psr\Http\Message\ResponseInterface;
  * @link     https://www.github.com/aces/Loris/
  */
 abstract class Module extends \LORIS\Router\PrefixRouter
-    implements RequestHandlerInterface
+    implements RequestHandlerInterface, LoggerAwareInterface
 {
+    use \Psr\Log\LoggerAwareTrait;
+
     const GENERIC_500_ERROR   = "We're sorry, LORIS has encountered an internal "
         . "server error. Please contact your project administrator for more "
         . "information.";
@@ -35,45 +40,21 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         . "your project administrator and/or verify your LORIS configuration.";
     protected $name;
     protected $dir;
-    protected $lorisinstance;
 
-    /**
-     * Retrieve all active module descriptors from the given database
-     *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
-     *
-     * @return \Module[]
-     */
-    static public function getActiveModules(\Database $db): array
-    {
-        $mnames = $db->pselectCol(
-            "SELECT Name FROM modules WHERE Active='Y'",
-            []
-        );
-
-        $modules = [];
-        foreach ($mnames as $name) {
-            try {
-                $modules[] = self::factory($name);
-            } catch(\LorisModuleMissingException $e) {
-                error_log($e->getMessage() . " " . $e->getTraceAsString());
-            }
-        }
-        return $modules;
-    }
+    protected \LORIS\LorisInstance $lorisinstance;
 
     /**
      * Retrieve all active module descriptors from the given database, indexed
      * by their primary key in the database.
      *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the modules
      *
      * @return \Module[]
      */
-    static public function getActiveModulesIndexed(\Database $db): array
-    {
+    static public function getActiveModulesIndexed(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $db     = $loris->getDatabaseConnection();
         $mnames = $db->pselect(
             "SELECT ID, Name FROM modules WHERE Active='Y'",
             []
@@ -81,7 +62,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $rv = [];
         foreach ($mnames as $row) {
-            $rv[$row['ID']] = self::factory($row['Name']);
+            $rv[$row['ID']] = self::factory($loris, $row['Name']);
         }
         return $rv;
     }
@@ -95,7 +76,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * This also sets up PHP class autoloading for the module that is loaded,
      * such that files in the module/php directory can be autoloaded.
      *
-     * @param string $name The module name we'd like information about
+     * @param \Loris\LorisInstance $loris The LORIS instance containing the module
+     * @param string               $name  The module name we'd like information about
      *
      * @throws \LorisNoSuchModuleException
      * @throws \LorisModuleMissingException
@@ -103,8 +85,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @return \Module object
      */
-    static public function factory(string $name): \Module
-    {
+    static public function factory(
+        \Loris\LorisInstance $loris,
+        string $name
+    ) : \Module {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
         $base    = $config->getSetting("base");
@@ -152,18 +136,29 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        $cls       = new $className($name, $mpath);
+        $cls       = new $className($loris, $name, $mpath);
         return $cls;
     }
 
     /**
      * Creates a new module instance
      *
-     * @param string $name      The name of the module
-     * @param string $moduledir The directory on the filesystem containing the module
+     * @param \LORIS\LorisInstance $loris     The LORIS instance for the module
+     * @param string               $name      The name of the module
+     * @param string               $moduledir The directory on the filesystem
+     *                                        containing the module
      */
-    public function __construct(string $name, string $moduledir)
-    {
+    public function __construct(
+        \LORIS\LorisInstance $loris,
+        string $name,
+        string $moduledir
+    ) {
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
         parent::__construct(
             new \ArrayIterator(
                 [
@@ -188,6 +183,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 ]
             )
         );
+
+        $this->lorisinstance = $loris;
+
         $this->name = $name;
         $this->dir  = $moduledir;
     }
@@ -227,7 +225,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * @return bool False. Subclasses must override this function in the case
      *                  that they should be publicly available.
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         return false;
     }
@@ -246,6 +244,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         if ($this->isPublicModule() !== true) {
             if ($user instanceof \LORIS\AnonymousUser) {
+                $this->logger->debug(
+                    "Denied module access because AnonymousUser attempted to " .
+                    "access non-public module"
+                );
                 return false;
             }
         }
@@ -323,6 +325,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $this->logger->debug("Module handle function called");
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
             $path = $request->getURI()->getPath();
@@ -351,32 +354,23 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $user  = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
         $loris = $request->getAttribute("loris");
+
         try {
             $page = $this->loadPage($loris, $pagename);
-            // FIXME: Hack required for breadcrumbs. This should be removed,
-            // but some tests depend on it.
-            if ($this->getName() === $pagename) {
-                $_REQUEST['test_name'] = $pagename;
-            } else {
-                $_REQUEST['subtest'] = $pagename;
-            }
-
-            $page->loadResources($user, $request);
-            if ($page->_hasAccess($user) !== true) {
-                return (new \LORIS\Middleware\PageDecorationMiddleware(
-                    $user
-                ))->process(
-                    $request,
-                    new \LORIS\Router\NoopResponder(
-                        new \LORIS\Http\Error(
-                            $request,
-                            403,
-                            "You do not have access to this page."
-                        )
-                    )
-                );
-            }
         } catch (\NotFound $e) {
+            $this->logger->debug("Page $pagename not found");
+            return $resp->withStatus(404);
+        }
+        // FIXME: Hack required for breadcrumbs. This should be removed,
+        // but some tests depend on it.
+        if ($this->getName() === $pagename) {
+            $_REQUEST['test_name'] = $pagename;
+        } else {
+            $_REQUEST['subtest'] = $pagename;
+        }
+
+        $page->loadResources($user, $request);
+        if ($page->_hasAccess($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -384,45 +378,12 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 new \LORIS\Router\NoopResponder(
                     new \LORIS\Http\Error(
                         $request,
-                        404,
-                        "File not found: " . $request->getURI()->__toString()
+                        403,
+                        "You do not have access to this page."
                     )
                 )
             );
-            /* The order of these catch statements matter and should go from
-             * most to least specific. Otherwise all Exceptions will be caught
-             * as their more generic parent class which reduces precision.
-             */
-        } catch (\DatabaseException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
-        } catch (\ConfigurationException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::CONFIGURATION_ERROR
-            );
-        } catch (\LorisException $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            return $this->responseStatus500(
-                $request,
-                $user,
-                self::GENERIC_500_ERROR
-            );
         }
-
         return $page->process($request, $page);
     }
 

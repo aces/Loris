@@ -18,7 +18,6 @@
    [ ] Biological Sex
    [ ] Number of visits
    [ ] Date of birth
-   [ ] Latest Visit Status
    [ ] Feedback
    [Automation Testing]
 9. Click "Clear Form" and ensure filters are reset to same state as #2.

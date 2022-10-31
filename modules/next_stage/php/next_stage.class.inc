@@ -169,9 +169,9 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 [
-                    null => null,
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => null,
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');

@@ -468,7 +468,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             if ($name == 'Examiner') {
                 continue;
             }
-            switch($type) {
+            switch ($type) {
             case 'page':
             case 'table':
             case 'title':
@@ -552,7 +552,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                             " FROM instrument_subtests".
                             " WHERE Test_name=:testname".
                             " AND Description=:testdesc";
-            switch($type) {
+            switch ($type) {
             case 'page':
                 $exists = $db->pselectOne(
                     $sqlSelectOne,

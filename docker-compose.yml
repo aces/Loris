@@ -22,7 +22,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
       - ./test/test_instrument/NDB_BVL_Instrument_testtest.class.inc:/app/project/instruments/NDB_BVL_Instrument_testtest.class.inc
@@ -36,7 +36,7 @@ services:
   unit-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
     working_dir: /app
@@ -49,7 +49,7 @@ services:
   integration-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php8
     volumes:
       - ./:/app
     working_dir: /app

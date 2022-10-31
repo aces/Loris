@@ -51,7 +51,7 @@ class Imaging_QC extends \NDB_Menu_Filter
     function _getScanTypes(): array
     {
         $config = \NDB_Config::singleton();
-        $db     = \Database::singleton();
+        $db     = $this->loris->getDatabaseConnection();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
@@ -125,7 +125,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
             " CASE
-              WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
+              WHEN f.Required_elements_completed='N' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
@@ -182,7 +182,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $this->skipTemplate = true;
         $user      = \User::singleton();
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $siteList  = [];
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter

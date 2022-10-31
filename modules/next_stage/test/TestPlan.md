@@ -13,8 +13,10 @@
    [Manual Testing]
 6. Create a timepoint where the age (date entered minus DoB) falls within the
    AgeMin and AgeMax for a `test_battery`. The `test_battery` needs to have a 
-   matching `subprojectID` and a NULL `Visit_label`. Ensure that those 
-   instruments are inserted.
+   matching `subprojectID` and a NULL `Visit_label`. There should be no 
+   other `test_battery` entries with the `Visit_label` set to the visit label 
+   of the timepoint. Ensure that the instruments of the `test_battery` with the 
+   NULL `Visit_label` are inserted.
    [Manual Testing]
 7. Create a timepoint where there is a `test_battery` entry for the
    `Visit_label` and `subprojectID`, and start the stage. Ensure that those 

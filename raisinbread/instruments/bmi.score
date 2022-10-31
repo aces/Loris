@@ -1,32 +1,34 @@
 #!/usr/bin/php
 <?php
 /**
-* BMI Scoring
-*
-* PHP version 5
-*
-* @category Main
-* @package  BMI_Instrument
-* @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://github.com/aces/Loris
-*/
+ * BMI Scoring
+ *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  BMI_Instrument
+ * @author   Rathi Gnanasekaran <sekaranrathi@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
 
 require_once __DIR__."/../../tools/generic_includes.php";
-require_once "Database.class.inc";
-$CommentID = $argv[1];
-$db        =& Database::singleton();
-$query         = "SELECT * from bmi WHERE CommentID = :CommentID";
-$WhereCriteria = array('CommentID'=>$CommentID);
-$record        = array();
-$record        = $db->pselectRow($query, $WhereCriteria);
-$scores = array();
-$bmi = '';
+$CommentID     = $argv[1];
+$testname      = 'bmi';
+$instrumentObj = \NDB_BVL_Instrument::factory(
+    $lorisInstance,
+    $testname,
+    $CommentID,
+);
+$record        = $instrumentObj->getInstanceData();
+$scores        = array();
+$bmi           = '';
+
 if($record['unit_classification'] == 'metric') {
-   if(is_numeric($record['height_cms']) && is_numeric($record['weight_kgs'])) {
-      $height_mts = $record['height_cms']/100;
-      $bmi        = $record['weight_kgs']/ ($height_mts*$height_mts);
-   }
+    if(is_numeric($record['height_cms']) && is_numeric($record['weight_kgs'])) {
+        $height_mts = $record['height_cms']/100;
+        $bmi        = $record['weight_kgs']/ ($height_mts*$height_mts);
+    }
 
 } else if($record['unit_classification'] == 'imperial') {
     $ht_inches =0;
@@ -61,8 +63,5 @@ if(empty($bmi)) {
 
 }
 //save scores
-$result = $db->update('bmi', $scores, $WhereCriteria);
-
+$instrumentObj->_saveValues($scores);
 exit(0);
-
-?>
