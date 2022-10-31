@@ -41,13 +41,15 @@ class DataEntrySelectClause
      */
     private function _getColumn(string $columnName, callable $getExpression) : string
     {
-        $columnName = \Database::singleton()->escape($columnName);
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $columnName = $DB->escape($columnName);
 
         $parts = [];
 
         $parts[] = "(CASE appointment_type.Name";
         foreach ($this->_expressions as $type=>$expr) {
-            $quotedType = \Database::singleton()->quote($type);
+            $quotedType = $DB->quote($type);
             $expression = $getExpression($expr);
             $parts[]    = "WHEN {$quotedType} THEN ({$expression})";
         }
