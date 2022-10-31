@@ -72,8 +72,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             'UploadDate AS Upload_Date',
             'UploadedBy AS Uploaded_By',
             'mu.TarchiveID AS Tarchive_Info',
-            'number_of_mincCreated AS Number_of_MINC_Created',
-            'number_of_mincInserted AS Number_of_MINC_Inserted',
+            'number_of_mincCreated AS Number_of_Files_Created',
+            'number_of_mincInserted AS Number_of_Files_Inserted',
             'ta.PatientName',
             's.ID AS SessionID',
         ];
@@ -408,9 +408,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $updateFile = isset($args['values']['overwrite'])
             ? (boolean) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
-            "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+            "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
             ['ul' => "%$file_name"]
         );
@@ -557,9 +557,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             // wildcard for files that were uploaded to a random temp path.
             $fileName = $file->fileInfo['name'];
             $id       = $db->pselectOne(
-                "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
                 ['ul' => "%$fileName"]
             );
