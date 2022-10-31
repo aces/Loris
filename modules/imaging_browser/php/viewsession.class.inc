@@ -308,6 +308,7 @@ class ViewSession extends \NDB_Form
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
             $XMLprotocol = $FileObj->getParameter('ProtocolFile');
             $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
+            $NiiFile     = $FileObj->getParameter('check_nii_filename');
             $BvalFile    = $FileObj->getParameter('check_bval_filename');
             $BvecFile    = $FileObj->getParameter('check_bvec_filename');
             $JsonFile    = $FileObj->getParameter('bids_json_file');
@@ -361,6 +362,7 @@ class ViewSession extends \NDB_Form
                 'XMLreport'                  => $XMLreport,
                 'XMLprotocol'                => $XMLprotocol,
                 'NrrdFile'                   => $NrrdFile,
+                'NiiFile'                    => $NiiFile,
                 'BvalFile'                   => $BvalFile,
                 'BvecFile'                   => $BvecFile,
                 'JsonFile'                   => $JsonFile,

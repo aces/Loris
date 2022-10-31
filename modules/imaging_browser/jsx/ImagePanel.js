@@ -826,6 +826,10 @@ class ImageDownloadButtons extends Component {
                         BaseURL={this.props.BaseURL}
                         Label="Download NRRD"
         />
+        <DownloadButton FileName={this.props.NiiFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download NIfTI"
+        />
         <DownloadButton FileName={this.props.BvalFile}
                         BaseURL={this.props.BaseURL}
                         Label="Download BVAL"
@@ -854,6 +858,7 @@ ImageDownloadButtons.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
@@ -921,6 +926,7 @@ class ImagePanelBody extends Component {
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
+          NiiFile={this.props.NiiFile}
           BvalFile={this.props.BvalFile}
           BvecFile={this.props.BvecFile}
           JsonFile={this.props.JsonFile}
@@ -947,6 +953,7 @@ ImagePanelBody.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
@@ -1035,6 +1042,7 @@ class ImagePanel extends Component {
               XMLProtocol={this.props.XMLProtocol}
               XMLReport={this.props.XMLReport}
               NrrdFile={this.props.NrrdFile}
+              NiiFile={this.props.NiiFile}
               BvalFile={this.props.BvalFile}
               BvecFile={this.props.BvecFile}
               JsonFile={this.props.JsonFile}
@@ -1060,6 +1068,7 @@ ImagePanel.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,

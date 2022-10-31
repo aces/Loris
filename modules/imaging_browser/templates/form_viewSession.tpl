@@ -66,6 +66,7 @@
                       "XMLProtocol" : "{$files[file].XMLprotocol}",
                       "XMLReport" : "{$files[file].XMLreport}",
                       "NrrdFile" : "{$files[file].NrrdFile}",
+                      "NiiFile" : "{$files[file].NiiFile}",
                       "BvalFile" : "{$files[file].BvalFile}",
                       "BvecFile" : "{$files[file].BvecFile}",
                       "JsonFile" : "{$files[file].JsonFile}",
