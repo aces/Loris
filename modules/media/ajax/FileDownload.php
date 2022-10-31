@@ -26,9 +26,10 @@ if (!$user->hasPermission('media_write')) {
 // by using a relative filename.
 $file     = html_entity_decode(basename($_GET['File']));
 $config   =& NDB_Config::singleton();
-$path     = $DB->pselectOne(
-            "SELECT data_dir FROM media WHERE file_name =:filename",['filename' => $file]
-            );
+
+$path = $DB->pselectOne(
+    "SELECT data_dir FROM media WHERE file_name =:filename",['filename' => $file]
+);
 
 $filePath = $path . $file;
 
