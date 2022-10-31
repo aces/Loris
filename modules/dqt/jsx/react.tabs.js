@@ -1140,15 +1140,14 @@ class ManageSavedQueryRow extends Component {
               cache: 'no-cache',
               credentials: 'same-origin',
               }).then((resp) => {
-                    if (resp.status == 200) {
-                           swal.fire('delete Successful!', '', 'success');
-                      } else {
-                           swal.fire('delete Not Successful!', '', 'error');
-                      }
-                })
-                .then(()=>{
+                  if (resp.status == 200) {
+                   swal.fire('delete Successful!', '', 'success');
+                  } else {
+                   swal.fire('delete Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
                   location.reload();
-                });
+              });
            }
           });
          }
