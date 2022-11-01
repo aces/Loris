@@ -51,7 +51,7 @@ class CandidateData
         if ($this->timepoints !== null) {
             foreach ($timepoints as $timepoint) {
                 if (!($timepoint instanceof \TimePoint)) {
-                    throw new \DomainException("\Timepoints must contain TimePoint classes");
+                    throw new \DomainException("CandidateData timepoints must contain TimePoint classes");
                 }
             }
             $this->timepoints = $timepoints;
