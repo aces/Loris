@@ -1,148 +1,133 @@
-/* exported RPaginationLinks */
+import React, {useState} from 'react';
 
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+const theme = {
+  primary: '#053665',
+  secondary: '#A6D3F5',
+  accent: '#E89A0C',
+  neutral: '#DDD',
+};
 
 /**
- * Pagination component
+ * Produces the pagination number links
+ *
+ * @param {jsx} children
+ * @param {bool} active
+ * @param {func} onClick
+ *
+ * @return {jsx}
  */
-class PaginationLinks extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
+function PaginationLink({
+                          children,
+                          active,
+                          onClick,
+                        }) {
+  const [hover, setHover] = useState(false);
+  const hoverOn = () => setHover(true);
+  const hoverOff = () => setHover(false);
+  const style = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '0.2rem',
+    width: '3rem',
+    height: '3rem',
+    background: onClick && hover && !active && theme.neutral,
+    border: active && '0.1rem solid '+theme.primary,
+    borderRadius: '50%',
+    cursor: onClick && 'pointer',
+  };
 
-    this.state = {
+  return (
+    <div
+      style={style}
+      onClick={onClick}
+      onMouseOver={hoverOn}
+      onMouseOut={hoverOff}
+    >
+      {children}
+    </div>
+  );
+};
 
-    };
-    this.changePage = this.changePage.bind(this);
+/**
+ * Produces the series of pagination links
+ *
+ * @param {int} rowsPerPage
+ * @param {int} total
+ * @param {int} active
+ * @param {func} onChangePage
+ *
+ * @return {jsx}
+ */
+function PaginationLinks({
+                           rowsPerPage = 10,
+                           total,
+                           active = 1,
+                           onChangePage,
+                         }) {
+  let pageLinks = [];
+  const lastPage = Math.ceil(total / rowsPerPage);
+  if (lastPage < active) {
+    onChangePage(1);
   }
 
-  /**
-   * Called by React when the component is updated.
-   *
-   * @param {object} prevProps - Previous React Component properties
-   */
-  componentDidUpdate(prevProps) {
-    if (this.props.Total < prevProps.Total) {
-      this.props.onChangePage(1);
+  let startPage = 1;
+  let endPage = lastPage;
+  if (lastPage > 5) {
+    if (active - 2 > 1) {
+      startPage = active - 2;
+    }
+    if (active + 2 < lastPage) {
+      endPage = active + 2;
     }
   }
 
-  /**
-   * Creates an onClick Event Handler
-   * execyting this.props.onChangePage(i)
-   *
-   * @param {int} i - Page index
-   * @return {function(event)} - onClick Event Handler
-   */
-  changePage(i) {
-    return function(evt) {
-      // Don't jump to the top of the page
-      evt.preventDefault();
-
-      if (this.props.onChangePage) {
-        this.props.onChangePage(i);
-      }
-    }.bind(this);
+  if (total === 0 || total < rowsPerPage || lastPage === 1) {
+    return null;
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
-  render() {
-    let rowsPerPage = this.props.RowsPerPage;
-    let pageLinks = [];
-    let classList;
-    let lastPage = Math.ceil(this.props.Total / rowsPerPage);
-    let startPage = Math.max(1, this.props.Active - 3);
-    let lastShownPage = Math.min(this.props.Active + 3, lastPage);
-
-    if (this.props.Total === 0) {
-      return <div />;
-    }
-    if (this.props.Total < this.props.RowsPerPage) {
-      return <div />;
-    }
-
-    if ((lastShownPage - startPage) <= 7) {
-      lastShownPage = startPage + 6;
-      if (lastShownPage > lastPage) {
-        lastShownPage = lastPage;
-        startPage = lastPage - 6;
-      }
-    }
-
-    if (startPage > 1) {
-      pageLinks.push(
-        <li
-          key={'table_page_beginning_' + startPage.toString()}
-          onClick={this.changePage(1)}>
-          <a href='#'>&laquo;</a>
-        </li>
-      );
-    }
-    if (startPage < 1) {
-      startPage = 1;
-    }
-    if (lastShownPage < 1) {
-      lastShownPage = 1;
-    }
-
-        // If there is only 1 page, don't display pagination links
-    if (startPage === lastShownPage) {
-      return <div />;
-    }
-
-    for (let i = startPage; i <= lastShownPage; i += 1) {
-      classList = '';
-      if (this.props.Active === i) {
-        classList = 'active';
-      }
-      pageLinks.push(
-        <li
-          key={'table_page_' + i.toString()}
-          onClick={this.changePage(i)}
-          className={classList}
-        >
-          <a href="#">{i}</a>
-        </li>
-      );
-    }
-    if (lastShownPage !== lastPage) {
-      pageLinks.push(
-        <li
-          key={'table_page_more_' + lastShownPage.toString()}
-          onClick={this.changePage(lastPage)}
-        >
-          <a href='#'>&raquo;</a>
-        </li>
-      );
-    }
-
-    return (
-      <ul className='pagination pagination-table'>
-          {pageLinks}
-      </ul>
-    );
+  if (active - 2 > 1) {
+    pageLinks = [
+      <PaginationLink
+        key={startPage-1}
+        onClick={() => onChangePage(1)}
+      >
+        1
+      </PaginationLink>,
+      <PaginationLink key={'front_ellipsis'}>...</PaginationLink>,
+    ];
   }
+
+  for (let i = startPage; i <= endPage; i += 1) {
+    pageLinks = [...pageLinks,
+      <PaginationLink
+        key={i}
+        active={active === i}
+        onClick={() => onChangePage(i)}
+      >
+        {i}
+      </PaginationLink>,
+    ];
+  }
+
+  if (active + 2 < lastPage) {
+    pageLinks = [...pageLinks,
+      <PaginationLink key={'back_ellipsis'}>...</PaginationLink>,
+      <PaginationLink
+        key={endPage+1}
+        onClick={() => onChangePage(lastPage)}
+      >
+        {lastPage}
+      </PaginationLink>,
+    ];
+  }
+
+  const paginationStyle = {
+    display: 'flex',
+    fontSize: '1.6rem',
+  };
+
+  return <div style={paginationStyle}>{pageLinks}</div>;
 }
-PaginationLinks.propTypes = {
-  onChangePage: PropTypes.func,
-  Total: PropTypes.number.isRequired,
-};
-PaginationLinks.defaultProps = {
-  RowsPerPage: 10,
-  Active: 1,
-};
-
-let RPaginationLinks = React.createFactory(PaginationLinks);
-
-window.PaginationLinks = PaginationLinks;
-window.RPaginationLinks = RPaginationLinks;
 
 export default PaginationLinks;

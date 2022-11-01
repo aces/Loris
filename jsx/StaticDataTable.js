@@ -594,10 +594,10 @@ class StaticDataTable extends Component {
             (Maximum rows per page: {RowsPerPageDropdown})
             <div className="pull-right">
               <PaginationLinks
-                Total={filteredRows}
+                total={filteredRows}
                 onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
+                rowsPerPage={rowsPerPage}
+                active={this.state.PageNumber}
               />
             </div>
           </div>
@@ -623,10 +623,10 @@ class StaticDataTable extends Component {
             </div>
             <div className="pull-right">
               <PaginationLinks
-                Total={filteredRows}
+                total={filteredRows}
                 onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
+                rowsPerPage={rowsPerPage}
+                active={this.state.PageNumber}
               />
             </div>
           </div>

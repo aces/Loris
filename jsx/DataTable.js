@@ -578,10 +578,10 @@ class DataTable extends Component {
                 Download Table as CSV
               </button>
               <PaginationLinks
-                Total={filteredCount}
+                total={filteredCount}
                 onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
+                rowsPerPage={rowsPerPage}
+                active={this.state.page.number}
               />
             </div>
           </div>
