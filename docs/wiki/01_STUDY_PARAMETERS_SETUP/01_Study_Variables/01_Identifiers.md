@@ -25,44 +25,45 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
 
 1. ***sequential*** generates PSCIDs sequentially for each new candiddate registered. **(default)**
 
- ```xml
- <PSCID>
-     <generation>sequential</generation> 
-     <structure>
-         <seq type="siteAbbrev"/>
-         <seq type="numeric" length="4" min="10" max="9999"/>
-     </structure>
- </PSCID>
- ```
+```xml
+<PSCID>
+    <generation>sequential</generation> 
+    <structure>
+        <seq type="siteAbbrev"/>
+        <seq type="numeric" length="4" min="10" max="9999"/>
+    </structure>
+</PSCID>
+```
  > Example PSCID generated: MTL1234
  > Where the site's alias is MTL
 
 2. ***manual*** asks the user to enter the PSCID when registering a new candidate.
 
- ```xml
- <PSCID> 
-     <generation>user</generation> 
-     <structure>
-         <seq type="alphanumeric" length="2"/>
-     </structure>
- </PSCID>
- ```
+```xml
+<PSCID> 
+    <generation>user</generation> 
+    <structure>
+        <seq type="alphanumeric" length="2"/>
+    </structure>
+</PSCID>
+```
   > Example PSCID accepted: A1
 
 3. ***random*** generates PSCIDs with a random numerical value for each new participant registered.
 
- ```xml
- <PSCID>
-     <generation>random</generation> 
-     <structure>
-         <seq type="static">PREFIX</seq>
-         <seq type="numeric" length="4" min="1" max="9999"/>
-     </structure>
- </PSCID>
- ```
+```xml
+<PSCID>
+    <generation>random</generation> 
+    <structure>
+        <seq type="static">PREFIX</seq>
+        <seq type="numeric" length="4" min="1" max="9999"/>
+    </structure>
+</PSCID>
+```
  > Example PSCID generated: PREFIX3994
  
  Options for the `type` element of the `<seq>` tag are:
+
   - `siteAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
   field of the `psc` table in the database.
   - `projectAbbrev`: A string value that will be used as a dynamic prefix. Value drawn from the `Alias` 
@@ -71,11 +72,11 @@ PSCIDs can be created for new subjects in one of 3 ways: *sequentially generated
   - `numeric`: An integer value generated dynamically in accordance to the generation method defined.
   - `alphanumeric`: An alphanumeric string value generated dynamically in accordance to the generation method defined. 
   - `alpha`: An alphabetic string value generated dynamically in accordance to the generation method defined.
- 
-  > Note: The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
+
+ **Note:** The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
   a `length` attribute. The length defaults to `4` when not specified.
   
-  > Note: The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
+ **Note:** The last 3 types above (`numeric`,`alphanumeric`,`alpha`) can be associated with 
   minimum `min` and maximum `max` values for sequentially and randomly generated PSCIDs. 
   By default sequence will start at the lowest possible values (i.e.: 0000, AAAA).
 
