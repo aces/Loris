@@ -31,17 +31,17 @@ class CandidateData
     /**
      * Construct a CandidateData object
      *
-     * @param ?\ProjectID  $project    The RegistrationProjectID
+     * @param ?\ProjectID  $projectID  The RegistrationProjectID
      * @param ?\CenterID   $centerID   The RegistrationCenterID
      * @param ?TimePoint[] $timepoints TimePoint objects for each visit of the
      *                                 candidate
      */
     public function __construct(
-        ?\ProjectID $project,
+        ?\ProjectID $projectID,
         ?\CenterID $centerID,
         ?array $timepoints,
     ) {
-        $this->registrationProjectID = $project;
+        $this->registrationProjectID = $projectID;
         $this->registrationCenterID  = $centerID;
 
         $this->timepoints = $timepoints;
