@@ -491,7 +491,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getProjectID(): \ProjectID
     {
-        return $this->data->getRegistrationProjectID();
+        return $this->data->registrationProjectID;
     }
 
     /**
@@ -545,7 +545,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getCenterID(): CenterID
     {
-        return $this->data->getRegistrationCenterID();
+        return $this->data->registrationCenterID;
     }
 
     /**

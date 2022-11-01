@@ -24,9 +24,10 @@
  */
 class CandidateData
 {
-    protected $registrationProjectID;
-    protected $registrationCenterID;
-    protected $timepoints;
+    public \ProjectID $registrationProjectID;
+    public \CenterID $registrationCenterID;
+
+    public array $timepoints;
 
     /**
      * Construct a CandidateData object
@@ -37,52 +38,20 @@ class CandidateData
      *                                 candidate
      */
     public function __construct(
-        ?\ProjectID $projectID,
-        ?\CenterID $centerID,
+        ?\ProjectID $registrationProjectID,
+        ?\CenterID $registrationCenterID,
         ?array $timepoints,
     ) {
-        $this->registrationProjectID = $projectID;
-        $this->registrationCenterID  = $centerID;
-
-        $this->timepoints = $timepoints;
-    }
-
-    /**
-     * Get the RegistrationCenterID for this candidate.
-     *
-     * @return \CenterID
-     */
-    public function getRegistrationCenterID() : \CenterID
-    {
-        if ($this->registrationCenterID === null) {
-            throw new LogicException("CenterID not loaded in data");
+        if ($projectID !== null) {
+            $this->registrationProjectID = $projectID;
         }
-        return $this->registrationCenterID;
+        if ($registrationCenterID !== null) {
+            $this->registrationCenterID  = $registrationCenterID;
+        }
+        if ($this->timepoints !== null) {
+            $this->timepoints = $timepoints;
+        }
+
     }
 
-    /**
-     * Get the RegistrationProjectID for this candidate.
-     *
-     * @return \ProjectID
-     */
-    public function getRegistrationProjectID() : \ProjectID
-    {
-        if ($this->registrationProjectID === null) {
-            throw new LogicException("ProjectID not loaded in data");
-        }
-        return $this->registrationProjectID;
-    }
-
-    /**
-     * Get the timepoint objects for this candidate's visits
-     *
-     * @return TimePoint[]
-     */
-    public function getTimepoints() : array
-    {
-        if ($this->timepoints === null) {
-            throw new LogicException("Timepoints not instantiated");
-        }
-        return $this->timepoints;
-    }
 }
