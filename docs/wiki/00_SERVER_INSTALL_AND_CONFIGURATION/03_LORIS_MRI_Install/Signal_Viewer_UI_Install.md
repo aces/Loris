@@ -1,5 +1,3 @@
-
-
 # EEG Visualization Install
 
 > Last update: 2022-11-02
