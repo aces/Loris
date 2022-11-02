@@ -6,21 +6,15 @@
 
 ## Context
 
-This document is a guide to install and configure Loris HBCD to use the `Signal Viewer` UI for EEG (BIDS files).
+This document is a guide to install and configure Loris to use the `EEG Visualization` features.
 
 ## TOC
 
 1. Install
     1. [Environment](#environment)
-    1. [Versions](#versions)
-    1. [Install Loris-MRI](#install-loris-mri)
     1. [Install Protobuf](#install-protobuf)
     1. [Update `electrophysiology_browser` module](#update-electrophysiology_browser-module)
-    1. [Installed environment](#installed-environment)
-1. [EEG upload to Loris](#eeg-upload-to-loris)
-    1. [Get EEG files](#get-eeg-files)
-    1. [Chunk EEG files](#chunk-eeg-files)
-    1. [Import BIDS to Loris](#import-bids-to-loris)
+1. [Import BIDS to Loris](#import-bids-to-loris)
 1. [Troubleshooting](#troubleshooting)
     1. [BIDS import](#bids-import)
 
@@ -31,64 +25,16 @@ This document is a guide to install and configure Loris HBCD to use the `Signal 
 > Note: right now, only `24.0 release` with `php 8.0` works. More recent versions are on the way.
 
 Environment:
-- `Ubuntu` machine
-- A `Loris instance` at `24.0` release (or `24.0-release` branch)
-- HBCD project should in `project` folder (`staging` branch)
-
-### Versions
-
-Versions:
-- `php 8.0`, and all packages required for php and apache:
-
-```bash
-# install
-sudo apt install -y \
-    php 8.0 \
-    php8.0-mysql \
-    php8.0-xml \
-    php8.0-mbstring \
-    php8.0-gd \
-    php8.0-zip \
-    php8.0-curl \
-    libapache2-mod-php8.0
-
-# select php8.0
-sudo update-alternatives --config php
-
-# in Loris, update php deps
-cd /path/to/loris
-composer update
-
-# make
-make
-make dev
-```
-
-- Apache2 with `php8.0` module enabled
-
-```bash
-# disable php modules in apache
-sudo a2dismod php7.4
-sudo a2dismod php8.1
-
-# enable apache php 8.0 module
-sudo a2enmod php8.0
-
-# restart apache
-sudo service apache2 restart
-```
-
-### Install Loris-MRI
-
-Follow the steps mentionned in [Loris-MRI README.md](https://github.com/regisoc/Loris-MRI#installation). This includes the [BIC MNI toolkit](https://github.com/aces/Loris-MRI#3-install-minc-toolkit-from-httpbic-mnigithubio) and [a Loris database update](https://github.com/aces/Loris-MRI#4-run-installer-to-set-up-directories-configure-environment-install-perl-libraries-and-dicom-toolkit).
+- A `Loris instance` at `24.0` or above.
+- `Loris-MRI` installed.
 
 ### Install Protobuf
 
-Install [Protobuf](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation). See also [PR #8193](https://github.com/aces/Loris/pull/8193) to install a recent version of Protobuf with current troubleshooting.
+Install [Protocol Buffer (Protobuf)](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) (`3.x.x` recommended). For `v21.x.x` troubleshooting see [this section](https://github.com/aces/Loris/modules/electrophysiology_browser/README.md#troubleshooting-error-when-trying-to-use-protobuf-v21-and-higher).
 
 ### Update `electrophysiology_browser` module
 
-Update the module with the [step detailed for visualization features](https://github.com/aces/Loris/tree/main/modules/electrophysiology_browser#-installation-requirements-to-use-the-visualization-features).
+Follow the [installation steps for the visualization features](https://github.com/aces/Loris/tree/main/modules/electrophysiology_browser#-installation-requirements-to-use-the-visualization-features).
 
 
 ```bash
@@ -96,69 +42,6 @@ Update the module with the [step detailed for visualization features](https://gi
 make
 make dev
 ```
-
-### Installed environment
-
-At this point:
-
-- languages installed:
-    - python3
-    - perl
-- folders should be:
-    - a project folder base in: `/data/$PROJECT_NAME`
-    - MRI tools in:             `/opt/$PROJECT_NAME/bin/mri`
-    - MINC tools in:            `/opt/minc`
-    - MINC bins in:             `/opt/minc/$minc_version/bin` (and added to $PATH)
-- the `~/.bashrc` file should have the environment for Loris-MRI scripts (e.g. `source /opt/$PROJECT_NAME/bin/mri/environment`).
-- the environment used should be noted at the start of the shell prompt with `(loris-mri-python)` (if not, just disconnect, then reconnect to your session).
-
-## EEG upload to Loris
-
-### Get EEG files
-
-> Note: from DICOM files? In an archive `.tar.gz`?
-
-## Chunk EEG files
-
-To generated chunks, use the script `eeglab_to_chunk.py`.
-
-```bash
-# python 3 is used through (loris-mri-python) env
-cd /opt/$PROJECT_NAME/bin/mri
-python ./python/react-series-data-viewer/eeglab_to_chunks.py -h
-
-# usage: eeglab_to_chunks.py [-h] [--channel_index CHANNEL_INDEX]
-#                            [--channel_count CHANNEL_COUNT]
-#                            [--chunk-size CHUNK_SIZE]
-#                            [--downsamplings DOWNSAMPLINGS]
-#                            [--destination DESTINATION] [--prefix PREFIX]
-#                            FILE [FILE ...]
-#
-# Convert .set files to chunks for browser based visualisation.
-```
-
-To get `.set` files, extract them from BIDS archive files.
-
-```bash
-# tar xzf $your_archive
-# example with a ficitonal file named PIDCC0046_500574_V03_bids.ta.gz
-tar xzf PIDCC0046_500574_V03_bids.ta.gz -C /data/archives/
-
-# this should create
-```
-
-Then, use the `eeglab_to_chunk.py` to generate chunks.
-
-```bash
-# Use it on a `.set` file
-cd /opt/$PROJECT_NAME/bin/mri/python/react-series-data-viewer
-python eeglab_to_chunks.py /data/archives/PIDCC0046_500574_V03_bids/sub-PIDCC0046/ses-V03/eeg/sub-PIDCC0046_ses-V03_task-VEP_acq-eeg_eeg.set
-```
-
-By default
-
-Chunks should be generated into
-`/data/archives/PIDCC0046_500574_V03_bids/sub-PIDCC0046/ses-V03/eeg/sub-PIDCC0046_ses-V03_task-VEP_acq-eeg_eeg.chunks/`
 
 ## Import BIDS to Loris
 
@@ -181,7 +64,8 @@ But the whole pipeline is already written. Adapt and use the following `pipeline
 # */15 * * * * cd /var/www/loris/project/tools && ./pipeline.sh
 # in crontab -e
 
-PROJECT_NAME='hbcd'
+# change the <UPDATE_HERE> with your project name
+PROJECT_NAME='<UPDATE_HERE>'
 DATA_FOLDER='/data/${PROJECT_NAME}'
 
 source /opt/$PROJECT_NAME/bin/mri/environment
