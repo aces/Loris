@@ -29,7 +29,8 @@
     "resize-observer-polyfill": "^1.5.0",
     "rxjs": "^6.6.3",
     "tslib": "^1.9.3",
-    "typescript": "2.5.2"
+    "typescript": "2.5.2",
+    "lodash": "4.17.4"
   },
   "devDependencies": {
     "@types/react": "^16.12.0",
