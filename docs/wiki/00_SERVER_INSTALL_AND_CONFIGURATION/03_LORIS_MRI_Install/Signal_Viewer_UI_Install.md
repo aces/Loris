@@ -10,48 +10,29 @@ This document is a guide to install and configure Loris to use the `EEG Visualiz
 
 1. Install
     1. [Environment](#environment)
-    1. [Install Protobuf](#install-protobuf)
-    1. [Update `electrophysiology_browser` module](#update-electrophysiology_browser-module)
-1. [Import BIDS to Loris](#import-bids-to-loris)
-1. [Troubleshooting](#troubleshooting)
-    1. [BIDS import](#bids-import)
+    1. [Installation requirements](#installation-requirements)
+1. [Import EEG BIDS data to Loris](#import-eeg-bids-data-to-loris)
 
 ## Install
 
 ### Environment
 
-Environment:
-- A `Loris instance` at `24.0` or above.
+- `Loris` `v24.0` or above.
 - `Loris-MRI` installed.
 
-### Install Protobuf
 
-Install [Protocol Buffer (Protobuf)](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) (`3.x.x` recommended). For `v21.x.x` troubleshooting see [this section](https://github.com/aces/Loris/modules/electrophysiology_browser/README.md#troubleshooting-error-when-trying-to-use-protobuf-v21-and-higher).
-
-### Update `electrophysiology_browser` module
+### Installation requirements
 
 Follow the [installation steps for the visualization features](https://github.com/aces/Loris/tree/main/modules/electrophysiology_browser#-installation-requirements-to-use-the-visualization-features).
 
 
-```bash
-# run
-make
-make dev
-```
+## Import EEG BIDS data to Loris
 
-## Import BIDS to Loris
-
-One script import BIDS files into Loris.
-
-```bash
-ls /opt/$PROJECT_NAME/bin/mri/python/bids_import.py
-```
-
-But the whole pipeline is already written. Adapt and use the following `pipeline.sh` script. It will:
+Adapt and use the following `pipeline.sh` script. It will:
 - take BIDS archives located in `/data/incoming`
 - extract them to their folder in `/data/processing/bidsFiles/`
 - move the archive to `/data/archive`
-- import data into Loris DB with `bids_import.py`
+- import data into Loris DB with `/opt/$PROJECT_NAME/bin/mri/python/bids_import.py`
 
 ```bash
 #!/usr/bin/env bash
@@ -98,60 +79,3 @@ for ((i=0; i<${#archives[@]}; i++)); do
     fi
 done
 ```
-
-Data should be extracted to
-
-```bash
-# extracted BIDS archive files
-ls /data/$PROJECT_NAME/data/bids_imports
-```
-
-
-
-
-
-## Troubleshooting
-
-### BIDS Import
-
-> Note: this should change, participants and events should have their data right.
-
-#### Extract BIDS file
-
-```bash
-# extract
-tar xzf PIDCC0046_500574_V03_bids.tar.gz
-```
-
-#### Update EEG data participants
-
-```bash
-# change the participants data
-nano PIDCC0046_500574_V03_bids/participants.tsv
-
-# should be added: the `site name` and the `project name`
-# here is an example with `site = Data Coordinating Center`
-# and `project = Pumpernickel`
-# participant_id  age     sex     hand    site    subproject      project
-# sub-PIDCC0046   -23     Female          Data Coordinating Center                Pumpernickel
-```
-
-#### Update events files
-
-```bash
-# events files
-ls -l /data/$PROJECT_NAME/data/bids_imports/PIDCC0046_V03_BIDSVersion_1.6.0/sub-PIDCC0046/ses-V03/eeg/sub-PIDCC0046_ses-V03_*_events.tsv
-```
-
-Those files should have a `response_time` column with `0` values as base. Some `NaN`, `nan`, or `null` values are errors. change those by `0`.
-
-Referenced in [Issue #365](https://github.com/aces/HBCD/issues/365)
-
-
-#### Recompress BIDS archive
-
-```bash
-# compress back the folder into one tar
-tar czf PIDCC0046_500574_V03_bids.tar.gz PIDCC0046_500574_V03_bids/
-```
-
