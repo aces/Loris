@@ -22,8 +22,6 @@ This document is a guide to install and configure Loris to use the `EEG Visualiz
 
 ### Environment
 
-> Note: right now, only `24.0 release` with `php 8.0` works. More recent versions are on the way.
-
 Environment:
 - A `Loris instance` at `24.0` or above.
 - `Loris-MRI` installed.
