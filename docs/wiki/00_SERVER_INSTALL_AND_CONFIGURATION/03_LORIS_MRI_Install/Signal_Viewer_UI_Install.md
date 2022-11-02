@@ -1,6 +1,6 @@
 
 
-# Signal Viewer UI Install
+# EEG Visualization Install
 
 > Last update: 2022-11-02
 
