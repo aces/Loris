@@ -14,6 +14,8 @@
 
 namespace LORIS;
 
+use LORIS\Data\DataInstance;
+
 /**
  * The Project class encapsulates all details of a project.
  *
@@ -23,49 +25,25 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Subproject implements \JsonSerializable
+class SubprojectData implements DataInstance
 {
-    protected ?int $id;
+    public readonly int $id;
     public string $title;
     public ?bool $useEDC;
     public ?string $windowDifference;
     public ?int $recruitmentTarget;
 
     /**
-     * Contructor
+     * Setter for the ID value since readonly properties can only be set from within
+     * the class
      *
-     * @param ?int    $id                The subproject id
-     * @param string  $title             The subproject title
-     * @param ?bool   $useEDC            Expected date of confinement status
-     * @param ?string $windowDifference  Value from the database
-     * @param ?int    $recruitmentTarget Target number for subproject recruitment
-     */
-    public function __construct(
-        ?int $id,
-        string $title,
-        ?bool $useEDC,
-        ?string $windowDifference = null,
-        ?int $recruitmentTarget = null
-    ) {
-        //ID should only be null when creating a new subproject
-        $this->id     = $id;
-        $this->title  = $title;
-        $this->useEDC = $useEDC;
-        $this->windowDifference  = $windowDifference;
-        $this->recruitmentTarget = $recruitmentTarget;
-    }
-
-    /**
-     * Getter for subproject ID
+     * @param int $id Integer ID for the subproject
      *
-     * @return int The subproject's identifier
+     * @return void
      */
-    public function getID(): int
+    public function setID(int $id) : void
     {
-        if ($this->id === null) {
-            throw new \LorisException("No ID defined for Subproject");
-        }
-        return $this->id;
+        $this->id = $id;
     }
 
     /**
@@ -73,10 +51,11 @@ class Subproject implements \JsonSerializable
      * Returns data which can be serialized by json_encode(), which is a value of
      * any type other than a resource.
      *
-     * @see    https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed
+     * @see https://www.php.net/manual/en/jsonserializable.jsonserialize.php
+     *
+     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return [
             "SubprojectID"      => $this->id,

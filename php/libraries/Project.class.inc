@@ -479,13 +479,13 @@ class Project implements \JsonSerializable
      * singleton function for every project. This also updates the static instances
      * array containing a cache of projects.
      *
-     * @param \LORIS\Subproject $subproject The subproject object for which we want
-     *                                      the associated subprojects
+     * @param \LORIS\SubprojectData $subproject The subproject object for which we
+     *                                          want the associated subprojects
      *
      * @return \Project[] List of projects for the given subproject
      */
     public static function getProjectsForSubproject(
-        \LORIS\Subproject $subproject
+        \LORIS\SubprojectData $subproject
     ) : array {
         $projectsData = \NDB_Factory::singleton()->database()->pSelect(
             "SELECT
@@ -498,7 +498,7 @@ class Project implements \JsonSerializable
               JOIN project_subproject_rel psr USING(ProjectID)
             WHERE SubprojectID = :sid
             ",
-            ['sid' => $subproject->getID()]
+            ['sid' => $subproject->id]
         );
 
         if (empty($projectsData)) {
