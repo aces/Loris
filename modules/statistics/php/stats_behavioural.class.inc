@@ -151,7 +151,7 @@ class Stats_Behavioural extends \NDB_Form
         //SUBPROJECTS
         $suproject_query = '';
         if ($currentProject !== null) {
-            $cohorts = \Utility::getCohortsForProject($currentProject);
+            $cohorts     = \Utility::getCohortsForProject($currentProject);
             $subprojList = implode(',', array_keys($cohorts));
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.CohortID IN ($subprojList)";

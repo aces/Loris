@@ -34,15 +34,15 @@ class SNP
      * Constructor
      *
      * @param array $sites            The list_of_sites for form element
-     * @param array $cohorts      The cohorts for form element
+     * @param array $cohorts          The cohorts for form element
      * @param array $platform_options The platform_options for form element
      */
     public function __construct($sites, $cohorts, $platform_options)
     {
         $this->_formElement = [
-            'Sites'       => $sites,
-            'Cohorts' => $cohorts,
-            'Platform'    => $platform_options,
+            'Sites'    => $sites,
+            'Cohorts'  => $cohorts,
+            'Platform' => $platform_options,
         ];
     }
 

@@ -205,7 +205,7 @@ class Sessions extends \NDB_Page
         $subjectData['site']        = $this->timepoint->getPSC();
         $subjectData['dob']         = $candidate->getCandidateDoB();
         $subjectData['sex']         = $candidate->getCandidateSex();
-        $subjectData['cohort']  = $this->timepoint->getData('CohortTitle');
+        $subjectData['cohort']      = $this->timepoint->getData('CohortTitle');
         $subjectData['output_type'] = $outputType;
 
         return $subjectData;

@@ -263,9 +263,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 = "A project must be selected from the available dropdown.";
         }
 
-        $candid       = $values['candID'];
-        $cohortID = intval($values['cohort']);
-        $projectID    = new \ProjectID($values['project']);
+        $candid    = $values['candID'];
+        $cohortID  = intval($values['cohort']);
+        $projectID = new \ProjectID($values['project']);
 
         //Visit - Get all visits to map ID back to label for session table
         $visits     = \Utility::getVisitsForProjectCohort(

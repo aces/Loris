@@ -109,7 +109,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
         $tpl_var = \Utility::getCohortsForProject($projectID);
-        $tpl_data['Cohorts']      = $tpl_var;
+        $tpl_data['Cohorts']          = $tpl_var;
         $tpl_data['DropdownName']     = $dropdownName;
         $tpl_data['DropdownOptions']  = $dropdownOpt;
         $tpl_data['DropdownSelected'] = $dropdownSelected;
@@ -256,7 +256,7 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['Cohorts'] = $cohorts;
         // Only search for cohorts if $demographicProject is a positive int.
         if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
-            $cohorts = \Utility::getCohortsForProject(
+            $cohorts     = \Utility::getCohortsForProject(
                 new \ProjectID($demographicProject)
             );
             $subprojList = implode(',', array_keys($cohorts));
@@ -313,10 +313,10 @@ class Stats_Demographic extends \NDB_Form
             }
         }
 
-        $this->tpl_data['Sites']       = $sites;
-        $this->tpl_data['Projects']    = $projects;
-        $this->tpl_data['Visits']      = $visits;
-        $this->tpl_data['Cohorts'] = $cohorts;
+        $this->tpl_data['Sites']    = $sites;
+        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Visits']   = $visits;
+        $this->tpl_data['Cohorts']  = $cohorts;
 
         /**
          * REGISTERED CANDIDATES ROW

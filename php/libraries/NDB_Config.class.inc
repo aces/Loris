@@ -468,7 +468,7 @@ class NDB_Config
      * of coming from config.xml
      *
      * @param integer $cohortID The cohortID we want the settings
-     *                              for
+     *                          for
      *
      * @return array of settings for this cohortID
      */

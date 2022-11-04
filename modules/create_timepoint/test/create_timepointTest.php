@@ -86,7 +86,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * Create a timepoint with three parameters.
      *
      * @param string $canID      ID of candidate
-     * @param string $cohort text of cohort
+     * @param string $cohort     text of cohort
      * @param string $visitlabel text of visit label
      *
      * @return void

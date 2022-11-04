@@ -100,20 +100,20 @@ class NDB_BVL_Battery
      * on age AND CohortID, adds all appropriate instruments to the
      * battery
      *
-     * @param \LORIS\LorisInstance $loris        The LORIS instance to add
-     *                                           instruments to
-     * @param integer              $CohortID The CohortID that we want
-     *                                           the battery for
-     * @param string               $stage        Either 'visit' or 'screening'
-     * @param string               $visit_label  The visit label to create a
-     *                                           battery for.
-     * @param \CenterID            $center_ID    The center of the candidate
-     *                                           having a battery created
-     * @param boolean              $firstVisit   Whether this is a first visit
-     *                                           battery.  true means ONLY
-     *                                           first visit, false means NOT
-     *                                           first visit, null can be any
-     *                                           visit.
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to add
+     *                                          instruments to
+     * @param integer              $CohortID    The CohortID that we want
+     *                                          the battery for
+     * @param string               $stage       Either 'visit' or 'screening'
+     * @param string               $visit_label The visit label to create a
+     *                                          battery for.
+     * @param \CenterID            $center_ID   The center of the candidate
+     *                                          having a battery created
+     * @param boolean              $firstVisit  Whether this is a first visit
+     *                                          battery.  true means ONLY
+     *                                          first visit, false means NOT
+     *                                          first visit, null can be any
+     *                                          visit.
      *
      * @return void
      */
@@ -400,28 +400,28 @@ class NDB_BVL_Battery
      * Looks up what the appropriate battery for the current visit should
      * be, based on age AND cohort
      *
-     * @param integer   $age          the age of the subject, in months
-     * @param integer   $CohortID The ID of the cohort that we want
-     *                                to look up the battery for.
-     * @param string    $stage        either 'visit' or 'screening' - determines
-     *                                whether to register only screening
-     *                                instruments or visit instruments
-     * @param string    $visit_label  (optional) The visit label to look up the
-     *                                battery for. If this is specified the
-     *                                battery will use this INSTEAD OF the age
-     *                                of candidate.
-     * @param ?CenterID $center_ID    (optional) The center ID to look up the visit
-     *                                battery for. If this is specified the lookup
-     *                                will use it as an ADDITIONAL condition to
-     *                                $age/$visit_label.
-     * @param ?boolean  $firstVisit   (optional) Whether or not we want the battery
-     *                                for the first visit of the candidate. If this
-     *                                is true, it will get instruments for the
-     *                                first visit. If false, it will only get
-     *                                instruments where it is NOT the first visit.
-     *                                If null, it will get all instruments matching
-     *                                criteria regardless of if it's the first
-     *                                visit or not.
+     * @param integer   $age         the age of the subject, in months
+     * @param integer   $CohortID    The ID of the cohort that we want
+     *                               to look up the battery for.
+     * @param string    $stage       either 'visit' or 'screening' - determines
+     *                               whether to register only screening
+     *                               instruments or visit instruments
+     * @param string    $visit_label (optional) The visit label to look up the
+     *                               battery for. If this is specified the
+     *                               battery will use this INSTEAD OF the age
+     *                               of candidate.
+     * @param ?CenterID $center_ID   (optional) The center ID to look up the visit
+     *                               battery for. If this is specified the lookup
+     *                               will use it as an ADDITIONAL condition to
+     *                               $age/$visit_label.
+     * @param ?boolean  $firstVisit  (optional) Whether or not we want the battery
+     *                               for the first visit of the candidate. If this
+     *                               is true, it will get instruments for the
+     *                               first visit. If false, it will only get
+     *                               instruments where it is NOT the first visit.
+     *                               If null, it will get all instruments matching
+     *                               criteria regardless of if it's the first
+     *                               visit or not.
      *
      * @return array  an array of instrument names
      */

@@ -61,7 +61,7 @@ class TestOptionsEndpoint extends \NDB_Page
         return [
             'instruments' => \Utility::getAllInstruments(),
             'stages'      => $this->_getStageList(),
-            'cohorts' => \Utility::getCohortList(null),
+            'cohorts'     => \Utility::getCohortList(null),
             'visits'      => \Utility::getVisitList(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),

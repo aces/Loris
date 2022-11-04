@@ -236,7 +236,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             = [
                 'site'             => $siteList,
                 'project'          => $projectList2,
-                'cohort'       => $cohortList2,
+                'cohort'           => $cohortList2,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
                     "Incomplete" => "Incomplete",

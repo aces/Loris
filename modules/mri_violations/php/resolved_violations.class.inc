@@ -300,7 +300,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             'Site'        => 'v.Site',
             'TimeRun'     => 'v.TimeRun',
             'Project'     => 'v.Project',
-            'Cohort'  => 'v.Cohort',
+            'Cohort'      => 'v.Cohort',
             'ProblemType' => 'v.Problem',
             'Filename'    => 'v.MincFile',
             'Description' => 'v.Series_Description',

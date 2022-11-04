@@ -241,7 +241,7 @@ class CohortController extends \LORIS\Data\ProvisionerInstance
      * The querying and instantiation of projects is done by the Project class.
      *
      * @param CohortData $cohort The cohort object for which we want
-     *                                   the associated cohorts
+     *                           the associated cohorts
      *
      * @return \Project[] List of projects for the given cohort
      */

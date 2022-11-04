@@ -170,7 +170,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $cohortSettings   = $config->getCohortSettings(
+            $cohortSettings       = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)
             );
             $title = $cohortSettings['title'] ?? '';
@@ -223,7 +223,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Registers a new timepoint into the session table
      *
      * @param \Candidate   $candidate      The Candidate to create this timepoint for
-     * @param integer      $CohortID   The cohortID of the new timepoint
+     * @param integer      $CohortID       The cohortID of the new timepoint
      * @param string|null  $nextVisitLabel The visit label of the timepoint
      *                                     being created. If null,
      *                                     consecutive V1, V2, etc will be
@@ -279,7 +279,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $insertData = [
             'CandID'          => $candidate->getCandID(),
-            'CohortID'    => $CohortID,
+            'CohortID'        => $CohortID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
             'CenterID'        => $psc->getCenterID()->__toString(),
@@ -301,10 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID     $candid       The candidate identifier
-     * @param \ProjectID $projectID    The Project identifier
-     * @param integer    $cohortID The cohortID
-     * @param string     $visitName    The visit name
+     * @param CandID     $candid    The candidate identifier
+     * @param \ProjectID $projectID The Project identifier
+     * @param integer    $cohortID  The cohortID
+     * @param string     $visitName The visit name
      *
      * @throws LorisException
      *

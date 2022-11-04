@@ -148,12 +148,12 @@ foreach ($instruments as $instrument => $full_name) {
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
- * @param String  $test_name    The instrument been searched
- * @param ?string $visit_label  The VisitLabel Placed in the CSV file
- * @param ?string $sid          The SessionID been searched
- * @param ?string $candid       The candid been searched
- * @param ?string $pscid        The PSCID been searched
- * @param ?string $cohortid The subprojecitd been searched
+ * @param String  $test_name   The instrument been searched
+ * @param ?string $visit_label The VisitLabel Placed in the CSV file
+ * @param ?string $sid         The SessionID been searched
+ * @param ?string $candid      The candid been searched
+ * @param ?string $pscid       The PSCID been searched
+ * @param ?string $cohortid    The subprojecitd been searched
  *
  * @return array $commentids An array of commentids found
  */

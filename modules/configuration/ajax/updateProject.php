@@ -25,13 +25,13 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
 
-$ProjectList   = Utility::getProjectList();
-$projectName   = $_POST['Name'] ?? '';
-$projectAlias  = $_POST['Alias'] ?? '';
-$recTarget     = empty($_POST['recruitmentTarget'])
+$ProjectList  = Utility::getProjectList();
+$projectName  = $_POST['Name'] ?? '';
+$projectAlias = $_POST['Alias'] ?? '';
+$recTarget    = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
-$projectID     = $_POST['ProjectID'] ?? null;
-$cohortIDs = $_POST['CohortIDs'] ?? [];
+$projectID    = $_POST['ProjectID'] ?? null;
+$cohortIDs    = $_POST['CohortIDs'] ?? [];
 
 $project = null;
 

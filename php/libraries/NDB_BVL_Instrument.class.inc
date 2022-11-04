@@ -1464,8 +1464,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $sessionID = $this->getSessionID();
         if (!is_null($sessionID)) {
-            $timepoint    = \TimePoint::singleton($sessionID);
-            $cohortID = $timepoint->getCohortID();
+            $timepoint = \TimePoint::singleton($sessionID);
+            $cohortID  = $timepoint->getCohortID();
             return $cohortID;
         }
         return null;

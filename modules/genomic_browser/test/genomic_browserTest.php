@@ -49,16 +49,16 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     ];
 
     //Filter locations
-    static $site       = 'select[name="Site"]';
-    static $DCCID      = 'input[name="DCCID"]';
-    static $PSCID      = 'input[name="PSCID"]';
-    static $sex        = 'select[name="Sex"]';
-    static $cohort = 'select[name="Cohort"]';
-    static $externID   = 'input[name="External ID"]';
-    static $file       = 'select[name="File"]';
-    static $SNP        = 'select[name="SNPs found"]';
-    static $CNV        = 'select[name="CNVs found"]';
-    static $CPG        = 'select[name="CPGs found"]';
+    static $site     = 'select[name="Site"]';
+    static $DCCID    = 'input[name="DCCID"]';
+    static $PSCID    = 'input[name="PSCID"]';
+    static $sex      = 'select[name="Sex"]';
+    static $cohort   = 'select[name="Cohort"]';
+    static $externID = 'input[name="External ID"]';
+    static $file     = 'select[name="File"]';
+    static $SNP      = 'select[name="SNPs found"]';
+    static $CNV      = 'select[name="CNVs found"]';
+    static $CPG      = 'select[name="CPGs found"]';
 
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';

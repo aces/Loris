@@ -354,8 +354,8 @@ class Utility
      * Returns a list of visits associated with the supplied Project AND cohort.
      * The visits are in an associative array format [VisitID=>VisitLabel]
      *
-     * @param \ProjectID $projectID    ID of the project
-     * @param int        $cohortID ID of the cohort
+     * @param \ProjectID $projectID ID of the project
+     * @param int        $cohortID  ID of the cohort
      *
      * @return array list of visits for supplied project-cohort combination
      *

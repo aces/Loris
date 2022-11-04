@@ -64,7 +64,7 @@ class CohortData implements DataInstance
     public function jsonSerialize() : array
     {
         return [
-            "CohortID"      => $this->id,
+            "CohortID"          => $this->id,
             "Title"             => $this->title,
             "UseEDC"            => $this->useEDC,
             "WindowDifference"  => $this->windowDifference,

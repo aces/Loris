@@ -65,7 +65,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "cohort",
             [
                 'CohortID' => '55',
-                'title'        => 'TESTinCohort',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -81,14 +81,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111111',
-                'CandID'       => '999888',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'CohortID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111111',
+                'CandID'      => '999888',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(
@@ -104,14 +104,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111112',
-                'CandID'       => '999999',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'CohortID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111112',
+                'CandID'      => '999999',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(

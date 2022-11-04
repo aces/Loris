@@ -105,7 +105,7 @@ class Stats_MRI extends \NDB_Form
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
         $tpl_var = \Utility::getCohortsForProject($projectID);
-        $tpl_data['Cohorts']      = $tpl_var;
+        $tpl_data['Cohorts']          = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
@@ -256,7 +256,7 @@ class Stats_MRI extends \NDB_Form
         }
 
         //SUBPROJECTS
-        $cohorts = \Utility::getCohortsForProject($currentProject);
+        $cohorts     = \Utility::getCohortsForProject($currentProject);
         $subprojList = implode(',', array_keys($cohorts));
         if (!empty($subprojList)) {
             $suproject_query ="AND s.CohortID IN ($subprojList)";
@@ -335,7 +335,7 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;
-        $this->tpl_data['Cohorts']    = $cohorts;
+        $this->tpl_data['Cohorts']        = $cohorts;
         $this->tpl_data['Visits']         = $Visits;
 
         //START BIG TABLE

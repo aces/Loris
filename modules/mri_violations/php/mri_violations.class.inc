@@ -217,7 +217,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->formToFilter = [
             'PatientName' => 'v.PatientName',
             'Project'     => 'v.Project',
-            'Cohort'  => 'v.Cohort',
+            'Cohort'      => 'v.Cohort',
             'TimeRun'     => 'v.TimeRun',
             'ProblemType' => 'v.Problem',
             'Filename'    => 'v.MincFile',

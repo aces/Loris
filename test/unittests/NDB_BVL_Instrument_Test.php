@@ -1052,7 +1052,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
                 ['CohortID' => '2', 'ProjectID' => '1',
-                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                    'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
@@ -1896,13 +1896,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'           => '123',
-                    'CandID'       => 1,
+                    'ID'       => '123',
+                    'CandID'   => 1,
                     'CohortID' => '12'
                 ],
                 [
-                    'ID'           => '234',
-                    'CandID'       => 2,
+                    'ID'       => '234',
+                    'CandID'   => 2,
                     'CohortID' => '12'
                 ]
             ]
@@ -1928,11 +1928,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active'       => 'Y',
-                    'Test_name'    => 'TestName1_proband',
-                    'CohortID' => '12',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100
+                    'Active'     => 'Y',
+                    'Test_name'  => 'TestName1_proband',
+                    'CohortID'   => '12',
+                    'AgeMinDays' => 0,
+                    'AgeMaxDays' => 100
                 ]
             ]
         );

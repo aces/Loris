@@ -118,7 +118,7 @@ class Candidate_List extends \DataFrameworkMenu
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
             'project'           => $project_options,
-            'cohort'        => $cohort_options,
+            'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
         ];

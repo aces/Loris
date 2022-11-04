@@ -27,7 +27,7 @@ class Behavioral
      * @param array $visits      The visits for form element
      * @param array $instruments The instruments for form element
      * @param array $projects    The projects for form element
-     * @param array $cohorts The cohorts for form element
+     * @param array $cohorts     The cohorts for form element
      * @param array $sites       The sites for form element
      */
     public function __construct(
@@ -41,7 +41,7 @@ class Behavioral
             'instruments' => $instruments,
             'visits'      => $visits,
             'projects'    => $projects,
-            'cohorts' => $cohorts,
+            'cohorts'     => $cohorts,
             'sites'       => $sites,
         ];
     }

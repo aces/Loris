@@ -221,7 +221,7 @@ class CnvDTO implements \LORIS\Data\DataInstance
             'DCCID'             => $this->_DCCID,
             'PSCID'             => $this->_PSCID,
             'Sex'               => $this->_Sex,
-            'Cohort'        => $this->_Cohort,
+            'Cohort'            => $this->_Cohort,
             'DoB'               => $this->_DoB,
             'ExternalID'        => $this->_ExternalID,
             'Chromosome'        => $this->_Chromosome,

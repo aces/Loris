@@ -46,9 +46,9 @@ class VisitsPopulator
      * Checks if a Visit_label is already in the visits table and
      * if not, it inserts it.
      *
-     * @param string $visit        The Visit name to insert
-     * @param string $new_label    The new visit_label for the front end.
-     * @param int    $cohortID The ID of the Cohort for this visit
+     * @param string $visit     The Visit name to insert
+     * @param string $new_label The new visit_label for the front end.
+     * @param int    $cohortID  The ID of the Cohort for this visit
      *
      * @return none, but as a side-effect potentially inserts into database
      */

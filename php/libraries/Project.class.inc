@@ -430,8 +430,8 @@ class Project implements \JsonSerializable
             $db->insertIgnore(
                 'project_cohort_rel',
                 [
-                    'ProjectID'    => $this->_projectId,
-                    'CohortID' => $id,
+                    'ProjectID' => $this->_projectId,
+                    'CohortID'  => $id,
                 ]
             );
         }
@@ -453,8 +453,8 @@ class Project implements \JsonSerializable
             $db->delete(
                 'project_cohort_rel',
                 [
-                    'ProjectID'    => $this->_projectId,
-                    'CohortID' => $id,
+                    'ProjectID' => $this->_projectId,
+                    'CohortID'  => $id,
                 ]
             );
         }
@@ -480,7 +480,7 @@ class Project implements \JsonSerializable
      * array containing a cache of projects.
      *
      * @param \LORIS\CohortData $cohort The cohort object for which we
-     *                                          want the associated cohorts
+     *                                  want the associated cohorts
      *
      * @return \Project[] List of projects for the given cohort
      */

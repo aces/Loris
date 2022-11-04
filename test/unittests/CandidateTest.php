@@ -628,7 +628,7 @@ class CandidateTest extends TestCase
         $cohort = [
             [
                 'CohortID' => 1,
-                'title'        => 'testCohort'
+                'title'    => 'testCohort'
             ]
         ];
         $this->_dbMock->expects($this->once())
@@ -650,7 +650,7 @@ class CandidateTest extends TestCase
 
         $expectedCohort = [
             'CohortID' => 1,
-            'title'        => 'testCohort'
+            'title'    => 'testCohort'
         ];
 
         $this->assertEquals(

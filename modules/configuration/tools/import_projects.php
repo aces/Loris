@@ -54,7 +54,7 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
             $windowDiff = $row['options']['WindowDifference'];
         }
         $ins = [
-            'CohortID'     => $row['id'],
+            'CohortID'         => $row['id'],
             'title'            => $row['title'],
             'useEDC'           => 0,
             'WindowDifference' => $windowDiff,

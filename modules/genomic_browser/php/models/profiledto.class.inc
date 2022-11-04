@@ -133,7 +133,7 @@ class ProfileDTO implements \LORIS\Data\DataInstance
             'DCCID'      => $this->_DCCID,
             'PSCID'      => $this->_PSCID,
             'Sex'        => $this->_Sex,
-            'Cohort' => $this->_Cohort,
+            'Cohort'     => $this->_Cohort,
             'DoB'        => $this->_DoB,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,

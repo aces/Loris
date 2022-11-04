@@ -18,9 +18,9 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$db = $factory->database();
+$db         = $factory->database();
 $CohortList = Utility::getCohortList();
-$recTarget      = $_POST['RecruitmentTarget'];
+$recTarget  = $_POST['RecruitmentTarget'];
 
 
 // Basic validation

@@ -72,7 +72,7 @@ class DashboardTest extends LorisIntegrationTest
             "cohort",
             [
                 'CohortID' => '55',
-                'title'        => 'TESTinCohort',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -97,14 +97,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '222222',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => '',
-                'CohortID' => '55',
-                'Active'       => 'Y',
+                'ID'          => '222222',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => '',
+                'CohortID'    => '55',
+                'Active'      => 'Y',
             ]
         );
         $this->DB->insert(

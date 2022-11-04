@@ -277,7 +277,7 @@ class MethylationDTO implements \LORIS\Data\DataInstance
             'DCCID'            => $this->_DCCID,
             'PSCID'            => $this->_PSCID,
             'Sex'              => $this->_Sex,
-            'Cohort'       => $this->_Cohort,
+            'Cohort'           => $this->_Cohort,
             'DoB'              => $this->_DoB,
             'Sample'           => $this->_Sample,
             'cpg_name'         => $this->_cpg_name,

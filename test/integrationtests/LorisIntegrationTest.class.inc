@@ -378,7 +378,7 @@ abstract class LorisIntegrationTest extends TestCase
      * Helper function to create a cohort
      *
      * @param string $CohortID Name of the cohort
-     * @param string $title        Name of the cohort
+     * @param string $title    Name of the cohort
      *
      * @return void
      */
@@ -387,7 +387,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->insert(
             "cohort",
             [
-                "CohortID"      => $CohortID,
+                "CohortID"          => $CohortID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",

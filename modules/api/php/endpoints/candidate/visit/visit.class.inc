@@ -267,7 +267,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 [
                     'CenterID'        => $centerid,
                     'Visit_label'     => $visitinfo['Visit'],
-                    'CohortID'    => $cohortid,
+                    'CohortID'        => $cohortid,
                     'Active'          => 'Y',
                     'Date_active'     => $today,
                     'RegisteredBy'    => $username,

@@ -69,7 +69,7 @@ class Conflicts extends \NDB_Page implements ETagCalculator
         $body = [
             'data'         => $data,
             'fieldOptions' => $this->_getFieldOptions($request),
-            'cohorts'  => \Utility::getCohortList(),
+            'cohorts'      => \Utility::getCohortList(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
     }

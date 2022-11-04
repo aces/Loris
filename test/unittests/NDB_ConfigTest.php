@@ -290,7 +290,7 @@ class NDB_ConfigTest extends TestCase
     public function testGetCohortSettings()
     {
         $info1  = [
-            'CohortID'      => '999',
+            'CohortID'          => '999',
             'title'             => 'test',
             'useEDC'            => 'true',
             'WindowDifference'  => 'optimal',

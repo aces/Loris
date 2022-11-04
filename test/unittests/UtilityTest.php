@@ -95,11 +95,11 @@ class UtilityTest extends TestCase
      */
     private $_sessionInfo = [
         ['CandID' => '100001',
-            'CohortID'  => '2',
+            'CohortID'      => '2',
             'Current_stage' => 'Not Started'
         ],
         ['CandID' => '100003',
-            'CohortID'  => '4',
+            'CohortID'      => '4',
             'Current_stage' => 'Approval'
         ]
     ];
@@ -289,10 +289,10 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['CohortID' => '1',
-                        'title'        => 'cohort1'
+                        'title'    => 'cohort1'
                     ],
                     ['CohortID' => '2',
-                        'title'        => 'cohort2'
+                        'title'    => 'cohort2'
                     ]
                 ]
             );
@@ -328,7 +328,7 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['CohortID' => '123',
-                        'title'        => 'DemoProject'
+                        'title'    => 'DemoProject'
                     ]
                 ]
             );
@@ -358,7 +358,7 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['CohortID' => '123',
-                        'title'        => 'DemoProject'
+                        'title'    => 'DemoProject'
                     ]
                 ]
             );
