@@ -35,8 +35,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
-    var $listOfTimePoints;
 
+    protected $data;
+
+    /**
+     * Construct a new Candidate object optionally populated by
+     * the given DTO.
+     *
+     * @param ?CandidateData $data a Candidate DTO object to bypass
+     *                             the singleton constructor.
+     */
+    public function __construct(?CandidateData $data=null)
+    {
+        $this->data = $data;
+    }
     /**
      * This returns a single Candidate object for the given
      * candID, and will only ever instantiate one object in
@@ -99,6 +111,13 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
+        // We need to refer to these when instantiating the CandidateData
+        // object after Timepoints have been selected, but by then $row
+        // will have been overwritten, so put them in other variables.
+        // Initialize them to null, they should get set in the foreach loop.
+        $registrationProjectID = null;
+        $registrationCenterID  = null;
+
         // store user data in object property
         foreach ($row as $key=>$value) {
             switch ($key) {
@@ -109,17 +128,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
-                $this->candidateInfo[$key] = new \ProjectID($value);
+                $registrationProjectID     = new \ProjectID($value);
+                $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $this->candidateInfo[$key] = new \CenterID($value);
+                $registrationCenterID      = new \CenterID($value);
+                $this->candidateInfo[$key] = $registrationCenterID;
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
             }
         }
-
-        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
@@ -176,16 +195,30 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // get Time Point SessionIDs for the $candID
-        // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s
+        $query = "SELECT s.ID, s.ProjectID, s.CenterID FROM session as s
             WHERE s.CandID=:Candidate AND s.Active='Y'
             ORDER BY ID";
         $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
+        $timepoints = [];
         foreach ($row as $value) {
-            $this->listOfTimePoints[] = intval($value["ID"]);
+            $timepoints[] = new TimePoint(
+                new TimePointData(
+                    new SessionID(strval($value["ID"])),
+                    new ProjectID(strval($value["ProjectID"])),
+                    new CenterID(strval($value["CenterID"])),
+                )
+            );
         }
+
+        $this->data = new CandidateData(
+            $candID,
+            $registrationProjectID,
+            $registrationCenterID,
+            $timepoints,
+        );
+        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
     }
 
     /**
@@ -374,7 +407,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getListOfTimePoints(): array
     {
-        return $this->listOfTimePoints ?? [];
+        return array_map(
+            function ($timepoint) {
+                return intval(
+                    strval($timepoint->getSessionID())
+                );
+            },
+            $this->data->timepoints,
+        );
     }
 
     /**
@@ -387,8 +427,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getSessionID(int $visitNo): ?int
     {
-        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
-            return intval($this->listOfTimePoints[$visitNo-1]);
+        $timepoints = $this->data->timepoints;
+        if (isset($timepoints[$visitNo-1]) ) {
+            return intval(
+                strval($timepoints[$visitNo-1]->getSessionID())
+            );
         }
 
         return null;
@@ -453,7 +496,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getProjectID(): \ProjectID
     {
-        return $this->candidateInfo["RegistrationProjectID"];
+        return $this->data->registrationProjectID;
     }
 
     /**
@@ -507,7 +550,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getCenterID(): CenterID
     {
-        return $this->candidateInfo["RegistrationCenterID"];
+        return $this->data->registrationCenterID;
     }
 
     /**
@@ -905,20 +948,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // If we can't access due the registration, check if we
-        // have access to any sites. If we have access to a site,
-        // we need to be able to access the candidate to get to it.
-        $timepoints = $this->getListOfTimePoints();
-        foreach ($timepoints as $sessionID) {
-            $timepoint = \TimePoint::singleton(
-                new \SessionID(strval($sessionID))
-            );
-
+        // have access to any timepoints.
+        foreach ($this->data->timepoints as $timepoint) {
             if ($timepoint->isAccessibleBy($user)) {
-                // There's at least one, we don't need to check
-                // any more.
                 return true;
             }
         }
+
+        // No Registration Project/Center match and no accessible
+        // timepoints, so no access.
         return false;
     }
 
