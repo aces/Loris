@@ -82,7 +82,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }//end test_help_pageload()
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some

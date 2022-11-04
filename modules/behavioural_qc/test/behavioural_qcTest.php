@@ -40,7 +40,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
     /**
      * Tests that behavioural_qc does not load with the permission

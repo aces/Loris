@@ -67,7 +67,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        ); 
     }
     /**
      * Checks the contents of the session table and compares it against an expected

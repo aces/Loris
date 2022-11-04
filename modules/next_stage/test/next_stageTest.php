@@ -51,7 +51,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
     /**
      * Tests that, page loads with data_entry permission

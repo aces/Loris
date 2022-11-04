@@ -73,7 +73,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
     /**
      * Tests that help editor loads with the permission

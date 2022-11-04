@@ -75,7 +75,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
     /**
      * Tests that configuration loads with the permission

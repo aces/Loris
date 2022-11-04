@@ -47,7 +47,7 @@ class InstrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
     /**
      * Tests that, when loading the Instrument builder module with permission, some

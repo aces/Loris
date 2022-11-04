@@ -38,7 +38,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Brainbrowser", $bodyText);
-                $this->assertStringNotContainsString(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
