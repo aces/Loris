@@ -411,7 +411,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             function ($timepoint) {
                 return intval($timepoint->getSessionID());
             },
-            $this->data->getTimePoints(),
+            $this->data->timepoints,
         );
     }
 
@@ -425,7 +425,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      */
     function getSessionID(int $visitNo): ?int
     {
-        $timepoints = $this->data->getTimePoints();
+        $timepoints = $this->data->timepoints;
         if (isset($timepoints[$visitNo-1]) ) {
             return intval($timepoints[$visitNo-1]);
         }
@@ -945,7 +945,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         // If we can't access due the registration, check if we
         // have access to any timepoints.
-        foreach ($this->data->getTimePoints() as $timepoint) {
+        foreach ($this->data->timepoints as $timepoint) {
             if ($timepoint->isAccessibleBy($user)) {
                 return true;
             }

@@ -50,13 +50,13 @@ class CandidateData
             $this->CandID = $candID;
         }
 
-        if ($projectID !== null) {
-            $this->registrationProjectID = $projectID;
+        if ($registrationProjectID !== null) {
+            $this->registrationProjectID = $registrationProjectID;
         }
         if ($registrationCenterID !== null) {
             $this->registrationCenterID = $registrationCenterID;
         }
-        if ($this->timepoints !== null) {
+        if ($timepoints !== null) {
             foreach ($timepoints as $timepoint) {
                 if (!($timepoint instanceof \TimePoint)) {
                     throw new \DomainException(
