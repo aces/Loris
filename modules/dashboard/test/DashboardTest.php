@@ -334,6 +334,14 @@ class DashboardTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".welcome")
         )->getText();
         $this->assertStringContainsString("Welcome", $welcomeText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );        
     }
 
     /**

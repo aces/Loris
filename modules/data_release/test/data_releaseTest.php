@@ -21,6 +21,14 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
             $this->_loadWithPermission('data_release_view')
         );
         $this->resetPermissions();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );        
     }
 
     /**

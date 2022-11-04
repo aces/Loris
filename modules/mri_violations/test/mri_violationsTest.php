@@ -329,6 +329,14 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('$value').textContent"
         );
             $this->assertEquals("Mri Protocol Violations", $text);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );            
     }
 
     /**
