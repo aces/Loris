@@ -205,9 +205,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($row as $value) {
             $timepoints[] = new TimePoint(
                 new TimePointData(
-                    new SessionID($value["ID"]),
-                    new ProjectID($value["ProjectID"]),
-                    new CenterID($value["CenterID"]),
+                    new SessionID(strval($value["ID"])),
+                    new ProjectID(strval($value["ProjectID"])),
+                    new CenterID(strval($value["CenterID"])),
                 )
             );
         }
