@@ -145,7 +145,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        ); 
+        );
     }
     /**
      * Tests that, when loading the Imaging_uploader module without permission,

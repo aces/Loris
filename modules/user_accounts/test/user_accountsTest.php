@@ -133,7 +133,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        ); 
+        );
     }
     /**
      * Tests that searching for users using thei user IDs works

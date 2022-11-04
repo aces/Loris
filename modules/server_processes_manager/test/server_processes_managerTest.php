@@ -78,7 +78,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString('Cannot continue', $bodyText);    
+        $this->assertStringContainsString('Cannot continue', $bodyText);
         $this->resetPermissions();
     }
 
@@ -123,7 +123,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        ); 
         $this->resetPermissions();
     }
 

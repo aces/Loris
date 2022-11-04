@@ -104,7 +104,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );                
+        );
     }
     /**
      * Testing UI elements when page loads

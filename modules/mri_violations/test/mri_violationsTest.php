@@ -336,7 +336,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );            
+        );
     }
 
     /**

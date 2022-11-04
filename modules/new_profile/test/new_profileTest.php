@@ -54,7 +54,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
         // check EDC shows on the page
         $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
                  " div > div:nth-child(1) > label";
