@@ -324,8 +324,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "/mri_violations/mri_protocol_violations/"
         );
         sleep(1);
-        $value     = "#bc2 > a:nth-child(3)";
-        $bodyText  = $this->webDriver->executescript(
+        $value    = "#bc2 > a:nth-child(3)";
+        $bodyText = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertEquals("Mri Protocol Violations", $bodyText);
