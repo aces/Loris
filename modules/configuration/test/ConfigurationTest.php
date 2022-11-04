@@ -68,7 +68,7 @@ class ConfigurationTest extends LorisIntegrationTest
             "/Please enter the various configuration variables/",
             $bodyText
         );
-      $this->assertStringNotContainsString(
+        $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
         );
