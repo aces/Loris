@@ -27,7 +27,13 @@ use LORIS\Data\DataInstance;
  */
 class SubprojectData implements DataInstance
 {
-    public readonly int $id;
+    /**
+     * The variables below should be set as readonly
+     * when PHP8.1 is the lowest supported PHP version
+     *
+     * @var int
+     */
+    public int $id;
     public string $title;
     public ?bool $useEDC;
     public ?string $windowDifference;

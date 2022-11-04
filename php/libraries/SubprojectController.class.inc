@@ -49,6 +49,21 @@ class SubprojectController extends \LORIS\Data\ProvisionerInstance
     }
 
     /**
+     * Function defining the base query for subprojects to avoid duplication
+     *
+     * @return string
+     */
+    protected function getBaseQuery() : string
+    {
+        return "SELECT
+                SubprojectID,
+                title,
+                useEDC,
+                WindowDifference,
+                RecruitmentTarget
+            FROM subproject ";
+    }
+    /**
      * Retruns a list of configured Subprojects
      *
      * @return SubprojectData[] The list of subprojects
@@ -56,14 +71,7 @@ class SubprojectController extends \LORIS\Data\ProvisionerInstance
     public function getAllSubprojects(): array
     {
         $subprojectRows = $this->database->pselect(
-            "SELECT
-                SubprojectID,
-                title,
-                useEDC,
-                WindowDifference,
-                RecruitmentTarget
-            FROM subproject
-            ",
+            $this->getBaseQuery(),
             []
         );
 
@@ -94,14 +102,7 @@ class SubprojectController extends \LORIS\Data\ProvisionerInstance
     public function getSubprojectByTitle(string $subprojectTitle) : SubprojectData
     {
         $row = $this->database->pSelectRow(
-            "SELECT
-                    SubprojectID,
-                    title,
-                    useEDC,
-                    WindowDifference,
-                    RecruitmentTarget
-                FROM subproject
-                WHERE title = :title",
+            $this->getBaseQuery()." WHERE title = :title",
             ['title' => $subprojectTitle]
         );
 
