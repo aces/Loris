@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+use LORIS\StudyEntities\Candidate\CandID;
 /**
  * A CandidateData object is a DTO (data transfer object) to
  * store a representation of data associated with a Candidate
@@ -24,6 +25,7 @@
  */
 class CandidateData
 {
+    public CandID $CandID;
     public \ProjectID $registrationProjectID;
     public \CenterID $registrationCenterID;
 
@@ -32,26 +34,35 @@ class CandidateData
     /**
      * Construct a CandidateData object
      *
-     * @param ?\ProjectID  $projectID  The RegistrationProjectID
-     * @param ?\CenterID   $centerID   The RegistrationCenterID
-     * @param ?TimePoint[] $timepoints TimePoint objects for each visit of the
-     *                                 candidate
+     * @param ?CandID      $candID                The CandID for this candidate
+     * @param ?\ProjectID  $registrationProjectID The RegistrationProjectID
+     * @param ?\CenterID   $registrationCenterID  The RegistrationCenterID
+     * @param ?TimePoint[] $timepoints            TimePoint objects for each
+     *                                            visit of the candidate
      */
     public function __construct(
-        ?\ProjectID $registrationProjectID,
-        ?\CenterID $registrationCenterID,
-        ?array $timepoints,
+        ?CandID $candID=null,
+        ?\ProjectID $registrationProjectID=null,
+        ?\CenterID $registrationCenterID=null,
+        ?array $timepoints=null,
     ) {
+        if ($candID !== null) {
+            $this->CandID = $candID;
+        }
+
         if ($projectID !== null) {
             $this->registrationProjectID = $projectID;
         }
         if ($registrationCenterID !== null) {
-            $this->registrationCenterID  = $registrationCenterID;
+            $this->registrationCenterID = $registrationCenterID;
         }
         if ($this->timepoints !== null) {
             foreach ($timepoints as $timepoint) {
                 if (!($timepoint instanceof \TimePoint)) {
-                    throw new \DomainException("CandidateData timepoints must contain TimePoint classes");
+                    throw new \DomainException(
+                        "CandidateData timepoints must contain TimePoint "
+                        . "classes"
+                    );
                 }
             }
             $this->timepoints = $timepoints;
