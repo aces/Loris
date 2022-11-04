@@ -330,10 +330,10 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $welcomeText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(".welcome")
         )->getText();
-        $this->assertStringContainsString("Welcome", $welcomeText);
+        $this->assertStringContainsString("Welcome", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText

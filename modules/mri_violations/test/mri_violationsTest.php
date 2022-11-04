@@ -325,10 +325,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $value = "#bc2 > a:nth-child(3)";
-        $text  = $this->webDriver->executescript(
+        $bodyText  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals("Mri Protocol Violations", $text);
+            $this->assertEquals("Mri Protocol Violations", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText

@@ -20,7 +20,9 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
             "Data Release",
             $this->_loadWithPermission('data_release_view')
         );
-        $this->resetPermissions();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -29,6 +31,7 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
         );
+        $this->resetPermissions();
     }
 
     /**
