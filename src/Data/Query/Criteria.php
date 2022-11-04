@@ -8,7 +8,8 @@ namespace LORIS\Data\Query;
  * Generally, the operator is defined by the class type and the
  * the value by getValue().
  */
-interface Criteria {
+interface Criteria
+{
     /**
      * Get the value of the comparison.
      */

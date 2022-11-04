@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 namespace LORIS\Data\Query;
+
+use \LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\Data\DataInstance;
+
 /**
  * A QueryEngine is an entity which represents a set of data and
  * the ability to query against them.
@@ -11,7 +16,8 @@ namespace LORIS\Data\Query;
  * There is usually one query engine per module that deals with
  * candidate data.
  */
-interface QueryEngine {
+interface QueryEngine
+{
     /**
      * Return a data dictionary of data types managed by this QueryEngine.
      * DictionaryItems are grouped into categories and an engine may know
@@ -27,7 +33,10 @@ interface QueryEngine {
      * If visitlist is provided, session scoped variables will match
      * if the criteria is met for at least one of those visit labels.
      */
-    public function getCandidateMatches(QueryTerm $criteria, ?array $visitlist=null) : iterable;
+    public function getCandidateMatches(
+        QueryTerm $criteria,
+        ?array $visitlist = null
+    ) : iterable;
 
     /**
      * Retrieve the data for a given list of DictionaryItems from this
@@ -48,5 +57,8 @@ interface QueryEngine {
      *
      * @return string[]
      */
-    public function getVisitList(\LORIS\Data\Dictionary\Category $inst, \LORIS\Data\Dictionary\DictionaryItem $item) : iterable;
+    public function getVisitList(
+        \LORIS\Data\Dictionary\Category $inst,
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : iterable;
 }

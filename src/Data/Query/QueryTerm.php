@@ -1,12 +1,14 @@
 <?php
 namespace LORIS\Data\Query;
+
 use LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * A QueryTerm represents a single criteria used as part of a query
  * For instance "age < 5"
  */
-class QueryTerm {
+class QueryTerm
+{
     /**
      * Construct a query term.
      *
@@ -14,8 +16,9 @@ class QueryTerm {
      * @param Criteria       $criteria   The criteria to compare the
      *                                   term against.
      */
-    function __construct(
+    public function __construct(
         public \LORIS\Data\Dictionary\DictionaryItem $dictionary,
-        public Criteria $criteria) {
+        public Criteria $criteria
+    ) {
     }
 }
