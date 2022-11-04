@@ -34,13 +34,13 @@ class Methylation
      * Constructor
      *
      * @param array $sites       The list_of_sites for form element
-     * @param array $subprojects The subprojects for form element
+     * @param array $cohorts The cohorts for form element
      */
-    public function __construct($sites, $subprojects)
+    public function __construct($sites, $cohorts)
     {
         $this->_formElement = [
             'Sites'           => $sites,
-            'Subprojects'     => $subprojects,
+            'Cohorts'     => $cohorts,
             'Context'         => $this->_getDistinctValues(
                 'genomic_cpg_annotation',
                 'island_relation'

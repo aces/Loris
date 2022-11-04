@@ -72,11 +72,11 @@ class SnpDTO implements \LORIS\Data\DataInstance
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -265,7 +265,7 @@ class SnpDTO implements \LORIS\Data\DataInstance
             'DCCID'               => $this->_DCCID,
             'PSCID'               => $this->_PSCID,
             'Sex'                 => $this->_Sex,
-            'Subproject'          => $this->_Subproject,
+            'Cohort'          => $this->_Cohort,
             'DoB'                 => $this->_DoB,
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,

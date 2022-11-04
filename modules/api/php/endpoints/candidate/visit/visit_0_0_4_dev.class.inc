@@ -277,9 +277,9 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             return $response;
         }
 
-        $subprojectid = array_search(
+        $cohortid = array_search(
             $visitinfo['Battery'],
-            \Utility::getSubprojectList()
+            \Utility::getCohortList()
         );
 
         $sessionid = array_search(
@@ -306,7 +306,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
                 [
                     'CenterID'        => $this->_centerID,
                     'Visit_label'     => $visitinfo['Visit'],
-                    'SubprojectID'    => $subprojectid,
+                    'CohortID'    => $cohortid,
                     'Active'          => 'Y',
                     'Date_active'     => $today,
                     'RegisteredBy'    => $username,
@@ -327,7 +327,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
                 $this->_project->getId(),
-                $subprojectid,
+                $cohortid,
                 $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
@@ -338,7 +338,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
         \TimePoint::createNew(
             $this->_candidate,
-            $subprojectid,
+            $cohortid,
             $visitinfo['Visit'],
             \Site::singleton($this->_centerID),
             $this->_project
@@ -433,7 +433,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         // add instruments to the time point
         $battery->createBattery(
             $request->getAttribute("loris"),
-            $this->_visit->getSubprojectID(),
+            $this->_visit->getCohortID(),
             $newStage,
             $this->_visit->getVisitLabel(),
             $this->_visit->getCenterID(),

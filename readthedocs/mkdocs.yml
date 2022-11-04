@@ -22,7 +22,7 @@ nav:
             - Identifiers: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/01_Identifiers.md'
             - Projects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/02_Projects.md'
             - Sites: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/03_Sites.md'
-            - Subprojects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Subprojects.md'
+            - Cohorts: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Cohorts.md'
             - Timepoints: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
         - Clinical Instruments and Test Batteries:
             - Introduction: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/01_instrument_intro_prerequisites.md'

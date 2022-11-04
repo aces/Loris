@@ -57,7 +57,7 @@ class ElectrophysiologySessionView extends Component {
           dob: '',
           sex: '',
           output_type: '',
-          subproject: '',
+          cohort: '',
         },
       },
       database: [
@@ -442,7 +442,7 @@ class ElectrophysiologySessionView extends Component {
         'DOB',
         'Sex',
         'Output Type',
-        'Subproject',
+        'Cohort',
     ]}
       Data={[
             [
@@ -453,7 +453,7 @@ class ElectrophysiologySessionView extends Component {
               this.state.patient.info.dob,
               this.state.patient.info.sex,
               this.state.patient.info.output_type,
-              this.state.patient.info.subproject,
+              this.state.patient.info.cohort,
             ],
     ]}
       freezeColumn='PSCID'

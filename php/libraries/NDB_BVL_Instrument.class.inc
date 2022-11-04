@@ -667,7 +667,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y'
                             AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                     $query_params
                 );
@@ -683,7 +683,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN flag f USING(Test_name)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y' AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                         $query_params
                     );
@@ -1456,17 +1456,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Gets the subprojectID for the timepoint for this instrument.
+     * Gets the cohortID for the timepoint for this instrument.
      *
-     * @return int|null The subprojectID
+     * @return int|null The cohortID
      */
-    function getSubprojectID(): ?int
+    function getCohortID(): ?int
     {
         $sessionID = $this->getSessionID();
         if (!is_null($sessionID)) {
             $timepoint    = \TimePoint::singleton($sessionID);
-            $subprojectID = $timepoint->getSubprojectID();
-            return $subprojectID;
+            $cohortID = $timepoint->getCohortID();
+            return $cohortID;
         }
         return null;
     }

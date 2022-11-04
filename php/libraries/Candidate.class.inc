@@ -665,20 +665,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Generates list of valid subprojects for a the selected Candidate's
+     * Generates list of valid cohorts for a the selected Candidate's
      * project
      *
-     * @return array Array of the form SubprojectID => SubprojectID
+     * @return array Array of the form CohortID => CohortID
      *               or NULL if none exist
      * @throws DatabaseException
      */
-    public function getValidSubprojects(): array
+    public function getValidCohorts(): array
     {
         $subprojList = [];
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID
-                    FROM project_subproject_rel
+        $query   = "SELECT CohortID
+                    FROM project_cohort_rel
                     WHERE ProjectID = :prj";
         $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
@@ -687,7 +687,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         foreach ($subproj as $row) {
             foreach ($row as $key =>$val) {
-                if ($key == 'SubprojectID') {
+                if ($key == 'CohortID') {
                     $subprojList[$val] = $val;
                 }
             }
@@ -697,20 +697,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Returns the SubprojectID and subproject title of the candidate's last visit
+     * Returns the CohortID and cohort title of the candidate's last visit
      * based on Date_visit
      *
-     * @return array|null Array with values SubprojectID and title
+     * @return array|null Array with values CohortID and title
      *                    for the candidate's last visit or NULL if none exist
      */
-    public function getSubprojectForMostRecentVisit(): ?array
+    public function getCohortForMostRecentVisit(): ?array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT SubprojectID, title FROM session
-          LEFT JOIN subproject USING (SubprojectID)
+        $query  = "SELECT CohortID, title FROM session
+          LEFT JOIN cohort USING (CohortID)
           WHERE CandID=:cid AND Date_visit IS NOT NULL
           ORDER BY Date_visit DESC LIMIT 1";
         $where  = ['cid' => $candID];

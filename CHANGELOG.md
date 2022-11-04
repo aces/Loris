@@ -39,7 +39,7 @@ on the naming format of a Basic Date or `MonthYear` field. (PR #6923)
 - React Form Select Element now has the ability to set an option in the element 
 as a disabled option. (PR #7306)
 - Pending accounts in Dashboard now includes DCC users (PR #7054)
-- Subproject filter added to Behavioural QC module (PR #7430)
+- Cohort filter added to Behavioural QC module (PR #7430)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - Addition of new tables to store PET HRRT data (PR #6142)
 - Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
@@ -124,7 +124,7 @@ inefficient code and conditional display of select options based on previous sel
 - The dataquery module user interface has been completely redesigned. (PR #6908)
 #### EEG Browser
 - Signal Visualization, Events and Electrode map (PR #7387)
-- Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+- Site/Project/cohort filters only displays entries user has permission for. (PR #7400)
 - Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
 on the session page to support new annotation features (PR #7345)
 - New integration test class added to this module (PR #6922)
@@ -170,7 +170,7 @@ user name match email address" and "Generate new password". (PR #6803)
 - New tool `generate_candidate_externalids.php` to fill external IDs for all 
 candidates where a NULL value is found. (PR #7095)
 - New tool `populate_visits.php` to back-populate visits from the `config.xml`, 
-`session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+`session` table and `Visit_Windows` table into the `visit` and `visit_project_cohort_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
 - Fixes a bug in the way that the data dictionary entries associated to MRI comments were named in the CouchDB database (PR #7082).
 
@@ -196,8 +196,8 @@ scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `RegistrationProjectID` column of the candidate table and the `ProjectID` column of the session table 
 in the database are no longer nullable. This means that a value must be set in these fields BEFORE running 
 the release SQL patch or it will fail.
-- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getSubprojectIDUsingCandID`, 
-adding the ability to determine which subproject a candidate belongs to given their most recent visit.
+- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getCohortIDUsingCandID`, 
+adding the ability to determine which cohort a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the `getFullName()` and `getSubtestList()`
 functions thus making entries in the `test_names` and `instrument_subtests` tables 
 unnecessary for LINST instruments (PR #7169)
@@ -314,7 +314,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 - Projects filter only displays projects user has permission for. (PR #6706)
 
 #### Genomic Browser
-- In Profile and SNP screens, display subproject title instead of id. (PR #6633)
+- In Profile and SNP screens, display cohort title instead of id. (PR #6633)
 
 #### Survey
 - Fix Notice error logs and infinite redirect. (PR #6644)

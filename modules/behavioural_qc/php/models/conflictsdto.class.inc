@@ -60,7 +60,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
      *
      * @var string
      */
-    private $_subproject = '';
+    private $_cohort = '';
 
     /**
      * The site
@@ -139,7 +139,7 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
             'pscID'             => $this->_pscID,
             'visit'             => $this->_visit,
             'project'           => $this->_project,
-            'subproject'        => $this->_subproject,
+            'cohort'        => $this->_cohort,
             'site'              => $this->_site,
             'fieldName'         => $this->_fieldName,
             'tableName'         => $this->_tableName,

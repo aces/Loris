@@ -62,10 +62,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'        => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -87,7 +87,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'ProjectID'    => '1',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
+                'CohortID' => '55',
                 'Visit'        => 'In Progress',
             ]
         );
@@ -110,7 +110,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                 'ProjectID'    => '1',
                 'UserID'       => '1',
                 'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
+                'CohortID' => '55',
                 'Visit'        => 'In Progress',
             ]
         );
@@ -154,8 +154,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ['CandID' => '999999']
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "psc",

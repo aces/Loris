@@ -110,7 +110,7 @@
 		<field name="CenterID">2</field>
 		<field name="VisitNo">1</field>
 		<field name="Visit_label">V01</field>
-		<field name="SubprojectID">2</field>
+		<field name="CohortID">2</field>
 		<field name="Submitted">N</field>
 		<field name="Current_stage">Visit</field>
 		<field name="Date_stage_change">2013-04-10</field>
@@ -143,7 +143,7 @@
 		<field name="CenterID">2</field>
 		<field name="VisitNo">2</field>
 		<field name="Visit_label">V02</field>
-		<field name="SubprojectID">2</field>
+		<field name="CohortID">2</field>
 		<field name="Submitted">N</field>
 		<field name="Current_stage">Visit</field>
 		<field name="Date_stage_change">2013-04-22</field>
@@ -176,7 +176,7 @@
 		<field name="CenterID">2</field>
 		<field name="VisitNo">1</field>
 		<field name="Visit_label">V01</field>
-		<field name="SubprojectID">1</field>
+		<field name="CohortID">1</field>
 		<field name="Submitted">N</field>
 		<field name="Current_stage">Visit</field>
 		<field name="Date_stage_change">2015-05-14</field>
@@ -209,7 +209,7 @@
 		<field name="CenterID">2</field>
 		<field name="VisitNo">2</field>
 		<field name="Visit_label">V02</field>
-		<field name="SubprojectID">1</field>
+		<field name="CohortID">1</field>
 		<field name="Submitted">N</field>
 		<field name="Current_stage">Visit</field>
 		<field name="Date_stage_change">2014-05-02</field>
@@ -242,7 +242,7 @@
 		<field name="CenterID">2</field>
 		<field name="VisitNo">1</field>
 		<field name="Visit_label">V10</field>
-		<field name="SubprojectID">1</field>
+		<field name="CohortID">1</field>
 		<field name="Submitted">N</field>
 		<field name="Current_stage">Visit</field>
 		<field name="Date_stage_change">2015-05-05</field>

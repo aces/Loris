@@ -50,7 +50,7 @@ class GWAS extends Component {
         resp.json().then((json) => {
           const data = {
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
           };
           this.setState({
             data,

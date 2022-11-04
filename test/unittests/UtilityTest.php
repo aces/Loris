@@ -95,11 +95,11 @@ class UtilityTest extends TestCase
      */
     private $_sessionInfo = [
         ['CandID' => '100001',
-            'SubprojectID'  => '2',
+            'CohortID'  => '2',
             'Current_stage' => 'Not Started'
         ],
         ['CandID' => '100003',
-            'SubprojectID'  => '4',
+            'CohortID'  => '4',
             'Current_stage' => 'Approval'
         ]
     ];
@@ -277,42 +277,42 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getSubprojectList() returns a list of subprojects from the database
+     * Test that getCohortList() returns a list of cohorts from the database
      *
-     * @covers Utility::getSubprojectList
+     * @covers Utility::getCohortList
      * @return void
      */
-    public function testGetSubprojectList()
+    public function testGetCohortList()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
                 [
-                    ['SubprojectID' => '1',
-                        'title'        => 'subproject1'
+                    ['CohortID' => '1',
+                        'title'        => 'cohort1'
                     ],
-                    ['SubprojectID' => '2',
-                        'title'        => 'subproject2'
+                    ['CohortID' => '2',
+                        'title'        => 'cohort2'
                     ]
                 ]
             );
 
         $this->assertEquals(
-            ['1' => 'subproject1',
-                '2' => 'subproject2'
+            ['1' => 'cohort1',
+                '2' => 'cohort2'
             ],
-            Utility::getSubprojectList()
+            Utility::getCohortList()
         );
     }
 
     /**
-     * Test that getSubprojectList() returns the correct subproject
+     * Test that getCohortList() returns the correct cohort
      * when a ProjectID is specified
      *
-     * @covers Utility::getSubprojectList
+     * @covers Utility::getCohortList
      * @return void
      */
-    public function testGetSubprojectListWithProjectID()
+    public function testGetCohortListWithProjectID()
     {
         /**
          * The 'with' assertion is included to check that the mySQL query changes
@@ -322,12 +322,12 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
+                    "JOIN project_cohort_rel USING (CohortID)"
                 )
             )
             ->willReturn(
                 [
-                    ['SubprojectID' => '123',
+                    ['CohortID' => '123',
                         'title'        => 'DemoProject'
                     ]
                 ]
@@ -335,29 +335,29 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectList(new ProjectID("123"))
+            Utility::getCohortList(new ProjectID("123"))
         );
     }
 
     /**
-     * Test that getSubprojectsForProject calls getSubprojectList and
+     * Test that getCohortsForProject calls getCohortList and
      * returns the same information as the test above
      *
      * @return void
-     * @covers Utility::getSubprojectsForProject
+     * @covers Utility::getCohortsForProject
      */
-    public function testGetSubprojectsForProject()
+    public function testGetCohortsForProject()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
+                    "JOIN project_cohort_rel USING (CohortID)"
                 )
             )
             ->willReturn(
                 [
-                    ['SubprojectID' => '123',
+                    ['CohortID' => '123',
                         'title'        => 'DemoProject'
                     ]
                 ]
@@ -365,22 +365,22 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectsForProject(new \ProjectID("123"))
+            Utility::getCohortsForProject(new \ProjectID("123"))
         );
     }
 
     /**
-     * Test that getSubprojectsForProject returns an empty array
+     * Test that getCohortsForProject returns an empty array
      * if no project ID is given
      *
      * @return void
-     * @covers Utility::getSubprojectsForProject
+     * @covers Utility::getCohortsForProject
      */
-    public function testGetSubprojectsForProjectWithoutID()
+    public function testGetCohortsForProjectWithoutID()
     {
         $this->assertEquals(
             [],
-            Utility::getSubprojectsForProject()
+            Utility::getCohortsForProject()
         );
     }
 

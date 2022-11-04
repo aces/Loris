@@ -152,21 +152,21 @@ class VisitTest extends TestCase
     }
 
     /**
-     * Test that VisitController::getVisitsProjectSubproject returns the proper
-     * project-subproject relation for the visits in the database
+     * Test that VisitController::getVisitsProjectCohort returns the proper
+     * project-cohort relation for the visits in the database
      *
      * @return void
-     * @covers VisitController::getVisitsProjectSubproject
+     * @covers VisitController::getVisitsProjectCohort
      */
     function testVisitsProjects()
     {
         $this->markTestSkipped("Test Will be restored after Visit class revamp");
 
-        $visits = $this->visitController->getVisitsProjectSubproject();
+        $visits = $this->visitController->getVisitsProjectCohort();
         $this->assertEquals(
             $this->listOfVisitProject,
             $visits,
-            "the project subproject relation does not match value in DB"
+            "the project cohort relation does not match value in DB"
         );
     }
 

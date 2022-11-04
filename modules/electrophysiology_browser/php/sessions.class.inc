@@ -205,7 +205,7 @@ class Sessions extends \NDB_Page
         $subjectData['site']        = $this->timepoint->getPSC();
         $subjectData['dob']         = $candidate->getCandidateDoB();
         $subjectData['sex']         = $candidate->getCandidateSex();
-        $subjectData['subproject']  = $this->timepoint->getData('SubprojectTitle');
+        $subjectData['cohort']  = $this->timepoint->getData('CohortTitle');
         $subjectData['output_type'] = $outputType;
 
         return $subjectData;
@@ -461,9 +461,9 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
         $fileSummary['epochsURL']   = $db->pselectOne(
-            "SELECT FilePath 
+            "SELECT FilePath
             FROM physiological_event_file
-            WHERE PhysiologicalFileID=:physioFileID 
+            WHERE PhysiologicalFileID=:physioFileID
             AND FileType='tsv'",
             ['physioFileID' => $physioFileID]
         );

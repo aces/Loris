@@ -94,7 +94,7 @@ class Test implements
             'AgeMinDays'   => $this->row['ageMinDays']      ?? null,
             'AgeMaxDays'   => $this->row['ageMaxDays']      ?? null,
             'Stage'        => $this->row['stage']           ?? null,
-            'SubprojectID' => $this->row['subproject']      ?? null,
+            'CohortID' => $this->row['cohort']      ?? null,
             'Visit_label'  => $this->row['visitLabel']      ?? null,
             'CenterID'     => $this->row['centerId']        ?? null,
             'firstVisit'   => $this->row['firstVisit']      ?? null,

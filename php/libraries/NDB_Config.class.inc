@@ -21,7 +21,7 @@
  * table, etc to get the value of the setting.
  *
  * Some special variables that have their own database table (ie. MenuTabs
- * or Subprojects) have special static functions to get the specific settings.
+ * or Cohorts) have special static functions to get the specific settings.
  *
  * @category Main
  * @package  Loris
@@ -462,24 +462,24 @@ class NDB_Config
     }
 
     /**
-     * Get list of Subprojects for this project, given a subprojectID.
+     * Get list of Cohorts for this project, given a cohortID.
      * This is differentiated from the default getSetting() because
-     * Subprojects will probably eventually get their own table instead
+     * Cohorts will probably eventually get their own table instead
      * of coming from config.xml
      *
-     * @param integer $subprojectID The subprojectID we want the settings
+     * @param integer $cohortID The cohortID we want the settings
      *                              for
      *
-     * @return array of settings for this subprojectID
+     * @return array of settings for this cohortID
      */
-    function getSubprojectSettings(int $subprojectID): array
+    function getCohortSettings(int $cohortID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         $info = $DB->pselectRow(
-            "SELECT * FROM subproject WHERE SubprojectID=:sp",
-            ['sp' => $subprojectID]
+            "SELECT * FROM cohort WHERE CohortID=:sp",
+            ['sp' => $cohortID]
         );
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
@@ -487,7 +487,7 @@ class NDB_Config
         if (!empty($info)) {
             $x = $info['WindowDifference'];
             return [
-                'id'                => $info['SubprojectID'],
+                'id'                => $info['CohortID'],
                 'title'             => $info['title'],
                 'options'           => [
                     'useEDC'           => $info['useEDC'],

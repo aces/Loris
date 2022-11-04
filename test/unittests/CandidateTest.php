@@ -553,24 +553,24 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test Candidate::getValidSubprojects returns a list
-     * of valid subprojects for a specific project
+     * Test Candidate::getValidCohorts returns a list
+     * of valid cohorts for a specific project
      *
-     * @covers Candidate::getValidSubprojects
+     * @covers Candidate::getValidCohorts
      * @return void
      */
-    public function testGetValidSubprojectsReturnsAListOfSubprojects()
+    public function testGetValidCohortsReturnsAListOfCohorts()
     {
-        $subprojects = [
-            ['SubprojectID' => 1],
-            ['SubprojectID' => 2]
+        $cohorts = [
+            ['CohortID' => 1],
+            ['CohortID' => 2]
         ];
         //$this->_setUpTestDoublesForSelectCandidate();
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
-        $expectedSubprojects = [
+        $expectedCohorts = [
             1 => 1,
             2 => 2
         ];
@@ -580,55 +580,55 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT SubprojectID
-                    FROM project_subproject_rel
+                    "SELECT CohortID
+                    FROM project_cohort_rel
                     WHERE ProjectID = :prj"
                 )
             )
             ->willReturn(
-                $subprojects
+                $cohorts
             );
         $this->assertEquals(
-            $expectedSubprojects,
-            $this->_candidate->getValidSubprojects()
+            $expectedCohorts,
+            $this->_candidate->getValidCohorts()
         );
     }
 
     /**
-     * Test getValidSubprojects returns array() when there are no subprojects
+     * Test getValidCohorts returns array() when there are no cohorts
      * in DB.
      *
-     * @covers Candidate::getValidSubprojects
+     * @covers Candidate::getValidCohorts
      * @return void
      */
-    public function testGetValidSubprojectsReturnsEmptyArray(): void
+    public function testGetValidCohortsReturnsEmptyArray(): void
     {
-        $subprojects = [];
+        $cohorts = [];
         $this->_setUpTestDoublesForSelectCandidate();
 
         $this->_dbMock->expects($this->exactly(2))
             ->method('pselect')
             ->willReturn(
-                $subprojects
+                $cohorts
             );
 
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->assertEquals($this->_candidate->getValidSubprojects(), []);
+        $this->assertEquals($this->_candidate->getValidCohorts(), []);
     }
 
     /**
-     * Test getSubprojectForMostRecentVisit returns most recent visit's label
+     * Test getCohortForMostRecentVisit returns most recent visit's label
      *
-     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @covers Candidate::getCohortForMostRecentVisit
      * @return void
      */
-    public function testGetSubprojectForMostRecentVisitReturnsMostRecentVisitLabel()
+    public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
     {
-        $subproject = [
+        $cohort = [
             [
-                'SubprojectID' => 1,
-                'title'        => 'testSubproject'
+                'CohortID' => 1,
+                'title'        => 'testCohort'
             ]
         ];
         $this->_dbMock->expects($this->once())
@@ -641,34 +641,34 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT SubprojectID, title"
+                    "SELECT CohortID, title"
                 )
             )
             ->willReturn(
-                $subproject
+                $cohort
             );
 
-        $expectedSubproject = [
-            'SubprojectID' => 1,
-            'title'        => 'testSubproject'
+        $expectedCohort = [
+            'CohortID' => 1,
+            'title'        => 'testCohort'
         ];
 
         $this->assertEquals(
-            $expectedSubproject,
-            $this->_candidate->getSubprojectForMostRecentVisit()
+            $expectedCohort,
+            $this->_candidate->getCohortForMostRecentVisit()
         );
     }
 
     /**
-     * Test getSubprojectForMostRecentVisit returns null if there is
+     * Test getCohortForMostRecentVisit returns null if there is
      * no visit with a Date_visit
      *
-     * @covers Candidate::getSubprojectForMostRecentVisit
+     * @covers Candidate::getCohortForMostRecentVisit
      * @return void
      */
-    public function testGetSubprojectForMostRecentVisitReturnsNull()
+    public function testGetCohortForMostRecentVisitReturnsNull()
     {
-        $subproject = [];
+        $cohort = [];
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -679,14 +679,14 @@ class CandidateTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "SELECT SubprojectID, title"
+                    "SELECT CohortID, title"
                 )
             )
-            ->willReturn($subproject);
+            ->willReturn($cohort);
 
         $this->assertEquals(
             null,
-            $this->_candidate->getSubprojectForMostRecentVisit()
+            $this->_candidate->getCohortForMostRecentVisit()
         );
     }
 

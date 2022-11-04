@@ -147,12 +147,12 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: false,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.Subprojects,
+          options: options.Cohorts,
         },
       },
       {

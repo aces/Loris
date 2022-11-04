@@ -53,7 +53,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     static $DCCID      = 'input[name="DCCID"]';
     static $PSCID      = 'input[name="PSCID"]';
     static $sex        = 'select[name="Sex"]';
-    static $subproject = 'select[name="Subproject"]';
+    static $cohort = 'select[name="Cohort"]';
     static $externID   = 'input[name="External ID"]';
     static $file       = 'select[name="File"]';
     static $SNP        = 'select[name="SNPs found"]';

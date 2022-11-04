@@ -67,7 +67,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
         $body        = [
             'data'         => $data,
             'fieldOptions' => $this->_getFieldOptions($request),
-            'subprojects'  => \Utility::getSubprojectList(),
+            'cohorts'  => \Utility::getCohortList(),
         ];
         return new \LORIS\Http\Response\JsonResponse($body);
     }
@@ -107,7 +107,7 @@ class Behavioural extends \NDB_Page implements ETagCalculator
             $visit_array,
             \Utility::getAllInstruments(),
             $projects,
-            \Utility::getSubprojectList(),
+            \Utility::getCohortList(),
             $list_of_sites
         ))->toArray();
     }

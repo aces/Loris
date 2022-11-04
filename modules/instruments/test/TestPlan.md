@@ -54,7 +54,7 @@ instrument for that candidate. Enter a date (same a step 4) posterior to the DoD
 ### Visit the Candidate Dashboard module.
    1. Candidate Widget - "Behavioural Data" for Candidate instruments entry.
       - Ensure the appropriate visit labels are visible for the candidate. 
-      - The visit status, subproject status, site, date of visit, and age should be shown.
+      - The visit status, cohort status, site, date of visit, and age should be shown.
       - Clicking on a visit should redirect to the instrument_list module for the candidate.
       - Test making a new Time Point for a candidate and assign an instrument to the time point. 
         The Behavioural Data widget should update accordingly.

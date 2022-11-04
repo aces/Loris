@@ -122,8 +122,8 @@ class Imaging_QC extends \NDB_Menu_Filter
               " ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project,".
-            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
-           as subproject,".
+            " (SELECT title FROM cohort WHERE CohortID=s.CohortID)
+           as cohort,".
             " CASE
               WHEN f.Required_elements_completed='N' THEN 'Incomplete'
               ELSE 'Complete'
@@ -211,12 +211,12 @@ class Imaging_QC extends \NDB_Menu_Filter
         foreach (array_values($projectList) as $value) {
             $projectList2[$value] = $value;
         }
-        $subprojectList  = \Utility::getSubprojectList();
-        $subprojectList2 = [];
-        foreach (array_values($subprojectList) as $value) {
-            $subprojectList2[$value] = $value;
+        $cohortList  = \Utility::getCohortList();
+        $cohortList2 = [];
+        foreach (array_values($cohortList) as $value) {
+            $cohortList2[$value] = $value;
         }
-        //print_r($subprojectList2);
+        //print_r($cohortList2);
         $uploaderList = [];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -236,7 +236,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             = [
                 'site'             => $siteList,
                 'project'          => $projectList2,
-                'subproject'       => $subprojectList2,
+                'cohort'       => $cohortList2,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
                     "Incomplete" => "Incomplete",
@@ -319,7 +319,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             'cand_id',
             'site',
             'project',
-            'subproject',
+            'cohort',
             'visit_label',
             'scan_type',
             'mri_parameter_form',
@@ -338,7 +338,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             cand_id,
             site,
             project,
-            subproject,
+            cohort,
             visit_label,
             scan_type,
             mri_parameter_form,

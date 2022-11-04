@@ -102,7 +102,7 @@ function populateVisitLabel($result, $visit_label)
     //To assign missing instruments to all sessions, sent to DCC or not.
     $defined_battery =$battery->lookupBattery(
         $battery->age,
-        $result['subprojectID'],
+        $result['cohortID'],
         $timePoint->getCurrentStage(),
         $visit_label,
         $timePoint->getCenterID(),
@@ -135,7 +135,7 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query ="SELECT s.ID, s.subprojectID, s.CandID from session
+    $query ="SELECT s.ID, s.cohortID, s.CandID from session
             s LEFT JOIN candidate c USING (CandID)
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
@@ -146,7 +146,7 @@ if (isset($visit_label)) {
         populateVisitLabel($result, $visit_label);
     }
 } else if (isset($visit_labels)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s
+    $query   ="SELECT s.ID, s.cohortID, s.Visit_label, s.CandID from session s
             LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y'
             AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
     $results = $DB->pselect($query, []);

@@ -528,7 +528,7 @@ class NDB_BVL_Feedback
         if (!empty($this->_feedbackObjectInfo['SessionID'])
             || !empty($this->_feedbackObjectInfo['CommentID'])
         ) {
-            $query .= ", s.VisitNo as Visit, s.SubprojectID, s.ID as SessionID";
+            $query .= ", s.VisitNo as Visit, s.CohortID, s.ID as SessionID";
         }
 
         $query .= ", ft.FeedbackID,

@@ -862,8 +862,8 @@ class ViewSession extends \NDB_Form
 
         $subjectData = [];
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
-        $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
-        $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
+        $subjectData['CohortID']    = $timePoint->getCohortID();
+        $subjectData['CohortTitle'] = $timePoint->getData('CohortTitle');
         $subjectData['visitLabel']      = $timePoint->getVisitLabel();
         $subjectData['visitNo']         = $timePoint->getVisitNo();
         $subjectData['site']            = $timePoint->getPSC();
