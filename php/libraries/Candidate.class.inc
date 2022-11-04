@@ -113,16 +113,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         // We need to refer to these when instantiating the CandidateData
         // object after Timepoints have been selected, but by then $row
-        // will have been overwritten, so put them in other variables..
-        $registrationProjectID = new \ProjectID($row['RegistrationProjectID']);
-        $registrationCenterID  = $row['RegistrationCenterID'];
+        // will have been overwritten, so put them in other variables.
+        // Initialize them to null, they should get set in the foreach loop.
+        $registrationProjectID = null;
+        $registrationCenterID  = null;
 
         // store user data in object property
         foreach ($row as $key=>$value) {
             switch ($key) {
-            case 'RegistrationProjectID':
-            case 'RegistrationCenterID':
-                break;
             case 'Sex':
                 $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
                 break;
@@ -130,10 +128,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $this->candidateInfo[$key] = new EntityType($value);
                 break;
             case 'RegistrationProjectID':
-                $this->candidateInfo[$key] = new \ProjectID($value);
+                $registrationProjectID     = new \ProjectID($value);
+                $this->candidateInfo[$key] = $registrationProjectID;
                 break;
             case 'RegistrationCenterID':
-                $this->candidateInfo[$key] = new \CenterID($value);
+                $registrationCenterID      = new \CenterID($value);
+                $this->candidateInfo[$key] = $registrationCenterID;
                 break;
             default:
                 $this->candidateInfo[$key] = $value;
@@ -215,7 +215,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $this->data = new CandidateData(
             $candID,
             $registrationProjectID,
-            new \CenterID($registrationCenterID),
+            $registrationCenterID,
             $timepoints,
         );
         $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
@@ -409,7 +409,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return array_map(
             function ($timepoint) {
-                return intval($timepoint->getSessionID());
+                return intval(
+                    strval($timepoint->getSessionID())
+                );
             },
             $this->data->timepoints,
         );
@@ -427,7 +429,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         $timepoints = $this->data->timepoints;
         if (isset($timepoints[$visitNo-1]) ) {
-            return intval($timepoints[$visitNo-1]);
+            return intval(
+                strval($timepoints[$visitNo-1]->getSessionID())
+            );
         }
 
         return null;
