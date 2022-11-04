@@ -328,15 +328,16 @@ class FieldList extends Component {
       }
     }
 
-    return (
+    return filteredItems.length > 0 ? (
       <div className="list-group col-md-11 col-sm-12">
-        <PaginationLinks Total={filteredItems.length}
-                         Active={this.props.PageNumber}
-                         onChangePage={this.props.changePage}
-                         RowsPerPage={rowsPerPage}/>
+          <PaginationLinks
+            total={filteredItems.length}
+            active={this.props.PageNumber}
+            onChangePage={this.props.changePage}
+            rowsPerPage={rowsPerPage}/>
         {fields}
       </div>
-    );
+    ) : null;
   }
 }
 
