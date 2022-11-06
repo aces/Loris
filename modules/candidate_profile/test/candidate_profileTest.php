@@ -39,7 +39,6 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
             "Candidate Dashboard 900000 / TST0001",
             $bodyText
         );
-        $this->assertStringContainsString("Acknowledgements", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
