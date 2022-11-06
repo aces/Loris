@@ -42,7 +42,6 @@ class CandidateParametersTestIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Candidate Parameters", $bodyText);
-        $this->assertStringContainsString("Acknowledgements", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
