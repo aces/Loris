@@ -17,7 +17,11 @@ security:
 paths:
   /queries:
     get:
+<<<<<<< HEAD
       summary: Get a list of a recent, shared, and study (top) queries for the current user.
+=======
+      summary: Get a list of a recent, shared, and study (top) queries to display.
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
       responses:
         '200':
           description: Successfully operation
@@ -34,7 +38,11 @@ paths:
         content:
           application/json:
             schema:
+<<<<<<< HEAD
               $ref: '#/components/schemas/QueryObject'
+=======
+              $ref: '#/components/schemas/Query'
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
       responses:
         '200':
           description: Query successfully created
@@ -54,6 +62,7 @@ paths:
                 properties:
                   error:
                     type: string
+<<<<<<< HEAD
   /queries/runs:
     get:
       summary: Get a list of a recent, query runs for the current user.
@@ -64,6 +73,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QueryRunList'
+=======
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
   /queries/{QueryID}:
     parameters:
       - name: QueryID
@@ -90,6 +101,7 @@ paths:
           style: spaceDelimited
           schema:
             type: boolean
+<<<<<<< HEAD
           description: if true, the query will be shared. If false, it will be unshared
         - name: star
           in: query
@@ -120,6 +132,38 @@ paths:
           description: The access was performed
         '403':
           description: The access was not performed because of permissions being denied.
+=======
+          
+        - name: unshare
+          in: query
+          style: spaceDelimited
+          schema:
+            type: boolean
+        - name: star
+          in: query
+          style: spaceDelimited
+          schema:
+            type: boolean
+        - name: unstar
+          in: query
+          style: spaceDelimited
+          schema:
+            type: boolean
+        - name: type
+          in: query
+          style: spaceDelimited
+          schema:
+            type: string
+            enum: ['top', 'untop', 'dashboard']
+        - name: name
+          in: query
+          style: pipeDelimited
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Bad request. Most likely caused by one or more incompatible patches to be done at the same time.
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
   /queries/{QueryID}/run:
     parameters:
       - name: QueryID
@@ -129,11 +173,19 @@ paths:
         style: simple
         schema:
           type: integer  
+<<<<<<< HEAD
     post:
       description: |- 
         Run the query QueryID and returns the results. 
         
         This endpoint will result in a new query run being generated, which will be returned in the queries of the user on the /queries endpoint.
+=======
+    get:
+      description: |- 
+        Run the query QueryID and returns the results. 
+        
+        This endpoint will result in a new query run being generated, which will be returned in the 'recent' queries of the user on the /queries endpoint.
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
       responses:
         '200':
           description: The query was able to be successfully run
@@ -202,6 +254,7 @@ components:
     AllQueries:
       type: object
       properties:
+<<<<<<< HEAD
         queries:
           type: array
           items:
@@ -236,6 +289,30 @@ components:
         Name:
           type: string
           description: The name given by the current user for this query
+=======
+        recent:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryRun'
+        shared:
+          type: array
+          items:
+            $ref: '#/components/schemas/Query'
+        topqueries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Query'
+
+    Query:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ['candidates']
+          example: "candidates"
+        Name:
+          type: string
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
           example: "My Query"
         SharedBy:
           type: array
@@ -244,6 +321,7 @@ components:
             example: "admin"
         Starred:
           type: boolean
+<<<<<<< HEAD
           description: The query has been starred by the user
         Public:
           type: boolean
@@ -276,6 +354,30 @@ components:
           type: integer
           description: A reference to the run number of this query
           example: 4
+=======
+        Shared:
+          type: boolean
+        QueryID:
+          type: integer
+          example: 3
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryField'
+        criteria:
+          $ref: '#/components/schemas/QueryCriteriaGroup'
+      required:
+        - type
+        - fields
+    QueryRun:
+      type: object
+      properties:
+        RunTime:
+          type: string
+          example: "2022-11-02 15:34:38"
+        Query:
+          $ref: '#/components/schemas/Query'
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
     QueryField:
       type: object
       properties:
@@ -297,6 +399,7 @@ components:
         - module
         - category
         - field
+<<<<<<< HEAD
     QueryObject:
       type: object
       description: A set of filters and fields used to determine what is being queried.
@@ -314,6 +417,8 @@ components:
       required:
         - type
         - fields
+=======
+>>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
     QueryCriteriaGroup:
       type: object
       description: An and/or group used for filtering, all items in the group must be the same operator (but an item in the group may be a query criteria subgroup using a different operator)
