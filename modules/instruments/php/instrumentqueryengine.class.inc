@@ -13,8 +13,6 @@
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\instruments;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 use LORIS\StudyEntities\Candidate\CandID;
 
 /**
@@ -105,7 +103,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $testname  = null;
         $fieldname = null;
-        $fullname  = $term->getDictionaryItem()->getName();
+        $fullname  = $term->dictionary->getName();
         foreach ($rows as $testcandidate) {
             if (strpos($fullname, $testcandidate) === 0) {
                 $testname  = $testcandidate;
@@ -135,13 +133,13 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             $query .= ')';
         }
         $data   = $DB->pselect($query, $queryparams);
-        $inst   = \NDB_BVL_Instrument::factory($testname);
+        $inst   = \NDB_BVL_Instrument::factory($this->loris, $testname);
         $values = $inst->bulkLoadInstanceData(
             array_map(
                 function ($row) {
                     return $row['CommentID'];
                 },
-                $data
+                $data,
             )
         );
 
@@ -149,7 +147,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($data as $row) {
             $map[$row['CommentID']] = new CandID($row['CandID']);
         }
-        return $this->_filtered($values, $map, $fieldname, $term->getCriteria());
+        return $this->_filtered($values, $map, $fieldname, $term->criteria);
     }
 
     /**
@@ -299,7 +297,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * @param iterable $candidates Candidates whose data we want
      * @param ?array   $visitlist  List of visits that we want data for
      *
-     * @return iterable CandID => items data
+     * @return \LORIS\Data\DataInstance[]
      */
     public function getCandidateData(
         array $items,
@@ -340,7 +338,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             );"
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
-            . join('),(', $candidates)
+            . join('),(', iterator_to_array($candidates))
             . ')';
 
         $q = $DB->prepare($insertstmt);
@@ -394,12 +392,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * Merge the iterators for each instrument into a single iterator for the
      * candidate.
      *
-     * @param string[]   $candidates The list of CandIDs that were expected to
+     * @param iterable     $candidates The list of CandIDs that were expected to
                                      be returned
-     * @param iterable[] $iterators  An iterator for each instrument, may or
+     * @param \Generator[] $iterators  An iterator for each instrument, may or
      *                               may not have every CandID
      *
-     * @return iterable
+     * @return \Generator
      */
     private function _mergeIterators($candidates, $iterators)
     {
@@ -408,7 +406,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             // put it in the appropriate columns.
             $candidateData = [];
             $candIDStr     = "$candID";
-            foreach ($iterators as $instrumentName => $instrData ) {
+            foreach ($iterators as $instrData) {
                 if (!$instrData->valid()) {
                     continue;
                 }
@@ -463,7 +461,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             $candData = [];
             $iCandID  = $commentID2CandID[$loadedInstrument->getCommentID()];
 
-            foreach ($items as $idx => $dict) {
+            foreach ($items as $dict) {
                 $fieldinst = $field2instMap[$dict->getName()];
                 if ($fieldinst  == $loadedInstrument->testName) {
                     if (!isset($candData[$dict->getName()])) {
