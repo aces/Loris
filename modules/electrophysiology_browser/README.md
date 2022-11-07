@@ -44,7 +44,7 @@ electrode information, task event information, the actual recording) -- as well 
 New annotations or edits to existing annotations made through the browser must also be updated in the derivative files stored in the filesystem, before a user tries to download a derivative file package. To do this automatically, a script is provided under `tools/update_annotation_files.php`, and a cron job should be set up to execute it regularly, e.g. every evening. 
 
 ## <a name="installation-requirements-to-use-the-visualization-features"></a> Installation requirements to use the visualization features
-The visualization component requires Protocol Buffers v3.0.0 or higher.
+The visualization component requires Protocol Buffers v3.0.0 or higher (v3.x.x recommended).
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
 
 In order to automatically generate the protoc compiled files, add the following block in `modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json`: 
@@ -54,6 +54,8 @@ In order to automatically generate the protoc compiled files, add the following 
 }
 ```
 and run `make dev` or 'npm install && npm run compile' from the loris root directory.
+
+> Note: for versions `>3.20.x`, Protobuf changed its [naming convention to match each language](https://developers.google.com/protocol-buffers/docs/news/2022-05-06#versioning). Once compiled, check version e.g. installed versions `v21.8` displays `protoc --version` as `v3.21.8`.
 
 ### Troubleshooting: error when trying to use Protobuf v21 and higher
 
