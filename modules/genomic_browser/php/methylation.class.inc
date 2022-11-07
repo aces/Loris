@@ -85,7 +85,7 @@ class Methylation extends \DataFrameworkMenu implements ETagCalculator
 
         return (new \LORIS\genomic_browser\Views\Methylation(
             $this->getSiteOptions($user, false),
-            $this->getSubprojectOptions($user),
+            $this->getCohortOptions($user),
         ))->toArray();
     }
 

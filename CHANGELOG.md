@@ -8,6 +8,70 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 25.0 (Release Date: ????-??-??)
+### Core
+#### Features
+- placeholder 
+
+#### Updates and Improvements
+- Rename subproject to Cohort (PR #7817)
+- Create new CohortData and CohortController classes to use as data access model 
+  and transfer object (PR #7817)
+- 
+
+#### Bug Fixes
+- placeholder
+
+### Modules
+#### ModuleName
+- placeholder
+
+### Tools
+- placeholder
+
+### Clean Up
+- placeholder
+
+### Notes For Existing Projects
+- placeholder
+
+
+### Notes For Developers
+- placeholder
+
+
+
+
+## LORIS 24.1 (Release Date: 2022-10-05)
+### Core
+#### Updates and Improvements
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `mri_protocol`
+  and `mri_protocol_violated_scans` tables to allow for better discrimination between some
+  MRI sequences.
+- Addition of `PhaseEncodingDirection` and `EchoNumber` columns to the `files`, `files_qcstatus`
+  and `feedback_mri_comments` tables to ensure uniqueness keys for specific GE sequences for
+  which the `SeriesUID/EchoTime` combination is not enough (PR #8152).
+- Addition of `image_type`, `PhaseEncodingDirection` and `EchoNumber` fields to the tables
+  present in the "Could not identify scan" page of the MRI violation module (PR #8156)
+- Modification of the list of headers displayed in the image panel headers table (PR #8157)
+#### Bug Fixes
+- Bug fix to the imaging uploader so that when clicking on an upload row, the row is
+  highlighted and the proper log is being displayed in the log viewer (PR #8154)
+- Remove SNR label from the image panel of the imaging browser when no SNR values can
+  be found for the image (PR #8155)
+- Add the missing download buttons for BVAL, BVEC and JSON files that comes with BIDS/NIfTI
+  dataset/images. In addition, the "Download MINC" button has been renamed to a more generic
+  label "Download Image" (PR #8159)
+- Fix ConfigurationException bug (PR #8107)
+- Fix PHP fatal error when running the LORIS installation script (PR #8108)
+- Add psr/log to composer (PR #8109)
+- Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
+- Add support for PHP 8.1 (PR #7989)
+### Modules
+#### API
+- Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
+
+
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
 #### Features
@@ -39,7 +103,7 @@ on the naming format of a Basic Date or `MonthYear` field. (PR #6923)
 - React Form Select Element now has the ability to set an option in the element 
 as a disabled option. (PR #7306)
 - Pending accounts in Dashboard now includes DCC users (PR #7054)
-- Subproject filter added to Behavioural QC module (PR #7430)
+- Cohort filter added to Behavioural QC module (PR #7430)
 - Addition of `date_format` as a DataType in ConfigSettings (PR #6719)
 - Addition of new tables to store PET HRRT data (PR #6142)
 - Modification of the `parameter_file` table's `Value` field type to `longtext` (PR #7392)
@@ -124,7 +188,7 @@ inefficient code and conditional display of select options based on previous sel
 - The dataquery module user interface has been completely redesigned. (PR #6908)
 #### EEG Browser
 - Signal Visualization, Events and Electrode map (PR #7387)
-- Site/Project/subproject filters only displays entries user has permission for. (PR #7400)
+- Site/Project/cohort filters only displays entries user has permission for. (PR #7400)
 - Addition of tables in the SQL schema, a filter on the main page of the module, and a download button 
 on the session page to support new annotation features (PR #7345)
 - New integration test class added to this module (PR #6922)
@@ -170,7 +234,7 @@ user name match email address" and "Generate new password". (PR #6803)
 - New tool `generate_candidate_externalids.php` to fill external IDs for all 
 candidates where a NULL value is found. (PR #7095)
 - New tool `populate_visits.php` to back-populate visits from the `config.xml`, 
-`session` table and `Visit_Windows` table into the `visit` and `visit_project_subproject_rel` (#7663)
+`session` table and `Visit_Windows` table into the `visit` and `visit_project_cohort_rel` (#7663)
 - Deprecation of the `populate_visit_windows.php` tool in favour of `populate_visits.php` (#7663)
 - Fixes a bug in the way that the data dictionary entries associated to MRI comments were named in the CouchDB database (PR #7082).
 
@@ -196,8 +260,8 @@ scanners, then `ScannerID` of the protocol should be set to `NULL` (PR #7496)
 - The `RegistrationProjectID` column of the candidate table and the `ProjectID` column of the session table 
 in the database are no longer nullable. This means that a value must be set in these fields BEFORE running 
 the release SQL patch or it will fail.
-- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getSubprojectIDUsingCandID`, 
-adding the ability to determine which subproject a candidate belongs to given their most recent visit.
+- New function `Candidate::getSubjectForMostRecentVisit` replaces `Utility::getCohortIDUsingCandID`, 
+adding the ability to determine which cohort a candidate belongs to given their most recent visit.
 - LINST instrument class was modified to implement the `getFullName()` and `getSubtestList()`
 functions thus making entries in the `test_names` and `instrument_subtests` tables 
 unnecessary for LINST instruments (PR #7169)
@@ -314,7 +378,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 - Projects filter only displays projects user has permission for. (PR #6706)
 
 #### Genomic Browser
-- In Profile and SNP screens, display subproject title instead of id. (PR #6633)
+- In Profile and SNP screens, display cohort title instead of id. (PR #6633)
 
 #### Survey
 - Fix Notice error logs and infinite redirect. (PR #6644)

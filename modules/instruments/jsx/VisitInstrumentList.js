@@ -268,7 +268,7 @@ class VisitInstrumentList extends Component {
                 <div>
                 <dl style={defliststyle}>
                     <div style={termstyle}>
-                        <dt>Subproject</dt>
+                        <dt>Cohort</dt>
                         <dd>{this.props.Visit.Meta.Battery}</dd>
                     </div>
                     <div style={termstyle}>

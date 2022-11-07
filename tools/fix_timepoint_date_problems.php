@@ -270,7 +270,7 @@ case 'diagnose':
         fwrite(
             STDERR,
             "\n Timepoint ".$timePoint->getVisitLabel()." ; SubProjectID: "
-            .$timePoint->getSubprojectID()." ; Effective DOB: "
+            .$timePoint->getCohortID()." ; Effective DOB: "
             .$timePoint->getEffectiveDateOfBirth().
             " ; (SessionID): $sessionID \n"
         );
@@ -662,7 +662,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     $stageList['screening']['date']   = $timePoint->getDateOfScreening();
     $stageList['visit']['status']     = $timePoint->getVisitStatus();
     $stageList['visit']['date']       = $timePoint->getDateOfVisit();
-    $subProjectID = $timePoint->getSubprojectID();
+    $subProjectID = $timePoint->getCohortID();
 
     // define the date of birth to use (dob or edc)
     if (($dateType=='dob' && $subProjectID==1)

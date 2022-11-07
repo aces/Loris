@@ -69,10 +69,10 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -97,14 +97,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '222222',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => '',
-                'SubprojectID' => '55',
-                'Active'       => 'Y',
+                'ID'          => '222222',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => '',
+                'CohortID'    => '55',
+                'Active'      => 'Y',
             ]
         );
         $this->DB->insert(
@@ -288,8 +288,8 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "Project",

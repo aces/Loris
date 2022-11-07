@@ -55,7 +55,7 @@ class Module extends \Module
             SELECT PatientName    AS PatientName,
                    time_run       AS TimeRun,
                    s.ProjectID    AS Project,
-                   s.SubprojectID AS Subproject,
+                   s.CohortID AS Cohort,
                    minc_location  AS MincFile,
                    series_description AS Series_Description,
                    'Could not identify scan type' AS Problem,
@@ -90,7 +90,7 @@ class Module extends \Module
             SELECT PatientName,
                    TimeRun,
                    s.ProjectID AS Project,
-                   s.SubprojectID AS Subproject,
+                   s.CohortID AS Cohort,
                    MincFile,
                    mri_scan_type.Scan_type,
                    'Protocol Violation',
@@ -107,7 +107,7 @@ class Module extends \Module
             FROM mri_violations_log AS mrl
             LEFT JOIN mri_scan_type ON (mri_scan_type.ID=mrl.Scan_type)
             LEFT JOIN violations_resolved ON (
-                  violations_resolved.ExtID=mrl.LogID 
+                  violations_resolved.ExtID=mrl.LogID
               AND violations_resolved.TypeTable='mri_violations_log'
             )
             LEFT JOIN candidate c ON (mrl.CandID=c.CandID)
@@ -151,10 +151,10 @@ class Module extends \Module
               $mriViolationsLogSubquery
               UNION
               $mriCandidateErrorsSubquery
-            ) AS v 
-            LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            ) AS v
+            LEFT JOIN psc site ON (site.CenterID = v.Site)
             LEFT JOIN Project AS pjct ON (v.Project = pjct.ProjectID)
-            LEFT JOIN subproject AS subpjct ON (v.Subproject = subpjct.SubprojectID)
+            LEFT JOIN cohort AS subpjct ON (v.Cohort = subpjct.CohortID)
             WHERE $siteClause
         ";
 

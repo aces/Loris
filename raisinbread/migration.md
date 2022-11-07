@@ -83,7 +83,7 @@ ________________________________________________________________________________
 2019-04-30-project-rel-rename.sql
 2019-07-01_add_projects_to_sessions.sql
 2019-07-04-remove_header_row_from_parameter_file_and_convert_back_to_Value_field_to_text.sql
-2019-07-10-subproject-session-FK.sql
+2019-07-10-cohort-session-FK.sql
 2019-07-17_remove_mri_acquisition_dates_table.sql
 2019-08-05-add_projects_to_users.sql
 2019-10-01_Rename-media-column.sql

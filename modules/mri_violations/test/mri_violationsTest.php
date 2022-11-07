@@ -59,10 +59,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -88,27 +88,27 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '9888',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit_label'  => 'Test1',
+                'ID'          => '9888',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit_label' => 'Test1',
             ]
         );
         $this->DB->insert(
             "session",
             [
-                'ID'           => '9777',
-                'CandID'       => '999777',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '2',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit_label'  => 'Test2',
+                'ID'          => '9777',
+                'CandID'      => '999777',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '2',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit_label' => 'Test2',
             ]
         );
 
@@ -287,8 +287,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ['ExtID' => '1002']
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "psc",

@@ -155,10 +155,10 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Control");
+        $Cohort->sendKeys("Control");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
@@ -193,10 +193,10 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Fresh");
+        $Cohort->sendKeys("Fresh");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")

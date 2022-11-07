@@ -54,7 +54,7 @@ class DataConflicts extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
           };
           this.setState({
             data,
@@ -209,12 +209,12 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: false,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.subprojects,
+          options: options.cohorts,
         },
       },
       {

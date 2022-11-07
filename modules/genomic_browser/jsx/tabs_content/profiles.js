@@ -177,12 +177,12 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: true,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.Subprojects,
+          options: options.Cohorts,
         },
       },
       {

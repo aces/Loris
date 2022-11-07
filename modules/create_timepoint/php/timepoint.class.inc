@@ -77,21 +77,21 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values['project'] = $projectOptions;
         $values['psc']     = \Utility::getSiteNameListByIDs($user->getCenterIDs());
 
-        //Subprojects should be determined by project options
+        //Cohorts should be determined by project options
         //Nested array of valid suprojects grouped by projects
-        $subprojectGroups = [];
+        $cohortGroups = [];
         foreach ($projectOptions as $pid=>$pname) {
-            $subprojectGroups[$pid] = \Utility::getSubprojectList(
+            $cohortGroups[$pid] = \Utility::getCohortList(
                 new \ProjectID(strval($pid))
             );
         }
-        $values['subprojectGroups'] = $subprojectGroups;
+        $values['cohortGroups'] = $cohortGroups;
 
-        //Visits are determined by subproject-project associations.
+        //Visits are determined by cohort-project associations.
         $visitGroups = [];
-        foreach ($subprojectGroups as $pid=>$subprojectList) {
-            foreach ($subprojectList as $sid=>$title) {
-                $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectSubproject(
+        foreach ($cohortGroups as $pid=>$cohortList) {
+            foreach ($cohortList as $sid=>$title) {
+                $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectCohort(
                     new \ProjectID(strval($pid)),
                     $sid
                 );
@@ -108,7 +108,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                $conflict['subprojectID']
+                $conflict['cohortID']
             );
         }
         if (empty($values['psc'])) {
@@ -176,9 +176,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectSubproject(
+        $visits     = \Utility::getVisitsForProjectCohort(
             $project->getId(),
-            intval($values['subproject'])
+            intval($values['cohort'])
         );
         $visitLabel = $visits[$values['visit']];
         $visitName  = (new VisitController(
@@ -187,7 +187,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
 
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
-            intval($values['subproject']),
+            intval($values['cohort']),
             $visitName,
             $site,
             $project,
@@ -263,14 +263,14 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 = "A project must be selected from the available dropdown.";
         }
 
-        $candid       = $values['candID'];
-        $subprojectID = intval($values['subproject']);
-        $projectID    = new \ProjectID($values['project']);
+        $candid    = $values['candID'];
+        $cohortID  = intval($values['cohort']);
+        $projectID = new \ProjectID($values['project']);
 
         //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectSubproject(
+        $visits     = \Utility::getVisitsForProjectCohort(
             $projectID,
-            intval($values['subproject'])
+            intval($values['cohort'])
         );
         $visitLabel = $visits[$values['visit']];
         $visitName  = (new VisitController(
@@ -281,7 +281,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
                 $projectID,
-                $subprojectID,
+                $cohortID,
                 $visitName,
             );
         } catch (\LorisException $exception) {
