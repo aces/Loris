@@ -86,7 +86,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $testname  = null;
         $fieldname = null;
-        $fullname  = $term->getDictionaryItem()->getName();
+        $fullname  = $term->dictionary->getName();
         foreach ($rows as $testcandidate) {
             if (strpos($fullname, $testcandidate) === 0) {
                 $testname  = $testcandidate;
@@ -122,7 +122,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 function ($row) {
                     return $row['CommentID'];
                 },
-                $data
+                $data,
             )
         );
 
@@ -130,7 +130,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($data as $row) {
             $map[$row['CommentID']] = new CandID($row['CandID']);
         }
-        return $this->_filtered($values, $map, $fieldname, $term->getCriteria());
+        return $this->_filtered($values, $map, $fieldname, $term->criteria);
     }
 
     /**
@@ -280,7 +280,11 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * @param iterable $candidates Candidates whose data we want
      * @param ?array   $visitlist  List of visits that we want data for
      *
+<<<<<<< HEAD
      * @return iterable<string, \LORIS\Data\DataInstance>
+=======
+     * @return \LORIS\Data\DataInstance[]
+>>>>>>> 537f7915c (phan)
      */
     public function getCandidateData(
         array $items,
@@ -321,8 +325,11 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             );"
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
+<<<<<<< HEAD
         /* see https://github.com/phan/phan/issues/4746
          * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
+=======
+>>>>>>> 537f7915c (phan)
             . join('),(', iterator_to_array($candidates))
             . ')';
 
@@ -377,12 +384,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * Merge the iterators for each instrument into a single iterator for the
      * candidate.
      *
-     * @param string[]   $candidates The list of CandIDs that were expected to
+     * @param iterable     $candidates The list of CandIDs that were expected to
                                      be returned
-     * @param iterable[] $iterators  An iterator for each instrument, may or
+     * @param \Generator[] $iterators  An iterator for each instrument, may or
      *                               may not have every CandID
      *
-     * @return iterable
+     * @return \Generator
      */
     private function _mergeIterators($candidates, $iterators)
     {
@@ -391,7 +398,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             // put it in the appropriate columns.
             $candidateData = [];
             $candIDStr     = "$candID";
-            foreach ($iterators as $instrumentName => $instrData ) {
+            foreach ($iterators as $instrData) {
                 if (!$instrData->valid()) {
                     continue;
                 }
