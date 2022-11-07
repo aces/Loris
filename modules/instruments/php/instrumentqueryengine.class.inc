@@ -13,12 +13,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
     protected $loris;
 
     /**
-     * Cache of an instrument's visits for getVisitList
-     */
-    private $visitcache = [];
-
-
-    /**
      * Constructor
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
@@ -92,7 +86,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $testname  = null;
         $fieldname = null;
-        $fullname  = $term->dictionary->getName();
+        $fullname  = $term->getDictionaryItem()->getName();
         foreach ($rows as $testcandidate) {
             if (strpos($fullname, $testcandidate) === 0) {
                 $testname  = $testcandidate;
@@ -128,7 +122,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 function ($row) {
                     return $row['CommentID'];
                 },
-                $data,
+                $data
             )
         );
 
@@ -136,7 +130,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($data as $row) {
             $map[$row['CommentID']] = new CandID($row['CandID']);
         }
-        return $this->_filtered($values, $map, $fieldname, $term->criteria);
+        return $this->_filtered($values, $map, $fieldname, $term->getCriteria());
     }
 
     /**
@@ -237,6 +231,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             }
         }
     }
+
+    private $_visitcache = [];
 
     /**
      * Get list of visits that an instrument is valid at
@@ -345,6 +341,11 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             [],
         );
 
+        $data = [];
+        foreach ($candidates as $candidate) {
+            $data["$candidate"] = [];
+        }
+
         $commentID2CandID = [];
         foreach ($rows as $row) {
             $commentID2CandID[$row['CommentID']] = $row['CandID'];
@@ -376,12 +377,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * Merge the iterators for each instrument into a single iterator for the
      * candidate.
      *
-     * @param iterable     $candidates The list of CandIDs that were expected to
-                                       be returned
-     * @param \Generator[] $iterators  An iterator for each instrument, may or
-     *                                 may not have every CandID
+     * @param string[]   $candidates The list of CandIDs that were expected to
+                                     be returned
+     * @param iterable[] $iterators  An iterator for each instrument, may or
+     *                               may not have every CandID
      *
-     * @return \Generator
+     * @return iterable
      */
     private function _mergeIterators($candidates, $iterators)
     {
@@ -390,7 +391,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             // put it in the appropriate columns.
             $candidateData = [];
             $candIDStr     = "$candID";
-            foreach ($iterators as $instrData) {
+            foreach ($iterators as $instrumentName => $instrData ) {
                 if (!$instrData->valid()) {
                     continue;
                 }
