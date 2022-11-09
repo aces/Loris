@@ -24,7 +24,7 @@ Additionally, the following package manager are required to build LORIS:
 
 * NodeJS 16.10.0 (or higher)
 
-* NPM 5.7.0 (or higher)
+* NPM 8.19.2 (or higher)
 
 * composer
 
