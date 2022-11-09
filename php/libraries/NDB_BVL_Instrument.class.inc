@@ -2529,9 +2529,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $Responses = $this->getInstanceData();
 
-        foreach ($tpl_data['questions'] as &$row) {
+        foreach ($tpl_data['questions'] as $key => &$row) {
+            $isStatusField = $row['SourceField']
+                === $tpl_data['questions'][$key-1]['SourceField']."_status";
             if (isset($Responses[$row['SourceField']])) {
+                // Consider status fields
+                if ($isStatusField) {
+                    // The current row is the status field of the previous one
+                    // remove row and set the answer to whichever is answered
+                    $tpl_data['questions'][$key-1]['response']
+                        = $Responses[$row['SourceField']];
+                    unset($tpl_data['questions'][$key]);
+                    continue;
+                }
                 $row['response'] = $Responses[$row['SourceField']];
+            } elseif ($isStatusField) {
+                // incase it's a status field AND its empty, unset it
+                unset($tpl_data['questions'][$key]);
             }
         }
 

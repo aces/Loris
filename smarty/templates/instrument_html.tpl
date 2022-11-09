@@ -260,7 +260,7 @@
                                 {else}
                                     {assign var="itemError" value=""}
                                 {/if}
-                                {if $gitem.type == 'date'}
+                                {if $gitem.type == 'date' || $gitem.type == 'time' }
                                     <td class="element form-inline{$itemError}">{$gitem.html}</td>
                                 {elseif $gitem.type == 'checkbox'}
                                     <td class="form-inline{$itemError}">{$gitem.html}</td>

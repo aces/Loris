@@ -8,6 +8,7 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+<<<<<<< HEAD
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
 #### Features

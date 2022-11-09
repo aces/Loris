@@ -223,17 +223,23 @@ class Edit_User extends \NDB_Form
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
-            // granted.
-            $permIDs = array_intersect(
-                $newPermissions,
-                $editorPermissions
-            );
+            // granted unless they are a superuser
+            if ($editor->hasPermission('superuser')) {
+                $permIDs = $newPermissions;
+            } else {
+                $permIDs = array_intersect(
+                    $newPermissions,
+                    $editorPermissions
+                );
+            }
         }
 
-        // Keep old permissions if the editor is not allowed to edit them.
+        // Keep old permissions if the editor is not allowed to edit them,
+        // unless editor is superuser
         foreach ($current_permissionids as $perm) {
             if (!in_array($perm, $newPermissions)
                 && !in_array($perm, $editorPermissions)
+                && !$editor->hasPermission('superuser')
             ) {
                 $permIDs[] = $perm;
             }
@@ -1309,9 +1315,13 @@ class Edit_User extends \NDB_Form
      */
     private function _getEmailError(\Database $DB, string $email): ?string
     {
-        // remove illegal characters
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (preg_match('/(<|>|"|&)/', $email)) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            return 'Email address can not contain any the following '.
+                'characters: <, >, & and "';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
             return "Invalid email address";
         }

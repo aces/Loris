@@ -10,7 +10,7 @@
     </thead>
     <tbody>
     {foreach item=row from=$questions}
-        <tr {if $row.response==''}class="unanswered"{/if}>
+        <tr {if $row.response===''}class="unanswered"{/if}>
             <td>{$row.question}</td>
             <td>{$row.response|default:"-"|replace:"_":" "|capitalize}</td>
         </tr>
