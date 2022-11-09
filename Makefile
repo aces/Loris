@@ -21,9 +21,7 @@ clean:
 	rm -f VERSION
 	rm -rf vendor
 	rm -rf node_modules
-	rm -f package-lock.json
 	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/node_modules
-	rm -f modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
 
 # Perform static analysis checks
 checkstatic: phpdev
