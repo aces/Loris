@@ -363,8 +363,8 @@ class Project implements \JsonSerializable
      */
     public function getCohorts(): array
     {
-        $factory     = \NDB_Factory::singleton();
-        $cohorttData = $factory->database()->pselect(
+        $factory    = \NDB_Factory::singleton();
+        $cohortData = $factory->database()->pselect(
             "
             SELECT
               sp.cohortId,
