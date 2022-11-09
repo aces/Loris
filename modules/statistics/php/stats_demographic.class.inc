@@ -250,7 +250,7 @@ class Stats_Demographic extends \NDB_Form
             $this->params['pid'] = $demographicProject;
         }
 
-        //SUBPROJECTS
+        //COHORTS
         $cohortQuery = '';
         $cohorts     = \Utility::getCohortList();
         $this->tpl_data['Cohorts'] = $cohorts;

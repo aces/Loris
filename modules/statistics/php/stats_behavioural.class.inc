@@ -148,7 +148,7 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         //
-        //SUBPROJECTS
+        //COHORTS
         $suproject_query = '';
         if ($currentProject !== null) {
             $cohorts     = \Utility::getCohortsForProject($currentProject);

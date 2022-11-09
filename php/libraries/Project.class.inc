@@ -364,7 +364,7 @@ class Project implements \JsonSerializable
     public function getCohorts(): array
     {
         $factory        = \NDB_Factory::singleton();
-        $subProjectData = $factory->database()->pselect(
+        $cohorttData = $factory->database()->pselect(
             "
             SELECT
               sp.cohortId,
@@ -382,7 +382,7 @@ class Project implements \JsonSerializable
             ['v_project_id' => $this->_projectId]
         );
 
-        return $subProjectData;
+        return $cohortData;
     }
 
     /**

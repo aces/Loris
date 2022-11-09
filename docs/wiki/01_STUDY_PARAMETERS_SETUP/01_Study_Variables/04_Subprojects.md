@@ -51,5 +51,5 @@ existing project:
 	cohort s
   WHERE
 	p.Name = "%PROJECT_NAME%"
-	AND s.title IN("%SUBPROJECT_1%", "%SUBPROJECT_2%", "%SUBPROJECT_3%");
+	AND s.title IN("%COHORT_1%", "%COHORT_2%", "%COHORT_3%");
   ```
