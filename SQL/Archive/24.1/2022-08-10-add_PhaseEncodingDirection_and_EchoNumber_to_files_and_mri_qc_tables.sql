@@ -27,4 +27,5 @@ ALTER TABLE mri_violations_log ADD COLUMN `EchoNumber`             VARCHAR(20) D
 -- ---------------------------------------------------------------------------------------------
 INSERT INTO parameter_type (Name, Type, Description, SourceFrom)
 SELECT 'PhaseEncodingDirection', 'text', 'BIDS PhaseEncodingDirection (a.k.a. i, i-, j, j-, k, k-)', 'parameter_file'
+FROM DUAL
 WHERE NOT EXISTS (SELECT * FROM parameter_type where Name='PhaseEncodingDirection');
