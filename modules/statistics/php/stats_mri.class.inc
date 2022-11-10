@@ -255,7 +255,7 @@ class Stats_MRI extends \NDB_Form
             $Param_Project = '';
         }
 
-        //SUBPROJECTS
+        //COHORTS
         $cohorts     = \Utility::getCohortsForProject($currentProject);
         $subprojList = implode(',', array_keys($cohorts));
         if (!empty($subprojList)) {

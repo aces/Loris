@@ -60,7 +60,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB = Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $visit_label = $argv[1];
 } else {
@@ -91,8 +91,7 @@ function populateVisitLabel($result, $visit_label)
     $battery->selectBattery($sessionID);
     $timePoint = TimePoint::singleton($sessionID);
 
-    $DB        = Database::singleton();
-    $candidate = Candidate::singleton(new CandID($result['CandID']));
+    $candidate         = Candidate::singleton(new CandID($result['CandID']));
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
     if ($result_firstVisit == $visit_label) {

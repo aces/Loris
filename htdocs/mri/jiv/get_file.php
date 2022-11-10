@@ -148,6 +148,17 @@ case 'nrrd':
     $MimeType         = 'image/vnd.nrrd';
     $DownloadFilename = basename($File);
     break;
+case 'bvec':
+case 'bval':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'text/plain';
+    $DownloadFilename = basename($File);
+    break;
+case 'json':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/json';
+    $DownloadFilename = basename($File);
+    break;
 case 'DICOMTAR':
     // ADD case for DICOMTAR
     $FullPath         = $tarchivePath . '/' . $File;

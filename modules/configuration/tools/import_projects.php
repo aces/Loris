@@ -36,7 +36,7 @@ if (!is_array($subprojs)) {
 $db        = $factory->database();
 $optionpos = 1; //The position of the option in the command line.
 
-if (is_null($argv[$optionpos])
+if (empty($argv[$optionpos])
 ) {
     echo ("The script needs an argument. The arguments are -s,-p or -a.\r\n");
     echo ("-s -> Imports only the cohorts from the XML.\r\n");
@@ -45,9 +45,7 @@ if (is_null($argv[$optionpos])
     echo ("      from the XML.\r\n");
     exit(2);
 }
-if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
-    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
-) {
+if ($argv[$optionpos] === "-s" || $argv[$optionpos] === "-a") {
     foreach ($subprojs['cohort'] as $row) {
         $windowDiff = "optimal";
         if (isset($row['options']) && isset($row['options']['WindowDifference'])) {
@@ -69,9 +67,7 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
         $db->insert('cohort', $ins);
     }
 }
-if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
-    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
-) {
+if ($argv[$optionpos] === "-p" || $argv[$optionpos] === "-a") {
     $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
     $projects = $config->getSettingFromXML("Projects");
     if (!is_array($projects)) {
