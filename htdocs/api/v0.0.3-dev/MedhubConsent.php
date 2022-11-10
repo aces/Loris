@@ -81,12 +81,23 @@ class MedhubConsent extends APIBase {
             ['to' => $token]
         );
 
+
+        //Check that every consent is represented AND all fields are set
+        $consentNames = ['INF','HR', 'GEN', 'CL', 'CQ', 'CS', 'CR', 'ATPSY','ORPS'];
+        foreach($consentNames as $conName){
+            if (!isset($consentList[$conName]['Response'], $consentList[$conName]['Date'])){
+                error_log('Incomplete Consent Data');
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->safeExit(0);
+            }
+        }
+
+
         if (!isset($candidTimeUsed['EntryDate'],$candidTimeUsed['CandidateID'] )or isset($candidTimeUsed['AlreadyUsed'])){
-            error_log("Error: No candidate found for token $token");
+            error_log("Error: No candidate found for token $token or token already used");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
-
 
         $entryDate = $candidTimeUsed['EntryDate'];
         $candid = $candidTimeUsed['CandidateID'];
@@ -96,17 +107,12 @@ class MedhubConsent extends APIBase {
         $this->DB->update('medhub_token', $AlreadyUsed,['CandidateID' => $candid] );
 
 
-
-
-
         //Checks if token more than a ~month old
         if((time()-(60*60*24*30)) > strtotime($entryDate)){
             error_log("The Given Token is expired: we are unable to connect this to a file");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
-
-
 
         //TODO: Incude validation to make sure the consent object is complete (IE 9 rows), and that every row is complete!
 
@@ -136,45 +142,7 @@ class MedhubConsent extends APIBase {
 
 
         }
-
-
         $this->header("HTTP/1.1 201 Created");
-
-        /*TODO:Add Verification for TOKEN(?) and Consent List*/
-
-
-        /* Creation Code for token table
-         * CREATE TABLE `medhub_token` (
-    `CandidateID` int(6) NOT NULL,
-    `Token` varchar(255) NOT NULL,
-    'AlreadyUsed' varchar(255) NOT NULL,
-    `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `PK_medhub_token` PRIMARY KEY (`CandidateID`,`Token`),
-    CONSTRAINT `FK_medhub_token_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-
-
-        INSERT INTO medhub_token (CandidateID, Token) VALUES ('908028', 'Token765Yup');
-
-        */
-
-
-
-
-        /*TODO: For Loop: for all consents, loop thru, and call the singleton update consent (need to match consent param object)*/
-
-
-        // create empty consent param array obj --> add candID, find consentID via name, answer = answer, date = date
-        //Is consent history necessary?? could that be why I had problems??
-
-
-
-
-
-
 
     }
 
