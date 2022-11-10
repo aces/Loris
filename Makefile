@@ -10,11 +10,17 @@ VERSION: .
 phpdev:
 	composer install
 
-javascript:
+jsdev:
 	npm ci
 	npm run compile
 
-dev: VERSION phpdev javascript
+jslatest: clean
+	rm -rf package-lock.json
+	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
+	npm install
+	npm run compile
+
+dev: VERSION phpdev jsdev
 
 clean:
 	rm -f smarty/templates_c/*
