@@ -47,8 +47,6 @@ class MedhubConsent extends APIBase {
 
         $token = null;
         $consentList = null;
-
-
         $candid = null;
 
         $data   = $this->RequestData;
@@ -73,118 +71,83 @@ class MedhubConsent extends APIBase {
 
         //Tries to select CandID + entry date for the given token --> later throws and error and dies if nothing found
         $token = $data['Token'];
-        $ConsentList = $data['ConsentList'];
+        $consentList = $data['ConsentList'];
 
-        $candidTime = $this->DB->pselect(
-            "SELECT CandidateID, EntryDate
+        $candidTimeUsed = $this->DB->pselectRow(
+            "SELECT CandidateID, EntryDate, AlreadyUsed
                 FROM medhub_token
              WHERE Token = :to
                 ",
             ['to' => $token]
         );
 
-        if (!isset($candidTime[0]['EntryDate']) or !isset($candidTime[0]['CandidateID'])  ){
+        if (!isset($candidTimeUsed['EntryDate'],$candidTimeUsed['CandidateID'] )or isset($candidTimeUsed['AlreadyUsed'])){
             error_log("Error: No candidate found for token $token");
-            die();
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->safeExit(0);
         }
 
-        $entryDate = $candidTime[0]['EntryDate'];
-        $candid = $candidTime[0]['CandidateID'];
+
+        $entryDate = $candidTimeUsed['EntryDate'];
+        $candid = $candidTimeUsed['CandidateID'];
+
+        //Sets the already used marker in the token table
+        $AlreadyUsed = array ('AlreadyUsed' => 'TRUE');
+        $this->DB->update('medhub_token', $AlreadyUsed,['CandidateID' => $candid] );
+
+
+
+
 
         //Checks if token more than a ~month old
         if((time()-(60*60*24*30)) > strtotime($entryDate)){
             error_log("The Given Token is expired: we are unable to connect this to a file");
-            die();
-
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->safeExit(0);
         }
 
 
-        //TODO: REPLACE DIES WITH THROW ERROR
 
         //TODO: Incude validation to make sure the consent object is complete (IE 9 rows), and that every row is complete!
 
 
-        //Attach to candidate --> start building proper object (generalized and to be tweaked on each loop)
-
-        $PSCID =  \Candidate::singleton($candid)->getPSCID();
-        //error_log($PSCID);
-
-        $ConsentParameters = array(
-        'ConsentStatus' => array (
-            'CandidateID'   => $candid,
-            'ConsentID'     => null,
-            'Status'        =>  null,
-            'DateGiven'     => null,
-            'DateWithdrawn' => null
-        ),
-
-        'ConsentHistory' => array (
-            'PSCID'         => $PSCID,
-            'ConsentName'   => null ,
-            'ConsentLabel'  => null,
-            'Status'        => null,
-            'DateGiven'     => null,
-            'DateWithdrawn' => null,
-            'EntryStaff'    => 'admin'
-        )
-    );
+        //Gets the mapping of consent IDs, Names, and Labels from the DB
+        $consentIDLabel = $this->DB->pselectWithIndexKey(
+            "SELECT ConsentID, Name, Label
+                FROM consent" ,
+        [], Name
+        );
 
 
+      foreach ($consentList as $conName => $conInfo){
 
+          $consentID = $consentIDLabel[$conName]['ConsentID'];
+          $consentLabel = $consentIDLabel[$conName]['Label'];
 
+          $consentArray = [];
 
+          $consentArray['ConsentName'] = $conName;
+          $consentArray['ConsentLabel'] = $consentLabel;
+          $consentArray['Status'] = $conInfo['Response'];
+          $consentArray['DateGiven'] = $conInfo['Date'];
+          $consentArray['ConsentID'] = $consentID;
 
-      foreach ($ConsentList as $conName => $conInfo){
-            //error_log(print_r($conName, True));
-            //error_log(print_r($conInfo['Response'], True));
-
-          $consentIDLabel = $this->DB->pselect(
-              "SELECT ConsentID, Label
-                FROM consent
-             WHERE Name = :to
-                ",
-              ['to' => $conName]
-          );
-          //error_log(print_r($consentIDLabel, True));
-
-          $consentID = $consentIDLabel[0]['ConsentID'];
-          $consentLabel = $consentIDLabel[0]['Label'];
-
-          $ConsentParameters['ConsentHistory']['ConsentName'] = $conName;
-          $ConsentParameters['ConsentHistory']['ConsentLabel'] = $consentLabel;
-          $ConsentParameters['ConsentHistory']['Status'] = $conInfo['Response'];
-          $ConsentParameters['ConsentHistory']['DateGiven'] = $conInfo['Date'];
-
-
-          $ConsentParameters['ConsentStatus']['ConsentID'] = $consentID;
-          $ConsentParameters['ConsentStatus']['Status'] = $conInfo['Response'];
-          $ConsentParameters['ConsentStatus']['DateGiven'] = $conInfo['Date'];
-
-          //error_log(print_r($ConsentParameters, True));
-
-          \Candidate::singleton($candid)->editConsentStatusFields($ConsentParameters, $candid, $PSCID);
-
+          \Candidate::singleton($candid)->editConsentStatusFields($consentArray);
 
 
         }
 
 
-
-        die();
+        $this->header("HTTP/1.1 201 Created");
 
         /*TODO:Add Verification for TOKEN(?) and Consent List*/
-
-
-
-
-      // ADD date to token table!!! --> add checks in validation (is date recent, does token exist??) -->
-
 
 
         /* Creation Code for token table
          * CREATE TABLE `medhub_token` (
     `CandidateID` int(6) NOT NULL,
     `Token` varchar(255) NOT NULL,
+    'AlreadyUsed' varchar(255) NOT NULL,
     `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `PK_medhub_token` PRIMARY KEY (`CandidateID`,`Token`),
     CONSTRAINT `FK_medhub_token_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE
