@@ -39,7 +39,6 @@ class Visit extends \NDB_Form
         return $user->hasPermission('config');
     }
 
-
     /**
      * Loads the project page.
      *
@@ -49,7 +48,7 @@ class Visit extends \NDB_Form
     {
         $projectList        = \Utility::getProjectList();
         $subprojectList     = \Utility::getSubprojectList();
-        $projectSubprojects = \Utility::getProjectSubprojectAssociations();
+        $projectSubprojects = \Utility::getProjectCohortAssociations();
         $visitController    = new \LORIS\VisitController(
             \NDB_Factory::singleton()->database()
         );
