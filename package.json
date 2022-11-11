@@ -64,7 +64,8 @@
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
-    "compile": "webpack",
+    "compile": "webpack --node-env=development",
+    "build": "webpack --node-env=production",
     "watch": "webpack --watch",
     "postinstall": "node npm-postinstall.js"
   },
