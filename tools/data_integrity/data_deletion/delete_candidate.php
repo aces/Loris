@@ -14,19 +14,13 @@
  *
  * @category Main
  * @package  Loris
- * @author   Various <example@example.com>
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
 
-set_include_path(
-    get_include_path().":".
-    __DIR__."/../project/tools:".
-    __DIR__."/../php/tools:"
-);
-
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "generic_includes.php";
+require_once __DIR__ . "/../../../vendor/autoload.php";
+require_once __DIR__ . "/../../generic_includes.php";
 use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
@@ -82,7 +76,7 @@ default:
     break;
 }
 
-$DB =& Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 
 /*
  * Perform validations on arguments
@@ -135,7 +129,7 @@ function showHelp()
     echo <<<USAGE
 *** Delete Candidate Info ***
 
-Usage: php delete_candidate.php delete_candidate CandID PSCID [confirm]
+Usage: php delete_candidate.php delete_candidate CandID PSCID [confirm] [tosql]
 Example: php delete_candidate.php delete_candidate 965327 dcc0007
 Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm
 Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql
@@ -315,25 +309,25 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
         $DB->delete("parameter_candidate", ["CandID" => $CandID]);
 
         //delete from SNP_candidate_rel
-        $result = $DB->delete("SNP_candidate_rel", ["CandID" => $CandID]);
+        $DB->delete("SNP_candidate_rel", ["CandID" => $CandID]);
 
         //delete from CNV
-        $result = $DB->delete("CNV", ["CandID" => $CandID]);
+        $DB->delete("CNV", ["CandID" => $CandID]);
 
         //delete from genomic_candidate_files_rel
-        $result = $DB->delete(
+        $DB->delete(
             "genomic_candidate_files_rel",
             ["CandID" => $CandID]
         );
 
         //delete from genomic_sample_candidate_rel
-        $result = $DB->delete(
+        $DB->delete(
             "genomic_sample_candidate_rel",
             ["CandID" => $CandID]
         );
 
         //delete from issues
-        $result = $DB->delete("issues", ["candID" => $CandID]);
+        $DB->delete("issues", ["candID" => $CandID]);
 
         //delete from candidate
         $DB->delete("candidate", ["CandID" => $CandID]);
