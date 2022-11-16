@@ -102,9 +102,7 @@ class MedhubConsent extends APIBase {
         $entryDate = $candidTimeUsed['EntryDate'];
         $candid = $candidTimeUsed['CandidateID'];
 
-        //Sets the already used marker in the token table
-        $AlreadyUsed = array ('AlreadyUsed' => 'TRUE');
-        $this->DB->update('medhub_token', $AlreadyUsed,['CandidateID' => $candid] );
+
 
 
         //Checks if token more than a ~month old
@@ -114,6 +112,8 @@ class MedhubConsent extends APIBase {
             $this->safeExit(0);
         }
 
+
+
         //TODO: Incude validation to make sure the consent object is complete (IE 9 rows), and that every row is complete!
 
 
@@ -121,29 +121,38 @@ class MedhubConsent extends APIBase {
         $consentIDLabel = $this->DB->pselectWithIndexKey(
             "SELECT ConsentID, Name, Label
                 FROM consent" ,
-        [], Name
+            [], Name
         );
 
 
-      foreach ($consentList as $conName => $conInfo){
+        foreach ($consentList as $conName => $conInfo){
 
-          $consentID = $consentIDLabel[$conName]['ConsentID'];
-          $consentLabel = $consentIDLabel[$conName]['Label'];
+            $consentID = $consentIDLabel[$conName]['ConsentID'];
+            $consentLabel = $consentIDLabel[$conName]['Label'];
 
-          $consentArray = [];
+            $consentArray = [];
+            $consentArray['ConsentName'] = $conName;
+            $consentArray['ConsentLabel'] = $consentLabel;
+            $consentArray['Status'] = $conInfo['Response'];
+            $consentArray['DateGiven'] = $conInfo['Date'];
+            $consentArray['ConsentID'] = $consentID;
 
-          $consentArray['ConsentName'] = $conName;
-          $consentArray['ConsentLabel'] = $consentLabel;
-          $consentArray['Status'] = $conInfo['Response'];
-          $consentArray['DateGiven'] = $conInfo['Date'];
-          $consentArray['ConsentID'] = $consentID;
-
-          \Candidate::singleton($candid)->editConsentStatusFields($consentArray);
-
+            try{
+                \Candidate::singleton($candid)->editConsentStatusFields($consentArray);
+            }catch (LorisException $e){
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->safeExit(0);
+            }
 
         }
-        $this->header("HTTP/1.1 201 Created");
 
+        //TODO: UNCOMMENT THIS TO DEPLOY!
+        //Sets the already used marker in the token table
+        /*
+        $AlreadyUsed = array ('AlreadyUsed' => 'TRUE');
+        $this->DB->update('medhub_token', $AlreadyUsed,['CandidateID' => $candid] );*/
+
+        $this->header("HTTP/1.1 201 Created");
     }
 
 
@@ -181,15 +190,3 @@ if (isset($_REQUEST['PrintCandidates'])) {
     }
     print $obj->toJSONString();
 }
-
-
-
-
-
-
-
-
-
-
-
-
