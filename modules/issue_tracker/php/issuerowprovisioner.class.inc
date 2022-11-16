@@ -106,7 +106,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         $module = new \NullModule($this->lorisinstance);
         if (!empty($mname)) {
             if (!isset($modules[$mname])) {
-                $modules[$mname] = \Module::factory($this->lorisinstance, $mname);
+                $modules[$mname] = $this->lorisinstance->getModule($mname);
             }
             $module = &$modules[$mname];
         }

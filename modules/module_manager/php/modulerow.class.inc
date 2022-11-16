@@ -46,7 +46,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
     public function __construct(\LORIS\LorisInstance $loris, array $row)
     {
         $this->lorisinstance = $loris;
-        $this->Module        = \Module::factory($loris, $row['name']);
+        $this->Module        = $loris->getModule($row['name']);
         $this->Active        = $row['active'];
     }
 
