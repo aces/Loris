@@ -11,8 +11,6 @@ require_once 'APIBase.php';
 
 class MedhubConsent extends APIBase {
 
-
-
     var $requestData;
 
 
@@ -27,16 +25,10 @@ class MedhubConsent extends APIBase {
 
     public function __construct($method, $data=null)
     {
-
-
-
-
         $this->AllowedMethods = [
             'PUT'
         ];
-
         $this->RequestData    = $data;
-
         parent::__construct($method);
     }
 
@@ -44,18 +36,13 @@ class MedhubConsent extends APIBase {
 
     public function handlePUT()
     {
-
-        $token = null;
-        $consentList = null;
-        $candid = null;
-
         $data   = $this->RequestData;
-        if ($data === null) {
+
+        if (empty($data)) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Can't parse data");
             $this->safeExit(0);
         }
-
 
         if (!isset($data['Token'])) {
             $this->header("HTTP/1.1 400 Bad Request");
@@ -73,6 +60,19 @@ class MedhubConsent extends APIBase {
         $token = $data['Token'];
         $consentList = $data['ConsentList'];
 
+
+
+        //Check that every consent is represented AND all fields are set
+        $consentNames = ['INF','HR', 'GEN', 'CL', 'CQ', 'CS', 'CR', 'ATPSY','ORPS'];
+        foreach($consentNames as $conName){
+            if (!isset($consentList[$conName],$consentList[$conName]['Response'], $consentList[$conName]['Date'])){
+                $this->error("Data incomplete");
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->safeExit(0);
+            }
+        }
+
+
         $candidTimeUsed = $this->DB->pselectRow(
             "SELECT CandidateID, EntryDate, AlreadyUsed
                 FROM medhub_token
@@ -80,50 +80,27 @@ class MedhubConsent extends APIBase {
                 ",
             ['to' => $token]
         );
-
-
-        //Check that every consent is represented AND all fields are set
-        $consentNames = ['INF','HR', 'GEN', 'CL', 'CQ', 'CS', 'CR', 'ATPSY','ORPS'];
-        foreach($consentNames as $conName){
-            if (!isset($consentList[$conName]['Response'], $consentList[$conName]['Date'])){
-                error_log('Incomplete Consent Data');
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
-            }
-        }
-
-
-        if (!isset($candidTimeUsed['EntryDate'],$candidTimeUsed['CandidateID'] )or isset($candidTimeUsed['AlreadyUsed'])){
-            error_log("Error: No candidate found for token $token or token already used");
+        $entryDate = $candidTimeUsed['EntryDate'];
+        $candid = $candidTimeUsed['CandidateID'];
+        if (empty($candidTimeUsed) || $candidTimeUsed['AlreadyUsed'] == 'TRUE'){
+            $this->error("Data incomplete");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
-
-        $entryDate = $candidTimeUsed['EntryDate'];
-        $candid = $candidTimeUsed['CandidateID'];
-
-
-
 
         //Checks if token more than a ~month old
         if((time()-(60*60*24*30)) > strtotime($entryDate)){
-            error_log("The Given Token is expired: we are unable to connect this to a file");
+            $this->error("Date check failed");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
-
-
-
-        //TODO: Incude validation to make sure the consent object is complete (IE 9 rows), and that every row is complete!
-
 
         //Gets the mapping of consent IDs, Names, and Labels from the DB
         $consentIDLabel = $this->DB->pselectWithIndexKey(
             "SELECT ConsentID, Name, Label
                 FROM consent" ,
-            [], Name
+            [], "Name"
         );
-
 
         foreach ($consentList as $conName => $conInfo){
 
@@ -140,6 +117,7 @@ class MedhubConsent extends APIBase {
             try{
                 \Candidate::singleton($candid)->editConsentStatusFields($consentArray);
             }catch (LorisException $e){
+                $this->error("Consent data insertion failed");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
