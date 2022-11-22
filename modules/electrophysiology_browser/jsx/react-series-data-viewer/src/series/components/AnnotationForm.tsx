@@ -6,8 +6,10 @@ import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
 import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {RootState} from '../store';
+import {setEpochs} from '../store/state/dataset';
 
 type CProps = {
+  fileID: number,
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
@@ -19,6 +21,7 @@ type CProps = {
 };
 
 const AnnotationForm = ({
+  fileID,
   timeSelection,
   epochs,
   filteredEpochs,
@@ -30,6 +33,9 @@ const AnnotationForm = ({
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   let [event, setEvent] = useState([startEvent, endEvent]);
+  let [label, setLabel] = useState('');
+  let [comment, setComment] = useState('');
+  let [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     const [startEvent = '', endEvent = ''] = timeSelection || [];
@@ -43,6 +49,94 @@ const AnnotationForm = ({
       && event[0] >= interval[0] && event[0] <= interval[1]
       && event[1] >= interval[0] && event[1] <= interval[1]
   );
+
+  const handleLabelChange = (e) => {
+    setLabel(e.target.value);
+  };
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+  const handleSubmit = () => {
+    setIsSubmitted(true);
+  };
+
+  useEffect(() => {
+    // only proceed if isSubmitted === true
+    if (!isSubmitted) {
+      return;
+    }
+
+    // Validate inputs
+    if (!label || !comment || !event[0] || !event[1]) {
+      // TODO: Display message
+      setIsSubmitted(false);
+      return;
+    }
+
+    const url = window.location.origin +
+      '/electrophysiology_browser/annotations/';
+
+    // get duration of annotation
+    let startTime = event[0];
+    let endTime = event[1];
+    if (typeof startTime === 'string') {
+      startTime = parseInt(startTime);
+    }
+    if (typeof endTime === 'string') {
+      endTime = parseInt(endTime);
+    }
+    const duration = endTime - startTime;
+
+    // set body
+    // instance_id = null for new annotations,
+    // should be updated when we implement annotation editing
+    const body = {
+      physioFileID: fileID,
+      instance_id: null,
+      instance: {
+        onset: startTime,
+        duration: duration,
+        label_name: label,
+        label_description: label,
+        channels: 'all',
+        description: comment,
+      },
+      // TODO: Figure out data that should go here
+      metadata: {
+        description: 'An annotation',
+        sources: 'LORIS',
+        author: 'LORIS user',
+      },
+    };
+
+    const newAnnotation : EpochType = {
+      onset: startTime,
+      duration: duration,
+      type: 'Annotation',
+      label: label,
+      comment: comment,
+      channels: 'all'
+    };
+
+    fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: JSON.stringify(body),
+    }).then(response => {
+      if (response.ok) {
+        setIsSubmitted(false);
+        epochs.push(newAnnotation);
+        setEpochs(
+          epochs
+          .sort(function(a, b) {
+            return a.onset - b.onset;
+          })
+        );
+      }
+    }).catch(error => {
+      console.log(error);
+    })
+  }, [isSubmitted]);
 
   return (
     <div
@@ -125,7 +219,7 @@ const AnnotationForm = ({
         </div>
         <div className="form-group">
           <label htmlFor="label">Label</label>
-          <select className="form-control input-sm" id="label">
+          <select className="form-control input-sm" id="label" onChange={handleLabelChange}>
             <option></option>
             <option>Artifact</option>
             <option>Motion</option>
@@ -158,9 +252,10 @@ const AnnotationForm = ({
             className="form-control"
             id="comment"
             rows={3}
+            onChange={handleCommentChange}
           ></textarea>
         </div>
-        <button type="submit" className="btn btn-primary btn-xs">
+        <button type="submit" disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary btn-xs">
           Submit
         </button>
       </div>
@@ -197,6 +292,10 @@ export default connect(
     updateActiveEpoch: R.compose(
       dispatch,
       updateActiveEpoch
+    ),
+    setEpochs: R.compose(
+      dispatch,
+      setEpochs
     ),
   })
 )(AnnotationForm);

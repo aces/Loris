@@ -32,6 +32,12 @@ export type Epoch = {
   channels: number[] | "all",
 };
 
+export type AnnotationMetadata = {
+  instances: any[],
+  labels: any[],
+  metadata: any[]
+}
+
 export type RightPanel = 'annotationForm' | 'epochList' | null;
 
 export type Electrode = {

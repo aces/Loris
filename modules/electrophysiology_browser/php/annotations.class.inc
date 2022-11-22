@@ -27,13 +27,14 @@ class Annotations extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $parameters = $request->getQueryParams();
         $factory    = \NDB_Factory::singleton();
         $user       = $factory->user();
         $db         = $factory->database();
 
         switch ($request->getMethod()) {
         case 'GET':
+            $parameters = $request->getQueryParams();
+
             $sessionID = $db->pselectOne(
                 'SELECT SessionID
                     FROM physiological_file
@@ -78,6 +79,8 @@ class Annotations extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
+            $parameters = $request->getQueryParams();
+
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
@@ -94,6 +97,8 @@ class Annotations extends \NDB_Page
 
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
+            $parameters = json_decode((string) $request->getBody(), true);
+
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());

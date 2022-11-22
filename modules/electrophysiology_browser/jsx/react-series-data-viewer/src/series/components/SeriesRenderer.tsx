@@ -47,6 +47,7 @@ import {
 } from '../store/types';
 
 type CProps = {
+  fileID: number,
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
@@ -78,6 +79,7 @@ type CProps = {
 };
 
 const SeriesRenderer: FunctionComponent<CProps> = ({
+  fileID,
   viewerHeight,
   viewerWidth,
   interval,
@@ -301,6 +303,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   seriesRange={seriesRange}
                   amplitudeScale={amplitudeScale}
                   scales={scales}
+                  fileID={fileID}
                 />
               ))
             ))
@@ -577,10 +580,25 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }}
             >
               <div className='col-xs-offset-1 col-xs-11'>
+                <button
+                  className={'btn btn-primary btn-xs'
+                    + (rightPanel === 'annotationForm' ? ' active' : '')
+                  }
+                  onClick={() => {
+                    rightPanel === 'annotationForm'
+                      ? setRightPanel(null)
+                      : setRightPanel('annotationForm');
+                  }}
+                >
+                  {rightPanel === 'annotationForm'
+                    ? 'Close Annotation form'
+                    : 'New Annotation'
+                  }
+                </button>
                 {epochs.length > 0 &&
                   <button
                     className={
-                      'btn btn-primary'
+                      'btn btn-primary btn-xs'
                       + (rightPanel === 'epochList' ? ' active' : '')
                     }
                     onClick={() => {
@@ -624,7 +642,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           </div>
           {rightPanel &&
             <div className='col-md-3'>
-              {rightPanel === 'annotationForm' && <AnnotationForm />}
+              {rightPanel === 'annotationForm' && <AnnotationForm fileID={fileID} />}
               {rightPanel === 'epochList' && <EventManager />}
             </div>
           }

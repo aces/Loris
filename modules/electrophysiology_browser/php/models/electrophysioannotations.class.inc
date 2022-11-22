@@ -73,20 +73,19 @@ class ElectrophysioAnnotations
      * Will add new derivative files if none exist for the given instance.
      * Will either add new annotations or update existing ones.
      *
-     * @param array $instance_data Instance data
-     * @param array $metadata      Metadata
-     * @param int   $instance_id   InstanceID
-     * @param int   $parameter_id  ParameterID
+     * @param array    $instance_data Instance data
+     * @param array    $metadata      Metadata
+     * @param int|null $instance_id   InstanceID
+     * @param int|null $parameter_id  ParameterID
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-        int $instance_id,
-        int $parameter_id
+        ?int $instance_id,
+        ?int $parameter_id
     ): void {
-
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
