@@ -78,8 +78,7 @@ class Annotations extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
-            $parameters = $request->getQueryParams();
-
+            $parameters = json_decode((string) $request->getBody(), true);
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
@@ -92,45 +91,51 @@ class Annotations extends \NDB_Page
             }
 
             (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
-                ->delete($parameters['instance_id']);
+                ->delete(intval($parameters['instance_id']));
 
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
             $parameters = json_decode((string) $request->getBody(), true);
-
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
             }
 
-            if (!isset($parameters['sessionID'])) {
-                return (new \LORIS\Http\Response\JSON\BadRequest());
-            }
-
-            $physioFileID = $db->pselectOne(
-                'SELECT PhysiologicalFileID
-                    FROM physiological_file
-                    WHERE SessionID=:SID',
-                ['SID' => $parameters['sessionID']]
-            );
-
-            if (!isset($physioFileID)) {
+            if (!isset($parameters['physioFileID'])) {
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
             $instance_data = $parameters['instance'];
-            $metadata      = [
+            // $metadata      = $parameters['metadata'];
+            // TODO: Figure out a better description modeled on other derivatives
+            $metadata = [
                 'description' => 'An annotation',
                 'sources'     => 'EEGNet LORIS',
                 'author'      => $user->getFullname()
             ];
-            $instance_id   = $parameters['instance_id'] ?? null;
-            $parameter_id  = $parameters['parameter_id'] ?? null;
 
-            (new ElectrophysioAnnotations(intval($physioFileID)))
+            $instance_id  = $parameters['instance_id'] ?
+                 intval($parameters['instance_id']) :  null;
+            $parameter_id = $parameters['parameter_id'] ?? null;
+
+            (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
                 ->update($instance_data, $metadata, $instance_id, $parameter_id);
 
-            return (new \LORIS\Http\Response\JSON\OK());
+            // if new annotation, get instanceID
+            if (is_null($instance_id)) {
+                $instance_id = $db->pselectOne(
+                    "SELECT MAX(AnnotationInstanceID)
+                    FROM physiological_annotation_instance ai
+                    JOIN physiological_annotation_file af USING (AnnotationFileID)
+                    WHERE PhysiologicalFileID=:physioFileID
+                    ",
+                    ['physioFileID' => $parameters['physioFileID']]
+                );
+            }
+
+            return (new \LORIS\Http\Response\JSON\OK(
+                ['instance_id' => $instance_id]
+            ));
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ["GET", "DELETE", "POST"]

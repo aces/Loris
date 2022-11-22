@@ -4,6 +4,7 @@ import {combineEpics} from 'redux-observable';
 import {boundsReducer} from './state/bounds';
 import {filtersReducer} from './state/filters';
 import {datasetReducer} from './state/dataset';
+import {currentAnnotationReducer} from './state/currentAnnotation';
 import {cursorReducer} from './state/cursor';
 import {panelReducer} from './state/rightPanel';
 import {timeSelectionReducer} from './state/timeSelection';
@@ -30,6 +31,7 @@ export const rootReducer = combineReducers({
   bounds: boundsReducer,
   filters: filtersReducer,
   dataset: datasetReducer,
+  currentAnnotation: currentAnnotationReducer,
   cursor: cursorReducer,
   rightPanel: panelReducer,
   timeSelection: timeSelectionReducer,
