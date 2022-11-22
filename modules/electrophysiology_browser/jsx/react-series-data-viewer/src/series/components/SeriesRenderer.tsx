@@ -245,7 +245,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     return (
       <>
-        <clipPath id='lineChunk' clipPathUnits='userSpaceOnUse'>
+        <clipPath id={'lineChunk-' + fileID} clipPathUnits='userSpaceOnUse'>
           <rect
             x={-viewerWidth / 2}
             y={-viewerHeight / (2 * MAX_CHANNELS)}

@@ -60,6 +60,7 @@ type CProps = {
   seriesRange: [number, number],
   amplitudeScale: number,
   scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>],
+  fileID: number,
   color?: string
 };
 
@@ -71,6 +72,7 @@ const LineChunk = ({
   seriesRange,
   amplitudeScale,
   scales,
+  fileID,
   color,
   ...rest
 }: CProps) => {
@@ -93,7 +95,7 @@ const LineChunk = ({
 
   return (
     <Group
-      style={{clipPath: 'url(#lineChunk)'}}
+      style={{clipPath: 'url(#lineChunk-' + fileID + ')'}}
       top={-p0[1]}
     >
       <Group
