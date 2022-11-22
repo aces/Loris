@@ -78,8 +78,8 @@ const EventManager = ({
                 }}
               >
                 {epoch.label} <br/>
-                {epoch.onset}{epoch.duration > 0
-                && ' - ' + (epoch.onset + epoch.duration)}
+                {epoch.onset.toFixed(3)}{epoch.duration > 0
+                && ' - ' + (epoch.onset + epoch.duration).toFixed(3)}
                 <button
                   type="button"
                   className={(visible ? '' : 'active ')
