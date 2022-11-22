@@ -195,7 +195,7 @@ class ElectrophysiologySessionView extends Component {
       .then((data) => {
           const database = data.database.map((dbEntry) => ({
             ...dbEntry,
-            // EEG Visualisation parameters
+            // EEG Visualization parameters
             chunksURLs:
                 dbEntry
                 && dbEntry.file.chunks_urls.map(
