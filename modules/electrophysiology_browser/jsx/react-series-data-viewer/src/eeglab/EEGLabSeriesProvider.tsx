@@ -17,7 +17,7 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {Channel} from '../series/store/types';
-import {AnnotationMetadata} from '../series/store/types';
+import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
@@ -29,6 +29,7 @@ type CProps = {
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
+  events: EventMetadata,
   annotations: AnnotationMetadata,
   limit: number,
 };
@@ -69,6 +70,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
       chunksURL,
       epochsURL,
       electrodesURL,
+      events,
       annotations,
       limit,
     } = props;
@@ -109,34 +111,41 @@ class EEGLabSeriesProvider extends Component<CProps> {
           this.store.dispatch(setInterval(timeInterval));
         }
       }
-    ).then(() => Promise.race(racers(fetchText, epochsURL))
-      .then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
-        return tsvParse(
-          text.json.replace('trial_type', 'label'))
-          .map(({ onset, duration, label }, i) => ({
-            onset: parseFloat(onset),
-            duration: parseFloat(duration),
+    )
+      .then(() => {
+        return events.instances.map(instance => {
+          const onset = parseFloat(instance.Onset);
+          const duration = parseFloat(instance.Duration);
+          const label = instance.TrialType && instance.TrialType !== 'n/a' ?
+            instance.TrialType : instance.EventValue;
+          const hed = instance.AssembledHED;
+          return {
+            onset: onset,
+            duration: duration,
             type: 'Event',
             label: label,
             comment: null,
+            hed: hed,
             channels: 'all',
-          }));
+            annotationInstanceID: null,
+          }
+        });
       }).then(events => {
         let epochs = events;
         annotations.instances.map(instance => {
           const label = annotations.labels
             .find(label =>
               label.AnnotationLabelID == instance.AnnotationLabelID
-            ).LabelDescription;
+            ).LabelName;
           epochs.push({
             onset: parseFloat(instance.Onset),
             duration: parseFloat(instance.Duration),
             type: 'Annotation',
             label: label,
-            comment: null,
+            comment: instance.Description,
+            hed: null,
             channels: 'all',
+            annotationInstanceID: instance.AnnotationInstanceID,
           });
         });
         return epochs;
@@ -152,7 +161,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
         );
         this.store.dispatch(updateFilteredEpochs());
       })
-    );
+    ;
 
     Promise.race(racers(fetchText, electrodesURL))
       .then((text) => {

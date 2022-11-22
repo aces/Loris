@@ -50,18 +50,85 @@ const IntervalSelect: FunctionComponent<CProps> = ({
 
   return (
     <div className='row'>
-      <h5
-        className='col-xs-offset-1 col-xs-11'
+      <div
         style={{
-          color: '#064785',
-          fontWeight: 'bold',
-          paddingLeft: '15px',
-          marginBottom: '15px',
-          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
       >
-        Timeline Range View
-        <input
+        <h5
+          className='col-xs-offset-1 col-xs-11'
+          style={{
+            color: '#064785',
+            fontWeight: 'bold',
+            paddingLeft: '15px',
+            marginBottom: '15px',
+            textAlign: 'center',
+          }}
+        >
+          Timeline Range View
+        </h5>
+        <div
+          className='col-xs-offset-1 col-xs-11'
+          style={{
+            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          <div className='btn-group'>
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                if (interval[0] !== domain[0]) {
+                  setInterval([interval[0] - 50, interval[1] - 50])
+                } else {
+                  setInterval([interval[0], interval[1] - 50])
+                }
+              }}
+              value='<<'
+            />
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                if (interval[0] !== domain[0]) {
+                  setInterval([interval[0] - 1, interval[1] - 1])
+                } else {
+                  setInterval([interval[0], interval[1] - 1])
+                }
+              }}
+              value='<'
+            />
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                if (interval[1] !== domain[1]) {
+                  setInterval([interval[0] + 1, interval[1] + 1])
+                } else {
+                  setInterval([interval[0] + 1, interval[1]])
+                }
+              }}
+              value='>'
+            />
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                if (interval[1] !== domain[1]) {
+                  setInterval([interval[0] + 50, interval[1] + 50])
+                } else {
+                  setInterval([interval[0] + 50, interval[1]])
+                }
+              }}
+              value='>>'
+            />
+          </div>
+          <input
             type='button'
             className='btn btn-primary btn-xs'
             onClick={() => {
@@ -71,7 +138,8 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             value='Reset'
             style={{marginLeft: '15px'}}
           />
-      </h5>
+        </div>
+      </div>
       <div
         className='col-xs-offset-1 col-xs-11'
         style={{height: viewerHeight}}
