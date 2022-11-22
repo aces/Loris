@@ -461,6 +461,15 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
+        $fileOutput = $db->pselectone(
+            'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+            ['PFID' => $physioFileID]
+        );
+
         //Get the annotation data
         $annotations = new ElectrophysioAnnotations(
             intval($physioFileID)
