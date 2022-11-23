@@ -189,15 +189,25 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
     );
     print_r($events);
 
-    echo "\nAnnotations\n";
+    echo "\nAnnotations Files\n";
     echo "----------------------------\n";
-    $annotations = $DB->pselect(
+    $annotations_files = $DB->pselect(
         'SELECT DISTINCT FilePath
         FROM physiological_annotation_file
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
-    print_r($annotations);
+    print_r($annotations_files);
+
+    echo "\nAnnotations Archives";
+    echo "----------------------------\n";
+    $annotations_archives = $DB->pselect(
+        'SELECT DISTINCT FilePath
+        FROM physiological_annotation_archive
+        WHERE PhysiologicalFileID=:pfid',
+        ['pfid' => $physioFileID]
+    );
+    print_r($annotations_archives);
 
     echo "\nChunks\n";
     echo "----------------------------\n";
@@ -241,8 +251,12 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $files[] = $data_path . $event['FilePath'];
         }
 
-        foreach ($annotations as $annotation) {
-            $files[] = $data_path . $annotation['FilePath'];
+        foreach ($annotations_files as $annotation_file) {
+            $files[] = $data_path . $annotation_file['FilePath'];
+        }
+
+        foreach ($annotations_archives as $annotations_archive) {
+            $files[] = $data_path . $annotations_archive['FilePath'];
         }
 
         foreach ($chunks as $chunk) {
@@ -295,6 +309,12 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         // delete from the physiological_annotation_file table
         $DB->delete(
             "physiological_annotation_file",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_annotation_archive table
+        $DB->delete(
+            "physiological_annotation_archive",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
