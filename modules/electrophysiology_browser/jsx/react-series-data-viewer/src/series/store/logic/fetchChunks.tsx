@@ -100,14 +100,10 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                   };
                 })
                 .filter(
-                  ({interval, downsampling}) =>
-                    // TODO: check this condition...
-                    // Why interval[1] - interval[0] < MAX_VIEWED_CHUNKS ?
-                    // downsampling === 0 prevents a change of downsampling
-                    // otherwise the interval becomes wrong
+                  ({interval}) =>
                     interval[1] - interval[0] < MAX_VIEWED_CHUNKS
-                    && downsampling === 0
-                );
+                )
+                .reverse();
 
               const max = R.reduce(
                 R.maxBy(({interval}) => interval[1] - interval[0]),
