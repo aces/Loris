@@ -192,10 +192,10 @@ class ElectrophysiologySessionView extends Component {
       }
       return resp.json();
     })
-        .then((data) => {
+      .then((data) => {
           const database = data.database.map((dbEntry) => ({
             ...dbEntry,
-            // EEG Visualisation urls
+            // EEG Visualization parameters
             chunksURLs:
                 dbEntry
                 && dbEntry.file.chunks_urls.map(
@@ -219,6 +219,9 @@ class ElectrophysiologySessionView extends Component {
                       + '/electrophysiology_browser/file_reader/?file='
                       + group.links[1].file
                 ),
+            annotations:
+                dbEntry
+                && dbEntry.file.annotations,
           }));
 
           this.setState({
@@ -318,6 +321,7 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs,
           epochsURL,
           electrodesURL,
+          annotations,
         } = this.state.database[i];
         const file = this.state.database[i].file;
         const splitPagination = [];
@@ -346,7 +350,8 @@ class ElectrophysiologySessionView extends Component {
           chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
       }
         epochsURL={epochsURL}
-        electrodesURL={electrodesURL}
+                  electrodesURL={electrodesURL}
+                  annotations={annotations}
             >
             <Panel
         id='channel-viewer'

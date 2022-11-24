@@ -48,7 +48,7 @@ class ElectrophysioAnnotations
 
         $annotationLabels = $db->pselect(
             'SELECT * FROM physiological_annotation_label',
-            ['PFID' => $this->_physioFileID]
+            []
         );
 
         $this->_data = [

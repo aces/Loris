@@ -17,6 +17,7 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {Channel} from '../series/store/types';
+import {AnnotationMetadata} from '../series/store/types';
 
 declare global {
   interface Window {
@@ -28,6 +29,7 @@ type CProps = {
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
+  annotations: AnnotationMetadata,
   limit: number,
 };
 
@@ -67,6 +69,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
       chunksURL,
       epochsURL,
       electrodesURL,
+      annotations,
       limit,
     } = props;
 
@@ -106,20 +109,45 @@ class EEGLabSeriesProvider extends Component<CProps> {
           this.store.dispatch(setInterval(timeInterval));
         }
       }
-    ).then(() => Promise.race(racers(fetchText, epochsURL)).then((text) => {
+    ).then(() => Promise.race(racers(fetchText, epochsURL))
+      .then((text) => {
         if (!(typeof text.json === 'string'
           || text.json instanceof String)) return;
+        return tsvParse(
+          text.json.replace('trial_type', 'label'))
+          .map(({onset, duration, label}, i) => ({
+            onset: parseFloat(onset),
+            duration: parseFloat(duration),
+            type: 'Event',
+            label: label,
+            comment: null,
+            channels: 'all',
+          }));
+      }).then(events => {
+        let epochs = events;
+        annotations.instances.map(instance => {
+          const label = annotations.labels
+            .find(label =>
+              label.AnnotationLabelID == instance.AnnotationLabelID
+            ).LabelDescription;
+          epochs.push({
+            onset: parseFloat(instance.Onset),
+            duration: parseFloat(instance.Duration),
+            type: 'Annotation',
+            label: label,
+            comment: null,
+            channels: 'all',
+          });
+        });
+        return epochs;
+      }).then(epochs => {
         this.store.dispatch(
-          setEpochs(tsvParse(
-            text.json.replace('trial_type', 'label'))
-              .map(({onset, duration, label}, i) => ({
-                onset: parseFloat(onset),
-                duration: parseFloat(duration),
-                type: 'Event',
-                label: label,
-                comment: null,
-                channels: 'all',
-              }))
+          setEpochs(
+            epochs
+            .flat()
+            .sort(function(a, b) {
+              return a.onset - b.onset;
+            })
           )
         );
         this.store.dispatch(updateFilteredEpochs());

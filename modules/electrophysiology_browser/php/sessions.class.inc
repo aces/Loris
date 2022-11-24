@@ -477,15 +477,12 @@ class Sessions extends \NDB_Page
             ['PFID' => $physioFileID]
         );
 
-        //Get the annotation data if the output type is derivative
-        //Get the annotation data if the output type is derivative
-        if (strcmp($fileOutput, 'derivative') == 0) {
-            $annotations = new ElectrophysioAnnotations(
-                intval($physioFileID)
-            );
-            $fileSummary['annotations'] = $annotations->getData();
-        }
+        //Get the annotation data
+        $annotations = new ElectrophysioAnnotations(
+            intval($physioFileID)
+        );
 
+        $fileSummary['annotations'] = $annotations->getData();
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
 
