@@ -115,7 +115,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
           || text.json instanceof String)) return;
         return tsvParse(
           text.json.replace('trial_type', 'label'))
-          .map(({ onset, duration, label }, i) => ({
+          .map(({onset, duration, label}, i) => ({
             onset: parseFloat(onset),
             duration: parseFloat(duration),
             type: 'Event',
