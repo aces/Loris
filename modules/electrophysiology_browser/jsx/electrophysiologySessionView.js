@@ -359,6 +359,7 @@ class ElectrophysiologySessionView extends Component {
                   events={events}
                   annotations={annotations}
                   electrodesURL={electrodesURL}
+                  physioFileID={this.state.database[i].file.id}
                 >
                   <Panel
                     id='channel-viewer'

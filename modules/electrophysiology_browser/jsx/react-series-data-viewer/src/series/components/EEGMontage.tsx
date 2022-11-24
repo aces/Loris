@@ -18,6 +18,7 @@ type CProps = {
   mouseX: number,
   mouseY: number,
   setHidden: (_: number[]) => void,
+  physioFileID: number,
 };
 
 const EEGMontage = (
@@ -25,6 +26,7 @@ const EEGMontage = (
     electrodes,
     hidden,
     setHidden,
+    physioFileID,
   }: CProps) => {
   if (electrodes.length === 0) return null;
 
@@ -197,7 +199,7 @@ const EEGMontage = (
   return (
     <div className='col-lg-4 col-md-6'>
       <Panel
-        id='electrode-montage'
+        id={'electrode-montage-' + physioFileID}
         title={'Electrode Map'}
       >
         <div
@@ -258,6 +260,7 @@ export default connect(
   (state: RootState) => ({
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
+    physioFileID: state.dataset.physioFileID,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

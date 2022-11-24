@@ -252,7 +252,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     return (
       <>
-        <clipPath id={'lineChunk-' + fileID} clipPathUnits='userSpaceOnUse'>
+        <clipPath id={'lineChunk-' + physioFileID} clipPathUnits='userSpaceOnUse'>
           <rect
             x={-viewerWidth / 2}
             y={-viewerHeight / (2 * MAX_CHANNELS)}
@@ -310,6 +310,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   seriesRange={seriesRange}
                   amplitudeScale={amplitudeScale}
                   scales={scales}
+                  physioFileID={physioFileID}
                 />
               ))
             ))
@@ -726,6 +727,7 @@ export default connect(
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
+    physioFileID: state.dataset.physioFileID,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(

@@ -20,6 +20,9 @@ export const setFilteredEpochs = createAction(SET_FILTERED_EPOCHS);
 export const SET_ACTIVE_EPOCH = 'SET_ACTIVE_EPOCH';
 export const setActiveEpoch = createAction(SET_ACTIVE_EPOCH);
 
+export const SET_PHYSIOFILE_ID = 'SET_PHYSIOFILE_ID';
+export const setPhysioFileID = createAction(SET_PHYSIOFILE_ID);
+
 export const SET_DATASET_METADATA = 'SET_DATASET_METADATA';
 export const setDatasetMetadata = createAction(SET_DATASET_METADATA);
 
@@ -29,6 +32,7 @@ export type Action =
   | {type: 'SET_EPOCHS', payload: Epoch[]}
   | {type: 'SET_FILTERED_EPOCHS', payload: number[]}
   | {type: 'SET_ACTIVE_EPOCH', payload: number}
+  | {type: 'SET_PHYSIOFILE_ID', payload: number}
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
@@ -52,6 +56,7 @@ export type State = {
   epochs: Epoch[],
   filteredEpochs: number[],
   activeEpoch: number | null,
+  physioFileID: number | null,
   shapes: number[][],
   timeInterval: [number, number],
   seriesRange: [number, number],
@@ -66,6 +71,7 @@ export const datasetReducer = (
     epochs: [],
     filteredEpochs: [],
     activeEpoch: null,
+    physioFileID: null,
     offsetIndex: 1,
     limit: MAX_CHANNELS,
     shapes: [],
@@ -92,6 +98,9 @@ export const datasetReducer = (
     }
     case SET_ACTIVE_EPOCH: {
       return R.assoc('activeEpoch', action.payload, state);
+    }
+    case SET_PHYSIOFILE_ID: {
+      return R.assoc('physioFileID', action.payload, state);
     }
     case SET_DATASET_METADATA: {
       return R.merge(state, action.payload);
