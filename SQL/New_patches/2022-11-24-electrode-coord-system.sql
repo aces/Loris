@@ -63,6 +63,9 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system` (
 -- -----------------------------------------------------
 -- Table `physiological_electrode`
 -- -----------------------------------------------------
+
+-- need to move data before
+
 ALTER TABLE `physiological_electrode`
   DROP COLUMN `PhysiologicalFileID`, `InsertTime`;
 
