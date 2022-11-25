@@ -4,7 +4,7 @@
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `physiological_coord_system_type` (
   `PhysiologicalCoordSystemTypeID`  INT(10)     UNSIGNED  NOT NULL AUTO_INCREMENT,
-  `Name`                            VARCHAR(50)           NOT NULL UNIQUE,
+  `Name`                            VARCHAR(20)           NOT NULL UNIQUE,
   PRIMARY KEY (`PhysiologicalCoordSystemTypeID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
