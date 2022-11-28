@@ -61,7 +61,6 @@ class MedhubConsent extends APIBase {
         $consentList = $data['ConsentList'];
 
 
-
         //Check that every consent is represented AND all fields are set
         $consentNames = ['INF','HR', 'GEN', 'CL', 'CQ', 'CS', 'CR', 'ATPSY','ORPS'];
         foreach($consentNames as $conName){
@@ -95,24 +94,13 @@ class MedhubConsent extends APIBase {
             $this->safeExit(0);
         }
 
-        //Gets the mapping of consent IDs, Names, and Labels from the DB
-        $consentIDLabel = $this->DB->pselectWithIndexKey(
-            "SELECT ConsentID, Name, Label
-                FROM consent" ,
-            [], "Name"
-        );
 
         foreach ($consentList as $conName => $conInfo){
 
-            $consentID = $consentIDLabel[$conName]['ConsentID'];
-            $consentLabel = $consentIDLabel[$conName]['Label'];
-
             $consentArray = [];
             $consentArray['ConsentName'] = $conName;
-            $consentArray['ConsentLabel'] = $consentLabel;
             $consentArray['Status'] = $conInfo['Response'];
             $consentArray['DateGiven'] = $conInfo['Date'];
-            $consentArray['ConsentID'] = $consentID;
 
             try{
                 \Candidate::singleton($candid)->editConsentStatusFields($consentArray);
