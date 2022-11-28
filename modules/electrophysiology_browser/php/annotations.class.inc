@@ -27,9 +27,8 @@ class Annotations extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = $request->getAttribute('user');
+        $db   = $request->getAttribute('loris')->getDatabaseConnection();
 
         switch ($request->getMethod()) {
         case 'GET':
