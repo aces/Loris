@@ -39,7 +39,6 @@ const EEGMontage = (
   const [mouseY, setMouseY] = useState(0);
   const [view3D, setView3D] = useState(false);
 
-  const scale = 1200;
   let scatter3D = [];
   let scatter2D = [];
   const startAngle = 0;
@@ -50,8 +49,7 @@ const EEGMontage = (
     .y((d) => d.y)
     .z((d) => d.z)
     .rotateZ( startAngle)
-    .rotateX(-startAngle)
-    .scale(scale);
+    .rotateX(-startAngle);
 
   const dragStart = (v: any) => {
     setDrag(true);
@@ -72,15 +70,15 @@ const EEGMontage = (
   };
 
   const dragEnd = (v: any) => {
-    setDrag( false);
-    setMouseX( v[0] - mx + mouseX);
+    setDrag(false);
+    setMouseX(v[0] - mx + mouseX);
     setMouseY(v[1] - my + mouseY);
   };
 
   /**
    * Compute the stereographic projection.
    *
-   * Given a unit sphere with radius r = 1 and center at The origin.
+   * Given a unit sphere with radius r = 1 and center at the origin.
    * Project the point p = (x, y, z) from the sphere's South pole (0, 0, -1)
    * on a plane on the sphere's North pole (0, 0, 1).
    *
@@ -98,18 +96,81 @@ const EEGMontage = (
     return [x * mu, y * mu];
   };
 
-  electrodes.map((electrode, i) => {
-    scatter3D.push({
-      x: electrode.position[0],
-      y: electrode.position[1],
-      z: electrode.position[2],
-    });
-    const [x, y] = stereographicProjection(
-      electrode.position[0] * 10,
-      electrode.position[1] * 10,
-      electrode.position[2] * 10
+   /**
+   * Computes an axis aligned bounding box for a set of points
+   *
+   * @param {number[][]} points - an array of nD points
+   *
+   * @return {[number, number]} : a pair of lower and upper bounds for the point set
+   */
+  const boundingBox = (points) => {
+    if(points.length === 0) return []
+    const dim = points[0].length;
+
+    return points.reduce(
+      (boundingBox, point) => {
+        for(let j=0; j < dim; ++j) {
+          boundingBox[0][j] = Math.min(boundingBox[0][j], point[j]);
+          boundingBox[1][j] = Math.max(boundingBox[1][j], point[j]);
+        }
+        return boundingBox;
+      },
+      [points[0].slice(), points[0].slice()]
     );
-    scatter2D.push({x: x * 150, y: y * 150 / 0.8});
+  }
+
+  // Find the enclosing rectangle
+  const bb = boundingBox(electrodes.map((electrode) => electrode.position.slice(0, 2)));
+
+  // Determine if the points are in an ALS or RAS coordinate system
+  // and the head ratio
+  let ALSOrientation = false;
+  let headScale = 10;
+  let stereographicProjectionScale = 1;
+  const montageRadius = 130;
+  let montageScale = 1;
+
+  if (bb.length > 0) {
+    const bbw = Math.abs(bb[0][0]) + Math.abs(bb[1][0]);
+    const bbh = Math.abs(bb[0][1]) + Math.abs(bb[1][1]);
+    if (bbw > bbh) ALSOrientation = true;
+
+    // Scale the sphere used for projection with the radius of the enclosing sphere
+    stereographicProjectionScale = Math.max(bbw, bbh)/2 * 1.2;
+
+    montageScale = montageRadius / stereographicProjectionScale;
+  }
+
+  electrodes.map((electrode, i) => {
+    let electrodeCoords = electrode.position.slice();
+
+    // SVG Y axis points toward bottom
+    // Rotate the points to have the nose up
+    electrodeCoords[1] *= -1;
+
+    // We want the electrodes in the RAS orientation
+    // Convert from ALS if necessary
+    if (ALSOrientation) {
+      electrodeCoords = [
+        electrodeCoords[1],
+        -electrodeCoords[0],
+        electrodeCoords[2],
+      ];
+    }
+
+    scatter3D.push({
+      x: electrodeCoords[0] * headScale,
+      y: electrodeCoords[1] * headScale,
+      z: electrodeCoords[2] * headScale,
+    });
+
+    const [x, y] = stereographicProjection(
+      electrodeCoords[0],
+      electrodeCoords[1],
+      electrodeCoords[2],
+      stereographicProjectionScale
+    );
+    scatter2D.push({x: x * headScale * montageScale, y: y * headScale * montageScale});
   });
 
   const Montage3D = () => (
@@ -124,7 +185,9 @@ const EEGMontage = (
             fill={color}
             fillOpacity='0.3'
             opacity='1'
-          />
+          >
+            <title>{electrodes[i].name}</title>
+          </circle>
         );
       })}
     </Group>
@@ -133,29 +196,29 @@ const EEGMontage = (
   const Montage2D = () => (
     <Group>
       <line
-        x1="25" y1="-135"
-        x2="0" y2="-150"
+        x1="25" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-15}
         stroke="black"
       />
       <line
-        x1="-25" y1="-135"
-        x2="0" y2="-150"
+        x1="-25" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-15}
         stroke="black"
       />
       <ellipse
-        cx="135" cy="0"
-        rx="15" ry="40"
+        cx={montageRadius} cy="0"
+        rx="12" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
       <ellipse
-        cx="-135" cy="0"
-        rx="15" ry="40"
+        cx={-montageRadius} cy="0"
+        rx="12" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
       <circle
-        r='138'
+        r={montageRadius}
         stroke="black"
         fill='white'
       />
@@ -165,7 +228,6 @@ const EEGMontage = (
           key={i}
         >
           <circle
-            transform='rotate(-90)'
             cx={point.x}
             cy={point.y}
             r='8'
@@ -175,13 +237,6 @@ const EEGMontage = (
             <title>{electrodes[i].name}</title>
           </circle>
           <text
-            transform={
-              'rotate(-90) rotate(90, '
-              + point.x
-              + ', '
-              + point.y
-              + ')'
-            }
             x={point.x}
             y={point.y}
             dominantBaseline="central"
