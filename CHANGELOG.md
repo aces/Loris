@@ -11,7 +11,7 @@ changes in the following format: PR #1234***
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
 #### Features
-- placeholder 
+- Added new interface intended to be used for querying module data from PHP (PR #8215) 
 
 #### Updates and Improvements
 - Rename subproject to Cohort (PR #7817)
@@ -70,7 +70,6 @@ changes in the following format: PR #1234***
 ### Modules
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
-
 
 ## LORIS 24.0 (Release Date: 2022-03-24)
 ### Core
