@@ -2906,6 +2906,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $req     = $request->getParsedBody();
         $success = false;
+        if (isset($req['ClearInstrument'])) {
+            $success = true;
+        }
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $success = $this->save();
         }
