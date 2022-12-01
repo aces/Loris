@@ -120,6 +120,7 @@ multi-echo aquisitions (PR #7515).
 - The `Center_name` field in the `mri_protocol` table has been replaced by `CenterID` 
 from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the 
 default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
+- The statistics displayed in the dashboard was changed to only show the data relevant to the user's site(s). (PR #8132)
 
 #### Bug Fixes
 - A LINST instrument Date field name now appears correctly (not truncated) on the 
