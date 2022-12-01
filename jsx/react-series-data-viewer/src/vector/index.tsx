@@ -11,7 +11,7 @@ export const MIN_EPOCH_WIDTH = 1;
 
 export const MAX_VIEWED_CHUNKS = 3;
 
-export const MAX_CHANNELS = 6;
+export const MAX_CHANNELS = 32;
 
 export const SIGNAL_SCALE = Math.pow(10, 6);
 

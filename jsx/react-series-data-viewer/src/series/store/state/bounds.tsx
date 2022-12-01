@@ -58,7 +58,7 @@ const viewerWidth = (state = 400, action?: Action): number => {
   return state;
 };
 
-const viewerHeight = (state = 400, action?: Action): number => {
+const viewerHeight = (state = 800, action?: Action): number => {
   if (action && action.type === 'SET_VIEWER_HEIGHT') {
     return action.payload;
   }

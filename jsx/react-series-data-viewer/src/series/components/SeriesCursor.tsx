@@ -170,7 +170,7 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
   );
 
   return (
-    <div style={{margin: '5px 5px'}}>
+    <div style={{margin: '0 5px', width: '70px'}}>
       {channel.traces.map((trace, i) => {
         const chunk = trace.chunks.find(
           (chunk) => chunk.interval[0] <= time && chunk.interval[1] >= time
