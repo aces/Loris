@@ -32,7 +32,7 @@ submodules.forEach((submodule) => {
 
   cp.spawnSync(
     'npm',
-    ['i', '--package-lock-only'],
+    ['ci'],
     {
       env: process.env,
       cwd: submodule,
