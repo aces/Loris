@@ -30,9 +30,15 @@ submodules.forEach((submodule) => {
     + '\n -----'
   );
 
+  let installMode = 'ci';
+  // ensure submodule has package-lock.json
+  if (!fs.existsSync(path.join(submodule, 'package-lock.json'))) {
+    installMode = 'i';
+  }
+
   cp.spawnSync(
     'npm',
-    ['ci'],
+    [installMode],
     {
       env: process.env,
       cwd: submodule,
