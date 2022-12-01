@@ -4,7 +4,7 @@ export const SET_CURSOR = 'SET_CURSOR';
 export const setCursor = createAction(SET_CURSOR);
 
 export type Action = {
-  type: "SET_CURSOR",
+  type: 'SET_CURSOR',
   payload?: number
 };
 

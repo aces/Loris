@@ -24,8 +24,6 @@ type CProps = {
 const EEGMontage = (
   {
     electrodes,
-    hidden,
-    setHidden,
     physioFileID,
   }: CProps) => {
   if (electrodes.length === 0) return null;
@@ -39,12 +37,12 @@ const EEGMontage = (
   const [mouseY, setMouseY] = useState(0);
   const [view3D, setView3D] = useState(false);
 
-  let scatter3D = [];
-  let scatter2D = [];
+  const scatter3D = [];
+  const scatter2D = [];
   const startAngle = 0;
   const color = '#000000';
 
-  let point3D = _3d()
+  const point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
     .z((d) => d.z)
@@ -87,29 +85,31 @@ const EEGMontage = (
    * @param {number} x - x coordinate of electrodes on a unit sphere scale
    * @param {number} y - x coordinate of electrodes on a unit sphere scale
    * @param {number} z - x coordinate of electrodes on a unit sphere scale
-   * @param {number} scale - Scale to change the projection point.Defaults to 1, which is on the sphere
+   * @param {number} scale - Scale to change the projection point.
+   *                         Defaults to 1, which is on the sphere
    *
-   * @return {number[]} : x, y positions of electrodes as projected onto a unit circle.
+   * @return {number[]} : x, y positions of electrodes
+   *                      as projected onto a unit circle.
    */
   const stereographicProjection = (x, y, z, scale=1.0) => {
     const mu = (2 * scale) / (scale + z);
     return [x * mu, y * mu];
   };
 
-   /**
+  /**
    * Computes an axis aligned bounding box for a set of points
    *
-   * @param {number[][]} points - an array of nD points
+   * @param {Array<number[]>} points - an array of nD points
    *
-   * @return {[number, number]} : a pair of lower and upper bounds for the point set
+   * @return {number[]} : a pair of lower and upper bounds
    */
   const boundingBox = (points) => {
-    if(points.length === 0) return []
+    if (points.length === 0) return [];
     const dim = points[0].length;
 
     return points.reduce(
       (boundingBox, point) => {
-        for(let j=0; j < dim; ++j) {
+        for (let j=0; j < dim; ++j) {
           boundingBox[0][j] = Math.min(boundingBox[0][j], point[j]);
           boundingBox[1][j] = Math.max(boundingBox[1][j], point[j]);
         }
@@ -117,17 +117,22 @@ const EEGMontage = (
       },
       [points[0].slice(), points[0].slice()]
     );
-  }
+  };
 
   // Find the enclosing rectangle
-  const bb = boundingBox(electrodes.map((electrode) => electrode.position.slice(0, 2)));
+  const bb = boundingBox(
+    electrodes.map(
+      (electrode) => electrode.position.slice(0, 2)
+    )
+  );
 
   let ALSOrientation = false;
   let headRadius = 1;
   let headRatio = 1;
   let montageRadius = 100;
 
-  // === Those values may need to be adjusted depending on the coord space/net used
+  // === Those values may need to be adjusted
+  //     depending on the coord space/net used
   const scale3D = 10;
   const scale2D = 5;
   // ===
@@ -138,13 +143,19 @@ const EEGMontage = (
     const bbh = Math.abs(bb[0][1]) + Math.abs(bb[1][1]);
     if (bbw > bbh) ALSOrientation = true;
 
-    // Scale the sphere used for projection with the radius of the enclosing sphere
+    // Scale the sphere used for projection
+    // with the radius of the enclosing sphere
     headRadius = Math.max(bbw, bbh)/2;
     headRatio = Math.max(bbw, bbh) / Math.min(bbw, bbh);
-    montageRadius = stereographicProjection(headRadius, 0, 0, headRadius)[0] * scale2D;
+    montageRadius = stereographicProjection(
+      headRadius,
+      0,
+      0,
+      headRadius
+    )[0] * scale2D;
   }
 
-  electrodes.map((electrode, i) => {
+  electrodes.map((electrode) => {
     let electrodeCoords = electrode.position.slice();
 
     // SVG Y axis points toward bottom

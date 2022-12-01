@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
-import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
+import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
-import { RootState } from '../store';
+import {RootState} from '../store';
 
 type CProps = {
   timeSelection?: [number, number],
@@ -37,7 +37,6 @@ const EventManager = ({
     && rightPanel !== 'annotationForm'
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
-  const [activeEpochs, setActiveEpochs] = useState([]);
   const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
   const [visibleComments, setVisibleComments] = useState([]);
   const [allCommentsVisible, setAllCommentsVisible] = useState(false);
@@ -92,9 +91,9 @@ const EventManager = ({
           justifyContent: 'space-between',
         }}
       >
-        <p style={{ margin: '0px' }}>
+        <p style={{margin: '0px'}}>
           <strong>{`${epochType}s`}</strong>
-          <span style={{ fontSize: '0.75em' }}>
+          <span style={{fontSize: '0.75em'}}>
             <br />in timeline view
           </span>
         </p>
@@ -109,7 +108,7 @@ const EventManager = ({
           ></i>
           <i
             className={'glyphicon glyphicon-tags'}
-            style={{ padding: '0.5em' }}
+            style={{padding: '0.5em'}}
             onClick={() => setAllCommentsVisible(!allCommentsVisible)}
           ></i>
           <i
@@ -145,14 +144,14 @@ const EventManager = ({
               if (!visibleComments.includes(index)) {
                 setVisibleComments([
                   ...visibleComments,
-                  index
+                  index,
                 ]);
               } else {
                 setVisibleComments(visibleComments.filter(
-                  value => value !== index
+                  (value) => value !== index
                 ));
               }
-            }
+            };
 
             const handleEditClick = () => {
               setCurrentAnnotation(epoch);
@@ -160,7 +159,7 @@ const EventManager = ({
               const startTime = epoch.onset;
               const endTime = epoch.duration + startTime;
               setTimeSelection([startTime, endTime]);
-            }
+            };
 
             return (
               <div

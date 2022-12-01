@@ -28,12 +28,12 @@ declare global {
 
 type CProps = {
   chunksURL: string,
-  epochsURL: string,
   electrodesURL: string,
   events: EventMetadata,
   annotations: AnnotationMetadata,
   physioFileID: number,
   limit: number,
+  children: React.ReactNode,
 };
 
 /**
@@ -70,7 +70,6 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     const {
       chunksURL,
-      epochsURL,
       electrodesURL,
       events,
       annotations,
@@ -87,10 +86,10 @@ class EEGLabSeriesProvider extends Component<CProps> {
         // if request fails don't resolve
         .catch((error) => {
           console.error(error);
-          return new Promise((resolve) => {});
+          return Promise.resolve();
         })];
       } else {
-        return [new Promise((resolve) => {})];
+        return [Promise.resolve()];
       }
     };
 
@@ -109,14 +108,14 @@ class EEGLabSeriesProvider extends Component<CProps> {
             })
           );
           this.store.dispatch(setChannels(emptyChannels(
-              Math.min(this.props.limit, channelMetadata.length),
+              Math.min(limit, channelMetadata.length),
               1
           )));
           this.store.dispatch(setDomain(timeInterval));
           this.store.dispatch(setInterval(timeInterval));
         }
       }).then(() => {
-        return events.instances.map(instance => {
+        return events.instances.map((instance) => {
           const onset = parseFloat(instance.Onset);
           const duration = parseFloat(instance.Duration);
           const label = instance.TrialType && instance.TrialType !== 'n/a' ?
@@ -131,13 +130,13 @@ class EEGLabSeriesProvider extends Component<CProps> {
             hed: hed,
             channels: 'all',
             annotationInstanceID: null,
-          }
+          };
         });
-      }).then(events => {
-        let epochs = events;
-        annotations.instances.map(instance => {
+      }).then((events) => {
+        const epochs = events;
+        annotations.instances.map((instance) => {
           const label = annotations.labels
-            .find(label =>
+            .find((label) =>
               label.AnnotationLabelID == instance.AnnotationLabelID
             ).LabelName;
           epochs.push({
@@ -152,7 +151,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
           });
         });
         return epochs;
-      }).then(epochs => {
+      }).then((epochs) => {
         this.store.dispatch(
           setEpochs(
             epochs
@@ -211,7 +210,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
   static defaultProps = {
     limit: MAX_CHANNELS,
-  };  
+  };
 }
 
 export default EEGLabSeriesProvider;

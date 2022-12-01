@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "plugins": [
     "react",
     "no-jquery"
@@ -65,6 +65,16 @@
     }]
   },
   "overrides": [
+    {
+      "files": "**/*.+(ts|tsx)",
+      "plugins": ["@typescript-eslint"],
+      "extends": ["plugin:@typescript-eslint/recommended", "eslint:recommended", "plugin:react/recommended", "google"],
+      "rules": {
+        "no-undef": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    },
     {
       "files": [
         "modules/**"

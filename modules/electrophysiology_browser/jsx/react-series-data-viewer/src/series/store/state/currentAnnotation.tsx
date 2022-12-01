@@ -5,7 +5,7 @@ export const SET_CURRENT_ANNOTATION = 'SET_CURRENT_ANNOTATION';
 export const setCurrentAnnotation = createAction(SET_CURRENT_ANNOTATION);
 
 export type Action = {
-  type: "SET_CURRENT_ANNOTATION",
+  type: 'SET_CURRENT_ANNOTATION',
   payload: Epoch
 };
 

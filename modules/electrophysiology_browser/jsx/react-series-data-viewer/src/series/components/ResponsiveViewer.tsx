@@ -1,8 +1,7 @@
 import * as R from 'ramda';
-import React, { FunctionComponent, ReactNode, Children } from 'react';
+import React, {FunctionComponent} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
-import { WithParentSizeProps } from '@visx/responsive/lib/enhancers/withParentSizeModern';
 
 type CProps = {
   parentWidth?: number,
@@ -20,7 +19,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseMove,
   mouseUp,
   mouseLeave,
-  children
+  children,
 }) => {
   const provision = (layer) =>
     React.cloneElement(
@@ -98,10 +97,18 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 ResponsiveViewer.defaultProps = {
   parentWidth: 400,
   parentHeight: 300,
-  mouseMove: () => {},
-  mouseDown: () => {},
-  mouseUp: () => {},
-  mouseLeave: () => {},
+  mouseMove: () => {
+    // do nothing
+  },
+  mouseDown: () => {
+    // do nothing
+  },
+  mouseUp: () => {
+    // do nothing
+  },
+  mouseLeave: () => {
+    // do nothing
+  },
 };
 
 export default withParentSize(ResponsiveViewer);

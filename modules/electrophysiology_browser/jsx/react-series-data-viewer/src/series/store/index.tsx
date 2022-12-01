@@ -1,4 +1,3 @@
-import * as R from 'ramda';
 import {combineReducers} from 'redux';
 import {combineEpics} from 'redux-observable';
 import {boundsReducer} from './state/bounds';
@@ -39,7 +38,7 @@ export const rootReducer = combineReducers({
 });
 
 export const rootEpic = combineEpics(
-  createDragBoundsEpic(R.prop('bounds')),
+  createDragBoundsEpic(),
   createTimeSelectionEpic(({bounds, timeSelection}) => {
     const {interval} = bounds;
     return {interval, timeSelection};

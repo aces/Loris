@@ -1,10 +1,20 @@
-import React, {useCallback, useEffect, useState, FunctionComponent} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  FunctionComponent,
+} from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
-import {MAX_RENDERED_EPOCHS, MAX_CHANNELS, SIGNAL_UNIT, Vector2} from '../../vector';
+import {
+  MAX_RENDERED_EPOCHS,
+  MAX_CHANNELS,
+  SIGNAL_UNIT,
+  Vector2,
+} from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
 import LineChunk from './LineChunk';
@@ -106,7 +116,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setHighPassFilter,
   setViewerWidth,
   setViewerHeight,
-  setFilteredEpochs,
   dragStart,
   dragContinue,
   dragEnd,
@@ -154,7 +163,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   vec2.add(center, topLeft, bottomRight);
   vec2.scale(center, center, 1 / 2);
 
-  const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+  const scales: [
+      ScaleLinear<number, number, never>,
+      ScaleLinear<number, number, never>
+  ] = [
     scaleLinear()
       .domain(interval)
       .range([topLeft[0], bottomRight[0]]),
@@ -191,7 +203,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
-                color={epochs[index]?.type === 'Annotation' ? '#fabb8e' : '#8eecfa'}
+                color={epochs[index]?.type === 'Annotation' ?
+                  '#fabb8e' :
+                  '#8eecfa'
+                }
                 key={`${index}`}
                 scales={scales}
                 opacity={0.7}
@@ -252,7 +267,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     return (
       <>
-        <clipPath id={'lineChunk-' + physioFileID} clipPathUnits='userSpaceOnUse'>
+        <clipPath
+          id={'lineChunk-' + physioFileID}
+          clipPathUnits='userSpaceOnUse'
+        >
           <rect
             x={-viewerWidth / 2}
             y={-viewerHeight / (2 * MAX_CHANNELS)}
@@ -289,7 +307,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
           const seriesRange = channelMetadata[channel.index].seriesRange;
-          const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+          const scales: [
+            ScaleLinear<number, number, never>,
+            ScaleLinear<number, number, never>
+          ] = [
             scaleLinear()
               .domain(interval)
               .range([subTopLeft[0], subBottomRight[0]]),
@@ -400,7 +421,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(HIGH_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setHighPassFilter(key);
                               setHighPass(key);
                             }}
@@ -432,7 +453,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(LOW_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setLowPassFilter(key);
                               setLowPass(key);
                             }}
@@ -458,7 +479,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         style={{width: '55px'}}
                         value={offsetIndex}
                         onChange={(e) => {
-                          let value = parseInt(e.target.value);
+                          const value = parseInt(e.target.value);
                           !isNaN(value) && setOffsetIndex(value);
                         }}
                       />
@@ -659,9 +680,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 >
                   {[...Array(epochs.length).keys()].filter((i) =>
                       epochs[i].onset + epochs[i].duration > interval[0]
-                    && epochs[i].onset < interval[1]
-                      && ((epochs[i].type === 'Event' && rightPanel === 'eventList')
-                      || (epochs[i].type === 'Annotation' && rightPanel === 'annotationList'))
+                      && epochs[i].onset < interval[1]
+                      && (
+                        (epochs[i].type === 'Event'
+                         && rightPanel === 'eventList')
+                        ||
+                        (epochs[i].type === 'Annotation'
+                         && rightPanel === 'annotationList')
+                      )
                     ).length >= MAX_RENDERED_EPOCHS &&
                     <div
                       style={{

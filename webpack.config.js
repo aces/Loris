@@ -214,6 +214,7 @@ let config = [
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        extensions: ['ts', 'tsx', 'js', 'jsx'],
         files: [
           'modules/',
           'jsx/',

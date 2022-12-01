@@ -1,5 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {AnnotationMetadata, Epoch as EpochType, RightPanel} from '../store/types';
+import {
+  AnnotationMetadata,
+  Epoch as EpochType,
+  RightPanel,
+} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
@@ -30,7 +34,6 @@ type CProps = {
 const AnnotationForm = ({
   timeSelection,
   epochs,
-  filteredEpochs,
   setTimeSelection,
   setRightPanel,
   setEpochs,
@@ -38,17 +41,23 @@ const AnnotationForm = ({
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
-  toggleEpoch,
-  updateActiveEpoch,
   interval,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
-  let [event, setEvent] = useState([startEvent, endEvent]);
-  let [label, setLabel] = useState(currentAnnotation ? currentAnnotation.label : null);
-  let [comment, setComment] = useState(currentAnnotation ? currentAnnotation.comment : '');
-  let [isSubmitted, setIsSubmitted] = useState(false);
-  let [isDeleted, setIsDeleted] = useState(false);
-  let [annoMessage, setAnnoMessage] = useState('');
+  const [event, setEvent] = useState([startEvent, endEvent]);
+  const [label, setLabel] = useState(
+    currentAnnotation ?
+    currentAnnotation.label :
+    null
+  );
+  const [comment, setComment] = useState(
+    currentAnnotation ?
+    currentAnnotation.comment :
+    ''
+  );
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [annoMessage, setAnnoMessage] = useState('');
 
   // Time Selection
   useEffect(() => {
@@ -70,7 +79,7 @@ const AnnotationForm = ({
 
     if (validate([value, event[1]])) {
       let endTime = event[1];
-      if (typeof endTime === 'string'){
+      if (typeof endTime === 'string') {
         endTime = parseInt(endTime);
       }
       setTimeSelection(
@@ -80,7 +89,7 @@ const AnnotationForm = ({
         ]
       );
     }
-  }
+  };
 
   const handleEndTimeChange = (name, val) => {
     const value = parseInt(val);
@@ -88,17 +97,17 @@ const AnnotationForm = ({
 
     if (validate([event[0], value])) {
       let startTime = event[0];
-      if (typeof startTime === 'string'){
+      if (typeof startTime === 'string') {
         startTime = parseInt(startTime);
       }
       setTimeSelection(
         [
           startTime || null,
-          value
+          value,
         ]
       );
     }
-  }
+  };
 
   const handleLabelChange = (name, value) => {
     setLabel(value);
@@ -116,11 +125,11 @@ const AnnotationForm = ({
     setTimeSelection([null, null]);
     setLabel('');
     setComment('');
-  }
+  };
 
   const handleDelete = () => {
     setIsDeleted(true);
-  }
+  };
 
   // Submit
   useEffect(() => {
@@ -158,14 +167,16 @@ const AnnotationForm = ({
     // instance_id = null for new annotations
     const body = {
       physioFileID: physioFileID,
-      instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
+      instance_id: currentAnnotation ?
+        currentAnnotation.annotationInstanceID :
+        null,
       instance: {
         onset: startTime,
         duration: duration,
         label_name: label,
         label_description: label,
         channels: 'all',
-        description: comment
+        description: comment,
       },
     };
 
@@ -176,18 +187,20 @@ const AnnotationForm = ({
       label: label,
       comment: comment,
       channels: 'all',
-      annotationInstanceID: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
+      annotationInstanceID: currentAnnotation ?
+        currentAnnotation.annotationInstanceID :
+        null,
     };
 
     fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
       body: JSON.stringify(body),
-    }).then(response => {
+    }).then((response) => {
       if (response.ok) {
         return response.json();
       }
-    }).then(data => {
+    }).then((data) => {
       setIsSubmitted(false);
 
       // if in edit mode, remove old annotation instance
@@ -208,7 +221,9 @@ const AnnotationForm = ({
       handleReset();
 
       // Display success message
-      setAnnoMessage(currentAnnotation ? 'Annotation Updated!' : 'Annotation Added!');
+      setAnnoMessage(currentAnnotation ?
+        'Annotation Updated!' :
+        'Annotation Added!');
       setTimeout(() => {
         setAnnoMessage(''); // Empty string will cause success div to hide
 
@@ -218,35 +233,37 @@ const AnnotationForm = ({
           setRightPanel('annotationList');
         }
       }, 3000);
-
-    }).catch(error => {
-      console.log(error);
+    }).catch((error) => {
+      console.error(error);
       // Display error message
       swal.fire(
         'Error',
         'Something went wrong!',
         'error'
       );
-    }) 
+    });
   }, [isSubmitted]);
 
   // Delete
   useEffect(() => {
     if (isDeleted) {
-      const url = window.location.origin + '/electrophysiology_browser/annotations/';
+      const url = window.location.origin
+                  + '/electrophysiology_browser/annotations/';
       const body = {
         physioFileID: physioFileID,
-        instance_id: currentAnnotation ? currentAnnotation.annotationInstanceID : null,
+        instance_id: currentAnnotation ?
+          currentAnnotation.annotationInstanceID :
+          null,
       };
 
       swal.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        text: 'You won\'t be able to revert this!',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, delete it!',
       }).then((result) => {
         // if isConfirmed
         if (result.value) {
@@ -254,14 +271,14 @@ const AnnotationForm = ({
             method: 'DELETE',
             credentials: 'same-origin',
             body: JSON.stringify(body),
-          }).then(response => {
+          }).then((response) => {
             if (response.ok) {
               setIsDeleted(false);
 
               epochs.splice(epochs.indexOf(currentAnnotation), 1);
               setEpochs(
                 epochs
-                  .sort(function (a, b) {
+                  .sort(function(a, b) {
                     return a.onset - b.onset;
                   })
               );
@@ -282,8 +299,8 @@ const AnnotationForm = ({
                 setRightPanel('annotationList');
               }
             }
-          }).catch(error => {
-            console.log(error);
+          }).catch((error) => {
+            console.error(error);
             // Display error message
             swal.fire(
               'Error',
@@ -299,11 +316,11 @@ const AnnotationForm = ({
   }, [isDeleted]);
 
   let labelOptions = {};
-  annotationMetadata.labels.map(label => {
+  annotationMetadata.labels.map((label) => {
     labelOptions = {
       ...labelOptions,
-      [label.LabelName]: label.LabelName
-    }
+      [label.LabelName]: label.LabelName,
+    };
   });
 
   return (
@@ -366,19 +383,35 @@ const AnnotationForm = ({
             value={comment}
             onUserInput={handleCommentChange}
           />
-          <button type="submit" disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary btn-xs">
+          <button
+            type="submit"
+            disabled={isSubmitted}
+            onClick={handleSubmit}
+            className="btn btn-primary btn-xs"
+          >
             Submit
           </button>
-          <button type="reset" onClick={handleReset} className="btn btn-primary btn-xs">
+          <button type="reset"
+            onClick={handleReset}
+            className="btn btn-primary btn-xs"
+          >
             Clear
           </button>
           {currentAnnotation &&
-            <button type="button" onClick={handleDelete} className="btn btn-primary btn-xs">
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="btn btn-primary btn-xs"
+            >
               Delete
             </button>
           }
           {annoMessage && (
-            <div className="alert alert-success text-center" role="alert" style={{margin: '5px'}}>
+            <div
+              className="alert alert-success text-center"
+              role="alert"
+              style={{margin: '5px'}}
+            >
               {annoMessage}
             </div>
           )}
