@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{$baseurl}/vendor/js/mf-conditional-fields.js"></script>
+<script type="text/javascript" src="{$baseurl}/instruments/js/mf-conditional-fields.js"></script>
 <script type="text/javascript" src="{$baseurl}/js/instrument_form_control.js"></script>
 <style type="text/css">
 	.table-instrument>tbody>tr>th{
