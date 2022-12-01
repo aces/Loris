@@ -513,6 +513,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                             'issueID' => $issueID,
                         ]
                     );
+                    // Send email to watchers if they are set and different from assignee.
+                    if (isset($issueValues['assignee']) and $issueValues['assignee'] == $usersWatching) {
+                        continue;
+                    }
+                    $this->emailUser($issueID, $usersWatching, $user);
                 }
             }
         }
