@@ -20,7 +20,6 @@ const ReactMarkdown = require('react-markdown');
  *
  * @author Dave MacFarlane
  * @version 0.0.1
- *
  */
 class Markdown extends Component {
   /**

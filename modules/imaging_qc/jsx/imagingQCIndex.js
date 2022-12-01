@@ -27,7 +27,6 @@ class ImagingQCIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -74,7 +73,6 @@ class ImagingQCIndex extends Component {
    *
    * @param {string} url
    * @param {object} state - The React state object
-   *
    * @return {object}
    */
   fetchData(url, state) {

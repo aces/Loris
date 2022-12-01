@@ -5,7 +5,6 @@
  *
  * @author Loris Team
  * @version 1.0.0
- *
  */
 
 import React, {Component} from 'react';
@@ -45,6 +44,7 @@ class StaticDataTable extends Component {
 
   /**
    * shouldComponentUpdate
+   *
    * @param {object} nextProps - next props
    * @param {object} nextState - next state
    * @param {object} nextContext - next context
@@ -129,7 +129,7 @@ class StaticDataTable extends Component {
    * Set the component page variable
    * to a new value
    *
-   * @param {int} pageNo - Page index
+   * @param {number} pageNo - Page index
    */
   changePage(pageNo) {
     this.setState({
@@ -142,8 +142,8 @@ class StaticDataTable extends Component {
    * If component sortColumn is already set to colNumber
    * Toggle SortOrder ASC/DESC
    *
-   * @param {int} colNumber - The column index
-   * @return {function(e)} - onClick Event Handler
+   * @param {number} colNumber - The column index
+   * @return {Function} - onClick Event Handler
    */
   setSortColumn(colNumber) {
     return function(e) {
@@ -183,7 +183,7 @@ class StaticDataTable extends Component {
   /**
    * Export the filtered rows and columns into a csv
    *
-   * @param {[]} csvData - The csv data
+   * @param {array} csvData - The csv data
    */
   downloadCSV(csvData) {
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
@@ -232,7 +232,7 @@ class StaticDataTable extends Component {
   /**
    * Get the number of filtered rows
    *
-   * @return {int}
+   * @return {number}
    */
   countFilteredRows() {
     let useKeyword = false;
@@ -298,7 +298,7 @@ class StaticDataTable extends Component {
   /**
    * Sort the rows according to the sort configuration
    *
-   * @return {Object[]}
+   * @return {object[]}
    */
   getSortedRows() {
     const index = [];

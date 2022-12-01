@@ -8,10 +8,8 @@ import swal from 'sweetalert2';
  * Create Timepoint.
  *
  * @description form for create timepoint.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class CreateTimepoint extends React.Component {
   /**
@@ -261,6 +259,7 @@ class CreateTimepoint extends React.Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -319,6 +318,7 @@ class CreateTimepoint extends React.Component {
 
     /**
      * Populate the elements of messages to display.
+     *
      * @param {array} values (messages) data from server.
      * @return {array} individual messages.
      */

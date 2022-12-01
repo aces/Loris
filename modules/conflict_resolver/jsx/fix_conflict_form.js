@@ -78,7 +78,7 @@ class FixConflictForm extends Component {
   /**
    * Renders select element that enables conflict resolution.
    *
-   * @return {jsx}
+   * @return {JSX}
    */
   render() {
     const {value, success, error, emptyOption} = this.state;

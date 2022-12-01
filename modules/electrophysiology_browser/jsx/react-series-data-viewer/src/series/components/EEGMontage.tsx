@@ -83,11 +83,10 @@ const EEGMontage = (
    * P' = P * (2r / (r + z))
    *
    * @param {number} x - x coordinate of electrodes on a unit sphere scale
-   * @param {number} y - x coordinate of electrodes on a unit sphere scale
-   * @param {number} z - x coordinate of electrodes on a unit sphere scale
+   * @param {number} y - y coordinate of electrodes on a unit sphere scale
+   * @param {number} z - z coordinate of electrodes on a unit sphere scale
    * @param {number} scale - Scale to change the projection point.
    *                         Defaults to 1, which is on the sphere
-   *
    * @return {number[]} : x, y positions of electrodes
    *                      as projected onto a unit circle.
    */
@@ -99,9 +98,8 @@ const EEGMontage = (
   /**
    * Computes an axis aligned bounding box for a set of points
    *
-   * @param {Array<number[]>} points - an array of nD points
-   *
-   * @return {number[]} : a pair of lower and upper bounds
+   * @param {number[][]} points - an array of nD points
+   * @return {[number, number]} : a pair of lower and upper bounds
    */
   const boundingBox = (points) => {
     if (points.length === 0) return [];

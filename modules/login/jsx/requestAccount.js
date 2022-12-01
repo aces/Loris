@@ -7,10 +7,8 @@ import swal from 'sweetalert2';
  * Request account form.
  *
  * @description form for request account.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class RequestAccount extends Component {
   /**
@@ -118,6 +116,7 @@ class RequestAccount extends Component {
   loadGoogleCaptcha() {
     /**
      * Dynamically load a script if necessary.
+     *
      * @param {string} url - script to load.
      */
     function loadScript(url) {

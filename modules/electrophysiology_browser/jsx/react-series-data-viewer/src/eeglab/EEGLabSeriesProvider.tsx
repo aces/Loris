@@ -46,7 +46,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   };
 
   /**
-   * @constructor
+   * @class
    * @param {object} props - React Component properties
    */
   constructor(props: CProps) {

@@ -8,8 +8,7 @@
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
- * */
+ */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
@@ -192,6 +191,7 @@ class MediaEditForm extends Component {
 
   /**
    * Handles form submission
+   *
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {

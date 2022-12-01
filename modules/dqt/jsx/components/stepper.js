@@ -138,7 +138,6 @@ Step.propTypes = {
  * Stepper component.
  *
  * @description guides the user with steps to complete a task.
- *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */
@@ -192,7 +191,6 @@ const StepperPanel = (props) => {
  *
  * @description ProgressBar used for DQT loading status
  * and showing or hiding the Stepper component.
- *
  * @param {object} props - React Component properties
  * @return {JSX} - React markup for the component
  */

@@ -7,7 +7,6 @@ import VisitInstrumentList from './VisitInstrumentList';
  * a list of instruments in that visit.
  *
  * @param {object} props - React props
- *
  * @return {object} - The JSX component
  */
 function CandidateInstrumentList(props) {

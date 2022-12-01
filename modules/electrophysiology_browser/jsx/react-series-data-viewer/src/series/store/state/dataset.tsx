@@ -123,6 +123,12 @@ export const datasetReducer = (
 
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
   const makeTrace = () => ({chunks: [], type: 'line'});
+  /**
+   * makeChannel
+   *
+   * @param {number} index - The channel index
+   * @return {object} - An object with channel key and traces
+   */
   const makeChannel = (index) => ({
     index,
     traces: R.range(0, tracesCount).map(makeTrace),

@@ -6,10 +6,8 @@ import Panel from 'Panel';
  * Reset password form.
  *
  * @description form for reset password.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class ResetPassword extends Component {
   /**
