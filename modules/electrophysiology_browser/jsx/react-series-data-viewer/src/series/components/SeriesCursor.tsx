@@ -100,7 +100,7 @@ const SeriesCursor = (
         borderRadius: '3px',
       }}
     >
-      {Math.round(time)} s
+      {Math.round(time * 1000) / 1000} s
     </div>
   );
 

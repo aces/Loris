@@ -29,8 +29,14 @@ export type Epoch = {
   type: 'Event' | 'Annotation',
   label: string,
   comment?: string,
+  hed?: string,
   channels: number[] | "all",
+  annotationInstanceID?: number,
 };
+
+export type EventMetadata = {
+  instances: any[],
+}
 
 export type AnnotationMetadata = {
   instances: any[],
@@ -38,7 +44,7 @@ export type AnnotationMetadata = {
   metadata: any[]
 }
 
-export type RightPanel = 'annotationForm' | 'epochList' | null;
+export type RightPanel = 'annotationForm' | 'eventList' | 'annotationList' | null;
 
 export type Electrode = {
   name: string,

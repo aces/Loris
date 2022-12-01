@@ -42,9 +42,41 @@ svg {
   user-select: none;
 }
 
-.annotation.list-group-item {
+.list-group-item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.annotation {
   background: #fffae6;
   border-left: 5px solid #ff6600;
+}
+
+.epoch-details {
+  padding-right: 100px;
+}
+
+.epoch-action {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0;
+}
+
+.epoch-tag {
+  padding: 5px;
+  background: #e7e4e4;
+  border-left: 5px solid #797878;
+}
+
+.epoch-tag p {
+  word-wrap: break-word;
+  width: 95%;
 }
 
 .event-list .btn.btn-primary {

@@ -73,18 +73,18 @@ class ElectrophysioAnnotations
      * Will add new derivative files if none exist for the given instance.
      * Will either add new annotations or update existing ones.
      *
-     * @param array $instance_data Instance data
-     * @param array $metadata      Metadata
-     * @param int   $instance_id   InstanceID
-     * @param int   $parameter_id  ParameterID
+     * @param array    $instance_data Instance data
+     * @param array    $metadata      Metadata
+     * @param int|null $instance_id   InstanceID
+     * @param int|null $parameter_id  ParameterID
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-        int $instance_id,
-        int $parameter_id
+        ?int $instance_id,
+        ?int $parameter_id
     ): void {
 
         $factory = \NDB_Factory::singleton();
@@ -96,7 +96,10 @@ class ElectrophysioAnnotations
             //If the label is new, add to annotation label table
             //and get label ID
             $labelID = $db->pselectOne(
-                "SELECT AnnotationLabelID
+                // Adding MAX here as a hack fix for now until LORIS-MRI
+                // bugfix for issue https://github.com/aces/Loris-MRI/issues/763
+                // is available and cleanup happens of the annotation_label table
+                "SELECT MAX(AnnotationLabelID)
                     FROM physiological_annotation_label
                     WHERE LabelName=:label",
                 ['label' => $instance_data['label_name']]
@@ -134,8 +137,9 @@ class ElectrophysioAnnotations
                 'Onset'             => $instance_data['onset'],
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
-                'Channels'          => $instance_data['channels'],
-                'AbsoluteTime'      => $instance_data['abs_time'],
+                'Channels'          => $instance_data['channels'] === 'all' ?
+                                         null :
+                                         $instance_data['channels'],
                 'Description'       => $instance_data['description']
             ];
 
@@ -293,7 +297,7 @@ class ElectrophysioAnnotations
         );
 
         $tsv_entries = [
-            'onset', 'duration', 'label', 'channels', 'aboslute_time', 'description'
+            'onset', 'duration', 'label', 'channels', 'absolute_time', 'description'
         ];
 
         $tsv = $db->pselect(
@@ -451,6 +455,15 @@ class ElectrophysioAnnotations
             ['PFID' => $this->_physioFileID]
         );
 
+        // Get output type (raw, derivative)
+        $outputType = $db->pselectOne(
+            'SELECT OutputTypeName
+                FROM physiological_file pf
+                JOIN physiological_output_type ot USING (PhysiologicalOutputTypeID)
+                WHERE PhysiologicalFileID=:PFID',
+            ['PFID' => $this->_physioFileID]
+        );
+
         //Create new filepaths
         //Get data directory base path from Config
         $dataDir = $db->pselectOne(
@@ -461,21 +474,27 @@ class ElectrophysioAnnotations
             ['name' => 'dataDirBasepath']
         );
         //Create path with correct structure
-        $subPath       = strstr($physioFilePath, "sub");
-        $pathWithDeriv = $dataDir
+        $subPath = strstr($physioFilePath, "sub");
+
+        if ($outputType === 'derivative') {
+            $destinationPath = $dataDir
             . "bids_imports/derivatives/loris_annotations/"
             . $subPath;
+        } else {
+            $destinationPath = $dataDir . $physioFilePath;
+        }
+
         //Create directories if they don't exist
-        $dirname = pathinfo($pathWithDeriv, PATHINFO_DIRNAME);
+        $dirname = pathinfo($destinationPath, PATHINFO_DIRNAME);
         if (!file_exists($dirname)) {
             mkdir($dirname, 0777, true);
         }
 
         //Replace file type with "annotations"
         $pathWithoutEDF = substr(
-            $pathWithDeriv,
+            $destinationPath,
             0,
-            strrpos($pathWithDeriv, "_")
+            strrpos($destinationPath, "_")
         );
 
         $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
