@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is used by the Configuration module to update
- * or insert values into the subproject table.
+ * or insert values into the cohort table.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
@@ -18,9 +18,9 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$db = $factory->database();
-$SubprojectList = Utility::getSubprojectList();
-$recTarget      = $_POST['RecruitmentTarget'];
+$db         = $factory->database();
+$CohortList = Utility::getCohortList();
+$recTarget  = $_POST['RecruitmentTarget'];
 
 
 // Basic validation
@@ -31,10 +31,10 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
     );
 }
 
-if ($_POST['subprojectID'] === 'new') {
-    if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
+if ($_POST['cohortID'] === 'new') {
+    if (!in_array($_POST['title'], $CohortList) && !empty($_POST['title'])) {
         $db->insert(
-            "subproject",
+            "cohort",
             [
                 "title"             => $_POST['title'],
                 "useEDC"            => $_POST['useEDC'],
@@ -47,18 +47,18 @@ if ($_POST['subprojectID'] === 'new') {
     }
 } else {
     $db->update(
-        "subproject",
+        "cohort",
         [
             "title"             => $_POST['title'],
             "useEDC"            => $_POST['useEDC'],
             "WindowDifference"  => $_POST['WindowDifference'],
             "RecruitmentTarget" => $recTarget,
         ],
-        ["SubprojectID" => $_POST['subprojectID']]
+        ["CohortID" => $_POST['cohortID']]
     );
 }
 // FIXME: This should probably be a 201 Created instead.
-printAndExit(200, ["ok" => "Subproject updated successfully"]);
+printAndExit(200, ["ok" => "Cohort updated successfully"]);
 
 /**
  * Prints a parameter converted to JSON-encoded string.

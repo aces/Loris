@@ -1051,21 +1051,21 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['SubprojectID' => '2', 'ProjectID' => '1',
-                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                ['CohortID' => '2', 'ProjectID' => '1',
+                    'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
     }
 
     /**
-     * Test that getSubprojectID returns the correct value
+     * Test that getCohortID returns the correct value
      * for the given session ID
      *
-     * @covers NDB_BVL_Instrument::getSubprojectID
+     * @covers NDB_BVL_Instrument::getCohortID
      * @return void
      */
-    function testGetSubprojectID()
+    function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
@@ -1075,8 +1075,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['SubprojectID' => '2','ProjectID' => '1']);
-        $this->assertEquals(2, $this->_instrument->getSubprojectID());
+            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+        $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
     /**
@@ -1896,14 +1896,14 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'           => '123',
-                    'CandID'       => 1,
-                    'SubprojectID' => '12'
+                    'ID'       => '123',
+                    'CandID'   => 1,
+                    'CohortID' => '12'
                 ],
                 [
-                    'ID'           => '234',
-                    'CandID'       => 2,
-                    'SubprojectID' => '12'
+                    'ID'       => '234',
+                    'CandID'   => 2,
+                    'CohortID' => '12'
                 ]
             ]
         );
@@ -1928,11 +1928,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active'       => 'Y',
-                    'Test_name'    => 'TestName1_proband',
-                    'SubprojectID' => '12',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100
+                    'Active'     => 'Y',
+                    'Test_name'  => 'TestName1_proband',
+                    'CohortID'   => '12',
+                    'AgeMinDays' => 0,
+                    'AgeMaxDays' => 100
                 ]
             ]
         );

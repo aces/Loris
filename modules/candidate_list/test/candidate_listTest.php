@@ -32,7 +32,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $subproject     = 'select[name="subproject"]';
+    static $cohort         = 'select[name="cohort"]';
     static $advancedFilter = "div:nth-child(2) > .btn:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
@@ -289,7 +289,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '1 row'
         );
         $this->_filterTest(
-            self::$subproject,
+            self::$cohort,
             self::$display,
             self::$clearFilter,
             "High Yeast",

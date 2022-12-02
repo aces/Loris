@@ -46,7 +46,7 @@ class ConfigurationTest extends LorisIntegrationTest
     public function tearDown(): void
     {
         $this->DB->delete(
-            "subproject",
+            "cohort",
             ['title' => 'Test Test Test']
         );
         parent::tearDown();
@@ -106,26 +106,26 @@ class ConfigurationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
     /**
-     * Tests that subproject panel in configuration
+     * Tests that cohort panel in configuration
      *
      * @return void
      */
-    public function testSubproject()
+    public function testCohort()
     {
-         $this->safeGet($this->url . "/configuration/subproject/");
+         $this->safeGet($this->url . "/configuration/cohort/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#\#subprojectnew")
+            WebDriverBy::cssSelector("#\#cohortnew")
         )->getText();
-         $this->assertStringContainsString("SubprojectID", $bodyText);
+         $this->assertStringContainsString("CohortID", $bodyText);
     }
     /**
-     * Tests that subproject navigate back to config page
+     * Tests that cohort navigate back to config page
      *
      * @return void
      */
-    private function _testSubprojectBreadcrumbs()
+    private function _testCohortBreadcrumbs()
     {
-         $this->safeGet($this->url . "/configuration/subproject/");
+         $this->safeGet($this->url . "/configuration/cohort/");
         $this->safeFindElement(
             WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div")
         )->click();
@@ -134,7 +134,7 @@ class ConfigurationTest extends LorisIntegrationTest
         )->getText();
 
         $this->assertStringContainsString(
-            "To configure study subprojects click here.",
+            "To configure study cohorts click here.",
             $bodyText
         );
     }
@@ -189,7 +189,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $sandbox = $dev['sandbox'];
         if ($sandbox == '1') {
 
-            $this->_testSubprojectBreadcrumbs();
+            $this->_testCohortBreadcrumbs();
             $this->_testProjectsLink();
         } else {
             $this->assertEquals(true, 1);

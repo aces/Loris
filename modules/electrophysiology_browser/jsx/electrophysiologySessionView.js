@@ -57,7 +57,7 @@ class ElectrophysiologySessionView extends Component {
           dob: '',
           sex: '',
           output_type: '',
-          subproject: '',
+          cohort: '',
         },
       },
       database: [
@@ -145,6 +145,8 @@ class ElectrophysiologySessionView extends Component {
           chunksURL: null,
           epochsURL: null,
           electrodesURL: null,
+          events: null,
+          annotations: null,
           splitData: null,
         },
       ],
@@ -195,7 +197,7 @@ class ElectrophysiologySessionView extends Component {
         .then((data) => {
           const database = data.database.map((dbEntry) => ({
             ...dbEntry,
-            // EEG Visualisation urls
+            // EEG Visualization urls
             chunksURLs:
                 dbEntry
                 && dbEntry.file.chunks_urls.map(
@@ -218,7 +220,13 @@ class ElectrophysiologySessionView extends Component {
                     && loris.BaseURL
                       + '/electrophysiology_browser/file_reader/?file='
                       + group.links[1].file
-                ),
+              ),
+            events:
+              dbEntry
+              && dbEntry.file.events,
+            annotations:
+                dbEntry
+                && dbEntry.file.annotations,
           }));
 
           this.setState({
@@ -302,13 +310,13 @@ class ElectrophysiologySessionView extends Component {
   render() {
     if (!this.state.isLoaded) {
       return (
-          <button className='btn-info has-spinner'>
+        <button className='btn-info has-spinner'>
           Loading
           <span
-      className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
-          </button>
-    );
+        </button>
+      );
     }
 
     if (this.state.isLoaded) {
@@ -317,151 +325,158 @@ class ElectrophysiologySessionView extends Component {
         const {
           chunksURLs,
           epochsURL,
+          events,
+          annotations,
           electrodesURL,
         } = this.state.database[i];
         const file = this.state.database[i].file;
         const splitPagination = [];
         for (const j of Array(file.splitData?.splitCount).keys()) {
           splitPagination.push(
-          <a
-          key={j}
-          className={
-                'btn btn-xs btn-primary split-nav'
-              + (file.splitData?.splitIndex === j ? ' active' : '')
-        }
-          onClick={() => this.getSplitData(file.id, i, j)}
-        >{j+1}</a>
-        );
+            <a
+              key={j}
+              className={
+                    'btn btn-xs btn-primary split-nav'
+                  + (file.splitData?.splitIndex === j ? ' active' : '')
+              }
+              onClick={() => this.getSplitData(file.id, i, j)}
+            >{j+1}</a>
+          );
         }
         database.push(
-        <div key={i}>
+          <div key={i}>
             <FilePanel
-        id={'filename_panel_' + i}
-        title={this.state.database[i].file.name}
-        data={this.state.database[i].file.details}
+              id={'filename_panel_' + i}
+              title={this.state.database[i].file.name}
+              data={this.state.database[i].file.details}
             >
-            <div className="react-series-data-viewer-scoped col-xs-12">
-            <EEGLabSeriesProvider
-        chunksURL={
-          chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
-      }
-        epochsURL={epochsURL}
-        electrodesURL={electrodesURL}
-            >
-            <Panel
-        id='channel-viewer'
-        title={
-              'Signal Viewer' + (file.splitData
-                      ? ' [split '+(file.splitData?.splitIndex+1)+']'
-                      : ''
-              )
-            }
-            >
-            {file.splitData &&
-                  <>
-                  <span
-              style={{
-          color: '#064785',
-              fontWeight: 'bold',
-              fontSize: '14px',
-              paddingRight: '15px',
-        }}
-      >
-        Viewing signal split file:
-            </span>
-        <a
-        className={
-              'btn btn-xs btn-default split-nav'
-            + (file.splitData.splitIndex === 0
-                ? ' disabled'
-                : '')
-      }
-        onClick={() => this.getSplitData(
-            file.id,
-            i,
-            file.splitData.splitIndex-1
-        )}
-      >
-        {'<'}
-      </a>
-        {splitPagination}
-      <a
-        className={
-              'btn btn-xs btn-default split-nav'
-            + (file.splitData.splitIndex
-            === (file.splitData.splitCount-1)
-                ? ' disabled'
-                : '')
-      }
-        onClick={
-        () => this.getSplitData(
-            file.id,
-            i,
-            file.splitData.splitIndex+1
-        )
-      }
-      >
-        {'>'}
-      </a>
-        </>
-      }
-      <SeriesRenderer />
-        </Panel>
-        <div className='row'>
-            <div className='col-md-6 col-lg-4'>
-            <SummaryPanel
-        id={'filename_summary_' + i}
-        data={this.state.database[i].file.summary}
-        />
-        </div>
-        <EEGMontage />
-        <div className='col-md-6 col-lg-4'>
-            <DownloadPanel
-        id={'file_download_' + i}
-        downloads={this.state.database[i].file.downloads}
-        physioFileID={this.state.database[i].file.id}
-        outputType={this.state.database[i].file.output_type}
-        />
-        </div>
-        </div>
-        </EEGLabSeriesProvider>
-        </div>
-        </FilePanel>
-        </div>
-      );
+              <div className="react-series-data-viewer-scoped col-xs-12">
+                <EEGLabSeriesProvider
+                  chunksURL={
+                    chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
+                  }
+                  epochsURL={epochsURL}
+                  events={events}
+                  annotations={annotations}
+                  electrodesURL={electrodesURL}
+                >
+                  <Panel
+                    id='channel-viewer'
+                    title={
+                      'Signal Viewer' + (file.splitData
+                              ? ' [split '+(file.splitData?.splitIndex+1)+']'
+                              : ''
+                      )
+                    }
+                  >
+                  {file.splitData &&
+                    <>
+                      <span
+                        style={{
+                          color: '#064785',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                          paddingRight: '15px',
+                        }}
+                      >
+                      Viewing signal split file:
+                      </span>
+                      <a
+                        className={
+                          'btn btn-xs btn-default split-nav'
+                          + (file.splitData.splitIndex === 0
+                            ? ' disabled'
+                            : '')
+                        }
+                        onClick={() => this.getSplitData(
+                          file.id,
+                          i,
+                          file.splitData.splitIndex-1
+                        )}
+                      >
+                      {'<'}
+                      </a>
+                      {splitPagination}
+                      <a
+                        className={
+                              'btn btn-xs btn-default split-nav'
+                            + (file.splitData.splitIndex
+                            === (file.splitData.splitCount-1)
+                                ? ' disabled'
+                                : '')
+                        }
+                        onClick={
+                          () => this.getSplitData(
+                              file.id,
+                              i,
+                              file.splitData.splitIndex+1
+                          )
+                        }
+                      >
+                      {'>'}
+                      </a>
+                    </>
+                  }
+                  <SeriesRenderer
+                    physioFileID={this.state.database[i].file.id}
+                    annotationMetadata={annotations}
+                  />
+                  </Panel>
+                  <div className='row'>
+                    <div className='col-md-6 col-lg-4'>
+                      <SummaryPanel
+                        id={'filename_summary_' + i}
+                        data={this.state.database[i].file.summary}
+                      />
+                    </div>
+                    <EEGMontage />
+                    <div className='col-md-6 col-lg-4'>
+                      <DownloadPanel
+                        id={'file_download_' + i}
+                        downloads={this.state.database[i].file.downloads}
+                        physioFileID={this.state.database[i].file.id}
+                        outputType={this.state.database[i].file.output_type}
+                      />
+                    </div>
+                  </div>
+                </EEGLabSeriesProvider>
+              </div>
+            </FilePanel>
+          </div>
+        );
       }
 
       return (
-          <div id='lorisworkspace'>
+        <div id='lorisworkspace'>
           <StaticDataTable
-      Headers={[
-            'PSCID',
-        'DCCID',
-        'Visit Label',
-        'Site',
-        'DOB',
-        'Sex',
-        'Output Type',
-        'Subproject',
-    ]}
-      Data={[
-            [
-              this.state.patient.info.pscid,
-              this.state.patient.info.dccid,
-              this.state.patient.info.visit_label,
-              this.state.patient.info.site,
-              this.state.patient.info.dob,
-              this.state.patient.info.sex,
-              this.state.patient.info.output_type,
-              this.state.patient.info.subproject,
-            ],
-    ]}
-      freezeColumn='PSCID'
-      Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
-      />
-      {database}
-    </div>
-    );
+            Headers={[
+              'PSCID',
+              'DCCID',
+              'Visit Label',
+              'Site',
+              'DOB',
+              'Sex',
+              'Output Type',
+              'Cohort',
+            ]}
+            Data={[
+              [
+                this.state.patient.info.pscid,
+                this.state.patient.info.dccid,
+                this.state.patient.info.visit_label,
+                this.state.patient.info.site,
+                this.state.patient.info.dob,
+                this.state.patient.info.sex,
+                this.state.patient.info.output_type,
+                this.state.patient.info.cohort,
+              ],
+            ]}
+            freezeColumn='PSCID'
+            Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
+          />
+          {database}
+        </div>
+      );
     }
   }
 }

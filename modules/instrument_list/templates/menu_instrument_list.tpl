@@ -32,7 +32,7 @@
         Visit to Site
       </th>
       <th>
-        Subproject
+        Cohort
       </th>
       <th>
         MR Scan Done
@@ -87,7 +87,7 @@
         {$display.PSC}
       </td>
       <td>
-        {$display.SubprojectTitle}
+        {$display.CohortTitle}
       </td>
       <td>
         {$display.Scan_done|default:"<img alt=\"Data Missing\" src=\"{$baseurl|default}/images/help2.gif\" width=\"12\" height=\"12\" />"}

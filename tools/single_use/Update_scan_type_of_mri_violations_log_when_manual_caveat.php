@@ -45,7 +45,7 @@ function selectManualCaveat()
               WHERE HEADER LIKE \"Manual Caveat Set by%\" 
               AND Scan_type IS NULL";
 
-    $result = $db->pselect($query, array());
+    $result = $db->pselect($query, []);
 
     return $result;
 }
@@ -68,7 +68,7 @@ function updateScanType($seriesUID)
     // select scan type for the SeriesUID given as an argument
     $scan_type_list = $db->pselectCol(
         "SELECT AcquisitionProtocolID FROM files WHERE SeriesUID=:seriesUID",
-        array('seriesUID' => $seriesUID)
+        ['seriesUID' => $seriesUID]
     );
 
     // update mri_violations_log if only one scan type found
@@ -77,8 +77,8 @@ function updateScanType($seriesUID)
         print "Updating scan type to $scan_type for SeriesUID $seriesUID \n";
         $db->update(
             'mri_violations_log',
-            array('Scan_type'=>$scan_type),
-            array('SeriesUID'=>$seriesUID)
+            ['Scan_type'=>$scan_type],
+            ['SeriesUID'=>$seriesUID]
         );
     } elseif (count($scan_type_list) == 0) {
         print "Could not find any scan type for SeriesUID $seriesUID \n";
@@ -87,4 +87,4 @@ function updateScanType($seriesUID)
     }
 }
 
-?>
+

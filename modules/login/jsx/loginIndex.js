@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
+import DOMPurify from 'dompurify';
 
 /**
  * Login form.
@@ -177,7 +178,9 @@ class Login extends Component {
     }
     if (this.state.mode === 'login') {
       const study = (
-        <div dangerouslySetInnerHTML={{__html: this.state.study.description}}/>
+        <div dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(this.state.study.description),
+        }}/>
       );
       const error = this.state.form.error.toggle ? (
         <StaticElement

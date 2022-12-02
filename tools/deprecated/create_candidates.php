@@ -29,16 +29,19 @@ require_once "generic_includes.php";
  * "pscid" if pscid exists, or the empty string if
  * neither exists.
  */
-function checkExists($candid, $pscid) : string {
+function checkExists($candid, $pscid) : string
+{
     global $DB;
-    $val = $DB->pselectOne("SELECT CandID FROM candidate WHERE CandID=:cndid",
-        array('cndid' => $candid)
+    $val = $DB->pselectOne(
+        "SELECT CandID FROM candidate WHERE CandID=:cndid",
+        ['cndid' => $candid]
     );
     if (!empty($val)) {
         return "candid";
     }
-    $val = $DB->pselectOne("SELECT PSCID FROM candidate WHERE PSCID=:pscid",
-        array('pscid' => $pscid)
+    $val = $DB->pselectOne(
+        "SELECT PSCID FROM candidate WHERE PSCID=:pscid",
+        ['pscid' => $pscid]
     );
     if (!empty($val)) {
         return "pscid";
@@ -47,13 +50,13 @@ function checkExists($candid, $pscid) : string {
 }
 
 
-$count = 0;
+$count      = 0;
 $lastcandid = 100000;
-$lastpscid = 0;
+$lastpscid  = 0;
 
-while($count < 5000) {
+while ($count < 5000) {
     $pscid = sprintf("dcc%04.d", $lastpscid);
-    switch(checkExists($lastcandid, $pscid)) {
+    switch (checkExists($lastcandid, $pscid)) {
     case "candid":
         $lastcandid++;
         break;
@@ -63,16 +66,18 @@ while($count < 5000) {
     default:
         print "Creating $lastcandid/$pscid\n";
 
-        $DB->insert("candidate",
+        $DB->insert(
+            "candidate",
             [ 'CandID' => $lastcandid,
-            'PSCID' => $pscid,
-            'DoB' => '2004-02-02',
-            'Sex' => 'Male',
-            'RegistrationCenterID' => 1,
-            'RegistrationProjectID' => 1,
-            'Active' => 'Y',
-            'Date_active' => '2008-01-31',
-            'Entity_type' => 'Human']
+                'PSCID'                 => $pscid,
+                'DoB'                   => '2004-02-02',
+                'Sex'                   => 'Male',
+                'RegistrationCenterID'  => 1,
+                'RegistrationProjectID' => 1,
+                'Active'                => 'Y',
+                'Date_active'           => '2008-01-31',
+                'Entity_type'           => 'Human'
+            ]
         );
         $lastpscid++;
         $lastcandid++;

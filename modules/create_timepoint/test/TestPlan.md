@@ -9,30 +9,30 @@ appropriate page.
 3. Ensure that the DCCID field displays the correct candidate's identifier.
   [Manual Testing]
 4. Ensure user can only choose from Projects and sites they are affiliated with
-5. Ensure the Subproject dropdown is dynamically populated once a site and 
+5. Ensure the Cohort dropdown is dynamically populated once a site and 
 project are selected.
   [Manual Testing]
-6. Ensure the Visit label dropdown is dynamically populated once the Subproject 
+6. Ensure the Visit label dropdown is dynamically populated once the Cohort 
 selection is done.
   [Manual Testing]
-7. Confirm that options displayed for subprojects and visit labels fields match 
-the content of the `project_subproject_rel` table and the 
-`visit_project_subproject_rel` table respectively.
+7. Confirm that options displayed for cohorts and visit labels fields match 
+the content of the `project_cohort_rel` table and the 
+`visit_project_cohort_rel` table respectively.
   [Manual Testing]
-8. Ensure that a popup error is displayed when a project with no subproject 
+8. Ensure that a popup error is displayed when a project with no cohort 
 associations is selected.
   [Manual Testing]
-9. Ensure that a popup error is displayed when a subproject is selected, in 
+9. Ensure that a popup error is displayed when a cohort is selected, in 
 combination with a project, where no visitlabels are defined for that 
-project-subproject combination.
+project-cohort combination.
   [Manual Testing] 
 10. Ensure that if the user is affiliated with a single project and/or a single 
 site, the Project/site dropdowns are auto-populated with the sole available option
   [Manual Testing]  
-11. Ensure that if the subproject and/or visit label dropdowns contain a single 
+11. Ensure that if the cohort and/or visit label dropdowns contain a single 
 option only, the option is auto-selected by default
   [Manual Testing] 
-12. choose a site, project and subproject, make sure to select a visit which the 
+12. choose a site, project and cohort, make sure to select a visit which the 
 candidate already has. Ensure that an error appears stating that the 
 visit label already exists for the candidate.
   [Manual Testing]

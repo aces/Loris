@@ -49,7 +49,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.CandID AS DCCID,
                 GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
                 psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Subproject,
+                GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
@@ -70,7 +70,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
-                    LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+                    LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex

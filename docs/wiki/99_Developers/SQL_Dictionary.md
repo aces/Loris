@@ -59,25 +59,25 @@
 	| `recruitmentTarget`  | Expected number of candidates to be recruited |                                                                                              |
 
 
-- Table: `subproject`
+- Table: `cohort`
  
- 	*This table stores the list of subprojects configured for the study.*
+ 	*This table stores the list of cohorts configured for the study.*
  
 	|        Field       |                  Description                  |                                     Notes                                    |
 	|:------------------:|:---------------------------------------------:|:----------------------------------------------------------------------------:|
-	| `SubprojectID`     | Identifier of the subproject                  | Avoid setting this field explicitly when inserting data, it auto increments. |
-	| `title`            | Name of the subproject                        |                                                                              |
+	| `CohortID`     | Identifier of the cohort                  | Avoid setting this field explicitly when inserting data, it auto increments. |
+	| `title`            | Name of the cohort                        |                                                                              |
 	| `useEDC`           | Use the Expected date Of Confinement          |                                                                              |
 	| `WindowDifference` |                                               | Deprecated                                                                |
 	| `RecruitmentTarget`| Expected number of candidates to be recruited |                                                                              |
 	
 	
-- Table: `project_subproject_rel`
+- Table: `project_cohort_rel`
  
- 	*This table stores the association of projects with subprojects*
+ 	*This table stores the association of projects with cohorts*
  
 	|            Field          |                    Description                   |                                     Notes                                    |
 	|:-------------------------:|:------------------------------------------------:|:----------------------------------------------------------------------------:|
-	| `ProjectSubprojectRelID ` | Identifier of the project-subproject relation    | Avoid setting this field explicitly when inserting data, it auto increments. Other tables in the database require this field as a foreign key reference to point to a specific project-subproject tuple.   |
+	| `ProjectCohortRelID ` | Identifier of the project-cohort relation    | Avoid setting this field explicitly when inserting data, it auto increments. Other tables in the database require this field as a foreign key reference to point to a specific project-cohort tuple.   |
 	| `ProjectID `              | Project identifier                               |                                                                              |
-	| `SubprojectID `           | Subproject identifier                            |                                                                              |
+	| `CohortID `           | Cohort identifier                            |                                                                              |
