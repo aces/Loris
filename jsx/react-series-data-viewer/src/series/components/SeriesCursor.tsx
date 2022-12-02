@@ -189,7 +189,7 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
             key={`${i}-${channel.traces.length}`}
             style={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'row-reverse',
               backgroundColor: 'rgba(238, 238, 238, 0.8)',
               padding: '2px 2px',
               borderRadius: '3px',
