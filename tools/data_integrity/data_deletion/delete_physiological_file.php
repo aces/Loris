@@ -259,13 +259,13 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $files[] = $data_path . $annotations_archive['FilePath'];
         }
 
-        foreach ($chunks as $chunk) {
-            $files[] = $data_path . $chunk['FilePath'];
-        }
-
         foreach ($files as $file) {
             echo "Deleting $file\n";
-            //unlink($file);
+            unlink($file);
+        }
+
+        foreach ($chunks as $chunk) {
+            deleteDirectory(dirname($data_path . $chunk['FilePath']));
         }
 
         echo "\Deleting DB entries\n";
@@ -460,4 +460,35 @@ function _exportSQL($output, $physioFileID)
 if ($confirm === false && $printToSQL === false) {
     echo "\n\nRun this tool again with the argument 'confirm' or 'tosql' to ".
         "perform the changes or export them as an SQL patch\n\n";
+}
+
+/**
+ * Delete directory
+ *
+ * @param string $dir The directory to delete.
+ *
+ * @return void
+ */
+function deleteDirectory($dir)
+{
+    if (!file_exists($dir)) {
+        return true;
+    }
+
+    if (!is_dir($dir)) {
+        return unlink($dir);
+    }
+
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') {
+            continue;
+        }
+
+        if (!deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            return false;
+        }
+
+    }
+
+    return rmdir($dir);
 }
