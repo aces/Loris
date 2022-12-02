@@ -94,7 +94,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         // BVLQCStatus
         $this->_displayBVLQCStatus();
 
-        $smarty = new \Smarty_neurodb("instrument_list");
+        $smarty = new \Smarty_NeuroDB("instrument_list");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrument_list_controlpanel.tpl");
         return $html;

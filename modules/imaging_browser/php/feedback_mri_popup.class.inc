@@ -321,7 +321,7 @@ class Feedback_MRI_Popup extends \NDB_Page
     {
         $this->tpl_data = $this->getData();
 
-        $smarty = new \Smarty_neurodb("imaging_browser");
+        $smarty = new \Smarty_NeuroDB("imaging_browser");
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_feedback_mri_popup.tpl");
