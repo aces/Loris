@@ -179,15 +179,25 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
     );
     print_r($electrodes);
 
-    echo "\nEvents\n";
+    echo "\nEvents Files\n";
     echo "----------------------------\n";
-    $events = $DB->pselect(
+    $events_files = $DB->pselect(
         'SELECT DISTINCT FilePath
-        FROM physiological_task_event
+        FROM physiological_event_file
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
-    print_r($events);
+    print_r($events_files);
+
+    echo "\nEvents Archives\n";
+    echo "----------------------------\n";
+    $events_archives = $DB->pselect(
+        'SELECT DISTINCT FilePath
+        FROM physiological_event_archive
+        WHERE PhysiologicalFileID=:pfid',
+        ['pfid' => $physioFileID]
+    );
+    print_r($events_archives);
 
     echo "\nAnnotations Files\n";
     echo "----------------------------\n";
@@ -247,8 +257,12 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $files[] = $data_path . $electrode['FilePath'];
         }
 
-        foreach ($events as $event) {
-            $files[] = $data_path . $event['FilePath'];
+        foreach ($events_files as $events_file) {
+            $files[] = $data_path . $events_file['FilePath'];
+        }
+
+        foreach ($events_archives as $events_archive) {
+            $files[] = $data_path . $events_archive['FilePath'];
         }
 
         foreach ($annotations_files as $annotation_file) {
@@ -288,6 +302,53 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             "physiological_task_event",
             ["PhysiologicalFileID" => $physioFileID]
         );
+
+        // delete from the physiological_event_file table
+        $DB->delete(
+            "physiological_event_file",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_event_archive table
+        $DB->delete(
+            "physiological_event_archive",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_event_parameter_category_level table
+        $EventParameterIDs = $DB->pselect(
+            'SELECT EventParameterID
+            FROM physiological_event_parameter
+            JOIN physiological_event_file USING(EventFileID)
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($EventParameterIDs)) {
+            foreach ($EventParameterIDs as $EventParameterID) {
+                $DB->delete(
+                    "physiological_event_parameter_category_level",
+                    ["EventParameterID" => $EventParameterID]
+                );
+            }
+        }
+
+        // delete from the physiological_event_parameter table
+        $EventFileIDs = $DB->pselect(
+            'SELECT EventFileID
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($EventFileIDs)) {
+            foreach ($EventFileIDs as $EventFileID) {
+                $DB->delete(
+                    "physiological_event_parameter",
+                    ["EventFileID" => $EventFileID]
+                );
+            }
+        }
 
         // delete from the physiological_annotation_instance table
         $AnnotationFileIDs = $DB->pselect(
