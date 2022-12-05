@@ -22,9 +22,9 @@ class RequestAccount extends Component {
     this.state = {
       form: {
         value: {
-          firstname: '',
-          lastname: '',
-          email: '',
+          firstname: this.props.defaultFirstName || '',
+          lastname: this.props.defaultLastName || '',
+          email: this.props.defaultEmail || '',
           site: this.props.data.site
             ? Object.keys(this.props.data.site)['']
             : '',
