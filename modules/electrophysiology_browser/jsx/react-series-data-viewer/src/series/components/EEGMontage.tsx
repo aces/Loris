@@ -92,7 +92,7 @@ const EEGMontage = (
    * @return {number[]} : x, y positions of electrodes as projected onto a unit circle.
    */
   const stereographicProjection = (x, y, z, scale=1.0) => {
-    const mu = 1.0 / (scale + z);
+    const mu = (2 * scale) / (scale + z);
     return [x * mu, y * mu];
   };
 
@@ -122,23 +122,26 @@ const EEGMontage = (
   // Find the enclosing rectangle
   const bb = boundingBox(electrodes.map((electrode) => electrode.position.slice(0, 2)));
 
-  // Determine if the points are in an ALS or RAS coordinate system
-  // and the head ratio
   let ALSOrientation = false;
-  let headScale = 10;
-  let stereographicProjectionScale = 1;
-  const montageRadius = 130;
-  let montageScale = 1;
+  let headRadius = 1;
+  let headRatio = 1;
+  let montageRadius = 100;
+
+  // === Those values may need to be adjusted depending on the coord space/net used
+  const scale3D = 10;
+  const scale2D = 5;
+  // ===
 
   if (bb.length > 0) {
+    // Determine if the points are in an ALS or RAS coordinate system
     const bbw = Math.abs(bb[0][0]) + Math.abs(bb[1][0]);
     const bbh = Math.abs(bb[0][1]) + Math.abs(bb[1][1]);
     if (bbw > bbh) ALSOrientation = true;
 
     // Scale the sphere used for projection with the radius of the enclosing sphere
-    stereographicProjectionScale = Math.max(bbw, bbh)/2 * 1.2;
-
-    montageScale = montageRadius / stereographicProjectionScale;
+    headRadius = Math.max(bbw, bbh)/2;
+    headRatio = Math.max(bbw, bbh) / Math.min(bbw, bbh);
+    montageRadius = stereographicProjection(headRadius, 0, 0, headRadius)[0] * scale2D;
   }
 
   electrodes.map((electrode, i) => {
@@ -159,18 +162,18 @@ const EEGMontage = (
     }
 
     scatter3D.push({
-      x: electrodeCoords[0] * headScale,
-      y: electrodeCoords[1] * headScale,
-      z: electrodeCoords[2] * headScale,
+      x: electrodeCoords[0] * scale3D,
+      y: electrodeCoords[1] * scale3D,
+      z: electrodeCoords[2] * scale3D,
     });
 
     const [x, y] = stereographicProjection(
-      electrodeCoords[0],
+      electrodeCoords[0] * headRatio,
       electrodeCoords[1],
       electrodeCoords[2],
-      stereographicProjectionScale
+      headRadius
     );
-    scatter2D.push({x: x * headScale * montageScale, y: y * headScale * montageScale});
+    scatter2D.push({x: x * scale2D, y: y * scale2D});
   });
 
   const Montage3D = () => (
@@ -196,24 +199,24 @@ const EEGMontage = (
   const Montage2D = () => (
     <Group>
       <line
-        x1="25" y1={-montageRadius+5}
-        x2="0" y2={-montageRadius-15}
+        x1="20" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-10}
         stroke="black"
       />
       <line
-        x1="-25" y1={-montageRadius+5}
-        x2="0" y2={-montageRadius-15}
+        x1="-20" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-10}
         stroke="black"
       />
       <ellipse
         cx={montageRadius} cy="0"
-        rx="12" ry={montageRadius*0.3}
+        rx="10" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
       <ellipse
         cx={-montageRadius} cy="0"
-        rx="12" ry={montageRadius*0.3}
+        rx="10" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
@@ -230,7 +233,7 @@ const EEGMontage = (
           <circle
             cx={point.x}
             cy={point.y}
-            r='8'
+            r='7'
             fill='white'
             stroke={color}
           >
@@ -241,7 +244,7 @@ const EEGMontage = (
             y={point.y}
             dominantBaseline="central"
             textAnchor="middle"
-            fontSize="8px"
+            fontSize="7px"
           >
             {i + 1}
             <title>{electrodes[i].name}</title>
