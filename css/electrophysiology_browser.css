@@ -136,6 +136,14 @@ svg {
   height: auto !important;
 }
 
+#eegSessionView .panel-heading > div > i {
+  cursor: pointer;
+}
+
+#eegSessionView .panel-heading > div > i:hover {
+  scale: 1.05;
+}
+
 #eegSidebar {
   top: 0;
   bottom: 0;
