@@ -132,6 +132,15 @@ class Authentication extends \NDB_Page implements ETagCalculator
         $requestAccountData['project'] = \Utility::getProjectList();
         $values['requestAccount']      = $requestAccountData;
 
+        if ($this->loris->hasModule('oidc')) {
+            $DB = $this->loris->getDatabaseConnection();
+            $providers = $DB->pselectCol(
+                "SELECT Name FROM openid_connect_providers",
+                [],
+            );
+            $values['oidc'] = $providers;
+        }
+
         return $values;
     }
 
