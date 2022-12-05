@@ -19,7 +19,7 @@ changes in the following format: PR #1234***
   module. (PR #8302)
 - new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
   when `make` or `npm ci` is executed (PR #8244)
-
+- Add OpenID Connect authorization support to LORIS (PR #????)
 
 #### Updates and Improvements
 - Upgrade react to version 18 (PR #8188)
