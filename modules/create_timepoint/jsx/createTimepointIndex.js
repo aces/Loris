@@ -150,7 +150,7 @@ class CreateTimepoint extends React.Component {
             this.handleVisitLabel();
           }
           // Populate the select options for languages.
-          if (data.languages) {
+          if (Object.keys(data.languages).length > 1) {
             state.form.options.languages = data.languages;
             state.form.display.languages = true;
           }
