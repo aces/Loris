@@ -1,1 +1,1 @@
-<div id='statistics_widget'></div>
+<div id='statistics_widgets'></div>

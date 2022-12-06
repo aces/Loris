@@ -32,6 +32,6 @@ window.addEventListener('load', () => {
     <WidgetIndex
       baseURL={`${loris.BaseURL}/statistics`}
     />,
-    document.getElementById('statistics_widget')
+    document.getElementById('statistics_widgets')
   );
 });

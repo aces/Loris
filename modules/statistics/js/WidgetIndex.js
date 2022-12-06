@@ -1883,7 +1883,7 @@ WidgetIndex.propTypes = {
 window.addEventListener('load', function () {
   ReactDOM.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(WidgetIndex, {
     baseURL: "".concat(loris.BaseURL, "/statistics")
-  }), document.getElementById('statistics_widget'));
+  }), document.getElementById('statistics_widgets'));
 });
 })();
 
