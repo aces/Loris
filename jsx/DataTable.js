@@ -473,10 +473,6 @@ class DataTable extends Component {
     let index = this.sortRows(filteredRowIndexes);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
 
-    if (this.props.filters.keyword) {
-      useKeyword = true;
-    }
-
     // Format each cell for the data table.
     for (let i = currentPageRow;
          (i < filteredCount) && (rows.length < rowsPerPage);
