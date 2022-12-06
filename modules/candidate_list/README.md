@@ -35,10 +35,8 @@ can exclusively see candidates at study sites with which they are affiliated.
 
 ## Configurations
 
-The `useEDC` variable (_"Use EDC"_) can be configured to show or hide the
-"EDC" column in the data table. "EDC" stands for "Expected Date Of Confinement",
-which refers to the pregnancy due date. This variable can be turned on or off
-in the Configurations module.
+The "EDC" column is only displayed in the data table if the `useEDC` variable
+(_"Use EDC"_) is configured to 'Yes' in the Configuration module.
 
 ## Interactions with LORIS
 
@@ -46,8 +44,11 @@ The "Scan Done" column indicates whether or not a scan was performed
 for that candidate. If a scan was performed, the value "Y" in the column
 will contain a link to the `imaging_browser` module prefiltered for that candidate.
 
-Clicking on the link in the PSCID column takes the user to the
-`timepoint_list` page for that candidate. For users who do *not*
-have the `access_all_profiles` permission, an _Open Profile_ form can be
-used to access a candidate from a restricted site if the correct CandID
-and PSCID are provided.
+Clicking on the link in the PSCID column takes the user to the `timepoint_list`
+page for that candidate. Users who do *not* have the `access_all_profiles`
+permission will only be able to see, and navigate to the `timepoint_list` page of,
+candidates from sites with which the user is affiliated. For these users, a
+separate form appears (by clicking the _Open Profile_ button) for the user to fill
+out in order to access candidates not displayed. This is done by entering in the
+form a candidate's CandID/PSCID combination. This is intended to allow users
+to only see candidates whose CandID and PSCID they already have access to.
