@@ -119,7 +119,7 @@ class Module extends \Module
                 new \LORIS\dashboard\WidgetContent(
                     "",
                     $this->renderTemplate(
-                        "widget_react.tpl",
+                        "widgets.tpl",
                         []
                     ),
                     '',
