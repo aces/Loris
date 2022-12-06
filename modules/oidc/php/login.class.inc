@@ -5,50 +5,67 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * This page initiates the login workflow with openid connect.
  * It populates the state and nonce and then forwards the user
- * to the authorization endpoint of the provider. 
+ * to the authorization endpoint of the provider.
  *
- * @link https://www.github.com/aces/Loris/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Login extends \NDB_Page
 {
     /**
      * Initiate a request to an existing OpenID Connect Identity Provider.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $params = $request->getQueryParams();
         if (!isset($params['loginWith'])) {
             return (new \LORIS\Http\Response())
                 ->withStatus(400)
-                ->withBody(new \LORIS\Http\StringStream("Missing loginWith parameter"));
+                ->withBody(
+                    new \LORIS\Http\StringStream("Missing loginWith parameter")
+                );
         }
         $DB = $this->loris->getDatabaseConnection();
         $providerconfig = $DB->pselectRow(
-            "SELECT OpenIDProviderID, BaseURI, ClientID, RedirectURI FROM openid_connect_providers WHERE Name=:loginwith",
+            "SELECT OpenIDProviderID, BaseURI, ClientID, RedirectURI
+                FROM openid_connect_providers WHERE Name=:loginwith",
             ['loginwith' => $params['loginWith']],
         );
         if (empty($providerconfig)) {
             return (new \LORIS\Http\Response())
                 ->withStatus(400)
-                ->withBody(new \LORIS\Http\StringStream("Invalid loginWith parameter"));
+                ->withBody(
+                    new \LORIS\Http\StringStream("Invalid loginWith parameter")
+                );
 
         }
 
         $thestate = bin2hex(random_bytes(128 / 8));
-        $nonce = bin2hex(random_bytes(128 / 8));
-        $DB->insert("openid_connect_csrf",
+        $nonce    = bin2hex(random_bytes(128 / 8));
+
+        $DB->insert(
+            "openid_connect_csrf",
             [
                 'OpenIDProviderID' => $providerconfig['OpenIDProviderID'],
-                'State' => $thestate,
-                'Nonce' => $nonce,
+                'State'            => $thestate,
+                'Nonce'            => $nonce,
             ]
         );
 
         $client = new \GuzzleHttp\Client(['base_uri' => $providerconfig['BaseURI']]);
-        $endpoints = $this->getOpenIDConfiguration($client);
+
+        $endpoints = $this->_getOpenIDConfiguration($client);
         if ($endpoints == null) {
             return (new \LORIS\Http\Response())
                 ->withStatus(500)
-                ->withBody(new \LORIS\Http\StringStream("Could not determine authorization endpoint"));
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        "Could not determine authorization endpoint"
+                    )
+                );
         }
 
         return (new \LORIS\Http\Response())
@@ -70,8 +87,13 @@ class Login extends \NDB_Page
      * results into an array.
      *
      * Client should already have the URL base set.
+     *
+     * @param \GuzzleHttp\Client $client The guzzle client to make requests with.
+     *
+     * @return ?array
      */
-    private function getOpenIDConfiguration(\GuzzleHttp\Client $client) : ?array {
+    private function _getOpenIDConfiguration(\GuzzleHttp\Client $client) : ?array
+    {
         $response = $client->request('GET', '/.well-known/openid-configuration');
         if ($response->getStatusCode() !== 200) {
             return null;
