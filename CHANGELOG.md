@@ -13,13 +13,14 @@ changes in the following format: PR #1234***
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
 - Added the NOT NULL constraint on Project Name (PR #8295)
+<<<<<<< HEAD
 - Added ability to display images in issue tracker tickets (PR #8346)
 - Migrated instrument permissions from config.xml to database and added the ability
   to manage instrument permissions in the frontend from the `instrument_manager`
   module. (PR #8302)
 - new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
   when `make` or `npm ci` is executed (PR #8244)
-- Add OpenID Connect authorization support to LORIS (PR #????)
+- Add OpenID Connect authorization support to LORIS (PR #8255)
 
 #### Updates and Improvements
 - Upgrade react to version 18 (PR #8188)
