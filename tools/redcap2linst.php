@@ -96,6 +96,11 @@ function toLINST(
     case 'sql':
         // The "SQL" data type seems to just be for presentation? I hope?
         return "";
+    case'slider':
+        return "numeric{@}$redcapfieldname{@}$label{@}0{@}100";
+    case 'file':
+        // File upload - NOT SUPPORTED BY LINST
+        return "";
     case 'notes':
         // REDCap calls textareas notes
         return "textarea{@}$redcapfieldname{@}$label";
