@@ -181,16 +181,13 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $this->lorisinstance->getDatabaseConnection()
         ))->getVisitFromVisitLabel($visitLabel)->getName();
 
-        $language = !is_null($values['languages'])
-                ? intval($values['languages'])
-                : null;
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
             intval($values['cohort']),
             $visitName,
             $site,
             $project,
-            $language
+            intval($values['languages']) ?? null
         );
         return new \LORIS\Http\Response\JSON\Created(['success']);
     }
