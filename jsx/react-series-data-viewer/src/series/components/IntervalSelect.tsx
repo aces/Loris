@@ -11,6 +11,7 @@ import {Slider, Rail, Handles, Ticks} from 'react-compound-slider';
 import {Handle, Tick} from './components';
 import React, {useState, FunctionComponent} from 'react';
 import {RootState} from '../store';
+import {DEFAULT_TIME_INTERVAL} from "../../vector";
 
 type CProps = {
   viewerHeight?: number,
@@ -129,16 +130,26 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               value='>>'
             />
           </div>
-          <input
-            type='button'
-            className='btn btn-primary btn-xs'
-            onClick={() => {
-              setInterval([domain[0], domain[1]]);
-              updateFilteredEpochs();
-            }}
-            value='Reset'
-            style={{marginLeft: '15px'}}
-          />
+          <div style={{marginLeft: '15px'}}>
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                setInterval(DEFAULT_TIME_INTERVAL);
+                updateFilteredEpochs();
+              }}
+              value='Reset'
+            />
+            <input
+              type='button'
+              className='btn btn-primary btn-xs'
+              onClick={() => {
+                setInterval([domain[0], domain[1]]);
+                updateFilteredEpochs();
+              }}
+              value='Show All'
+            />
+          </div>
         </div>
       </div>
       {/* ##################### EEGNET OVERRIDE END ################## */}
