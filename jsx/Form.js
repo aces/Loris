@@ -1523,36 +1523,34 @@ class DateElement extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    if (!Modernizr.inputtypes.month) {
-      // Check if props minYear and maxYear are valid values if supplied
-      let minYear = this.props.minYear;
-      let maxYear = this.props.maxYear;
-      if (this.props.minYear === '' || this.props.minYear === null) {
-        minYear = '1000';
-      }
-      if (this.props.maxYear === '' || this.props.maxYear === null) {
-        maxYear = '9999';
-      }
-      let monthInputs = $('input[type=month][name=' + this.props.name+']');
-      monthInputs.datepicker({
-        dateFormat: 'yy-mm',
-        changeMonth: true,
-        changeYear: true,
-        yearRange: minYear + ':' + maxYear,
-        constrainInput: true,
-        onChangeMonthYear: (y, m, d) => {
-          // Update date in the input field
-          $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
-        },
-        onSelect: (dateText, picker) => {
-          this.props.onUserInput(this.props.name, dateText);
-        },
-      });
-      monthInputs.attr('placeholder', 'yyyy-mm');
-      monthInputs.on('keydown paste', (e) => {
-        e.preventDefault();
-      });
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
     }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+    let monthInputs = $('input[type=month][name=' + this.props.name+']');
+    monthInputs.datepicker({
+      dateFormat: 'yy-mm',
+      changeMonth: true,
+      changeYear: true,
+      yearRange: minYear + ':' + maxYear,
+      constrainInput: true,
+      onChangeMonthYear: (y, m, d) => {
+        // Update date in the input field
+        $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+      },
+      onSelect: (dateText, picker) => {
+        this.props.onUserInput(this.props.name, dateText);
+      },
+    });
+    monthInputs.attr('placeholder', 'yyyy-mm');
+    monthInputs.on('keydown paste', (e) => {
+      e.preventDefault();
+    });
   }
 
   /**

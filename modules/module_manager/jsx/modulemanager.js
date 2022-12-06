@@ -84,7 +84,7 @@ class ModuleManagerIndex extends Component {
    * @param {int} id - module id
    *
    */
-  toggleActive(name, value) {
+  toggleActive(name, value, id) {
     fetch(
       this.props.BaseURL + '/module_manager/modules/' + name,
       {
