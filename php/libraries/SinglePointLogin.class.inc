@@ -215,7 +215,6 @@ class SinglePointLogin
 
         $sharedKey = $config->getSetting("JWTKey");
 
-        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode(
                 $token,
