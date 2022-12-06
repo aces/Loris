@@ -11,6 +11,7 @@ import {
   setChannels,
   setEpochs,
   setDatasetMetadata,
+  setPhysioFileID,
   emptyChannels,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
@@ -31,6 +32,7 @@ type CProps = {
   electrodesURL: string,
   events: EventMetadata,
   annotations: AnnotationMetadata,
+  physioFileID: number,
   limit: number,
 };
 
@@ -72,8 +74,11 @@ class EEGLabSeriesProvider extends Component<CProps> {
       electrodesURL,
       events,
       annotations,
+      physioFileID,
       limit,
     } = props;
+
+    this.store.dispatch(setPhysioFileID(physioFileID));
 
     const racers = (fetcher, url, route = '') => {
       if (url) {

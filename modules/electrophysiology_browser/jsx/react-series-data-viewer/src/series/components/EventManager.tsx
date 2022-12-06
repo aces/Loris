@@ -163,58 +163,62 @@ const EventManager = ({
             }
 
             return (
-              <>
+              <div
+                key={index}
+                className={
+                  (epoch.type == 'Annotation' ? 'annotation ' : '')
+                  + 'list-group-item list-group-item-action'
+                }
+                style={{
+                  position: 'relative',
+                }}
+              >
                 <div
-                  key={index}
-                  className={
-                    (epoch.type == 'Annotation' ? 'annotation ' : '')
-                    + 'list-group-item list-group-item-action'
-                  }
+                  className="epoch-details"
                 >
-                  <div
-                    className="epoch-details"
-                  >
-                    {epoch.label} <br/>
-                    {epoch.onset}{epoch.duration > 0
-                      && ' - ' + (epoch.onset + epoch.duration)}
-                  </div>
-                  <div
-                    className="epoch-action"
-                  >
-                    {epoch.type === 'Annotation' &&
-                      <button
-                        type="button"
-                        className={'btn btn-xs btn-primary'}
-                        onClick={() => handleEditClick()}
-                      >
-                        <i className={
-                          'glyphicon glyphicon-edit'
-                        }></i>
-                      </button>
-                    }
+                  {epoch.label} <br/>
+                  {Math.round(epoch.onset * 1000) / 1000}
+                  {epoch.duration > 0
+                    && ' - '
+                    + (Math.round((epoch.onset + epoch.duration) * 1000) / 1000)
+                  }
+                </div>
+                <div
+                  className="epoch-action"
+                >
+                  {epoch.type === 'Annotation' &&
                     <button
                       type="button"
-                      className={(visible ? '' : 'active ')
-                        + 'btn btn-xs btn-primary'}
-                      onClick={() => toggleEpoch(index)}
-                      onMouseEnter={() => updateActiveEpoch(index)}
-                      onMouseLeave={() => updateActiveEpoch(null)}
+                      className={'btn btn-xs btn-primary'}
+                      onClick={() => handleEditClick()}
                     >
                       <i className={
-                        'glyphicon glyphicon-eye-'
-                        + (visible ? 'open' : 'close')
+                        'glyphicon glyphicon-edit'
                       }></i>
                     </button>
-                    {(epoch.comment || epoch.hed) &&
-                      <button
-                        type="button"
-                        className={'btn btn-xs btn-primary'}
-                        onClick={() => handleCommentVisibilityChange()}
-                      >
-                        <i className={'glyphicon glyphicon-tags'}></i>
-                      </button>
-                    }
-                  </div>
+                  }
+                  <button
+                    type="button"
+                    className={(visible ? '' : 'active ')
+                      + 'btn btn-xs btn-primary'}
+                    onClick={() => toggleEpoch(index)}
+                    onMouseEnter={() => updateActiveEpoch(index)}
+                    onMouseLeave={() => updateActiveEpoch(null)}
+                  >
+                    <i className={
+                      'glyphicon glyphicon-eye-'
+                      + (visible ? 'open' : 'close')
+                    }></i>
+                  </button>
+                  {(epoch.comment || epoch.hed) &&
+                    <button
+                      type="button"
+                      className={'btn btn-xs btn-primary'}
+                      onClick={() => handleCommentVisibilityChange()}
+                    >
+                      <i className={'glyphicon glyphicon-tags'}></i>
+                    </button>
+                  }
                 </div>
                 {visibleComments.includes(index) &&
                   <div className="epoch-tag">
@@ -226,7 +230,7 @@ const EventManager = ({
                     }
                   </div>
                 }
-              </>
+              </div>
             );
           })}
         </div>
