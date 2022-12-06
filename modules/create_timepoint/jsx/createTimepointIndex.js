@@ -152,7 +152,7 @@ class CreateTimepoint extends React.Component {
           // Populate the select options for languages.
           if (Object.keys(data.languages).length > 1) {
             state.form.options.languages = data.languages;
-            state.form.display.languages = true;
+            state.form.display.languages = Object.keys(data.languages).length > 1;
           }
           this.setState(state);
         });
