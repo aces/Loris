@@ -134,6 +134,8 @@ class NDB_Client
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
 
+        // Lax is required for third party login to maintain the State, otherwise
+        // it gets lost after the redirect.
         $sessionOptions['cookie_samesite'] = "Lax";
 
         // API Detect
