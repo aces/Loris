@@ -59,6 +59,11 @@ class Callback extends \NDB_Page
             ",
             ['providerid' => $oidcstate['OpenIDProviderID']]
         );
+        if (empty($clientsettings)) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "Could not find provider settings"
+            );
+        }
 
         $client = new \GuzzleHttp\Client(
             [
@@ -130,7 +135,9 @@ class Callback extends \NDB_Page
         } else {
             // Not clear what the correct response here is. We can't trust the email,
             // but everything is configured correctly and the workflow worked..
-            return new \LORIS\Http\Response\JSON\OK("Email not verified");
+            return new \LORIS\Http\Response\JSON\OK(
+                ["error" => "Email not verified"],
+            );
         }
     }
 
@@ -209,6 +216,9 @@ class Callback extends \NDB_Page
         }
         $respjson = json_decode($response->getBody(), true);
 
+        if (!is_array($respjson)) {
+            return null;
+        }
         // We don't actually care about this but it implies that something
         // went wrong.
         if ($respjson['token_type'] !== 'Bearer') {
