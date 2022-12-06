@@ -140,7 +140,7 @@ class Module extends \Module
                     ],
                 )
             );
-            $widget->setTemplate('card.tpl');
+            $widget->setTemplate('div.tpl');
 
             return [
                 $widget,
