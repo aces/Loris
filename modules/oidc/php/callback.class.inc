@@ -80,11 +80,8 @@ class Callback extends \NDB_Page
                     return new \LORIS\Http\Response\JSON\OK(["error" =>"Account is pending approval"]);
                 }
 
-                $spl = new \SinglePointLogin();
-                $spl->_isLoggedIn = true;
-                $spl->_username = $UserID;
-                $_SESSION['State']->setProperty('login', $spl);
-                $spl->setState();
+                $login = new \SinglePointLogin();
+                $login->setLoggedInUser($user);
                 $response = parent::handle($request)
                     ->withStatus(302)
                     ->withHeader("Location", "/");

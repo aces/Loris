@@ -639,4 +639,10 @@ class SinglePointLogin
         }
         return false;
     }
+
+    function setLoggedInUser(\User $user) : void {
+        $this->_username = $user->getUsername();
+        $this->setState();
+        $_SESSION['State']->setProperty('login', $this);
+    }
 }
