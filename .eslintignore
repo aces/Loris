@@ -5,7 +5,6 @@ babel.config.js
 
 # compiled js ignored since it is run on the jsx directory
 modules/*/js/*
-modules/*/js/*/*
 modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js
 htdocs/js/components/*
 
