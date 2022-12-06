@@ -33,6 +33,7 @@ class Widget implements \LORIS\GUI\Widget
     private WidgetContent $_content;
     private WidgetDisplayProps $_displayprops;
     private ?WidgetDependencies $_dependencies;
+    private $_template = "panel.tpl";
 
     /**
      * Construct a dashboard widget with the specified properties.
@@ -52,6 +53,15 @@ class Widget implements \LORIS\GUI\Widget
         $this->_content      = $content;
         $this->_displayprops = $props;
         $this->_dependencies = $deps;
+    }
+
+    /**
+     * setTemplate - change smarty template
+     * @param string $template_file The template file to use.
+     *                                Example: "panel.tpl"
+     */
+    public function setTemplate(string $template_file) {
+        $this->_template = $template_file;
     }
 
     /**
@@ -121,6 +131,6 @@ class Widget implements \LORIS\GUI\Widget
                 'menus'  => $this->_displayprops->getMenus(),
             ]
         );
-        return $renderer->fetch("panel.tpl");
+        return $renderer->fetch($this->_template);
     }
 }

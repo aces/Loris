@@ -115,7 +115,35 @@ class Module extends \Module
 
             $recpersite = 'View recruitment per site';
 
+            $widget = new \LORIS\dashboard\Widget(
+                new \LORIS\dashboard\WidgetContent(
+                    "",
+                    $this->renderTemplate(
+                        "widget_react.tpl",
+                        []
+                    ),
+                    '',
+                ),
+                new \LORIS\dashboard\WidgetDisplayProps(
+                    "normal",
+                    10,
+                    []
+                ),
+                new \LORIS\dashboard\WidgetDependencies(
+                    [
+                        $baseURL . "/css/c3.css"
+                    ],
+                    [
+                        $baseURL . '/js/d3.min.js',
+                        $baseURL . '/js/c3.min.js',
+                        $baseURL . "/statistics/js/WidgetIndex.js"
+                    ],
+                )
+            );
+            $widget->setTemplate('card.tpl');
+
             return [
+                $widget,
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
                         "Recruitment",
