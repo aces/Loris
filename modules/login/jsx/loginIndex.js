@@ -41,7 +41,7 @@ class Login extends Component {
           message: '',
         },
       },
-      mode: 'login',
+      mode: props.defaultmode || 'login',
       component: {
         requestAccount: null,
         expiredPassword: null,
@@ -282,6 +282,9 @@ class Login extends Component {
           module={'reset'}
           setMode={this.setMode}
           data={this.state.component.requestAccount}
+          defaultFirstName={this.props.defaultRequestFirstName}
+          defaultLastName={this.props.defaultRequestLastName}
+          defaultEmail={this.props.defaultRequestEmail}
         />
       );
     }
@@ -302,8 +305,16 @@ Login.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const getParam = (name, deflt) => {
+      return params.has(name) ? params.get(name) : deflt;
+  };
   ReactDOM.render(
     <Login
+      defaultmode={getParam('page', null)}
+      defaultRequestFirstName={getParam('firstname', '')}
+      defaultRequestLastName={getParam('lastname', '')}
+      defaultRequestEmail={getParam('email', '')}
       module={'login'}
     />,
     document.getElementsByClassName('main-content')[0]

@@ -51,3 +51,7 @@ check: checkstatic unittests
 
 testdata:
 	php tools/raisinbread_refresh.php
+
+login:
+	target=login npm run compile
+
