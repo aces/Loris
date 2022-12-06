@@ -59,6 +59,7 @@ if (!fs.existsSync(
 ) {
   mod.rules.push({
     test: /react-series-data-viewer\/src\/chunks/,
+    exclude: /project/,
     use: 'null-loader',
   });
 }
