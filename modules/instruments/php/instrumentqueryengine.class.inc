@@ -330,10 +330,15 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* see https://github.com/phan/phan/issues/4746
          * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
 =======
 >>>>>>> 537f7915c (phan)
+=======
+        /* see https://github.com/phan/phan/issues/4746
+         * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
+>>>>>>> 01e8a7a1d (Suppress error caused by phan bug)
             . join('),(', iterator_to_array($candidates))
             . ')';
 
