@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from '../Panel';
-// import * as chartBuilder from './chartBuilder';
+import * as chartBuilder from './chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
@@ -13,6 +13,7 @@ const Recruitment = (props) => {
   const [loading, setLoading] = useState(true);
   const [overall, setOverall] = useState({});
   const [siteBreakdown, setSiteBreakdown] = useState({});
+  const [projectBreakdown, setProjectBreakdown] = useState({});
 
   /**
    * Similar to componentDidMount and componentDidUpdate.
@@ -41,16 +42,16 @@ const Recruitment = (props) => {
           console.log(json);
           const overallData = (
             <div className='recruitment-panel' id='overall-recruitment'>
-              {progressBarBuilder(json)}
+              {progressBarBuilder(json['recruitment']['overall'])}
             </div>
           );
           let siteBreakdownData;
-          if (json['recruitment']['progress']['overall'] &&
-            json['recruitment']['progress']['overall']['total_recruitment'] > 0
+          if (json['recruitment']['overall'] &&
+            json['recruitment']['overall']['total_recruitment'] > 0
           ) {
             siteBreakdownData = (
               <>
-                <div className='col-lg-12 col-md-12 col-sm-12'>
+                <div className='col-lg-4 col-md-4 col-sm-4'>
                   <div>
                     <h5 className='chart-title'>
                       Total recruitment per site
@@ -58,7 +59,7 @@ const Recruitment = (props) => {
                     <div id='recruitmentPieChart'/>
                   </div>
                 </div>
-                <div className='col-lg-12 col-md-12 col-sm-12'>
+                <div className='col-lg-8 col-md-8 col-sm-8'>
                   <div>
                     <h5 className='chart-title'>
                       Biological sex breakdown by site
@@ -75,12 +76,24 @@ const Recruitment = (props) => {
               <p>There have been no candidates registered yet.</p>
             );
           }
+          let projectBreakdownData = [];
+          for (const [key, value] of Object.entries(json['recruitment'])) {
+            if (key !== 'overall') {
+              projectBreakdownData.push(
+                <div key={`projectBreakdown_${key}`}>
+                  {progressBarBuilder(value)}
+                </div>
+              );
+            }
+          }
+          setProjectBreakdown(projectBreakdownData);
           setOverall(overallData);
           setSiteBreakdown(siteBreakdownData);
           setLoading(false);
           // Process statistics for c3.js
           // todo chartBuilder code should be replaced with npmjs version.
-          // chartBuilder.process();
+          console.log('calling chart builder');
+          chartBuilder.process();
         });
       } else {
         // set error
@@ -100,16 +113,16 @@ const Recruitment = (props) => {
   const progressBarBuilder = (data) => {
     let title;
     let content;
-    if (data['recruitment']['progress']['overall']['recruitment_target']) {
+    if (data['recruitment_target']) {
       title = <h5>
-        {data['recruitment']['progress']['overall']['title']}
+        {data['title']}
       </h5>;
-      if (data['recruitment']['progress']['overall']['surpassed_recruitment']) {
+      if (data['surpassed_recruitment']) {
         content = (
           <div>
             <p>
               The recruitment target (
-              {data['recruitment']['progress']['overall']['recruitment_target']}
+              {data['recruitment_target']}
               ) has been passed.
             </p>
             <div className='progress'>
@@ -117,19 +130,17 @@ const Recruitment = (props) => {
                    role='progressbar'
                    style={
                      {
-                       width: data['recruitment']['progress']['overall']
-                         ['female_full_percent'] + '%',
+                       width: data['female_full_percent'] + '%',
                      }
                    }
                    data-toggle='tooltip'
                    data-placement='bottom'
                    title={
-                     data['recruitment']['progress']['overall']
-                       ['female_full_percent'] + '%'
+                     data['female_full_percent'] + '%'
                    }
               >
                 <p>
-                  {data['recruitment']['progress']['overall']['female_total']}
+                  {data['female_total']}
                   <br/>
                   Females
                 </p>
@@ -140,24 +151,21 @@ const Recruitment = (props) => {
                    role='progressbar'
                    style={
                      {
-                       width: data['recruitment']['progress']['overall']
-                         ['male_full_percent'] + '%',
+                       width: data['male_full_percent'] + '%',
                      }
                    }
                    title={
-                     data['recruitment']['progress']['overall']
-                       ['male_full_percent'] + '%'
+                     data['male_full_percent'] + '%'
                    }
               >
                 <p>
-                  {data['recruitment']['progress']['overall']['male_total']}
+                  {data['male_total']}
                   <br/>
                   Males
                 </p>
               </div>
               <p className='pull-right small target'>
-                Target: {data['recruitment']['progress']['overall']
-                ['recruitment_target']}
+                Target: {data['recruitment_target']}
               </p>
             </div>
           </div>
@@ -169,17 +177,15 @@ const Recruitment = (props) => {
                  role='progressbar'
                  style={
                    {
-                     width: data['recruitment']['progress']['overall']
-                       ['female_percent'] + '%',
+                     width: data['female_percent'] + '%',
                    }
                  }
                  data-toggle='tooltip'
                  data-placement='bottom'
-                 title={data['recruitment']['progress']['overall']
-                   ['female_percent'] + '%'}
+                 title={data['female_percent'] + '%'}
             >
               <p>
-                {data['recruitment']['progress']['overall']['female_total']}
+                {data['female_total']}
                 <br/>
                 Females
               </p>
@@ -190,22 +196,21 @@ const Recruitment = (props) => {
                  role='progressbar'
                  style={
                    {
-                     width: data['recruitment']['progress']['overall']
-                       ['male_percent'] + '%',
+                     width: data['male_percent'] + '%',
                    }
                  }
                  title={
-              data['recruitment']['progress']['overall']['male_percent'] + '%'}
+              data['male_percent'] + '%'}
             >
               <p>
-                {data['recruitment']['progress']['overall']['male_total']}
+                {data['male_total']}
                 <br/>
                 Males
               </p>
             </div>
             <p className='pull-right small target'>
               Target: {
-              data['recruitment']['progress']['overall']['recruitment_target']}
+              data['recruitment_target']}
             </p>
           </div>
         );
@@ -214,7 +219,7 @@ const Recruitment = (props) => {
       content = (
         <div>
           Please add a recruitment target for {
-          data['recruitment']['progress']['overall']['title']
+          data['title']
         }.
         </div>
       );
@@ -241,14 +246,23 @@ const Recruitment = (props) => {
             <div className='recruitment-panel' id='overall-recruitment'>
               {overall}
             </div>,
-          title: 'Recruitment'},
+          title: 'Recruitment: Overall',
+        },
         {visible: true,
           content:
             <div className='recruitment-panel'
                  id='recruitment-site-breakdown'>
               {siteBreakdown}
             </div>,
-          title: 'Site Breakdown',
+          title: 'Recruitment: Site Breakdown',
+        },
+        {visible: true,
+          content:
+            <div className='recruitment-panel'
+                 id='recruitment-project-breakdown'>
+              {projectBreakdown}
+            </div>,
+          title: 'Recruitment: Project Breakdown',
         },
       ]}
     />

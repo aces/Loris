@@ -19,15 +19,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _Panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
+/* harmony import */ var _chartBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(20);
 
 
 
 
- // import * as chartBuilder from './chartBuilder';
+
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
@@ -50,6 +51,11 @@ var Recruitment = function Recruitment(props) {
       _useState6 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState5, 2),
       siteBreakdown = _useState6[0],
       setSiteBreakdown = _useState6[1];
+
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({}),
+      _useState8 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState7, 2),
+      projectBreakdown = _useState8[0],
+      setProjectBreakdown = _useState8[1];
   /**
    * Similar to componentDidMount and componentDidUpdate.
    */
@@ -78,18 +84,18 @@ var Recruitment = function Recruitment(props) {
           var overallData = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
             className: "recruitment-panel",
             id: "overall-recruitment"
-          }, progressBarBuilder(json));
+          }, progressBarBuilder(json['recruitment']['overall']));
           var siteBreakdownData;
 
-          if (json['recruitment']['progress']['overall'] && json['recruitment']['progress']['overall']['total_recruitment'] > 0) {
+          if (json['recruitment']['overall'] && json['recruitment']['overall']['total_recruitment'] > 0) {
             siteBreakdownData = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-              className: "col-lg-12 col-md-12 col-sm-12"
+              className: "col-lg-4 col-md-4 col-sm-4"
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", {
               className: "chart-title"
             }, "Total recruitment per site"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
               id: "recruitmentPieChart"
             }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-              className: "col-lg-12 col-md-12 col-sm-12"
+              className: "col-lg-8 col-md-8 col-sm-8"
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", {
               className: "chart-title"
             }, "Biological sex breakdown by site"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
@@ -102,11 +108,28 @@ var Recruitment = function Recruitment(props) {
             siteBreakdownData = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "There have been no candidates registered yet.");
           }
 
+          var projectBreakdownData = [];
+
+          for (var _i = 0, _Object$entries = Object.entries(json['recruitment']); _i < _Object$entries.length; _i++) {
+            var _Object$entries$_i = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_Object$entries[_i], 2),
+                key = _Object$entries$_i[0],
+                value = _Object$entries$_i[1];
+
+            if (key !== 'overall') {
+              projectBreakdownData.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+                key: "projectBreakdown_".concat(key)
+              }, progressBarBuilder(value)));
+            }
+          }
+
+          setProjectBreakdown(projectBreakdownData);
           setOverall(overallData);
           setSiteBreakdown(siteBreakdownData);
           setLoading(false); // Process statistics for c3.js
           // todo chartBuilder code should be replaced with npmjs version.
-          // chartBuilder.process();
+
+          console.log('calling chart builder');
+          _chartBuilder__WEBPACK_IMPORTED_MODULE_4__.process();
         });
       } else {
         // set error
@@ -128,33 +151,33 @@ var Recruitment = function Recruitment(props) {
     var title;
     var content;
 
-    if (data['recruitment']['progress']['overall']['recruitment_target']) {
-      title = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", null, data['recruitment']['progress']['overall']['title']);
+    if (data['recruitment_target']) {
+      title = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", null, data['title']);
 
-      if (data['recruitment']['progress']['overall']['surpassed_recruitment']) {
-        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "The recruitment target (", data['recruitment']['progress']['overall']['recruitment_target'], ") has been passed."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+      if (data['surpassed_recruitment']) {
+        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "The recruitment target (", data['recruitment_target'], ") has been passed."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
           className: "progress"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
           className: "progress-bar progress-bar-female",
           role: "progressbar",
           style: {
-            width: data['recruitment']['progress']['overall']['female_full_percent'] + '%'
+            width: data['female_full_percent'] + '%'
           },
           "data-toggle": "tooltip",
           "data-placement": "bottom",
-          title: data['recruitment']['progress']['overall']['female_full_percent'] + '%'
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['recruitment']['progress']['overall']['female_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Females")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+          title: data['female_full_percent'] + '%'
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['female_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Females")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
           className: "progress-bar progress-bar-male",
           "data-toggle": "tooltip",
           "data-placement": "bottom",
           role: "progressbar",
           style: {
-            width: data['recruitment']['progress']['overall']['male_full_percent'] + '%'
+            width: data['male_full_percent'] + '%'
           },
-          title: data['recruitment']['progress']['overall']['male_full_percent'] + '%'
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['recruitment']['progress']['overall']['male_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Males")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+          title: data['male_full_percent'] + '%'
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['male_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Males")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
           className: "pull-right small target"
-        }, "Target: ", data['recruitment']['progress']['overall']['recruitment_target'])));
+        }, "Target: ", data['recruitment_target'])));
       } else {
         content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
           className: "progress"
@@ -162,26 +185,26 @@ var Recruitment = function Recruitment(props) {
           className: "progress-bar progress-bar-female",
           role: "progressbar",
           style: {
-            width: data['recruitment']['progress']['overall']['female_percent'] + '%'
+            width: data['female_percent'] + '%'
           },
           "data-toggle": "tooltip",
           "data-placement": "bottom",
-          title: data['recruitment']['progress']['overall']['female_percent'] + '%'
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['recruitment']['progress']['overall']['female_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Females")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+          title: data['female_percent'] + '%'
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['female_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Females")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
           className: "progress-bar progress-bar-male",
           "data-toggle": "tooltip",
           "data-placement": "bottom",
           role: "progressbar",
           style: {
-            width: data['recruitment']['progress']['overall']['male_percent'] + '%'
+            width: data['male_percent'] + '%'
           },
-          title: data['recruitment']['progress']['overall']['male_percent'] + '%'
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['recruitment']['progress']['overall']['male_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Males")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+          title: data['male_percent'] + '%'
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, data['male_total'], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Males")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
           className: "pull-right small target"
-        }, "Target: ", data['recruitment']['progress']['overall']['recruitment_target']));
+        }, "Target: ", data['recruitment_target']));
       }
     } else {
-      content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, "Please add a recruitment target for ", data['recruitment']['progress']['overall']['title'], ".");
+      content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, "Please add a recruitment target for ", data['title'], ".");
     }
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), null, title, content);
@@ -203,20 +226,27 @@ var Recruitment = function Recruitment(props) {
         className: "recruitment-panel",
         id: "overall-recruitment"
       }, overall),
-      title: 'Recruitment'
+      title: 'Recruitment: Overall'
     }, {
       visible: true,
       content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
         className: "recruitment-panel",
         id: "recruitment-site-breakdown"
       }, siteBreakdown),
-      title: 'Site Breakdown'
+      title: 'Recruitment: Site Breakdown'
+    }, {
+      visible: true,
+      content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+        className: "recruitment-panel",
+        id: "recruitment-project-breakdown"
+      }, projectBreakdown),
+      title: 'Recruitment: Project Breakdown'
     }]
   });
 };
 
 Recruitment.propTypes = {
-  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string)
+  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string)
 };
 Recruitment.defaultProps = {
   baseURL: false
@@ -1682,6 +1712,400 @@ function _defineProperty(obj, key, value) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "process": () => (/* binding */ process)
+/* harmony export */ });
+/* eslint-disable */
+
+/**
+ * process -
+ */
+function process() {
+  console.log('test start');
+  console.log('test 0');
+  var baseURL = window.location.origin; // AJAX to get recruitment line chart data
+
+  var apiScanLineData = "".concat(baseURL, "/statistics/charts/scans_bymonth");
+  var apiScanLineDataRecruitment = "".concat(baseURL, "/statistics/charts/siterecruitment_line"); // AJAX to get pie chart data
+
+  var apiRecruitmentPieData = "".concat(baseURL, "/statistics/charts/siterecruitment_pie"); // AJAX to get bar chart data
+
+  var apiRecruitmentBarData = "".concat(baseURL, "/statistics/charts/siterecruitment_bysex");
+  var scanLineChart;
+  var recruitmentPieChart;
+  var recruitmentBarChart;
+  var recruitmentLineChart; // Colours for all charts broken down by only by site
+
+  var siteColours = ['#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000', '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']; // Colours for the recruitment bar chart: breakdown by sex
+
+  var sexColours = ['#2FA4E7', '#1C70B6']; // Turn on the tooltip for the progress bar - shows total
+  // male and female registered candidates
+
+  $('.progress-bar').tooltip(); // Open the appropriate charts from the "views" dropdown menus
+
+  $('.dropdown-menu a').click(function () {
+    $(this).parent().siblings().removeClass('active');
+    $(this).parent().addClass('active');
+    $($(this).parent().siblings().children('a')).each(function () {
+      $(document.getElementById(this.getAttribute('data-target'))).addClass('hidden');
+    });
+    $(document.getElementById(this.getAttribute('data-target'))).removeClass('hidden');
+    /* Make sure the chart variables are defined before resizing
+     * They may not be defined on initial page load because
+     * they are created through an AJAX request.
+     */
+
+    if (typeof recruitmentPieChart !== 'undefined') {
+      recruitmentPieChart.resize();
+    }
+
+    if (typeof recruitmentBarChart !== 'undefined') {
+      recruitmentBarChart.resize();
+    }
+
+    if (typeof recruitmentLineChart !== 'undefined') {
+      recruitmentLineChart.resize();
+    }
+
+    if (typeof scanLineChart !== 'undefined') {
+      scanLineChart.resize();
+    }
+  });
+  $('.new-scans').click(function (e) {
+    e.preventDefault();
+    applyFilter('imaging_browser', {
+      'Pending': 'PN'
+    });
+  });
+  $('.pending-accounts').click(function (e) {
+    e.preventDefault();
+    applyFilter('user_accounts', {
+      'pending': 'Y'
+    });
+  });
+  /**
+   * applyFilter
+   * @param {string} testName
+   * @param {object} filters
+   */
+
+  function applyFilter(testName, filters) {
+    var form = $('<form />', {
+      'action': loris.BaseURL + '/' + testName + '/',
+      'method': 'post'
+    });
+    var values = {
+      'reset': 'true',
+      'filter': 'Show Data'
+    };
+    $.extend(values, filters);
+    $.each(values, function (name, value) {
+      $('<input />', {
+        type: 'hidden',
+        name: name,
+        value: value
+      }).appendTo(form);
+    });
+    form.appendTo('body').submit();
+  }
+  /**
+   * formatPieData
+   * @param {object} data
+   * @return {*[]}
+   */
+
+
+  function formatPieData(data) {
+    'use strict';
+
+    var processedData = [];
+
+    for (var i in data) {
+      if (data.hasOwnProperty(i)) {
+        var siteData = [data[i].label, data[i].total];
+        processedData.push(siteData);
+      }
+    }
+
+    return processedData;
+  }
+  /**
+   * formatBarData
+   * @param {object} data
+   * @return {*[]}
+   */
+
+
+  function formatBarData(data) {
+    'use strict';
+
+    var processedData = [];
+
+    if (data['datasets']) {
+      var females = ['Female'];
+      processedData.push(females.concat(data['datasets']['female']));
+    }
+
+    if (data['datasets']) {
+      var males = ['Male'];
+      processedData.push(males.concat(data['datasets']['male']));
+    }
+
+    return processedData;
+  }
+  /**
+   * formatLineData
+   * @param {object} data
+   * @return {*[]}
+   */
+
+
+  function formatLineData(data) {
+    'use strict';
+
+    var processedData = [];
+    var labels = [];
+    labels.push('x');
+
+    for (var i in data.labels) {
+      if (data.labels.hasOwnProperty(i)) {
+        labels.push(data.labels[i]);
+      }
+    }
+
+    processedData.push(labels);
+
+    for (var _i in data.datasets) {
+      if (data.datasets.hasOwnProperty(_i)) {
+        var dataset = [];
+        dataset.push(data.datasets[_i].name);
+        processedData.push(dataset.concat(data.datasets[_i].data));
+      }
+    }
+
+    var totals = [];
+    totals.push('Total');
+
+    for (var j = 0; j < data.datasets[0].data.length; j++) {
+      var total = 0;
+
+      for (var _i2 = 0; _i2 < data.datasets.length; _i2++) {
+        total += parseInt(data.datasets[_i2].data[j]);
+      }
+
+      totals.push(total);
+    }
+
+    processedData.push(totals);
+    return processedData;
+  }
+  /**
+   * maxY
+   * @param {object} data
+   * @return {number}
+   */
+
+
+  function maxY(data) {
+    var maxi = 0;
+
+    for (var j = 0; j < data.datasets[0].data.length; j++) {
+      for (var i = 0; i < data.datasets.length; i++) {
+        maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
+      }
+    }
+
+    return maxi;
+  } // Updated AJAX to get scan line chart data
+
+
+  fetch(apiScanLineData, {
+    credentials: 'same-origin'
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    var legendNames = [];
+
+    for (var j = 0; j < data.datasets.length; j++) {
+      legendNames.push(data.datasets[j].name);
+    }
+
+    var scanLineData = formatLineData(data);
+    scanLineChart = c3.generate({
+      size: {
+        height: '100%'
+      },
+      bindto: '#scanChart',
+      data: {
+        x: 'x',
+        xFormat: '%m-%Y',
+        columns: scanLineData,
+        type: 'area-spline'
+      },
+      legend: {
+        show: false
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m-%Y'
+          }
+        },
+        y: {
+          max: maxY(data),
+          label: 'Scans'
+        }
+      },
+      zoom: {
+        enabled: true
+      },
+      color: {
+        pattern: siteColours
+      }
+    });
+    d3.select('.scanChartLegend').insert('div', '.scanChart').attr('class', 'legend').selectAll('div').data(legendNames).enter().append('div').attr('data-id', function (id) {
+      return id;
+    }).html(function (id) {
+      return '<span></span>' + id;
+    }).each(function (id) {
+      d3.select(this).select('span').style('background-color', scanLineChart.color(id));
+    }).on('mouseover', function (id) {
+      scanLineChart.focus(id);
+    }).on('mouseout', function (id) {
+      scanLineChart.revert();
+    }).on('click', function (id) {
+      $(this).toggleClass('c3-legend-item-hidden');
+      scanLineChart.toggle(id);
+    });
+  })["catch"](function (error) {
+    console.error(error);
+  }); // AJAX to get pie chart data
+
+  console.log('test 1 ');
+  fetch(apiRecruitmentPieData, {
+    credentials: 'same-origin'
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    console.log('test');
+    var recruitmentPieData = formatPieData(data);
+    recruitmentPieChart = c3.generate({
+      bindto: '#recruitmentPieChart',
+      data: {
+        columns: recruitmentPieData,
+        type: 'pie'
+      },
+      color: {
+        pattern: siteColours
+      }
+    });
+  })["catch"](function (error) {
+    console.error(error);
+  }); // AJAX to get bar chart data
+
+  fetch(apiRecruitmentBarData, {
+    credentials: 'same-origin'
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    var recruitmentBarData = formatBarData(data);
+    var recruitmentBarLabels = data.labels;
+    recruitmentBarChart = c3.generate({
+      bindto: '#recruitmentBarChart',
+      data: {
+        columns: recruitmentBarData,
+        type: 'bar'
+      },
+      axis: {
+        x: {
+          type: 'categorized',
+          categories: recruitmentBarLabels
+        },
+        y: {
+          label: 'Candidates registered'
+        }
+      },
+      color: {
+        pattern: sexColours
+      }
+    });
+  })["catch"](function (error) {
+    console.error(error);
+  }); // AJAX to get recruitment line chart data
+
+  fetch(apiScanLineDataRecruitment, {
+    credentials: 'same-origin'
+  }).then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    var legendNames = [];
+
+    for (var j = 0; j < data.datasets.length; j++) {
+      legendNames.push(data.datasets[j].name);
+    }
+
+    var recruitmentLineData = formatLineData(data);
+    recruitmentLineChart = c3.generate({
+      size: {
+        height: '100%'
+      },
+      bindto: '#recruitmentChart',
+      data: {
+        x: 'x',
+        xFormat: '%m-%Y',
+        columns: recruitmentLineData,
+        type: 'area-spline'
+      },
+      legend: {
+        show: false
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m-%Y'
+          }
+        },
+        y: {
+          max: maxY(data),
+          label: 'Candidates registered'
+        }
+      },
+      zoom: {
+        enabled: true
+      },
+      color: {
+        pattern: siteColours
+      }
+    });
+    d3.select('.recruitmentChartLegend').insert('div', '.recruitmentChart').attr('class', 'legend').selectAll('div').data(legendNames).enter().append('div').attr('data-id', function (id) {
+      return id;
+    }).html(function (id) {
+      return '<span></span>' + id;
+    }).each(function (id) {
+      d3.select(this).select('span').style('background-color', recruitmentLineChart.color(id));
+    }).on('mouseover', function (id) {
+      recruitmentLineChart.focus(id);
+    }).on('mouseout', function (id) {
+      recruitmentLineChart.revert();
+    }).on('click', function (id) {
+      $(this).toggleClass('c3-legend-item-hidden');
+      recruitmentLineChart.toggle(id);
+    });
+  })["catch"](function (error) {
+    console.error(error);
+  });
+}
+
+
+
+/***/ }),
+/* 21 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
@@ -1850,7 +2274,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _widgets_recruitment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _widgets_studyprogression__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
+/* harmony import */ var _widgets_studyprogression__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
 
 
 

@@ -94,21 +94,14 @@ class Recruitment extends \NDB_Page implements ETagCalculator
             );
         }
 
-        // These are just here to avoid phpcs complaining about line length.
-        $overallstring       = 'View overall recruitment';
-        $sitebreakdownstring = 'View site breakdown';
-        $projbreakdownstring = 'View project breakdown';
-
-        $recpersite = 'View recruitment per site';
-
-        if ($recruitment['progress']['overall']) {
-            $studyProgressionData = $recruitment['progress']['overall'];
-        }
-        $studyProgressionData['total_scans'] = $recruitment['total_scans'];
-
-        $values                     = [];
-        $values['recruitment']      = $recruitment;
-        $values['studyProgression'] = $studyProgressionData;
+        $values = [];
+        // recruitment.tpl
+        $values['recruitment'] = $recruitment;
+        // studyprogression.tpl"
+        $values['studyprogression'] = [
+            'total_scans' => $totalScans,
+            'recruitment' => $recruitment
+        ];
         return $values;
     }
 
