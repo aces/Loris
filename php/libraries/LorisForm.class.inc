@@ -1607,9 +1607,9 @@ class LorisForm
         //  CSS to wrap the tag which avoids the label from being separated from the
         //  checkbox. We don't wrap the whole label in it because if it's a long
         //  label it's still allowed to have linebreaks.
-        return "<span style=\"white-space: nowrap; display: flex; "
+        return "<span style=\"white-space: nowrap; display: flex;"
                     . " flex-direction: column; align-content: center;\">"
-                    . " <input name=\"$el[name]\""
+                    . "<input name=\"$el[name]\""
                         . " type=\"checkbox\" $checked $value "
                         . "$disabled/>"
             . " </span>$el[label]";
