@@ -9,7 +9,7 @@ const submodules = [
 
 submodules.forEach((submodule) => {
   // Check if the submodule is in modules/, and has an override
-  submodulePath = submodule.split(path.sep);
+  const submodulePath = submodule.split(path.sep);
 
   if (
     submodulePath[0] === 'modules' &&
