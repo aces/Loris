@@ -972,11 +972,21 @@ class Edit_User extends \NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                htmlspecialchars($row['label']) . "<br>",
+                '<span>' . htmlspecialchars($row['label']) . '</span>',
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "");
+        $this->addGroup(
+            $group,
+            'PermID_Group',
+            'Permissions',
+            "",
+            [
+                'prefix_wrapper'  => '<div style="'
+                        . 'display: flex; gap: 5px; align-items: center;">',
+                'postfix_wrapper' => '</div>',
+            ]
+        );
         unset($group);
 
         //getting users name and emails to create checkboxes
