@@ -190,6 +190,7 @@ let config = [
           'jslib/',
           'htdocs/js/',
           'webpack.config.js',
+          'npm-postinstall.js',
         ],
         cache: true,
       }),
