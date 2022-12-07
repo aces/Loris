@@ -53,7 +53,7 @@ interface QueryEngine
      *
      * @return iterable<string, DataInstance>
      */
-    public function getCandidateData(array $items, array $candidates, ?array $visitlist) : iterable;
+    public function getCandidateData(array $items, iterable $candidates, ?array $visitlist) : iterable;
 
     /**
      * Get the list of visits at which a DictionaryItem is valid
