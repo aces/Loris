@@ -348,11 +348,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             [],
         );
 
-        $data = [];
-        foreach ($candidates as $candidate) {
-            $data["$candidate"] = [];
-        }
-
         $commentID2CandID = [];
         foreach ($rows as $row) {
             $commentID2CandID[$row['CommentID']] = $row['CandID'];
