@@ -33,7 +33,7 @@ uploaded file system where new files will be written.
 Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following events occurs:
 * Addition, deletion or modification of a file (by another user)
 * Addition of a category (by another user)
-* The filter only works in the current directory (root folder only contains diretories).
+* The filter only works in the current directory (root folder only contains directories).
 * The global filter will filter the file across the directories.
 
 ### Dashboard Widget
