@@ -2,15 +2,12 @@
 {if $InstrumentResetting }
     <h3 class="controlPanelSection">Clear Instrument</h3>
     <ul class="controlPanel">
-        <li><div id="deleteInstrumentBtn"></div></li>
+        <li><form id="ConfirmDelete" method="post"><input class="button" type="button" value="Delete instrument data"/>
+                <input type="hidden" name="ClearInstrument" value="1">
+            </form>
+        </li>
     </ul>
-    <script type="text/javascript" src="{$baseurl}/instruments/js/ControlpanelDeleteInstrumentData.js"></script>
-    <script type="text/javascript">
-    ReactDOM.render(
-        RControlpanelDeleteInstrumentData(),
-        document.getElementById("deleteInstrumentBtn")
-    );
-    </script>
+    <script type="text/javascript" src="{$baseurl}/js/instrument_controlpanel_swaldeletedata.js"></script>
 {/if}
 <h3 class="controlPanelSection">Administration</h3>
 <ul class="controlPanel fa-ul">
