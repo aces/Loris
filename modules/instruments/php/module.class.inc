@@ -15,7 +15,6 @@
 namespace LORIS\instruments;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -153,8 +152,7 @@ class Module extends \Module
     }
 
     /**
-     * Return the query engine for all instruments installed on this
-     * LORIS instance.
+     * {@inheritDoc}
      *
      * @return \LORIS\Data\Query\QueryEngine
      */
