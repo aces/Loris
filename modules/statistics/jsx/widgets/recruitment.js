@@ -128,17 +128,10 @@ const Recruitment = (props) => {
             <div className='progress'>
               <div className='progress-bar progress-bar-female'
                    role='progressbar'
-                   style={
-                     {
-                       width: data['female_full_percent'] + '%',
-                     }
-                   }
+                   style={{width: data['female_full_percent'] + '%'}}
                    data-toggle='tooltip'
                    data-placement='bottom'
-                   title={
-                     data['female_full_percent'] + '%'
-                   }
-              >
+                   title={data['female_full_percent'] + '%'}>
                 <p>
                   {data['female_total']}
                   <br/>
@@ -149,15 +142,8 @@ const Recruitment = (props) => {
                    data-toggle='tooltip'
                    data-placement='bottom'
                    role='progressbar'
-                   style={
-                     {
-                       width: data['male_full_percent'] + '%',
-                     }
-                   }
-                   title={
-                     data['male_full_percent'] + '%'
-                   }
-              >
+                   style={{width: data['male_full_percent'] + '%'}}
+                   title={data['male_full_percent'] + '%'}>
                 <p>
                   {data['male_total']}
                   <br/>
@@ -175,15 +161,10 @@ const Recruitment = (props) => {
           <div className='progress'>
             <div className='progress-bar progress-bar-female'
                  role='progressbar'
-                 style={
-                   {
-                     width: data['female_percent'] + '%',
-                   }
-                 }
+                 style={{width: data['female_percent'] + '%'}}
                  data-toggle='tooltip'
                  data-placement='bottom'
-                 title={data['female_percent'] + '%'}
-            >
+                 title={data['female_percent'] + '%'}>
               <p>
                 {data['female_total']}
                 <br/>
@@ -194,14 +175,8 @@ const Recruitment = (props) => {
                  data-toggle='tooltip'
                  data-placement='bottom'
                  role='progressbar'
-                 style={
-                   {
-                     width: data['male_percent'] + '%',
-                   }
-                 }
-                 title={
-              data['male_percent'] + '%'}
-            >
+                 style={{width: data['male_percent'] + '%'}}
+                 title={data['male_percent'] + '%'}>
               <p>
                 {data['male_total']}
                 <br/>
@@ -243,7 +218,8 @@ const Recruitment = (props) => {
       views={[
         {visible: true,
           content:
-            <div className='recruitment-panel' id='overall-recruitment'>
+            <div className='recruitment-panel'
+                 id='overall-recruitment'>
               {overall}
             </div>,
           title: 'Recruitment: Overall',
