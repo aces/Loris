@@ -265,7 +265,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : iterable {
         if ($item->getScope()->__toString() !== 'session') {
-            return null;
+            return [];
         }
 
         // An instrument's fields all have the same visit list, so cache
@@ -355,11 +355,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
              ORDER BY c.CandID",
             [],
         );
-
-        $data = [];
-        foreach ($candidates as $candidate) {
-            $data["$candidate"] = [];
-        }
 
         $commentID2CandID = [];
         foreach ($rows as $row) {
