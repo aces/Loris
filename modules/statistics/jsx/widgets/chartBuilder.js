@@ -109,7 +109,6 @@ function process() {
    * @return {*[]}
    */
   function formatPieData(data) {
-    'use strict';
     const processedData = [];
     for (const i in data) {
       if (data.hasOwnProperty(i)) {
@@ -126,7 +125,6 @@ function process() {
    * @return {*[]}
    */
   function formatBarData(data) {
-    'use strict';
     const processedData = [];
     if (data['datasets']) {
       const females = ['Female'];
@@ -145,7 +143,6 @@ function process() {
    * @return {*[]}
    */
   function formatLineData(data) {
-    'use strict';
     const processedData = [];
     const labels = [];
     labels.push('x');

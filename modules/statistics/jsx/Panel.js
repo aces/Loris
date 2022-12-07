@@ -50,7 +50,7 @@ const Panel = (props) => {
       );
       content.push(
         <div key={index}
-             id={`${index}_panel_content`}
+             id={`${index}_panel_content_${props.id}`}
              className={index === activeView ?
                `${index}_panel_content` : `${index}_panel_content hidden`}>
           {view['content']}

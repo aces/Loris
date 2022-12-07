@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from '../Panel';
-import * as chartBuilder from './chartBuilder';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
@@ -38,8 +37,6 @@ const Recruitment = (props) => {
     ).then((resp) => {
       if (resp.ok) {
         resp.json().then((json) => {
-          console.log('json is ');
-          console.log(json);
           const overallData = (
             <div className='recruitment-panel' id='overall-recruitment'>
               {progressBarBuilder(json['recruitment']['overall'])}
@@ -65,7 +62,6 @@ const Recruitment = (props) => {
                       Biological sex breakdown by site
                     </h5>
                     <div id='recruitmentBarChart'
-                         style={{position: 'relative'}}
                     />
                   </div>
                 </div>
@@ -90,10 +86,6 @@ const Recruitment = (props) => {
           setOverall(overallData);
           setSiteBreakdown(siteBreakdownData);
           setLoading(false);
-          // Process statistics for c3.js
-          // todo chartBuilder code should be replaced with npmjs version.
-          console.log('calling chart builder');
-          chartBuilder.process();
         });
       } else {
         // set error
@@ -222,7 +214,7 @@ const Recruitment = (props) => {
                  id='overall-recruitment'>
               {overall}
             </div>,
-          title: 'Recruitment: Overall',
+          title: 'Recruitment - overall',
         },
         {visible: true,
           content:
@@ -230,7 +222,7 @@ const Recruitment = (props) => {
                  id='recruitment-site-breakdown'>
               {siteBreakdown}
             </div>,
-          title: 'Recruitment: Site Breakdown',
+          title: 'Recruitment - site breakdown',
         },
         {visible: true,
           content:
@@ -238,7 +230,7 @@ const Recruitment = (props) => {
                  id='recruitment-project-breakdown'>
               {projectBreakdown}
             </div>,
-          title: 'Recruitment: Project Breakdown',
+          title: 'Recruitment - project breakdown',
         },
       ]}
     />

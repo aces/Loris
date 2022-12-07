@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Recruitment from './widgets/recruitment';
 import StudyProgression from './widgets/studyprogression';
+import * as chartBuilder from './widgets/chartBuilder';
 
 /**
  * WidgetIndex - the main window.
@@ -9,6 +10,14 @@ import StudyProgression from './widgets/studyprogression';
  * @return {JSX.Element}
  */
 const WidgetIndex = (props) => {
+  /**
+   * Similar to componentDidMount and componentDidUpdate.
+   */
+  useEffect(() => {
+    // Process statistics for c3.js
+    // todo chartBuilder code should be replaced with npmjs version.
+    chartBuilder.process();
+  }, []);
   /**
    * Renders the React component.
    * @return {JSX.Element} - React markup for component.

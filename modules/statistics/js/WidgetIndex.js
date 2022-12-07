@@ -19,12 +19,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _Panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
-/* harmony import */ var _chartBuilder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(20);
-
 
 
 
@@ -79,8 +77,6 @@ var Recruitment = function Recruitment(props) {
     }).then(function (resp) {
       if (resp.ok) {
         resp.json().then(function (json) {
-          console.log('json is ');
-          console.log(json);
           var overallData = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
             className: "recruitment-panel",
             id: "overall-recruitment"
@@ -99,10 +95,7 @@ var Recruitment = function Recruitment(props) {
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", {
               className: "chart-title"
             }, "Biological sex breakdown by site"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-              id: "recruitmentBarChart",
-              style: {
-                position: 'relative'
-              }
+              id: "recruitmentBarChart"
             }))));
           } else {
             siteBreakdownData = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "There have been no candidates registered yet.");
@@ -125,11 +118,7 @@ var Recruitment = function Recruitment(props) {
           setProjectBreakdown(projectBreakdownData);
           setOverall(overallData);
           setSiteBreakdown(siteBreakdownData);
-          setLoading(false); // Process statistics for c3.js
-          // todo chartBuilder code should be replaced with npmjs version.
-
-          console.log('calling chart builder');
-          _chartBuilder__WEBPACK_IMPORTED_MODULE_4__.process();
+          setLoading(false);
         });
       } else {
         // set error
@@ -226,27 +215,27 @@ var Recruitment = function Recruitment(props) {
         className: "recruitment-panel",
         id: "overall-recruitment"
       }, overall),
-      title: 'Recruitment: Overall'
+      title: 'Recruitment - overall'
     }, {
       visible: true,
       content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
         className: "recruitment-panel",
         id: "recruitment-site-breakdown"
       }, siteBreakdown),
-      title: 'Recruitment: Site Breakdown'
+      title: 'Recruitment - site breakdown'
     }, {
       visible: true,
       content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
         className: "recruitment-panel",
         id: "recruitment-project-breakdown"
       }, projectBreakdown),
-      title: 'Recruitment: Project Breakdown'
+      title: 'Recruitment - project breakdown'
     }]
   });
 };
 
 Recruitment.propTypes = {
-  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_5___default().string)
+  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string)
 };
 Recruitment.defaultProps = {
   baseURL: false
@@ -1593,7 +1582,7 @@ var Panel = function Panel(props) {
         }, view['title'])));
         content.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", {
           key: index,
-          id: "".concat(index, "_panel_content"),
+          id: "".concat(index, "_panel_content_").concat(props.id),
           className: index === activeView ? "".concat(index, "_panel_content") : "".concat(index, "_panel_content hidden")
         }, view['content']));
       };
@@ -1712,12 +1701,143 @@ function _defineProperty(obj, key, value) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _Panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
+
+
+
+
+
+/**
+ * StudyProgression - a widget containing statistics for study data.
+ * @param {object} props
+ * @return {JSX.Element}
+ */
+
+var StudyProgression = function StudyProgression(props) {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
+      _useState2 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState, 2),
+      loading = _useState2[0],
+      setLoading = _useState2[1];
+
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({}),
+      _useState4 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState3, 2),
+      siteScans = _useState4[0],
+      setSiteScans = _useState4[1];
+
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({}),
+      _useState6 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState5, 2),
+      siteRecruitments = _useState6[0],
+      setSiteRecruitments = _useState6[1];
+  /**
+   * Similar to componentDidMount and componentDidUpdate.
+   */
+
+
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    // Fetch data from backend.
+    fetchData();
+  }, []);
+  /**
+   * Retrieve data from the provided URL and save it in state.
+   */
+
+  var fetchData = function fetchData() {
+    fetch("".concat(props.baseURL, "/Progression"), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (resp) {
+      if (resp.ok) {
+        resp.json().then(function (json) {
+          console.log('json is ');
+          console.log(json);
+          setSiteScans(json['studyprogression']['total_scans'] > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            className: "row"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            id: "scanChart",
+            className: "col-xs-10"
+          }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            className: "scanChartLegend legend-container col-xs-2"
+          })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "There have been no scans yet."));
+          setSiteRecruitments(json['studyprogression']['recruitment']['overall']['total_recruitment'] > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            className: "row"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            id: "recruitmentChart",
+            className: "col-xs-10"
+          }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+            className: 'recruitmentChartLegend legend-container col-xs-2'
+          })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "There have been no candidates registered yet."));
+          setLoading(false);
+        });
+      } else {
+        // set error
+        console.error(resp.statusText);
+      }
+    })["catch"](function (error) {
+      // set error
+      console.error(error);
+    });
+  };
+  /**
+   * Renders the React component.
+   * @return {JSX.Element} - React markup for component.
+   */
+
+
+  return loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_Panel__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Study Progression"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_Panel__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Study Progression",
+    id: "statistics_studyprogression",
+    views: [{
+      visible: true,
+      content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+        id: "scans-line-chart-panel"
+      }, siteScans, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("small", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("i", null, "Note that the Recruitment and Study Progression charts \xA0include data from ineligible, excluded, and consent \xA0withdrawn candidates."))),
+      title: 'Study Progression - site scans'
+    }, {
+      visible: true,
+      content: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+        id: "recruitment-line-chart-panel"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h5", {
+        className: "chart-title"
+      }, "Recruitment per site"), siteRecruitments, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("small", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("i", null, "Note that the Recruitment and Study Progression charts \xA0include data from ineligible, excluded, and consent \xA0withdrawn candidates."))),
+      title: 'Study Progression - site recruitment'
+    }]
+  });
+};
+
+StudyProgression.propTypes = {
+  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string)
+};
+StudyProgression.defaultProps = {
+  baseURL: false
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (StudyProgression);
+
+/***/ }),
+/* 21 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "process": () => (/* binding */ process)
 /* harmony export */ });
 /* eslint-disable */
 
 /**
- * process -
+ * process - the chartBuilding for the widgets.
  */
 function process() {
   var baseURL = window.location.origin; // AJAX to get recruitment line chart data
@@ -1813,8 +1933,6 @@ function process() {
 
 
   function formatPieData(data) {
-    'use strict';
-
     var processedData = [];
 
     for (var i in data) {
@@ -1834,8 +1952,6 @@ function process() {
 
 
   function formatBarData(data) {
-    'use strict';
-
     var processedData = [];
 
     if (data['datasets']) {
@@ -1858,8 +1974,6 @@ function process() {
 
 
   function formatLineData(data) {
-    'use strict';
-
     var processedData = [];
     var labels = [];
     labels.push('x');
@@ -2095,102 +2209,6 @@ function process() {
 
 
 
-/***/ }),
-/* 21 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
-/* harmony import */ var _Panel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
-
-
-
-
-
-/**
- * StudyProgression - a widget containing statistics for study data.
- * @param {object} props
- * @return {JSX.Element}
- */
-
-var StudyProgression = function StudyProgression(props) {
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
-      _useState2 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState, 2),
-      loading = _useState2[0],
-      setLoading = _useState2[1];
-  /**
-   * Similar to componentDidMount and componentDidUpdate.
-   */
-
-
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    setLoading(false);
-  }, []);
-  /**
-   * Retrieve data from the provided URL and save it in state.
-   */
-
-  var fetchData = function fetchData() {
-    fetch("".concat(props.baseURL, "/Progression"), {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(function (resp) {
-      if (resp.ok) {
-        resp.json().then(function (json) {
-          console.log('json is ');
-          console.log(json);
-          setLoading(false);
-        });
-      } else {
-        // set error
-        console.error(resp.statusText);
-      }
-    })["catch"](function (error) {
-      // set error
-      console.error(error);
-    });
-  };
-  /**
-   * Renders the React component.
-   * @return {JSX.Element} - React markup for component.
-   */
-
-
-  return loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_Panel__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    title: "Study Progression",
-    id: "statistics_study_progression",
-    views: [{
-      visible: true,
-      content: 'example 1',
-      title: 'Study Progression'
-    }, {
-      visible: false,
-      content: 'example 2',
-      title: 'example 2'
-    }]
-  });
-};
-
-StudyProgression.propTypes = {
-  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string)
-};
-StudyProgression.defaultProps = {
-  baseURL: false
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (StudyProgression);
-
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -2267,10 +2285,12 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _widgets_recruitment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var _widgets_studyprogression__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
+/* harmony import */ var _widgets_studyprogression__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
+/* harmony import */ var _widgets_chartBuilder__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
+
 
 
 
@@ -2283,9 +2303,18 @@ __webpack_require__.r(__webpack_exports__);
 
 var WidgetIndex = function WidgetIndex(props) {
   /**
+   * Similar to componentDidMount and componentDidUpdate.
+   */
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    // Process statistics for c3.js
+    // todo chartBuilder code should be replaced with npmjs version.
+    _widgets_chartBuilder__WEBPACK_IMPORTED_MODULE_3__.process();
+  }, []);
+  /**
    * Renders the React component.
    * @return {JSX.Element} - React markup for component.
    */
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_widgets_recruitment__WEBPACK_IMPORTED_MODULE_1__["default"], {
     baseURL: props.baseURL
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_widgets_studyprogression__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -2294,7 +2323,7 @@ var WidgetIndex = function WidgetIndex(props) {
 };
 
 WidgetIndex.propTypes = {
-  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_3___default().string)
+  baseURL: (prop_types__WEBPACK_IMPORTED_MODULE_4___default().string)
 };
 /**
  * Render StatisticsIndex on page load.

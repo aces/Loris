@@ -1,153 +1,108 @@
-<?php
-/**
- * This serves as a hint to LORIS that this module is a real module.
- * It does nothing but implement the module class in the module's namespace.
- *
- * PHP Version 7
- *
- * @category   Behavioural
- * @package    Main
- * @subpackage Statistics
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
- */
+<?php declare(strict_types=1);
+
 namespace LORIS\statistics;
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \LORIS\Middleware\ETagCalculator;
+
 /**
- * Class module implements the basic LORIS module functionality
+ * The Progression Class.
  *
- * @category   Behavioural
- * @package    Main
- * @subpackage Statistics
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * This class provides the php code to retrieve the statistics
+ * for progession data.
+ *
+ * @category Loris
+ * @package  Statistics
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class Module extends \Module
+class Progression extends \NDB_Page implements ETagCalculator
 {
     /**
-     * {@inheritDoc}
-     *
-     * @param \User $user The user whose access is being checked.
-     *
-     * @return bool whether access is granted
+     * A cache of the endpoint results, so that it doesn't need to be
+     * recalculated for the ETag and handler.
      */
-    public function hasAccess(\User $user) : bool
-    {
-        return parent::hasAccess($user) && $user->hasPermission('data_entry');
-    }
+    private $_cache;
 
     /**
-     * {@inheritDoc}
-     *
-     * @return string The menu category for this module
+     * the handle function will return a json response.
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    public function getMenuCategory() : string
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        return "Reports";
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string The human readable name for this module
-     */
-    public function getLongName() : string
-    {
-        return "Statistics";
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $type    The type of widgets to get.
-     * @param \User  $user    The user widgets are being retrieved for.
-     * @param array  $options A type dependent list of options to provide
-     *                        to the widget.
-     *
-     * @return \LORIS\GUI\Widget[]
-     */
-    public function getWidgets(string $type, \User $user, array $options) : array
-    {
-        switch ($type) {
-        case 'dashboard':
-            $factory = \NDB_Factory::singleton();
-            $config  = $factory->config();
-            $db      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
-
-            $recruitmentTarget = $config->getSetting('recruitmentTarget');
-
-            $totalScans  = $this->_getTotalRecruitment($db);
-            $recruitment = [
-                'overall' => $this->_createProjectProgressBar(
-                    'overall',
-                    "Overall Recruitment",
-                    $recruitmentTarget,
-                    $totalScans,
-                    $db,
-                )
-            ];
-
-            $projects = \Utility::getProjectList();
-            foreach (array_keys($projects) as $projectID) {
-                $projectInfo = $config->getProjectSettings($projectID);
-                if (is_null($projectInfo)) {
-                    throw new \LorisException(
-                        'No project settings exist in the Database for ' .
-                        'project ID ' . intval($projectID)
+        if (!isset($this->_cache)) {
+            // Ensure GET request.
+            switch ($request->getMethod()) {
+                case 'GET':
+                    $this->_cache = $this->_handleGET($request);
+                    break;
+                default:
+                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                        $this->allowedMethods()
                     );
-                }
-                $recruitment[$projectID] = $this->_createProjectProgressBar(
-                    $projectID,
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($db, $projectID),
-                    $db
+            }
+        }
+        return new \LORIS\Http\Response\JsonResponse(
+            $this->_cache
+        );
+    }
+
+    /**
+     * handles the retrieval of statistical data for the request.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     * @return array The outgoing PSR7 response body content.
+     */
+    private function _handleGET(
+        ServerRequestInterface $request) : array
+    {
+        // todo replace with  $request->getAttribute('loris')->getDatabaseConnection();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $config  = $factory->config();
+
+        $recruitmentTarget = $config->getSetting('recruitmentTarget');
+
+        $totalScans  = $this->_getTotalRecruitment($db);
+        $recruitment = [
+            'overall' => $this->_createProjectProgressBar(
+                'overall',
+                "Overall Recruitment",
+                $recruitmentTarget,
+                $totalScans,
+                $db,
+            )
+        ];
+
+        $projects = \Utility::getProjectList();
+        foreach (array_keys($projects) as $projectID) {
+            $projectInfo = $config->getProjectSettings($projectID);
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval($projectID)
                 );
             }
-
-            // These are just here to avoid phpcs complaining about line length.
-            $overallstring       = 'View overall recruitment';
-            $sitebreakdownstring = 'View site breakdown';
-            $projbreakdownstring = 'View project breakdown';
-
-            $recpersite = 'View recruitment per site';
-
-            $widget = new \LORIS\dashboard\Widget(
-                new \LORIS\dashboard\WidgetContent(
-                    "",
-                    $this->renderTemplate(
-                        "widgets.tpl",
-                        []
-                    ),
-                    '',
-                ),
-                new \LORIS\dashboard\WidgetDisplayProps(
-                    "normal",
-                    10,
-                    []
-                ),
-                new \LORIS\dashboard\WidgetDependencies(
-                    [
-                        $baseURL . "/css/c3.css",
-                        $baseURL . "/statistics/css/recruitment.css"
-                    ],
-                    [
-                        $baseURL . '/js/d3.min.js',
-                        $baseURL . '/js/c3.min.js',
-                        $baseURL . "/statistics/js/WidgetIndex.js"
-                    ],
-                )
+            $recruitment[$projectID] = $this->_createProjectProgressBar(
+                $projectID,
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject($db, $projectID),
+                $db
             );
-            $widget->setTemplate('div.tpl');
-
-            return [
-                $widget,
-            ];
         }
-        return [];
+
+        $values = [];
+        // recruitment.tpl
+        $values['recruitment'] = $recruitment;
+        // studyprogression.tpl"
+        $values['studyprogression'] = [
+            'total_scans' => $totalScans,
+            'recruitment' => $recruitment
+        ];
+        return $values;
     }
 
     /**
@@ -270,7 +225,6 @@ class Module extends \Module
         ) ?? 0;
     }
 
-
     /**
      * Gets the total count of candidates associated with a specific project.
      *
@@ -291,5 +245,27 @@ class Module extends \Module
               AND c.RegistrationCenterID <> 1",
             ['PID' => "$projectID"]
         ) ?? 0;
+    }
+
+    /**
+     * the ETagCalculator provides the ability to calculate
+     * an ETag for an incoming HTTP request.
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request): string
+    {
+        return md5(
+            json_encode((string) $this->_handleGET($request)->getBody())
+        );
+    }
+
+    /**
+     * Return an array of valid HTTP methods for this endpoint.
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return ['GET'];
     }
 }
