@@ -43,7 +43,7 @@ Adapt and use the following `pipeline.sh` script. It will:
 
 # change the <UPDATE_HERE> with your project name
 PROJECT_NAME='<UPDATE_HERE>'
-DATA_FOLDER='/data/${PROJECT_NAME}'
+DATA_FOLDER='/data/'${PROJECT_NAME}
 
 source /opt/$PROJECT_NAME/bin/mri/environment
 
