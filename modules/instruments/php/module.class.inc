@@ -160,10 +160,7 @@ class Module extends \Module
      */
     public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
     {
-        if(!isset($this->queryEngine)) {
-            $this->queryEngine = new InstrumentQueryEngine($this->lorisinstance);
-        }
-        return $this->queryEngine;
+        return new InstrumentQueryEngine($this->loris);
     }
 }
 
