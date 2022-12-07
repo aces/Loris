@@ -1720,8 +1720,6 @@ __webpack_require__.r(__webpack_exports__);
  * process -
  */
 function process() {
-  console.log('test start');
-  console.log('test 0');
   var baseURL = window.location.origin; // AJAX to get recruitment line chart data
 
   var apiScanLineData = "".concat(baseURL, "/statistics/charts/scans_bymonth");
@@ -1981,13 +1979,11 @@ function process() {
     console.error(error);
   }); // AJAX to get pie chart data
 
-  console.log('test 1 ');
   fetch(apiRecruitmentPieData, {
     credentials: 'same-origin'
   }).then(function (response) {
     return response.json();
   }).then(function (data) {
-    console.log('test');
     var recruitmentPieData = formatPieData(data);
     recruitmentPieChart = c3.generate({
       bindto: '#recruitmentPieChart',

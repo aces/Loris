@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * process -
+ * process - the chartBuilding for the widgets.
  */
 function process() {
   const baseURL = window.location.origin;
@@ -249,7 +249,9 @@ function process() {
             return '<span></span>' + id;
           })
           .each(function(id) {
-            d3.select(this).select('span').style('background-color', scanLineChart.color(id));
+            d3.select(this).select('span').style(
+              'background-color', scanLineChart.color(id)
+            );
           })
           .on('mouseover', function(id) {
             scanLineChart.focus(id);
@@ -385,7 +387,8 @@ function process() {
             return '<span></span>' + id;
           })
           .each(function(id) {
-            d3.select(this).select('span').style('background-color', recruitmentLineChart.color(id));
+            d3.select(this).select('span').style('background-color',
+              recruitmentLineChart.color(id));
           })
           .on('mouseover', function(id) {
             recruitmentLineChart.focus(id);
