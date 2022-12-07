@@ -135,7 +135,7 @@ const EventManager = ({
         <div
           className="list-group"
           style={{
-            maxHeight: '540px',
+            maxHeight: '875px',
             overflowY: 'scroll',
             marginBottom: 0,
           }}
@@ -147,7 +147,7 @@ const EventManager = ({
           ).map((index) => {
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
-            
+
             const handleCommentVisibilityChange = () => {
               if (!visibleComments.includes(index)) {
                 setVisibleComments([
