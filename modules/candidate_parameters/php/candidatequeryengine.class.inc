@@ -1,27 +1,10 @@
 <?php
 declare(strict_types=1);
 namespace LORIS\candidate_parameters;
-use LORIS\candidate_profile\CandidateInfo;
-use LORIS\candidate_profile\CandidateWidget;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
 use LORIS\Data\Dictionary\DictionaryItem;
 use LORIS\StudyEntities\Candidate\CandID;
-
-use LORIS\Data\Query\Criteria\Equal;
-use LORIS\Data\Query\Criteria\NotEqual;
-use LORIS\Data\Query\Criteria\LessThan;
-use LORIS\Data\Query\Criteria\LessThanOrEqual;
-use LORIS\Data\Query\Criteria\GreaterThanOrEqual;
-use LORIS\Data\Query\Criteria\GreaterThan;
-use LORIS\Data\Query\Criteria\In;
-
-use LORIS\Data\Query\Criteria\NotNull;
-use LORIS\Data\Query\Criteria\IsNull;
-
-use LORIS\Data\Query\Criteria\StartsWith;
-use LORIS\Data\Query\Criteria\Substring;
-use LORIS\Data\Query\Criteria\EndsWith;
 
 /**
  * A CandidateQueryEngine providers a QueryEngine interface to query
@@ -194,7 +177,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $this->addWhereClause("c.Active='Y'");
         $prepbindings = [];
 
-        $this->buildQueryFromCriteria($term, $prepbindings);
+        $this->_buildQueryFromCriteria($term, $prepbindings);
 
         $query = 'SELECT DISTINCT c.CandID FROM';
 
@@ -229,7 +212,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : iterable {
         if ($item->getScope()->__toString() !== 'session') {
-            return null;
+            return [];
         }
 
         // Session scoped variables: VisitLabel, project, site, subproject
@@ -240,10 +223,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      * {@inheritDoc}
      *
      * @param DictionaryItem[] $items      Items to get data for
-     * @param CandID[]         $candidates CandIDs to get data for
+     * @param iterable         $candidates CandIDs to get data for
      * @param ?string[]        $visitlist  Possible list of visits
      *
-     * @return DataInstance[]
+     * @return iterable<string, DataInstance>
      */
     public function getCandidateData(
         array $items,
@@ -259,8 +242,6 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         // Always required for candidateCombine
         $fields = ['c.CandID'];
-
-        $now = time();
 
         $DBSettings = $this->loris->getConfiguration()->getSetting("database");
 
@@ -326,21 +307,14 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         }
         $query .= ' ORDER BY c.CandID';
 
-        $now = time();
-        error_log("Running query $query");
         $rows = $DB->prepare($query);
 
-        error_log("Preparing took " . (time() - $now) . "s");
-        $now    = time();
         $result = $rows->execute($prepbindings);
-        error_log("Executing took" . (time() - $now) . "s");
 
-        error_log("Executing query");
         if ($result === false) {
-            throw new Exception("Invalid query $query");
+            throw new \Exception("Invalid query $query");
         }
 
-        error_log("Combining candidates");
         return $this->candidateCombine($items, $rows);
     }
 
