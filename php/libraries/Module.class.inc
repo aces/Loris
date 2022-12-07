@@ -458,14 +458,4 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     {
         return new \LORIS\Data\Query\NullQueryEngine();
     }
-
-    /**
-     * Return a QueryEngine for this module.
-     *
-     * @return \LORIS\Data\Query\QueryEngine
-     */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
-    {
-        return new \LORIS\Data\Query\NullQueryEngine();
-    }
 }
