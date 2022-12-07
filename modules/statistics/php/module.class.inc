@@ -131,7 +131,8 @@ class Module extends \Module
                 ),
                 new \LORIS\dashboard\WidgetDependencies(
                     [
-                        $baseURL . "/css/c3.css"
+                        $baseURL . "/css/c3.css",
+                        $baseURL . "/statistics/css/recruitment.css"
                     ],
                     [
                         $baseURL . '/js/d3.min.js',
@@ -144,38 +145,6 @@ class Module extends \Module
 
             return [
                 $widget,
-                new \LORIS\dashboard\Widget(
-                    new \LORIS\dashboard\WidgetContent(
-                        "Recruitment",
-                        $this->renderTemplate(
-                            "recruitment.tpl",
-                            [
-                                'recruitment' => $recruitment
-                            ]
-                        ),
-                        "",
-                    ),
-                    new \LORIS\dashboard\WidgetDisplayProps(
-                        "normal",
-                        10,
-                        [
-                            'overall-recruitment'           => $overallstring,
-                            'recruitment-site-breakdown'    => $sitebreakdownstring,
-                            'recruitment-project-breakdown' => $projbreakdownstring,
-                        ]
-                    ),
-                    new \LORIS\dashboard\WidgetDependencies(
-                        [
-                            $baseURL . "/css/c3.css",
-                            $baseURL . "/statistics/css/recruitment.css"
-                        ],
-                        [
-                            $baseURL. '/js/d3.min.js',
-                            $baseURL . '/js/c3.min.js',
-                            $baseURL . "/statistics/js/recruitment.js"
-                        ],
-                    )
-                ),
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
                         "Study Progression",
