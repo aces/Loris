@@ -280,7 +280,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * @param iterable $candidates Candidates whose data we want
      * @param ?array   $visitlist  List of visits that we want data for
      *
-     * @return \LORIS\Data\DataInstance[]
+     * @return iterable<string, \LORIS\Data\DataInstance>
      */
     public function getCandidateData(
         array $items,
