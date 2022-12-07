@@ -30,7 +30,7 @@ use LORIS\Data\Query\Criteria\Substring;
 class CandidateQueryEngineTest extends TestCase
 {
 
-    protected $engine;
+    protected \LORIS\candidate_parameters\CandidateQueryEngine $engine;
     protected $factory;
     protected $config;
     protected $DB;
@@ -647,8 +647,10 @@ class CandidateQueryEngineTest extends TestCase
         );
         $this->assertMatchAll($result);
 
-        $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new NotEqual("TestProject"))
+        $result = iterator_to_array(
+            $this->engine->getCandidateMatches(
+                new QueryTerm($candiddict, new NotEqual("TestProject"))
+            )
         );
         $this->assertTrue(is_array($result));
         $this->assertEquals(0, count($result));
@@ -1685,12 +1687,13 @@ class CandidateQueryEngineTest extends TestCase
     /**
      * Assert that nothing matched in a result.
      *
-     * @param array $result The result of getCandidateMatches
+     * @param iterable $result The result of getCandidateMatches
      *
      * @return void
      */
     protected function assertMatchNone($result)
     {
+        $result = iterator_to_array($result);
         $this->assertTrue(is_array($result));
         $this->assertEquals(0, count($result));
     }
@@ -1698,13 +1701,14 @@ class CandidateQueryEngineTest extends TestCase
     /**
      * Assert that exactly 1 result matched and it was $candid
      *
-     * @param array  $result The result of getCandidateMatches
+     * @param iterable $result The result of getCandidateMatches
      * @param string $candid The expected CandID
      *
      * @return void
      */
     protected function assertMatchOne($result, $candid)
     {
+        $result = iterator_to_array($result);
         $this->assertTrue(is_array($result));
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID($candid));
@@ -1713,12 +1717,13 @@ class CandidateQueryEngineTest extends TestCase
     /**
      * Assert that a query matched all candidates from the test.
      *
-     * @param array $result The result of getCandidateMatches
+     * @param iterable $result The result of getCandidateMatches
      *
      * @return void
      */
     protected function assertMatchAll($result)
     {
+        $result = iterator_to_array($result);
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));

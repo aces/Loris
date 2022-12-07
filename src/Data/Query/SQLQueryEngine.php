@@ -1,6 +1,11 @@
 <?php declare(strict_types=1);
 namespace LORIS\Data\Query;
 
+use LORIS\StudyEntities\Candidate\CandID;
+
+use LORIS\Data\DataInstance;
+use LORIS\Data\Dictionary\DictionaryItem;
+
 use LORIS\Data\Query\Criteria;
 
 use LORIS\Data\Query\Criteria\Equal;
@@ -31,9 +36,13 @@ use LORIS\Data\Query\Criteria\EndsWith;
  */
 abstract class SQLQueryEngine implements QueryEngine
 {
-    public function __construct(\LORIS\LorisInstance $loris)
+    /**
+     * Construct an SQLQueryEngine
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance being queried
+     */
+    public function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $this->loris = $loris;
     }
 
     /**
@@ -60,10 +69,11 @@ abstract class SQLQueryEngine implements QueryEngine
     }
 
     /**
+     * {@inheritDoc}
      *
      * @param DictionaryItem[] $items
      * @param CandID[] $candidates
-     * @param ?VisitLabel[] $visits
+     * @param ?string[] $visits
      *
      * @return DataInstance[]
      */
@@ -325,9 +335,8 @@ abstract class SQLQueryEngine implements QueryEngine
         $result = $PDO->exec($query);
 
         if ($result === false) {
-            throw new DatabaseException(
+            throw new \DatabaseException(
                 "Could not run query $query"
-                . $this->_createPDOErrorString()
             );
         }
 
@@ -337,9 +346,8 @@ abstract class SQLQueryEngine implements QueryEngine
         $result = $PDO->exec($query);
 
         if ($result === false) {
-            throw new DatabaseException(
+            throw new \DatabaseException(
                 "Could not run query $query"
-                . $this->_createPDOErrorString()
             );
         }
 
