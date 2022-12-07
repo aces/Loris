@@ -1,4 +1,10 @@
 /* eslint-disable */
+
+let scanLineChart;
+let recruitmentPieChart;
+let recruitmentBarChart;
+let recruitmentLineChart;
+
 /**
  * process - the chartBuilding for the widgets.
  */
@@ -15,10 +21,6 @@ function process() {
   // AJAX to get bar chart data
   const apiRecruitmentBarData =
     `${baseURL}/statistics/charts/siterecruitment_bysex`;
-  let scanLineChart;
-  let recruitmentPieChart;
-  let recruitmentBarChart;
-  let recruitmentLineChart;
 
   // Colours for all charts broken down by only by site
   const siteColours = [
@@ -32,37 +34,6 @@ function process() {
   // Turn on the tooltip for the progress bar - shows total
   // male and female registered candidates
   $('.progress-bar').tooltip();
-
-  // Open the appropriate charts from the "views" dropdown menus
-  $('.dropdown-menu a').click(function() {
-    $(this).parent().siblings().removeClass('active');
-    $(this).parent().addClass('active');
-    $($(this).parent().siblings().children('a')).each(function() {
-      $(document.getElementById(
-        this.getAttribute('data-target'))
-      ).addClass('hidden');
-    });
-    $(document.getElementById(
-      this.getAttribute('data-target'))
-    ).removeClass('hidden');
-
-    /* Make sure the chart variables are defined before resizing
-     * They may not be defined on initial page load because
-     * they are created through an AJAX request.
-     */
-    if (typeof recruitmentPieChart !== 'undefined') {
-      recruitmentPieChart.resize();
-    }
-    if (typeof recruitmentBarChart !== 'undefined') {
-      recruitmentBarChart.resize();
-    }
-    if (typeof recruitmentLineChart !== 'undefined') {
-      recruitmentLineChart.resize();
-    }
-    if (typeof scanLineChart !== 'undefined') {
-      scanLineChart.resize();
-    }
-  });
 
   $('.new-scans').click(function(e) {
     e.preventDefault();
@@ -152,19 +123,19 @@ function process() {
       }
     }
     processedData.push(labels);
-    for (const i in data.datasets) {
-      if (data.datasets.hasOwnProperty(i)) {
+    for (const i in data['datasets']) {
+      if (data['datasets'].hasOwnProperty(i)) {
         const dataset = [];
-        dataset.push(data.datasets[i].name);
-        processedData.push(dataset.concat(data.datasets[i].data));
+        dataset.push(data['datasets'][i].name);
+        processedData.push(dataset.concat(data['datasets'][i].data));
       }
     }
     const totals = [];
     totals.push('Total');
-    for (let j=0; j<data.datasets[0].data.length; j++){
+    for (let j=0; j<data['datasets'][0].data.length; j++){
       let total = 0;
-      for (let i=0; i<data.datasets.length; i++){
-        total += parseInt(data.datasets[i].data[j]);
+      for (let i=0; i<data['datasets'].length; i++){
+        total += parseInt(data['datasets'][i].data[j]);
       }
       totals.push(total);
     }
@@ -179,9 +150,9 @@ function process() {
    */
   function maxY(data){
     let maxi = 0;
-    for(let j=0; j < data.datasets[0].data.length; j++){
-      for(let i=0; i<data.datasets.length; i++){
-        maxi = Math.max(maxi,parseInt(data.datasets[i].data[j]));
+    for(let j=0; j < data['datasets'][0].data.length; j++){
+      for(let i=0; i<data['datasets'].length; i++){
+        maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
       }
     }
     return maxi;
@@ -197,8 +168,8 @@ function process() {
     .then(
       (data) => {
         let legendNames = [];
-        for (let j=0; j < data.datasets.length; j++) {
-          legendNames.push(data.datasets[j].name);
+        for (let j=0; j < data['datasets'].length; j++) {
+          legendNames.push(data['datasets'][j].name);
         }
         const scanLineData = formatLineData(data);
         scanLineChart = c3.generate({
@@ -260,10 +231,10 @@ function process() {
             $(this).toggleClass('c3-legend-item-hidden')
             scanLineChart.toggle(id);
           });
-      })
-    .catch((error) => {
-      console.error(error);
-    });
+        scanLineChart.resize();
+      }).catch((error) => {
+        console.error(error);
+      });
 
   // AJAX to get pie chart data
   fetch(
@@ -285,10 +256,10 @@ function process() {
             pattern: siteColours,
           },
         });
-      })
-    .catch((error) => {
-      console.error(error);
-    });
+        recruitmentPieChart.resize();
+      }).catch((error) => {
+        console.error(error);
+      });
 
   // AJAX to get bar chart data
   fetch(
@@ -320,10 +291,10 @@ function process() {
             pattern: sexColours,
           },
         });
-      })
-    .catch((error) => {
-      console.error(error);
-    });
+        recruitmentBarChart.resize();
+      }).catch((error) => {
+        console.error(error);
+      });
 
   // AJAX to get recruitment line chart data
   fetch(
@@ -335,8 +306,8 @@ function process() {
     .then(
       (data) => {
         let legendNames = [];
-        for (let j=0; j < data.datasets.length; j++) {
-          legendNames.push(data.datasets[j].name);
+        for (let j=0; j < data['datasets'].length; j++) {
+          legendNames.push(data['datasets'][j].name);
         }
         const recruitmentLineData = formatLineData(data);
         recruitmentLineChart = c3.generate({
@@ -384,7 +355,8 @@ function process() {
             return '<span></span>' + id;
           })
           .each(function(id) {
-            d3.select(this).select('span').style('background-color',
+            d3.select(this).select('span').style(
+              'background-color',
               recruitmentLineChart.color(id));
           })
           .on('mouseover', function(id) {
@@ -394,13 +366,13 @@ function process() {
             recruitmentLineChart.revert();
           })
           .on('click', function(id) {
-            $(this).toggleClass('c3-legend-item-hidden')
+            $(this).toggleClass('c3-legend-item-hidden');
             recruitmentLineChart.toggle(id);
           });
-      })
-    .catch((error) => {
-      console.error(error);
-    });
+        recruitmentLineChart.resize();
+      }).catch((error) => {
+        console.error(error);
+      });
 }
 
 export {

@@ -1835,10 +1835,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "process": () => (/* binding */ process)
 /* harmony export */ });
 /* eslint-disable */
-
+var scanLineChart;
+var recruitmentPieChart;
+var recruitmentBarChart;
+var recruitmentLineChart;
 /**
  * process - the chartBuilding for the widgets.
  */
+
 function process() {
   var baseURL = window.location.origin; // AJAX to get recruitment line chart data
 
@@ -1847,47 +1851,14 @@ function process() {
 
   var apiRecruitmentPieData = "".concat(baseURL, "/statistics/charts/siterecruitment_pie"); // AJAX to get bar chart data
 
-  var apiRecruitmentBarData = "".concat(baseURL, "/statistics/charts/siterecruitment_bysex");
-  var scanLineChart;
-  var recruitmentPieChart;
-  var recruitmentBarChart;
-  var recruitmentLineChart; // Colours for all charts broken down by only by site
+  var apiRecruitmentBarData = "".concat(baseURL, "/statistics/charts/siterecruitment_bysex"); // Colours for all charts broken down by only by site
 
   var siteColours = ['#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000', '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']; // Colours for the recruitment bar chart: breakdown by sex
 
   var sexColours = ['#2FA4E7', '#1C70B6']; // Turn on the tooltip for the progress bar - shows total
   // male and female registered candidates
 
-  $('.progress-bar').tooltip(); // Open the appropriate charts from the "views" dropdown menus
-
-  $('.dropdown-menu a').click(function () {
-    $(this).parent().siblings().removeClass('active');
-    $(this).parent().addClass('active');
-    $($(this).parent().siblings().children('a')).each(function () {
-      $(document.getElementById(this.getAttribute('data-target'))).addClass('hidden');
-    });
-    $(document.getElementById(this.getAttribute('data-target'))).removeClass('hidden');
-    /* Make sure the chart variables are defined before resizing
-     * They may not be defined on initial page load because
-     * they are created through an AJAX request.
-     */
-
-    if (typeof recruitmentPieChart !== 'undefined') {
-      recruitmentPieChart.resize();
-    }
-
-    if (typeof recruitmentBarChart !== 'undefined') {
-      recruitmentBarChart.resize();
-    }
-
-    if (typeof recruitmentLineChart !== 'undefined') {
-      recruitmentLineChart.resize();
-    }
-
-    if (typeof scanLineChart !== 'undefined') {
-      scanLineChart.resize();
-    }
-  });
+  $('.progress-bar').tooltip();
   $('.new-scans').click(function (e) {
     e.preventDefault();
     applyFilter('imaging_browser', {
@@ -1986,22 +1957,22 @@ function process() {
 
     processedData.push(labels);
 
-    for (var _i in data.datasets) {
-      if (data.datasets.hasOwnProperty(_i)) {
+    for (var _i in data['datasets']) {
+      if (data['datasets'].hasOwnProperty(_i)) {
         var dataset = [];
-        dataset.push(data.datasets[_i].name);
-        processedData.push(dataset.concat(data.datasets[_i].data));
+        dataset.push(data['datasets'][_i].name);
+        processedData.push(dataset.concat(data['datasets'][_i].data));
       }
     }
 
     var totals = [];
     totals.push('Total');
 
-    for (var j = 0; j < data.datasets[0].data.length; j++) {
+    for (var j = 0; j < data['datasets'][0].data.length; j++) {
       var total = 0;
 
-      for (var _i2 = 0; _i2 < data.datasets.length; _i2++) {
-        total += parseInt(data.datasets[_i2].data[j]);
+      for (var _i2 = 0; _i2 < data['datasets'].length; _i2++) {
+        total += parseInt(data['datasets'][_i2].data[j]);
       }
 
       totals.push(total);
@@ -2020,8 +1991,8 @@ function process() {
   function maxY(data) {
     var maxi = 0;
 
-    for (var j = 0; j < data.datasets[0].data.length; j++) {
-      for (var i = 0; i < data.datasets.length; i++) {
+    for (var j = 0; j < data['datasets'][0].data.length; j++) {
+      for (var i = 0; i < data['datasets'].length; i++) {
         maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
       }
     }
@@ -2037,8 +2008,8 @@ function process() {
   }).then(function (data) {
     var legendNames = [];
 
-    for (var j = 0; j < data.datasets.length; j++) {
-      legendNames.push(data.datasets[j].name);
+    for (var j = 0; j < data['datasets'].length; j++) {
+      legendNames.push(data['datasets'][j].name);
     }
 
     var scanLineData = formatLineData(data);
@@ -2089,6 +2060,7 @@ function process() {
       $(this).toggleClass('c3-legend-item-hidden');
       scanLineChart.toggle(id);
     });
+    scanLineChart.resize();
   })["catch"](function (error) {
     console.error(error);
   }); // AJAX to get pie chart data
@@ -2109,6 +2081,7 @@ function process() {
         pattern: siteColours
       }
     });
+    recruitmentPieChart.resize();
   })["catch"](function (error) {
     console.error(error);
   }); // AJAX to get bar chart data
@@ -2139,6 +2112,7 @@ function process() {
         pattern: sexColours
       }
     });
+    recruitmentBarChart.resize();
   })["catch"](function (error) {
     console.error(error);
   }); // AJAX to get recruitment line chart data
@@ -2150,8 +2124,8 @@ function process() {
   }).then(function (data) {
     var legendNames = [];
 
-    for (var j = 0; j < data.datasets.length; j++) {
-      legendNames.push(data.datasets[j].name);
+    for (var j = 0; j < data['datasets'].length; j++) {
+      legendNames.push(data['datasets'][j].name);
     }
 
     var recruitmentLineData = formatLineData(data);
@@ -2202,6 +2176,7 @@ function process() {
       $(this).toggleClass('c3-legend-item-hidden');
       recruitmentLineChart.toggle(id);
     });
+    recruitmentLineChart.resize();
   })["catch"](function (error) {
     console.error(error);
   });
