@@ -281,10 +281,14 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * @param ?array   $visitlist  List of visits that we want data for
      *
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return iterable<string, \LORIS\Data\DataInstance>
 =======
      * @return \LORIS\Data\DataInstance[]
 >>>>>>> 537f7915c (phan)
+=======
+     * @return iterable<string, \LORIS\Data\DataInstance>
+>>>>>>> 2254ce6ad (Make QueryEngines getCandidateData be CandID => DataInstance instead of DataInstance[])
      */
     public function getCandidateData(
         array $items,
