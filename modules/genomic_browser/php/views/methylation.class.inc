@@ -33,14 +33,14 @@ class Methylation
     /**
      * Constructor
      *
-     * @param array $list_of_sites The list_of_sites for form element
-     * @param array $subprojects   The subprojects for form element
+     * @param array $sites   The list_of_sites for form element
+     * @param array $cohorts The cohorts for form element
      */
-    public function __construct($list_of_sites, $subprojects)
+    public function __construct($sites, $cohorts)
     {
         $this->_formElement = [
-            'Sites'           => $list_of_sites,
-            'SubprojectID'    => $subprojects,
+            'Sites'           => $sites,
+            'Cohorts'         => $cohorts,
             'Context'         => $this->_getDistinctValues(
                 'genomic_cpg_annotation',
                 'island_relation'
@@ -82,7 +82,7 @@ class Methylation
      */
     private function _getDistinctValues($table, $column)
     {
-        $DB      = \Database::singleton();
+        $DB      = \NDB_Factory::singleton()->database();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
             []

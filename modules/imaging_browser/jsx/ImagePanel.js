@@ -20,13 +20,6 @@ class ImagePanelHeader extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $('.panel-title').tooltip();
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -120,28 +113,20 @@ class ImagePanelHeadersTable extends Component {
   }
 
   /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    $(ReactDOM.findDOMNode(this)).DynamicTable();
-  }
-
-  /**
-   * Invoked immediately before a component is unmounted and destroyed.
-   */
-  componentWillUnmount() {
-    // Remove wrapper nodes so React is able to remove component
-    $(ReactDOM.findDOMNode(this)).DynamicTable({
-      removeDynamicTable: true,
-    });
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
+    let inversionTime = null;
+    if (this.props.HeaderInfo.InversionTime !== '0.00') {
+      inversionTime = this.props.HeaderInfo.InversionTime + ' ms';
+    }
+    let numVolumes = null;
+    if (this.props.HeaderInfo.NumVolumes !== '0.00') {
+      numVolumes = parseInt(this.props.HeaderInfo.NumVolumes) + ' volumes';
+    }
+
     return (
       <table className="
         table
@@ -153,12 +138,18 @@ class ImagePanelHeadersTable extends Component {
       ">
         <tbody>
         <tr>
-          <th className="info col-xs-2">Voxel Size</th>
+          <th className="col-xs-2 info">Series Instance UID</th>
+          <td className="col-xs-10" colSpan="5">
+            {this.props.HeaderInfo.SeriesUID}
+          </td>
+        </tr>
+        <tr>
+          <th className="col-xs-2 info">Voxel Size</th>
           <td className="col-xs-6" colSpan="3">
             {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
-              this.props.HeaderInfo.XStep + ' mm '}
+              this.props.HeaderInfo.XStep + ' mm, '}
             {this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' +
-              this.props.HeaderInfo.YStep + ' mm '}
+              this.props.HeaderInfo.YStep + ' mm, '}
             {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' +
               this.props.HeaderInfo.ZStep + ' mm '}
           </td>
@@ -168,84 +159,93 @@ class ImagePanelHeadersTable extends Component {
           </td>
         </tr>
         <tr>
+          <th className="col-xs-2 info">Protocol</th>
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.AcquisitionProtocol}
+          </td>
           <th className="col-xs-2 info">Acquisition Date</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.AcquisitionDate}
           </td>
-
-          <th className="col-xs-2 info">Space</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.CoordinateSpace}
-          </td>
-
           <th className="col-xs-2 info">Inserted Date</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.InsertedDate}
           </td>
         </tr>
         <tr>
-          <th className="col-xs-2 info">Protocol</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.AcquisitionProtocol}
-          </td>
-
-          <th className="col-xs-2 info">Series Description</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.SeriesDescription}
-          </td>
-
           <th className="col-xs-2 info">Series Number</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.SeriesNumber}
           </td>
-        </tr>
-        <tr>
-          <th className="col-xs-2 info">Echo Time</th>
+          <th className="col-xs-2 info">Series Description</th>
           <td className="col-xs-2">
-            {this.props.HeaderInfo.EchoTime} ms
+            {this.props.HeaderInfo.SeriesDescription}
           </td>
-
-          <th className="col-xs-2 info">Rep Time</th>
-          <td className="col-xs-2">
-            {this.props.HeaderInfo.RepetitionTime} ms
-          </td>
-
           <th className="col-xs-2 info">Slice Thick</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.SliceThickness} mm
           </td>
         </tr>
         <tr>
-          <th className="col-xs-2 info">Number of volumes</th>
+          <th className="col-xs-2 info">TR</th>
           <td className="col-xs-2">
-            {this.props.HeaderInfo.NumVolumes} volumes
+            {this.props.HeaderInfo.RepetitionTime} ms
           </td>
-
-          <th className="col-xs-2 info">Pipeline</th>
+          <th className="col-xs-2 info">TE</th>
           <td className="col-xs-2">
-            {this.props.HeaderInfo.Pipeline}
+            {this.props.HeaderInfo.EchoTime} ms
           </td>
-
-          <th className="col-xs-2 info">Algorithm</th>
+          <th className="col-xs-2 info">TI</th>
           <td className="col-xs-2">
-            {this.props.HeaderInfo.Algorithm}
+            {inversionTime}
           </td>
         </tr>
         <tr>
-          <th className="col-xs-2 info">
-            Number of rejected directions
-          </th>
+          <th className="col-xs-2 info">Phase Encoding Direction</th>
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.PhaseEncodingDirection}
+          </td>
+          <th className="col-xs-2 info">Image Type</th>
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.ImageType}
+          </td>
+          <th className="col-xs-2 info">Echo Number</th>
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.EchoNumber}
+          </td>
+        </tr>
+        <tr>
+          <th className="col-xs-2 info">Number of volumes</th>
+          <td className="col-xs-2">
+            {numVolumes}
+          </td>
+          {this.props.HeaderInfo.ProcessingPipeline ?
+          <th className="col-xs-2 info">Processing Pipeline</th>
+            : null}
+          {this.props.HeaderInfo.ProcessingPipeline ?
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.ProcessingPipeline}
+          </td>
+            : null}
+          {this.props.HeaderInfo.ProcDate ?
+          <th className="col-xs-2 info">Processing Pipeline Date</th>
+            : null }
+          {this.props.HeaderInfo.ProcDate ?
+          <td className="col-xs-2">
+            {this.props.HeaderInfo.ProcDate}
+          </td>
+            : null }
+        </tr>
+        {this.props.HeaderInfo.ProcessingPipeline === 'DTIPrepPipeline' ?
+        <tr>
+          <th className="col-xs-2 info">Number of rejected directions</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.TotalRejected}
           </td>
-
-          <th className="col-xs-2 info">
-            Number of Interlace correlations
-          </th>
+          <th className="col-xs-2 info">Number of Interlace correlations</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.InterlaceRejected}
           </td>
-
           <th className="col-xs-2 info">
             Number of Gradient-wise correlations
           </th>
@@ -253,21 +253,15 @@ class ImagePanelHeadersTable extends Component {
             {this.props.HeaderInfo.IntergradientRejected}
           </td>
         </tr>
+          : null}
+        {this.props.HeaderInfo.ProcessingPipeline === 'DTIPrepPipeline' ?
         <tr>
-          <th className="col-xs-2 info">
-            Number of Slicewise correlations
-          </th>
+          <th className="col-xs-2 info">Number of Slicewise correlations</th>
           <td className="col-xs-2">
             {this.props.HeaderInfo.SlicewiseRejected}
           </td>
-          <th className="col-xs-2 info">
-            Series Instance UID
-          </th>
-          <td className="col-xs-2" colSpan="2">
-            {this.props.HeaderInfo.SeriesUID}
-          </td>
-          <td className="col-xs-4" colSpan="4">&nbsp;</td>
         </tr>
+          : null}
         </tbody>
       </table>
     );
@@ -555,9 +549,13 @@ class ImagePanelQCSNRValue extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    let label = null;
+    if (this.props.SNR) {
+      label = 'SNR';
+    }
     return (
       <ImageQCStatic
-        Label="SNR"
+        Label={label}
         FormName="snr"
         FileID={this.props.FileID}
         defaultValue={this.props.SNR}
@@ -648,15 +646,20 @@ class DownloadButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    if (!this.props.FileName || this.props.FileName === '') {
+    const empty = (prop) => {
+        return !prop || prop == '';
+    };
+    if (empty(this.props.FileName) && empty(this.props.URL)) {
       return <span/>;
     }
     let style = {
       margin: 6,
     };
+    const url = this.props.URL ||
+        (this.props.BaseURL
+           + '/mri/jiv/get_file.php?file=' + this.props.FileName);
     return (
-      <a href={this.props.BaseURL + '/mri/jiv/get_file.php?file=' +
-      this.props.FileName}
+      <a href={url}
          className="btn btn-default" style={style}>
         <span className="glyphicon glyphicon-download-alt"></span>
         <span className="hidden-xs">{this.props.Label}</span>
@@ -691,10 +694,11 @@ class ImageQCCommentsButton extends Component {
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
-      this.props.BaseURL + '/feedback_mri_popup.php?fileID=' +
+      this.props.BaseURL +
+      '/imaging_browser/feedback_mri_popup/fileID=' +
       this.props.FileID,
       'feedback_mri',
-      'width=500,height=800,toolbar=no,location=no,' +
+      'width=700,height=800,toolbar=no,location=no,' +
       'status=yes,scrollbars=yes,resizable=yes'
     );
   }
@@ -806,8 +810,8 @@ class ImageDownloadButtons extends Component {
         <ImageQCCommentsButton FileID={this.props.FileID}
                                BaseURL={this.props.BaseURL}
         />
-        <DownloadButton FileName={this.props.Fullname}
-                        Label="Download Minc"
+        <DownloadButton URL={this.props.APIFile}
+                        Label='Download Image'
                         BaseURL={this.props.BaseURL}
         />
         <DownloadButton FileName={this.props.XMLProtocol}
@@ -822,6 +826,18 @@ class ImageDownloadButtons extends Component {
                         BaseURL={this.props.BaseURL}
                         Label="Download NRRD"
         />
+        <DownloadButton FileName={this.props.BvalFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BVAL"
+        />
+        <DownloadButton FileName={this.props.BvecFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BVEC"
+        />
+        <DownloadButton FileName={this.props.JsonFile}
+                        BaseURL={this.props.BaseURL}
+                        Label="Download BIDS JSON"
+        />
         <LongitudinalViewButton FileID={this.props.FileID}
                                 BaseURL={this.props.BaseURL}
                                 OtherTimepoints={this.props.OtherTimepoints}
@@ -833,10 +849,14 @@ class ImageDownloadButtons extends Component {
 ImageDownloadButtons.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
+  APIFile: PropTypes.string,
   Fullname: PropTypes.string,
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
 };
 
@@ -877,7 +897,7 @@ class ImagePanelBody extends Component {
           <div className="col-xs-9 imaging_browser_pic">
             <a href="#noID" onClick={this.openWindowHandler}>
               <img className="img-checkpic img-responsive"
-                   src={this.props.Checkpic}/>
+                   src={this.props.APIFile + '/format/thumbnail'}/>
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">
@@ -897,10 +917,13 @@ class ImagePanelBody extends Component {
         <ImageDownloadButtons
           BaseURL={this.props.BaseURL}
           FileID={this.props.FileID}
-          Fullname={this.props.Fullname}
+          APIFile={this.props.APIFile}
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
+          BvalFile={this.props.BvalFile}
+          BvecFile={this.props.BvecFile}
+          JsonFile={this.props.JsonFile}
           OtherTimepoints={this.props.OtherTimepoints}
         />
         {this.props.HeadersExpanded ? <ImagePanelHeadersTable
@@ -920,12 +943,15 @@ ImagePanelBody.propTypes = {
   SeriesUID: PropTypes.string,
   BaseURL: PropTypes.string,
   Fullname: PropTypes.string,
+  APIFile: PropTypes.string,
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
-  Checkpic: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
 };
 
@@ -992,7 +1018,7 @@ class ImagePanel extends Component {
 
               FileID={this.props.FileID}
               Filename={this.props.Filename}
-              Checkpic={this.props.Checkpic}
+              APIFile={this.props.APIFile}
               HeadersExpanded={!this.state.HeadersCollapsed}
 
               HeaderInfo={this.props.HeaderInfo}
@@ -1009,6 +1035,9 @@ class ImagePanel extends Component {
               XMLProtocol={this.props.XMLProtocol}
               XMLReport={this.props.XMLReport}
               NrrdFile={this.props.NrrdFile}
+              BvalFile={this.props.BvalFile}
+              BvecFile={this.props.BvecFile}
+              JsonFile={this.props.JsonFile}
               OtherTimepoints={this.props.OtherTimepoints}
               SeriesUID={this.props.SeriesUID}
             />}
@@ -1031,10 +1060,13 @@ ImagePanel.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  BvalFile: PropTypes.string,
+  BvecFile: PropTypes.string,
+  JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
-  Checkpic: PropTypes.string,
+  APIFile: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
 };
 

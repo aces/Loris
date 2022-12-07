@@ -1,10 +1,4 @@
 parameters:
-    autoload_directories:
-        - %currentWorkingDirectory%/php/
-        - %currentWorkingDirectory%/src/
-        - %currentWorkingDirectory%/modules/
-        - %currentWorkingDirectory%/test/integrationtests/
-        - %currentWorkingDirectory%/test/unittests/
     excludes_analyse:
         - %currentWorkingDirectory%/modules/*/ajax/*
         - %currentWorkingDirectory%/modules/*/test/*

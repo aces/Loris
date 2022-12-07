@@ -55,7 +55,6 @@ class Profiles extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
           };
           this.setState({
             data,
@@ -178,12 +177,12 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: true,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.Subproject,
+          options: options.Cohorts,
         },
       },
       {

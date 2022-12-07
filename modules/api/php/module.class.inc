@@ -35,7 +35,7 @@ class Module extends \Module
      *
      * @return bool
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         // The API is "public"  because the login endpoint needs to be public.
         return true;
@@ -99,7 +99,7 @@ class Module extends \Module
 
         $handlername = $pathparts[0];
 
-        switch($handlername) {
+        switch ($handlername) {
         case 'candidates':
             $handler = new \LORIS\api\Endpoints\Candidates();
             break;

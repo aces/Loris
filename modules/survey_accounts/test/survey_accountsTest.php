@@ -62,10 +62,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -81,14 +81,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111111',
-                'CandID'       => '999888',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111111',
+                'CandID'      => '999888',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(
@@ -104,14 +104,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111112',
-                'CandID'       => '999999',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111112',
+                'CandID'      => '999999',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(
@@ -154,8 +154,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ['CandID' => '999999']
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "psc",
@@ -181,7 +181,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(["survey_accounts_view"]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("Survey Accounts", $bodyText);
         $this->resetPermissions();

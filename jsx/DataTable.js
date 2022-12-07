@@ -370,7 +370,8 @@ class DataTable extends Component {
         searchKey = filterData[i].toLowerCase();
         searchString = data ? data.toString().toLowerCase() : '';
 
-        match = (searchString === searchKey);
+        let searchArray = searchString.split(',');
+        match = (searchArray.includes(searchKey));
         if (match) {
           result = true;
         }
@@ -471,10 +472,6 @@ class DataTable extends Component {
     let filteredCount = filteredRowIndexes.length;
     let index = this.sortRows(filteredRowIndexes);
     let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
-
-    if (this.props.filters.keyword) {
-      useKeyword = true;
-    }
 
     // Format each cell for the data table.
     for (let i = currentPageRow;

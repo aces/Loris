@@ -82,11 +82,11 @@ class CandidateListIndex extends Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-        // Convert concatenated string of subproject and visit labels to array
+        // Convert concatenated string of cohort and visit labels to array
         data.Data = data.Data.map((row) => {
           // Visit label
           row[2] = (row[2]) ? row[2].split(',') : null;
-          // Subproject
+          // Cohort
           row[4] = (row[4]) ? row[4].split(',') : null;
           return row;
         });
@@ -148,8 +148,8 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === 'Subproject') {
-      // If user has multiple subprojects, join array into string
+    if (column === 'Cohort') {
+      // If user has multiple cohorts, join array into string
       let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
       return result;
     }
@@ -215,12 +215,12 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'Subproject',
+        'label': 'Cohort',
         'show': true,
         'filter': {
-          name: 'subproject',
+          name: 'cohort',
           type: 'select',
-          options: options.subproject,
+          options: options.cohort,
         },
       },
       {
@@ -307,34 +307,15 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'Latest Visit Status',
+        'label': 'Project',
         'show': true,
         'filter': {
-          name: 'latestVisitStatus',
+          name: 'project',
           type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            'Not Started': 'Not Started',
-            'Screening': 'Screening',
-            'Visit': 'Visit',
-            'Approval': 'Approval',
-            'Recycling Bin': 'Recycling Bin',
-          },
+          options: options.project,
         },
       },
-
     ];
-     fields.push(
-        {
-          'label': 'Project',
-          'show': true,
-          'filter': {
-            name: 'project',
-            type: 'select',
-            options: options.project,
-          },
-        },
-      );
 
     if (options.useedc === 'true') {
       fields.push(

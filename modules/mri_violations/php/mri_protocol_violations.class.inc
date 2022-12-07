@@ -73,6 +73,9 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'mpv.zstep_range',
             'mpv.time_range',
             'mpv.SeriesUID',
+            'mpv.image_type',
+            'mpv.PhaseEncodingDirection',
+            'mpv.EchoNumber',
             'tarchive.TarchiveID',
         ];
         $this->validFilters = [
@@ -103,6 +106,9 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
             'Zstep',
             'Time',
             'SeriesUID',
+            'Image_Type',
+            'Phase_Encoding_Direction',
+            'Echo_Number',
             'TarchiveID',
         ];
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
@@ -165,22 +171,25 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      */
     function getMRIProtocolData()
     {
-        $db =& \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
         // select all except Objective from mri_protocol
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
         $rows = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
-                    p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
+            "SELECT p.ID, mpg.Name as 'Protocol Group', psc.Name as Center_name,
+                    ScannerID, p.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
                     zspace_max, xstep_min, xstep_max, ystep_min, ystep_max,
-                    zstep_min, zstep_max, time_min, time_max,series_description_regex
+                    zstep_min, zstep_max, time_min, time_max,
+                    series_description_regex, image_type, PhaseEncodingDirection,
+                    EchoNumber
              FROM mri_protocol as p
-             LEFT JOIN mri_protocol_group mpg 
+             LEFT JOIN mri_protocol_group mpg
              ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
              LEFT JOIN mri_scan_type as s
              ON p.Scan_type=s.ID
+             LEFT JOIN psc ON psc.CenterID=p.CenterID
              ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
             []
         );

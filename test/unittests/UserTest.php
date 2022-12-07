@@ -184,13 +184,16 @@ class UserTest extends TestCase
 
     private $_moduleInfo = [
         0 => [
-            'ID'   => 2,
-            'Name' => 'candidate_list'
+            'ID'     => 2,
+            'Name'   => 'candidate_list',
+            'Active' => 'Y',
         ],
         1 => [
-            'ID'   => 5,
-            'Name' => 'timepoint_list'
+            'ID'     => 5,
+            'Name'   => 'timepoint_list',
+            'Active' => 'Y',
         ],
+
     ];
 
     private $_userPermInfo = [0 => ['permID' => 1,
@@ -287,7 +290,7 @@ class UserTest extends TestCase
         $this->_factory->reset();
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
         $database          = $this->_configMock->getSetting('database');
-        $this->_dbMock     = \Database::singleton(
+        $this->_dbMock     = $this->_factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -304,7 +307,7 @@ class UserTest extends TestCase
         $this->_mockDB      = $mockdb;
         $this->_mockConfig  = $mockconfig;
         $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($mockdb);
+        $this->_mockFactory->setDatabase($this->_dbMock);
 
         $this->_factory->setConfig($this->_mockConfig);
 
@@ -739,6 +742,7 @@ class UserTest extends TestCase
                 $this->stringContains("FROM user_login_history")
             )
             ->willReturn($count);
+        $this->_factory->setDatabase($this->_mockDB);
 
         $this->assertTrue($this->_user->hasLoggedIn());
     }
@@ -1124,32 +1128,38 @@ class UserTest extends TestCase
             "modules",
             $this->_moduleInfo
         );
+
+        $loris = new \LORIS\LorisInstance(
+            $this->_dbMock,
+            new \NDB_Config(),
+            [],
+        );
         $this->assertEquals(
-            $this->_user->getPermissionsVerbose(),
+            $this->_user->getPermissionsVerbose($loris),
             [
-                0 => ['permID' => '1',
-                    'code'        => "superuser",
-                    'description' => "superuser description",
-                    'type'        => "superuser category",
-                    'action'      => null,
-                    'moduleID'    => null,
-                    'label'       => 'superuser description'
-                ],
-                1 => ['permID' => '2',
+                0 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
                     'type'        => "category 1",
                     'action'      => "View",
-                    'moduleID'    => 2,
+                    'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
                 ],
-                2 => ['permID' => '3',
+                1 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
                     'type'        => "category 2",
                     'action'      => "Edit",
-                    'moduleID'    => 5,
+                    'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
+                ],
+                2 => ['permID' => '4',
+                    'code'        => 'test_permission3',
+                    'description' => 'description 3',
+                    'type'        => null,
+                    'action'      => 'View/Create',
+                    'moduleID'    => '5',
+                    'label'       => 'Timepoint List: View/Create description 3'
                 ]
             ]
         );

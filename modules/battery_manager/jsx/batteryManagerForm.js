@@ -94,12 +94,12 @@ class BatteryManagerForm extends Component {
           hasError={errors.stage}
         />
         <SelectElement
-          name="subproject"
-          label="Subproject"
-          options={options.subprojects}
+          name="cohort"
+          label="Cohort"
+          options={options.cohorts}
           onUserInput={setTest}
           required={false}
-          value={test.subproject}
+          value={test.cohort}
         />
         <SelectElement
           name="visitLabel"

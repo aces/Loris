@@ -357,6 +357,12 @@ If a GET request for a candidate is issued such as
 GET /candidates/$CandID
 ```
 
+or
+
+```
+GET /candidates/$PSCID
+```
+
 A JSON object representing that candidate will be returned.
 
 The JSON object is of the form:
@@ -375,8 +381,16 @@ PUT / PATCH are not supported for candidates in this version of the
 API.
 
 It will return a 200 OK on success, a 404 if the candidate does not exist, and
-a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
-true of all of the API hierarchy under /candidates/$CandID.
+a 400 Bad Request if the CandID or PSCID is invalid or there are multiple
+entries in the database with the same PSCID. The same is
+true of all of the API hierarchy under /candidates/$CandID (which
+may all use PSCID in place of CandID, as long as there is a single
+unique PSCID with that identifier in the database.)
+
+Note that it's theoretically possible that a study may have a PSCID that
+is the same value as a different CandID (ie. PSCID=123456 for one candidate, but
+CandID=123456 for a different candidate.) The caller should verify the candidate
+object in the Meta key to ensure the correct candidate was retrieved.
 
 ### 3.2 Getting Candidate visit data
 
@@ -396,7 +410,7 @@ The JSON object is of the form:
         "CandID" : CandID,
         "Visit"  : VisitLabel,
         "Site"   : SiteName,
-        "Battery": "NameOfSubproject",
+        "Battery": "NameOfCohort",
         "Project" : ProjectName
     },
     "Stages" : {
@@ -416,10 +430,27 @@ The JSON object is of the form:
 }
 ```
 
-A PUT of the same format but with only the Meta fields will create the VisitLabel
+A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
-PATCH is not supported for Visit Labels.
+A PATCH request of the form:
+```js
+{
+    "CandID"  : 317604,
+    "Visit"   : 'Visit 01',
+    "Site"    : 'DCC',
+    "Battery" : 'Stale',
+    "Project" : 'Pumpernickel',
+    "Stages" : {
+        "Visit" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "In Progress"
+        }
+    }
+}
+```
+will update the Visit stage date and status and start the next stage if the Visit stage
+is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)

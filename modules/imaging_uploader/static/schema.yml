@@ -1,0 +1,68 @@
+openapi: 3.0.1
+info:
+  title: LORIS - REST API endpoints
+  description: The LORIS API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.
+  contact:
+    name: LORIS Development Team
+    url: https://github.com/aces/loris
+  license:
+    name: GNU Public License, Version 3
+    url: https://opensource.org/licenses/GPL-3.0
+  version: 0.0.3
+servers:
+  - url: /
+security:
+  - ApiKeyAuth: []
+paths:
+  /imaging_uploader:
+    get:
+      tags:
+        - Imaging Uploader
+      summary: Generates the html page for this module including the React component. 
+      responses:
+        '200':
+          description: The html page with menu, breadcrumbs and the React component that interact with the backend for data requests and submission.
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      tags:
+        - Imaging Uploader
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadForm'
+      responses:
+        '200':
+          description: Successfuly uploaded
+          
+components:
+  schemas:
+    UploadForm:
+      type: object
+      properties:
+        IsPhantom:
+          type: string
+          enum:
+            - 'Y'
+            - 'N'
+        candID:
+          type: string
+        pSCID:
+          type: string
+        visitLabel:
+          type: string
+        mriFile:
+          type: string
+          format: binary
+        fire_away:
+          type: string
+          example: Upload
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header

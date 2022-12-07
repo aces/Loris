@@ -141,6 +141,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         if ($page !== null
             && method_exists($page, 'getFeedbackPanel')
+            && $loris->hasModule("bvl_feedback")
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
         ) {
@@ -154,9 +155,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 $sessionID
             );
 
-            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->PageName
-            );
+            $tpl_data['bvl_feedback'] = true;
         }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
@@ -200,11 +199,11 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         $oneIsStudySite   = in_array("1", $isStudySite);
         $tpl_data['user'] = [];
+        $tpl_data['user']['Real_name']            = $this->user->getFullName();
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);
-        $tpl_data['user']['SitesTooltip'] = str_replace(
-            ";",
+        $tpl_data['user']['SitesTooltip'] = implode(
             "<br/>",
             $this->user->getSiteNames()
         );

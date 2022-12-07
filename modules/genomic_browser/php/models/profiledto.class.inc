@@ -29,12 +29,27 @@ namespace LORIS\genomic_browser\Models;
  */
 class ProfileDTO implements \LORIS\Data\DataInstance
 {
+
     /**
      * The centerID
      *
      * @var string
      */
     private $_centerID = "";
+
+    /**
+     * The projectID
+     *
+     * @var string
+     */
+    private $_projectID = "";
+
+    /**
+     * The PSC name
+     *
+     * @var string
+     */
+    private $_PSC = "";
 
     /**
      * The DCCID
@@ -58,11 +73,11 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -114,11 +129,11 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     public function jsonSerialize(): array
     {
         return [
-            'centerID'   => $this->_centerID,
+            'centerID'   => $this->_PSC,
             'DCCID'      => $this->_DCCID,
             'PSCID'      => $this->_PSCID,
             'Sex'        => $this->_Sex,
-            'Subproject' => $this->_Subproject,
+            'Cohort'     => $this->_Cohort,
             'DoB'        => $this->_DoB,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,
@@ -126,5 +141,25 @@ class ProfileDTO implements \LORIS\Data\DataInstance
             'CNV'        => $this->_CNV,
             'CPG'        => $this->_CPG,
         ];
+    }
+
+    /**
+     * Returns the CenterID for this row
+     *
+     * @return integer The CenterID
+     */
+    public function getCenterID(): int
+    {
+        return (int) $this->_centerID;
+    }
+
+    /**
+     * Returns the ProjectID for this row
+     *
+     * @return integer The ProjectID
+     */
+    public function getProjectID(): int
+    {
+        return (int) $this->_projectID;
     }
 }

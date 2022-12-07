@@ -120,6 +120,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'SessionID'                 => '999999',
                 'PhysiologicalOutputTypeID' => 22,
+                'InsertedByUser'            => 'Unit Tester',
+                'FilePath'                  => '/path/to/test/file',
                 'FileType'                  => 'testType'
             ]
         );
@@ -128,6 +130,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'SessionID'                 => '999997',
                 'PhysiologicalOutputTypeID' => 23,
+                'InsertedByUser'            => 'Unit Tester',
+                'FilePath'                  => '/path/to/test/file2',
                 'FileType'                  => 'testType2'
             ]
         );
@@ -211,7 +215,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testEEGBrowserDoesPageLoad()
     {
-        $this->safeGet($this->url . "/electrophysiology_browser/?");
+        $this->safeGet($this->url . "/electrophysiology_browser/");
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
@@ -268,6 +272,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilters()
     {
+        $this->setupPermissions(['electrophysiology_browser_view_site']);
         $this->safeGet($this->url . "/electrophysiology_browser/");
         $this->_filterTest(
             self::$PSCID,
@@ -304,19 +309,22 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             'Data Coordinating Center',
             "1 rows"
         );
-        $this->_filterTest(
+        $this->_filterOptionsTest(
             self::$site,
-            self::$display,
-            self::$clearFilter,
             'Montreal',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$project,
             self::$display,
             self::$clearFilter,
+            'Pumpernickel',
+            "1 rows"
+        );
+        $this->_filterOptionsTest(
+            self::$project,
             'Challah',
-            "0 rows"
+            false
         );
         $this->_filterTest(
             self::$visitLabel,
@@ -343,7 +351,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testEEGBrowserSortableByColumn()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/?");
-
         //Test PSCID Header
         $this->safeClick(
             WebDriverBy::cssSelector(self::$PSCIDHeader)
@@ -544,6 +551,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     function testSessionsBreadcrumbLink()
     {
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
+
         $this->safeClick(WebDriverBy::cssSelector(self::$breadcrumbLink));
 
         $bodyText = $this->safeFindElement(

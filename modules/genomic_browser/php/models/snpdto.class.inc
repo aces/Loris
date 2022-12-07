@@ -30,6 +30,20 @@ namespace LORIS\genomic_browser\Models;
 class SnpDTO implements \LORIS\Data\DataInstance
 {
     /**
+     * The centerID
+     *
+     * @var string
+     */
+    private $_centerID = "";
+
+    /**
+     * The projectID
+     *
+     * @var string
+     */
+    private $_projectID = "";
+
+    /**
      * The PSC
      *
      * @var string
@@ -58,11 +72,11 @@ class SnpDTO implements \LORIS\Data\DataInstance
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -251,7 +265,7 @@ class SnpDTO implements \LORIS\Data\DataInstance
             'DCCID'               => $this->_DCCID,
             'PSCID'               => $this->_PSCID,
             'Sex'                 => $this->_Sex,
-            'Subproject'          => $this->_Subproject,
+            'Cohort'              => $this->_Cohort,
             'DoB'                 => $this->_DoB,
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,
@@ -278,5 +292,25 @@ class SnpDTO implements \LORIS\Data\DataInstance
             'Genotype_Quality'    => $this->_Genotype_Quality,
             'Exonic_Function'     => $this->_Exonic_Function,
         ];
+    }
+
+    /**
+     * Returns the CenterID for this row
+     *
+     * @return integer The CenterID
+     */
+    public function getCenterID(): int
+    {
+        return (int) $this->_centerID;
+    }
+
+    /**
+     * Returns the ProjectID for this row
+     *
+     * @return integer The ProjectID
+     */
+    public function getProjectID(): int
+    {
+        return (int) $this->_projectID;
     }
 }

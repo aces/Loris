@@ -269,8 +269,8 @@ case 'diagnose':
         // print out the $sessionID
         fwrite(
             STDERR,
-            "\n Timepoint ".$timePoint->getVisitLabel()." ; SubProjectID: "
-            .$timePoint->getSubprojectID()." ; Effective DOB: "
+            "\n Timepoint ".$timePoint->getVisitLabel()." ; cohortID: "
+            .$timePoint->getCohortID()." ; Effective DOB: "
             .$timePoint->getEffectiveDateOfBirth().
             " ; (SessionID): $sessionID \n"
         );
@@ -662,11 +662,11 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     $stageList['screening']['date']   = $timePoint->getDateOfScreening();
     $stageList['visit']['status']     = $timePoint->getVisitStatus();
     $stageList['visit']['date']       = $timePoint->getDateOfVisit();
-    $subProjectID = $timePoint->getSubprojectID();
+    $cohortID = $timePoint->getCohortID();
 
     // define the date of birth to use (dob or edc)
-    if (($dateType=='dob' && $subProjectID==1)
-        || ($dateType=='edc' && $subProjectID==2)
+    if (($dateType=='dob' && $cohortID==1)
+        || ($dateType=='edc' && $cohortID==2)
     ) {
         $dateBirth = $newDate;
     } else {
@@ -686,10 +686,10 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
             . $stageList['screening']['status'].")."
         );
     }
-    // check the subProjectID
-    if (empty($subProjectID)) {
+    // check the cohortID
+    if (empty($cohortID)) {
         throw new LorisException(
-            "SubProjectID ($subProjectID) is empty for timepoint ($sessionID)"
+            "CohortID ($cohortID) is empty for timepoint ($sessionID)"
         );
     }
 
@@ -718,7 +718,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
                 // compute subject age for the current stage
                 $ageArray = Utility::calculateAge($dateBirth, $dateOfStage);
                 $age      = ($ageArray['year'] * 12 + $ageArray['mon']) * 30
-                            + $ageArray['day'];
+                    + $ageArray['day'];
                 if ($age < 0) {
                     $age = 0;
                 }
@@ -733,7 +733,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
             $success = $battery->selectBattery(new \SessionID(strval($sessionID)));
 
             // get the existing battery for the stage
-            $existingTests = $battery->getBattery($stage);
+            $existingTests = $battery->getBattery();
 
             // determine the correct list of instruments
             $neededTests = Utility::lookupBattery($age, $stage);

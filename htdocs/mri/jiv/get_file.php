@@ -87,7 +87,7 @@ if (strpos($FileBase, "DCM_") === 0) {
  * name based on its extension.
  */
 $DownloadFilename = '';
-switch($FileExt) {
+switch ($FileExt) {
 case 'mnc':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = "application/x-minc";
@@ -146,6 +146,17 @@ case 'tsv':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'bvec':
+case 'bval':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'text/plain';
+    $DownloadFilename = basename($File);
+    break;
+case 'json':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/json';
     $DownloadFilename = basename($File);
     break;
 case 'DICOMTAR':

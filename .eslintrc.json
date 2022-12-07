@@ -12,7 +12,8 @@
   "env": {
     "browser": true,
     "jquery": true,
-    "node": true
+    "node": true,
+    "es6": true
   },
   "parserOptions": {
     "sourceType": "module",
@@ -44,7 +45,7 @@
     "no-fallthrough": "off",
     "react/jsx-no-undef": "off",
     "react/prop-types": "off",
-    "no-undef": "off",
+    "no-undef": "error",
     "react/jsx-key": "off",
     "no-extra-semi": "off",
     "no-prototype-builtins": "off",
@@ -151,7 +152,7 @@
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
         "modules/dqt/**",
-        "modules/imaging_uploader/**"
+        "modules/configuration/jsx/configuration_helper.js"
       ],
       "rules": {
         "no-jquery/no-other-utils": "warn",
@@ -234,6 +235,7 @@
     "ReactDOM": true,
     "loris": true,
     "QueryString": true,
-    "swal": true
+    "swal": true,
+    "schema_urls": true
   }
 }

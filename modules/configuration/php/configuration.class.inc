@@ -48,7 +48,7 @@ class Configuration extends \NDB_Form
     {
         parent::setup();
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
             "SELECT Scan_type
@@ -75,8 +75,20 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['date_format']     = $date_format;
-        $this->tpl_data['lookup_center']   = [
+        $this->tpl_data['log_levels']      = [
+            'none'      => 'None',
+            'debug'     => 'Debug',
+            'info'      => 'Info',
+            'notice'    => 'Notice',
+            'warning'   => 'Warning',
+            'error'     => 'Error',
+            'critical'  => 'Critical',
+            'alert'     => 'Alert',
+            'emergency' => 'Emergency',
+        ];
+
+        $this->tpl_data['date_format']   = $date_format;
+        $this->tpl_data['lookup_center'] = [
             ''            => '',
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
@@ -91,7 +103,7 @@ class Configuration extends \NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
             "SELECT Label, Name 
@@ -114,7 +126,7 @@ class Configuration extends \NDB_Form
     function _getConfigSettingTree()
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         // Get the names and meta-information for the config settings in the database
         $configs = $DB->pselect(

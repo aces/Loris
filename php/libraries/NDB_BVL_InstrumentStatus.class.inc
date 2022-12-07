@@ -104,7 +104,7 @@ class NDB_BVL_InstrumentStatus
         // set the _commentID property
         $this->_commentID = $commentID;
 
-        $db = Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // get candidate data from database
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion
@@ -179,8 +179,8 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current data entry status of the instrument
      *
-     * @param string $status the new status from the set (NULL,
-     *                       'In Progress','Not Complete','Complete')
+     * @param string $status the new status from the set ('In Progress',
+     *                       'Not Complete','Complete')
      *
      * @return void
      */
@@ -257,7 +257,7 @@ class NDB_BVL_InstrumentStatus
      * Sets the current administration status of the instrument
      *
      * @param string $status the new status from the set
-     *                       (NULL, 'None','Partial','All')
+     *                       ('None','Partial','All')
      *
      * @return void
      */
@@ -283,7 +283,7 @@ class NDB_BVL_InstrumentStatus
      * Sets the current validity status of the instrument
      *
      * @param string $status the new status from the set
-     *                       (NULL, 'Questionable', 'Invalid', 'Valid')
+     *                       ('Questionable', 'Invalid', 'Valid')
      *
      * @return void
      */
@@ -308,7 +308,7 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current exclusion status of the instrument
      *
-     * @param string $status the new status from the set (NULL, 'Fail', 'Pass')
+     * @param string $status the new status from the set ('Fail', 'Pass')
      *
      * @return void
      */

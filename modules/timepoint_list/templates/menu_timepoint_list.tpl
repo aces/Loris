@@ -68,7 +68,7 @@
     <thead>
         <tr class="info">
             <th>Visit Label<BR>(Click to Open)</th>
-            <th>Subproject</th>
+            <th>Cohort</th>
             <th>Site</th>
             <th>Project</th>
             <th>Stage</th>
@@ -87,7 +87,7 @@
         <tr>
             <td><a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
 
-            <td>{$timePoints[timepoint].SubprojectTitle}</td>
+            <td>{$timePoints[timepoint].CohortTitle}</td>
 
             <td>{$timePoints[timepoint].SiteAlias}</td>
             <td>{$timePoints[timepoint].ProjectName}</td>
@@ -155,7 +155,7 @@
             </td>
         </tr>
     {sectionelse}
-        <tr><td colspan="10">No timepoints have been registered yet.</td></tr>
+        <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>
     {/section}
     </tbody>
 </table>

@@ -59,10 +59,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -88,27 +88,27 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '9888',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit_label'  => 'Test1',
+                'ID'          => '9888',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit_label' => 'Test1',
             ]
         );
         $this->DB->insert(
             "session",
             [
-                'ID'           => '9777',
-                'CandID'       => '999777',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '2',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit_label'  => 'Test2',
+                'ID'          => '9777',
+                'CandID'      => '999777',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '2',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit_label' => 'Test2',
             ]
         );
 
@@ -216,6 +216,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'PatientName' => '[Test]PatientName',
                 'MincFile'    => 'assembly/test2/test2/mri/test2/test3.mnc',
                 'SeriesUID'   => '5558',
+                'Reason'      => 'Test Case'
             ]
         );
     }
@@ -286,8 +287,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             ['ExtID' => '1002']
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "psc",
@@ -422,7 +423,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
         )->getText();
         $this->assertStringContainsString("Resolved", $bodyText);
@@ -441,33 +442,33 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/resolved_violations/"
         );
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->getText();
         $this->assertEquals("", $bodyText);
 
         //testing the Description
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("Description")
         )->sendKeys("test");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("Description")
         )->getText();
         $this->assertEquals("", $bodyText);
 
         //testing the MincFile
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("Filename")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("Filename")
         )->getText();
         $this->assertEquals("", $bodyText);
@@ -483,11 +484,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("", $value);
 
         //testing the Series UID
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("SeriesUID")
         )->sendKeys("test");
-        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
-        $bodyText = $this->webDriver->findElement(
+        $this->safeFindElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->safeFindElement(
             WebDriverBy::Name("SeriesUID")
         )->getText();
         $this->assertEquals("", $bodyText);
@@ -537,10 +538,10 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testNotResolvedSaveButton()
     {
         $this->safeGet($this->url . "/mri_violations/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("[name]test");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
@@ -664,20 +665,22 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function _searchTest($searchBy,$testValue)
     {
         //$this->safeGet($this->url . "/mri_violations/");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name($searchBy)
         )->sendKeys($testValue);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("filter")
         )->click();
-        sleep(1);
-        $bodyText = $this->webDriver->executescript(
-            "return document.querySelector(
-                    '#datatable > div > div.table-header.panel-heading > div')
-                 .textContent"
+
+        $body     = $this->safeFindElement(
+            WebDriverby::CSSSelector(
+                '#datatable > div > div.table-header.panel-heading > div'
+            )
         );
+        $bodyText = $body->getText();
+
         $this->assertStringContainsString("1 rows displayed of 1", $bodyText);
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("reset")
         )->click();
     }

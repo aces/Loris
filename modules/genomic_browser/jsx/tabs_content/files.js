@@ -66,7 +66,7 @@ class Files extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
             permissions: json.permissions,
           };
           this.setState({
@@ -155,8 +155,8 @@ class Files extends Component {
         const url = `${this.props.baseURL}/${rowData.DCCID}/`;
         reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
         break;
-      case 'Subproject':
-        reactElement = <td>{this.state.data.subprojects[parseInt(cell)]}</td>;
+      case 'Cohort':
+        reactElement = <td>{this.state.data.cohorts[parseInt(cell)]}</td>;
         break;
       default:
         reactElement = <td>{cell}</td>;

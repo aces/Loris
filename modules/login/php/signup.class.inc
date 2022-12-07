@@ -110,6 +110,23 @@ class Signup extends \NDB_Page implements ETagCalculator
             'account_request_date' => date('Y-m-d'),
         ];
 
+        // Check if email address is valid.
+        if (preg_match('/(<|>|"|&)/', $from)) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'Email address can not contain the following' .
+                ' characters: <,>,& and "'
+            );
+        }
+        if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
+            // Invalid email address.
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'Please provide a valid email address!'
+            );
+        }
+
         // Check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",

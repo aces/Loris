@@ -409,7 +409,7 @@ class NDB_Menu_Filter extends NDB_Menu
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'sex'
+                || strtolower(substr($field, -3)) == 'sex'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
@@ -433,7 +433,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
         // add the base query
         $query  = '';
@@ -643,7 +643,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
-        switch($this->format) {
+        switch ($this->format) {
         case 'json':
             return $this->toJSON();
         }

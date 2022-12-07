@@ -21,7 +21,7 @@
  * table, etc to get the value of the setting.
  *
  * Some special variables that have their own database table (ie. MenuTabs
- * or Subprojects) have special static functions to get the specific settings.
+ * or Cohorts) have special static functions to get the specific settings.
  *
  * @category Main
  * @package  Loris
@@ -46,6 +46,7 @@ class NDB_Config
      */
     var $configFilePath;
 
+    static $configInstance = null;
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -55,9 +56,8 @@ class NDB_Config
      */
     static function &singleton(?string $configFile = null): \NDB_Config
     {
-        static $config = null;
+        $config = self::$configInstance;
         if (is_null($config)) {
-
             $config = new NDB_Config();
 
             if ($configFile === null) {
@@ -76,6 +76,7 @@ class NDB_Config
                     $config->load($config->configFilePath($path));
                 }
             }
+            self::$configInstance = $config;
         }
 
         return $config;
@@ -265,7 +266,7 @@ class NDB_Config
     function getSettingFromDB(string $name, ?int $id = null)
     {
         // These should never come from the DB
-        switch($name) {
+        switch ($name) {
         case 'database':
         case 'sandbox':
         case 'showDatabaseQueries':
@@ -402,7 +403,7 @@ class NDB_Config
             if ($XMLValue !== null) {
                 return $XMLValue;
             }
-        } catch(ConfigurationException $e) {
+        } catch (ConfigurationException $e) {
             // There was no config in the database with this
             // name. It may exist in the XML, so we handle this
             // silently.
@@ -461,24 +462,24 @@ class NDB_Config
     }
 
     /**
-     * Get list of Subprojects for this project, given a subprojectID.
+     * Get list of Cohorts for this project, given a cohortID.
      * This is differentiated from the default getSetting() because
-     * Subprojects will probably eventually get their own table instead
+     * Cohorts will probably eventually get their own table instead
      * of coming from config.xml
      *
-     * @param integer $subprojectID The subprojectID we want the settings
-     *                              for
+     * @param integer $cohortID The cohortID we want the settings
+     *                          for
      *
-     * @return array of settings for this subprojectID
+     * @return array of settings for this cohortID
      */
-    function getSubprojectSettings(int $subprojectID): array
+    function getCohortSettings(int $cohortID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         $info = $DB->pselectRow(
-            "SELECT * FROM subproject WHERE SubprojectID=:sp",
-            ['sp' => $subprojectID]
+            "SELECT * FROM cohort WHERE CohortID=:sp",
+            ['sp' => $cohortID]
         );
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
@@ -486,7 +487,7 @@ class NDB_Config
         if (!empty($info)) {
             $x = $info['WindowDifference'];
             return [
-                'id'                => $info['SubprojectID'],
+                'id'                => $info['CohortID'],
                 'title'             => $info['title'],
                 'options'           => [
                     'useEDC'           => $info['useEDC'],
@@ -526,5 +527,17 @@ class NDB_Config
         return $mapped;
     }
 
+    /**
+     * Get an object denoting the active log level settings for the
+     * current LORISInstance.
+     *
+     * @return LogSettings
+     */
+    public function getLogSettings() : LogSettings
+    {
+        $settings = $this->getSetting("logs");
+        return new LogSettings($settings);
+
+    }
 }
 

@@ -5,7 +5,7 @@ import ImagingUploader from './ImagingUploader';
 /**
  * Render imaging_uploader on page load
  */
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
   const imagingUploader = (
     <div className='page-imaging-uploader'>
       <ImagingUploader
