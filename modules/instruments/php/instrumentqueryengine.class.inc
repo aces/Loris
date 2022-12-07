@@ -385,9 +385,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * candidate.
      *
      * @param iterable     $candidates The list of CandIDs that were expected to
-                                     be returned
+                                       be returned
      * @param \Generator[] $iterators  An iterator for each instrument, may or
-     *                               may not have every CandID
+     *                                 may not have every CandID
      *
      * @return \Generator
      */
