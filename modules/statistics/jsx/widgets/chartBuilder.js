@@ -3,8 +3,6 @@
  * process -
  */
 function process() {
-  console.log('test start');
-  console.log('test 0');
   const baseURL = window.location.origin;
   // AJAX to get recruitment line chart data
   const apiScanLineData =
@@ -269,7 +267,6 @@ function process() {
     });
 
   // AJAX to get pie chart data
-  console.log('test 1 ');
   fetch(
     apiRecruitmentPieData,
     {
@@ -278,7 +275,6 @@ function process() {
   ).then((response) => response.json())
     .then(
       (data) => {
-        console.log('test');
         const recruitmentPieData = formatPieData(data);
         recruitmentPieChart = c3.generate({
           bindto: '#recruitmentPieChart',
