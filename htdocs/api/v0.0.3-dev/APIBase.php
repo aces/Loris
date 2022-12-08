@@ -79,6 +79,14 @@ abstract class APIBase
                 $this->error("User not authenticated");
                 $this->safeExit(0);
             }
+
+            $user = \User::singleton();
+            // If the user has the medhub permission they will be blocked from any endpoints not containing medhub
+            if (!str_contains($_SERVER['REQUEST_URI'],"/medhubConsent") && $user->hasPermission('medhub')) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("Insufficient permissions to access this endpoint");
+                $this->safeExit(0);
+            }
         }
 
         $this->DB = $this->Factory->database();
