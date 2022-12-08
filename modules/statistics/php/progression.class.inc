@@ -36,13 +36,13 @@ class Progression extends \NDB_Page implements ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
-            case 'GET':
-                $this->_cache = $this->_handleGET($request);
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        case 'GET':
+            $this->_cache = $this->_handleGET($request);
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
         return $this->_cache;
     }
@@ -54,7 +54,8 @@ class Progression extends \NDB_Page implements ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) {
+    private function _handleGET(ServerRequestInterface $request)
+    {
         if (isset($this->_cache)) {
             return $this->_cache;
         }

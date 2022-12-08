@@ -54,7 +54,8 @@ class Recruitment extends \NDB_Page implements ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(ServerRequestInterface $request) {
+    private function _handleGET(ServerRequestInterface $request)
+    {
         if (isset($this->_cache)) {
             return $this->_cache;
         }
