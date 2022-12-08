@@ -34,7 +34,7 @@ const sexColours = ['#2FA4E7', '#1C70B6'];
  */
 const applyFilter = (testName, filters) => {
   const form = $('<form />', {
-    'action': loris.BaseURL + '/' + testName + '/',
+    'action': baseURL + '/' + testName + '/',
     'method': 'post',
   });
 
