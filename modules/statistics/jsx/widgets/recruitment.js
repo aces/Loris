@@ -18,83 +18,58 @@ const Recruitment = (props) => {
    * Similar to componentDidMount and componentDidUpdate.
    */
   useEffect(() => {
-    // Fetch data from backend.
-    fetchData();
-  }, []);
-
-  /**
-   * Retrieve data from the provided URL and save it in state.
-   */
-  const fetchData = () => {
-    fetch(`${props.baseURL}/Recruitment`,
-      {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const json = props.data;
+    if (json && Object.keys(json).length !== 0) {
+      const overallData = (
+        <div className='recruitment-panel' id='overall-recruitment'>
+          {progressBarBuilder(json['recruitment']['overall'])}
+        </div>
+      );
+      let siteBreakdownData;
+      if (json['recruitment']['overall'] &&
+        json['recruitment']['overall']['total_recruitment'] > 0
+      ) {
+        siteBreakdownData = (
+          <>
+            <div className='col-lg-4 col-md-4 col-sm-4'>
+              <div>
+                <h5 className='chart-title'>
+                  Total recruitment per site
+                </h5>
+                <div id='recruitmentPieChart'/>
+              </div>
+            </div>
+            <div className='col-lg-8 col-md-8 col-sm-8'>
+              <div>
+                <h5 className='chart-title'>
+                  Biological sex breakdown by site
+                </h5>
+                <div id='recruitmentBarChart'/>
+              </div>
+            </div>
+          </>
+        );
+      } else {
+        siteBreakdownData = (
+          <p>There have been no candidates registered yet.</p>
+        );
       }
-    ).then((resp) => {
-      if (resp.ok) {
-        resp.json().then((json) => {
-          const overallData = (
-            <div className='recruitment-panel' id='overall-recruitment'>
-              {progressBarBuilder(json['recruitment']['overall'])}
+      let projectBreakdownData = [];
+      for (const [key, value] of Object.entries(json['recruitment'])) {
+        if (key !== 'overall') {
+          projectBreakdownData.push(
+            <div key={`projectBreakdown_${key}`}>
+              {progressBarBuilder(value)}
             </div>
           );
-          let siteBreakdownData;
-          if (json['recruitment']['overall'] &&
-            json['recruitment']['overall']['total_recruitment'] > 0
-          ) {
-            siteBreakdownData = (
-              <>
-                <div className='col-lg-4 col-md-4 col-sm-4'>
-                  <div>
-                    <h5 className='chart-title'>
-                      Total recruitment per site
-                    </h5>
-                    <div id='recruitmentPieChart'/>
-                  </div>
-                </div>
-                <div className='col-lg-8 col-md-8 col-sm-8'>
-                  <div>
-                    <h5 className='chart-title'>
-                      Biological sex breakdown by site
-                    </h5>
-                    <div id='recruitmentBarChart'/>
-                  </div>
-                </div>
-              </>
-            );
-          } else {
-            siteBreakdownData = (
-              <p>There have been no candidates registered yet.</p>
-            );
-          }
-          let projectBreakdownData = [];
-          for (const [key, value] of Object.entries(json['recruitment'])) {
-            if (key !== 'overall') {
-              projectBreakdownData.push(
-                <div key={`projectBreakdown_${key}`}>
-                  {progressBarBuilder(value)}
-                </div>
-              );
-            }
-          }
-          setProjectBreakdown(projectBreakdownData);
-          setOverall(overallData);
-          setSiteBreakdown(siteBreakdownData);
-          setLoading(false);
-        });
-      } else {
-        // set error
-        console.error(resp.statusText);
+        }
       }
-    }).catch((error) => {
-      // set error
-      console.error(error);
-    });
-  };
+      setProjectBreakdown(projectBreakdownData);
+      setOverall(overallData);
+      setSiteBreakdown(siteBreakdownData);
+      setLoading(false);
+    }
+  }, [props.data]);
 
   /**
    * progressBarBuilder - generates the graph content.
@@ -226,9 +201,11 @@ const Recruitment = (props) => {
 };
 Recruitment.propTypes = {
   baseURL: PropTypes.string,
+  data: PropTypes.object,
 };
 Recruitment.defaultProps = {
   baseURL: false,
+  data: {},
 };
 
 export default Recruitment;
