@@ -1,8 +1,17 @@
 /* eslint-disable */
 
 import c3 from 'c3';
-import d3 from 'd3';
+import {select} from 'd3';
 
+const baseURL = window.location.origin;
+// API - requests to server.
+const API = {
+  scanLineData: `${baseURL}/statistics/charts/scans_bymonth`,
+  scanLineDataRecruitment: `${baseURL}/statistics/charts/siterecruitment_line`,
+  recruitmentPieData: `${baseURL}/statistics/charts/siterecruitment_pie`,
+  recruitmentBarData: `${baseURL}/statistics/charts/siterecruitment_bysex`,
+};
+// Charts
 let scanLineChart;
 let recruitmentPieChart;
 let recruitmentBarChart;
@@ -12,19 +21,6 @@ let recruitmentLineChart;
  * process - the chartBuilding for the widgets.
  */
 function process() {
-  const baseURL = window.location.origin;
-  // AJAX to get recruitment line chart data
-  const apiScanLineData =
-    `${baseURL}/statistics/charts/scans_bymonth`;
-  const apiScanLineDataRecruitment =
-    `${baseURL}/statistics/charts/siterecruitment_line`;
-  // AJAX to get pie chart data
-  const apiRecruitmentPieData =
-    `${baseURL}/statistics/charts/siterecruitment_pie`;
-  // AJAX to get bar chart data
-  const apiRecruitmentBarData =
-    `${baseURL}/statistics/charts/siterecruitment_bysex`;
-
   // Colours for all charts broken down by only by site
   const siteColours = [
     '#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000',
@@ -163,7 +159,7 @@ function process() {
 
   // Updated AJAX to get scan line chart data
   fetch(
-    apiScanLineData,
+    API.scanLineData,
     {
       credentials: 'same-origin',
     }
@@ -208,7 +204,7 @@ function process() {
             pattern: siteColours,
           },
         });
-        d3.select('.scanChartLegend')
+        select('.scanChartLegend')
           .insert('div', '.scanChart')
           .attr('class', 'legend')
           .selectAll('div').data(legendNames).enter()
@@ -220,7 +216,7 @@ function process() {
             return '<span></span>' + id;
           })
           .each(function(id) {
-            d3.select(this).select('span').style(
+            select(this).select('span').style(
               'background-color', scanLineChart.color(id)
             );
           })
@@ -241,7 +237,7 @@ function process() {
 
   // AJAX to get pie chart data
   fetch(
-    apiRecruitmentPieData,
+    API.recruitmentPieData,
     {
       credentials: 'same-origin',
     }
@@ -266,7 +262,7 @@ function process() {
 
   // AJAX to get bar chart data
   fetch(
-    apiRecruitmentBarData,
+    API.recruitmentBarData,
     {
       credentials: 'same-origin',
     }
@@ -301,7 +297,7 @@ function process() {
 
   // AJAX to get recruitment line chart data
   fetch(
-    apiScanLineDataRecruitment,
+    API.scanLineDataRecruitment,
     {
       credentials: 'same-origin',
     }
@@ -346,7 +342,7 @@ function process() {
             pattern: siteColours,
           },
         });
-        d3.select('.recruitmentChartLegend')
+        select('.recruitmentChartLegend')
           .insert('div', '.recruitmentChart')
           .attr('class', 'legend')
           .selectAll('div').data(legendNames).enter()
@@ -358,7 +354,7 @@ function process() {
             return '<span></span>' + id;
           })
           .each(function(id) {
-            d3.select(this).select('span').style(
+            select(this).select('span').style(
               'background-color',
               recruitmentLineChart.color(id));
           })
