@@ -84,7 +84,7 @@ getConfig.stdout.on('data', (data) => {
 
     const eegVizSubmodule = path.join(__dirname, getPath(eegVisualization));
 
-    cp.spawn(
+    const protoc = cp.spawn(
       'protoc',
       [
         'protocol-buffers/chunk.proto',
@@ -96,9 +96,18 @@ getConfig.stdout.on('data', (data) => {
         stdio: 'inherit',
       }
     );
+
+    protoc.on('error', (error) => {
+      console.error('ERROR: '
+        + 'Make sure that protoc '
+        + '(https://github.com/protocolbuffers/protobuf/releases/) '
+        + 'is installed on your system '
+      );
+      console.error(error);
+    });
   }
 });
 
-getConfig.stderr.on('data', (data) => {
-  console.error(data);
+getConfig.on('error', (error) => {
+    console.error(error);
 });
