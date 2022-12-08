@@ -200,11 +200,9 @@ const Recruitment = (props) => {
   );
 };
 Recruitment.propTypes = {
-  baseURL: PropTypes.string,
   data: PropTypes.object,
 };
 Recruitment.defaultProps = {
-  baseURL: false,
   data: {},
 };
 

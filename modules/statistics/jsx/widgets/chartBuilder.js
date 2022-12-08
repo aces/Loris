@@ -1,5 +1,8 @@
 /* eslint-disable */
 
+import c3 from 'c3';
+import d3 from 'd3';
+
 let scanLineChart;
 let recruitmentPieChart;
 let recruitmentBarChart;

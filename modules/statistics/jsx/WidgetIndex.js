@@ -49,11 +49,9 @@ const WidgetIndex = (props) => {
   return (
     <>
       <Recruitment
-        baseURL={props.baseURL}
         data={recruitmentData}
       />
       <StudyProgression
-        baseURL={props.baseURL}
         data={studyProgressionData}
       />
     </>

@@ -77,11 +77,9 @@ const StudyProgression = (props) => {
   );
 };
 StudyProgression.propTypes = {
-  baseURL: PropTypes.string,
   data: PropTypes.object,
 };
 StudyProgression.defaultProps = {
-  baseURL: false,
   data: {},
 };
 
