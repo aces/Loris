@@ -33,7 +33,7 @@ class Widget implements \LORIS\GUI\Widget
     private WidgetContent $_content;
     private WidgetDisplayProps $_displayprops;
     private ?WidgetDependencies $_dependencies;
-    private $_template = 'panel.tpl';
+    private $_template           = 'panel.tpl';
     private $_template_variables = [];
 
     /**
@@ -57,19 +57,26 @@ class Widget implements \LORIS\GUI\Widget
     }
 
     /**
-     * setTemplate - change smarty template
+     * The setTemplate - change default smarty template
+     *
      * @param string $template_file The template file to use.
-     *                                Example: "panel.tpl"
+     *
+     * @return void
      */
-    public function setTemplate(string $template_file) {
+    public function setTemplate(string $template_file)
+    {
         $this->_template = $template_file;
     }
 
     /**
-     * setTemplateVariables - set additional smarty template variables
+     * The setTemplateVariables - set additional smarty template variables
+     *
      * @param array $template_variables The template variables to use.
+     *
+     * @return void
      */
-    public function setTemplateVariables(array $template_variables) {
+    public function setTemplateVariables(array $template_variables)
+    {
         $this->_template_variables = $template_variables;
     }
 

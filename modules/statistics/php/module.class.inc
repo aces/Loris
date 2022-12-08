@@ -91,8 +91,8 @@ class Module extends \Module
                         $baseURL . '/statistics/css/recruitment.css'
                     ],
                     [
-//                        $baseURL . '/js/d3.min.js',
-//                        $baseURL . '/js/c3.min.js',
+                    //                        $baseURL . '/js/d3.min.js',
+                    //                        $baseURL . '/js/c3.min.js',
                         $baseURL . '/statistics/js/WidgetIndex.js'
                     ],
                 )

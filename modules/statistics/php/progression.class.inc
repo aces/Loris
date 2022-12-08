@@ -10,7 +10,7 @@ use \LORIS\Middleware\ETagCalculator;
  * The Progression Class.
  *
  * This class provides the php code to retrieve the statistics
- * for progession data.
+ * for progression data.
  *
  * @category Loris
  * @package  Statistics
@@ -27,8 +27,10 @@ class Progression extends \NDB_Page implements ETagCalculator
     private $_cache;
 
     /**
-     * the handle function will return a json response.
+     * The handle function will return a json response.
+     *
      * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface The outgoing PSR7 response
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -36,13 +38,13 @@ class Progression extends \NDB_Page implements ETagCalculator
         if (!isset($this->_cache)) {
             // Ensure GET request.
             switch ($request->getMethod()) {
-                case 'GET':
-                    $this->_cache = $this->_handleGET($request);
-                    break;
-                default:
-                    return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                        $this->allowedMethods()
-                    );
+            case 'GET':
+                $this->_cache = $this->_handleGET($request);
+                break;
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    $this->allowedMethods()
+                );
             }
         }
         return new \LORIS\Http\Response\JsonResponse(
@@ -51,17 +53,18 @@ class Progression extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * handles the retrieval of statistical data for the request.
+     * Handles the retrieval of statistical data for the request.
+     *
      * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
      * @return array The outgoing PSR7 response body content.
      */
     private function _handleGET(
-        ServerRequestInterface $request) : array
-    {
-        // todo replace with  $request->getAttribute('loris')->getDatabaseConnection();
+        ServerRequestInterface $request
+    ) : array {
         $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
         $config  = $factory->config();
+        $db      = $request->getAttribute('loris')->getDatabaseConnection();
 
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
@@ -248,9 +251,11 @@ class Progression extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * the ETagCalculator provides the ability to calculate
+     * The ETagCalculator provides the ability to calculate
      * an ETag for an incoming HTTP request.
+     *
      * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
      * @return string The value to use for the ETag header.
      */
     public function ETag(ServerRequestInterface $request): string
@@ -262,6 +267,7 @@ class Progression extends \NDB_Page implements ETagCalculator
 
     /**
      * Return an array of valid HTTP methods for this endpoint.
+     *
      * @return string[] Valid versions
      */
     protected function allowedMethods(): array
