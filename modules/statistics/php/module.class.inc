@@ -77,10 +77,7 @@ class Module extends \Module
             $widget  = new \LORIS\dashboard\Widget(
                 new \LORIS\dashboard\WidgetContent(
                     '',
-                    $this->renderTemplate(
-                        'widgets.tpl',
-                        []
-                    ),
+                    '',
                     '',
                 ),
                 new \LORIS\dashboard\WidgetDisplayProps(
@@ -101,6 +98,7 @@ class Module extends \Module
                 )
             );
             $widget->setTemplate('div.tpl');
+            $widget->setTemplateVariables(['id' => 'statistics_widgets']);
 
             return [$widget];
         }

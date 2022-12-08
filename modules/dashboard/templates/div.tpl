@@ -1,1 +1,1 @@
-<div>{$body}</div>
+<div id='{$id}'>{$body}</div>
