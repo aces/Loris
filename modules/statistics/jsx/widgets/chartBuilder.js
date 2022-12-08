@@ -37,14 +37,11 @@ const applyFilter = (testName, filters) => {
     'action': baseURL + '/' + testName + '/',
     'method': 'post',
   });
-
   const values = {
     'reset': 'true',
     'filter': 'Show Data',
   };
-
   $.extend(values, filters);
-
   $.each(values, function(name, value) {
     $('<input />', {
       type: 'hidden',
@@ -52,7 +49,6 @@ const applyFilter = (testName, filters) => {
       value: value,
     }).appendTo(form);
   });
-
   form.appendTo('body').submit();
 };
 
@@ -134,7 +130,7 @@ const maxY = (data) => {
   let maxi = 0;
   for(let j=0; j < data['datasets'][0].data.length; j++){
     for(let i=0; i<data['datasets'].length; i++){
-      maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
+      maxi = Math.max(maxi, parseInt(data['datasets'][i].data[j]));
     }
   }
   return maxi;
