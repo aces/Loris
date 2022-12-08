@@ -14,7 +14,7 @@ const StudyProgression = (props) => {
   const [siteRecruitments, setSiteRecruitments] = useState({});
 
   /**
-   * Similar to componentDidMount and componentDidUpdate.
+   * useEffect - modified to run when props.data updates.
    */
   useEffect(() => {
     const json = props.data;
