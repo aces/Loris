@@ -36,8 +36,6 @@ const StudyProgression = (props) => {
     ).then((resp) => {
       if (resp.ok) {
         resp.json().then((json) => {
-          console.log('json is ');
-          console.log(json);
           setSiteScans(
             json['studyprogression']['total_scans'] > 0
               ? <div className='row'>
