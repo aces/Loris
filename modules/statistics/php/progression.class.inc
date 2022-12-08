@@ -35,9 +35,7 @@ class Progression extends \NDB_Page implements ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!isset($this->_cache)) {
-            // Ensure GET request.
-            switch ($request->getMethod()) {
+        switch ($request->getMethod()) {
             case 'GET':
                 $this->_cache = $this->_handleGET($request);
                 break;
@@ -45,11 +43,8 @@ class Progression extends \NDB_Page implements ETagCalculator
                 return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                     $this->allowedMethods()
                 );
-            }
         }
-        return new \LORIS\Http\Response\JsonResponse(
-            $this->_cache
-        );
+        return $this->_cache;
     }
 
     /**
@@ -57,11 +52,12 @@ class Progression extends \NDB_Page implements ETagCalculator
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
-     * @return array The outgoing PSR7 response body content.
+     * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET(
-        ServerRequestInterface $request
-    ) : array {
+    private function _handleGET(ServerRequestInterface $request) {
+        if (isset($this->_cache)) {
+            return $this->_cache;
+        }
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
         $db      = $request->getAttribute('loris')->getDatabaseConnection();
@@ -105,7 +101,10 @@ class Progression extends \NDB_Page implements ETagCalculator
             'total_scans' => $totalScans,
             'recruitment' => $recruitment
         ];
-        return $values;
+
+        $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
+
+        return $this->_cache;
     }
 
     /**
@@ -260,9 +259,7 @@ class Progression extends \NDB_Page implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        return md5(
-            json_encode((string) $this->_handleGET($request)->getBody())
-        );
+        return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
 
     /**

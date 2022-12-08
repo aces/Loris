@@ -139,7 +139,7 @@ const maxY = (data) => {
 /**
  * process - the chartBuilding for the widgets.
  */
-function process() {
+const process = () => {
   // Updated AJAX to get scan line chart data
   fetch(
     API.scanLineData,
@@ -369,7 +369,7 @@ function process() {
     e.preventDefault();
     applyFilter('user_accounts', {'pending': 'Y'});
   });
-}
+};
 
 export {
   process,
