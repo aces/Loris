@@ -17,146 +17,133 @@ let recruitmentPieChart;
 let recruitmentBarChart;
 let recruitmentLineChart;
 
+// Colours for all charts broken down by only by site
+const siteColours = [
+  '#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000',
+  '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
+  '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
+];
+
+// Colours for the recruitment bar chart: breakdown by sex
+const sexColours = ['#2FA4E7', '#1C70B6'];
+
+/**
+ * applyFilter
+ * @param {string} testName
+ * @param {object} filters
+ */
+const applyFilter = (testName, filters) => {
+  const form = $('<form />', {
+    'action': loris.BaseURL + '/' + testName + '/',
+    'method': 'post',
+  });
+
+  const values = {
+    'reset': 'true',
+    'filter': 'Show Data',
+  };
+
+  $.extend(values, filters);
+
+  $.each(values, function(name, value) {
+    $('<input />', {
+      type: 'hidden',
+      name: name,
+      value: value,
+    }).appendTo(form);
+  });
+
+  form.appendTo('body').submit();
+};
+
+/**
+ * formatPieData
+ * @param {object} data
+ * @return {*[]}
+ */
+const formatPieData = (data) => {
+  const processedData = [];
+  for (const i in data) {
+    if (data.hasOwnProperty(i)) {
+      const siteData = [data[i].label, data[i].total];
+      processedData.push(siteData);
+    }
+  }
+  return processedData;
+};
+
+/**
+ * formatBarData
+ * @param {object} data
+ * @return {*[]}
+ */
+const formatBarData = (data) => {
+  const processedData = [];
+  if (data['datasets']) {
+    const females = ['Female'];
+    processedData.push(females.concat(data['datasets']['female']));
+  }
+  if (data['datasets']) {
+    const males = ['Male'];
+    processedData.push(males.concat(data['datasets']['male']));
+  }
+  return processedData;
+};
+
+/**
+ * formatLineData
+ * @param {object} data
+ * @return {*[]}
+ */
+const formatLineData = (data) => {
+  const processedData = [];
+  const labels = [];
+  labels.push('x');
+  for (const i in data.labels) {
+    if (data.labels.hasOwnProperty(i)) {
+      labels.push(data.labels[i]);
+    }
+  }
+  processedData.push(labels);
+  for (const i in data['datasets']) {
+    if (data['datasets'].hasOwnProperty(i)) {
+      const dataset = [];
+      dataset.push(data['datasets'][i].name);
+      processedData.push(dataset.concat(data['datasets'][i].data));
+    }
+  }
+  const totals = [];
+  totals.push('Total');
+  for (let j=0; j<data['datasets'][0].data.length; j++){
+    let total = 0;
+    for (let i=0; i<data['datasets'].length; i++){
+      total += parseInt(data['datasets'][i].data[j]);
+    }
+    totals.push(total);
+  }
+  processedData.push(totals);
+  return processedData;
+};
+
+/**
+ * maxY
+ * @param {object} data
+ * @return {number}
+ */
+const maxY = (data) => {
+  let maxi = 0;
+  for(let j=0; j < data['datasets'][0].data.length; j++){
+    for(let i=0; i<data['datasets'].length; i++){
+      maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
+    }
+  }
+  return maxi;
+};
+
 /**
  * process - the chartBuilding for the widgets.
  */
 function process() {
-  // Colours for all charts broken down by only by site
-  const siteColours = [
-    '#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000',
-    '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
-    '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
-  ];
-  // Colours for the recruitment bar chart: breakdown by sex
-  const sexColours = ['#2FA4E7', '#1C70B6'];
-
-  // Turn on the tooltip for the progress bar - shows total
-  // male and female registered candidates
-  $('.progress-bar').tooltip();
-
-  $('.new-scans').click(function(e) {
-    e.preventDefault();
-    applyFilter('imaging_browser', {'Pending': 'PN'});
-  });
-
-  $('.pending-accounts').click(function(e) {
-    e.preventDefault();
-    applyFilter('user_accounts', {'pending': 'Y'});
-  });
-
-  /**
-   * applyFilter
-   * @param {string} testName
-   * @param {object} filters
-   */
-  function applyFilter(testName, filters) {
-    const form = $('<form />', {
-      'action': loris.BaseURL + '/' + testName + '/',
-      'method': 'post',
-    });
-
-    const values = {
-      'reset': 'true',
-      'filter': 'Show Data',
-    };
-
-    $.extend(values, filters);
-
-    $.each(values, function(name, value) {
-      $('<input />', {
-        type: 'hidden',
-        name: name,
-        value: value,
-      }).appendTo(form);
-    });
-
-    form.appendTo('body').submit();
-  }
-
-  /**
-   * formatPieData
-   * @param {object} data
-   * @return {*[]}
-   */
-  function formatPieData(data) {
-    const processedData = [];
-    for (const i in data) {
-      if (data.hasOwnProperty(i)) {
-        const siteData = [data[i].label, data[i].total];
-        processedData.push(siteData);
-      }
-    }
-    return processedData;
-  }
-
-  /**
-   * formatBarData
-   * @param {object} data
-   * @return {*[]}
-   */
-  function formatBarData(data) {
-    const processedData = [];
-    if (data['datasets']) {
-      const females = ['Female'];
-      processedData.push(females.concat(data['datasets']['female']));
-    }
-    if (data['datasets']) {
-      const males = ['Male'];
-      processedData.push(males.concat(data['datasets']['male']));
-    }
-    return processedData;
-  }
-
-  /**
-   * formatLineData
-   * @param {object} data
-   * @return {*[]}
-   */
-  function formatLineData(data) {
-    const processedData = [];
-    const labels = [];
-    labels.push('x');
-    for (const i in data.labels) {
-      if (data.labels.hasOwnProperty(i)) {
-        labels.push(data.labels[i]);
-      }
-    }
-    processedData.push(labels);
-    for (const i in data['datasets']) {
-      if (data['datasets'].hasOwnProperty(i)) {
-        const dataset = [];
-        dataset.push(data['datasets'][i].name);
-        processedData.push(dataset.concat(data['datasets'][i].data));
-      }
-    }
-    const totals = [];
-    totals.push('Total');
-    for (let j=0; j<data['datasets'][0].data.length; j++){
-      let total = 0;
-      for (let i=0; i<data['datasets'].length; i++){
-        total += parseInt(data['datasets'][i].data[j]);
-      }
-      totals.push(total);
-    }
-    processedData.push(totals);
-    return processedData;
-  }
-
-  /**
-   * maxY
-   * @param {object} data
-   * @return {number}
-   */
-  function maxY(data){
-    let maxi = 0;
-    for(let j=0; j < data['datasets'][0].data.length; j++){
-      for(let i=0; i<data['datasets'].length; i++){
-        maxi = Math.max(maxi, parseInt(data.datasets[i].data[j]));
-      }
-    }
-    return maxi;
-  }
-
   // Updated AJAX to get scan line chart data
   fetch(
     API.scanLineData,
@@ -372,6 +359,20 @@ function process() {
       }).catch((error) => {
         console.error(error);
       });
+
+  // Turn on the tooltip for the progress bar - shows total
+  // male and female registered candidates
+  $('.progress-bar').tooltip();
+
+  $('.new-scans').click(function(e) {
+    e.preventDefault();
+    applyFilter('imaging_browser', {'Pending': 'PN'});
+  });
+
+  $('.pending-accounts').click(function(e) {
+    e.preventDefault();
+    applyFilter('user_accounts', {'pending': 'Y'});
+  });
 }
 
 export {
