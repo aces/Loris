@@ -171,21 +171,21 @@ const Recruitment = (props) => {
       title='Recruitment'
       id='statistics_recruitment'
       views={[
-        {visible: true,
+        {
           content:
             <>
               {overall}
             </>,
           title: 'Recruitment - overall',
         },
-        {visible: true,
+        {
           content:
             <>
               {siteBreakdown}
             </>,
           title: 'Recruitment - site breakdown',
         },
-        {visible: true,
+        {
           content:
             <>
               {projectBreakdown}

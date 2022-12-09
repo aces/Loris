@@ -51,7 +51,7 @@ const StudyProgression = (props) => {
       title='Study Progression'
       id='statistics_studyprogression'
       views={[
-        {visible: true,
+        {
           content: <>
             {siteScans}
             <small><i>Note that the Recruitment and Study Progression charts
@@ -61,7 +61,7 @@ const StudyProgression = (props) => {
           </>,
           title: 'Study Progression - site scans',
         },
-        {visible: true,
+        {
           content: <>
             <h5 className='chart-title'>Recruitment per site</h5>
             {siteRecruitments}
