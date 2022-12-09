@@ -6,7 +6,6 @@ import {fetchData} from './Fetch';
 import {
   recruitmentCharts,
   studyProgressionCharts,
-  setupFilters,
 } from './widgets/chartBuilder';
 
 /**
@@ -39,12 +38,10 @@ const WidgetIndex = (props) => {
       setStudyProgressionData(json);
       // Process statistics for c3.js
       studyProgressionCharts();
-      setupFilters();
     }).catch((error) => {
       // Error occurred.
       console.error(error);
     });
-    // todo chartBuilder code should be replaced with npmjs version.
   }, []);
 
   /**
