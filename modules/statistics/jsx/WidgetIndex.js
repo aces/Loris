@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import Recruitment from './widgets/recruitment';
 import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
-import * as chartBuilder from './widgets/chartBuilder';
+import {
+  recruitmentCharts,
+  studyProgressionCharts,
+  setupFilters,
+  resizeHandler,
+} from './widgets/chartBuilder';
 
 /**
  * WidgetIndex - the main window.
@@ -23,7 +28,7 @@ const WidgetIndex = (props) => {
     ).then((json) => {
       setRecruitmentData(json);
       // Process statistics for c3.js
-      chartBuilder.process();
+      recruitmentCharts();
     }).catch((error) => {
       // Error occurred.
       console.error(error);
@@ -34,7 +39,9 @@ const WidgetIndex = (props) => {
     ).then((json) => {
       setStudyProgressionData(json);
       // Process statistics for c3.js
-      chartBuilder.process();
+      studyProgressionCharts();
+      setupFilters();
+      resizeHandler();
     }).catch((error) => {
       // Error occurred.
       console.error(error);

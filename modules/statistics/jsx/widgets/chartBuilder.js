@@ -21,55 +21,28 @@ let recruitmentLineChart;
 const siteColours = [
   '#F0CC00', '#27328C', '#2DC3D0', '#4AE8C2', '#D90074', '#7900DB', '#FF8000',
   '#0FB500', '#CC0000', '#DB9CFF', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
-  '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'
+  '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5',
 ];
 
 // Colours for the recruitment bar chart: breakdown by sex
 const sexColours = ['#2FA4E7', '#1C70B6'];
 
 /**
- * applyFilter
- * @param {string} testName
- * @param {object} filters
- */
-const applyFilter = (testName, filters) => {
-  const form = $('<form />', {
-    'action': baseURL + '/' + testName + '/',
-    'method': 'post',
-  });
-  const values = {
-    'reset': 'true',
-    'filter': 'Show Data',
-  };
-  $.extend(values, filters);
-  $.each(values, function(name, value) {
-    $('<input />', {
-      type: 'hidden',
-      name: name,
-      value: value,
-    }).appendTo(form);
-  });
-  form.appendTo('body').submit();
-};
-
-/**
- * formatPieData
+ * formatPieData - used for the recruitment widget
  * @param {object} data
  * @return {*[]}
  */
 const formatPieData = (data) => {
   const processedData = [];
-  for (const i in data) {
-    if (data.hasOwnProperty(i)) {
-      const siteData = [data[i].label, data[i].total];
-      processedData.push(siteData);
-    }
+  for (const [i] of Object.entries(data)) {
+    const siteData = [data[i].label, data[i].total];
+    processedData.push(siteData);
   }
   return processedData;
 };
 
 /**
- * formatBarData
+ * formatBarData - used for the recruitment widget
  * @param {object} data
  * @return {*[]}
  */
@@ -87,7 +60,76 @@ const formatBarData = (data) => {
 };
 
 /**
- * formatLineData
+ * recruitmentCharts - fetch data for recruitments
+ */
+const recruitmentCharts = () => {
+  // fetch data for the pie chart.
+  fetch(
+    API.recruitmentPieData,
+    {
+      credentials: 'same-origin',
+    }
+  ).then((response) => response.json())
+    .then(
+      (data) => {
+        const recruitmentPieData = formatPieData(data);
+        recruitmentPieChart = c3.generate({
+          bindto: '#recruitmentPieChart',
+          data: {
+            columns: recruitmentPieData,
+            type: 'pie',
+          },
+          color: {
+            pattern: siteColours,
+          },
+        });
+        recruitmentPieChart.resize();
+      }).catch((error) => {
+    console.error(error);
+  });
+
+  // fetch data for the bar chart.
+  fetch(
+    API.recruitmentBarData,
+    {
+      credentials: 'same-origin',
+    }
+  ).then((response) => response.json())
+    .then(
+      (data) => {
+        const recruitmentBarData = formatBarData(data);
+        const recruitmentBarLabels = data.labels;
+        recruitmentBarChart = c3.generate({
+          bindto: '#recruitmentBarChart',
+          size: {
+            width: 636,
+            height: 266,
+          },
+          data: {
+            columns: recruitmentBarData,
+            type: 'bar',
+          },
+          axis: {
+            x: {
+              type: 'categorized',
+              categories: recruitmentBarLabels,
+            },
+            y: {
+              label: 'Candidates registered',
+            },
+          },
+          color: {
+            pattern: sexColours,
+          },
+        });
+        recruitmentBarChart.resize();
+      }).catch((error) => {
+    console.error(error);
+  });
+};
+
+/**
+ * formatLineData - used for the study progression widget
  * @param {object} data
  * @return {*[]}
  */
@@ -95,24 +137,20 @@ const formatLineData = (data) => {
   const processedData = [];
   const labels = [];
   labels.push('x');
-  for (const i in data.labels) {
-    if (data.labels.hasOwnProperty(i)) {
-      labels.push(data.labels[i]);
-    }
+  for (const [i] of Object.entries(data.labels)) {
+    labels.push(data.labels[i]);
   }
   processedData.push(labels);
-  for (const i in data['datasets']) {
-    if (data['datasets'].hasOwnProperty(i)) {
-      const dataset = [];
-      dataset.push(data['datasets'][i].name);
-      processedData.push(dataset.concat(data['datasets'][i].data));
-    }
+  for (const [i] of Object.entries(data['datasets'])) {
+    const dataset = [];
+    dataset.push(data['datasets'][i].name);
+    processedData.push(dataset.concat(data['datasets'][i].data));
   }
   const totals = [];
   totals.push('Total');
-  for (let j=0; j<data['datasets'][0].data.length; j++){
+  for (let j=0; j<data['datasets'][0].data.length; j++) {
     let total = 0;
-    for (let i=0; i<data['datasets'].length; i++){
+    for (let i=0; i<data['datasets'].length; i++) {
       total += parseInt(data['datasets'][i].data[j]);
     }
     totals.push(total);
@@ -122,14 +160,14 @@ const formatLineData = (data) => {
 };
 
 /**
- * maxY
+ * maxY - used for the study progression widget
  * @param {object} data
  * @return {number}
  */
 const maxY = (data) => {
   let maxi = 0;
-  for(let j=0; j < data['datasets'][0].data.length; j++){
-    for(let i=0; i<data['datasets'].length; i++){
+  for (let j=0; j < data['datasets'][0].data.length; j++) {
+    for (let i=0; i<data['datasets'].length; i++) {
       maxi = Math.max(maxi, parseInt(data['datasets'][i].data[j]));
     }
   }
@@ -137,10 +175,10 @@ const maxY = (data) => {
 };
 
 /**
- * process - the chartBuilding for the widgets.
+ * studyProgressionCharts - fetch data for study progression
  */
-const process = () => {
-  // Updated AJAX to get scan line chart data
+const studyProgressionCharts = () => {
+  // fetch data for the line chart.
   fetch(
     API.scanLineData,
     {
@@ -210,167 +248,169 @@ const process = () => {
             scanLineChart.revert();
           })
           .on('click', function(id) {
-            $(this).toggleClass('c3-legend-item-hidden')
+            // todo
+            // $(this).toggleClass('c3-legend-item-hidden');
             scanLineChart.toggle(id);
           });
         scanLineChart.resize();
       }).catch((error) => {
-        console.error(error);
-      });
+    console.error(error);
+  });
 
-  // AJAX to get pie chart data
-  fetch(
-    API.recruitmentPieData,
-    {
-      credentials: 'same-origin',
-    }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        const recruitmentPieData = formatPieData(data);
-        recruitmentPieChart = c3.generate({
-          bindto: '#recruitmentPieChart',
-          data: {
-            columns: recruitmentPieData,
-            type: 'pie',
-          },
-          color: {
-            pattern: siteColours,
-          },
-        });
-        recruitmentPieChart.resize();
-      }).catch((error) => {
-        console.error(error);
-      });
-
-  // AJAX to get bar chart data
-  fetch(
-    API.recruitmentBarData,
-    {
-      credentials: 'same-origin',
-    }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        const recruitmentBarData = formatBarData(data);
-        const recruitmentBarLabels = data.labels;
-        recruitmentBarChart = c3.generate({
-          bindto: '#recruitmentBarChart',
-          data: {
-            columns: recruitmentBarData,
-            type: 'bar',
-          },
-          axis: {
-            x: {
-              type: 'categorized',
-              categories: recruitmentBarLabels,
-            },
-            y: {
-              label: 'Candidates registered',
-            },
-          },
-          color: {
-            pattern: sexColours,
-          },
-        });
-        recruitmentBarChart.resize();
-      }).catch((error) => {
-        console.error(error);
-      });
-
-  // AJAX to get recruitment line chart data
+  // fetch data for the line chart.
   fetch(
     API.scanLineDataRecruitment,
     {
       credentials: 'same-origin',
     }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        let legendNames = [];
-        for (let j=0; j < data['datasets'].length; j++) {
-          legendNames.push(data['datasets'][j].name);
-        }
-        const recruitmentLineData = formatLineData(data);
-        recruitmentLineChart = c3.generate({
-          size: {
-            height: '100%',
+  ).then(
+    (response) => response.json()
+  ).then((data) => {
+    let legendNames = [];
+    for (let j=0; j < data['datasets'].length; j++) {
+      legendNames.push(data['datasets'][j].name);
+    }
+    const recruitmentLineData = formatLineData(data);
+    recruitmentLineChart = c3.generate({
+      size: {
+        height: '100%',
+      },
+      bindto: '#recruitmentChart',
+      data: {
+        x: 'x',
+        xFormat: '%m-%Y',
+        columns: recruitmentLineData,
+        type: 'area-spline',
+      },
+      legend: {
+        show: false,
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m-%Y',
           },
-          bindto: '#recruitmentChart',
-          data: {
-            x: 'x',
-            xFormat: '%m-%Y',
-            columns: recruitmentLineData,
-            type: 'area-spline',
-          },
-          legend: {
-            show: false,
-          },
-          axis: {
-            x: {
-              type: 'timeseries',
-              tick: {
-                format: '%m-%Y',
-              },
-            },
-            y: {
-              max: maxY(data),
-              label: 'Candidates registered',
-            },
-          },
-          zoom: {
-            enabled: true,
-          },
-          color: {
-            pattern: siteColours,
-          },
-        });
-        select('.recruitmentChartLegend')
-          .insert('div', '.recruitmentChart')
-          .attr('class', 'legend')
-          .selectAll('div').data(legendNames).enter()
-          .append('div')
-          .attr('data-id', function(id) {
-            return id;
-          })
-          .html(function(id) {
-            return '<span></span>' + id;
-          })
-          .each(function(id) {
-            select(this).select('span').style(
-              'background-color',
-              recruitmentLineChart.color(id));
-          })
-          .on('mouseover', function(id) {
-            recruitmentLineChart.focus(id);
-          })
-          .on('mouseout', function(id) {
-            recruitmentLineChart.revert();
-          })
-          .on('click', function(id) {
-            $(this).toggleClass('c3-legend-item-hidden');
-            recruitmentLineChart.toggle(id);
-          });
-        recruitmentLineChart.resize();
-      }).catch((error) => {
-        console.error(error);
+        },
+        y: {
+          max: maxY(data),
+          label: 'Candidates registered',
+        },
+      },
+      zoom: {
+        enabled: true,
+      },
+      color: {
+        pattern: siteColours,
+      },
+    });
+    select('.recruitmentChartLegend')
+      .insert('div', '.recruitmentChart')
+      .attr('class', 'legend')
+      .selectAll('div').data(legendNames).enter()
+      .append('div')
+      .attr('data-id', function(id) {
+        return id;
+      })
+      .html(function(id) {
+        return '<span></span>' + id;
+      })
+      .each(function(id) {
+        select(this).select('span').style(
+          'background-color',
+          recruitmentLineChart.color(id));
+      })
+      .on('mouseover', function(id) {
+        recruitmentLineChart.focus(id);
+      })
+      .on('mouseout', function(id) {
+        recruitmentLineChart.revert();
+      })
+      .on('click', function(id) {
+        // todo
+        // $(this).toggleClass('c3-legend-item-hidden');
+        recruitmentLineChart.toggle(id);
       });
+    recruitmentLineChart.resize();
+  }).catch((error) => {
+    console.error(error);
+  });
+};
 
+/**
+ * applyFilter
+ * @param {string} testName
+ * @param {object} filters
+ */
+const applyFilter = (testName, filters) => {
+  const form = $('<form />', {
+    'action': baseURL + '/' + testName + '/',
+    'method': 'post',
+  });
+  const values = {
+    'reset': 'true',
+    'filter': 'Show Data',
+  };
+  $.extend(values, filters);
+  $.each(values, function(name, value) {
+    $('<input />', {
+      type: 'hidden',
+      name: name,
+      value: value,
+    }).appendTo(form);
+  });
+  form.appendTo('body').submit();
+};
+
+/**
+ * setupFilters - used for the My Tasks widgets.
+ */
+const setupFilters = () => {
   // Turn on the tooltip for the progress bar - shows total
   // male and female registered candidates
   $('.progress-bar').tooltip();
 
+  // My Tasks widget
   $('.new-scans').click(function(e) {
     e.preventDefault();
+    console.log('test');
     applyFilter('imaging_browser', {'Pending': 'PN'});
   });
 
+  // My Tasks widget
   $('.pending-accounts').click(function(e) {
     e.preventDefault();
+    console.log('test');
     applyFilter('user_accounts', {'pending': 'Y'});
   });
 };
 
+const resizeHandler = () => {
+  const elements = document.querySelectorAll(
+    '[data-target="1_panel_content"]'
+  );
+  console.log('elements is ');
+  console.log(elements);
+  for (const element of elements) {
+    element.addEventListener('click', () => {
+      setTimeout(() => {
+        console.log('click happened');
+        recruitmentPieChart.resize();
+        recruitmentBarChart.resize();
+        scanLineChart.resize();
+        recruitmentLineChart.resize();
+      }, 100);
+    });
+  }
+  // recruitmentPieChart.resize();
+  // recruitmentBarChart.resize();
+  // scanLineChart.resize();
+  // recruitmentLineChart.resize();
+};
+
 export {
-  process,
+  recruitmentCharts,
+  studyProgressionCharts,
+  setupFilters,
+  resizeHandler,
 };
