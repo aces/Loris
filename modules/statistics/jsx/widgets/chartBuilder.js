@@ -78,30 +78,29 @@ const recruitmentCharts = () => {
     `${baseURL}/statistics/charts/siterecruitment_pie`,
     {
       credentials: 'same-origin',
-    }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        const recruitmentPieData = formatPieData(data);
-        recruitmentPieChart = c3.generate({
-          bindto: '#recruitmentPieChart',
-          size: {
-            width: 227,
-          },
-          data: {
-            columns: recruitmentPieData,
-            type: 'pie',
-          },
-          color: {
-            pattern: siteColours,
-          },
-        });
-        elementVisibility(recruitmentPieChart.element, (visible) => {
-          if (visible) {
-            recruitmentPieChart.resize();
-          }
-        });
-      }).catch((error) => {
+    },
+  ).then((response) => response.json(),
+  ).then((data) => {
+    const recruitmentPieData = formatPieData(data);
+    recruitmentPieChart = c3.generate({
+      bindto: '#recruitmentPieChart',
+      size: {
+        width: 227,
+      },
+      data: {
+        columns: recruitmentPieData,
+        type: 'pie',
+      },
+      color: {
+        pattern: siteColours,
+      },
+    });
+    elementVisibility(recruitmentPieChart.element, (visible) => {
+      if (visible) {
+        recruitmentPieChart.resize();
+      }
+    });
+  }).catch((error) => {
     console.error(error);
   });
 
@@ -110,40 +109,39 @@ const recruitmentCharts = () => {
     `${baseURL}/statistics/charts/siterecruitment_bysex`,
     {
       credentials: 'same-origin',
-    }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        const recruitmentBarData = formatBarData(data);
-        const recruitmentBarLabels = data.labels;
-        recruitmentBarChart = c3.generate({
-          bindto: '#recruitmentBarChart',
-          size: {
-            width: 461,
-          },
-          data: {
-            columns: recruitmentBarData,
-            type: 'bar',
-          },
-          axis: {
-            x: {
-              type: 'categorized',
-              categories: recruitmentBarLabels,
-            },
-            y: {
-              label: 'Candidates registered',
-            },
-          },
-          color: {
-            pattern: sexColours,
-          },
-        });
-        elementVisibility(recruitmentBarChart.element, (visible) => {
-          if (visible) {
-            recruitmentBarChart.resize();
-          }
-        });
-      }).catch((error) => {
+    },
+  ).then((response) => response.json(),
+  ).then((data) => {
+    const recruitmentBarData = formatBarData(data);
+    const recruitmentBarLabels = data.labels;
+    recruitmentBarChart = c3.generate({
+      bindto: '#recruitmentBarChart',
+      size: {
+        width: 461,
+      },
+      data: {
+        columns: recruitmentBarData,
+        type: 'bar',
+      },
+      axis: {
+        x: {
+          type: 'categorized',
+          categories: recruitmentBarLabels,
+        },
+        y: {
+          label: 'Candidates registered',
+        },
+      },
+      color: {
+        pattern: sexColours,
+      },
+    });
+    elementVisibility(recruitmentBarChart.element, (visible) => {
+      if (visible) {
+        recruitmentBarChart.resize();
+      }
+    });
+  }).catch((error) => {
     console.error(error);
   });
 };
@@ -168,9 +166,9 @@ const formatLineData = (data) => {
   }
   const totals = [];
   totals.push('Total');
-  for (let j=0; j<data['datasets'][0].data.length; j++) {
+  for (let j = 0; j < data['datasets'][0].data.length; j++) {
     let total = 0;
-    for (let i=0; i<data['datasets'].length; i++) {
+    for (let i = 0; i < data['datasets'].length; i++) {
       total += parseInt(data['datasets'][i].data[j]);
     }
     totals.push(total);
@@ -186,8 +184,8 @@ const formatLineData = (data) => {
  */
 const maxY = (data) => {
   let maxi = 0;
-  for (let j=0; j < data['datasets'][0].data.length; j++) {
-    for (let i=0; i<data['datasets'].length; i++) {
+  for (let j = 0; j < data['datasets'][0].data.length; j++) {
+    for (let i = 0; i < data['datasets'].length; i++) {
       maxi = Math.max(maxi, parseInt(data['datasets'][i].data[j]));
     }
   }
@@ -203,82 +201,81 @@ const studyProgressionCharts = () => {
     `${baseURL}/statistics/charts/scans_bymonth`,
     {
       credentials: 'same-origin',
+    },
+  ).then((response) => response.json(),
+  ).then((data) => {
+    let legendNames = [];
+    for (let j = 0; j < data['datasets'].length; j++) {
+      legendNames.push(data['datasets'][j].name);
     }
-  ).then((response) => response.json())
-    .then(
-      (data) => {
-        let legendNames = [];
-        for (let j=0; j < data['datasets'].length; j++) {
-          legendNames.push(data['datasets'][j].name);
-        }
-        const scanLineData = formatLineData(data);
-        scanLineChart = c3.generate({
-          size: {
-            height: '100%',
+    const scanLineData = formatLineData(data);
+    scanLineChart = c3.generate({
+      size: {
+        height: '100%',
+      },
+      bindto: '#scanChart',
+      data: {
+        x: 'x',
+        xFormat: '%m-%Y',
+        columns: scanLineData,
+        type: 'area-spline',
+      },
+      legend: {
+        show: false,
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%m-%Y',
           },
-          bindto: '#scanChart',
-          data: {
-            x: 'x',
-            xFormat: '%m-%Y',
-            columns: scanLineData,
-            type: 'area-spline',
-          },
-          legend: {
-            show: false,
-          },
-          axis: {
-            x: {
-              type: 'timeseries',
-              tick: {
-                format: '%m-%Y',
-              },
-            },
-            y: {
-              max: maxY(data),
-              label: 'Scans',
-            },
-          },
-          zoom: {
-            enabled: true,
-          },
-          color: {
-            pattern: siteColours,
-          },
-        });
-        select('.scanChartLegend')
-          .insert('div', '.scanChart')
-          .attr('class', 'legend')
-          .selectAll('div').data(legendNames).enter()
-          .append('div')
-          .attr('data-id', function(id) {
-            return id;
-          })
-          .html(function(id) {
-            return '<span></span>' + id;
-          })
-          .each(function(id) {
-            select(this).select('span').style(
-              'background-color', scanLineChart.color(id)
-            );
-          })
-          .on('mouseover', function(id) {
-            scanLineChart.focus(id);
-          })
-          .on('mouseout', function(id) {
-            scanLineChart.revert();
-          })
-          .on('click', function(id) {
-            // todo
-            // $(this).toggleClass('c3-legend-item-hidden');
-            scanLineChart.toggle(id);
-          });
-        elementVisibility(scanLineChart.element, (visible) => {
-          if (visible) {
-            scanLineChart.resize();
-          }
-        });
+        },
+        y: {
+          max: maxY(data),
+          label: 'Scans',
+        },
+      },
+      zoom: {
+        enabled: true,
+      },
+      color: {
+        pattern: siteColours,
+      },
+    });
+    select('.scanChartLegend')
+      .insert('div', '.scanChart')
+      .attr('class', 'legend')
+      .selectAll('div').data(legendNames).enter()
+      .append('div')
+      .attr('data-id', function(id) {
+        return id;
+      })
+      .html(function(id) {
+        return '<span></span>' + id;
+      })
+      .each(function(id) {
+        select(this).select('span').style(
+          'background-color', scanLineChart.color(id),
+        );
+      })
+      .on('mouseover', function(id) {
+        scanLineChart.focus(id);
+      })
+      .on('mouseout', function(id) {
+        scanLineChart.revert();
+      })
+      .on('click', function(id) {
+        // todo
+        // $(this).toggleClass('c3-legend-item-hidden');
+        scanLineChart.toggle(id);
+      });
+    elementVisibility(scanLineChart.element, (visible) => {
+      if (visible) {
         scanLineChart.resize();
-      }).catch((error) => {
+      }
+    });
+    scanLineChart.resize();
+  }).catch((error) => {
     console.error(error);
   });
 
@@ -287,12 +284,12 @@ const studyProgressionCharts = () => {
     `${baseURL}/statistics/charts/siterecruitment_line`,
     {
       credentials: 'same-origin',
-    }
+    },
   ).then(
-    (response) => response.json()
+    (response) => response.json(),
   ).then((data) => {
     let legendNames = [];
-    for (let j=0; j < data['datasets'].length; j++) {
+    for (let j = 0; j < data['datasets'].length; j++) {
       legendNames.push(data['datasets'][j].name);
     }
     const recruitmentLineData = formatLineData(data);
