@@ -5,13 +5,7 @@ import c3 from 'c3';
 import {select} from 'd3';
 
 const baseURL = window.location.origin;
-// API - requests to server.
-const API = {
-  scanLineData: `${baseURL}/statistics/charts/scans_bymonth`,
-  scanLineDataRecruitment: `${baseURL}/statistics/charts/siterecruitment_line`,
-  recruitmentPieData: `${baseURL}/statistics/charts/siterecruitment_pie`,
-  recruitmentBarData: `${baseURL}/statistics/charts/siterecruitment_bysex`,
-};
+
 // Charts
 let scanLineChart;
 let recruitmentPieChart;
@@ -83,7 +77,7 @@ const formatBarData = (data) => {
 const recruitmentCharts = () => {
   // fetch data for the pie chart.
   fetch(
-    API.recruitmentPieData,
+    `${baseURL}/statistics/charts/siterecruitment_pie`,
     {
       credentials: 'same-origin',
     }
@@ -115,7 +109,7 @@ const recruitmentCharts = () => {
 
   // fetch data for the bar chart.
   fetch(
-    API.recruitmentBarData,
+    `${baseURL}/statistics/charts/siterecruitment_bysex`,
     {
       credentials: 'same-origin',
     }
@@ -208,7 +202,7 @@ const maxY = (data) => {
 const studyProgressionCharts = () => {
   // fetch data for the line chart.
   fetch(
-    API.scanLineData,
+    `${baseURL}/statistics/charts/scans_bymonth`,
     {
       credentials: 'same-origin',
     }
@@ -292,7 +286,7 @@ const studyProgressionCharts = () => {
 
   // fetch data for the line chart.
   fetch(
-    API.scanLineDataRecruitment,
+    `${baseURL}/statistics/charts/siterecruitment_line`,
     {
       credentials: 'same-origin',
     }
@@ -422,25 +416,6 @@ const setupFilters = () => {
     applyFilter('user_accounts', {'pending': 'Y'});
   });
 };
-
-/**
- * Solves c3.js position bug on hidden panels.
- */
-// window.addEventListener('resize', () => {
-//   // resize only when element is visible.
-//   if (scanLineChart.element.clientHeight !== 0) {
-//     scanLineChart.resize();
-//   }
-//   if (recruitmentPieChart.element.clientHeight !== 0) {
-//     recruitmentPieChart.resize();
-//   }
-//   if (recruitmentBarChart.element.clientHeight !== 0) {
-//     recruitmentBarChart.resize();
-//   }
-//   if (recruitmentLineChart.element.clientHeight !== 0) {
-//     recruitmentLineChart.resize();
-//   }
-// });
 
 export {
   recruitmentCharts,
