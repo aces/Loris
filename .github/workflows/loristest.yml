@@ -4,6 +4,9 @@ on:
   - push
   - pull_request
 
+env:
+  EEG_VIS_ENABLED: 'true'
+
 jobs:
   build:
     runs-on: ubuntu-latest

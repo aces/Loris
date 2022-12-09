@@ -67,12 +67,17 @@ const mod = {
  * to avoid import errors and optimize performance
  */
 
-const getConfig = cp.spawnSync('php', [
-  'tools/get_config.php',
-  'useEEGBrowserVisualizationComponents',
-], {});
+let EEGVisEnabled = false;
+if ('EEG_VIS_ENABLED' in process.env) {
+  EEGVisEnabled = process.env.EEG_VIS_ENABLED;
+} else {
+  const getConfig = cp.spawnSync('php', [
+    'tools/get_config.php',
+    'useEEGBrowserVisualizationComponents',
+  ], {});
 
-const EEGVisEnabled = JSON.parse(getConfig.stdout);
+  EEGVisEnabled = JSON.parse(getConfig.stdout);
+}
 
 modulePlugins.push(
   new DefinePlugin({
