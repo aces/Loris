@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import 'c3/c3.min.css';
 import c3 from 'c3';
 import {select} from 'd3';
@@ -369,56 +367,7 @@ const studyProgressionCharts = () => {
   });
 };
 
-/**
- * applyFilter
- * @param {string} testName
- * @param {object} filters
- */
-const applyFilter = (testName, filters) => {
-  const form = $('<form />', {
-    'action': baseURL + '/' + testName + '/',
-    'method': 'post',
-  });
-  const values = {
-    'reset': 'true',
-    'filter': 'Show Data',
-  };
-  $.extend(values, filters);
-  $.each(values, function(name, value) {
-    $('<input />', {
-      type: 'hidden',
-      name: name,
-      value: value,
-    }).appendTo(form);
-  });
-  form.appendTo('body').submit();
-};
-
-/**
- * setupFilters - used for the My Tasks widgets.
- */
-const setupFilters = () => {
-  // Turn on the tooltip for the progress bar - shows total
-  // male and female registered candidates
-  $('.progress-bar').tooltip();
-
-  // My Tasks widget
-  $('.new-scans').click(function(e) {
-    e.preventDefault();
-    console.log('test');
-    applyFilter('imaging_browser', {'Pending': 'PN'});
-  });
-
-  // My Tasks widget
-  $('.pending-accounts').click(function(e) {
-    e.preventDefault();
-    console.log('test');
-    applyFilter('user_accounts', {'pending': 'Y'});
-  });
-};
-
 export {
   recruitmentCharts,
   studyProgressionCharts,
-  setupFilters,
 };
