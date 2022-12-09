@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import 'c3/c3.min.css';
 import c3 from 'c3';
 import {select} from 'd3';
 
@@ -26,6 +27,23 @@ const siteColours = [
 
 // Colours for the recruitment bar chart: breakdown by sex
 const sexColours = ['#2FA4E7', '#1C70B6'];
+
+/**
+ * elementVisibility - used to resize charts when element becomes visible.
+ * @param {HTMLElement} element
+ * @param {function} callback
+ */
+const elementVisibility = (element, callback) => {
+  const options = {
+    root: document.documentElement,
+  };
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      callback(entry.intersectionRatio > 0);
+    });
+  }, options);
+  observer.observe(element);
+};
 
 /**
  * formatPieData - used for the recruitment widget
@@ -75,6 +93,9 @@ const recruitmentCharts = () => {
         const recruitmentPieData = formatPieData(data);
         recruitmentPieChart = c3.generate({
           bindto: '#recruitmentPieChart',
+          size: {
+            width: 227,
+          },
           data: {
             columns: recruitmentPieData,
             type: 'pie',
@@ -83,7 +104,11 @@ const recruitmentCharts = () => {
             pattern: siteColours,
           },
         });
-        recruitmentPieChart.resize();
+        elementVisibility(recruitmentPieChart.element, (visible) => {
+          if (visible) {
+            recruitmentPieChart.resize();
+          }
+        });
       }).catch((error) => {
     console.error(error);
   });
@@ -102,8 +127,7 @@ const recruitmentCharts = () => {
         recruitmentBarChart = c3.generate({
           bindto: '#recruitmentBarChart',
           size: {
-            width: 636,
-            height: 266,
+            width: 461,
           },
           data: {
             columns: recruitmentBarData,
@@ -122,7 +146,11 @@ const recruitmentCharts = () => {
             pattern: sexColours,
           },
         });
-        recruitmentBarChart.resize();
+        elementVisibility(recruitmentBarChart.element, (visible) => {
+          if (visible) {
+            recruitmentBarChart.resize();
+          }
+        });
       }).catch((error) => {
     console.error(error);
   });
@@ -252,6 +280,11 @@ const studyProgressionCharts = () => {
             // $(this).toggleClass('c3-legend-item-hidden');
             scanLineChart.toggle(id);
           });
+        elementVisibility(scanLineChart.element, (visible) => {
+          if (visible) {
+            scanLineChart.resize();
+          }
+        });
         scanLineChart.resize();
       }).catch((error) => {
     console.error(error);
@@ -331,6 +364,11 @@ const studyProgressionCharts = () => {
         // $(this).toggleClass('c3-legend-item-hidden');
         recruitmentLineChart.toggle(id);
       });
+    elementVisibility(recruitmentLineChart.element, (visible) => {
+      if (visible) {
+        recruitmentLineChart.resize();
+      }
+    });
     recruitmentLineChart.resize();
   }).catch((error) => {
     console.error(error);
@@ -385,32 +423,27 @@ const setupFilters = () => {
   });
 };
 
-const resizeHandler = () => {
-  const elements = document.querySelectorAll(
-    '[data-target="1_panel_content"]'
-  );
-  console.log('elements is ');
-  console.log(elements);
-  for (const element of elements) {
-    element.addEventListener('click', () => {
-      setTimeout(() => {
-        console.log('click happened');
-        recruitmentPieChart.resize();
-        recruitmentBarChart.resize();
-        scanLineChart.resize();
-        recruitmentLineChart.resize();
-      }, 100);
-    });
-  }
-  // recruitmentPieChart.resize();
-  // recruitmentBarChart.resize();
-  // scanLineChart.resize();
-  // recruitmentLineChart.resize();
-};
+/**
+ * Solves c3.js position bug on hidden panels.
+ */
+// window.addEventListener('resize', () => {
+//   // resize only when element is visible.
+//   if (scanLineChart.element.clientHeight !== 0) {
+//     scanLineChart.resize();
+//   }
+//   if (recruitmentPieChart.element.clientHeight !== 0) {
+//     recruitmentPieChart.resize();
+//   }
+//   if (recruitmentBarChart.element.clientHeight !== 0) {
+//     recruitmentBarChart.resize();
+//   }
+//   if (recruitmentLineChart.element.clientHeight !== 0) {
+//     recruitmentLineChart.resize();
+//   }
+// });
 
 export {
   recruitmentCharts,
   studyProgressionCharts,
   setupFilters,
-  resizeHandler,
 };

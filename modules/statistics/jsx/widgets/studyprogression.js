@@ -52,24 +52,24 @@ const StudyProgression = (props) => {
       id='statistics_studyprogression'
       views={[
         {visible: true,
-          content: <div id='scans-line-chart-panel'>
+          content: <>
             {siteScans}
             <small><i>Note that the Recruitment and Study Progression charts
               &nbsp;include data from ineligible, excluded, and consent
               &nbsp;withdrawn candidates.</i>
             </small>
-          </div>,
+          </>,
           title: 'Study Progression - site scans',
         },
         {visible: true,
-          content: <div id='recruitment-line-chart-panel'>
+          content: <>
             <h5 className='chart-title'>Recruitment per site</h5>
             {siteRecruitments}
             <small><i>Note that the Recruitment and Study Progression charts
               &nbsp;include data from ineligible, excluded, and consent
               &nbsp;withdrawn candidates.</i>
             </small>
-          </div>,
+          </>,
           title: 'Study Progression - site recruitment',
         },
       ]}

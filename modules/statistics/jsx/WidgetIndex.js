@@ -7,7 +7,6 @@ import {
   recruitmentCharts,
   studyProgressionCharts,
   setupFilters,
-  resizeHandler,
 } from './widgets/chartBuilder';
 
 /**
@@ -41,7 +40,6 @@ const WidgetIndex = (props) => {
       // Process statistics for c3.js
       studyProgressionCharts();
       setupFilters();
-      resizeHandler();
     }).catch((error) => {
       // Error occurred.
       console.error(error);

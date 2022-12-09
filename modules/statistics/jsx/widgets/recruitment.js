@@ -173,26 +173,23 @@ const Recruitment = (props) => {
       views={[
         {visible: true,
           content:
-            <div className='recruitment-panel'
-                 id='overall-recruitment'>
+            <>
               {overall}
-            </div>,
+            </>,
           title: 'Recruitment - overall',
         },
         {visible: true,
           content:
-            <div className='recruitment-panel'
-                 id='recruitment-site-breakdown'>
+            <>
               {siteBreakdown}
-            </div>,
+            </>,
           title: 'Recruitment - site breakdown',
         },
         {visible: true,
           content:
-            <div className='recruitment-panel'
-                 id='recruitment-project-breakdown'>
+            <>
               {projectBreakdown}
-            </div>,
+            </>,
           title: 'Recruitment - project breakdown',
         },
       ]}
