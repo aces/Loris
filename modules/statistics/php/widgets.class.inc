@@ -7,10 +7,10 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
 
 /**
- * The Recruitment Class.
+ * The Widgets Class.
  *
  * This class provides the php code to retrieve the statistics
- * for recruitment data.
+ * for recruitment and study progression data.
  *
  * @category Loris
  * @package  Statistics
@@ -18,7 +18,7 @@ use \LORIS\Middleware\ETagCalculator;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Recruitment extends \NDB_Page implements ETagCalculator
+class Widgets extends \NDB_Page implements ETagCalculator
 {
     /**
      * A cache of the endpoint results, so that it doesn't need to be
@@ -95,9 +95,9 @@ class Recruitment extends \NDB_Page implements ETagCalculator
         }
 
         $values = [];
-        // recruitment.tpl
+        // Used for the react widget recruitment.js
         $values['recruitment'] = $recruitment;
-        // studyprogression.tpl"
+        // Used for the react widget studyprogression.js
         $values['studyprogression'] = [
             'total_scans' => $totalScans,
             'recruitment' => $recruitment

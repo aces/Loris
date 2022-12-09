@@ -20,23 +20,14 @@ const WidgetIndex = (props) => {
    * Similar to componentDidMount and componentDidUpdate.
    */
   useEffect(() => {
-    // fetch recruitment data.
+    // fetch recruitment and study progression data.
     fetchData(
-      `${props.baseURL}/Recruitment`
+      `${props.baseURL}/Widgets`
     ).then((json) => {
       setRecruitmentData(json);
-      // Process statistics for c3.js
-      recruitmentCharts();
-    }).catch((error) => {
-      // Error occurred.
-      console.error(error);
-    });
-    // fetch progression data.
-    fetchData(
-      `${props.baseURL}/Progression`
-    ).then((json) => {
       setStudyProgressionData(json);
-      // Process statistics for c3.js
+      // setup statistics for c3.js charts.
+      recruitmentCharts();
       studyProgressionCharts();
     }).catch((error) => {
       // Error occurred.
