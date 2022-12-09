@@ -8,6 +8,14 @@ import {scaleOrdinal} from 'd3-scale';
 
 export const colorOrder = scaleOrdinal();
 
+/**
+ * hex2rgba
+ *
+ * @param {object} root - An object
+ * @param {string} root.color - An hexadecimal color
+ * @param {number} root.alpha - Opacity
+ * @returns {string} - An rgba expression
+ */
 export const hex2rgba = ({color = '#000000', alpha = 1} : {
   color: string,
   alpha: number,

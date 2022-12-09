@@ -24,7 +24,7 @@ export type Reducer = (state: State, action?: Action) => State;
  *
  * @param {State} state - The current state
  * @param {Action} action - The action
- * @return {State} - The updated state
+ * @returns {State} - The updated state
  */
 export const montageReducer: Reducer = (
   state = {electrodes: [], hidden: []},

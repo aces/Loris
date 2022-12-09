@@ -20,7 +20,12 @@ type FetchedChunks = {
   chunks: Chunk[]
 };
 
-
+/**
+ *
+ * @param {FetchedChunks} root - The fetched chunks
+ * @param {number} root.channelIndex - The channel index
+ * @returns {Function} - Dispatch actions to the store
+ */
 export const loadChunks = ({channelIndex, ...rest}: FetchedChunks) => {
   return (dispatch: (_: any) => void) => {
     const filters: Filter[] = window.EEGLabSeriesProviderStore
@@ -61,6 +66,12 @@ type State = {bounds: BoundsState, dataset: DatasetState};
 
 const UPDATE_DEBOUNCE_TIME = 100;
 
+/**
+ * createFetchChunksEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable} - An observable
+ */
 export const createFetchChunksEpic = (fromState: (any) => State) => (
   action$: Observable<any>,
   state$: Observable<any>

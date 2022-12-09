@@ -7,7 +7,7 @@ export type Vector2 = typeof glMatrix.ARRAY_TYPE;
  *
  * @param {Function[]} f - an array of functions
  * @param {Vector2} p - a point
- * @return {Vector2} - a vector
+ * @returns {Vector2} - a vector
  */
 export const ap = (
   f: [(_: any) => any, (_: any) => any],

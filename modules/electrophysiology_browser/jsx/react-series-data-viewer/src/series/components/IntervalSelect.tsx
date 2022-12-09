@@ -23,6 +23,18 @@ type CProps = {
   updateFilteredEpochs: (_: void) => void,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.domain
+ * @param root0.interval
+ * @param root0.setInterval
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.updateFilteredEpochs
+ */
 const IntervalSelect: FunctionComponent<CProps> = ({
   viewerHeight,
   domain,

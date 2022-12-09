@@ -22,6 +22,19 @@ type CProps = {
   interval: [number, number],
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.rightPanel
+ * @param root0.setCurrentAnnotation
+ * @param root0.setTimeSelection
+ * @param root0.setRightPanel
+ * @param root0.toggleEpoch
+ * @param root0.updateActiveEpoch
+ * @param root0.interval
+ */
 const EventManager = ({
   epochs,
   filteredEpochs,
@@ -140,6 +153,9 @@ const EventManager = ({
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
 
+            /**
+             *
+             */
             const handleCommentVisibilityChange = () => {
               if (!visibleComments.includes(index)) {
                 setVisibleComments([
@@ -153,6 +169,9 @@ const EventManager = ({
               }
             };
 
+            /**
+             *
+             */
             const handleEditClick = () => {
               setCurrentAnnotation(epoch);
               setRightPanel('annotationForm');

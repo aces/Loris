@@ -21,6 +21,12 @@ type CProps = {
   physioFileID: number,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.electrodes
+ * @param root0.physioFileID
+ */
 const EEGMontage = (
   {
     electrodes,
@@ -49,12 +55,20 @@ const EEGMontage = (
     .rotateZ( startAngle)
     .rotateX(-startAngle);
 
+  /**
+   *
+   * @param v
+   */
   const dragStart = (v: any) => {
     setDrag(true);
     setMx(v[0]);
     setMy(v[1]);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragged = (v: any) => {
     if (!drag) return;
     const beta = (v[0] - mx + mouseX) * -2 * Math.PI;
@@ -67,6 +81,10 @@ const EEGMontage = (
     setAngleZ(angleZ);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragEnd = (v: any) => {
     setDrag(false);
     setMouseX(v[0] - mx + mouseX);
@@ -185,6 +203,9 @@ const EEGMontage = (
     scatter2D.push({x: x * scale2D, y: y * scale2D});
   });
 
+  /**
+   *
+   */
   const Montage3D = () => (
     <Group>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
@@ -205,6 +226,9 @@ const EEGMontage = (
     </Group>
   );
 
+  /**
+   *
+   */
   const Montage2D = () => (
     <Group>
       <line

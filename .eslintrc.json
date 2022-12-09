@@ -95,6 +95,18 @@
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
+        "jsdoc/require-jsdoc": [
+          "error",
+          {"require": {
+            "ArrowFunctionExpression": true,
+            "FunctionExpression": true,
+            "ClassDeclaration": true,
+            "MethodDefinition": true
+          }}
+        ],
+        "jsdoc/require-param-description": "error",
+        "jsdoc/require-returns": "error",
+        "jsdoc/require-returns-description": "error",
         "no-undef": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-explicit-any": "off"

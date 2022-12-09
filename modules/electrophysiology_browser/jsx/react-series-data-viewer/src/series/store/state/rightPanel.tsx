@@ -16,7 +16,7 @@ export type Reducer = (state: RightPanel, action?: Action) => RightPanel;
  *
  * @param {RightPanel} state - The current state
  * @param {Action} action - The action
- * @return {RightPanel} - The updated state
+ * @returns {RightPanel} - The updated state
  */
 export const panelReducer: Reducer = (state = null, action) => {
   if (!action) {
