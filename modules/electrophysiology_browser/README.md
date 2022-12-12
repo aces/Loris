@@ -45,7 +45,7 @@ New annotations or edits to existing annotations made through the browser must a
 
 ## <a name="installation-requirements-to-use-the-visualization-features"></a> Installation requirements to use the visualization features
 
-The visualization component requires Protocol Buffers v3.0.0 or higher (v3.x.x recommended).
+The visualization component requires Protocol Buffers v3.0.0 or higher (< v3.21 recommended, see [Troubleshooting section](#troubleshooting-error-when-trying-to-use-protobuf-v21-and-higher)).
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
 
 In order to automatically generate the protoc compiled files, add the following block in `modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json`:
