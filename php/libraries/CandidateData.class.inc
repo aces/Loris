@@ -44,7 +44,7 @@ class CandidateData
         ?CandID $candID=null,
         ?\ProjectID $registrationProjectID=null,
         ?\CenterID $registrationCenterID=null,
-        ?array $timepoints=null,
+        ?array $timepoints=null
     ) {
         if ($candID !== null) {
             $this->CandID = $candID;
