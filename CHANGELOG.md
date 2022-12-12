@@ -17,7 +17,7 @@ changes in the following format: PR #1234***
 - Rename subproject to Cohort (PR #7817)
 - Create new CohortData and CohortController classes to use as data access model 
   and transfer object (PR #7817)
-- 
+- BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
 
 #### Bug Fixes
 - placeholder
@@ -121,7 +121,6 @@ multi-echo aquisitions (PR #7515).
 from the `psc` table. The default value of `CenterID` is `NULL`. Previously, the 
 default for `Center_name` was `AAAA` or `ZZZZ`. (PR #7525)
 - The statistics displayed in the dashboard was changed to only show the data relevant to the user's site(s). (PR #8132)
-- BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
 
 #### Bug Fixes
 - A LINST instrument Date field name now appears correctly (not truncated) on the 
