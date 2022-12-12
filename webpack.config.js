@@ -4,6 +4,10 @@ const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const cp = require('child_process');
+const {IgnorePlugin, DefinePlugin} = require('webpack');
+
+const modulePlugins = [];
 
 const optimization = {
   minimizer: [
@@ -55,18 +59,43 @@ const mod = {
   rules: [],
 };
 
-// If no compiled chunk.proto found, desactivate compilation
-// on the file importing it to avoid import errors
-// chunk.proto is only required for EEG visualization and requires protoc
-if (!fs.existsSync(
-  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
-  + 'protocol-buffers/chunk_pb.js')
-) {
-  mod.rules.push({
-    test: /react-series-data-viewer\/src\/chunks/,
-    use: 'null-loader',
-  });
+/*
+ * ------------------------------------------------------------
+ * Check if useEEGBrowserVisualizationComponents is set to TRUE
+ * If not, protoc compiled file chunk.proto may not exist.
+ * Deactivate compilation of the EEGBrowserVisualization files
+ * to avoid import errors and optimize performance
+ */
+
+let EEGVisEnabled = false;
+if ('EEG_VIS_ENABLED' in process.env) {
+  EEGVisEnabled = process.env.EEG_VIS_ENABLED;
+} else {
+  const getConfig = cp.spawnSync('php', [
+    'tools/get_config.php',
+    'useEEGBrowserVisualizationComponents',
+  ], {});
+
+  EEGVisEnabled = JSON.parse(getConfig.stdout);
 }
+
+modulePlugins.push(
+  new DefinePlugin({
+    EEG_VIS_ENABLED: EEGVisEnabled,
+  })
+);
+
+if (EEGVisEnabled !== 'true') {
+  modulePlugins.push(
+    new IgnorePlugin({
+      resourceRegExp: /react-series-data-viewer/,
+    })
+  );
+}
+
+/*
+ * ------------------------------------------------------------
+ */
 
 mod.rules.push(
   {
@@ -115,15 +144,15 @@ try {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
- * @param {boolean} override - Is the module an override or a native LORIS module.
  *
  * @return {object} - The webpack configuration
  */
-function lorisModule(mname, entries, override=false) {
+function lorisModule(mname, entries) {
   let entObj = {};
   let base = './modules';
 
-  if (override) {
+  // Check if an override exists in ./project/
+  if (fs.existsSync('./project/modules/' + mname)) {
     base = './project/modules';
   }
 
@@ -148,6 +177,7 @@ function lorisModule(mname, entries, override=false) {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${mode}"`,
       }),
+      ...modulePlugins,
     ],
     optimization: optimization,
     resolve: resolve,
