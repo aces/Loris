@@ -401,7 +401,8 @@ class CreateTimepoint extends React.Component {
       />
     ) : null;
     // Include languages select.
-    const emptyLangOption = Object.keys(data.languages).length > 1;
+    const emptyLangOption =
+      Object.keys(this.state.form.options.languages).length > 1;
     const languages = this.state.form.display.languages ? (
       <SelectElement
         id={'languageID'}
