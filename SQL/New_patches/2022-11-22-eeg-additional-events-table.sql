@@ -4,7 +4,7 @@ CREATE TABLE `physiological_task_event_opt` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PhysiologicalTaskEventID` int(10) unsigned NOT NULL,
     `TaskName` varchar(50) NOT NULL,
-    `TaskValue` varchar(255) NOT NULL,
+    `TaskValue` varchar(255) NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_event_task_opt`
         FOREIGN KEY (`PhysiologicalTaskEventID`)
