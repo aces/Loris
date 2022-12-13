@@ -14,7 +14,8 @@ namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \Loris\StudyEntities\Candidate\CandID;
+
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The timepoint list menu
@@ -99,12 +100,14 @@ class Timepoint_List extends \NDB_Menu
             $listOfSessionIDs,
         );
 
-        $listOfTimePoints = array_filter(
-            $listOfTimePoints,
-            function ($timePoint) use ($user) {
-                return $timePoint->isAccessibleBy($user);
-            }
-        );
+        if ($user->hasPermission('access_all_profiles') === false) {
+            $listOfTimePoints = array_filter(
+                $listOfTimePoints,
+                function ($timePoint) use ($user) {
+                    return $timePoint->isAccessibleBy($user);
+                }
+            );
+        }
 
         /*
          * List of visits
@@ -202,7 +205,7 @@ class Timepoint_List extends \NDB_Menu
                 new \SessionID($listOfSessionIDs[0])
             );
 
-            $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
+            $this->tpl_data['CohortID'] = $timePoint->getCohortID();
 
         } // end list
 

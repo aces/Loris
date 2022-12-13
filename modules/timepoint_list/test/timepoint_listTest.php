@@ -56,10 +56,18 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     function testTimepointListPageLoad()
     {
         $this->safeGet($this->url . "/" . self::$_TST0001_CANDID . "/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Candidate Profile", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Checks the contents of the session table and compares it against an expected

@@ -50,11 +50,21 @@ cat raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql
 
 ***Important:** Ensure that the above commands were completed properly and that all the tables were dropped before continuing the installation process.*
 
+If you could not drop all the tables with the commands above, you have the option to drop the tables by manually sourcing these .sql files directly 
+from the mysql command line as follows:
+```bash
+mysql> source /var/www/loris/raisinbread/instruments/instrument_sql/9999-99-99-drop_instrument_tables.sql
+mysql> source /var/www/loris/SQL/9999-99-99-drop_tables.sql
+```
+***Note:** It's important to drop the tables in the order listed above.*
+
 In order to be able to use the RaisinBread dataset, the LORIS SQL schema needs to be
 sourced, followed by the different instrument schemas and finally the actual RB data.
 The commands below assume that the current working directory is the main LORIS root
 directory. If the tables were not deleted or created properly, the schemas can be sourced 
 directly on the mysql command line.
+
+***Note:** It's important to load the RaisinBread tables in the order listed below.*
 
 ```bash
 cat SQL/0000-00-00-schema.sql \
@@ -80,7 +90,7 @@ some configurations are necessary.
 3. Change the values of the `Config` table of the SQL database to reflect the 
 correct `host` and `base` values
 4. copy the `raisinbread/instruments/` instrument PHP and LINST files to the 
-`projects/instruments/` directory
+`project/instruments/` directory
 
 > The password of the `admin` user on the RB database is `demo20!7`
 
@@ -127,11 +137,11 @@ sourcing these files and exporting them, the modification will be reported as gi
 uncommitted changes and thus they can be verified and submitted to the LORIS repo 
 in the same pull request as the code.
 
-Note: when contributing back new imaging files in raisinbread, the file 
-RB_parameter_file.sql can become too big due to the complete header being dumped 
-in the parameter_file using ParameterTypeID=238. To decrease the size of the 
-RB_parameter_file.sql file, run the following query on your mysql and recreate
-the RB_parameter_file.sql file.
+***Note:** When contributing back new imaging files in raisinbread, the file 
+RB\_parameter\_file.sql can become too big due to the complete header being dumped 
+in the parameter\_file using ParameterTypeID=238. To decrease the size of the 
+RB\_parameter\_file.sql file, run the following query on your mysql and recreate
+the RB\_parameter\_file.sql file.*
 
 ```SQL
 DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Name='header';
@@ -139,12 +149,16 @@ DELETE FROM parameter_file JOIN parameter_type USING (ParameterTypeID) WHERE Nam
 
 ### Troubleshooting
 
-If you are having issues sourcing RB using the single command above, you can try to 
-use the following comands sequentially. These commands echo the name of the SQL 
+ - If you are having issues sourcing RB using the single command above, you can try to 
+use the following commands sequentially. These commands echo the name of the SQL 
 script before running it which helps to identify exactly what SQL statement is failing.
 
-```bash
-for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
-for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
-for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
-```
+   ```bash
+   for n in SQL/0000-*.sql; do echo $n; cat $n | mysql || break; done;
+   for n in raisinbread/instruments/instrument_sql/*.sql; do echo $n; cat $n | mysql || break; done;
+   for n in raisinbread/RB_files/*.sql; do echo $n; cat $n | mysql || break; done;
+   ```
+
+ - If you are having issues running independent scoring algorithms such as the example `bmi.score`
+file, make sure the scorer file is in the `project/instruments` directory and is exectutable by 
+apache.

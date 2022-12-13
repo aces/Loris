@@ -1,14 +1,5 @@
-<?php declare(strict_types=1);
-/**
- * PHP version 7
- *
- * @category Genomics
- * @package  Main
- * @author   Xavier Lecours <xavier.lecours@mcin.ca>
- *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
- */
+<?php
+declare(strict_types=1);
 
 namespace LORIS\genomic_browser\provisioners;
 
@@ -17,27 +8,20 @@ namespace LORIS\genomic_browser\provisioners;
  *
  * PHP version 7
  *
- * @category Datadict
+ * @category Genomics
  * @package  Main
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
 {
-    private $_and = '';
-
     /**
      * Create a RowProvisioner
      */
     function __construct()
     {
-        $user = \User::singleton();
-        if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $site_arr   = implode(",", $user->getCenterIDs());
-            $this->_and = " AND candidate.RegistrationCenterID IN ($site_arr)";
-        }
         parent::__construct(
             "
            SELECT
@@ -45,7 +29,9 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LPAD(candidate.CandID, 6, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
-                cohort.SubprojectID AS _Subproject,
+                candidate.RegistrationCenterID as _centerID,
+                candidate.RegistrationProjectID as _projectID,
+                cohort.CohortID AS _Cohort,
                 DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 gscr.sample_label AS _Sample,
                 cpg.cpg_name AS _cpg_name,
@@ -79,7 +65,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LEFT JOIN (
                     SELECT
                         s.CandID,
-                        min(s.subprojectID) AS SubprojectID
+                        min(s.cohortID) AS CohortID
                     FROM
                         session s
                     GROUP BY
@@ -95,7 +81,6 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 cpg.beta_value IS NOT NULL
                 AND candidate.Entity_type = 'Human'
                 AND candidate.Active = 'Y'
-                $this->_and
             ",
             [],
             '\LORIS\genomic_browser\Models\MethylationDTO'

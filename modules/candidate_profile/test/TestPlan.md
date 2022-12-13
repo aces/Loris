@@ -36,7 +36,7 @@ that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (M
     - Age
     - Sex
     - Project
-    - Subproject
+    - Cohort
     - Site
     - Visits
 2. Ensure that any visits under "Visits" are links that go to the

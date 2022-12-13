@@ -133,7 +133,7 @@ class Project implements \JsonSerializable
      * @param integer|null $recruitmentTarget The number of expected participants
      *
      * @note If the recruitmentTarget is missing or null, this project
-     * recruitmentTarget will be the sum of all its subprojects recruitmentTarget
+     * recruitmentTarget will be the sum of all its cohorts recruitmentTarget
      * see: getRecruitmentTarget
      *
      * @return Project the Project object
@@ -154,7 +154,7 @@ class Project implements \JsonSerializable
         // TODO :: Add unique constraint to the name column of the Project table
         $projectId = $factory->database()->pselectOne(
             "
-            SELECT 
+            SELECT
               projectId
             FROM
               Project
@@ -287,7 +287,7 @@ class Project implements \JsonSerializable
      * Get the project's recruitment target.
      *
      * @note If the database value is null then the return value will be the sum of
-     * all this project's subproject recruitment target.
+     * all this project's cohort recruitment target.
      *
      * @return int
      */
@@ -295,7 +295,7 @@ class Project implements \JsonSerializable
     {
         if (empty($this->_recruitmentTarget)) {
             $total = array_reduce(
-                $this->getSubprojects(),
+                $this->getCohorts(),
                 function ($carry, $item) {
                     return (int )($carry + $item->_recruitmentTarget);
                 },
@@ -355,32 +355,34 @@ class Project implements \JsonSerializable
     }
 
     /**
-     * Get that project subprojects as defined in the project_subproject_rel table
+     * Get that project cohorts as defined in the project_cohort_rel table
      *
-     * @return array A list of object representation of subprojects
+     * @note Move function to cohort class
+     *
+     * @return array A list of object representation of cohorts
      */
-    public function getSubprojects(): array
+    public function getCohorts(): array
     {
-        $factory        = \NDB_Factory::singleton();
-        $subProjectData = $factory->database()->pselect(
+        $factory    = \NDB_Factory::singleton();
+        $cohortData = $factory->database()->pselect(
             "
             SELECT
-              sp.subprojectId,
+              sp.cohortId,
               sp.title,
               sp.useEDC,
               sp.windowDifference,
               sp.recruitmentTarget
             FROM
-              project_subproject_rel psr
-            JOIN 
-              subproject sp USING (subprojectId)
+              project_cohort_rel psr
+            JOIN
+              cohort sp USING (cohortId)
             WHERE
               psr.projectId = :v_project_id
             ",
             ['v_project_id' => $this->_projectId]
         );
 
-        return $subProjectData;
+        return $cohortData;
     }
 
     /**
@@ -414,45 +416,45 @@ class Project implements \JsonSerializable
     }
 
     /**
-     * Inserts new subproject IDs into the database, creating a relationship
+     * Inserts new cohort IDs into the database, creating a relationship
      * between them and this project.
      *
-     * @param int[] $ids The new subprojectIDs.
+     * @param int[] $ids The new cohortIDs.
      *
      * @return void
      */
-    public function insertSubprojectIDs(array $ids): void
+    public function insertCohortIDs(array $ids): void
     {
         $db = \NDB_Factory::singleton()->database();
         foreach ($ids as $id) {
             $db->insertIgnore(
-                'project_subproject_rel',
+                'project_cohort_rel',
                 [
-                    'ProjectID'    => $this->_projectId,
-                    'SubprojectID' => $id,
+                    'ProjectID' => $this->_projectId,
+                    'CohortID'  => $id,
                 ]
             );
         }
     }
 
     /**
-     * Deletes subproject IDs from the database.
+     * Deletes cohort IDs from the database.
      *
-     * @param int[] $ids The old subprojectIDs to delete.
+     * @param int[] $ids The old cohortIDs to delete.
      *
      * @return void
      */
-    public function deleteSubprojectIDs(array $ids): void
+    public function deleteCohortIDs(array $ids): void
     {
         $db = \NDB_Factory::singleton()->database();
         // The following can cause some deletions from the
-        // visit_project_subproject_rel table.
+        // visit_project_cohort_rel table.
         foreach ($ids as $id) {
             $db->delete(
-                'project_subproject_rel',
+                'project_cohort_rel',
                 [
-                    'ProjectID'    => $this->_projectId,
-                    'SubprojectID' => $id,
+                    'ProjectID' => $this->_projectId,
+                    'CohortID'  => $id,
                 ]
             );
         }
@@ -464,10 +466,63 @@ class Project implements \JsonSerializable
      * any type other than a resource.
      *
      * @see    https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed
+     * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : string
     {
         return $this->_projectName;
+    }
+
+    /**
+     * Getter for a list of projects associated with a given cohort. This
+     * function behaves as a bulk factory as well to avoid a call to the
+     * singleton function for every project. This also updates the static instances
+     * array containing a cache of projects.
+     *
+     * @param \LORIS\CohortData $cohort The cohort object for which we
+     *                                  want the associated cohorts
+     *
+     * @return \Project[] List of projects for the given cohort
+     */
+    public static function getProjectsForCohort(
+        \LORIS\CohortData $cohort
+    ) : array {
+        $projectsData = \NDB_Factory::singleton()->database()->pSelect(
+            "SELECT
+              projectId,
+              name,
+              Alias,
+              recruitmentTarget as recTarget
+            FROM
+              Project p
+              JOIN project_cohort_rel psr USING(ProjectID)
+            WHERE CohortID = :sid
+            ",
+            ['sid' => $cohort->id]
+        );
+
+        if (empty($projectsData)) {
+            throw new \NotFound(
+                "No projects found for cohort: " . $cohort->title
+            );
+        }
+        $projects = [];
+        foreach ($projectsData as $projectData) {
+            if (isset(self::$_instances[$projectData['name']])) {
+                $projects[] = self::$_instances[$projectData['name']];
+                break;
+            }
+            $project = new Project();
+
+            $project->_projectId         = new ProjectID($projectData['projectId']);
+            $project->_projectName       = $projectData['name'];
+            $project->_projectAlias      = $projectData['Alias'];
+            $project->_recruitmentTarget = (integer)$projectData['recTarget'];
+
+            self::$_instances[$projectData['name']] = $project;
+            $projects[] = $project;
+        }
+
+        return $projects;
     }
 }

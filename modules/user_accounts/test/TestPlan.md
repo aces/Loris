@@ -1,7 +1,7 @@
 User Account module - Test plan
 ===============================
 
-1. The page should only load if a user has the `user_accounts` or `user_accounts_multisite` permission.
+1. The page should only load if a user has the _User Accounts: View/Create/Edit User Accounts - Own Sites_ (`user_accounts`) or `user_accounts_multisite` permission.
 2. The User Module should display only users belonging to the same site as the active user, unless they have the permission `Across all sites create and edit users`.
 3. Click the `Clear Filters` button and verify it resets all filters.
 4. Verify that searching functions with all criteria: 

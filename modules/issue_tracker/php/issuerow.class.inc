@@ -22,10 +22,10 @@ class IssueRow implements
     /**
      * Create a new IssueRow
      *
-     * @param array   $row    The row (in the same format as \Database::pselectRow
-     *                        returns.
-     * @param array   $cids   The centerIDs affiliated with this row.
-     * @param \Module $module The module that this issue is for.
+     * @param array       $row    The row (in the same format
+                                  as \Database::pselectRow returns.)
+     * @param \CenterID[] $cids   The centerIDs affiliated with this row.
+     * @param \Module     $module The module that this issue is for.
      */
     public function __construct(array $row, array $cids, \Module $module)
     {

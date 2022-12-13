@@ -40,6 +40,14 @@ class StatisticsTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("General Description", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
 
     }
     /**
@@ -54,7 +62,7 @@ class StatisticsTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -74,7 +82,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/statistics/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(

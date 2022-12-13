@@ -85,7 +85,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDatadictDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
 
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
@@ -93,10 +93,18 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                     )
                 );
 
-                $bodyText = $this->webDriver->findElement(
+                $bodyText = $this->safeFindElement(
                     WebDriverBy::cssSelector("body")
                 )->getText();
                 $this->assertStringContainsString("Data Dictionary", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Testing UI elements when page loads

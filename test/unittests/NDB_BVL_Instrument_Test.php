@@ -118,6 +118,15 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->quickForm = new \LorisForm();
 
+        $dictionaryItem = $this->getMockBuilder(
+            \LORIS\Data\Dictionary\DictionaryItem::class
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dictionaryItem->method('getName')
+            ->willReturn('Test_Date_taken');
+        '@phan-var \LORIS\Data\Dictionary\DictionaryItem $dictionaryItem';
+
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
@@ -126,11 +135,27 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument->method('getFullName')->willReturn("Test Instrument");
         $instrument->method('getSubtestList')->willReturn([]);
-        $instrument->method('getDataDictionary')->willReturn([]);
+        $instrument->method('getDataDictionary')->willReturn([$dictionaryItem]);
 
         '@phan-var \NDB_BVL_Instrument $instrument';
+
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
+
+        // Use reflection to set the internal
+        // loris object that should have been
+        // set by the instrument constructor,
+        // if PHPunit hadn't disabled the constructor
+        $ref = new \ReflectionProperty(get_class($instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $instrument,
+            new \LORIS\LorisInstance(
+                $mockDB,
+                $mockConfig,
+                [],
+            )
+        );
 
         $this->_instrument = $instrument;
     }
@@ -405,6 +430,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             ["value" => "Option"],
             "Rule_message"
         );
+        $this->_instrument->form->setDefaults(['hourMinField' => '0']);
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
@@ -429,7 +456,8 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'name'    => 'hourMinField_status',
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
-                        'options' => [null => '',
+                        'options' => [
+                            ''             => '',
                             'dnk'          => 'DNK',
                             'refusal'      => 'Refusal',
                             'not_answered' => 'Not Answered',
@@ -476,7 +504,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ]
             ]
         );
-        $this->assertEquals($this->_instrument->monthYearFields[0], "Field1");
     }
 
     /**
@@ -523,7 +550,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
                         'options' => [
-                            null             => '',
+                            ''               => '',
                             '88_refused'     => "88 Refused",
                             '99_do_not_know' => "99 Do not know",
                             'not_answered'   => "Not Answered"
@@ -1024,21 +1051,21 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['SubprojectID' => '2', 'ProjectID' => '1',
-                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                ['CohortID' => '2', 'ProjectID' => '1',
+                    'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
     }
 
     /**
-     * Test that getSubprojectID returns the correct value
+     * Test that getCohortID returns the correct value
      * for the given session ID
      *
-     * @covers NDB_BVL_Instrument::getSubprojectID
+     * @covers NDB_BVL_Instrument::getCohortID
      * @return void
      */
-    function testGetSubprojectID()
+    function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
@@ -1048,8 +1075,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['SubprojectID' => '2','ProjectID' => '1']);
-        $this->assertEquals(2, $this->_instrument->getSubprojectID());
+            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+        $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
     /**
@@ -1111,18 +1138,19 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->assertEquals(
             $defaults,
             [
-                'ID'             => '1000',
-                'SessionID'      => '123',
-                'Test_name'      => 'Test_name1',
-                'CommentID'      => 'commentID1',
-                'Data_entry'     => null,
-                'Administration' => null,
-                'Validity'       => null,
-                'Exclusion'      => null,
-                'Flag_status'    => null,
-                'UserID'         => '456',
-                'Testdate'       => '2020-01-01 00:00:00',
-                'Data'           => null
+                'ID'                          => '1000',
+                'SessionID'                   => '123',
+                'Test_name'                   => 'Test_name1',
+                'CommentID'                   => 'commentID1',
+                'Data_entry'                  => '',
+                'Required_elements_completed' => 'N',
+                'Administration'              => '',
+                'Validity'                    => '',
+                'Exclusion'                   => null,
+                'Flag_status'                 => null,
+                'UserID'                      => '456',
+                'Testdate'                    => '2020-01-01 00:00:00',
+                'Data'                        => null
             ]
         );
     }
@@ -1140,8 +1168,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
-            'Test Examiner1',
-            $this->_instrument->getFieldValue('Examiner')
+            '2010-05-05',
+            $this->_instrument->getFieldValue('Date_taken')
         );
     }
 
@@ -1223,8 +1251,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     }
 
     /**
-     * Test that _setDefaultsArray changes the candidate age and sets
-     * the instrument's dateTimeFields value
+     * Test that _setDefaultsArray changes the candidate age
      *
      * @covers NDB_BVL_Instrument::_setDefaultsArray
      * @return void
@@ -1238,7 +1265,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $result   = $this->_instrument->_setDefaultsArray($defaults);
         $defaults['Candidate_Age'] = '2020-01-01 (Age out of range)';
         $this->assertEquals($defaults, $result);
-        $this->assertEquals(["Date_taken"], $this->_instrument->dateTimeFields);
     }
 
     /**
@@ -1254,7 +1280,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->testName  = 'Test Name1';
+        $this->_instrument->testName  = 'Test';
         $values = ['Date_taken' => '2005-06-06'];
         $this->_instrument->_saveCandidateAge($values);
         $this->assertEquals(
@@ -1311,7 +1337,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->testName  = 'TestName1';
+        $this->_instrument->testName  = 'Test';
         $this->_instrument->formType  = "XIN";
         $values = ['Date_taken' => '2005-06-06',
             'arthritis_age'        => 2,
@@ -1400,7 +1426,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements array is empty
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressNoRequiredEl()
@@ -1411,8 +1437,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Complete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'Y',
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
@@ -1421,7 +1447,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Incomplete' if the _requiredElements field and status field are not set
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithUnanswered()
@@ -1444,8 +1470,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Incomplete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'N',
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
@@ -1454,7 +1480,7 @@ class NDB_BVL_Instrument_Test extends TestCase
      * 'Complete' if the _requiredElements field and status field have set values
      *
      * @covers NDB_BVL_Instrument::determineDataEntryCompletionProgress
-     * @covers NDB_BVL_Instrument::_determineDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_determineRequiredElementsCompletedFlag
      * @return void
      */
     function testDetermineDataEntryCompletionProgressWithAnswered()
@@ -1477,63 +1503,63 @@ class NDB_BVL_Instrument_Test extends TestCase
             $this->_instrument->determineDataEntryCompletionProgress()
         );
         $this->assertEquals(
-            'Complete',
-            $this->_instrument->_determineDataEntryCompletionStatus()
+            'Y',
+            $this->_instrument->_determineRequiredElementsCompletedFlag()
         );
     }
 
     /**
-     * Test that getDataEntryCompletionStatus returns the correct data
+     * Test that getRequiredElementsCompletedFlag returns the correct data
      * from the database
      *
-     * @covers NDB_BVL_Instrument::getDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::getRequiredElementsCompleted
      * @return void
      */
-    function testGetDataEntryCompletionStatus()
+    function testGetRequiredElementsCompletedFlag()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
-            'Incomplete',
-            $this->_instrument->getDataEntryCompletionStatus()
+            'N',
+            $this->_instrument->getRequiredElementsCompletedFlag()
         );
     }
 
     /**
-     * Test that _setDataEntryCompletionStatus correctly sets the
-     * 'Data_entry_completion_status value in the instrument table
+     * Test that _setRequiredElementsCompleted correctly sets the
+     * 'Requires_elements_completed' value
      *
-     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_setRequiredElementsCompleted
      * @return void
      */
-    function testSetDataEntryCompletionStatus()
+    function testSetRequiredElementsCompletedFlag()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
-        $this->_instrument->_setDataEntryCompletionStatus('Complete');
-        $data = $this->_instrument->getInstanceData();
-        $this->assertEquals('Complete', $data['Data_entry_completion_status']);
+        $this->_instrument->_setRequiredElementsCompletedFlag('Y');
+        $status = $this->_instrument->getRequiredElementsCompletedFlag();
+        $this->assertEquals('Y', $status);
     }
 
     /**
-     * Test that _setDataEntryCompletionStatus throws an exception if
+     * Test that _setRequiredElementsCompletedFlag throws an exception if
      * the given status is not 'Complete' or 'Incomplete'
      *
-     * @covers NDB_BVL_Instrument::_setDataEntryCompletionStatus
+     * @covers NDB_BVL_Instrument::_setRequiredElementsCompletedFlag
      * @return void
      */
-    function testSetDataEntryCompletionStatusThrowsException()
+    function testSetRequiredElementsCompletedFlagThrowsException()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->expectException('Exception');
-        $this->_instrument->_setDataEntryCompletionStatus('BadString');
+        $this->_instrument->_setRequiredElementsCompletedFlag('BadString');
     }
 
     /**
@@ -1573,6 +1599,22 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->onlyMethods(
                 ["getFullName", "getSubtestList", "getDataDictionary"]
             )->getMock();
+
+        // Use reflection to set the internal
+        // loris object that should have been
+        // set by the instrument constructor,
+        // if PHPunit hadn't disabled the constructor
+        $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $otherInstrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_mockConfig,
+                [],
+            )
+        );
+
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
@@ -1637,7 +1679,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
         $this->_DB->run("DROP TEMPORARY TABLE IF EXISTS conflicts_unresolved");
         $this->assertEquals(null, $data['Examiner']);
-        $this->assertEquals('Incomplete', $data['Data_entry_completion_status']);
+        $status = $this->_instrument->getRequiredElementsCompletedFlag();
+        $this->assertEquals('N', $status);
         $this->assertEquals(
             $conflicts_data,
             $conflictsBefore
@@ -1809,24 +1852,26 @@ class NDB_BVL_Instrument_Test extends TestCase
             "flag",
             [
                 [
-                    'ID'             => '1000',
-                    'SessionID'      => '123',
-                    'CommentID'      => 'commentID1',
-                    'Test_name'      => 'Test_name1',
-                    'UserID'         => '456',
-                    'Data_entry'     => 'Incomplete',
-                    'Administration' => 'admin1',
-                    'Validity'       => 'valid1'
+                    'ID'                          => '1000',
+                    'SessionID'                   => '123',
+                    'CommentID'                   => 'commentID1',
+                    'Test_name'                   => 'Test_name1',
+                    'UserID'                      => '456',
+                    'Data_entry'                  => 'Incomplete',
+                    'Administration'              => 'admin1',
+                    'Validity'                    => 'valid1',
+                    'Required_elements_completed' => 'N'
                 ],
                 [
-                    'ID'             => '2000',
-                    'SessionID'      => '234',
-                    'CommentID'      => 'commentID2',
-                    'Test_name'      => 'Test_name2',
-                    'UserID'         => '457',
-                    'Data_entry'     => 'Complete',
-                    'Administration' => 'admin2',
-                    'Validity'       => 'valid2'
+                    'ID'                          => '2000',
+                    'SessionID'                   => '234',
+                    'CommentID'                   => 'commentID2',
+                    'Test_name'                   => 'Test_name2',
+                    'UserID'                      => '457',
+                    'Data_entry'                  => 'Complete',
+                    'Administration'              => 'admin2',
+                    'Validity'                    => 'valid2',
+                    'Required_elements_completed' => 'Y'
                 ],
             ]
         );
@@ -1851,14 +1896,14 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'           => '123',
-                    'CandID'       => 1,
-                    'SubprojectID' => '12'
+                    'ID'       => '123',
+                    'CandID'   => 1,
+                    'CohortID' => '12'
                 ],
                 [
-                    'ID'           => '234',
-                    'CandID'       => 2,
-                    'SubprojectID' => '12'
+                    'ID'       => '234',
+                    'CandID'   => 2,
+                    'CohortID' => '12'
                 ]
             ]
         );
@@ -1866,18 +1911,16 @@ class NDB_BVL_Instrument_Test extends TestCase
             "medical_history",
             [
                 [
-                    'CommentID'                    => 'commentID1',
-                    'UserID'                       => '456',
-                    'Examiner'                     => 'Test Examiner1',
-                    'Date_taken'                   => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete'
+                    'CommentID'  => 'commentID1',
+                    'UserID'     => '456',
+                    'Examiner'   => 'Test Examiner1',
+                    'Date_taken' => '2010-05-05'
                 ],
                 [
-                    'CommentID'                    => 'commentID2',
-                    'UserID'                       => '457',
-                    'Examiner'                     => 'Test Examiner2',
-                    'Date_taken'                   => '2010-05-05 00:00:01',
-                    'Data_entry_completion_status' => 'Incomplete'
+                    'CommentID'  => 'commentID2',
+                    'UserID'     => '457',
+                    'Examiner'   => 'Test Examiner2',
+                    'Date_taken' => '2010-05-05'
                 ],
             ]
         );
@@ -1885,11 +1928,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active'       => 'Y',
-                    'Test_name'    => 'TestName1_proband',
-                    'SubprojectID' => '12',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100
+                    'Active'     => 'Y',
+                    'Test_name'  => 'TestName1_proband',
+                    'CohortID'   => '12',
+                    'AgeMinDays' => 0,
+                    'AgeMaxDays' => 100
                 ]
             ]
         );
@@ -1897,11 +1940,13 @@ class NDB_BVL_Instrument_Test extends TestCase
             "parameter_type",
             [
                 [
+                    'Name'        => 'name 1',
                     'Description' => 'description 1',
                     'SourceField' => 'Not validity',
                     'SourceFrom'  => 'Testname1'
                 ],
                 [
+                    'Name'        => 'name 2',
                     'Description' => 'description 2',
                     'SourceField' => 'Validity',
                     'SourceFrom'  => 'Testname1'
@@ -1922,7 +1967,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
         $database      = $this->_config->getSetting('database');
-        $this->_DB     = \Database::singleton(
+        $this->_DB     = $this->_factoryForDB->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -1932,5 +1977,16 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_factoryForDB->setDatabase($this->_DB);
         $this->_factoryForDB->setConfig($this->_config);
+
+        $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $this->_instrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            )
+        );
     }
 }

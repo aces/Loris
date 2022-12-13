@@ -95,7 +95,13 @@ class BatteryManagerIndex extends Component {
       .then((body) => {
         body = JSON.parse(body);
         if (response.ok) {
-          resolve(body.message);
+          swal.fire('Submission successful!', body.message, 'success')
+          .then((result) => {
+            if (result.value) {
+              this.closeForm();
+              resolve(body.message);
+            }
+          });
         } else {
           swal.fire(body.error, '', 'error');
           reject(body.error);
@@ -155,8 +161,8 @@ class BatteryManagerIndex extends Component {
       case 'Instrument':
         result = <td>{this.state.options.instruments[cell]}</td>;
         break;
-      case 'Subproject':
-        result = <td>{this.state.options.subprojects[cell]}</td>;
+      case 'Cohort':
+        result = <td>{this.state.options.cohorts[cell]}</td>;
         break;
       case 'Site':
         result = <td>{this.state.options.sites[cell]}</td>;
@@ -307,10 +313,10 @@ class BatteryManagerIndex extends Component {
           type: 'select',
           options: options.stages,
         }},
-      {label: 'Subproject', show: true, filter: {
-          name: 'subproject',
+      {label: 'Cohort', show: true, filter: {
+          name: 'cohort',
           type: 'select',
-          options: options.subprojects,
+          options: options.cohorts,
         }},
       {label: 'Visit Label', show: true, filter: {
           name: 'visitLabel',
@@ -355,7 +361,7 @@ class BatteryManagerIndex extends Component {
         test.ageMinDays,
         test.ageMaxDays,
         test.stage,
-        test.subproject,
+        test.cohort,
         test.visitLabel,
         test.centerId,
         test.firstVisit,
@@ -413,7 +419,7 @@ class BatteryManagerIndex extends Component {
           test.ageMinDays == testCheck.ageMinDays &&
           test.ageMaxDays == testCheck.ageMaxDays &&
           test.stage == testCheck.stage &&
-          test.subproject == testCheck.subproject &&
+          test.cohort == testCheck.cohort &&
           test.visitLabel == testCheck.visitLabel &&
           test.centerId == testCheck.centerId &&
           test.firstVisit == testCheck.firstVisit

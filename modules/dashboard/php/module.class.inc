@@ -48,7 +48,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options)
     {
-        switch($type) {
+        switch ($type) {
         case 'dashboard':
             $factory = \NDB_Factory::singleton();
             $DB      = $factory->database();
@@ -136,8 +136,7 @@ class Module extends \Module
     private function _getTasksWidget()
     {
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
-        $modules = \Module::getActiveModules($DB);
+        $modules = $this->lorisinstance->getActiveModules();
         $user    = $factory->user();
 
         $widgets = [];

@@ -127,10 +127,10 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: 'Subproject', show: true, filter: {
-            name: 'subproject',
+          label: 'Cohort', show: true, filter: {
+            name: 'cohort',
             type: 'select',
-            options: ImgOptions.subproject,
+            options: ImgOptions.cohort,
           },
         },
         {

@@ -49,11 +49,15 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["media_read"]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
             $bodyText
         );
         $this->resetPermissions();
@@ -68,7 +72,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(

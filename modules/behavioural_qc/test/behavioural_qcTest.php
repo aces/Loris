@@ -29,10 +29,18 @@ class Behavioural_QCTest extends LorisIntegrationTest
     function testBehaviouralQCDoespageLoad()
     {
         $this->safeGet($this->url . "/behavioural_qc/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Behavioural Quality Control", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that behavioural_qc does not load with the permission

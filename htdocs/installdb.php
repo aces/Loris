@@ -93,7 +93,7 @@ $tpl_data = [];
 // Page 3: Help, prompt for new username/password (include defaults)
 // Page 4: 1. Check if user exists -- if so, error, if not create
 //     2. Update config.xml if write access, otherwise download copy
-switch(isset($_POST['formname']) ? $_POST['formname'] : '') {
+switch (isset($_POST['formname']) ? $_POST['formname'] : '') {
 case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already

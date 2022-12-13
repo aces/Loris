@@ -274,51 +274,116 @@ class Utility
     }
 
     /**
-     * Returns a list of study Subprojects
+     * Returns a list of study Cohorts
      *
      * @param ?ProjectID $projectID The project for which you would like
-     *                              to get the subprojects
+     *                              to get the cohorts
      *
-     * @return array       an associative array("SubprojectID" => "Subproject title")
+     * @return array       an associative array("CohortID" => "Cohort title")
      */
-    static function getSubprojectList(?ProjectID $projectID = null): array
+    static function getCohortList(?ProjectID $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         if (!is_null($projectID)) {
-            $subprojects = $DB->pselect(
-                "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID)
+            $cohorts = $DB->pselect(
+                "SELECT * FROM cohort
+                JOIN project_cohort_rel USING (CohortID)
                 WHERE ProjectID=:pID",
                 ['pID' => $projectID]
             );
         } else {
-            $subprojects = $DB->pselect("SELECT * FROM subproject", []);
+            $cohorts = $DB->pselect("SELECT * FROM cohort", []);
         }
 
         $subprojs = [];
-        foreach ($subprojects as $row) {
-            $subprojs[$row['SubprojectID']] = $row['title'];
+        foreach ($cohorts as $row) {
+            $subprojs[$row['CohortID']] = $row['title'];
         }
         return $subprojs;
     }
 
     /**
-     * Returns a list of study Subprojects associated with a project
+     * Returns a list of study Cohorts associated with a project
      *
      * @param ?ProjectID $projectID The project for which you would like
-     *                              to get the subprojects
+     *                              to get the cohorts
      *
-     * @return array an associative array("SubprojectID" => "Subproject title")
+     * @return array an associative array("CohortID" => "Cohort title")
      */
-    static function getSubprojectsForProject(?ProjectID $projectID = null): array
+    static function getCohortsForProject(?ProjectID $projectID = null): array
     {
         if (is_null($projectID)) {
             return [];
         }
-        return self::getSubprojectList($projectID);
+        return self::getCohortList($projectID);
     }
+
+    /**
+     * Returns a list of visits associated with the supplied cohort.
+     * The visits are in an associative array format [VisitName=>VisitLabel]
+     *
+     * @param int $cohortID ID of the cohort
+     *
+     * @return array list of visits for supplied cohort
+     *
+     * @note This function should be moved to a cohort class when it is created
+     */
+    static function getVisitsForCohort(int $cohortID): array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $result = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT VisitName, VisitLabel
+            FROM visit v
+                JOIN visit_project_cohort_rel vpsr USING(VisitID)
+                JOIN project_cohort_rel psr USING(ProjectCohortRelID)
+                JOIN cohort s USING(CohortID)
+            WHERE CohortID = :sid
+            ORDER BY VisitLabel",
+            ["sid"=>$cohortID],
+            "VisitName"
+        );
+
+        return $result;
+    }
+
+    /**
+     * Returns a list of visits associated with the supplied Project AND cohort.
+     * The visits are in an associative array format [VisitID=>VisitLabel]
+     *
+     * @param \ProjectID $projectID ID of the project
+     * @param int        $cohortID  ID of the cohort
+     *
+     * @return array list of visits for supplied project-cohort combination
+     *
+     * @note This function should be moved to a visits class when it is created
+     */
+    static function getVisitsForProjectCohort(
+        \ProjectID $projectID,
+        int $cohortID
+    ): array {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $result = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT VisitID, VisitLabel
+            FROM visit v
+                JOIN visit_project_cohort_rel vpsr USING(VisitID)
+                JOIN project_cohort_rel psr USING(ProjectCohortRelID)
+	    WHERE CohortID = :sid
+		AND ProjectID = :pid
+            ORDER BY VisitLabel",
+            ["sid"=>$cohortID, "pid"=>$projectID],
+            "VisitID"
+        );
+
+        return $result;
+    }
+
+
 
     /**
      * Returns a list of bvl instruments
@@ -458,10 +523,10 @@ class Utility
     static function getAllInstruments(): array
     {
         error_log(
-            "LORIS Deprecation Warning: The getAllInstruments() function of
-            the Utility class has been deprecated. This function does not load the
-            most accurate Full_name value and should be replaced by
-            getInstrumentNamesList() of the NDB_BVL_Instrument class."
+            "LORIS Deprecation Warning: The getAllInstruments() function of ".
+            "the Utility class has been deprecated. This function does not load ".
+            "the most accurate Full_name value and should be replaced by ".
+            "getInstrumentNamesList() of the NDB_BVL_Instrument class."
         );
         $Factory       = \NDB_Factory::singleton();
         $DB            = $Factory->Database();
@@ -562,7 +627,7 @@ class Utility
         $query    = "SELECT count(*)
             FROM {$table_name}
             WHERE {$column} is NULL";
-        $DB       =& \Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $num_null = $DB->pselectOne(
             $query,
             []
@@ -680,40 +745,26 @@ class Utility
      *                            to know the existing visit labels
      *
      * @return array Array of instruments which exist for the given visit label
-     *               array is of the form
-     *               array(0 => array('Test_name_display' => $TestName))?
-     *
-     * @note    Function comment written by Dave, not the author of this function.
-     *       The return value format seems weird. Should possibly be refactored.
-     * @note    Used in:
-     *      - behavioural_qc/php/NDB_Form_behavioural_qc.class.inc
-     *      - behavioural_qc/ajax/GetInstruments.php
-     * @cleanup
+     *               array is of the form [$Test_name => $Full_name]
      */
     static function getVisitInstruments(string $visit_label): array
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
-            $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery
-                WHERE Visit_label=:vl",
-                ['vl' => $visit_label]
-            );
-        } else {
-            $test_names = $DB->pselect(
-                "SELECT DISTINCT t.Full_name as Test_name_display FROM session s
-                JOIN candidate c ON (c.candid=s.candid)
-                JOIN psc ON (s.CenterID = psc.CenterID)
-                JOIN flag f ON (f.sessionid=s.id)
-                JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
-                AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
-                ORDER BY t.Full_name",
-                ['vl' => $visit_label]
-            );
-        }
+        $test_names = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT t.Test_name, t.Full_name
+            FROM session s
+            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN psc ON (s.CenterID=psc.CenterID)
+            JOIN flag f ON (f.sessionID=s.id)
+            JOIN test_names t ON (f.test_name=t.Test_name)
+            WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
+            AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
+            ORDER BY t.Full_name",
+            ['vl' => $visit_label],
+            'Test_name'
+        );
 
         return $test_names;
     }
@@ -777,7 +828,7 @@ class Utility
         $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);
 
-        switch($last) {
+        switch ($last) {
         case 'g':
             return (int)$val * 1024 * 1024 * 1024;
         case 'm':
@@ -951,5 +1002,22 @@ class Utility
 
         // If the first part began with a front-slash, add it back
         return ($addSlash ? '/' : '') . implode('/', $result);
+    }
+
+    /**
+     * Convert 'null' strings from FormData object to NULL
+     *
+     * @param array $formData The received FormData object.
+     *
+     * @return array The parsed FormData object.
+     */
+    public static function parseFormData(array $formData) : array
+    {
+        foreach ($formData as $key => $val) {
+            if ($formData[$key] === 'null') {
+                $formData[$key] = null;
+            }
+        }
+        return $formData;
     }
 }

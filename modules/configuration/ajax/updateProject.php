@@ -25,13 +25,13 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
 
-$ProjectList   = Utility::getProjectList();
-$projectName   = $_POST['Name'] ?? '';
-$projectAlias  = $_POST['Alias'] ?? '';
-$recTarget     = empty($_POST['recruitmentTarget'])
+$ProjectList  = Utility::getProjectList();
+$projectName  = $_POST['Name'] ?? '';
+$projectAlias = $_POST['Alias'] ?? '';
+$recTarget    = empty($_POST['recruitmentTarget'])
     ? null : $_POST['recruitmentTarget'];
-$projectID     = $_POST['ProjectID'] ?? null;
-$subprojectIDs = $_POST['SubprojectIDs'] ?? [];
+$projectID    = $_POST['ProjectID'] ?? null;
+$cohortIDs    = $_POST['CohortIDs'] ?? [];
 
 $project = null;
 
@@ -45,6 +45,10 @@ if ($projectID == 'new') {
     }
 
     $project = \Project::createNew($projectName, $projectAlias, $recTarget);
+    $db->insert(
+        'user_project_rel',
+        ["UserID"=>$user->getId(),"ProjectID"=>$project->getId()]
+    );
 } else {
     // Update Project fields
     $project = \Project::getProjectFromID(new \ProjectID($projectID));
@@ -54,15 +58,15 @@ if ($projectID == 'new') {
 
 }
 
-// Subproject information isn't mandatory. If the array is empty, give an
+// Cohort information isn't mandatory. If the array is empty, give an
 // OK response.
-if (!empty($subprojectIDs)) {
-    // Update subprojectIDs if data submitted.
+if (!empty($cohortIDs)) {
+    // Update cohortIDs if data submitted.
     // It's important not to delete and reinsert the values due to delete
-    // cascades on tables referencing project_subproject_rel in the database.
-    $preValues = array_column($project->getSubprojects(), 'subprojectId');
-    $toAdd     = array_diff($subprojectIDs, $preValues);
-    $toRemove  = array_diff($preValues, $subprojectIDs);
+    // cascades on tables referencing project_cohort_rel in the database.
+    $preValues = array_column($project->getCohorts(), 'cohortId');
+    $toAdd     = array_diff($cohortIDs, $preValues);
+    $toRemove  = array_diff($preValues, $cohortIDs);
 
     $toAdd = array_map(
         function ($row) {
@@ -71,8 +75,8 @@ if (!empty($subprojectIDs)) {
         $toAdd
     );
 
-    $project->insertSubprojectIDs($toAdd);
-    $project->deleteSubprojectIDs($toRemove);
+    $project->insertCohortIDs($toAdd);
+    $project->deleteCohortIDs($toRemove);
 }
 
 http_response_code(200);

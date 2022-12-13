@@ -41,6 +41,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $fullName;
     protected $dictionary = [];
 
+    // array of the format "field_name" => "group_name"
+    protected $GroupElements = [];
+
     /**
      * Sets up the variables required for a LINST instrument to load
      *
@@ -86,7 +89,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->dictionary,
             [
                 new DictionaryItem(
-                    'Date_taken',
+                    $this->testName.'_Date_taken',
                     'Date of Administration',
                     $scope,
                     new \LORIS\Data\Types\DateType(),
@@ -95,7 +98,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             ]
         );
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
@@ -105,7 +108,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            'Candidate_age',
+                            $this->testName.'_Candidate_age',
                             'Candidate Age (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
@@ -123,7 +126,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            'Candidate_age',
+                            $this->testName.'_Candidate_age',
                             'Candidate Age At Death (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
@@ -140,7 +143,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $this->dictionary,
                 [
                     new DictionaryItem(
-                        'Window_Difference',
+                        $this->testName.'_Window_Difference',
                         'Window difference from test battery (days)',
                         $scope,
                         new \LORIS\Data\Types\Duration(),
@@ -164,7 +167,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->dictionary,
             [
                 new DictionaryItem(
-                    'Examiner',
+                    $this->testName.'_Examiner',
                     'Examiner',
                     $scope,
                     // This should be an enum of examiners, but
@@ -338,7 +341,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 } else if (substr($elname, -7) != "_status"
                     && !in_array($elname, ["page", "subtest"])
                 ) {
-                    $errors[$elname] = "Required.";
+                    // Check if element part of a group.
+                    // If so, the error should be on the group to show up
+                    $errorEl          = $this->GroupElements[$elname] ?? $elname;
+                    $errors[$errorEl] = "$elname is required.";
+
                     if ($this->XINDebug) {
                         echo "Required by default";
                     }
@@ -471,8 +478,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             if (!isset($this->form)) {
                 $this->form = new \LorisForm();
             }
-            $this->dateTimeFields = ["Date_taken"];
-            $this->formType       = 'XIN';
+            $this->formType = 'XIN';
 
             $this->form->addFormRule([&$this, 'XINValidate']);
             $fp = fopen($filename, "r");
@@ -517,7 +523,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     continue;
                 }
-                switch($type) {
+                switch ($type) {
                 case 'page':
                     $pageDescription  = trim($pieces[2]);
                     $pageName         = "page_$subtestCount";
@@ -555,17 +561,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'begingroup':
                     if ($addElements) {
-                        $Group['Name']      = $pieces[1] . '_group';
-                        $Group['Delimiter'] = trim($pieces[2]);
-
-                        if (empty($Group['Delimiter'])) {
-                            $Group['Delimiter'] = $this->_GUIDelimiter;
-                        }
+                        $Group['Name']      = trim($pieces[1]) . '_group';
+                        $Group['Delimiter'] = isset($pieces[2])
+                            ? trim($pieces[2]) : $this->_GUIDelimiter;
                     }
                     break;
                 case 'endgroup':
                     if ($addElements) {
-                        $groupLabel = $pieces[2];
+                        $groupLabel = isset($pieces[2]) ? trim($pieces[2]) : null;
                         $this->addGroup(
                             $Group['Elements'],
                             $Group['Name'] ?? '',
@@ -573,30 +576,26 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $Group['Delimiter'],
                         );
 
+                        // Track elements and their groups for XIN errors proper
+                        // higlighting in the browser
+                        foreach ($Group['Elements'] as $el) {
+                            if (isset($el['name'])) {
+                                $this->GroupElements[$el['name']] = $Group['Name'];
+                            }
+                        }
+
                         $Group['Name']     = null;
                         $Group['Elements'] = [];
                     }
                     break;
-
                 case 'begintable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
-                    break;
                 case 'endtable':
-                    if ($addElements) {
-                        $this->form->addElement(
-                            'static',
-                            '',
-                            "</td></tr></table><table><tr><td>&nbsp;",
-                            ""
-                        );
-                    }
+                    error_log(
+                        "DEPRECATION MESSAGE: `begintable` and `endtable` elements ".
+                        "are deprecated. $this->testName instrument should be ".
+                        "modified to remove these elements as they will be ".
+                        "completely removed in a future version of LORIS."
+                    );
                     break;
                 case 'text':
                     if ($addElements) {
@@ -611,7 +610,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         new StringType(255),
@@ -636,7 +635,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
                     }
                     $this->dictionary[] = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         new StringType(),
@@ -651,7 +650,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'date':
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
-                            $dateOptions = null;
+                            $dateOptions = [];
                         } else {
                             $dateOptions = [
                                 'language'         => 'en',
@@ -664,7 +663,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
 
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new DateType(),
@@ -672,6 +671,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         );
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
+
+                        // The question should be added to the LinstQuestions in this
+                        // order, before the _date is stripped below for standard
+                        // dates to allow XINValidation to recognize the field name
+                        $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
 
                         if ($dateFormat === 'MonthYear') {
                             // Shows date without day of month
@@ -726,13 +730,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;
                     }
-                    $this->LinstQuestions[$pieces[1]] = ['type' => 'date'];
                     break;
                 case 'numeric':
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new IntegerType(),
@@ -835,7 +838,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                     $t  = new Enumeration(...$dictopts);
                     $it = new DictionaryItem(
-                        $pieces[1],
+                        $this->testName."_".$pieces[1],
                         $pieces[2],
                         $scope,
                         $t,
@@ -853,7 +856,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->_doubleDataEntryDiffIgnoreColumns[] = $pieces[1];
                     if ($addElements) {
                         if ($Group['Name'] != null) {
-                            print "Creating $pieces[1] with label: $pieces[2]";
                             $Group['Elements'][]
                                 = $this->form->createElement(
                                     'static',
@@ -874,7 +876,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             = ['type' => 'score'];
 
                         $this->dictionary[] = new DictionaryItem(
-                            $pieces[1],
+                            $this->testName."_".$pieces[1],
                             $pieces[2],
                             $scope,
                             new StringType(255),
@@ -975,7 +977,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     // of replaced.
                     $q['UserRules'] = true;
 
-                    switch($q['type']) {
+                    switch ($q['type']) {
                     case 'select':
                         // Selects are the only type of rules that aren't part
                         // of a group, the rest include a _status element

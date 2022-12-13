@@ -54,18 +54,22 @@ class ImagingUploader extends Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) => {
         this.setState({
           data: data,
           isLoaded: true,
         });
-      },
-      error: function(error) {
-        console.error(error);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -131,8 +135,8 @@ class ImagingUploader extends Component {
       }
 
       if (cell === 'Success') {
-        const created = row['Number Of MINC Created'];
-        const inserted = row['Number Of MINC Inserted'];
+        const created = row['Number Of Files Created'];
+        const inserted = row['Number Of Files Inserted'];
         return (
           <td style={cellStyle}>
           {cell} ({inserted} out of {created})
@@ -160,7 +164,7 @@ class ImagingUploader extends Component {
       );
     }
 
-    if (column === 'Number Of MINC Inserted') {
+    if (column === 'Number Of Files Inserted') {
       if (cell > 0) {
         const url = loris.BaseURL
                     + '/imaging_browser/viewSession/?sessionID='
@@ -173,11 +177,12 @@ class ImagingUploader extends Component {
       }
     }
 
-    if (column === 'Number Of MINC Created') {
+    if (column === 'Number Of Files Created') {
       let violatedScans;
-      if (row['Number Of MINC Created'] - row['Number Of MINC Inserted'] > 0) {
+      // eslint-disable-next-line max-len
+      if (row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0) {
         let numViolatedScans =
-             row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
+             row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
         let patientName = row.PatientName;
         violatedScans = <a

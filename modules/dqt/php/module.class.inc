@@ -55,6 +55,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Data Query Tool (Beta)";
+        return "Data Query Tool";
     }
 }

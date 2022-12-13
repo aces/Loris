@@ -33,14 +33,14 @@ class Profiles
     /**
      * Constructor
      *
-     * @param array $list_of_sites The list_of_sites for form element
-     * @param array $subprojects   The subprojects for form element
+     * @param array $sites   The sites for form element
+     * @param array $cohorts The cohorts for form element
      */
-    public function __construct($list_of_sites, $subprojects)
+    public function __construct($sites, $cohorts)
     {
         $this->_formElement = [
-            'Sites'        => $list_of_sites,
-            'SubprojectID' => $subprojects,
+            'Sites'   => $sites,
+            'Cohorts' => $cohorts,
         ];
     }
 

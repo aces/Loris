@@ -43,7 +43,7 @@ class TestOptionsEndpoint extends \NDB_Page
     {
         $method = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return new \LORIS\Http\Response\JSON\OK($this->_getOptions());
         }
@@ -61,7 +61,7 @@ class TestOptionsEndpoint extends \NDB_Page
         return [
             'instruments' => \Utility::getAllInstruments(),
             'stages'      => $this->_getStageList(),
-            'subprojects' => \Utility::getSubprojectList(null),
+            'cohorts'     => \Utility::getCohortList(null),
             'visits'      => \Utility::getVisitList(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),

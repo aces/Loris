@@ -58,13 +58,21 @@ class Edit_Help_Content extends \NDB_Form
             $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
         if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            try {
+                $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            } catch (\NotFound $e) {
+                $helpID = '';
+            }
         }
         if (isset($_REQUEST['section']) && !empty($_REQUEST['section'])
             && isset($_REQUEST['subsection'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            try {
+                $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            } catch (\NotFound $e) {
+                $helpID = '';
+            }
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
@@ -74,7 +82,7 @@ class Edit_Help_Content extends \NDB_Form
             $help_file = HelpFile::factory($helpID);
             $data      = $help_file->toArray();
             $defaults['title']   = $data['topic'];
-            $defaults['content'] = utf8_encode(trim($data['content']));
+            $defaults['content'] = trim($data['content']);
             if (isset($_REQUEST['helpID'])) {
                 $this->tpl_data['module_name'] = "Help Editor";
             } else {
@@ -122,7 +130,6 @@ class Edit_Help_Content extends \NDB_Form
         $this->addBasicTextArea(
             'content',
             'Content',
-            [],
             [
                 'cols' => 140,
                 'rows' => 30,
@@ -145,6 +152,7 @@ class Edit_Help_Content extends \NDB_Form
         return array_merge(
             $deps,
             [
+                $baseURL . '/vendor/sweetalert/sweetalert.js',
                 $baseURL . "/help_editor/js/help_editor_helper.js",
             ]
         );

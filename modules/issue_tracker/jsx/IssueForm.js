@@ -402,18 +402,19 @@ class IssueForm extends Component {
   }
 
   /**
-   * Handles form submission
+   * Handles form submission for new issue being created
    *
    * @param {event} e form submit event
    */
   handleSubmit(e) {
     e.preventDefault();
 
-    // Prevent new issue submissions while one is already in progress
-    if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: 'pending'});
-
-    const myFormData = this.state.formData;
+    const state = Object.assign({}, this.state);
+    // issue submissions already in progress
+    if (state.submissionResult && state.isNewIssue) {
+      return;
+    }
+    const myFormData = state.formData;
     const formRefs = this.refs;
     const formData = new FormData();
 
@@ -421,6 +422,9 @@ class IssueForm extends Component {
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
+
+    // Prevent multiple submissions
+    this.setState({submissionResult: 'pending'});
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
@@ -441,7 +445,7 @@ class IssueForm extends Component {
         response.json().then((data) => {
           this.setState({submissionResult: 'error'});
           let msgType = 'error';
-          let message = data.message || 'Failed to submit issue :(';
+          const message = data.error ?? data.message;
           this.showAlertMessage(msgType, message);
         });
         return;

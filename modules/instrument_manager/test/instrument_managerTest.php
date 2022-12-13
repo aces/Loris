@@ -37,10 +37,18 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentManagerDoespageLoad()
     {
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, when loading the instrument_manager module with permission,
@@ -53,7 +61,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         // Check read permission, 'instrument_manager_read'
         $this->setupPermissions(['instrument_manager_read']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
@@ -62,7 +70,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         // Check write permission, 'instrument_manager_write'
         $this->setupPermissions(['instrument_manager_write']);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
@@ -78,7 +86,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/instrument_manager/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(

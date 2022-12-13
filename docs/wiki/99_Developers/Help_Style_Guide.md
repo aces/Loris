@@ -50,19 +50,19 @@ LORIS is used by scientific community members worldwide, which means it's possib
 This means using more direct language and tone to get information across to the user in the least amount of time, with the least amount of friction. The quicker a user understands something, the happier they are. Easily understandable documentation also builds trust in the software, in addition to decreasing the amount of support questions we get.
 
 * Use second person point of view rather than third
-  * e.g. “This module allows *you* to browse…” (rather than “This module allows *users* to browse…”)
-* Keep it concise. Avoid unnecessary information.
-  * Try not to be repetitive. 
-  * e.g. the Help text for the Imaging Browser module begins with the title Imaging Browser. You don’t need to start text with “In the Imaging Browser module...”, because the user already knows the module based on the title. Instead, keep it short and say “In this module…”
-* Assume the user is tech-savvy enough to know about features that are intuitive or common across modern platforms, so you don’t need to repeat in every Help text
-  * e.g. clicking the column headers to re-sort a table
-  * e.g. clicking a Download button to download something
-  * e.g. navigate pages of a table using the arrows provided
-* Use Plain Language
-  * Avoid words that you wouldn't use in everyday speech
-* Where relevant introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a Help text title, then only call it QC throughout the text)
-  * e.g. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
-  * e.g. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
+    * e.g. “This module allows *you* to browse…” (rather than “This module allows *users* to browse…”)
+* Keep it concise. Avoid unnecessary information. 
+    * Try not to be repetitive. 
+    * e.g. the Help text for the Imaging Browser module begins with the title Imaging Browser. You don’t need to start text with “In the Imaging Browser module...”, because the user already knows the module based on the title. Instead, keep it short and say “In this module…”
+* Assume the user is tech-savvy enough to know about features that are intuitive or common across modern platforms, so you don’t need to repeat in every Help text 
+    * e.g. clicking the column headers to re-sort a table
+    * e.g. clicking a Download button to download something
+    * e.g. navigate pages of a table using the arrows provided
+* Use Plain Language 
+    * Avoid words that you wouldn't use in everyday speech
+* Where relevant introduce an abbreviation once and then use that abbreviation for the rest of the copy in that help text (e.g. introduce Quality Control = QC in a Help text title, then only call it QC throughout the text) 
+    * e.g. DO: “The Imaging Quality Control (QC) module allows you to view the QC status of images in your LORIS.”
+    * e.g. DON’T: “The Imaging Quality Control (QC) module allows you to view the Quality Control status of images in your LORIS.”
 * Break up large blocks of text. It's more visually pleasing and less intimidating.
 
 For more information, including research studies conducted, on the use and value of Plain Language, please see [this article](https://www.nngroup.com/articles/plain-language-experts/) and feel free to browse the rest of this website for further helpful details, tips, and tricks. 

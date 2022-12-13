@@ -82,11 +82,11 @@ class Next_Stage extends \NDB_Form
             ]
         );
 
-        // set SubprojectID if applicable
-        if (isset($values['SubprojectID'])) {
+        // set CohortID if applicable
+        if (isset($values['CohortID'])) {
             $timePoint->setData(
                 [
-                    'SubprojectID' => $values['SubprojectID'],
+                    'CohortID' => $values['CohortID'],
                 ]
             );
         }
@@ -119,7 +119,7 @@ class Next_Stage extends \NDB_Form
         // add instruments to the time point (lower case stage)
         $battery->createBattery(
             $this->loris,
-            $timePoint->getSubprojectID(),
+            $timePoint->getCohortID(),
             $newStage,
             $timePoint->getVisitLabel(),
             $timePoint->getCenterID(),
@@ -169,9 +169,9 @@ class Next_Stage extends \NDB_Form
                 'scan_done',
                 'Scan Done',
                 [
-                    null => null,
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => null,
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addRule('scan_done', 'Scan done is required', 'required');
@@ -193,15 +193,15 @@ class Next_Stage extends \NDB_Form
             $dateAttributes
         );
 
-        // let user select subproject *only* if subprojectid is not > 0
-        if (!($timePoint->getSubprojectID() > 0)) {
-            $list_of_objectives = \Utility::getSubprojectList();
+        // let user select cohort *only* if cohortid is not > 0
+        if (!($timePoint->getCohortID() > 0)) {
+            $list_of_objectives = \Utility::getCohortList();
             $this->addSelect(
-                'SubprojectID',
+                'CohortID',
                 'Objective',
                 ['' => ''] + $list_of_objectives
             );
-            $this->addRule('SubprojectID', 'Required', 'required');
+            $this->addRule('CohortID', 'Required', 'required');
         }
 
         // add date rules
@@ -243,7 +243,7 @@ class Next_Stage extends \NDB_Form
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
-        // get candidate's DOB or EDC according to SubprojectID
+        // get candidate's DOB or EDC according to CohortID
         $candidateBirthDate = $timePoint->getEffectiveDateOfBirth();
 
         //Determine the next stage, and validate accordingly

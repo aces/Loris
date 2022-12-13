@@ -84,7 +84,7 @@ class Charts extends \NDB_Page
         if (count($pathparts) != 2) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
-        switch($pathparts[1]){
+        switch ($pathparts[1]) {
         case 'siterecruitment_pie':
             return $this->_handleSitePieData();
         case 'siterecruitment_bysex':
@@ -108,7 +108,8 @@ class Charts extends \NDB_Page
         $DB = \NDB_Factory::singleton()->database();
 
         $recruitmentBySiteData = [];
-        $list_of_sites         = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $totalRecruitment = $DB->pselectOne(
@@ -138,7 +139,8 @@ class Charts extends \NDB_Page
     {
         $DB            = \NDB_Factory::singleton()->database();
         $sexData       = [];
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
@@ -203,7 +205,8 @@ class Charts extends \NDB_Page
         $scanData['labels'] = array_keys($labels);
 
         // Massage the data into the appropriate format per site.
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = [
                 "name" => $siteName,
@@ -281,7 +284,8 @@ class Charts extends \NDB_Page
             );
         }
 
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $recruitmentData['datasets'][] = [

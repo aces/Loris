@@ -260,6 +260,7 @@ class ExaminerIndex extends Component {
         name: 'examiner',
         type: 'text',
       }},
+      {label: 'Email', show: true},
       {label: 'ID', show: false},
       {label: 'Site', show: true, filter: {
         name: 'site',
