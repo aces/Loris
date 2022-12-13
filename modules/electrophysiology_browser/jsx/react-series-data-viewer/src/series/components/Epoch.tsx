@@ -6,7 +6,10 @@ type CProps = {
   parentHeight: number,
   onset: number,
   duration: number,
-  scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>],
+  scales: [
+    ScaleLinear<number, number, never>,
+    ScaleLinear<number, number, never>,
+  ],
   color: string,
   opacity: number,
 };

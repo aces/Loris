@@ -4,7 +4,7 @@ import {Observable, from, of} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {createAction} from 'redux-actions';
 import {State as DatasetState} from '../state/dataset';
-import {Filter} from '../state/filters'
+import {Filter} from '../state/filters';
 import {Chunk} from '../types';
 import {State as BoundsState} from '../state/bounds';
 import {fetchChunk} from '../../../chunks';
@@ -23,7 +23,8 @@ type FetchedChunks = {
 
 export const loadChunks = ({channelIndex, ...rest}: FetchedChunks) => {
   return (dispatch: (_: any) => void) => {
-    let filters: Filter[] = window.EEGLabSeriesProviderStore.getState().filters;
+    const filters: Filter[] = window.EEGLabSeriesProviderStore
+                              .getState().filters;
     rest.chunks.forEach((chunk, index, chunks) => {
       chunk.filters = [];
       chunks[index].values = Object.values(filters).reduce(
@@ -67,7 +68,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
   return action$.pipe(
     ofType(UPDATE_VIEWED_CHUNKS),
     Rx.withLatestFrom(state$),
-    Rx.map(([_, state]) => fromState(state)),
+    Rx.map(([, state]) => fromState(state)),
     Rx.debounceTime(UPDATE_DEBOUNCE_TIME),
     Rx.concatMap(({bounds, dataset}) => {
       const {chunksURL, shapes, timeInterval, channels} = dataset;
@@ -76,7 +77,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
       }
 
       const fetches = R.flatten(
-        channels.map((channel, i) => {
+        channels.map((channel) => {
           return (
             channel &&
             channel.traces.map((trace, j) => {

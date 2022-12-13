@@ -156,8 +156,10 @@ const indexToTime = (chunk) => (index) =>
   chunk.interval[0] +
   (index / chunk.values.length) * (chunk.interval[1] - chunk.interval[0]);
 
-const CursorContent = ({time, channel, contentIndex, showMarker}) => {
-  const Marker = ({color}) => (
+const CursorContent = (
+  {time, channel, contentIndex, showMarker}: CursorContentProps
+) => {
+  const Marker = (color) => (
     <div
       style={{
         margin: 'auto',
@@ -195,7 +197,11 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
               borderRadius: '3px',
             }}
           >
-            {showMarker && (<Marker color={colorOrder(contentIndex)} />)}
+            {showMarker && (
+              <Marker
+                color={colorOrder(contentIndex.toString())}
+              />
+            )}
             {chunk && Math.round(computeValue(chunk))} {SIGNAL_UNIT}
           </div>
         );
