@@ -25,7 +25,7 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_FILTERED_EPOCHS),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map(([, state]) => {
       const {interval, epochs} = fromState(state);
       let newFilteredEpochs = [...Array(epochs.length).keys()]
         .filter((index) =>

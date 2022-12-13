@@ -100,7 +100,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $this->db   = \Database::singleton();
+        $this->db   = $this->loris->getDatabaseConnection();
         $this->user = $request->getAttribute('user');
         $method     = $request->getMethod();
 
@@ -214,7 +214,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                          AgeMinDays,
                          AgeMaxDays,
                          Stage,
-                         SubprojectID,
+                         CohortID,
                          Visit_label,
                          CenterID,
                          firstVisit
@@ -229,7 +229,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['AgeMinDays'] == $entry['AgeMinDays']
                 && $testArray['AgeMaxDays'] == $entry['AgeMaxDays']
                 && $testArray['Stage'] == $entry['Stage']
-                && $testArray['SubprojectID'] == $entry['SubprojectID']
+                && $testArray['CohortID'] == $entry['CohortID']
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']

@@ -206,7 +206,7 @@ class Files extends \NDB_Page
      */
     function getUploadDocFields(string $id): array
     {
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             []
@@ -261,7 +261,7 @@ class Files extends \NDB_Page
     function parseCategory(array $value): array
     {
         $id           = $value['id'];
-        $DB           = \Database::singleton();
+        $DB           = $this->loris->getDatabaseConnection();
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
@@ -425,7 +425,7 @@ class Files extends \NDB_Page
      */
     function existFilename(string $filename): bool
     {
-        $DB        = \Database::singleton();
+        $DB        = $this->loris->getDatabaseConnection();
         $fileCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository
              WHERE File_Name=:name",

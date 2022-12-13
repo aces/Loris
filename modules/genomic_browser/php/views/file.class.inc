@@ -65,7 +65,7 @@ class File
      */
     function _getDistinctValues(string $table, string $column)
     {
-        $DB      = \Database::singleton();
+        $DB      = \NDB_Factory::singleton()->database();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
             []

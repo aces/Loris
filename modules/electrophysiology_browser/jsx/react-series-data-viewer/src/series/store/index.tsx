@@ -1,9 +1,9 @@
-import * as R from 'ramda';
 import {combineReducers} from 'redux';
 import {combineEpics} from 'redux-observable';
 import {boundsReducer} from './state/bounds';
 import {filtersReducer} from './state/filters';
 import {datasetReducer} from './state/dataset';
+import {currentAnnotationReducer} from './state/currentAnnotation';
 import {cursorReducer} from './state/cursor';
 import {panelReducer} from './state/rightPanel';
 import {timeSelectionReducer} from './state/timeSelection';
@@ -30,6 +30,7 @@ export const rootReducer = combineReducers({
   bounds: boundsReducer,
   filters: filtersReducer,
   dataset: datasetReducer,
+  currentAnnotation: currentAnnotationReducer,
   cursor: cursorReducer,
   rightPanel: panelReducer,
   timeSelection: timeSelectionReducer,
@@ -37,7 +38,7 @@ export const rootReducer = combineReducers({
 });
 
 export const rootEpic = combineEpics(
-  createDragBoundsEpic(R.prop('bounds')),
+  createDragBoundsEpic(),
   createTimeSelectionEpic(({bounds, timeSelection}) => {
     const {interval} = bounds;
     return {interval, timeSelection};

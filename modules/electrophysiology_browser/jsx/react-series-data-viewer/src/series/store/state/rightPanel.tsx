@@ -5,7 +5,7 @@ export const SET_RIGHT_PANEL = 'SET_RIGHT_PANEL';
 export const setRightPanel = createAction(SET_RIGHT_PANEL);
 
 export type Action = {
-  type: "SET_RIGHT_PANEL",
+  type: 'SET_RIGHT_PANEL',
   payload: RightPanel
 };
 

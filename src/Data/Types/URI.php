@@ -24,7 +24,7 @@ class URI implements \LORIS\Data\Type
      *
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : string
     {
         return $this->__toString();
     }

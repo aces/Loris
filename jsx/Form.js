@@ -1295,9 +1295,6 @@ class EmailElement extends Component {
         <div className={inputClass}>
           <input
             type="email"
-            pattern={'/^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[' +
-              'a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-' +
-              ']{0,61}[a-zA-Z0-9])?)*$/'}
             title="Please provide a valid email address!"
             className="form-control"
             name={this.props.name}
@@ -1526,36 +1523,34 @@ class DateElement extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    if (!Modernizr.inputtypes.month) {
-      // Check if props minYear and maxYear are valid values if supplied
-      let minYear = this.props.minYear;
-      let maxYear = this.props.maxYear;
-      if (this.props.minYear === '' || this.props.minYear === null) {
-        minYear = '1000';
-      }
-      if (this.props.maxYear === '' || this.props.maxYear === null) {
-        maxYear = '9999';
-      }
-      let monthInputs = $('input[type=month][name=' + this.props.name+']');
-      monthInputs.datepicker({
-        dateFormat: 'yy-mm',
-        changeMonth: true,
-        changeYear: true,
-        yearRange: minYear + ':' + maxYear,
-        constrainInput: true,
-        onChangeMonthYear: (y, m, d) => {
-          // Update date in the input field
-          $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
-        },
-        onSelect: (dateText, picker) => {
-          this.props.onUserInput(this.props.name, dateText);
-        },
-      });
-      monthInputs.attr('placeholder', 'yyyy-mm');
-      monthInputs.on('keydown paste', (e) => {
-        e.preventDefault();
-      });
+    // Check if props minYear and maxYear are valid values if supplied
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
     }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+    let monthInputs = $('input[type=month][name=' + this.props.name+']');
+    monthInputs.datepicker({
+      dateFormat: 'yy-mm',
+      changeMonth: true,
+      changeYear: true,
+      yearRange: minYear + ':' + maxYear,
+      constrainInput: true,
+      onChangeMonthYear: (y, m, d) => {
+        // Update date in the input field
+        $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+      },
+      onSelect: (dateText, picker) => {
+        this.props.onUserInput(this.props.name, dateText);
+      },
+    });
+    monthInputs.attr('placeholder', 'yyyy-mm');
+    monthInputs.on('keydown paste', (e) => {
+      e.preventDefault();
+    });
   }
 
   /**
@@ -1626,13 +1621,21 @@ class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type={inputType}
             className="form-control"
@@ -1717,19 +1720,28 @@ class TimeElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    let label;
+    let classSz;
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
+    if (this.props.label) {
+        label = <label className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+            </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
 
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        {label}
+        <div className={classSz}>
           <input
             type="time"
             className="form-control"
@@ -1811,13 +1823,22 @@ class NumericElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+    let labelHTML;
+    let classSz = 'col-sm-12';
+    if (this.props.label) {
+        labelHTML = <label
+            className="col-sm-3 control-label"
+            htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    };
+
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <input
             type="number"
             className="form-control"
@@ -1839,8 +1860,8 @@ class NumericElement extends Component {
 
 NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
-  min: PropTypes.number.isRequired,
-  max: PropTypes.number.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
@@ -1965,13 +1986,21 @@ class FileElement extends Component {
       );
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label">
+    let labelHTML;
+    let classSz;
+    if (this.props.label) {
+        labelHTML = <label className="col-sm-3 control-label">
           {this.props.label}
           {requiredHTML}
-        </label>
-        <div className="col-sm-9">
+        </label>;
+        classSz = 'col-sm-9';
+    } else {
+        classSz = 'col-sm-12';
+    }
+    return (
+      <div className={elementClass}>
+        {labelHTML}
+        <div className={classSz}>
           <div className="input-group">
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">

@@ -106,5 +106,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (117,117,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (118,118,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (119,119,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (120,120,'database_config.py');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (121,125,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

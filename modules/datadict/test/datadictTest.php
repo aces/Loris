@@ -97,6 +97,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                     WebDriverBy::cssSelector("body")
                 )->getText();
                 $this->assertStringContainsString("Data Dictionary", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Testing UI elements when page loads

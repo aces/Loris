@@ -22,7 +22,7 @@ nav:
             - Identifiers: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/01_Identifiers.md'
             - Projects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/02_Projects.md'
             - Sites: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/03_Sites.md'
-            - Subprojects: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Subprojects.md'
+            - Cohorts: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/04_Cohorts.md'
             - Timepoints: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/01_Study_Variables/05_Timepoints.md'
         - Clinical Instruments and Test Batteries:
             - Introduction: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/01_instrument_intro_prerequisites.md'
@@ -31,8 +31,8 @@ nav:
                 - PHP: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/02_instrument_format/PHP_instrument.md
             - Installation: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/03_instrument_install.md
             - Additional Configurations: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/04_instrument_additional_configurations.md
-            - Testing and Troubleshooting: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/05_instrument_testing_and_troubleshooting.md
-            - Quality Asssurance: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/06_instrument_quality_assurance.md
+            - Testing and Troubleshooting: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/06_instrument_testing_and_troubleshooting.md
+            - Quality Asssurance: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/05_instrument_quality_assurance.md
             - Test Batteries: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/07_clinical_test_battery.md
             - Annexe A - XIN Rules: docs/wiki/01_STUDY_PARAMETERS_SETUP/02_Clinical_Instruments/Annexe_A_XIN-Rules.md
         - Modules: 'docs/wiki/01_STUDY_PARAMETERS_SETUP/03_Loris_Modules/README.md'
@@ -40,9 +40,10 @@ nav:
     - Help and Troubleshooting: 'docs/wiki/03_HELP_AND_TROUBLESHOOTING/README.md'
     - REST API:
         - 'Stable' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.2.md'
-        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.3-dev.md'
+        - 'Dev' : 'docs/wiki/99_Developers/LORIS-REST-API-0.0.4-dev.md'
     - Developers:
         - Overview: 'docs/wiki/99_Developers/README.md'
+        - 'Developers Guide': 'docs/wiki/99_Developers/Developers_Guide.md'
         - 'Coding Standards': 'docs/CodingStandards.md'
         - 'SQL Modeling Standard': 'docs/SQLModelingStandard.md'
         - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
@@ -52,6 +53,7 @@ nav:
         - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
+        - 'NixOS': 'docs/wiki/99_Developers/Alternative_Install/Nix.md'
 
 use_directory_urls: False
 

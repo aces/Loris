@@ -70,7 +70,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $database = $this->config->getSetting('database');
 
-        $this->DB = Database::singleton(
+        $this->DB = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -375,19 +375,19 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to create a subproject
+     * Helper function to create a cohort
      *
-     * @param string $SubprojectID Name of the subproject
-     * @param string $title        Name of the subproject
+     * @param string $CohortID Name of the cohort
+     * @param string $title    Name of the cohort
      *
      * @return void
      */
-    function createSubproject($SubprojectID, $title)
+    function createCohort($CohortID, $title)
     {
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                "SubprojectID"      => $SubprojectID,
+                "CohortID"          => $CohortID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
@@ -396,16 +396,16 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to delete a subproject
+     * Helper function to delete a cohort
      *
-     * @param string $title Name of the subproject
+     * @param string $title Name of the cohort
      *
      * @return void
      */
-    function deleteSubproject($title)
+    function deleteCohort($title)
     {
         $this->DB->delete(
-            "subproject",
+            "cohort",
             [
                 "title"             => $title,
                 "WindowDifference"  => "optimal",

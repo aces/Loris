@@ -57,11 +57,12 @@ class VisitTest extends TestCase
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
-        $this->DB     = Database::singleton(
+        putenv("LORIS_{$database['database']}_USERNAME={$database['username']}");
+        putenv("LORIS_{$database['database']}_PASSWORD={$database['password']}");
+        putenv("LORIS_{$database['database']}_HOST={$database['host']}");
+
+        $this->DB = \Database::singleton(
             $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
             true,
         );
         $this->visitController = new \Loris\VisitController($this->DB);
@@ -151,21 +152,21 @@ class VisitTest extends TestCase
     }
 
     /**
-     * Test that VisitController::getVisitsProjectSubproject returns the proper
-     * project-subproject relation for the visits in the database
+     * Test that VisitController::getVisitsProjectCohort returns the proper
+     * project-cohort relation for the visits in the database
      *
      * @return void
-     * @covers VisitController::getVisitsProjectSubproject
+     * @covers VisitController::getVisitsProjectCohort
      */
     function testVisitsProjects()
     {
         $this->markTestSkipped("Test Will be restored after Visit class revamp");
 
-        $visits = $this->visitController->getVisitsProjectSubproject();
+        $visits = $this->visitController->getVisitsProjectCohort();
         $this->assertEquals(
             $this->listOfVisitProject,
             $visits,
-            "the project subproject relation does not match value in DB"
+            "the project cohort relation does not match value in DB"
         );
     }
 

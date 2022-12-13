@@ -1,5 +1,3 @@
-import swal from 'sweetalert2';
-
 $(document).ready(function(){
 $("input[name=preview]").click(function(e) {
     if($('div.help-content').length) {
@@ -36,7 +34,7 @@ $("input[name=preview]").click(function(e) {
      btn.setAttribute("id","helpclose");
      div.appendChild(btn);
      div.appendChild(wrap);
-     document.getElementById('page').appendChild(div);
+     document.getElementById('wrap').appendChild(div);
      div.setAttribute("class", "help-content");
      btn.addEventListener("click", function(e) {
         $(div).remove();

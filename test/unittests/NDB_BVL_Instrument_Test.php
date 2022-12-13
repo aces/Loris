@@ -142,6 +142,21 @@ class NDB_BVL_Instrument_Test extends TestCase
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
 
+        // Use reflection to set the internal
+        // loris object that should have been
+        // set by the instrument constructor,
+        // if PHPunit hadn't disabled the constructor
+        $ref = new \ReflectionProperty(get_class($instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $instrument,
+            new \LORIS\LorisInstance(
+                $mockDB,
+                $mockConfig,
+                [],
+            )
+        );
+
         $this->_instrument = $instrument;
     }
 
@@ -415,6 +430,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             ["value" => "Option"],
             "Rule_message"
         );
+        $this->_instrument->form->setDefaults(['hourMinField' => '0']);
+
         $json     = $this->_instrument->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
@@ -439,7 +456,8 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'name'    => 'hourMinField_status',
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
-                        'options' => [null => '',
+                        'options' => [
+                            ''             => '',
                             'dnk'          => 'DNK',
                             'refusal'      => 'Refusal',
                             'not_answered' => 'Not Answered',
@@ -532,7 +550,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'class'   => 'form-control input-sm',
                         'type'    => 'select',
                         'options' => [
-                            null             => '',
+                            ''               => '',
                             '88_refused'     => "88 Refused",
                             '99_do_not_know' => "99 Do not know",
                             'not_answered'   => "Not Answered"
@@ -1033,21 +1051,21 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
-                ['SubprojectID' => '2', 'ProjectID' => '1',
-                    'Visit_label'  => 'V1', 'CandID' => '300123'
+                ['CohortID' => '2', 'ProjectID' => '1',
+                    'Visit_label' => 'V1', 'CandID' => '300123'
                 ]
             );
         $this->assertEquals("V1", $this->_instrument->getVisitLabel());
     }
 
     /**
-     * Test that getSubprojectID returns the correct value
+     * Test that getCohortID returns the correct value
      * for the given session ID
      *
-     * @covers NDB_BVL_Instrument::getSubprojectID
+     * @covers NDB_BVL_Instrument::getCohortID
      * @return void
      */
-    function testGetSubprojectID()
+    function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->any(0))->method('pselectOne')
@@ -1057,8 +1075,8 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['SubprojectID' => '2','ProjectID' => '1']);
-        $this->assertEquals(2, $this->_instrument->getSubprojectID());
+            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+        $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
     /**
@@ -1581,6 +1599,22 @@ class NDB_BVL_Instrument_Test extends TestCase
             ->onlyMethods(
                 ["getFullName", "getSubtestList", "getDataDictionary"]
             )->getMock();
+
+        // Use reflection to set the internal
+        // loris object that should have been
+        // set by the instrument constructor,
+        // if PHPunit hadn't disabled the constructor
+        $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $otherInstrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_mockConfig,
+                [],
+            )
+        );
+
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
         $otherInstrument->table     = 'medical_history';
@@ -1862,14 +1896,14 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'           => '123',
-                    'CandID'       => 1,
-                    'SubprojectID' => '12'
+                    'ID'       => '123',
+                    'CandID'   => 1,
+                    'CohortID' => '12'
                 ],
                 [
-                    'ID'           => '234',
-                    'CandID'       => 2,
-                    'SubprojectID' => '12'
+                    'ID'       => '234',
+                    'CandID'   => 2,
+                    'CohortID' => '12'
                 ]
             ]
         );
@@ -1894,11 +1928,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             "test_battery",
             [
                 [
-                    'Active'       => 'Y',
-                    'Test_name'    => 'TestName1_proband',
-                    'SubprojectID' => '12',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100
+                    'Active'     => 'Y',
+                    'Test_name'  => 'TestName1_proband',
+                    'CohortID'   => '12',
+                    'AgeMinDays' => 0,
+                    'AgeMaxDays' => 100
                 ]
             ]
         );
@@ -1933,7 +1967,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_config = $this->_factoryForDB->Config(CONFIG_XML);
         $database      = $this->_config->getSetting('database');
-        $this->_DB     = \Database::singleton(
+        $this->_DB     = $this->_factoryForDB->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -1943,5 +1977,16 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->_factoryForDB->setDatabase($this->_DB);
         $this->_factoryForDB->setConfig($this->_config);
+
+        $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue(
+            $this->_instrument,
+            new \LORIS\LorisInstance(
+                $this->_DB,
+                $this->_config,
+                [],
+            )
+        );
     }
 }

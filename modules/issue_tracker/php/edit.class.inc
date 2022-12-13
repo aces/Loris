@@ -162,7 +162,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $allModules = \Module::getActiveModulesIndexed($db);
+        $allModules = \Module::getActiveModulesIndexed($this->loris);
 
         $modules = [];
         foreach ($allModules as $key => $m) {
@@ -306,7 +306,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         // looping by reference so can edit in place
-        $modules = \Module::getActiveModulesIndexed($db);
+        $modules = \Module::getActiveModulesIndexed($this->loris);
         foreach ($unformattedComments as &$comment) {
             if ($comment['fieldChanged'] === 'module') {
                 $mid = $comment['newValue'];

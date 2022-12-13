@@ -88,9 +88,9 @@ if (($instrument=='all') ||($instrument=='All')) {
 
 //get all candidates
 $candidates = $DB->pselect("SELECT CandID, PSCID FROM candidate", []);
-//get all subprojectids
-$subprojectids = $DB->pselect(
-    "SELECT DISTINCT subprojectid FROM session",
+//get all cohortids
+$cohortids = $DB->pselect(
+    "SELECT DISTINCT cohortid FROM session",
     []
 );
 
@@ -101,17 +101,17 @@ foreach ($instruments as $instrument => $full_name) {
         foreach ($candidates as $candidate) {
             $candid = $candidate['CandID'];
             $pscid  = $candidate['PSCID'];
-            foreach ($subprojectids as $subprojectid) {
+            foreach ($cohortids as $cohortid) {
                 $session_info = $DB->pselectRow(
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
-                    s.subprojectid = :subid",
+                    s.cohortid = :subid",
                     [
                         'cid'   => $candid,
                         'fname' => $instrument,
-                        'subid' => $subprojectid['subprojectid'],
+                        'subid' => $cohortid['cohortid'],
                     ]
                 );
                 if (($session_info!=null) && (!empty($session_info))) {
@@ -124,7 +124,7 @@ foreach ($instruments as $instrument => $full_name) {
                             $sessionid,
                             $candid,
                             $pscid,
-                            $subprojectid['subprojectid']
+                            $cohortid['cohortid']
                         );
                         $size      = sizeof($commentid);
                         if ($size >= MIN_SIZE_OF_COMMENTID_ARRAY) {
@@ -148,12 +148,12 @@ foreach ($instruments as $instrument => $full_name) {
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
- * @param String  $test_name    The instrument been searched
- * @param ?string $visit_label  The VisitLabel Placed in the CSV file
- * @param ?string $sid          The SessionID been searched
- * @param ?string $candid       The candid been searched
- * @param ?string $pscid        The PSCID been searched
- * @param ?string $subprojectid The subprojecitd been searched
+ * @param String  $test_name   The instrument been searched
+ * @param ?string $visit_label The VisitLabel Placed in the CSV file
+ * @param ?string $sid         The SessionID been searched
+ * @param ?string $candid      The candid been searched
+ * @param ?string $pscid       The PSCID been searched
+ * @param ?string $cohortid    The subprojecitd been searched
  *
  * @return array $commentids An array of commentids found
  */
@@ -163,10 +163,10 @@ function getCommentIDs(
     $sid = null,
     $candid = null,
     $pscid = null,
-    $subprojectid = null
+    $cohortid = null
 ) {
 
-    $commentID  = $candid. $pscid. $sid . $subprojectid;
+    $commentID  = $candid. $pscid. $sid . $cohortid;
     $commentids = [];
     $flag_info  = [];
 

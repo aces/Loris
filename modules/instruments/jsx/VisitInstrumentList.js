@@ -87,7 +87,6 @@ class VisitInstrumentList extends Component {
      */
     render() {
         let style = {
-            marginBottom: '0.5%',
             marginRight: '0.5%',
             textAlign: 'center',
             boxSizing: 'border-box',
@@ -129,7 +128,6 @@ class VisitInstrumentList extends Component {
             flexWrap: 'nowrap',
             width: '100%',
             height: '100%',
-            alignItems: 'flex-start',
             border: '1px solid #E4EBF2',
             borderTopRightRadius: '10px',
             borderBottomRightRadius: '10px',
@@ -270,7 +268,7 @@ class VisitInstrumentList extends Component {
                 <div>
                 <dl style={defliststyle}>
                     <div style={termstyle}>
-                        <dt>Subproject</dt>
+                        <dt>Cohort</dt>
                         <dd>{this.props.Visit.Meta.Battery}</dd>
                     </div>
                     <div style={termstyle}>

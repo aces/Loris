@@ -12,6 +12,7 @@ import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import StaticDataTable from '../../../jsx/StaticDataTable';
 const {jStat} = require('jstat');
+import JSZip from 'jszip';
 
 /**
  * Loading Component

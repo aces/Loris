@@ -1,21 +1,26 @@
 const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const cp = require('child_process');
+const {IgnorePlugin, DefinePlugin} = require('webpack');
+
+const modulePlugins = [];
 
 const optimization = {
   minimizer: [
-    new TerserPlugin({
-      cache: true,
-      parallel: true,
-      terserOptions: {
-        compress: false,
-        ecma: 6,
-        mangle: false,
-      },
-      sourceMap: true,
-    }),
+    (compiler) => {
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: false,
+        },
+      }).apply(compiler);
+    },
   ],
 };
 
@@ -44,24 +49,53 @@ const resolve = {
     Card: path.resolve(__dirname, './jsx/Card'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  fallback: {
+     fs: false,
+     path: false,
+   },
 };
 
 const mod = {
   rules: [],
 };
 
-// If no compiled chunk.proto found, desactivate compilation
-// on the file importing it to avoid import errors
-// chunk.proto is only required for EEG visualization and requires protoc
-if (!fs.existsSync(
-  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
-  + 'protocol-buffers/chunk_pb.js')
-) {
-  mod.rules.push({
-    test: /react-series-data-viewer\/src\/chunks/,
-    use: 'null-loader',
-  });
+/*
+ * ------------------------------------------------------------
+ * Check if useEEGBrowserVisualizationComponents is set to TRUE
+ * If not, protoc compiled file chunk.proto may not exist.
+ * Deactivate compilation of the EEGBrowserVisualization files
+ * to avoid import errors and optimize performance
+ */
+
+let EEGVisEnabled = false;
+if ('EEG_VIS_ENABLED' in process.env) {
+  EEGVisEnabled = process.env.EEG_VIS_ENABLED;
+} else {
+  const getConfig = cp.spawnSync('php', [
+    'tools/get_config.php',
+    'useEEGBrowserVisualizationComponents',
+  ], {});
+
+  EEGVisEnabled = JSON.parse(getConfig.stdout);
 }
+
+modulePlugins.push(
+  new DefinePlugin({
+    EEG_VIS_ENABLED: EEGVisEnabled,
+  })
+);
+
+if (EEGVisEnabled !== 'true') {
+  modulePlugins.push(
+    new IgnorePlugin({
+      resourceRegExp: /react-series-data-viewer/,
+    })
+  );
+}
+
+/*
+ * ------------------------------------------------------------
+ */
 
 mod.rules.push(
   {
@@ -91,21 +125,34 @@ mod.rules.push(
   },
 );
 
+let mode = 'production';
+try {
+  const configFile = fs.readFileSync('project/config.xml', 'latin1');
+  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
+              .exec(configFile);
+  if (res && parseInt(res[1]) == 1) mode = 'development';
+} catch (error) {
+  console.error(
+    'Error - Can\'t read config.xml file. '
+    + 'Webpack mode set to production.'
+  );
+}
+
 /**
  * Creates a webpack config entry for a LORIS module named
  * mname.
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
- * @param {boolean} override - Is the module an override or a native LORIS module.
  *
  * @return {object} - The webpack configuration
  */
-function lorisModule(mname, entries, override=false) {
+function lorisModule(mname, entries) {
   let entObj = {};
   let base = './modules';
 
-  if (override) {
+  // Check if an override exists in ./project/
+  if (fs.existsSync('./project/modules/' + mname)) {
     base = './project/modules';
   }
 
@@ -125,33 +172,22 @@ function lorisModule(mname, entries, override=false) {
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
-    plugins: [],
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': `"${mode}"`,
+      }),
+      ...modulePlugins,
+    ],
     optimization: optimization,
     resolve: resolve,
     module: mod,
     mode: 'none',
-    stats: 'errors-warnings',
+    stats: 'errors-only',
   };
 }
 
-let mode = 'production';
-try {
-  const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
-  if (res && parseInt(res[1]) == 1) mode = 'development';
-} catch (error) {
-  console.error(
-    'Error - Can\'t read config.xml file. '
-    + 'Webpack mode set to production.'
-  );
-}
-
-const config = [
+let config = [
   // Core components
   {
     mode: mode,
@@ -175,18 +211,17 @@ const config = [
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
     plugins: [
       new ESLintPlugin({
+        extensions: ['ts', 'tsx', 'js', 'jsx'],
         files: [
           'modules/',
           'jsx/',
           'jslib/',
           'htdocs/js/',
           'webpack.config.js',
+          'npm-postinstall.js',
         ],
         cache: true,
       }),
@@ -195,7 +230,6 @@ const config = [
           {
             from: path.resolve(__dirname, 'node_modules/react/umd'),
             to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
             force: true,
             globOptions: {
               ignore: ['react.profiling.min.js'],
@@ -212,7 +246,6 @@ const config = [
           {
             from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
             to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
             force: true,
             filter: async (path) => {
               const file = path.split('\\').pop().split('/').pop();
@@ -231,37 +264,39 @@ const config = [
     module: mod,
     stats: 'errors-warnings',
   },
-  // Modules
-  lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
-  lorisModule('issue_tracker', [
+];
+
+const lorisModules = {
+  media: ['CandidateMediaWidget', 'mediaIndex'],
+  issue_tracker: [
     'issueTrackerIndex',
     'index',
     'CandidateIssuesWidget',
-  ]),
-  lorisModule('login', ['loginIndex']),
-  lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
-  lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-  lorisModule('candidate_parameters', [
+  ],
+  login: ['loginIndex'],
+  publication: ['publicationIndex', 'viewProjectIndex'],
+  document_repository: ['docIndex', 'editFormIndex'],
+  candidate_parameters: [
     'CandidateParameters',
     'ConsentWidget',
-  ]),
-  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
-  lorisModule('conflict_resolver', ['conflict_resolver']),
-  lorisModule('battery_manager', ['batteryManagerIndex']),
-  lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-  lorisModule('behavioural_qc', ['behaviouralQCIndex']),
-  lorisModule('create_timepoint', ['createTimepointIndex']),
-  lorisModule('candidate_list', [
+  ],
+  configuration: ['CohortRelations', 'configuration_helper'],
+  conflict_resolver: ['conflict_resolver'],
+  battery_manager: ['batteryManagerIndex'],
+  bvl_feedback: ['react.behavioural_feedback_panel'],
+  behavioural_qc: ['behaviouralQCIndex'],
+  create_timepoint: ['createTimepointIndex'],
+  candidate_list: [
     'openProfileForm',
     'onLoad',
     'candidateListIndex',
-  ]),
-  lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('data_release', [
+  ],
+  datadict: ['dataDictIndex'],
+  data_release: [
     'dataReleaseIndex',
-  ]),
-  lorisModule('dictionary', ['dataDictIndex']),
-  lorisModule('dqt', [
+  ],
+  dictionary: ['dataDictIndex'],
+  dqt: [
     'components/expansionpanels',
     'components/searchabledropdown',
     'components/stepper',
@@ -273,44 +308,52 @@ const config = [
     'react.savedqueries',
     'react.sidebar',
     'react.tabs',
-  ]),
-  lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['genomicBrowserIndex']),
-  lorisModule('electrophysiology_browser', [
+  ],
+  dicom_archive: ['dicom_archive'],
+  genomic_browser: ['genomicBrowserIndex'],
+  electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
-  ]),
-  lorisModule('imaging_browser', [
+  ],
+  imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
     'CandidateScanQCSummaryWidget',
-  ]),
-  lorisModule('instrument_builder', [
+  ],
+  instrument_builder: [
     'react.instrument_builder',
     'react.questions',
-  ]),
-  lorisModule('instrument_manager', ['instrumentManagerIndex']),
-  lorisModule('survey_accounts', ['surveyAccountsIndex']),
-  lorisModule('mri_violations', [
+  ],
+  instrument_manager: ['instrumentManagerIndex'],
+  survey_accounts: ['surveyAccountsIndex'],
+  mri_violations: [
     'mri_protocol_check_violations_columnFormatter',
     'columnFormatter',
     'columnFormatterUnresolved',
     'mri_protocol_violations_columnFormatter',
-  ]),
-  lorisModule('user_accounts', ['userAccountsIndex']),
-  lorisModule('examiner', ['examinerIndex']),
-  lorisModule('help_editor', ['help_editor']),
-  lorisModule('brainbrowser', ['Brainbrowser']),
-  lorisModule('imaging_uploader', ['index']),
-  lorisModule('acknowledgements', ['acknowledgementsIndex']),
-  lorisModule('new_profile', ['NewProfileIndex']),
-  lorisModule('module_manager', ['modulemanager']),
-  lorisModule('imaging_qc', ['imagingQCIndex']),
-  lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-  lorisModule('instruments', ['CandidateInstrumentList']),
-  lorisModule('candidate_profile', ['CandidateInfo']),
-  lorisModule('api_docs', ['swagger-ui_custom']),
-];
+  ],
+  user_accounts: ['userAccountsIndex'],
+  examiner: ['examinerIndex'],
+  help_editor: ['help_editor'],
+  brainbrowser: ['Brainbrowser'],
+  imaging_uploader: ['index'],
+  acknowledgements: ['acknowledgementsIndex'],
+  new_profile: ['NewProfileIndex'],
+  module_manager: ['modulemanager'],
+  imaging_qc: ['imagingQCIndex'],
+  server_processes_manager: ['server_processes_managerIndex'],
+  instruments: ['CandidateInstrumentList'],
+  candidate_profile: ['CandidateInfo'],
+  api_docs: ['swagger-ui_custom'],
+};
+for (const [key] of Object.entries(lorisModules)) {
+  const target = process.env.target;
+  if (target && target !== key) {
+    // continue loop if target exists && module key doesn't match
+    continue;
+  }
+  config.push(lorisModule(key, lorisModules[key]));
+}
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {

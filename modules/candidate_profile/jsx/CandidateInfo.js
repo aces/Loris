@@ -15,7 +15,7 @@ export class CandidateInfo extends Component {
         super(props);
 
         this.calcAge = this.calcAge.bind(this);
-        this.getSubprojects = this.getSubprojects.bind(this);
+        this.getCohorts = this.getCohorts.bind(this);
         this.getVisitList = this.getVisitList.bind(this);
     }
 
@@ -42,15 +42,15 @@ export class CandidateInfo extends Component {
     }
 
     /**
-     * Return a list of the unique subprojects contained in the
+     * Return a list of the unique cohorts contained in the
      * visits passed.
      *
      * @param {array} visits - An array of visits in the format of
      *                         the LORIS API
      *
-     * @return {array} - The unique list of subprojects as a string.
+     * @return {array} - The unique list of cohorts as a string.
      */
-    getSubprojects(visits) {
+    getCohorts(visits) {
         let mapped = [...new Set(visits.map( (visit) => {
             return visit.Meta.Battery;
         }))];
@@ -107,9 +107,9 @@ export class CandidateInfo extends Component {
      * @return {object} - The rendered react component
      */
     render() {
-        const subprojects = this.getSubprojects(this.props.Visits);
-        const subprojlabel = subprojects.length == 1 ? 'Subproject'
-            : 'Subprojects';
+        const cohorts = this.getCohorts(this.props.Visits);
+        const subprojlabel = cohorts.length == 1 ? 'Cohort'
+            : 'Cohorts';
 
         const data = [
             {
@@ -139,7 +139,7 @@ export class CandidateInfo extends Component {
             },
             {
                 label: subprojlabel,
-                value: subprojects,
+                value: cohorts,
             },
             {
                 label: 'Site',

@@ -253,7 +253,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // since it isn't a real module, but it's required for the page
                 // constructor.
                 $loris,
-                Module::factory("instruments"),
+                Module::factory($loris, "instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -272,7 +272,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // Now go ahead and instantiate it
             $obj = new $class(
                 $loris,
-                Module::factory("instruments"),
+                Module::factory($loris, "instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -645,7 +645,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _saveCandidateAge(array &$values): void
     {
         if (!empty($values['Date_taken'])) {
-            $DB  = Database::singleton();
+            $DB  = $this->loris->getDatabaseConnection();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
@@ -667,7 +667,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y'
                             AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                     $query_params
                 );
@@ -683,7 +683,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN flag f USING(Test_name)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y' AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                         $query_params
                     );
@@ -823,7 +823,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _save(array $values): void
     {
-        $db = Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -1005,7 +1005,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return [];
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -1456,17 +1456,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Gets the subprojectID for the timepoint for this instrument.
+     * Gets the cohortID for the timepoint for this instrument.
      *
-     * @return int|null The subprojectID
+     * @return int|null The cohortID
      */
-    function getSubprojectID(): ?int
+    function getCohortID(): ?int
     {
         $sessionID = $this->getSessionID();
         if (!is_null($sessionID)) {
-            $timepoint    = \TimePoint::singleton($sessionID);
-            $subprojectID = $timepoint->getSubprojectID();
-            return $subprojectID;
+            $timepoint = \TimePoint::singleton($sessionID);
+            $cohortID  = $timepoint->getCohortID();
+            return $cohortID;
         }
         return null;
     }
@@ -1543,7 +1543,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getRequiredElementsCompletedFlag(): string
     {
-        $db     = Database::singleton();
+        $db     = $this->loris->getDatabaseConnection();
         $status = $db->pselectOne(
             "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentID()]
@@ -1574,7 +1574,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "'Y' or 'N'<br>\n"
             );
         }
-        $DB = Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $DB->update(
             "flag",
             ["Required_elements_completed" => $status],
@@ -1604,7 +1604,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             [
-                null           => '',
+                ''             => '',
                 'yes'          => 'Yes',
                 'no'           => 'No',
                 'not_answered' => 'Not Answered',
@@ -1693,7 +1693,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null             => '',
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => 'Not Answered',
@@ -1740,7 +1740,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null           => '',
+                ''             => '',
                 'not_answered' => 'Not Answered',
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1791,7 +1791,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             "",
             [
-                null           => '',
+                ''             => null,
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
@@ -1844,7 +1844,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1911,7 +1911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 '88_refused'     => "88 Refused",
                 '99_do_not_know' => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -1962,7 +1962,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1998,7 +1998,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             '',
             [
-                null             => "",
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -2108,7 +2108,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return $this->instanceData;
         }
 
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         if ($this->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2145,7 +2145,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Warning: loadInstanceData($inst) is deprecated and will be removed'
             . ' in a future version of LORIS. Use $inst->getInstanceData() instead.'
         );
-        $db = \Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         if ($instrumentInstance->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2180,7 +2180,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "Must bulk load from instrument loaded without commentID"
             );
         }
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         $prepBindings = [];
         $prepValues   = [];
@@ -2273,7 +2273,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDoB(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $dob = $db->pselectOne(
@@ -2293,7 +2293,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDoD(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
         $dod       = $db->pselectOne(
             "SELECT c.DoD FROM flag f
@@ -2312,7 +2312,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getPSCID(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
@@ -2333,7 +2333,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function clearInstrument(): void
     {
         $config   = NDB_Config::singleton();
-        $db       = Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $dbconfig = $config->getSetting('database');
 
         if (!$this->jsonData) {
@@ -2350,7 +2350,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             foreach ($columns as $row) {
                 switch ($row['COLUMN_NAME']) {
                 case 'CommentID':
+                case 'ID':
+                case 'SessionID':
                 case 'UserID':
+                case 'Test_name':
                     continue 2;
                 default:
                     $values[$row['COLUMN_NAME']] = null;
@@ -2529,9 +2532,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $Responses = $this->getInstanceData();
 
-        foreach ($tpl_data['questions'] as &$row) {
+        foreach ($tpl_data['questions'] as $key => &$row) {
+            $isStatusField = $row['SourceField']
+                === $tpl_data['questions'][$key-1]['SourceField']."_status";
             if (isset($Responses[$row['SourceField']])) {
+                // Consider status fields
+                if ($isStatusField) {
+                    // The current row is the status field of the previous one
+                    // remove row and set the answer to whichever is answered
+                    $tpl_data['questions'][$key-1]['response']
+                        = $Responses[$row['SourceField']];
+                    unset($tpl_data['questions'][$key]);
+                    continue;
+                }
                 $row['response'] = $Responses[$row['SourceField']];
+            } elseif ($isStatusField) {
+                // incase it's a status field AND its empty, unset it
+                unset($tpl_data['questions'][$key]);
             }
         }
 
@@ -2741,7 +2758,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function determineDataEntryAllowed(): bool
     {
-        $DB    = Database::singleton();
+        $DB    = $this->loris->getDatabaseConnection();
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentId()]
@@ -2889,6 +2906,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $req     = $request->getParsedBody();
         $success = false;
+        if (isset($req['ClearInstrument'])) {
+            $success = true;
+        }
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $success = $this->save();
         }

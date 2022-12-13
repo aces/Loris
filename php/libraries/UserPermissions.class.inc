@@ -36,7 +36,6 @@ class UserPermissions
      */
     private $permissions = [];
 
-
     /**
      * Constructor
      *
@@ -52,7 +51,7 @@ class UserPermissions
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = ['UName' => $username];
 
-        $userID = \Database::singleton()->pselectOne($query, $params);
+        $userID = \NDB_Factory::singleton()->database()->pselectOne($query, $params);
         if ($userID === null) {
             return false;
         }
@@ -74,7 +73,7 @@ class UserPermissions
     function setPermissions(): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
@@ -195,7 +194,7 @@ class UserPermissions
     function addPermissions(array $set): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // add the permissions
         foreach ($set as $value) {
@@ -224,7 +223,7 @@ class UserPermissions
     function removePermissions(?array $set = null): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if (is_null($set)) {
             // remove all permissions
             $DB->delete(
@@ -258,7 +257,7 @@ class UserPermissions
     function getPermissionIDs(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT permissions.permID
@@ -281,13 +280,15 @@ class UserPermissions
     /**
      * Returns an array with all permissions information for the user
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get
+     *                                    permissions from.
+     *
      * @return array
-     * @access public
      */
-    function getPermissionsVerbose(): array
+    function getPermissionsVerbose(\LORIS\LorisInstance $loris): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $loris->getDatabaseConnection();
 
         $query = "SELECT
                 p.permID,
@@ -311,9 +312,8 @@ class UserPermissions
                 LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
                 ORDER BY p.categoryID, m.Name, p.description";
             $results = $DB->pselect($query, []);
-
         }
-        $modules = \Module::getActiveModulesIndexed($DB);
+        $modules = \Module::getActiveModulesIndexed($loris);
         // Build new meaningful description from combination of columns
         // Module Long Name: action description
         foreach ($results as $key=>$perm) {
@@ -343,7 +343,7 @@ class UserPermissions
     ): void {
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \NDB_Factory::singleton()->database();
 
         //insert into the login_history
         $DB->insert(

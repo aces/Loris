@@ -35,7 +35,7 @@ class Module extends \Module
      *
      * @return bool
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         // The API is "public"  because the login endpoint needs to be public.
         return true;

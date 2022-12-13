@@ -4,7 +4,7 @@ export const SET_TIME_SELECTION = 'SET_TIME_SELECTION';
 export const setTimeSelection = createAction(SET_TIME_SELECTION);
 
 export type Action = {
-  type: "SET_TIME_SELECTION",
+  type: 'SET_TIME_SELECTION',
   payload?: [number, number]
 };
 

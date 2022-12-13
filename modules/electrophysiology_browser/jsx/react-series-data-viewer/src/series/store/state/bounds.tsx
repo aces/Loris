@@ -30,14 +30,20 @@ export type State = {
   viewerHeight: number,
 };
 
-const interval = (state: [number, number] = [0.25, 0.75], action?: Action): [number, number] => {
+const interval = (
+  state: [number, number] = [0.25, 0.75],
+  action?: Action
+): [number, number] => {
   if (action && action.type === 'SET_INTERVAL') {
     return action.payload;
   }
   return state;
 };
 
-const domain = (state: [number, number] = [0, 1], action?: Action): [number, number] => {
+const domain = (
+  state: [number, number] = [0, 1],
+  action?: Action
+): [number, number] => {
   if (action && action.type === 'SET_DOMAIN') {
     return action.payload;
   }
