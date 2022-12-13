@@ -18,6 +18,7 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -273,13 +274,25 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 EDC_NOT_SPECIFIED
             );
         }
-        if ($dateOfBirth !== null
-            && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
-            || empty($dateOfBirth))
-        ) {
+        if (empty($dateOfBirth)) {
             throw new InvalidArgumentException(
                 "Date of Birth must be specified",
                 DOB_NOT_SPECIFIED
+            );
+        }
+        $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
+        if (is_bool($dob) && $dob === false) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid",
+                DOB_INVALID
+            );
+        } elseif (is_object($dob)
+            && ($dob->getLastErrors()['error_count'] > 0
+            || $dob->getLastErrors()['warning_count'] > 0)
+        ) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid",
+                DOB_INVALID
             );
         }
 
