@@ -3,7 +3,7 @@ namespace LORIS\dataquery;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Data\Filters\AccessibleResourceFilter;
+// use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/* endpoint of
@@ -38,7 +38,6 @@ class Queries extends \NDB_Page
         $user    = $request->getAttribute('user');
         $url     = $request->getURI()->getPath();
         $pieces  = [];
-        $queryID = null;
         if (preg_match(
             "/queries$/",
             $url,
@@ -71,7 +70,6 @@ class Queries extends \NDB_Page
                         'Invalid JSON data'
                     );
                 }
-                $user = $request->getAttribute('user');
                 // FIXME: Validate query before storing it. Must contain fields.
                 $queryID = $this->_storeQuery($requestjson);
                 return new \LORIS\Http\Response\JSON\OK(
@@ -109,6 +107,7 @@ class Queries extends \NDB_Page
             $queryID = intval($pieces[1]);
             return $this->countResults($user, $queryID);
         }
+        /*
         if (preg_match(
             "/queries\/([0-9]+)\/run\/([0-9]+)$/",
             $url,
@@ -119,6 +118,7 @@ class Queries extends \NDB_Page
             $runID   = intval($pieces[2]);
             return $this->queryRun($user, $queryID, $runID);
         }
+        */
         return new \LORIS\Http\Response\JSON\NotFound();
     }
 
@@ -127,7 +127,7 @@ class Queries extends \NDB_Page
      *
      * @param \User $user The user getting the queries.
      *
-     * @return QueryRun[]
+     * @return \Traversable
      */
     public function getRecentQueries(\User $user) : iterable
     {
@@ -141,7 +141,7 @@ class Queries extends \NDB_Page
      *
      * @param \User $user The user getting the queries.
      *
-     * @return Query[]
+     * @return \Traversable
      */
     public function getSharedQueries(\User $user) : iterable
     {
@@ -155,7 +155,7 @@ class Queries extends \NDB_Page
      *
      * @param \User $user The user getting the queries.
      *
-     * @return Query[]
+     * @return \Traversable
      */
     public function getTopQueries(\User $user) : iterable
     {
@@ -208,7 +208,6 @@ class Queries extends \NDB_Page
     {
         $user = $request->getAttribute('user');
 
-        $query = null;
         try {
             $query = new Query($this->loris, $queryID);
         } catch (\NotFound $e) {
@@ -285,7 +284,7 @@ class Queries extends \NDB_Page
                 'Unhandled PATCH action'
             );
         }
-        return new \LORIS\Http\Response\JSON\BadMethod('Request must be GET');
+        return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET'], 'Request must be GET');
     }
 
     /**
