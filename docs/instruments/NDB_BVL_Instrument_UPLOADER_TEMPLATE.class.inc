@@ -150,7 +150,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
         }
         //echo error messages
         if(!empty($file->errorLog)){
-        while(list($fileType,$fileErrors)=each($file->errorLog)){
+        foreach($file->errorLog AS $fileType => $fileErrors){
             foreach($fileErrors AS $error){
                  echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
             }
