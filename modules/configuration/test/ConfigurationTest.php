@@ -68,6 +68,14 @@ class ConfigurationTest extends LorisIntegrationTest
             "/Please enter the various configuration variables/",
             $bodyText
         );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that configuration loads with the permission

@@ -223,6 +223,14 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             "Electrophysiology Browser",
             $bodyText
         );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**

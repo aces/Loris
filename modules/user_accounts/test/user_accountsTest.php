@@ -126,6 +126,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 WebDriverBy::Name("__Confirm")
             )->getAttribute("type")
         );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that searching for users using thei user IDs works

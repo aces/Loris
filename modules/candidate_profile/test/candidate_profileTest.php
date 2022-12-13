@@ -39,6 +39,14 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
             "Candidate Dashboard 900000 / TST0001",
             $bodyText
         );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
