@@ -289,7 +289,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
-        $cls->menu = $page;
+        if (property_exists($cls, 'menu')) {
+            $cls->menu = $page;
+        }
 
         return $cls;
     }
