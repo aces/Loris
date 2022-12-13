@@ -10,9 +10,9 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 # System Requirements - Install dependencies
 
 Default dependencies installed by CentOS 7.x may not meet the version requirements for LORIS deployment or development:
-* MariaDB 10.3 is supported for LORIS 24.
+* MariaDB 10.3 is supported for LORIS 25.
 
-* PHP 8.0 (or higher) is supported for LORIS 24.
+* PHP 8.1 (or higher) is supported for LORIS 25.
 
 In addition to the above, the following packages should be installed with `yum` and may also differ from the packages referenced in the main (Ubuntu) [LORIS Readme](../../../../../README.md). Detailed command examples are provided below (`sudo` privilege may be required depending on your system).
  * Apache 2.4 or higher  
@@ -31,7 +31,9 @@ sudo yum install httpd
 sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
-## PHP 8.0
+
+## PHP
+
 ```bash
 sudo yum install epel-release
 sudo yum install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
@@ -41,7 +43,7 @@ sudo yum update
 # By default, the repository for PHP 5.4 is enabled
 # Make sure to have only one repository for PHP enabled
 sudo yum-config-manager --disable remi-php54
-sudo yum-config-manager --enable remi-php80
+sudo yum-config-manager --enable remi-php82
 sudo yum install php php-pdo php-pdo_mysql php-fpm php-gd php-json php-mbstring php-mysqlnd php-xml php-xmlrpc php-opcache
 ```
 ## MariaDB
