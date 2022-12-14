@@ -33,7 +33,7 @@ function DefineFilters(props) {
             return;
         }
         fetch(
-           loris.BaseURL + '/dqt/queries',
+           loris.BaseURL + '/dataquery/queries',
            {
              method: 'POST',
              credentials: 'same-origin',
@@ -49,7 +49,7 @@ function DefineFilters(props) {
         ).then(
             (data) => {
                 fetch(
-                        loris.BaseURL + '/dqt/queries/'
+                        loris.BaseURL + '/dataquery/queries/'
                             + data.QueryID + '/count',
                         {
                             method: 'GET',

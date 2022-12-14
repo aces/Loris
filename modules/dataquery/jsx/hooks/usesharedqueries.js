@@ -19,7 +19,7 @@ function useStarredQueries(onCompleteCallback) {
         }
 
         fetch(
-            '/dqt/queries/' + starQueryID + '?star=' + starAction,
+            '/dataquery/queries/' + starQueryID + '?star=' + starAction,
             {
                 method: 'PATCH',
                 credentials: 'same-origin',
@@ -51,7 +51,7 @@ function useShareQueries(onCompleteCallback) {
         }
 
         fetch(
-            '/dqt/queries/' + shareQueryID + '?share=' + shareAction,
+            '/dataquery/queries/' + shareQueryID + '?share=' + shareAction,
             {
                 method: 'PATCH',
                 credentials: 'same-origin',
@@ -84,7 +84,7 @@ function useSharedQueries() {
     const [setShareQueryID, setShareAction] = useShareQueries(reloadQueries);
 
     useEffect(() => {
-        fetch('/dqt/queries', {credentials: 'same-origin'})
+        fetch('/dataquery/queries', {credentials: 'same-origin'})
         .then((resp) => {
           if (!resp.ok) {
             throw new Error('Invalid response');
@@ -225,7 +225,7 @@ function useLoadQueryFromURL(loadQuery) {
             return;
         }
         fetch(
-            '/dqt/queries/' + queryID,
+            '/dataquery/queries/' + queryID,
             {
                 method: 'GET',
                 credentials: 'same-origin',
