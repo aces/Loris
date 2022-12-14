@@ -35,6 +35,9 @@ Instrument builder Test Plan
 6.  Re-load existing instrument
   * 6.a Add questions
   * 6.b Save instrument file and ensure new changes are reflected in the file
-7. Install and test instrument
-8. Add and test some basic rules for the instrument (see the `bmi` in this repo for examples
-9. Test functionality on mutiple broswers.
+7.  Convert existing REDCap Data Dictionary CSV file
+  * 7.a Ensure the number of linst files downloaded matches the number of instruments in the dictionary
+  * 7.b Repeat step 6 with the downloaded linst files
+8. Install and test instrument
+9. Add and test some basic rules for the instrument (see the `bmi` in this repo for examples
+10. Test functionality on multiple browsers.

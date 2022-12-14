@@ -289,6 +289,7 @@ auto-launch set to true and your current upload overwrote an existing file (PR #
 - Use Loris API to view files (PR #7816)
 #### Instrument Builder
 - Fix for error 'Max value must be larger than min value' when clicking 'Add Row'. (PR #6810)
+- Add ability to convert a REDCap .csv data dictionary into .linst and download in the browser
 #### Instruments
 - General help text added for instrument data entry (PR #6902)
 - Fix to avoid select with required option in group fields to display as multiselect (PR #7254)

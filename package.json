@@ -11,6 +11,7 @@
         "@babel/runtime": "^7.10.5",
         "@fortawesome/fontawesome-free": "^5.11.2",
         "copy-webpack-plugin": "^11.0.0",
+        "csv-parse": "^5.3.3",
         "dompurify": "^2.2.9",
         "jstat": "^1.9.5",
         "jszip": "^3.10.1",
