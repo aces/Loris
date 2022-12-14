@@ -13,7 +13,7 @@ function useVisits() {
         if (allVisits !== false) {
             return;
         }
-          fetch('/dqt/visitlist', {credentials: 'same-origin'})
+          fetch('/dataquery/visitlist', {credentials: 'same-origin'})
           .then((resp) => {
                   if (!resp.ok) {
                       throw new Error('Invalid response');

@@ -23,7 +23,7 @@ function ViewData(props) {
             return;
         }
         fetch(
-           loris.BaseURL + '/dqt/queries',
+           loris.BaseURL + '/dataquery/queries',
            {
              method: 'POST',
              credentials: 'same-origin',
@@ -40,7 +40,9 @@ function ViewData(props) {
             (data) => {
                 let resultbuffer = [];
                 const response = fetchDataStream(
-                    loris.BaseURL + '/dqt/queries/' + data.QueryID + '/run',
+                    loris.BaseURL +
+                        '/dataquery/queries/' +
+                        data.QueryID + '/run',
                     (row) => {
                         resultbuffer.push(row);
                     },

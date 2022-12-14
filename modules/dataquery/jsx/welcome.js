@@ -179,7 +179,7 @@ function QueryList(props) {
         setQueryName(null);
 
         fetch(
-            '/dqt/queries/' + id
+            '/dataquery/queries/' + id
                 + '?name=' + encodeURIComponent(name),
             {
                 method: 'PATCH',
@@ -208,7 +208,7 @@ function QueryList(props) {
         setQueryName(null);
 
         fetch(
-            '/dqt/queries/' + id
+            '/dataquery/queries/' + id
                 + '?type=' + adminPinAction
                 + '&name=' + encodeURIComponent(name),
             {
@@ -234,7 +234,7 @@ function QueryList(props) {
         setUnpinAdminQuery(null);
 
         fetch(
-            '/dqt/queries/' + id + '?type=untop',
+            '/dataquery/queries/' + id + '?type=untop',
             {
                 method: 'PATCH',
                 credentials: 'same-origin',
