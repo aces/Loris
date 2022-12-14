@@ -148,19 +148,19 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
             //proccesses them (including verify, move, and import steps)
             $file->processFiles();
         }
-        //echo error messages
-        foreach($file->errorLog AS $fileType => $fileErrors){
-            foreach($fileErrors AS $error){
-		echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
-            }
-	}  
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'],
-            $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-	    $values['upload_file']
-        );
-        $this->_save($values);
-
-   }
+	//echo error messages
+    foreach($file->errorLog AS $fileType => $fileErrors){
+	   foreach($fileErrors AS $error){
+		  echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
+	   }
+    }
+    unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'],
+	   $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
+	   $values['upload_file']
+    );
+    this->_save($values);
+    
+    }
 
    /**
      * getTargetDirectory retrieves info about where the file should be stored.
