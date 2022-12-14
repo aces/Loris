@@ -62,6 +62,9 @@ data_release:
 instrument_manager:
 	target=instrument_manager npm run compile
 
+dataquery:
+	target=dataquery npm run compile
+
 login:
 	target=login npm run compile
 
