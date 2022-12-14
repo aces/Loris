@@ -55,3 +55,5 @@ testdata:
 login:
 	target=login npm run compile
 
+dataquery:
+	target=dataquery npm run compile
