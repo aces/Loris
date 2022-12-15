@@ -287,7 +287,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 "Date of Birth is invalid (expected format: YYYY-MM-DD)",
                 DOB_INVALID
             );
-        } 
+        }
 
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
