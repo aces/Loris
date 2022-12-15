@@ -281,20 +281,13 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
         $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
-        if (is_bool($dob) && $dob === false) {
+        if (!empty(\DateTime::getLastErrors())) {
+            error_log(print_r(\DateTime::getLastErrors(), true));
             throw new InvalidArgumentException(
                 "Date of Birth is invalid (expected format: YYYY-MM-DD)",
                 DOB_INVALID
             );
-        } elseif (is_object($dob)
-            && ($dob->getLastErrors()['error_count'] > 0
-            || $dob->getLastErrors()['warning_count'] > 0)
-        ) {
-            throw new InvalidArgumentException(
-                "Date of Birth is invalid (expected format: YYYY-MM-DD)",
-                DOB_INVALID
-            );
-        }
+        } 
 
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
