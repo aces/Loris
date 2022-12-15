@@ -279,7 +279,6 @@ CREATE TABLE `flag` (
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
