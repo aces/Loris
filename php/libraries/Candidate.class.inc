@@ -281,8 +281,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
         $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
-        if (!empty(\DateTime::getLastErrors())) {
-            error_log(print_r(\DateTime::getLastErrors(), true));
+        if (!empty($dob->getLastErrors())) {
+            error_log(print_r($dob->getLastErrors(), true));
             throw new InvalidArgumentException(
                 "Date of Birth is invalid (expected format: YYYY-MM-DD)",
                 DOB_INVALID
