@@ -39,10 +39,14 @@ paths:
           application/json:
             schema:
 <<<<<<< HEAD
+<<<<<<< HEAD
               $ref: '#/components/schemas/QueryObject'
 =======
               $ref: '#/components/schemas/Query'
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+              $ref: '#/components/schemas/QueryObject'
+>>>>>>> bdda21bc1 (Create QueryObject)
       responses:
         '200':
           description: Query successfully created
@@ -316,13 +320,11 @@ components:
              For instance, the starred and name properties may vary based on the user
              accessing the URI.
           example: "https://example.com/dataquery/queries/4"
-        type:
-          type: string
-          enum: ['candidates']
-          example: "candidates"
+        Query:
+          $ref: '#/components/schemas/QueryObject'
         AdminName:
           type: string
-          descripton: The name given by the admin for a pinned query
+          description: The name given by the admin for a pinned query
           example: "Important Study Query Of Missing T1s"
         Name:
           type: string
@@ -351,6 +353,7 @@ components:
         QueryID:
           type: integer
           example: 3
+<<<<<<< HEAD
     QueryRun:
       type: object
       properties:
@@ -396,6 +399,8 @@ components:
       required:
         - type
         - fields
+=======
+>>>>>>> bdda21bc1 (Create QueryObject)
     QueryRun:
       type: object
       properties:
@@ -438,6 +443,9 @@ components:
         - category
         - field
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bdda21bc1 (Create QueryObject)
     QueryObject:
       type: object
       description: A set of filters and fields used to determine what is being queried.
@@ -455,8 +463,11 @@ components:
       required:
         - type
         - fields
+<<<<<<< HEAD
 =======
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+>>>>>>> bdda21bc1 (Create QueryObject)
     QueryCriteriaGroup:
       type: object
       description: An and/or group used for filtering, all items in the group must be the same operator (but an item in the group may be a query criteria subgroup using a different operator)
