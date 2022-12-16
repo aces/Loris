@@ -80,36 +80,32 @@ paths:
           style: spaceDelimited
           schema:
             type: boolean
-          
-        - name: unshare
-          in: query
-          style: spaceDelimited
-          schema:
-            type: boolean
+          description: if true, the query will be shared. If false, it will be unshared
         - name: star
           in: query
           style: spaceDelimited
+          description: if true, the query will be shared. If false, it will be unshared
           schema:
             type: boolean
-        - name: unstar
+        - name: adminname
           in: query
-          style: spaceDelimited
-          schema:
-            type: boolean
-        - name: type
+          style: pipeDelimited
+          description: The admin name to pin the query as. If the empty string, will be unpinned.
+        - name: dashboardname
           in: query
-          style: spaceDelimited
-          schema:
-            type: string
-            enum: ['top', 'untop', 'dashboard']
+          style: pipeDelimited
+          description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
         - name: name
           in: query
           style: pipeDelimited
+          description: The name to set for the query for this user.
           schema:
             type: string
       responses:
-        '400':
-          description: Bad request. Most likely caused by one or more incompatible patches to be done at the same time.
+        '200':
+          description: The access was performed
+        '403':
+          description: The access was not performed because of permissions being denied.
   /queries/{QueryID}/run:
     parameters:
       - name: QueryID
@@ -119,7 +115,7 @@ paths:
         style: simple
         schema:
           type: integer  
-    get:
+    post:
       description: |- 
         Run the query QueryID and returns the results. 
         
@@ -255,6 +251,10 @@ components:
           type: integer
           description: A reference to an object in the queries property identified by QueryID
           example: 3
+        QueryRunID:
+          type: integer
+          description: A reference to the run number of this query
+          example: 4
     QueryField:
       type: object
       properties:
