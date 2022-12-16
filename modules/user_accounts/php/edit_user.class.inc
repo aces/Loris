@@ -623,8 +623,9 @@ class Edit_User extends \NDB_Form
             $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
-            assert(isset($values['Password_hash']));
-            $msg_data['password'] = $values['Password_hash'];
+            if (isset($values['Password_hash'])) {
+                $msg_data['password'] = $values['Password_hash'];
+            }
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
