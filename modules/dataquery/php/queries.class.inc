@@ -152,34 +152,6 @@ class Queries extends \NDB_Page
     }
 
     /**
-     * Get a list of shared queries for this user
-     *
-     * @param \User $user The user getting the queries.
-     *
-     * @return \Traversable
-     */
-    public function getSharedQueries(\User $user) : iterable
-    {
-        return (new provisioners\SharedQueries($this->loris, $user))
-            //->filter(new AccessibleResourceFilter())
-            ->execute($user);
-    }
-
-    /**
-     * Get a list of top queries for this user
-     *
-     * @param \User $user The user getting the queries.
-     *
-     * @return \Traversable
-     */
-    public function getTopQueries(\User $user) : iterable
-    {
-        return (new provisioners\StudyQueries($this->loris, 'topquery'))
-            //->filter(new AccessibleResourceFilter())
-            ->execute($user);
-    }
-
-    /**
      * Store a query that was run in the database and return the QueryID.
      * for it.
      *
