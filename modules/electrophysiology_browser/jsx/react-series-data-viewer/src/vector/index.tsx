@@ -2,9 +2,15 @@ import {vec2, glMatrix} from 'gl-matrix';
 
 export type Vector2 = typeof glMatrix.ARRAY_TYPE;
 
+/**
+ * Apply transformation f on point p
+ *
+ * @param {Function[]} f - an array of functions
+ * @param {Vector2} p - a point
+ * @returns {Vector2} - a vector
+ */
 export const ap = (
-  f: [(_: any) => any,
-  (_: any) => any],
+  f: [(_: any) => any, (_: any) => any],
   p: Vector2
 ): Vector2 =>
   vec2.fromValues(f[0](p[0]), f[1](p[1]));

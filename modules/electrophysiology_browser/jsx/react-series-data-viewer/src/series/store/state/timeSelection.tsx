@@ -12,6 +12,13 @@ export type State = [number, number];
 
 export type Reducer = (state?: [number, number], action?: Action) => State;
 
+/**
+ * timeSelectionReducer
+ *
+ * @param {State} state - The current state
+ * @param {Action} action - The action
+ * @returns {State} - The updated state
+ */
 export const timeSelectionReducer: Reducer = (state = null, action) => {
   if (!action) {
     return state;

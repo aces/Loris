@@ -12,6 +12,13 @@ export type Action = {
 
 export type State = Channel;
 
+/**
+ * channelReducer
+ *
+ * @param {State} state - The current state
+ * @param {Action} action - The action
+ * @returns {State} - The updated state
+ */
 export const channelReducer = (
   state: Channel = {index: 0, traces: []},
   action?: Action

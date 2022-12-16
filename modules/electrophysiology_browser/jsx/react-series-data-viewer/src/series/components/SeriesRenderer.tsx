@@ -92,6 +92,40 @@ type CProps = {
   annotationMetadata: AnnotationMetadata,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.viewerWidth
+ * @param root0.interval
+ * @param root0.amplitudeScale
+ * @param root0.cursor
+ * @param root0.rightPanel
+ * @param root0.timeSelection
+ * @param root0.setCursor
+ * @param root0.setRightPanel
+ * @param root0.channels
+ * @param root0.channelMetadata
+ * @param root0.hidden
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.activeEpoch
+ * @param root0.offsetIndex
+ * @param root0.setOffsetIndex
+ * @param root0.setAmplitudesScale
+ * @param root0.resetAmplitudesScale
+ * @param root0.setLowPassFilter
+ * @param root0.setHighPassFilter
+ * @param root0.setViewerWidth
+ * @param root0.setViewerHeight
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.limit
+ * @param root0.setCurrentAnnotation
+ * @param root0.physioFileID
+ * @param root0.annotationMetadata
+ */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
@@ -177,6 +211,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   * @param root0.interval
+   */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
       <>
@@ -194,6 +235,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   */
   const EpochsLayer = () => {
     return (
       <Group>
@@ -236,6 +280,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / MAX_CHANNELS;
     return (
@@ -260,6 +310,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
       setViewerWidth(viewerWidth);
@@ -343,12 +398,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
 
+  /**
+   *
+   * @param v
+   */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
     return (dragContinue)(x);
   };
 
+  /**
+   *
+   * @param v
+   */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     document.removeEventListener('mousemove', onMouseMove);

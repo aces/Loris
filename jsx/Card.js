@@ -3,7 +3,6 @@
  *
  * @author Zaliqa Rosli
  * @version 1.0.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';

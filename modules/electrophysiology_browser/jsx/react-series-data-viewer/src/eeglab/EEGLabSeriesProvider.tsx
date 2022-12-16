@@ -46,7 +46,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   };
 
   /**
-   * @constructor
+   * @class
    * @param {object} props - React Component properties
    */
   constructor(props: CProps) {
@@ -79,6 +79,13 @@ class EEGLabSeriesProvider extends Component<CProps> {
 
     this.store.dispatch(setPhysioFileID(physioFileID));
 
+    /**
+     *
+     * @param {Function} fetcher The fn to collect the type of data
+     * @param {string} url - The url
+     * @param {string} route - The route
+     * @returns {Promise} - The data
+     */
     const racers = (fetcher, url, route = '') => {
       if (url) {
         return [fetcher(`${url}${route}`)
@@ -196,7 +203,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @returns {JSX} - React markup for the component
    */
   render() {
     const [signalViewer, ...rest] = React.Children.toArray(this.props.children);

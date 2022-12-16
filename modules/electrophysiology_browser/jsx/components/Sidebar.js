@@ -26,7 +26,6 @@ const style = {
  * This file contains React component for the Electrophysiology module sidebar.
  *
  * @author Alizée Wickenheiser.
- *
  */
 class Sidebar extends Component {
   /**
@@ -56,6 +55,7 @@ class Sidebar extends Component {
 
   /**
    * Save the sidebar reference
+   *
    * @param {object} node - DOM node
    */
   saveSidebarRef(node) {

@@ -4,9 +4,9 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
@@ -160,6 +160,7 @@ class DataQueryApp extends Component {
 
   /**
    * Handle ProgressBar Setup
+   *
    * @param {function} callback
    */
   async handleProgressBarSetup(callback) {
@@ -246,6 +247,7 @@ class DataQueryApp extends Component {
 
   /**
    * getSessions - takes awhile if large couchdb instance.
+   *
    * @param {function} callback
    */
   async requestSessions(callback) {
@@ -322,6 +324,7 @@ class DataQueryApp extends Component {
 
   /**
    * save filter rule
+   *
    * @param {object} rule - sets the filter rule
    * @return {object}
    */
@@ -338,6 +341,7 @@ class DataQueryApp extends Component {
 
   /**
    * save filter group
+   *
    * @param {object} group - sets the filter group for saving query.
    * @return {object}
    */
@@ -361,6 +365,7 @@ class DataQueryApp extends Component {
 
   /**
    * save current query
+   *
    * @param {string} name
    * @param {string} shared
    * @param {boolean} override
@@ -432,6 +437,7 @@ class DataQueryApp extends Component {
 
   /**
    * Used to load in a filter rule
+   *
    * @param {object} rule
    * @return {object} rule
    */
@@ -536,6 +542,7 @@ class DataQueryApp extends Component {
 
   /**
    * Used to load in a filter group
+   *
    * @param {object} group
    * @return {object} group
    */
@@ -733,6 +740,7 @@ class DataQueryApp extends Component {
 
   /**
    * Used to add and remove fields from the current query being built
+   *
    * @param {object} fieldName
    * @param {object} category
    * @param {object} downloadable
@@ -825,7 +833,8 @@ class DataQueryApp extends Component {
 
   /**
    * Get the sessions to be selected
-   * @return {[]}
+   *
+   * @return {Array|void}
    */
   getSessions() {
     if (this.state.filter.children.length > 0) {
@@ -836,6 +845,7 @@ class DataQueryApp extends Component {
 
   /**
    * Run the current query
+   *
    * @param {string[]} fields
    */
   runQuery(fields) {
@@ -947,6 +957,7 @@ class DataQueryApp extends Component {
 
   /**
    * Build the queried data to be displayed in the data table
+   *
    * @param {number} displayID
    * @return {object}
    */
@@ -1137,6 +1148,7 @@ class DataQueryApp extends Component {
 
   /**
    * Change the display format of the data table
+   *
    * @param {number} displayID
    */
   changeDataDisplay(displayID) {
@@ -1151,6 +1163,7 @@ class DataQueryApp extends Component {
 
   /**
    * Update the filter
+   *
    * @param {object} filter
    */
   updateFilter(filter) {
@@ -1162,6 +1175,7 @@ class DataQueryApp extends Component {
 
   /**
    * navigation clicked
+   *
    * @param {string} command
    */
   navigationClicked(command) {
@@ -1196,6 +1210,7 @@ class DataQueryApp extends Component {
 
   /**
    * stepper clicked
+   *
    * @param {string} step
    * @param {number} index
    */
@@ -1243,6 +1258,7 @@ class DataQueryApp extends Component {
 
   /**
    * get sidebar visible status
+   *
    * @return {boolean}
    */
   getSideBarVisibleStatus() {
@@ -1254,6 +1270,7 @@ class DataQueryApp extends Component {
 
   /**
    * get AllSessions when needed.
+   *
    * @return {array}
    */
   getAllSessions() {

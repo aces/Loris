@@ -42,7 +42,7 @@ class DataTable extends Component {
    * Set the component page variable
    * to a new value
    *
-   * @param {int} i - Page index
+   * @param {number} i - Page index
    */
   changePage(i) {
     const page = this.state.page;
@@ -55,7 +55,7 @@ class DataTable extends Component {
    * If component sort.column is already set to column
    * Toggle sort.ascending
    *
-   * @param {int} column - The column index
+   * @param {number} column - The column index
    */
   setSortColumn(column) {
     if (this.state.sort.column === column) {
@@ -68,7 +68,7 @@ class DataTable extends Component {
   /**
    * Update the sort column
    *
-   * @param {int} column - The column index
+   * @param {number} column - The column index
    */
   updateSortColumn(column) {
     const sort = this.state.sort;
@@ -88,7 +88,7 @@ class DataTable extends Component {
   /**
    * Updates page state
    *
-   * @param {int} number - Number of page
+   * @param {number} number - Number of page
    */
   updatePageNumber(number) {
     const page = this.state.page;
@@ -111,7 +111,7 @@ class DataTable extends Component {
   /**
    * Export the filtered rows and columns into a csv
    *
-   * @param {int[]} filteredRowIndexes - The filtered Row Indexes
+   * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
   downloadCSV(filteredRowIndexes) {
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
@@ -152,8 +152,6 @@ class DataTable extends Component {
 
   /**
    * Get the Filtered Row Indexes
-   *
-   * @return {int[]}
    */
   getFilteredRowIndexes() {
     let useKeyword = false;
@@ -208,8 +206,8 @@ class DataTable extends Component {
   /**
    * Sort the given rows according to the sort configuration
    *
-   * @param {int[]} rowIndexes - The row indexes
-   * @return {Object[]}
+   * @param {number[]} rowIndexes - The row indexes
+   * @return {object[]}
    */
   sortRows(rowIndexes) {
     const index = [];
@@ -391,7 +389,7 @@ class DataTable extends Component {
   /**
    * Renders the Actions buttons.
    *
-   * @return {string[]} - Array of React Elements
+   * @return {string[]|void} - Array of React Elements
    */
   renderActions() {
     if (this.props.actions) {

@@ -24,6 +24,7 @@ class CandidateParameters extends Component {
 
   /**
    * Get tab panes
+   *
    * @param {object} tabList
    * @return {JSX} - React markup for the component
    */

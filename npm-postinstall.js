@@ -5,6 +5,7 @@ const cp = require('child_process');
 /**
  * Check if the path provided is a module and has an override
  * in project. If so, returns the override path
+ *
  * @param {string} p
  * @return {string}
  */

@@ -144,7 +144,6 @@ try {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
- *
  * @return {object} - The webpack configuration
  */
 function lorisModule(mname, entries) {

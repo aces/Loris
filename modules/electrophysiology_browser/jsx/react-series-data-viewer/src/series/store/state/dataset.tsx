@@ -62,6 +62,13 @@ export type State = {
   seriesRange: [number, number],
 };
 
+/**
+ * datasetReducer
+ *
+ * @param {State} state - The current state
+ * @param {Action} action - The action
+ * @returns {State} - The updated state
+ */
 export const datasetReducer = (
   state: State = {
     chunksURL: '',
@@ -121,8 +128,26 @@ export const datasetReducer = (
   }
 };
 
+/**
+ * emptyChannels
+ *
+ * @param {number} channelsCount - The channels count
+ * @param {number} tracesCount - The traces count
+ * @returns {Function} - A Fn that returns channelsCount empty channels
+ */
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
+  /**
+   * makeTrace
+   *
+   * @returns {object} - An object with trace type and chunks
+   */
   const makeTrace = () => ({chunks: [], type: 'line'});
+  /**
+   * makeChannel
+   *
+   * @param {number} index - The channel index
+   * @returns {object} - An object with channel index and traces
+   */
   const makeChannel = (index) => ({
     index,
     traces: R.range(0, tracesCount).map(makeTrace),

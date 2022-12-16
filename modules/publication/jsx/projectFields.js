@@ -7,7 +7,6 @@ import swal from 'sweetalert2';
 class EmailElement extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -17,6 +16,7 @@ class EmailElement extends React.Component {
 
   /**
    * Handle change
+   *
    * @param {object} e - Event object
    */
   handleChange(e) {
@@ -25,6 +25,7 @@ class EmailElement extends React.Component {
 
   /**
    * Handle blur
+   *
    * @param {object} e - Event object
    */
   handleBlur(e) {
@@ -114,7 +115,6 @@ EmailElement.defaultProps = {
 class ProjectFormFields extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -129,7 +129,8 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Delete upload
-   * @param {Number} uploadID
+   *
+   * @param {number} uploadID
    */
   deleteUpload(uploadID) {
     swal.fire({
@@ -163,7 +164,8 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Create file fields
-   * @return {JSX[]} - Array of React markup for the component
+   *
+   * @return {React.ReactElement[]} - Array of React markup for the component
    */
   createFileFields() {
     let fileFields = [];
@@ -267,6 +269,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Create collab email fields
+   *
    * @return {JSX} - React markup for the component
    */
   createCollabEmailFields() {
@@ -296,6 +299,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Add collaborator
+   *
    * @param {*} formElement
    * @param {string} value
    * @param {*} pendingValKey
@@ -316,6 +320,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Remove collaborator
+   *
    * @param {*} formElement
    * @param {*} value
    */
@@ -327,6 +332,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Set collaborator email
+   *
    * @param {string} formElement
    * @param {string} value
    */
@@ -340,6 +346,7 @@ class ProjectFormFields extends React.Component {
 
   /**
    * Toggle email notify
+   *
    * @param {object} e - Event object
    */
   toggleEmailNotify(e) {

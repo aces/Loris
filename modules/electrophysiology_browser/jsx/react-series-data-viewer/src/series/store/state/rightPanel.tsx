@@ -11,6 +11,13 @@ export type Action = {
 
 export type Reducer = (state: RightPanel, action?: Action) => RightPanel;
 
+/**
+ * panelReducer
+ *
+ * @param {RightPanel} state - The current state
+ * @param {Action} action - The action
+ * @returns {RightPanel} - The updated state
+ */
 export const panelReducer: Reducer = (state = null, action) => {
   if (!action) {
     return state;

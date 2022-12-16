@@ -3,9 +3,9 @@
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- *   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
@@ -71,8 +71,9 @@ class CategoryList extends Component {
 
   /**
    * select category handler
+   *
    * @param {string} category
-   * @return {function} - A callback executed when the event is triggered
+   * @return {Function} - A callback executed when the event is triggered
    */
   selectCategoryHandler(category) {
     return ((evt) => {
@@ -132,6 +133,7 @@ class FieldItem extends Component {
 
   /**
    * visit select
+   *
    * @param {object} evt - An event
    */
   visitSelect(evt) {
@@ -251,6 +253,7 @@ class FieldList extends Component {
 
   /**
    * field clicked
+   *
    * @param {string} fieldName
    * @param {boolean} downloadable
    */
@@ -370,6 +373,7 @@ class FieldSelector extends Component {
 
   /**
    * Wrapper function for field changes
+   *
    * @param {string} fieldName
    * @param {string} category
    * @param {boolean} downloadable
@@ -380,6 +384,7 @@ class FieldSelector extends Component {
 
   /**
    * Use the cached version if it exists
+   *
    * @param {string} elementName
    * @param {string} category
    */
@@ -405,6 +410,7 @@ class FieldSelector extends Component {
 
   /**
    * filter change event.
+   *
    * @param {object} evt - An event
    */
   filterChange(evt) {
@@ -485,6 +491,7 @@ class FieldSelector extends Component {
 
   /**
    * Modify category field visits.
+   *
    * @param {string} visit
    * @param {string} action
    */
@@ -535,6 +542,7 @@ class FieldSelector extends Component {
 
   /**
    * Change page
+   *
    * @param {number} i
    */
   changePage(i) {
@@ -554,6 +562,7 @@ class FieldSelector extends Component {
 
   /**
    * onFocus for search within fields
+   *
    * @param {object} e - an event
    */
   onFocus(e) {

@@ -5,7 +5,6 @@
  *
  * @author Alizée Wickenheiser.
  * @version 0.0.1
- *
  */
 
 import React, {Component} from 'react';
@@ -282,9 +281,9 @@ class ElectrophysiologySessionView extends Component {
   /**
    * Get split data for split index
    *
-   * @param {int} physioFileID
-   * @param {int} fileIndex
-   * @param {int} splitIndex
+   * @param {number} physioFileID
+   * @param {number} fileIndex
+   * @param {number} splitIndex
    */
   getSplitData(physioFileID, fileIndex, splitIndex) {
     const dataURL = loris.BaseURL
@@ -316,7 +315,7 @@ class ElectrophysiologySessionView extends Component {
   /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @return {JSX|void} - React markup for the component
    */
   render() {
     if (!this.state.isLoaded) {

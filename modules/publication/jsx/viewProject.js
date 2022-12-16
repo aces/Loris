@@ -32,6 +32,7 @@ class ViewProject extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {
@@ -166,6 +167,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create file download links
+   *
    * @return {JSX} - React markup for the component
    */
   createFileDownloadLinks() {
@@ -206,6 +208,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create menu filter links
+   *
    * @param {string[]} stringArr
    * @param {string} filterVar
    * @return {JSX} - React markup for the component
@@ -232,6 +235,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create static components
+   *
    * @return {JSX} - React markup for the component
    */
   createStaticComponents() {
@@ -334,6 +338,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create editable components
+   *
    * @return {JSX} - React markup for the component
    */
   createEditableComponents() {
@@ -364,6 +369,7 @@ class ViewProject extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -381,6 +387,7 @@ class ViewProject extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -401,6 +408,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {*} formElement
    * @param {*} value
    */
@@ -414,6 +422,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */

@@ -7,7 +7,6 @@
  * @author Alex Ilea
  * @author Jake Penny
  * @version 2.0.0
- *
  */
 
 import React, {Component} from 'react';

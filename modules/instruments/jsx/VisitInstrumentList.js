@@ -39,7 +39,6 @@ class VisitInstrumentList extends Component {
      *
      * @param {string} dob - The date of birth as a string
      * @param {string} visit - The visit date as a string
-     *
      * @return {string} - A human readable description of the age
      */
      calcAge(dob, visit) {

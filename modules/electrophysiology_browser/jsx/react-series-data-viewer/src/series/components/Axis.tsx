@@ -11,6 +11,17 @@ type CProps = {
   hideLine: boolean,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.orientation
+ * @param root0.domain
+ * @param root0.range
+ * @param root0.ticks
+ * @param root0.padding
+ * @param root0.format
+ * @param root0.hideLine
+ */
 const Axis = ({
   orientation,
   domain,
@@ -45,6 +56,10 @@ Axis.defaultProps = {
   ticks: 10,
   padding: 0,
   hideLine: false,
+  /**
+   *
+   * @param tick
+   */
   format: (tick) => `${tick}`,
 };
 

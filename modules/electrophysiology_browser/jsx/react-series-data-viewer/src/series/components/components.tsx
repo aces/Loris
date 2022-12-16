@@ -13,6 +13,18 @@ interface IHandleProps {
   getHandleProps: GetHandleProps;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.domain
+ * @param root0.domain.0
+ * @param root0.domain.1
+ * @param root0.handle
+ * @param root0.handle.id
+ * @param root0.handle.value
+ * @param root0.handle.percent
+ * @param root0.getHandleProps
+ */
 export const Handle: React.SFC<IHandleProps> = ({
   domain: [min, max],
   handle: {id, value, percent},
@@ -50,6 +62,12 @@ interface ITickProps {
   count: number;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.tick
+ * @param root0.count
+ */
 export const Tick: React.FC<ITickProps> = ({tick, count}) => (
   <div>
     <div

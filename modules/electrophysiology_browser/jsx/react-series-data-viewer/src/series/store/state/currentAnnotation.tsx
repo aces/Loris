@@ -11,6 +11,13 @@ export type Action = {
 
 export type Reducer = (state: Epoch, action?: Action) => Epoch;
 
+/**
+ * currentAnnotationReducer
+ *
+ * @param {object} state - The current state
+ * @param {Action} action - The action
+ * @returns {object} - The updated state
+ */
 export const currentAnnotationReducer: Reducer = (state = null, action) => {
   if (!action) {
     return state;

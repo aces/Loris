@@ -31,6 +31,20 @@ type CProps = {
   interval: [number, number],
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.timeSelection
+ * @param root0.epochs
+ * @param root0.setTimeSelection
+ * @param root0.setRightPanel
+ * @param root0.setEpochs
+ * @param root0.currentAnnotation
+ * @param root0.setCurrentAnnotation
+ * @param root0.physioFileID
+ * @param root0.annotationMetadata
+ * @param root0.interval
+ */
 const AnnotationForm = ({
   timeSelection,
   epochs,
@@ -65,6 +79,10 @@ const AnnotationForm = ({
     setEvent([startEvent, endEvent]);
   }, [timeSelection]);
 
+  /**
+   *
+   * @param event
+   */
   const validate = (event) => (
     (event[0] || event[0] === 0)
       && (event[1] || event[1] === 0)
@@ -73,6 +91,11 @@ const AnnotationForm = ({
       && event[1] >= interval[0] && event[1] <= interval[1]
   );
 
+  /**
+   *
+   * @param id
+   * @param val
+   */
   const handleStartTimeChange = (id, val) => {
     const value = parseInt(val);
     setEvent([value, event[1]]);
@@ -91,6 +114,11 @@ const AnnotationForm = ({
     }
   };
 
+  /**
+   *
+   * @param name
+   * @param val
+   */
   const handleEndTimeChange = (name, val) => {
     const value = parseInt(val);
     setEvent([event[0], value]);
@@ -109,16 +137,32 @@ const AnnotationForm = ({
     }
   };
 
+  /**
+   *
+   * @param name
+   * @param value
+   */
   const handleLabelChange = (name, value) => {
     setLabel(value);
   };
+  /**
+   *
+   * @param name
+   * @param value
+   */
   const handleCommentChange = (name, value) => {
     setComment(value);
   };
+  /**
+   *
+   */
   const handleSubmit = () => {
     setIsSubmitted(true);
   };
 
+  /**
+   *
+   */
   const handleReset = () => {
     // Clear all fields
     setEvent(['', '']);
@@ -127,6 +171,9 @@ const AnnotationForm = ({
     setComment('');
   };
 
+  /**
+   *
+   */
   const handleDelete = () => {
     setIsDeleted(true);
   };

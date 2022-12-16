@@ -12,8 +12,7 @@ import Loader from 'Loader';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 class DocUploadForm extends Component {
   /**
    * @constructor
@@ -58,7 +57,8 @@ class DocUploadForm extends Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -159,9 +159,11 @@ class DocUploadForm extends Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
   /**
    * Upload file

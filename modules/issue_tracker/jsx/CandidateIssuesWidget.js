@@ -4,7 +4,6 @@
  * with links to the issue tracker for each widget
  *
  * @param {array} props - the React props
- *
  * @return {object}
  */
 function CandidateIssuesWidget(props) {

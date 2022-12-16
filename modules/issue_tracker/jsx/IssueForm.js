@@ -518,6 +518,7 @@ class IssueForm extends Component {
 
   /**
    * Display a success/error alert message after form submission
+   *
    * @param {string} msgType - error/success message
    * @param {string} message - message content
    */

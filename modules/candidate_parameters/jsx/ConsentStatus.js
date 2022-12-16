@@ -227,6 +227,7 @@ class ConsentStatus extends Component {
 
     /**
      * Render formatted history
+     *
      * @return {JSX} - React markup for the component
      */
     renderFormattedHistory() {
@@ -287,6 +288,7 @@ class ConsentStatus extends Component {
 
     /**
      * Render Consent
+     *
      * @param {string} consentName
      * @return {JSX} - React markup for the component
      */

@@ -3,9 +3,9 @@
  *
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
  *  @author   Jordan Stirling <jstirling91@gmail.com>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component, useState} from 'react';
@@ -187,6 +187,7 @@ class ViewDataTabPane extends Component {
 
   /**
    * Called by React when the component has updated.
+   *
    * @param {object} prevProps - Previous component properties
    * @param {object} prevState - Previous component state
    */
@@ -619,7 +620,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * lsFit statistics
-   * @param {[]} data
+   *
+   * @param {array} data
    * @return {number[]}
    */
   lsFit(data) {
@@ -647,7 +649,8 @@ class ScatterplotGraph extends Component {
 
   /**
    * minmaxx statistics
-   * @param {[]} arr
+   *
+   * @param {array} arr
    * @return {number[]}
    */
   minmaxx(arr) {

@@ -8,7 +8,6 @@ CheckboxElement, ButtonElement, LorisElement
  *
  * @author Loris Team
  * @version 1.0.0
- *
  */
 
 import React, {Component} from 'react';
@@ -38,6 +37,7 @@ class FormElement extends Component {
 
   /**
    * Get form elements
+   *
    * @return {JSX[]} - An array of element React markup
    */
   getFormElements() {
@@ -184,6 +184,7 @@ class FieldsetElement extends Component {
 
   /**
    * Get form elements
+   *
    * @return {JSX[]} - An array of element React markup
    */
   getFormElements() {
@@ -2224,7 +2225,6 @@ LinkElement.defaultProps = {
 class CheckboxElement extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -2334,6 +2334,7 @@ class ButtonElement extends Component {
 
   /**
    * Handle click
+   *
    * @param {object} e - Event
    */
   handleClick(e) {
@@ -2388,10 +2389,10 @@ ButtonElement.defaultProps = {
 };
 
 /**
-  * Call To Action (CTA) component
-  * React wrapper for <button> element that is used for Call to Actions, usually
-  * outside the context of forms.
-  */
+ * Call To Action (CTA) component
+ * React wrapper for <button> element that is used for Call to Actions, usually
+ * outside the context of forms.
+ */
  class CTA extends Component {
   /**
    * Renders the React component.

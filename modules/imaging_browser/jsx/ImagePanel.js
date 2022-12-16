@@ -689,6 +689,7 @@ class ImageQCCommentsButton extends Component {
 
   /**
    * Open window handler
+   *
    * @param {object} e - Event object
    */
   openWindowHandler(e) {
@@ -746,6 +747,7 @@ class LongitudinalViewButton extends Component {
 
   /**
    * Open window handler
+   *
    * @param {object} e - Event object
    */
   openWindowHandler(e) {
@@ -876,6 +878,7 @@ class ImagePanelBody extends Component {
 
   /**
    * Open window handler
+   *
    * @param {object} e - Event object
    */
   openWindowHandler(e) {
@@ -976,6 +979,7 @@ class ImagePanel extends Component {
 
   /**
    * Toggle body
+   *
    * @param {object} e - Event object
    */
   toggleBody(e) {
@@ -986,6 +990,7 @@ class ImagePanel extends Component {
 
   /**
    * Toggle headers
+   *
    * @param {object} e - Event object
    */
   toggleHeaders(e) {

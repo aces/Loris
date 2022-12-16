@@ -22,6 +22,12 @@ export type State = {
   channels: Channel[]
 };
 
+/**
+ * createPaginationEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createPaginationEpic = (fromState: (_: any) => State) => (
   action$: Observable<any>,
   state$: Observable<any>
