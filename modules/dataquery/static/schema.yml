@@ -34,7 +34,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Query'
+              $ref: '#/components/schemas/QueryObject'
       responses:
         '200':
           description: Query successfully created
@@ -214,13 +214,11 @@ components:
              For instance, the starred and name properties may vary based on the user
              accessing the URI.
           example: "https://example.com/dataquery/queries/4"
-        type:
-          type: string
-          enum: ['candidates']
-          example: "candidates"
+        Query:
+          $ref: '#/components/schemas/QueryObject'
         AdminName:
           type: string
-          descripton: The name given by the admin for a pinned query
+          description: The name given by the admin for a pinned query
           example: "Important Study Query Of Missing T1s"
         Name:
           type: string
@@ -243,15 +241,6 @@ components:
         QueryID:
           type: integer
           example: 3
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryField'
-        criteria:
-          $ref: '#/components/schemas/QueryCriteriaGroup'
-      required:
-        - type
-        - fields
     QueryRun:
       type: object
       properties:
@@ -282,6 +271,23 @@ components:
         - module
         - category
         - field
+    QueryObject:
+      type: object
+      description: A set of filters and fields used to determine what is being queried.
+      properties:
+        type:
+          type: string
+          enum: ['candidates']
+          example: "candidates"
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryField'
+        criteria:
+          $ref: '#/components/schemas/QueryCriteriaGroup'
+      required:
+        - type
+        - fields
     QueryCriteriaGroup:
       type: object
       description: An and/or group used for filtering, all items in the group must be the same operator (but an item in the group may be a query criteria subgroup using a different operator)
