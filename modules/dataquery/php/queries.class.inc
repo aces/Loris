@@ -35,9 +35,9 @@ class Queries extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $user    = $request->getAttribute('user');
-        $url     = $request->getURI()->getPath();
-        $pieces  = [];
+        $user   = $request->getAttribute('user');
+        $url    = $request->getURI()->getPath();
+        $pieces = [];
         if (preg_match(
             "/queries$/",
             $url,
@@ -48,7 +48,7 @@ class Queries extends \NDB_Page
             case 'GET':
                 return new \LORIS\Http\Response\JSON\OK(
                     [
-                        'recent'     => iterator_to_array(
+                        'recent'  => iterator_to_array(
                             $this->getRecentRuns($user),
                             false,
                         ),
@@ -90,8 +90,13 @@ class Queries extends \NDB_Page
             $pieces
         ) === 1
         ) {
-            $queryID = intval($pieces[1]);
-            return $this->runQuery($user, $queryID);
+            switch ($request->getMethod()) {
+            case 'POST':
+                $queryID = intval($pieces[1]);
+                return $this->runQuery($user, $queryID);
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
+            }
         }
         if (preg_match(
             "/queries\/([0-9]+)\/count$/",
@@ -294,7 +299,10 @@ class Queries extends \NDB_Page
                 'Unhandled PATCH action'
             );
         }
-        return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET'], 'Request must be GET');
+        return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+            ['GET'],
+            'Request must be GET'
+        );
     }
 
     /**

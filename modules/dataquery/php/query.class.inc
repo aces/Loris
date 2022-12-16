@@ -32,15 +32,16 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Construct a Query object
      *
-     * @param \LORIS\LorisInstance $loris    The LORIS Instance
-     * @param int                  $queryID  The Query ID
-     * @param ?array               $query    The serialized form of
-     *                                       the query
-     * @param ?string              $name     The query name
-     * @param ?array               $sharedBy List of users who shared
-     *                                       this query
-     * @param ?bool                $starred  True if this query is starred
-     * @param ?bool                $shared   True if this query is shared
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance
+     * @param int                  $queryID   The Query ID
+     * @param ?array               $query     The serialized form of
+     *                                        the query
+     * @param ?string              $name      The query name
+     * @param ?string              $adminname The name used by an admin
+     *                                        pinning the query
+     * @param ?array               $sharedBy  List of users who shared
+     *                                        this query
+     * @param ?bool                $starred   True if this query is starred
      */
     public function __construct(
         protected \LORIS\LorisInstance $loris,
@@ -726,8 +727,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     public function jsonSerialize() : mixed
     {
         $factory = \NDB_Factory::singleton();
-        $result = [
-            'self' => $factory->settings()->getBaseURL() . '/dataquery/queries/' . $this->queryID,
+        $result  = [
+            'self'    => $factory->settings()->getBaseURL()
+                . '/dataquery/queries/' . $this->queryID,
             'QueryID' => $this->queryID,
             'Query'   => $this->data,
         ];
@@ -736,14 +738,14 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
         if ($this->adminname !== null && $this->adminname !== '') {
             $result['AdminName'] = $this->adminname;
-            $result['Pinned'] = true;
+            $result['Pinned']    = true;
         } else {
             $result['Pinned'] = false;
         }
 
         if ($this->sharedBy !== null) {
             $result['SharedBy'] = $this->sharedBy;
-            $result['Public'] = true;
+            $result['Public']   = true;
         } else {
             $result['Public'] = false;
         }
