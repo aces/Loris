@@ -119,9 +119,15 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function jsonSerialize() : mixed
     {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         $result = [
+            'self' => $baseURL 
+                . '/dataquery/queries/' . $this->query->queryID . '/run/' . $this->runID,
+            'Query'   => $this->query->queryID,
             'RunTime' => $this->runTime,
-            'Query'   => $this->query,
+            'QueryID'   => $this->query->queryID,
+            'QueryRunID' => $this->runID,
         ];
         return $result;
     }

@@ -23,10 +23,7 @@ class RecentQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct(protected \LORIS\LorisInstance $loris, \User $user)
     {
         parent::__construct(
-            "SELECT dq.QueryID, RunTime, Query,
-               IF(dpq.QueryID IS NULL, 'Unstarred', 'Starred') as Starred,
-               IF(dsq.QueryID IS NULL, 'Unshared', 'Shared') as Shared,
-               name.Name
+            "SELECT drq.RunID, dq.QueryID, RunTime, Query
             FROM dataquery_queries dq
                 JOIN dataquery_run_queries drq ON (dq.QueryID=drq.QueryID)
                 LEFT JOIN dataquery_starred_queries_rel dpq ON
@@ -35,7 +32,7 @@ class RecentQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                     (dq.QueryID=dsq.QueryID AND dsq.SharedBy=:userid)
                 LEFT JOIN dataquery_query_names name ON 
                     (dq.QueryID=name.QueryID AND name.UserID=:userid)
-            WHERE drq.UserID=:userid
+            WHERE drq.UserID=:userid AND drq.RunID IS NOT NULL
             ORDER BY drq.RunTime DESC",
             ['userid' => $user->getId()]
         );
@@ -56,10 +53,8 @@ class RecentQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                 loris: $this->loris,
                 queryID: intval($row['QueryID']),
                 query: json_decode($row['Query'], true),
-                name: $row['Name'] ?? '',
-                starred: $row['Starred'] === 'Starred',
-                shared: $row['Shared'] === 'Shared',
             ),
+            RunID: intval($row['RunID']),
             runTime: $row['RunTime'],
         );
         return $qr;

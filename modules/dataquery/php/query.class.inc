@@ -29,9 +29,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     \LORIS\Data\DataInstance
 {
     protected $data;
-    public readonly string $name;
-    protected $sharedBy;
-
     /**
      * Construct a Query object
      *
@@ -49,10 +46,10 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         protected \LORIS\LorisInstance $loris,
         public readonly int $queryID,
         ?array $query=null,
-        ?string $name=null,
-        ?array $sharedBy=null,
+        protected readonly ?string $name=null,
+        protected ?string $adminname=null,
+        protected ?array $sharedBy=null,
         protected ?bool $starred=null,
-        protected ?bool $shared=null
     ) {
         if ($query !== null) {
             $this->data = $query;
@@ -70,13 +67,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 throw new \NotFound("Query $queryID not found");
             }
             $this->data = json_decode($data, true);
-        }
-
-        if ($name !== null) {
-            $this->name = $name;
-        }
-        if ($sharedBy !== null) {
-            $this->sharedBy = $sharedBy;
         }
     }
 
@@ -735,21 +725,30 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function jsonSerialize() : mixed
     {
+        $factory = \NDB_Factory::singleton();
         $result = [
+            'self' => $factory->settings()->getBaseURL() . '/dataquery/queries/' . $this->queryID,
             'QueryID' => $this->queryID,
             'Query'   => $this->data,
         ];
         if ($this->name !== null && $this->name !== '') {
             $result['Name'] = $this->name;
         }
+        if ($this->adminname !== null && $this->adminname !== '') {
+            $result['AdminName'] = $this->adminname;
+            $result['Pinned'] = true;
+        } else {
+            $result['Pinned'] = false;
+        }
+
         if ($this->sharedBy !== null) {
             $result['SharedBy'] = $this->sharedBy;
+            $result['Public'] = true;
+        } else {
+            $result['Public'] = false;
         }
         if ($this->starred !== null) {
             $result['Starred'] = $this->starred;
-        }
-        if ($this->shared !== null) {
-            $result['Shared'] = $this->shared;
         }
         return $result;
     }

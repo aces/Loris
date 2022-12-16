@@ -49,16 +49,11 @@ class Queries extends \NDB_Page
                 return new \LORIS\Http\Response\JSON\OK(
                     [
                         'recent'     => iterator_to_array(
-                            $this->getRecentQueries($user),
+                            $this->getRecentRuns($user),
                             false,
                         ),
-                        'shared'     => iterator_to_array(
-                            $this->getSharedQueries($user),
-                            false,
-                        ),
-                        'topqueries' => iterator_to_array(
-                            $this->getTopQueries($user),
-                            false,
+                        'queries' => iterator_to_array(
+                            $this->getUserAccessibleQueries($user),
                         ),
                     ]
                 );
@@ -129,11 +124,26 @@ class Queries extends \NDB_Page
      *
      * @return \Traversable
      */
-    public function getRecentQueries(\User $user) : iterable
+    public function getUserAccessibleQueries(\User $user) : iterable
+    {
+        return (new provisioners\AllUserQueries($this->loris, $user))
+            // ->filter(new AccessibleResourceFilter())
+            ->execute($user);
+    }
+
+
+    /**
+     * Get a list of recent query runs for this user
+     *
+     * @param \User $user The user getting the queries.
+     *
+     * @return \Traversable
+     */
+    public function getRecentRuns(\User $user) : iterable
     {
         return (new provisioners\RecentQueries($this->loris, $user))
-            //->filter(new AccessibleResourceFilter())
-            ->execute($user);
+                //->filter(new AccessibleResourceFilter())
+                ->execute($user);
     }
 
     /**
