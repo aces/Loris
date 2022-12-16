@@ -101,14 +101,20 @@ paths:
           in: query
           style: pipeDelimited
           description: The admin name to pin the query as. If the empty string, will be unpinned.
+<<<<<<< HEAD
           schema:
             type: string
+=======
+>>>>>>> b742752be (Change to POST, add QueryRunID to query run)
         - name: dashboardname
           in: query
           style: pipeDelimited
           description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
+<<<<<<< HEAD
           schema:
             type: string
+=======
+>>>>>>> b742752be (Change to POST, add QueryRunID to query run)
         - name: name
           in: query
           style: pipeDelimited
@@ -304,12 +310,18 @@ components:
           description: A reference to an object in the queries property identified by QueryID
           example: 3
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b742752be (Change to POST, add QueryRunID to query run)
         QueryRunID:
           type: integer
           description: A reference to the run number of this query
           example: 4
+<<<<<<< HEAD
 =======
 >>>>>>> 4f6401a3e (Update schema after Xaviers review)
+=======
+>>>>>>> b742752be (Change to POST, add QueryRunID to query run)
     QueryField:
       type: object
       properties:
