@@ -5,31 +5,27 @@ Instrument builder Test Plan
   * 1.b Add Label 
   * 1.c Add Scored Field 
     * 1.c.1 Validate that this requires both QuestionName and QuestionText
-    * 1.c.2 Validate that both QuestionName and QuestionText require less than 65 characters
+    * 1.c.2 Validate that QuestionName require less than 65 characters
   * 1.d Add Textbox 
     * 1.d.1 Validate that this requires both QuestionName and QuestionText
     * 1.d.2 Validate that QuestionName requires less than 58 characters
-    * 1.d.3 Validate that QuestionText requires less than 65 characters 
   * 1.e Add Textarea  
     * 1.e.1 Validate that this requires both QuestionName and QuestionText
     * 1.e.2 Validate that QuestionName requires less than 58 characters
-    * 1.e.3 Validate that QuestionText requires less than 65 characters 
   * 1.f Add Dropdown   
     * 1.f.1 Validate that this requires both QuestionName and QuestionText
-    * 1.f.2 Validate that both QuestionName and QuestionText require less than 65 characters 
+    * 1.f.2 Validate that QuestionName require less than 65 characters
   * 1.g Add Multiselect 
     * 1.g.1 Validate that this requires both QuestionName and QuestionText
-    * 1.g.2 Validate that both QuestionName and QuestionText require less than 65 characters
+    * 1.g.2 Validate that QuestionName require less than 65 characters
   * 1.h Add Date 
     * 1.h.1 Validate that this requires both QuestionName and QuestionText 
     * 1.h.2 Validate adding range (startyear-endyear) 
     * 1.h.3 Validate that QuestionName requires less than 58 characters
-    * 1.h.4 Validate that QuestionText requires less than 65 characters
   * 1.i Add Numeric 
     * 1.i.1 Validate that this requires both QuestionName and QuestionText 
     * 1.i.2 Validate adding range 
     * 1.i.3 Validate that QuestionName requires less than 58 characters
-    * 1.i.4 Validate that QuestionText requires less than 65 characters
   * 1.j Add Blank Line 
   * 1.k Add Page break
 2.  Edit Question Name and Question Text in the table directly and check if it sticks.
