@@ -251,14 +251,16 @@ components:
              For instance, the starred and name properties may vary based on the user
              accessing the URI.
           example: "https://example.com/dataquery/queries/4"
-        type:
-          type: string
-          enum: ['candidates']
-          example: "candidates"
+        Query:
+          $ref: '#/components/schemas/QueryObject'
         AdminName:
           type: string
+<<<<<<< HEAD
           descripton: The name given by the admin for a pinned query
 >>>>>>> 4f6401a3e (Update schema after Xaviers review)
+=======
+          description: The name given by the admin for a pinned query
+>>>>>>> bdda21bc1 (Create QueryObject)
           example: "Important Study Query Of Missing T1s"
         Name:
           type: string
