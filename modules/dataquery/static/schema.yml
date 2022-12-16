@@ -184,8 +184,12 @@ paths:
       description: |- 
         Run the query QueryID and returns the results. 
         
+<<<<<<< HEAD
         This endpoint will result in a new query run being generated, which will be returned in the 'recent' queries of the user on the /queries endpoint.
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+        This endpoint will result in a new query run being generated, which will be returned in the queries of the user on the /queries endpoint.
+>>>>>>> 4f6401a3e (Update schema after Xaviers review)
       responses:
         '200':
           description: The query was able to be successfully run
@@ -294,25 +298,39 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QueryRun'
-        shared:
+        queries:
           type: array
           items:
             $ref: '#/components/schemas/Query'
-        topqueries:
-          type: array
-          items:
-            $ref: '#/components/schemas/Query'
-
     Query:
       type: object
       properties:
+        self:
+          type: string
+          description: |-
+             A URL that this query can be accessed at.
+
+             Accessing the query directly through the URL is sure to have the same fields
+             and criteria, but other details of the object returned may not be identical.
+
+             For instance, the starred and name properties may vary based on the user
+             accessing the URI.
+          example: "https://example.com/dataquery/queries/4"
         type:
           type: string
           enum: ['candidates']
           example: "candidates"
+        AdminName:
+          type: string
+          descripton: The name given by the admin for a pinned query
+          example: "Important Study Query Of Missing T1s"
         Name:
           type: string
+<<<<<<< HEAD
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+          description: The name given by the current user for this query
+>>>>>>> 4f6401a3e (Update schema after Xaviers review)
           example: "My Query"
         SharedBy:
           type: array
@@ -321,6 +339,7 @@ components:
             example: "admin"
         Starred:
           type: boolean
+<<<<<<< HEAD
 <<<<<<< HEAD
           description: The query has been starred by the user
         Public:
@@ -356,7 +375,15 @@ components:
           example: 4
 =======
         Shared:
+=======
+          description: The query has been starred by the user
+        Public:
+>>>>>>> 4f6401a3e (Update schema after Xaviers review)
           type: boolean
+          description: The query has been shared (made public to all users)
+        Pinned:
+          type: boolean
+          description: The query has been pinned by an administrator
         QueryID:
           type: integer
           example: 3
@@ -372,12 +399,23 @@ components:
     QueryRun:
       type: object
       properties:
+        self:
+          type: string
+          description: A URL to access this query run
+          example: "https://example.com/dataquery/queries/3/run/34"
         RunTime:
           type: string
           example: "2022-11-02 15:34:38"
+<<<<<<< HEAD
         Query:
           $ref: '#/components/schemas/Query'
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+        QueryID:
+          type: integer
+          description: A reference to an object in the queries property identified by QueryID
+          example: 3
+>>>>>>> 4f6401a3e (Update schema after Xaviers review)
     QueryField:
       type: object
       properties:
