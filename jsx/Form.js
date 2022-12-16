@@ -1886,7 +1886,7 @@ NumericElement.defaultProps = {
 
 /**
  * File Component
- * React wrapper for a simple or 'multiple' <select> element.
+ * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
 class FileElement extends Component {
   /**
@@ -1905,8 +1905,10 @@ class FileElement extends Component {
    */
   handleChange(e) {
     // Send current file to parent component
-    const file = e.target.files[0] ? e.target.files[0] : '';
-    this.props.onUserInput(this.props.name, file);
+    const files = e.target.files
+      ? (this.props.allowMultiple ? e.target.files : e.target.files[0])
+      : '';
+    this.props.onUserInput(this.props.name, files);
   }
 
   /**
@@ -1918,6 +1920,7 @@ class FileElement extends Component {
     const required = this.props.required ? 'required' : null;
 
     let fileName = undefined;
+
     if (this.props.value) {
       switch (typeof this.props.value) {
         case 'string':
@@ -1925,7 +1928,10 @@ class FileElement extends Component {
           break;
 
         case 'object':
-          fileName = this.props.value.name;
+          if (this.props.value instanceof FileList)
+            fileName = Array.from(this.props.value).map((file) => file.name).join(', ');
+          else
+            fileName = this.props.value.name;
           break;
 
         default:
@@ -1997,6 +2003,7 @@ class FileElement extends Component {
     } else {
         classSz = 'col-sm-12';
     }
+
     return (
       <div className={elementClass}>
         {labelHTML}
@@ -2018,6 +2025,7 @@ class FileElement extends Component {
                   name={this.props.name}
                   onChange={this.handleChange}
                   required={required}
+                  multiple={this.props.allowMultiple}
                 />
               </div>
             </div>
@@ -2039,6 +2047,7 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  allowMultiple: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -2051,6 +2060,7 @@ FileElement.defaultProps = {
   id: null,
   disabled: false,
   required: false,
+  allowMultiple: false,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {
