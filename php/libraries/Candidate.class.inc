@@ -13,6 +13,8 @@ define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
+define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -75,7 +77,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
@@ -216,6 +218,23 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             throw new \LorisException(
                 "EDC must be specified",
                 EDC_NOT_SPECIFIED
+            );
+        }
+
+        if (empty($dateOfBirth)) {
+            throw new InvalidArgumentException(
+                "Date of Birth must be specified",
+                DOB_NOT_SPECIFIED
+            );
+        }
+        $dob = DateTime::createFromFormat('!Y-m-d', $dateOfBirth);
+        if ($dob === false
+            || DateTime::getLastErrors()["warning_count"] > 0
+            || DateTime::getLastErrors()["error_count"] > 0
+        ) {
+            throw new InvalidArgumentException(
+                "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                DOB_INVALID
             );
         }
 
@@ -588,8 +607,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $subprojList = array();
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+        $query   = "SELECT SubprojectID
+                    FROM project_subproject_rel
                     WHERE ProjectID = :prj";
         $params  = array('prj' => $projID);
         $subproj = \NDB_Factory::singleton()
@@ -617,7 +636,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -748,8 +767,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             array('pid' => $parentID)
         );
