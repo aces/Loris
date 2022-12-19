@@ -2370,7 +2370,7 @@ class ButtonElement extends Component {
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
-            {this.props.label}
+            {this.props.disabled ? 'Uploading...' : this.props.label}
           </button>
         </div>
       </div>

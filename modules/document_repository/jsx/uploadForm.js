@@ -29,6 +29,7 @@ class DocUploadForm extends Component {
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
+      uploadInProgress: false,
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -153,7 +154,10 @@ class DocUploadForm extends Component {
               value={this.state.formData.files}
               allowMultiple={true}
             />
-            <ButtonElement label="Upload File(s)"/>
+            <ButtonElement
+              label="Upload File(s)"
+              disabled={this.state.uploadInProgress}
+            />
           </FormElement>
         </div>
       </div>
@@ -169,54 +173,75 @@ class DocUploadForm extends Component {
    */
   uploadFiles() {
     // Set form data and upload the media file
-    let formData = this.state.formData;
-    let formObject = new FormData();
-    for (let key in formData) {
-      if (formData[key] !== '') {
-        if (key === 'files' && document.querySelector('.fileUpload').multiple) {
-          Array.from(formData[key]).forEach((file) => {
-            formObject.append('files[]', file);
-          });
-        } else {
-          formObject.append(key, formData[key]);
-        }
-      }
-    }
-
-    fetch(this.props.action, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: formObject,
-    })
-    .then((resp) => {
-      console.error(resp);
-      if (resp.ok) {
-        resp.json().then((data) => {
-          if (data.error_count === 0) {
-            swal.fire('Upload Successful!', '', 'success').then((result) => {
-              if (result.value) {
-                this.setState({formData: {}});
-                this.props.refreshPage();
-              }
+    try {
+      this.setState({uploadInProgress: true});
+      let formData = this.state.formData;
+      let formObject = new FormData();
+      for (let key in formData) {
+        if (formData[key] !== '') {
+          if (key === 'files' && document.querySelector('.fileUpload').multiple) {
+            Array.from(formData[key]).forEach((file) => {
+              formObject.append('files[]', file);
             });
           } else {
-            swal.fire('Upload Incomplete', data.message, 'warning');
+            formObject.append(key, formData[key]);
           }
-        });
-      } else {
-        resp.json().then((data) => {
-          swal.fire('Could not upload files', data.error, 'error');
+        }
+      }
+
+      fetch(this.props.action, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject,
+      })
+        .then((resp) => {
+          console.error(resp);
+          if (resp.ok) {
+            resp.json().then((data) => {
+              if (data.error_count === 0) {
+                swal.fire('Upload Successful!', '', 'success').then((result) => {
+                  if (result.value) {
+                    this.setState({formData: {}, uploadInProgress: false});
+                    this.props.refreshPage();
+                  }
+                });
+              } else {
+                swal.fire('Upload Incomplete', data.message, 'warning');
+              }
+            }).catch((error) => {
+              console.error(error);
+              swal.fire(
+                'Error reading response',
+                'Please report the issue or contact your administrator',
+                'error'
+              );
+            });
+          } else {
+            resp.json().then((data) => {
+              this.setState({uploadInProgress: false});
+              swal.fire('Could not upload files', data.error, 'error');
+            }).catch((error) => {
+              console.error(error);
+              swal.fire(
+                'Error reading error response',
+                'Please report the issue or contact your administrator',
+                'error'
+              );
+            });
+          }
         }).catch((error) => {
           console.error(error);
           swal.fire(
-            'Unknown Error',
+            'Something went wrong',
             'Please report the issue or contact your administrator',
             'error'
           );
-        });
-      }
-    });
+        }).finally(() => this.setState({uploadInProgress: false}));
+    } catch (error) {
+      console.error(error);
+      this.setState({uploadInProgress: false});
+    }
   }
 
   /**
