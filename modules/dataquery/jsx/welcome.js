@@ -207,10 +207,18 @@ function QueryList(props) {
         setAdminModalID(null);
         setQueryName(null);
 
+        let param;
+        if (adminPinAction == 'top') {
+            param = 'adminname=' + encodeURIComponent(name);
+        } else if (adminPinAction == 'dashboard') {
+            param = 'dashboardname=' + encodeURIComponent(name);
+        } else if (adminPinAction == 'top,dashboard') {
+            param = 'adminname=' + encodeURIComponent(name)
+                + '&dashboardname=' + encodeURIComponent(name);
+        }
         fetch(
             '/dataquery/queries/' + id
-                + '?type=' + adminPinAction
-                + '&name=' + encodeURIComponent(name),
+                + '?' + param,
             {
                 method: 'PATCH',
                 credentials: 'same-origin',
@@ -234,7 +242,8 @@ function QueryList(props) {
         setUnpinAdminQuery(null);
 
         fetch(
-            '/dataquery/queries/' + id + '?type=untop',
+            '/dataquery/queries/' + id
+                + '?adminname=',
             {
                 method: 'PATCH',
                 credentials: 'same-origin',

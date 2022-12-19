@@ -91,58 +91,76 @@ function useSharedQueries() {
           }
           return resp.json();
         }).then((result) => {
-          let convertedrecent = [];
+          // let convertedrecent = [];
           let convertedshared = [];
           let convertedtop = [];
-          if (result.recent) {
-            result.recent.forEach( (queryrun) => {
-              if (queryrun.Query.Query.criteria) {
-                queryrun.Query.Query.criteria = unserializeSavedQuery(
-                  queryrun.Query.Query.criteria,
-                );
-              }
-              convertedrecent.push({
-                RunTime: queryrun.RunTime,
-                ...queryrun.Query,
+          let allQueries = {};
+          if (result.queries) {
+              result.queries.forEach( (query) => {
+                  if (query.Query.criteria) {
+                      query.Query.criteria = unserializeSavedQuery(
+                        query.Query.criteria,
+                      );
+                  }
+                  console.log('Query', query);
+                  allQueries[query.QueryID] = query;
+
+                  if (query.Public == true) {
+                      convertedshared.push({
+                        QueryID: query.QueryID,
+                        SharedBy: query.SharedBy,
+                        Name: query.Name,
+                        ...query.Query,
+                      });
+                  }
+                  if (query.Pinned == true) {
+                      convertedtop.push({
+                        QueryID: query.QueryID,
+                        Name: query.AdminName,
+                        ...query.Query,
+                      });
+                  }
               });
-            });
           }
-          if (result.shared) {
-            result.shared.forEach( (query) => {
-              if (query.Query.criteria) {
-                query.Query.criteria = unserializeSavedQuery(
-                  query.Query.criteria,
-                );
-              }
-              convertedshared.push({
-                QueryID: query.QueryID,
-                SharedBy: query.SharedBy,
-                Name: query.Name,
-                ...query.Query,
-              });
-            });
-          }
-          if (result.topqueries) {
-            result.topqueries.forEach( (query) => {
-              if (query.Query.criteria) {
-                query.Query.criteria = unserializeSavedQuery(
-                  query.Query.criteria,
-                );
-              }
-              convertedtop.push({
-                QueryID: query.QueryID,
-                Name: query.Name,
-                ...query.Query,
-              });
-            });
-          }
-          setRecentQueries(convertedrecent);
           setSharedQueries(convertedshared);
           setTopQueries(convertedtop);
+          return allQueries;
+    }).then((allQueries) => {
+        console.log(allQueries);
+        fetch('/dataquery/queries/runs', {credentials: 'same-origin'})
+        .then((resp) => {
+          if (!resp.ok) {
+            throw new Error('Invalid response');
+          }
+          return resp.json();
+        }).then((result) => {
+            if (result.queryruns) {
+                let convertedrecent = [];
+                result.queryruns.forEach( (queryRun) => {
+                    const queryObj = allQueries[queryRun.QueryID];
+                    if (!queryObj) {
+                        console.log(
+                            'Could not get ',
+                            queryRun.QueryID,
+                            ' from ',
+                            allQueries);
+                        return;
+                    }
+                    console.log('Got', queryRun.QueryID);
+                    convertedrecent.push({
+                        Runtime: queryRun.RunTime,
+                        ...queryObj,
+                    });
+                });
+                console.log(convertedrecent);
+                setRecentQueries(convertedrecent);
+            }
+        });
     }).catch( (error) => {
       console.error(error);
     });
     }, [loadQueriesForce]);
+
     return [
         {
             recent: recentQueries,
