@@ -102,19 +102,29 @@ paths:
           style: pipeDelimited
           description: The admin name to pin the query as. If the empty string, will be unpinned.
 <<<<<<< HEAD
-          schema:
-            type: string
-=======
->>>>>>> b742752be (Change to POST, add QueryRunID to query run)
-        - name: dashboardname
-          in: query
-          style: pipeDelimited
-          description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
 <<<<<<< HEAD
           schema:
             type: string
 =======
 >>>>>>> b742752be (Change to POST, add QueryRunID to query run)
+=======
+          schema:
+            type: string
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
+        - name: dashboardname
+          in: query
+          style: pipeDelimited
+          description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
+<<<<<<< HEAD
+<<<<<<< HEAD
+          schema:
+            type: string
+=======
+>>>>>>> b742752be (Change to POST, add QueryRunID to query run)
+=======
+          schema:
+            type: string
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
         - name: name
           in: query
           style: pipeDelimited
@@ -220,12 +230,15 @@ components:
           items:
             $ref: '#/components/schemas/QueryRun'
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         queries:
           type: array
           items:
             $ref: '#/components/schemas/Query'
 >>>>>>> 4f6401a3e (Update schema after Xaviers review)
+=======
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
     Query:
       type: object
       properties:
