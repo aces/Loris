@@ -283,7 +283,6 @@ CREATE TABLE `flag` (
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
-  KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
   KEY `flag_Test_name` (`Test_name`),
