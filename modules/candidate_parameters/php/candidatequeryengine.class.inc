@@ -4,7 +4,6 @@ namespace LORIS\candidate_parameters;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
 use LORIS\Data\Dictionary\DictionaryItem;
-use LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * A CandidateQueryEngine providers a QueryEngine interface to query
@@ -157,47 +156,6 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
         return [$ids, $demographics, $meta];
     }
-
-    /**
-     * Returns a list of candidates where all criteria matches. When multiple
-     * criteria are specified, the result is the AND of all the criteria.
-     *
-     * @param \LORIS\Data\Query\QueryTerm $term      The criteria term.
-     * @param ?string[]                   $visitlist The optional list of visits
-     *                                               to match at.
-     *
-     * @return iterable
-     */
-    public function getCandidateMatches(
-        \LORIS\Data\Query\QueryTerm $term,
-        ?array $visitlist=null
-    ) : iterable {
-        $this->resetEngineState();
-        $this->addTable('candidate c');
-        $this->addWhereClause("c.Active='Y'");
-        $prepbindings = [];
-
-        $this->_buildQueryFromCriteria($term, $prepbindings);
-
-        $query = 'SELECT DISTINCT c.CandID FROM';
-
-        $query .= ' ' . $this->getTableJoins();
-
-        $query .= ' WHERE ';
-        $query .= $this->getWhereConditions();
-        $query .= ' ORDER BY c.CandID';
-
-        $DB   = $this->loris->getDatabaseConnection();
-        $rows = $DB->pselectCol($query, $prepbindings);
-
-        return array_map(
-            function ($cid) {
-                return new CandID($cid);
-            },
-            $rows
-        );
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -220,113 +178,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param DictionaryItem[] $items      Items to get data for
-     * @param iterable         $candidates CandIDs to get data for
-     * @param ?string[]        $visitlist  Possible list of visits
-     *
-     * @return iterable<string, \LORIS\Data\DataInstance>
-     */
-    public function getCandidateData(
-        array $items,
-        iterable $candidates,
-        ?array $visitlist
-    ) : iterable {
-        if (count($candidates) == 0) {
-            return [];
-        }
-        $this->resetEngineState();
-
-        $this->addTable('candidate c');
-
-        // Always required for candidateCombine
-        $fields = ['c.CandID'];
-
-        $DBSettings = $this->loris->getConfiguration()->getSetting("database");
-
-        if (!$this->useBufferedQuery) {
-            $DB = new \PDO(
-                "mysql:host=$DBSettings[host];"
-                ."dbname=$DBSettings[database];"
-                ."charset=UTF8",
-                $DBSettings['username'],
-                $DBSettings['password'],
-            );
-            if ($DB->setAttribute(
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
-                false
-            ) == false
-            ) {
-                throw new \DatabaseException("Could not use unbuffered queries");
-            };
-
-            $this->createTemporaryCandIDTablePDO(
-                $DB,
-                "searchcandidates",
-                $candidates,
-            );
-        } else {
-            $DB = $this->loris->getDatabaseConnection();
-            $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
-        }
-
-        $sessionVariables = false;
-        foreach ($items as $dict) {
-            $fields[] = $this->_getFieldNameFromDict($dict)
-                . ' as '
-                . $dict->getName();
-            if ($dict->getScope() == 'session') {
-                $sessionVariables = true;
-            }
-        }
-
-        if ($sessionVariables) {
-            if (!in_array('s.Visit_label as VisitLabel', $fields)) {
-                $fields[] = 's.Visit_label as VisitLabel';
-            }
-            if (!in_array('s.SessionID', $fields)) {
-                $fields[] = 's.ID as SessionID';
-            }
-        }
-        $query  = 'SELECT ' . join(', ', $fields) . ' FROM';
-        $query .= ' ' . $this->getTableJoins();
-
-        $prepbindings = [];
-        $query       .= ' WHERE c.CandID IN (SELECT CandID from searchcandidates)';
-
-        if ($visitlist != null) {
-            $inset = [];
-            $i     = count($prepbindings);
-            foreach ($visitlist as $vl) {
-                $prepname = ':val' . $i++;
-                $inset[]  = $prepname;
-                $prepbindings[$prepname] = $vl;
-            }
-            $query .= 'AND s.Visit_label IN (' . join(",", $inset) . ')';
-        }
-        $query .= ' ORDER BY c.CandID';
-
-        $rows = $DB->prepare($query);
-
-        $result = $rows->execute($prepbindings);
-
-        if ($result === false) {
-            throw new \Exception("Invalid query $query");
-        }
-
-        return $this->candidateCombine($items, $rows);
-    }
-
-
-    /**
      * Get the SQL field name to use to refer to a dictionary item.
      *
      * @param \LORIS\Data\Dictionary\DictionaryItem $item The dictionary item
      *
      * @return string
      */
-    private function _getFieldNameFromDict(
+    protected function getFieldNameFromDict(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ) : string {
         switch ($item->getName()) {
@@ -396,42 +254,6 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         }
     }
 
-    /**
-     * Adds the necessary fields and tables to run the query $term
-     *
-     * @param \LORIS\Data\Query\QueryTerm $term         The term being added to the
-     *                                                  query.
-     * @param array                       $prepbindings Any prepared statement
-     *                                                  bindings required.
-     * @param ?array                      $visitlist    The list of visits.
-     *
-     * @return void
-     */
-    private function _buildQueryFromCriteria(
-        \LORIS\Data\Query\QueryTerm $term,
-        array &$prepbindings,
-        ?array $visitlist = null
-    ) {
-        $dict = $term->dictionary;
-        $this->addWhereCriteria(
-            $this->_getFieldNameFromDict($dict),
-            $term->criteria,
-            $prepbindings
-        );
-
-        if ($visitlist != null) {
-            $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
-            $this->addWhereClause("s.Active='Y'");
-            $inset = [];
-            $i     = count($prepbindings);
-            foreach ($visitlist as $vl) {
-                $prepname = ':val' . ++$i;
-                $inset[]  = $prepname;
-                $prepbindings[$prepname] = $vl;
-            }
-            $this->addWhereClause('s.Visit_label IN (' . join(",", $inset) . ')');
-        }
-    }
 
     /**
      * {@inheritDoc}
@@ -442,6 +264,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      */
     protected function getCorrespondingKeyField($fieldname)
     {
+        // There are no cardinality::many fields in this query engine, so this
+        // should never get called
         throw new \Exception("Unhandled Cardinality::MANY field $fieldname");
     }
 }
