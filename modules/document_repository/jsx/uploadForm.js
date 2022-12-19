@@ -204,7 +204,7 @@ class DocUploadForm extends Component {
                 swal.fire('Upload Successful!', '', 'success')
                   .then((result) => {
                     if (result.value) {
-                      this.setState({formData: {}, uploadInProgress: false});
+                      this.setState({formData: {}});
                       this.props.refreshPage();
                     }
                 });
@@ -221,7 +221,6 @@ class DocUploadForm extends Component {
             });
           } else {
             resp.json().then((data) => {
-              this.setState({uploadInProgress: false});
               swal.fire('Could not upload files', data.error, 'error');
             }).catch((error) => {
               console.error(error);
