@@ -18,6 +18,13 @@ export type Filter = {
   fn: (n: number[]) => number[]
 }
 
+/**
+ * filtersReducer
+ *
+ * @param {object} state - The current state
+ * @param {Action} action - The action
+ * @returns {object} - The updated state
+ */
 export const filtersReducer = (
   state: {[key: string]: Filter} = {},
   action?: Action

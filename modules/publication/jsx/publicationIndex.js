@@ -8,7 +8,6 @@ import PublicationUploadForm from './uploadForm.js';
 class PublicationIndex extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
@@ -58,6 +57,7 @@ class PublicationIndex extends React.Component {
 
   /**
    * Update filter
+   *
    * @param {*} filter
    */
   updateFilter(filter) {
@@ -156,7 +156,6 @@ class PublicationIndex extends React.Component {
    * @param {*} cell
    * @param {object} rowData
    * @param {string[]} rowHeaders
-   *
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {

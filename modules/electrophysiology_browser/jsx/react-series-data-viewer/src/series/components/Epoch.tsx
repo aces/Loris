@@ -6,11 +6,24 @@ type CProps = {
   parentHeight: number,
   onset: number,
   duration: number,
-  scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>],
+  scales: [
+    ScaleLinear<number, number, never>,
+    ScaleLinear<number, number, never>,
+  ],
   color: string,
   opacity: number,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.parentHeight
+ * @param root0.onset
+ * @param root0.duration
+ * @param root0.scales
+ * @param root0.color
+ * @param root0.opacity
+ */
 const Epoch = (
   {
     parentHeight,

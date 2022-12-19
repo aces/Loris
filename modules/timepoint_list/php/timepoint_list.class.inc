@@ -205,7 +205,7 @@ class Timepoint_List extends \NDB_Menu
                 new \SessionID($listOfSessionIDs[0])
             );
 
-            $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
+            $this->tpl_data['CohortID'] = $timePoint->getCohortID();
 
         } // end list
 

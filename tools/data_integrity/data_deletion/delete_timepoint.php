@@ -10,11 +10,11 @@
  * @package  Loris
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once __DIR__ . "/generic_includes.php";
+require_once __DIR__ . "/../../../vendor/autoload.php";
+require_once __DIR__ . "/../../generic_includes.php";
 
 /*
  * The minimum number of arguments required to run this script.
@@ -63,15 +63,15 @@ default:
     break;
 }
 
-$DB =& Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 
 /*
  * Perform validations on arguments
  */
 
 $candExists = $DB->pselectOne(
-    "SELECT COUNT(*) 
-      FROM candidate 
+    "SELECT COUNT(*)
+      FROM candidate
       WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     ['cid' => $CandID, 'pid' => $PSCID]
 );

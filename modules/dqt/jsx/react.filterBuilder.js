@@ -2,9 +2,9 @@
  *  The following file contains the components used for the filter builder tab
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
@@ -28,6 +28,7 @@ class LogicOperator extends Component {
 
   /**
    * Wrapper function updating operator
+   *
    * @param {object} op
    */
   changeOperator(op) {
@@ -107,6 +108,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules instrument, getting the instruments available fields
+   *
    * @param {object} event
    */
   selectInstrument(event) {
@@ -124,6 +126,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules desired field, setting the rules field and field type
+   *
    * @param {object} event
    */
   fieldSelect(event) {
@@ -143,6 +146,7 @@ class FilterRule extends Component {
 
   /**
    * Update the desired rule operation for the selected field
+   *
    * @param {object} event
    */
   operatorSelect(event) {
@@ -166,6 +170,7 @@ class FilterRule extends Component {
 
   /**
    * value changed event
+   *
    * @param {object} event
    */
   valueChange(event) {
@@ -252,6 +257,7 @@ class FilterRule extends Component {
 
   /**
    * Update rule to filter for specified visit
+   *
    * @param {object} event
    */
   updateVisit(event) {
@@ -452,6 +458,7 @@ class FilterGroup extends Component {
 
   /**
    * Update a specified child in the groups children
+   *
    * @param {number} index
    * @param {string} child
    */
@@ -470,6 +477,7 @@ class FilterGroup extends Component {
 
   /**
    * Update the group's operator
+   *
    * @param {object} operator
    */
   updateGroupOperator(operator) {
@@ -490,6 +498,7 @@ class FilterGroup extends Component {
 
   /**
    * Computes the desired sessions of the current group
+   *
    * @param {number} index
    * @param {string} child
    */
@@ -511,6 +520,7 @@ class FilterGroup extends Component {
 
   /**
    * Add a child to the group
+   *
    * @param {string} type
    */
   addChild(type) {
@@ -546,6 +556,7 @@ class FilterGroup extends Component {
 
   /**
    * Delete a child
+   *
    * @param {number} index
    */
   deleteChild(index) {
@@ -676,6 +687,7 @@ class FilterBuilder extends Component {
 
   /**
    * Open the CSV "import data" Modal.
+   *
    * @param {object} e
    */
   openModalCSV(e) {
@@ -692,6 +704,7 @@ class FilterBuilder extends Component {
 
   /**
    * requestSessions - get request for session mapping.
+   *
    * @param {string} type
    * @param {object} data
    * @param {function} callback
@@ -728,6 +741,7 @@ class FilterBuilder extends Component {
 
   /**
    * Define the Candidates from CSV.
+   *
    * @param {string} type
    * @param {number} operator
    * @param {object} data

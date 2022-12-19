@@ -69,7 +69,7 @@ class FilterableDataTable extends Component {
    *
    * @param {string} name
    * @param {*}      value
-   * @param {bool}   exactMatch
+   * @param {boolean}   exactMatch
    */
   addFilter(name, value, exactMatch) {
     const filters = this.state.filters;

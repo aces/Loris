@@ -10,18 +10,24 @@ VERSION: .
 phpdev:
 	composer install
 
-javascript:
+jsdev:
+	npm ci
+	npm run compile
+
+jslatest: clean
+	rm -rf package-lock.json
+	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
 	npm install
 	npm run compile
 
-dev: VERSION phpdev javascript
+dev: VERSION phpdev jsdev
 
 clean:
 	rm -f smarty/templates_c/*
 	rm -f VERSION
 	rm -rf vendor
 	rm -rf node_modules
-	rm package-lock.json
+	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/node_modules
 
 # Perform static analysis checks
 checkstatic: phpdev
@@ -45,3 +51,7 @@ check: checkstatic unittests
 
 testdata:
 	php tools/raisinbread_refresh.php
+
+login:
+	target=login npm run compile
+

@@ -20,6 +20,9 @@ export const setFilteredEpochs = createAction(SET_FILTERED_EPOCHS);
 export const SET_ACTIVE_EPOCH = 'SET_ACTIVE_EPOCH';
 export const setActiveEpoch = createAction(SET_ACTIVE_EPOCH);
 
+export const SET_PHYSIOFILE_ID = 'SET_PHYSIOFILE_ID';
+export const setPhysioFileID = createAction(SET_PHYSIOFILE_ID);
+
 export const SET_DATASET_METADATA = 'SET_DATASET_METADATA';
 export const setDatasetMetadata = createAction(SET_DATASET_METADATA);
 
@@ -29,6 +32,7 @@ export type Action =
   | {type: 'SET_EPOCHS', payload: Epoch[]}
   | {type: 'SET_FILTERED_EPOCHS', payload: number[]}
   | {type: 'SET_ACTIVE_EPOCH', payload: number}
+  | {type: 'SET_PHYSIOFILE_ID', payload: number}
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
@@ -52,11 +56,19 @@ export type State = {
   epochs: Epoch[],
   filteredEpochs: number[],
   activeEpoch: number | null,
+  physioFileID: number | null,
   shapes: number[][],
   timeInterval: [number, number],
   seriesRange: [number, number],
 };
 
+/**
+ * datasetReducer
+ *
+ * @param {State} state - The current state
+ * @param {Action} action - The action
+ * @returns {State} - The updated state
+ */
 export const datasetReducer = (
   state: State = {
     chunksURL: '',
@@ -66,6 +78,7 @@ export const datasetReducer = (
     epochs: [],
     filteredEpochs: [],
     activeEpoch: null,
+    physioFileID: null,
     offsetIndex: 1,
     limit: MAX_CHANNELS,
     shapes: [],
@@ -93,6 +106,9 @@ export const datasetReducer = (
     case SET_ACTIVE_EPOCH: {
       return R.assoc('activeEpoch', action.payload, state);
     }
+    case SET_PHYSIOFILE_ID: {
+      return R.assoc('physioFileID', action.payload, state);
+    }
     case SET_DATASET_METADATA: {
       return R.merge(state, action.payload);
     }
@@ -112,8 +128,26 @@ export const datasetReducer = (
   }
 };
 
+/**
+ * emptyChannels
+ *
+ * @param {number} channelsCount - The channels count
+ * @param {number} tracesCount - The traces count
+ * @returns {Function} - A Fn that returns channelsCount empty channels
+ */
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
+  /**
+   * makeTrace
+   *
+   * @returns {object} - An object with trace type and chunks
+   */
   const makeTrace = () => ({chunks: [], type: 'line'});
+  /**
+   * makeChannel
+   *
+   * @param {number} index - The channel index
+   * @returns {object} - An object with channel index and traces
+   */
   const makeChannel = (index) => ({
     index,
     traces: R.range(0, tracesCount).map(makeTrace),

@@ -13,7 +13,6 @@ import React, {useState, useEffect, useRef} from 'react';
  * may also be optionally specified for each card.
  *
  * @param {array} props - Cards to add to the grid.
- *
  * @return {object} - A React component for a CSS grid of cards
  */
 function CSSGrid(props) {

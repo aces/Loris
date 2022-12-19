@@ -57,8 +57,14 @@ function uploadPublication() : void
     if ($exists) {
         showPublicationError('Submitted title already exists', 400);
     }
-    $desc            = $_POST['description'] ?? null;
-    $leadInvest      = $_POST['leadInvestigator'] ?? null;
+    $desc    = $_POST['description'] ?? null;
+    $project = $_POST['project'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
+    $doi        = $_POST['doi'] ?? null;
+    $link       = $_POST['link'] ?? null;
+    $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     // check if lead investigator already exists in collaborator table
@@ -68,8 +74,8 @@ function uploadPublication() : void
         'FROM publication_collaborator '.
         'WHERE Name = :n AND Email = :e',
         [
-            'n' => $leadInvest,
             'e' => $leadInvestEmail,
+            'n' => $leadInvest,
         ]
     );
     if (empty($leadInvID)) {
@@ -94,6 +100,12 @@ function uploadPublication() : void
         'UserID'             => $uid,
         'Title'              => $title,
         'Description'        => $desc,
+        'project'            => $project,
+        'publishingStatus'   => $publishingStatus,
+        'datePublication'    => $datePublication,
+        'journal'            => $journal,
+        'doi'                => $doi,
+        'link'               => $link,
         'LeadInvestigatorID' => $leadInvID,
         'DateProposed'       => $today,
     ];
@@ -533,7 +545,13 @@ function editProject() : void
     $statusID         = $_POST['status'] ?? null;
     $rejectedReason   = $_POST['rejectedReason'] ?? null;
     $description      = $_POST['description'] ?? null;
-    $leadInvestigator = $_POST['leadInvestigator'] ?? null;
+    $project          = $_POST['project'] ?? null;
+    $publishingStatus = $_POST['publishingStatus'] ?? null;
+    $datePublication  = $_POST['datePublication'] ?? null;
+    $journal          = $_POST['journal'] ?? null;
+    $doi  = $_POST['doi'] ?? null;
+    $link = $_POST['link'] ?? null;
+    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
     $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
@@ -565,6 +583,24 @@ function editProject() : void
     }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
+    }
+    if ($pubData['project'] !== $project) {
+        $toUpdate['project'] = $project;
+    }
+    if ($pubData['publishingStatus'] !== $publishingStatus) {
+        $toUpdate['publishingStatus'] = $publishingStatus;
+    }
+    if ($pubData['datePublication'] !== $datePublication) {
+        $toUpdate['datePublication'] = $datePublication;
+    }
+    if ($pubData['journal'] !== $journal) {
+        $toUpdate['journal'] = $journal;
+    }
+    if ($pubData['doi'] !== $doi) {
+        $toUpdate['doi'] = $doi;
+    }
+    if ($pubData['link'] !== $link) {
+        $toUpdate['link'] = $link;
     }
     if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
         $leadInvToUpdate['Name'] = $leadInvestigator;

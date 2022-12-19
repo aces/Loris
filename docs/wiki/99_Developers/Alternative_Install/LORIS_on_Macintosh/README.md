@@ -20,6 +20,7 @@ The following list provides foresight into the proceeding sections and versions 
  * Apache (a.k.a httpd)
  * PHP (tested on v7.4.7)
  * PHP extension: ast-1.0.5
+ * Protocol Buffers
  * pkg-config
  * Composer
  * Node.js (npm)
@@ -172,7 +173,12 @@ LoadModule php7_module /usr/local/opt/php@<version>/lib/httpd/modules/libphp7.so
 sudo apachectl -k restart
 ```
 
-## 1.7 (Optional) Installing Xdebug
+## 1.7 Install Protocol Buffers
+```
+brew install protobuf
+```
+
+## 1.8 (Optional) Installing Xdebug
 
 Xdebug allows debugging with breakpoints (such as when using an IDE ex. Intellij).
 
@@ -181,7 +187,7 @@ Type into your terminal and hit enter:
 pecl install xdebug
 ```
 
-### 1.7.1 Configure Xdebug for local development
+### 1.8.1 Configure Xdebug for local development
 
 **a.** Comment out the line `zend_extensions=“xdebug.so”` from the top of your `php.ini` file (Note: replace `your_php_version` with the correct php version installed):
 ```
@@ -211,7 +217,7 @@ xdebug.idekey=phpstorm
 sudo apachectl -k restart
 ```
 
-### 1.7.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (recommended)
+### 1.8.2 Install [Xdebug toggle for OSX](https://github.com/w00fz/xdebug-osx) (recommended)
 
 **a.** Install from the GitHub repository.
 
@@ -226,7 +232,7 @@ xdebug on
 xdebug off
 ```
 
-## 1.8 Install the database
+## 1.9 Install the database
 
 We’re installing MariaDB (fork of mysql).
 
@@ -243,7 +249,7 @@ brew services start mariadb
 mysql_secure_installation
 ```
 
-### 1.8.1 MySQL GUI tool (Optional)
+### 1.9.1 MySQL GUI tool (Optional)
 
 [Sequel Pro](https://sequelpro.com/test-builds) (free)
 

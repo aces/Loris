@@ -281,11 +281,11 @@ class Module extends \Module
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
-                    "Subproject",
-                    "The LORIS subproject used for battery selection",
+                    "Cohort",
+                    "The LORIS cohort used for battery selection",
                     $sesscope,
                     new \LORIS\Data\Types\Enumeration(
-                        ...array_values(\Utility::getSubprojectList())
+                        ...array_values(\Utility::getCohortList())
                     ),
                     new Cardinality(Cardinality::SINGLE),
                 ),

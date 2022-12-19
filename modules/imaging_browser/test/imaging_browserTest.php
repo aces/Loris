@@ -368,10 +368,18 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $breadcrumbText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
-        $this->assertStringContainsString("Imaging Browser", $breadcrumbText);
+        $this->assertStringContainsString("Imaging Browser", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );        
     }
 
     /******** A ********/

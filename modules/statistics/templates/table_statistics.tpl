@@ -6,7 +6,7 @@
      - DropdownOptions (options in the dropdown to change what you're seeing)
      - DropdownName (name that the selection is submitted as)
      - DropdownSelected (current option selected)
-     - Subprojects (the valid subprojectIDs from the config file)
+     - Cohorts (the valid cohortIDs from the config file)
      - Subcategories (the ways this data is broken down)
      - Centers (the valid centerIDs from the psc table)
      - Visits (the visits to display)
@@ -48,16 +48,16 @@
   <table id="bigtable" class="data table table-primary table-bordered dynamictable">
     <thead>
     <tr>
-      <th rowspan="1" id="tpcol">Subproject</th>
+      <th rowspan="1" id="tpcol">Cohort</th>
       {assign var='colspan' value=count($Subcategories)}
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         <th colspan="{$colspan}">{$name|capitalize}</th>
       {/foreach}
-      <th colspan="{$colspan}">Total Across Subprojects</th>
+      <th colspan="{$colspan}">Total Across Cohorts</th>
     </tr>
     <tr>
       <th>Categories</th>
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         {* Go through each category once, and add the total
            for each cohort *}
         {foreach key=subcategory item=category from=$Subcategories}
@@ -75,12 +75,12 @@
     <tr>
       {foreach item=center from=$Centers}
       {* Calculation for the colspan is:
-               (number of subprojects + 1 for total)
+               (number of cohorts + 1 for total)
                x
                (number of subcategories + 1 for percent)
                +1 for timepoint list
       *}
-      {assign var='colspan' value=(count($Subcategories))*(count($Subprojects)+1)}
+      {assign var='colspan' value=(count($Subcategories))*(count($Cohorts)+1)}
       <th>{$center.LongName}</th>
       <th colspan="{$colspan}" width="50%"><br></th>
     </tr>
@@ -88,7 +88,7 @@
       <tr id="visitrow">
         {assign var="rowtotal" value="0"}
         <td>{$title}</td>
-        {foreach key="proj" item="value" from=$Subprojects}
+        {foreach key="proj" item="value" from=$Cohorts}
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
@@ -125,7 +125,7 @@
     <tr>
       <td class="subtotal">Site Total Across All Visits</td>
       {assign var="totalsitetotal" value="0"}
-      {foreach key=proj item=value from=$Subprojects}
+      {foreach key=proj item=value from=$Cohorts}
         {assign var="sitetotal" value="0"}
         {foreach key=sub item=subcat from=$Subcategories}
           {if $subcat@index eq 0}
@@ -163,14 +163,14 @@
 
     {* Totals at the bottom *}
     <tr>
-      {assign var='colspan' value=(count($Subcategories))*(count($Subprojects)+1)}
+      {assign var='colspan' value=(count($Subcategories))*(count($Cohorts)+1)}
       <th>Total</th>
       <th colspan="{$colspan}" width="50%"></th>
     </tr>
     {foreach from=$Visits item=visit key=title}
       <tr id="visitrow">
         <td>{$title}</td>
-        {foreach from=$Subprojects key=proj item=value}
+        {foreach from=$Cohorts key=proj item=value}
           {assign var="subtotal" value="0" }
           {foreach key=sub item=subcat from=$Subcategories}
             {if $subcat@index eq 0}
@@ -207,7 +207,7 @@
 
     <tr>
       <td class="total">Grand Total</td>
-      {foreach key=proj item=name from=$Subprojects}
+      {foreach key=proj item=name from=$Cohorts}
         {* Calculate the total instead of just looking it up, because of the potential
            for invalid visit labels throwing off the lookup, or some visits intentionally
            being excluded from stats *}

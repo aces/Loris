@@ -97,29 +97,29 @@ class NDB_BVL_Battery
 
     /**
      * Asserts that no instruments are in the current battery and then, based
-     * on age AND SubprojectID, adds all appropriate instruments to the
+     * on age AND CohortID, adds all appropriate instruments to the
      * battery
      *
-     * @param \LORIS\LorisInstance $loris        The LORIS instance to add
-     *                                           instruments to
-     * @param integer              $SubprojectID The SubprojectID that we want
-     *                                           the battery for
-     * @param string               $stage        Either 'visit' or 'screening'
-     * @param string               $visit_label  The visit label to create a
-     *                                           battery for.
-     * @param \CenterID            $center_ID    The center of the candidate
-     *                                           having a battery created
-     * @param boolean              $firstVisit   Whether this is a first visit
-     *                                           battery.  true means ONLY
-     *                                           first visit, false means NOT
-     *                                           first visit, null can be any
-     *                                           visit.
+     * @param \LORIS\LorisInstance $loris       The LORIS instance to add
+     *                                          instruments to
+     * @param integer              $CohortID    The CohortID that we want
+     *                                          the battery for
+     * @param string               $stage       Either 'visit' or 'screening'
+     * @param string               $visit_label The visit label to create a
+     *                                          battery for.
+     * @param \CenterID            $center_ID   The center of the candidate
+     *                                          having a battery created
+     * @param boolean              $firstVisit  Whether this is a first visit
+     *                                          battery.  true means ONLY
+     *                                          first visit, false means NOT
+     *                                          first visit, null can be any
+     *                                          visit.
      *
      * @return void
      */
     function createBattery(
         \LORIS\LorisInstance $loris,
-        $SubprojectID,
+        $CohortID,
         $stage=null,
         $visit_label=null,
         $center_ID=null,
@@ -131,7 +131,7 @@ class NDB_BVL_Battery
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
         try {
-            $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
+            $currentTests = $this->getBattery($stage, $CohortID, $visit_label);
         } catch (Exception $e) {
             throw new Exception(
                 "Could not get the current list of instruments, "
@@ -144,7 +144,7 @@ class NDB_BVL_Battery
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
             $this->age,
-            $SubprojectID,
+            $CohortID,
             $stage,
             $visit_label,
             $center_ID,
@@ -332,7 +332,7 @@ class NDB_BVL_Battery
             	      LEFT JOIN session s ON (s.ID=f.SessionID)
             	      LEFT JOIN test_battery b
        	                ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
-      	                AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL)
+      	                AND (s.CohortID=b.CohortID OR b.CohortID IS NULL)
        	                AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
        	                AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
        	          WHERE f.SessionID=:SID
@@ -398,36 +398,36 @@ class NDB_BVL_Battery
 
     /**
      * Looks up what the appropriate battery for the current visit should
-     * be, based on age AND subproject
+     * be, based on age AND cohort
      *
-     * @param integer   $age          the age of the subject, in months
-     * @param integer   $SubprojectID The ID of the subproject that we want
-     *                                to look up the battery for.
-     * @param string    $stage        either 'visit' or 'screening' - determines
-     *                                whether to register only screening
-     *                                instruments or visit instruments
-     * @param string    $visit_label  (optional) The visit label to look up the
-     *                                battery for. If this is specified the
-     *                                battery will use this INSTEAD OF the age
-     *                                of candidate.
-     * @param ?CenterID $center_ID    (optional) The center ID to look up the visit
-     *                                battery for. If this is specified the lookup
-     *                                will use it as an ADDITIONAL condition to
-     *                                $age/$visit_label.
-     * @param ?boolean  $firstVisit   (optional) Whether or not we want the battery
-     *                                for the first visit of the candidate. If this
-     *                                is true, it will get instruments for the
-     *                                first visit. If false, it will only get
-     *                                instruments where it is NOT the first visit.
-     *                                If null, it will get all instruments matching
-     *                                criteria regardless of if it's the first
-     *                                visit or not.
+     * @param integer   $age         the age of the subject, in months
+     * @param integer   $CohortID    The ID of the cohort that we want
+     *                               to look up the battery for.
+     * @param string    $stage       either 'visit' or 'screening' - determines
+     *                               whether to register only screening
+     *                               instruments or visit instruments
+     * @param string    $visit_label (optional) The visit label to look up the
+     *                               battery for. If this is specified the
+     *                               battery will use this INSTEAD OF the age
+     *                               of candidate.
+     * @param ?CenterID $center_ID   (optional) The center ID to look up the visit
+     *                               battery for. If this is specified the lookup
+     *                               will use it as an ADDITIONAL condition to
+     *                               $age/$visit_label.
+     * @param ?boolean  $firstVisit  (optional) Whether or not we want the battery
+     *                               for the first visit of the candidate. If this
+     *                               is true, it will get instruments for the
+     *                               first visit. If false, it will only get
+     *                               instruments where it is NOT the first visit.
+     *                               If null, it will get all instruments matching
+     *                               criteria regardless of if it's the first
+     *                               visit or not.
      *
      * @return array  an array of instrument names
      */
     function lookupBattery(
         $age,
-        $SubprojectID,
+        $CohortID,
         $stage=null,
         $visit_label=null,
         $center_ID=null,
@@ -439,7 +439,7 @@ class NDB_BVL_Battery
         }
         $qparams = [
             'vAge'      => $age,
-            'SubprojID' => $SubprojectID,
+            'SubprojID' => $CohortID,
         ];
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
@@ -454,16 +454,16 @@ class NDB_BVL_Battery
                         (b.AgeMinDays<= :vAge AND b.AgeMaxDays >= :vAge)
                     )
                     AND b.Active='Y'
-                    AND (SubprojectID=:SubprojID OR SubprojectID IS NULL)";
+                    AND (CohortID=:SubprojID OR CohortID IS NULL)";
 
         if (!is_null($visit_label)) {
             $VisitBatteryExists = $DB->pselectOne(
                 "SELECT COUNT(*)
                     FROM test_battery
-                    WHERE Visit_label =:VL AND SubprojectID=:SubID",
+                    WHERE Visit_label =:VL AND CohortID=:SubID",
                 [
                     'VL'    => $visit_label,
-                    'SubID' => $SubprojectID,
+                    'SubID' => $CohortID,
                 ]
             );
             if ($VisitBatteryExists > 0) {
@@ -505,10 +505,10 @@ class NDB_BVL_Battery
             $query_firstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND SubprojectID=:subID";
+                WHERE firstVisit=:FV AND CohortID=:subID";
             $where            = [
                 'FV'    => 'Y',
-                'subID' => $SubprojectID,
+                'subID' => $CohortID,
             ];
             $rows_firstVisit  = $DB->pselect($query_firstVisit, $where);
 
@@ -521,10 +521,10 @@ class NDB_BVL_Battery
             $query_notfirstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND SubprojectID=:subID";
+                WHERE firstVisit=:FV AND CohortID=:subID";
             $where = [
                 'FV'    => 'N',
-                'subID' => $SubprojectID,
+                'subID' => $CohortID,
             ];
 
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit, $where);
@@ -581,7 +581,7 @@ class NDB_BVL_Battery
         );
 
         $OtherInfo = $DB->pselectRow(
-            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
+            "SELECT CandID, c.PSCID, s.CohortID FROM session s
                     JOIN candidate c USING (CandID)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
             ['SID' => $SessionID]
@@ -593,7 +593,7 @@ class NDB_BVL_Battery
         return $OtherInfo['CandID']
             . $OtherInfo['PSCID']
             . $SessionID
-            . $OtherInfo['SubprojectID']
+            . $OtherInfo['CohortID']
             . $TestID
             . time();
     }

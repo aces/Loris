@@ -91,7 +91,7 @@ class DownloadPanel extends Component {
                           >Not Available</a>
                         : <a
                             className='btn btn-primary download col-xs-6'
-                            href={this.state.outputType == 'derivative' &&
+                            href={
                               (download.type ==
                               'physiological_annotation_files' ||
                               download.type == 'all_files') ?

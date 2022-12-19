@@ -89,7 +89,14 @@ if (is_dir($basePath . "project/modules/$Module")
 
 $public = false;
 try {
-    $m = Module::factory($Module);
+    // Anything that's still in an ajax directory isn't using the lorisinstance
+    // object, so for now just make a fake one to pass to the factory.
+    $loris = new \LORIS\LorisInstance(
+        new \Database(),
+        new \NDB_Config(),
+        []
+    );
+    $m     = Module::factory($loris, $Module);
 
     $public = $m->isPublicModule();
 } catch (LorisModuleMissingException $e) {

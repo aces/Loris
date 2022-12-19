@@ -1,9 +1,21 @@
 import {scaleOrdinal} from 'd3-scale';
+
 // import * as R from 'ramda';
 // import {schemeCategory10, schemeSet3} from 'd3-scale-chromatic';
-// export const colorOrder = scaleOrdinal(R.concat(schemeCategory10, schemeSet3));
+// export const colorOrder = scaleOrdinal(
+//   R.concat(schemeCategory10, schemeSet3)
+// );
+
 export const colorOrder = scaleOrdinal();
 
+/**
+ * hex2rgba
+ *
+ * @param {object} root - An object
+ * @param {string} root.color - An hexadecimal color
+ * @param {number} root.alpha - Opacity
+ * @returns {string} - An rgba expression
+ */
 export const hex2rgba = ({color = '#000000', alpha = 1} : {
   color: string,
   alpha: number,

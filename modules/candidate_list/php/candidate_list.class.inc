@@ -71,7 +71,7 @@ class Candidate_List extends \DataFrameworkMenu
     {
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
-        \Module::factory('candidate_parameters');
+        \Module::factory($this->lorisinstance, 'candidate_parameters');
 
         // create user object
         $factory = \NDB_Factory::singleton();
@@ -99,11 +99,11 @@ class Candidate_List extends \DataFrameworkMenu
             $project_options[$name] = $name;
         }
 
-        // get the list of subprojects
-        $list_of_subprojects = \Utility::getSubprojectList();
-        $subproject_options  = [];
-        foreach (array_values($list_of_subprojects) as $name) {
-            $subproject_options[$name] = $name;
+        // get the list of cohorts
+        $list_of_cohorts = \Utility::getCohortList();
+        $cohort_options  = [];
+        foreach (array_values($list_of_cohorts) as $name) {
+            $cohort_options[$name] = $name;
         }
 
         // get the list participant status options
@@ -118,7 +118,7 @@ class Candidate_List extends \DataFrameworkMenu
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
             'project'           => $project_options,
-            'subproject'        => $subproject_options,
+            'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
         ];

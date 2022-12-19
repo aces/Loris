@@ -10,8 +10,7 @@ import PropTypes from 'prop-types';
  * Alters the filter object and sends it to parent on every update.
  *
  * @param {props} props
- * @return {jsx}
- *
+ * @return {JSX}
  */
 function Filter(props) {
   /**

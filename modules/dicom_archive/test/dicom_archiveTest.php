@@ -66,6 +66,14 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("View Details", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that help editor loads with the permission
