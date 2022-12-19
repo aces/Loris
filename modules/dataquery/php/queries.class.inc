@@ -48,10 +48,6 @@ class Queries extends \NDB_Page
             case 'GET':
                 return new \LORIS\Http\Response\JSON\OK(
                     [
-                        'recent'  => iterator_to_array(
-                            $this->getRecentRuns($user),
-                            false,
-                        ),
                         'queries' => iterator_to_array(
                             $this->getUserAccessibleQueries($user),
                         ),
@@ -73,6 +69,27 @@ class Queries extends \NDB_Page
                     ]
                 );
             default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
+            }
+        }
+        if (preg_match(
+            "/queries\/runs$/",
+            $url,
+            $pieces
+        ) === 1
+        ) {
+            switch ($request->getMethod()) {
+            case 'GET':
+                return new \LORIS\Http\Response\JSON\OK(
+                    [
+                        'queryruns'  => iterator_to_array(
+                            $this->getRecentRuns($user),
+                            false,
+                        ),
+                    ]
+                );
+            default:
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET']);
             }
         }
         if (preg_match(
@@ -213,10 +230,10 @@ class Queries extends \NDB_Page
             if (isset($params['star'])) {
                 if ($params['star'] == 'false') {
                     $query->unstar($user);
-                    $resp['starred' => 'Unstarred query'];
+                    $resp['starred'] = 'Unstarred query';
                 } else if ($params['star'] == 'true') {
                     $query->star($user);
-                    $resp['starred' => 'Starred query'];
+                    $resp['starred'] = 'Starred query';
                 } else {
                     return new \LORIS\Http\Response\JSON\BadRequest(
                         'Invalid star action'

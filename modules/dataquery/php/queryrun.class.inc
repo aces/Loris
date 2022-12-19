@@ -125,7 +125,8 @@ class QueryRun implements \LORIS\StudyEntities\AccessibleResource,
             'self'       => $baseURL
                 . '/dataquery/queries/' . $this->query->queryID
                 . '/run/' . $this->runID,
-            'Query'      => $this->query->queryID,
+            'QueryURI'   => $baseURL
+                . '/dataquery/queries/' . $this->query->queryID,
             'RunTime'    => $this->runTime,
             'QueryID'    => $this->query->queryID,
             'QueryRunID' => $this->runID,
