@@ -17,15 +17,7 @@ security:
 paths:
   /queries:
     get:
-<<<<<<< HEAD
-<<<<<<< HEAD
       summary: Get a list of a recent, shared, and study (top) queries for the current user.
-=======
-      summary: Get a list of a recent, shared, and study (top) queries to display.
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-      summary: Get a list of a recent, shared, and study (top) queries for the current user.
->>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
       responses:
         '200':
           description: Successfully operation
@@ -42,15 +34,7 @@ paths:
         content:
           application/json:
             schema:
-<<<<<<< HEAD
-<<<<<<< HEAD
               $ref: '#/components/schemas/QueryObject'
-=======
-              $ref: '#/components/schemas/Query'
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-              $ref: '#/components/schemas/QueryObject'
->>>>>>> bdda21bc1 (Create QueryObject)
       responses:
         '200':
           description: Query successfully created
@@ -70,10 +54,6 @@ paths:
                 properties:
                   error:
                     type: string
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
   /queries/runs:
     get:
       summary: Get a list of a recent, query runs for the current user.
@@ -84,11 +64,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QueryRunList'
-<<<<<<< HEAD
-=======
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
->>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
   /queries/{QueryID}:
     parameters:
       - name: QueryID
@@ -115,8 +90,6 @@ paths:
           style: spaceDelimited
           schema:
             type: boolean
-<<<<<<< HEAD
-<<<<<<< HEAD
           description: if true, the query will be shared. If false, it will be unshared
         - name: star
           in: query
@@ -130,7 +103,6 @@ paths:
           description: The admin name to pin the query as. If the empty string, will be unpinned.
           schema:
             type: string
-<<<<<<< HEAD
         - name: dashboardname
           in: query
           style: pipeDelimited
@@ -148,51 +120,6 @@ paths:
           description: The access was performed
         '403':
           description: The access was not performed because of permissions being denied.
-=======
-          
-        - name: unshare
-          in: query
-          style: spaceDelimited
-          schema:
-            type: boolean
-=======
-          description: if true, the query will be shared. If false, it will be unshared
->>>>>>> b742752be (Change to POST, add QueryRunID to query run)
-        - name: star
-          in: query
-          style: spaceDelimited
-          description: if true, the query will be shared. If false, it will be unshared
-          schema:
-            type: boolean
-        - name: adminname
-          in: query
-          style: pipeDelimited
-          description: The admin name to pin the query as. If the empty string, will be unpinned.
-=======
->>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
-        - name: dashboardname
-          in: query
-          style: pipeDelimited
-          description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
-          schema:
-            type: string
-        - name: name
-          in: query
-          style: pipeDelimited
-          description: The name to set for the query for this user.
-          schema:
-            type: string
-      responses:
-<<<<<<< HEAD
-        '400':
-          description: Bad request. Most likely caused by one or more incompatible patches to be done at the same time.
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-        '200':
-          description: The access was performed
-        '403':
-          description: The access was not performed because of permissions being denied.
->>>>>>> b742752be (Change to POST, add QueryRunID to query run)
   /queries/{QueryID}/run:
     parameters:
       - name: QueryID
@@ -202,26 +129,11 @@ paths:
         style: simple
         schema:
           type: integer  
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b742752be (Change to POST, add QueryRunID to query run)
     post:
       description: |- 
         Run the query QueryID and returns the results. 
         
         This endpoint will result in a new query run being generated, which will be returned in the queries of the user on the /queries endpoint.
-=======
-    get:
-      description: |- 
-        Run the query QueryID and returns the results. 
-        
-<<<<<<< HEAD
-        This endpoint will result in a new query run being generated, which will be returned in the 'recent' queries of the user on the /queries endpoint.
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-        This endpoint will result in a new query run being generated, which will be returned in the queries of the user on the /queries endpoint.
->>>>>>> 4f6401a3e (Update schema after Xaviers review)
       responses:
         '200':
           description: The query was able to be successfully run
@@ -290,8 +202,6 @@ components:
     AllQueries:
       type: object
       properties:
-<<<<<<< HEAD
-<<<<<<< HEAD
         queries:
           type: array
           items:
@@ -326,51 +236,6 @@ components:
         Name:
           type: string
           description: The name given by the current user for this query
-=======
-        recent:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryRun'
-=======
->>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
-        queries:
-          type: array
-          items:
-            $ref: '#/components/schemas/Query'
-    QueryRunList:
-      type: object
-      properties:
-        queryruns:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryRun'
-    Query:
-      type: object
-      properties:
-        self:
-          type: string
-          description: |-
-             A URL that this query can be accessed at.
-
-             Accessing the query directly through the URL is sure to have the same fields
-             and criteria, but other details of the object returned may not be identical.
-
-             For instance, the starred and name properties may vary based on the user
-             accessing the URI.
-          example: "https://example.com/dataquery/queries/4"
-        Query:
-          $ref: '#/components/schemas/QueryObject'
-        AdminName:
-          type: string
-          description: The name given by the admin for a pinned query
-          example: "Important Study Query Of Missing T1s"
-        Name:
-          type: string
-<<<<<<< HEAD
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-          description: The name given by the current user for this query
->>>>>>> 4f6401a3e (Update schema after Xaviers review)
           example: "My Query"
         SharedBy:
           type: array
@@ -379,8 +244,6 @@ components:
             example: "admin"
         Starred:
           type: boolean
-<<<<<<< HEAD
-<<<<<<< HEAD
           description: The query has been starred by the user
         Public:
           type: boolean
@@ -391,7 +254,6 @@ components:
         QueryID:
           type: integer
           example: 3
-<<<<<<< HEAD
     QueryRun:
       type: object
       properties:
@@ -414,58 +276,6 @@ components:
           type: integer
           description: A reference to the run number of this query
           example: 4
-=======
-        Shared:
-=======
-          description: The query has been starred by the user
-        Public:
->>>>>>> 4f6401a3e (Update schema after Xaviers review)
-          type: boolean
-          description: The query has been shared (made public to all users)
-        Pinned:
-          type: boolean
-          description: The query has been pinned by an administrator
-        QueryID:
-          type: integer
-          example: 3
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryField'
-        criteria:
-          $ref: '#/components/schemas/QueryCriteriaGroup'
-      required:
-        - type
-        - fields
-=======
->>>>>>> bdda21bc1 (Create QueryObject)
-    QueryRun:
-      type: object
-      properties:
-        self:
-          type: string
-          description: A URL to access this query run
-          example: "https://example.com/dataquery/queries/3/run/34"
-        RunTime:
-          type: string
-          example: "2022-11-02 15:34:38"
-<<<<<<< HEAD
-        Query:
-          $ref: '#/components/schemas/Query'
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
-        QueryID:
-          type: integer
-          description: A reference to an object in the queries property identified by QueryID
-          example: 3
-<<<<<<< HEAD
->>>>>>> 4f6401a3e (Update schema after Xaviers review)
-=======
-        QueryRunID:
-          type: integer
-          description: A reference to the run number of this query
-          example: 4
->>>>>>> b742752be (Change to POST, add QueryRunID to query run)
     QueryField:
       type: object
       properties:
@@ -487,10 +297,6 @@ components:
         - module
         - category
         - field
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bdda21bc1 (Create QueryObject)
     QueryObject:
       type: object
       description: A set of filters and fields used to determine what is being queried.
@@ -508,11 +314,6 @@ components:
       required:
         - type
         - fields
-<<<<<<< HEAD
-=======
->>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
-=======
->>>>>>> bdda21bc1 (Create QueryObject)
     QueryCriteriaGroup:
       type: object
       description: An and/or group used for filtering, all items in the group must be the same operator (but an item in the group may be a query criteria subgroup using a different operator)
