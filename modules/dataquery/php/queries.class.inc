@@ -209,21 +209,14 @@ class Queries extends \NDB_Page
         case 'PATCH':
             $params = $request->getQueryParams();
             // Can only do 1 action at a time.
-            if (isset($params['star']) && isset($params['share'])) {
-                return new \LORIS\Http\Response\JSON\BadRequest();
-            }
-
+            $resp = [];
             if (isset($params['star'])) {
-                if ($params['star'] == 'unstar') {
+                if ($params['star'] == 'false') {
                     $query->unstar($user);
-                    return new \LORIS\Http\Response\JSON\OK(
-                        ['msg'=>'Unstarred query']
-                    );
-                } else if ($params['star'] == 'star') {
+                    $resp['starred' => 'Unstarred query'];
+                } else if ($params['star'] == 'true') {
                     $query->star($user);
-                    return new \LORIS\Http\Response\JSON\OK(
-                        ['msg'=>'Starred query']
-                    );
+                    $resp['starred' => 'Starred query'];
                 } else {
                     return new \LORIS\Http\Response\JSON\BadRequest(
                         'Invalid star action'
@@ -232,16 +225,12 @@ class Queries extends \NDB_Page
             }
 
             if (isset($params['share'])) {
-                if ($params['share'] == 'share') {
+                if ($params['share'] == 'true') {
                     $query->share($user);
-                    return new \LORIS\Http\Response\JSON\OK(
-                        ['msg'=>'Shared query']
-                    );
-                } else if ($params['share'] == 'unshare') {
+                    $resp['Share'] = 'Marked query public';
+                } else if ($params['share'] == 'false') {
                     $query->unshare($user);
-                    return new \LORIS\Http\Response\JSON\OK(
-                        ['msg'=>'Unshared query']
-                    );
+                    $resp['Share'] = 'Unshared query';
                 } else {
                     return new \LORIS\Http\Response\JSON\BadRequest(
                         'Invalid share action'
@@ -249,27 +238,31 @@ class Queries extends \NDB_Page
                 }
             }
 
-            if (!empty($params['type'])) {
-                if (str_contains($params['type'], 'untop')) {
+            if (isset($params['adminname'])) {
+                if ($params['adminname'] == '') {
                     $query->removeAdminPinnedQuery('topquery');
-                } else if (str_contains($params['type'], 'top')) {
-                    $query->setAdminPinnedQuery($user, $params['name'], 'topquery');
+                    $resp['adminpin'] = 'Unpinned query from dataquery module';
+                } else {
+                    $query->setAdminPinnedQuery($user, $params['adminname'], 'topquery');
+                    $resp['adminpin'] = 'Pinned query to dataquery module';
                 }
-
-                if (str_contains($params['type'], 'dashboard')) {
-                    $query->setAdminPinnedQuery($user, $params['name'], 'dashboard');
-                }
-                    return new \LORIS\Http\Response\JSON\OK(
-                        ['msg' => 'Pinned query']
-                    );
-            } else if (!empty($params['name'])) {
-                $query->setQueryName($user, $params['name']);
-                return new \LORIS\Http\Response\JSON\OK(['msg'=>'named query']);
             }
 
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Unhandled PATCH action'
-            );
+            if (isset($params['dashboardname'])) {
+                if ($params['dashboardname'] == '') {
+                    $query->removeAdminPinnedQuery('dashboard');
+                    $resp['dashboard'] = 'Unpinned query from dashboard';
+                } else {
+                    $query->setAdminPinnedQuery($user, $params['dashboardname'], 'dashboard');
+                    $resp['dashboard'] = 'Pinned query to dashboard';
+                }
+            }
+
+            if (isset($params['name'])) {
+                $query->setQueryName($user, $params['name']);
+                $resp['Name'] = 'Named query';
+            }
+            return new \LORIS\Http\Response\JSON\OK($resp);
         }
         return new \LORIS\Http\Response\JSON\MethodNotAllowed(
             ['GET'],
