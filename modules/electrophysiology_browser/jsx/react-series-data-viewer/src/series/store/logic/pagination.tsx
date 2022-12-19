@@ -5,9 +5,10 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {Channel, ChannelMetadata} from '../types';
 import {
-  emptyChannels,
+  setChannels
+} from '../state/channels';
+import {
   setDatasetMetadata,
-  setChannels,
 } from '../state/dataset';
 import {updateViewedChunks} from './fetchChunks';
 
@@ -59,8 +60,11 @@ export const createPaginationEpic = (fromState: (_: any) => State) => (
               R.prop('index'),
               R.equals(channelIndex)
             )
-          ) || emptyChannels(1, 1)[0];
-        channel.index = channelIndex;
+          ) || {
+            index: channelIndex,
+            traces: [{chunks: [], type: 'line'}],
+          };
+
         newChannels.push(channel);
         channelIndex++;
       }
