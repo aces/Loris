@@ -327,10 +327,11 @@ class Files extends \NDB_Page
             );
         }
 
-        $uploadedFiles = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
+        $uploadedFiles = is_array($uploadedFiles)
+            ? $uploadedFiles : [$uploadedFiles];
 
         $responseMessages = [];
-        $errorCounter = 0;
+        $errorCounter     = 0;
 
         foreach ($uploadedFiles as $uploadedFile) {
             $filename = urldecode($uploadedFile->getClientFilename());
@@ -339,7 +340,7 @@ class Files extends \NDB_Page
                 // If a record of this a file with the same name already exists
                 // in the database, don't proceed with upload.
                 $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
-                $errorCounter += 1;
+                $errorCounter      += 1;
                 continue;
             }
 
@@ -366,15 +367,17 @@ class Files extends \NDB_Page
                     );
             } catch (\ConfigurationException $e) {
                 $responseMessages[] = "$filename: {$e->getMessage()}";
-                $errorCounter += 1;
+                $errorCounter      += 1;
                 continue;
             }
 
             $response = $uploader->handle($request->withUploadedFiles([$uploadedFile]));
             if (!in_array($response->getStatusCode(), [200, 201], true)) {
-                $errorResponse = json_decode($response->getBody()->getContents());
+                $errorResponse      = json_decode(
+                    $response->getBody()->getContents()
+                );
                 $responseMessages[] = "$filename: $errorResponse->error";
-                $errorCounter += 1;
+                $errorCounter      += 1;
                 continue;
             }
 
@@ -414,16 +417,16 @@ class Files extends \NDB_Page
                 ]
             );
 
-            $uploadNotifier = new \NDB_Notifier(
+            $uploadNotifier     = new \NDB_Notifier(
                 "document_repository",
                 "upload"
             );
-            $msg_data       = [
+            $msg_data           = [
                 'newDocument' => 'Document Repository',
                 'document'    => $filename,
             ];
-            $uploadNotifier->notify($msg_data);
             $responseMessages[] = "$filename: Success";
+            $uploadNotifier->notify($msg_data);
         }
 
         $uploadResponse  = '<div class="upload-response">';
@@ -432,7 +435,7 @@ class Files extends \NDB_Page
 
         return (new \LORIS\Http\Response\JSON\OK(
             [
-                'message' => $uploadResponse,
+                'message'     => $uploadResponse,
                 'error_count' => $errorCounter
             ]
         ));
