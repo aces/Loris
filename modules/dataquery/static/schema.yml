@@ -17,7 +17,7 @@ security:
 paths:
   /queries:
     get:
-      summary: Get a list of a recent, shared, and study (top) queries to display.
+      summary: Get a list of a recent, shared, and study (top) queries for the current user.
       responses:
         '200':
           description: Successfully operation
@@ -54,6 +54,16 @@ paths:
                 properties:
                   error:
                     type: string
+  /queries/runs:
+    get:
+      summary: Get a list of a recent, query runs for the current user.
+      responses:
+        '200':
+          description: Successfully operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryRunList'
   /queries/{QueryID}:
     parameters:
       - name: QueryID
@@ -91,10 +101,14 @@ paths:
           in: query
           style: pipeDelimited
           description: The admin name to pin the query as. If the empty string, will be unpinned.
+          schema:
+            type: string
         - name: dashboardname
           in: query
           style: pipeDelimited
           description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
+          schema:
+            type: string
         - name: name
           in: query
           style: pipeDelimited
@@ -188,14 +202,17 @@ components:
     AllQueries:
       type: object
       properties:
-        recent:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryRun'
         queries:
           type: array
           items:
             $ref: '#/components/schemas/Query'
+    QueryRunList:
+      type: object
+      properties:
+        queryruns:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryRun'
     Query:
       type: object
       properties:
