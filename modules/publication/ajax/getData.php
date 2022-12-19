@@ -67,6 +67,16 @@ function getData($db) : array
         []
     );
 
+    $rawProject = $db->pselect(
+        'SELECT ProjectID, Name FROM Project',
+        []
+    );
+
+    $projectOptions = [];
+    foreach ($rawProject as $dataProject) {
+        $projectOptions[$dataProject['ProjectID']] = $dataProject['Name'];
+    }
+
     // merge variables and test names into one array
     $bvlVOIs = array_merge(
         array_column($bvlVOIs, 'Name'),
@@ -80,11 +90,11 @@ function getData($db) : array
 
     // imaging VoIs -- filter out non-human readable DICOM tags
     $imgVOIs = $db->pselectCol(
-        "SELECT DISTINCT p.Name FROM parameter_type p 
-         JOIN parameter_type_category_rel ptcr 
-         ON p.ParameterTypeID=ptcr.ParameterTypeID 
-         JOIN parameter_type_category ptc 
-         ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID 
+        "SELECT DISTINCT p.Name FROM parameter_type p
+         JOIN parameter_type_category_rel ptcr
+         ON p.ParameterTypeID=ptcr.ParameterTypeID
+         JOIN parameter_type_category ptc
+         ON ptc.ParameterTypeCategoryID=ptcr.ParameterTypeCategoryID
          WHERE ptc.Name='MRI Variables'",
         []
     );
@@ -114,6 +124,7 @@ function getData($db) : array
     );
     $collabs = array_combine($collabs, $collabs);
 
+    $data['projectOptions'] = $projectOptions;
     $data['users']          = $users;
     $data['uploadTypes']    = getUploadTypes();
     $data['existingTitles'] = $titles;
@@ -134,12 +145,15 @@ function getData($db) : array
  */
 function getProjectData($db, $user, $id) : array
 {
-    $query  = 'SELECT Title, Description, DateProposed, '.
+    $query  = 'SELECT Title, Description, pr.Name as project, datePublication, '.
+        'journal, link, publishingStatus, DateProposed, '.
         'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
         'LEFT JOIN publication_collaborator pc '.
         'ON p.LeadInvestigatorID = pc.PublicationCollaboratorID '.
+        'LEFT JOIN Project pr '.
+        'ON p.project = pr.ProjectID '.
         'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
@@ -169,13 +183,22 @@ function getProjectData($db, $user, $id) : array
 
         $usersWithEditPerm = $userIDs;
 
-        $title          = htmlspecialchars_decode($result['Title']);
-        $description    = htmlspecialchars_decode($result['Description']);
-        $rejectedReason = htmlspecialchars_decode($result['RejectedReason']);
+        $title           = htmlspecialchars_decode($result['Title']);
+        $description     = htmlspecialchars_decode($result['Description']);
+        $datePublication = htmlspecialchars_decode($result['datePublication']);
+        $journal         = htmlspecialchars_decode($result['journal']);
+        $link            = htmlspecialchars_decode($result['link']);
+        $publishingStatus = htmlspecialchars_decode($result['publishingStatus']);
+        $rejectedReason   = htmlspecialchars_decode($result['RejectedReason']);
 
         $pubData = [
             'title'                 => $title,
             'description'           => $description,
+            'project'               => $result['project'],
+            'datePublication'       => $datePublication,
+            'journal'               => $journal,
+            'link'                  => $link,
+            'publishingStatus'      => $publishingStatus,
             'leadInvestigator'      => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
             'status'                => $result['PublicationStatusID'],

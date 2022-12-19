@@ -140,16 +140,16 @@ class CouchDBDemographicsImporter
     }
 
     /**
-     * Get subproject title
+     * Get cohort title
      *
-     * @param int $id The subproject ID
+     * @param int $id The cohort ID
      *
      * @return string
      */
-    function _getSubproject($id)
+    function _getCohort($id)
     {
         $config   = \NDB_Config::singleton();
-        $subprojs = $config->getSubprojectSettings($id);
+        $subprojs = $config->getCohortSettings($id);
         if ($subprojs['id'] == $id) {
             return $subprojs['title'];
         }
@@ -185,7 +185,7 @@ class CouchDBDemographicsImporter
                                 c.CandID,
                                 c.PSCID,
                                 s.Visit_label,
-                                s.SubprojectID,
+                                s.CohortID,
                                 p.Alias as Site,
                                 c.Sex,
                                 s.Current_stage,
@@ -234,7 +234,7 @@ class CouchDBDemographicsImporter
                         c.CandID,
                         c.PSCID,
                         s.Visit_label,
-                        s.SubprojectID,
+                        s.CohortID,
                         Site,
                         c.Sex,
                         s.Current_stage,
@@ -383,8 +383,8 @@ class CouchDBDemographicsImporter
                 . '_'
                 . $demographics['Visit_label'];
             $demographics['Cohort']
-                = $this->_getSubproject($demographics['SubprojectID']);
-            unset($demographics['SubprojectID']);
+                = $this->_getCohort($demographics['CohortID']);
+            unset($demographics['CohortID']);
             if (isset($demographics['ProjectID'])) {
                 $demographics['Project']
                     = $this->_getProject($demographics['ProjectID']);

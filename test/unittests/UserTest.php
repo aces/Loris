@@ -1128,8 +1128,14 @@ class UserTest extends TestCase
             "modules",
             $this->_moduleInfo
         );
+
+        $loris = new \LORIS\LorisInstance(
+            $this->_dbMock,
+            new \NDB_Config(),
+            [],
+        );
         $this->assertEquals(
-            $this->_user->getPermissionsVerbose(),
+            $this->_user->getPermissionsVerbose($loris),
             [
                 0 => ['permID' => '2',
                     'code'        => "test_permission",

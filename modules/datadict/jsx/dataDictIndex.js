@@ -16,7 +16,6 @@ import fetchDataStream from 'jslib/fetchDataStream';
  *
  * @author Liza Levitis
  * @version 1.0.0
- *
  */
 class DataDictIndex extends Component {
   /**
@@ -77,7 +76,7 @@ class DataDictIndex extends Component {
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
    *
-   * @return {*} a formatted table cell for a given column
+   * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     const hasEditPermission = loris.userHasPermission('data_dict_edit');

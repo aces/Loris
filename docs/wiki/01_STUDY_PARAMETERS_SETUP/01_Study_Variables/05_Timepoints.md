@@ -33,5 +33,5 @@ _not yet available. See [API documentation](../../99_Developers/LORIS-REST-API-0
  
 ## Interaction With LORIS
 
-### Subprojects
- **Timepoints** should be assigned to subprojects in order to be able to create timepoints for candidates. This association should be defined in the `visit_project_subproject_rel` table of the database.
+### Cohorts
+ **Timepoints** should be assigned to cohorts in order to be able to create timepoints for candidates. This association should be defined in the `visit_project_cohort_rel` table of the database.

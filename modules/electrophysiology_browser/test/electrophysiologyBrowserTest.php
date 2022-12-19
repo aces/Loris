@@ -120,6 +120,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'SessionID'                 => '999999',
                 'PhysiologicalOutputTypeID' => 22,
+                'InsertedByUser'            => 'Unit Tester',
+                'FilePath'                  => '/path/to/test/file',
                 'FileType'                  => 'testType'
             ]
         );
@@ -128,6 +130,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'SessionID'                 => '999997',
                 'PhysiologicalOutputTypeID' => 23,
+                'InsertedByUser'            => 'Unit Tester',
+                'FilePath'                  => '/path/to/test/file2',
                 'FileType'                  => 'testType2'
             ]
         );
@@ -217,6 +221,14 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             ->getText();
         $this->assertStringContainsString(
             "Electrophysiology Browser",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
             $bodyText
         );
     }

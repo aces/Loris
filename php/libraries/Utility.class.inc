@@ -274,63 +274,63 @@ class Utility
     }
 
     /**
-     * Returns a list of study Subprojects
+     * Returns a list of study Cohorts
      *
      * @param ?ProjectID $projectID The project for which you would like
-     *                              to get the subprojects
+     *                              to get the cohorts
      *
-     * @return array       an associative array("SubprojectID" => "Subproject title")
+     * @return array       an associative array("CohortID" => "Cohort title")
      */
-    static function getSubprojectList(?ProjectID $projectID = null): array
+    static function getCohortList(?ProjectID $projectID = null): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
         if (!is_null($projectID)) {
-            $subprojects = $DB->pselect(
-                "SELECT * FROM subproject
-                JOIN project_subproject_rel USING (SubprojectID)
+            $cohorts = $DB->pselect(
+                "SELECT * FROM cohort
+                JOIN project_cohort_rel USING (CohortID)
                 WHERE ProjectID=:pID",
                 ['pID' => $projectID]
             );
         } else {
-            $subprojects = $DB->pselect("SELECT * FROM subproject", []);
+            $cohorts = $DB->pselect("SELECT * FROM cohort", []);
         }
 
         $subprojs = [];
-        foreach ($subprojects as $row) {
-            $subprojs[$row['SubprojectID']] = $row['title'];
+        foreach ($cohorts as $row) {
+            $subprojs[$row['CohortID']] = $row['title'];
         }
         return $subprojs;
     }
 
     /**
-     * Returns a list of study Subprojects associated with a project
+     * Returns a list of study Cohorts associated with a project
      *
      * @param ?ProjectID $projectID The project for which you would like
-     *                              to get the subprojects
+     *                              to get the cohorts
      *
-     * @return array an associative array("SubprojectID" => "Subproject title")
+     * @return array an associative array("CohortID" => "Cohort title")
      */
-    static function getSubprojectsForProject(?ProjectID $projectID = null): array
+    static function getCohortsForProject(?ProjectID $projectID = null): array
     {
         if (is_null($projectID)) {
             return [];
         }
-        return self::getSubprojectList($projectID);
+        return self::getCohortList($projectID);
     }
 
     /**
-     * Returns a list of visits associated with the supplied subproject.
+     * Returns a list of visits associated with the supplied cohort.
      * The visits are in an associative array format [VisitName=>VisitLabel]
      *
-     * @param int $subprojectID ID of the subproject
+     * @param int $cohortID ID of the cohort
      *
-     * @return array list of visits for supplied subproject
+     * @return array list of visits for supplied cohort
      *
-     * @note This function should be moved to a subproject class when it is created
+     * @note This function should be moved to a cohort class when it is created
      */
-    static function getVisitsForSubproject(int $subprojectID): array
+    static function getVisitsForCohort(int $cohortID): array
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -338,12 +338,12 @@ class Utility
         $result = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT VisitName, VisitLabel
             FROM visit v
-                JOIN visit_project_subproject_rel vpsr USING(VisitID)
-                JOIN project_subproject_rel psr USING(ProjectSubprojectRelID)
-                JOIN subproject s USING(SubprojectID)
-            WHERE SubprojectID = :sid
+                JOIN visit_project_cohort_rel vpsr USING(VisitID)
+                JOIN project_cohort_rel psr USING(ProjectCohortRelID)
+                JOIN cohort s USING(CohortID)
+            WHERE CohortID = :sid
             ORDER BY VisitLabel",
-            ["sid"=>$subprojectID],
+            ["sid"=>$cohortID],
             "VisitName"
         );
 
@@ -351,19 +351,19 @@ class Utility
     }
 
     /**
-     * Returns a list of visits associated with the supplied Project AND subproject.
+     * Returns a list of visits associated with the supplied Project AND cohort.
      * The visits are in an associative array format [VisitID=>VisitLabel]
      *
-     * @param \ProjectID $projectID    ID of the project
-     * @param int        $subprojectID ID of the subproject
+     * @param \ProjectID $projectID ID of the project
+     * @param int        $cohortID  ID of the cohort
      *
-     * @return array list of visits for supplied project-subproject combination
+     * @return array list of visits for supplied project-cohort combination
      *
      * @note This function should be moved to a visits class when it is created
      */
-    static function getVisitsForProjectSubproject(
+    static function getVisitsForProjectCohort(
         \ProjectID $projectID,
-        int $subprojectID
+        int $cohortID
     ): array {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -371,12 +371,12 @@ class Utility
         $result = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT VisitID, VisitLabel
             FROM visit v
-                JOIN visit_project_subproject_rel vpsr USING(VisitID)
-                JOIN project_subproject_rel psr USING(ProjectSubprojectRelID)
-	    WHERE SubprojectID = :sid
+                JOIN visit_project_cohort_rel vpsr USING(VisitID)
+                JOIN project_cohort_rel psr USING(ProjectCohortRelID)
+	    WHERE CohortID = :sid
 		AND ProjectID = :pid
             ORDER BY VisitLabel",
-            ["sid"=>$subprojectID, "pid"=>$projectID],
+            ["sid"=>$cohortID, "pid"=>$projectID],
             "VisitID"
         );
 

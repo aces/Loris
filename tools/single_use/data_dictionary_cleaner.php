@@ -66,7 +66,7 @@ $dupFields = $DB->pselectWithIndexKey(
     	GROUP BY fieldName
     	HAVING duplicationCount>1) as dr ON (dr.fieldName=pt.Name)
     WHERE pt.ParameterTypeID < dr.maxID",
-    array(),
+    [],
     "ParameterTypeID"
 );
 
@@ -78,7 +78,7 @@ $emptyFields = $DB->pselectCol(
 	WHERE (pt.Name IS NULL OR pt.Name='')
 	  AND pt.ParameterTypeID IS NOT NULL
 	  AND ptc.Type='Instrument'",
-    array()
+    []
 );
 
 $orphanCategories = $DB->pselect(
@@ -87,7 +87,7 @@ $orphanCategories = $DB->pselect(
 		LEFT JOIN parameter_type_category_rel ptcr USING(ParameterTypeCategoryID) 
 		LEFT JOIN parameter_type pt USING(ParameterTypeID) 
     WHERE ptc.Type='Instrument' AND pt.ParameterTypeID IS NULL",
-    array()
+    []
 );
 
 
@@ -149,11 +149,11 @@ if (!$apply && !$printToSQL) {
     foreach ($dupFields as $pti => $fieldData) {
         $DB->delete(
             "parameter_type_category_rel",
-            array("ParameterTypeID" => $pti)
+            ["ParameterTypeID" => $pti]
         );
         $DB->delete(
             "parameter_type",
-            array("ParameterTypeID" => $pti)
+            ["ParameterTypeID" => $pti]
         );
     }
 
@@ -163,11 +163,11 @@ if (!$apply && !$printToSQL) {
     foreach ($emptyFields as $pti) {
         $DB->delete(
             "parameter_type_category_rel",
-            array("ParameterTypeID" => $pti)
+            ["ParameterTypeID" => $pti]
         );
         $DB->delete(
             "parameter_type",
-            array("ParameterTypeID" => $pti)
+            ["ParameterTypeID" => $pti]
         );
     }
 

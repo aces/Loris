@@ -9,7 +9,7 @@ class ResolvedFilterableDataTable extends Component {
   /**
    * Constructor
    *
-   * @param {Object} props The provided props.
+   * @param {object} props The provided props.
    */
   constructor(props) {
     super(props);
@@ -38,7 +38,6 @@ class ResolvedFilterableDataTable extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -75,7 +74,7 @@ class ResolvedFilterableDataTable extends Component {
   /**
    * Renders the filterable datatable for the conflict resolver module
    *
-   * @return {jsx}
+   * @return {JSX}
    */
   render() {
     // If error occurs, return a message.

@@ -1,10 +1,10 @@
-/* exported RSubprojectRelations */
+/* exported RCohortRelations */
 import React, {Component} from 'react';
 
 /**
- * Subproject Relations React Component
+ * Cohort Relations React Component
  */
-class SubprojectRelations extends Component {
+class CohortRelations extends Component {
   /**
    * Get the default React properties.
    * Invoked once and cached when the class is created.
@@ -24,26 +24,26 @@ class SubprojectRelations extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    let subprojectIDs = Object.keys(this.props.Relations);
+    let cohortIDs = Object.keys(this.props.Relations);
     let that = this;
-    let subprojectList = subprojectIDs.map(function(key) {
+    let cohortList = cohortIDs.map(function(key) {
       return <li>{that.props.Relations[key]}</li>;
     });
 
     return (
             <div>
-                <h2>Related Subprojects</h2>
+                <h2>Related Cohorts</h2>
                 <ul>
-                    {subprojectList}
+                    {cohortList}
                 </ul>
             </div>
         );
   }
 }
 
-let RSubprojectRelations = React.createFactory(SubprojectRelations);
+let RCohortRelations = React.createFactory(CohortRelations);
 
-window.SubprojectRelations = SubprojectRelations;
-window.RSubprojectRelations = RSubprojectRelations;
+window.CohortRelations = CohortRelations;
+window.RCohortRelations = RCohortRelations;
 
-export default SubprojectRelations;
+export default CohortRelations;

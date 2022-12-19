@@ -28,12 +28,16 @@
  * @package  Loris
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+set_include_path(
+    get_include_path().":".
+    __DIR__."../../../project/libraries:" .
+    __DIR__."../../../php/libraries:"
+);
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../../../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -131,18 +135,18 @@ function detectIgnoreColumns($instruments)
  */
 function defaultIgnoreColumns()
 {
-    $db =& Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     if ($this->confirm) {
         foreach ($this->defaultFields as $field) {
-            $defaultQuery = "DELETE FROM conflicts_unresolved 
+            $defaultQuery = "DELETE FROM conflicts_unresolved
                 WHERE FieldName = '$field'";
             $changes      = $db->run($defaultQuery);
             echo $changes . "\n";
         }
     } else {
         foreach ($this->defaultFields as $field) {
-            $defaultQuery  = "SELECT TableName, FieldName, Value1, Value2 
+            $defaultQuery  = "SELECT TableName, FieldName, Value1, Value2
           FROM conflicts_unresolved WHERE FieldName = '$field'";
             $defaultColumn = $db->pselectOne($defaultQuery, []);
             echo "TableName, FieldName, Value1, Value2: ";

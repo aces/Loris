@@ -86,7 +86,28 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
     }
-
+    /**
+     * Tests that, when loading the Acknowledgements module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testAcknowledgementsDoespageLoad()
+    {
+        $this->safeGet($this->url . "/acknowledgements/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Acknowledgements", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
     /**
      * Ensures that the module loads if and only if the user has one of the
      * module permissions codes.

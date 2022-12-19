@@ -7,7 +7,6 @@ import {SET_INTERVAL, setInterval} from '../state/bounds';
 import {updateViewedChunks} from './fetchChunks';
 
 import {
-  State as BoundsState,
   Action as BoundsAction,
 } from '../state/bounds';
 
@@ -22,9 +21,13 @@ export const endDragInterval = createAction(END_DRAG_INTERVAL);
 
 export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 
-export const createDragBoundsEpic = (fromState: (any) => BoundsState) => (
-  action$: Observable<any>,
-  state$: Observable<any>
+/**
+ * createDragBoundsEpic
+ *
+ * @returns {Observable<Action>} - A stream of actions
+ */
+export const createDragBoundsEpic = () => (
+  action$: Observable<any>
 ): Observable<Action> => {
   const startDrag$ = action$.pipe(
     ofType(START_DRAG_INTERVAL),
@@ -38,18 +41,14 @@ export const createDragBoundsEpic = (fromState: (any) => BoundsState) => (
 
   const endDrag$ = action$.pipe(ofType(END_DRAG_INTERVAL));
 
-  const computeNewInterval = ([selection, _]) => setInterval(selection);
-
   const startUpdates$ = startDrag$.pipe(
-    Rx.withLatestFrom(state$),
-    Rx.map(computeNewInterval)
+    Rx.map(setInterval)
   );
 
   const dragUpdates$ = startDrag$.pipe(
     Rx.switchMap(() =>
       continueDrag$.pipe(
-        Rx.withLatestFrom(state$),
-        Rx.map(computeNewInterval),
+        Rx.map(setInterval),
         Rx.takeUntil(endDrag$)
       )
     )

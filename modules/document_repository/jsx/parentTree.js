@@ -9,8 +9,7 @@ import PropTypes from 'prop-types';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 const divStyle = {
   marginLeft: '20px',
   fontSize: '110%',
@@ -34,6 +33,7 @@ class ParentTree extends Component {
 
   /**
    * Action
+   *
    * @param {object} obj
    */
   action(obj) {

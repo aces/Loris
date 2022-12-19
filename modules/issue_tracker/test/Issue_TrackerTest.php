@@ -92,6 +92,14 @@ class Issue_TrackerTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
         $this->assertStringContainsString("Issue Tracker", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**

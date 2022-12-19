@@ -41,6 +41,9 @@ return [
         "vendor",
         "test"
     ],
+    'exclude_file_list' => [
+        'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizer/DoubleQuotedStringTest.inc'
+    ],
     "exclude_analysis_directory_list" => [
         "vendor"
     ],

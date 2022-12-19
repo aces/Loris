@@ -8,8 +8,7 @@
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
- * */
+ */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
@@ -192,19 +191,13 @@ class MediaEditForm extends Component {
 
   /**
    * Handles form submission
+   *
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
 
     let xhr = new XMLHttpRequest();
-    xhr.upload.addEventListener('progress', (evt) => {
-      if (evt.lengthComputable) {
-        let percent = Math.round((evt.loaded / evt.total) * 100);
-        progressbar.attr('aria-valuenow', percent);
-      }
-    }, false);
-
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
         swal.fire('Upload Successful!', '', 'success');

@@ -3,8 +3,8 @@
  *  for the issue being viewed in issue_tracker.
  *
  *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/aces/Loris
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component, Fragment} from 'react';
@@ -71,6 +71,7 @@ class AttachmentsList extends Component {
 
   /**
    * Confirm with the user about deleting the file.
+   *
    * @param {object} event - name of the form element
    */
   openModalAttachmentDelete(event) {
@@ -94,6 +95,7 @@ class AttachmentsList extends Component {
 
   /**
    * Populates the attachment options.
+   *
    * @param {string} deleteData - name of the element if deleted.
    * @param {object} item - info of attachment.
    * @return {DOMRect} row - to display.

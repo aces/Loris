@@ -7,14 +7,13 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
  * Behavioural Feedback Component.
  *
  * @description Behavioural Quality Control 'Behavioural Feedback' tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class BehaviouralFeedback extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -54,7 +53,7 @@ class BehaviouralFeedback extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
           };
           this.setState({
             data,
@@ -78,7 +77,6 @@ class BehaviouralFeedback extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -137,7 +135,7 @@ class BehaviouralFeedback extends Component {
   }
 
   /**
-   * @return {React} the feedback form to render.
+   * @return {JSX} the feedback form to render.
    */
   render() {
     // Waiting for async data to load.
@@ -196,12 +194,12 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: false,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.subprojects,
+          options: options.cohorts,
         },
       },
       {

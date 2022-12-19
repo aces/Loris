@@ -138,7 +138,7 @@ class Stats_Behavioural extends \NDB_Form
                 $paramProjects[] = ":paramProjectID$key";
                 $this->projectParams["paramProjectID$key"] = $projectID;
             }
-            $Param_Project ="AND (s.ProjectID IS NULL 
+            $Param_Project ="AND (s.ProjectID IS NULL
                                    OR s.ProjectID IN
                                        (" . implode(',', $paramProjects) . ")
                                  )";
@@ -148,13 +148,13 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         //
-        //SUBPROJECTS
+        //COHORTS
         $suproject_query = '';
         if ($currentProject !== null) {
-            $subprojects = \Utility::getSubprojectsForProject($currentProject);
-            $subprojList = implode(',', array_keys($subprojects));
+            $cohorts     = \Utility::getCohortsForProject($currentProject);
+            $subprojList = implode(',', array_keys($cohorts));
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $suproject_query ="AND s.CohortID IN ($subprojList)";
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
@@ -178,7 +178,7 @@ class Stats_Behavioural extends \NDB_Form
                 $paramCenters[] = ":paramSiteID$key";
                 $this->siteParams["paramSiteID$key"] = $siteID;
             }
-            $Param_Centers = "AND (s.CenterID IS NULL 
+            $Param_Centers = "AND (s.CenterID IS NULL
                               OR s.CenterID IN
                                   (" . implode(',', $paramCenters) . ")
                             )";
@@ -221,7 +221,7 @@ class Stats_Behavioural extends \NDB_Form
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                WHERE 
+                WHERE
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'

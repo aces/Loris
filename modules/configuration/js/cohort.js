@@ -1,22 +1,22 @@
 $(document).ready(function() {
     "use strict";
     $('div').tooltip();
-    $(".savesubproject").click(function(e) {
+    $(".savecohort").click(function(e) {
         var form = $(e.currentTarget).closest('form');
 
-        var subprojectID = $(form.find(".subprojectID")).val();
-        var title = $(form.find(".subprojectTitle")).val();
-        var useEDC = $(form.find(".subprojectuseEDC")).val();
-        var windowDifference = $(form.find(".subprojectWindowDifference")).val();
-        var recruitmentTarget = $(form.find(".subprojectRecruitmentTarget")).val();
+        var cohortID = $(form.find(".cohortID")).val();
+        var title = $(form.find(".cohortTitle")).val();
+        var useEDC = $(form.find(".cohortuseEDC")).val();
+        var windowDifference = $(form.find(".cohortWindowDifference")).val();
+        var recruitmentTarget = $(form.find(".cohortRecruitmentTarget")).val();
         e.preventDefault();
 
         $.ajax(
                 {
                     "type" : "post",
-                    "url" : loris.BaseURL + "/configuration/ajax/updateSubproject.php",
+                    "url" : loris.BaseURL + "/configuration/ajax/updateCohort.php",
                     "data" : {
-                        "subprojectID" : subprojectID,
+                        "cohortID" : cohortID,
                         "title" : title,
                         "useEDC" : useEDC,
                         "WindowDifference" : windowDifference,
@@ -29,15 +29,15 @@ $(document).ready(function() {
                         .css({ 'color': 'green'})
                         .fadeIn(500)
                         .delay(1000);
-                      if (subprojectID === 'new') {
+                      if (cohortID === 'new') {
                         setTimeout(function(){
                           location.reload();
                         }, 1000);
                       } else {
-                        var projectDiv = document.getElementById(`#subproject${subprojectID}`);
+                        var projectDiv = document.getElementById(`#cohort${cohortID}`);
                         var Name = projectDiv.innerText;
                         projectDiv.innerText = title;
-                        var projectHeader = document.getElementById(`subproject${subprojectID}`);
+                        var projectHeader = document.getElementById(`cohort${cohortID}`);
                         projectHeader.children[0].innerText = title + projectHeader.children[0].innerText.substring(
                           Name.length
                         );

@@ -24,10 +24,10 @@ namespace LORIS\configuration;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class Subproject extends \NDB_Form
+class Cohort extends \NDB_Form
 {
     /**
-     * Determine whether the user has access to configure subprojects
+     * Determine whether the user has access to configure cohorts
      *
      * @param \User $user The user whose access is being checked
      *
@@ -39,7 +39,7 @@ class Subproject extends \NDB_Form
     }
 
     /**
-     * Loads the subproject management submodule
+     * Loads the cohort management submodule
      *
      * @return void
      */
@@ -49,13 +49,13 @@ class Subproject extends \NDB_Form
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $subprojectList = \Utility::getSubprojectList();
-        $subprojects    = [];
-        foreach (array_keys($subprojectList) as $subprojectID) {
-            $subprojects[$subprojectID]
-                = $config->getSubprojectSettings(intval($subprojectID));
+        $cohortList = \Utility::getCohortList();
+        $cohorts    = [];
+        foreach (array_keys($cohortList) as $cohortID) {
+            $cohorts[$cohortID]
+                = $config->getCohortSettings(intval($cohortID));
         }
-        $this->tpl_data['subprojects'] = $subprojects;
+        $this->tpl_data['cohorts'] = $cohorts;
 
         $this->tpl_data['useEDCOptions']
             = [
