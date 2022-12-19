@@ -97,10 +97,12 @@ class DataDictIndex extends Component {
           const state = Object.assign({}, this.state);
           for (let i=0; i<state.data.length; i++) {
             if (arrayEquals(state.data[i], findData)) {
-              rowdata['Description Status'] = 'Modified';
-              rowdata.Description = e.target.valueOf().innerText;
-              state.data[i] = Object.values(rowdata);
-              this.setState(state);
+              if (rowdata.Description !== e.target.valueOf().innerText) {
+                rowdata['Description Status'] = 'Modified';
+                rowdata.Description = e.target.valueOf().innerText;
+                state.data[i] = Object.values(rowdata);
+                this.setState(state);
+              }
               break;
             }
           }
