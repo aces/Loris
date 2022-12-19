@@ -8,7 +8,7 @@ import Loader from 'Loader';
  * Media Upload Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to upload a document file
+ * to upload document files
  *
  * @author Shen Wang
  * @version 1.0.0
@@ -32,7 +32,7 @@ class DocUploadForm extends Component {
     };
 
     this.setFormData = this.setFormData.bind(this);
-    this.uploadFile = this.uploadFile.bind(this);
+    this.uploadFiles = this.uploadFiles.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
@@ -90,10 +90,10 @@ class DocUploadForm extends Component {
           <FormElement
             name="docUpload"
             fileUpload={true}
-            onSubmit={this.uploadFile}
+            onSubmit={this.uploadFiles}
             method="POST"
           >
-            <h3>Upload a file</h3><br/>
+            <h3>Upload files</h3><br/>
             <SelectElement
               name="category"
               label="Category"
@@ -145,14 +145,15 @@ class DocUploadForm extends Component {
               value={this.state.formData.comments}
             />
             <FileElement
-              name="file"
+              name="files"
               id="docUploadEl"
               onUserInput={this.setFormData}
-              label="File to upload"
+              label="File(s) to upload"
               required={true}
-              value={this.state.formData.file}
+              value={this.state.formData.files}
+              allowMultiple={true}
             />
-            <ButtonElement label="Upload File"/>
+            <ButtonElement label="Upload File(s)"/>
           </FormElement>
         </div>
       </div>
@@ -164,15 +165,21 @@ class DocUploadForm extends Component {
    *********************************************************************************/
 
   /**
-   * Upload file
+   * Upload file(s)
    */
-  uploadFile() {
+  uploadFiles() {
     // Set form data and upload the media file
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
       if (formData[key] !== '') {
-        formObject.append(key, formData[key]);
+        if (key === 'files' && document.querySelector('.fileUpload').multiple) {
+          Array.from(formData[key]).forEach((file) => {
+            formObject.append('files[]', file);
+          });
+        } else {
+          formObject.append(key, formData[key]);
+        }
       }
     }
 
@@ -185,15 +192,21 @@ class DocUploadForm extends Component {
     .then((resp) => {
       console.error(resp);
       if (resp.ok) {
-        swal.fire('Upload Successful!', '', 'success').then((result) => {
-          if (result.value) {
-            this.setState({formData: {}});
-            this.props.refreshPage();
+        resp.json().then((data) => {
+          if (data.error_count === 0) {
+            swal.fire('Upload Successful!', '', 'success').then((result) => {
+              if (result.value) {
+                this.setState({formData: {}});
+                this.props.refreshPage();
+              }
+            });
+          } else {
+            swal.fire('Upload Incomplete', data.message, 'warning');
           }
         });
       } else {
         resp.json().then((data) => {
-          swal.fire('Could not upload file', data.error, 'error');
+          swal.fire('Could not upload files', data.error, 'error');
         }).catch((error) => {
           console.error(error);
           swal.fire(

@@ -1928,10 +1928,12 @@ class FileElement extends Component {
           break;
 
         case 'object':
-          if (this.props.value instanceof FileList)
-            fileName = Array.from(this.props.value).map((file) => file.name).join(', ');
-          else
+          if (this.props.value instanceof FileList) {
+            const files = this.props.value;
+            fileName = Array.from(files).map((file) => file.name).join(', ');
+          } else {
             fileName = this.props.value.name;
+          }
           break;
 
         default:
