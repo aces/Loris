@@ -120,7 +120,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
             $factory->setBaseURL($baseurl);
 
-            $module  = $this->loris->getModule($modulename);
+            $module = $this->lorisinstance->getModule($modulename);
+            $module->registerAutoloader();
+
             $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
             return $ehandler->process($request, $mr);
