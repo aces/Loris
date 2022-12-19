@@ -3,7 +3,7 @@ namespace LORIS\dataquery;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-// use \LORIS\Data\Filters\AccessibleResourceFilter;
+use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/* endpoint of
@@ -149,7 +149,7 @@ class Queries extends \NDB_Page
     public function getUserAccessibleQueries(\User $user) : iterable
     {
         return (new provisioners\AllUserQueries($this->loris, $user))
-            // ->filter(new AccessibleResourceFilter())
+            ->filter(new AccessibleResourceFilter())
             ->execute($user);
     }
 
