@@ -75,7 +75,7 @@ abstract class SQLQueryEngine implements QueryEngine
      * @param CandID[] $candidates
      * @param ?string[] $visits
      *
-     * @return DataInstance[]
+     * @return iterable<string, DataInstance>
      */
     public function getCandidateData(array $items, iterable $candidates, ?array $visitlist) : iterable
     {

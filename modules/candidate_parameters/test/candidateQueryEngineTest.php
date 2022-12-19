@@ -135,6 +135,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -143,6 +144,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotEqual("123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -150,6 +152,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("123457"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -157,6 +160,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("123457", "123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -165,6 +169,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThanOrEqual("123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -173,6 +178,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThan("123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -180,6 +186,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThanOrEqual("123457"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -188,6 +195,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThan("123457"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -195,12 +203,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -209,6 +219,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new StartsWith("1"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -217,12 +228,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new StartsWith("2"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new StartsWith("123456"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -230,6 +243,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new EndsWith("6"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -238,12 +252,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new EndsWith("8"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new Substring("5"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -262,6 +278,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("test1"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -269,6 +286,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotEqual("test1"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -276,6 +294,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("test1"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -283,6 +302,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new StartsWith("te"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -291,6 +311,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new EndsWith("t2"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -298,6 +319,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Substring("es"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -306,12 +328,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -332,6 +356,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("1920-01-30"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -339,6 +364,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotEqual("1920-01-30"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -346,6 +372,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("1920-01-30"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -353,12 +380,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -367,6 +396,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThanOrEqual("1930-05-03"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -375,6 +405,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThan("1930-05-03"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -382,6 +413,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThan("1920-01-30"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -389,6 +421,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThanOrEqual("1920-01-30"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -409,6 +442,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("1950-11-16"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -427,6 +461,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("1950-11-16"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -434,6 +469,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -441,6 +477,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -448,6 +485,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThanOrEqual("1951-05-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -455,6 +493,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThan("1951-05-03"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -462,6 +501,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThan("1950-01-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -469,6 +509,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThanOrEqual("1950-01-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         // No starts/ends/substring because it's a date
@@ -487,6 +528,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("Male"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -494,6 +536,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotEqual("Male"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -501,6 +544,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("Female"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -514,6 +558,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -522,6 +567,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new StartsWith("Fe"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -529,6 +575,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new EndsWith("male"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
@@ -537,6 +584,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Substring("fem"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
         // No <, <=, >, >= because it's an enum.
@@ -555,6 +603,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -564,6 +613,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotEqual("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
         //$this->assertEquals($result[0], new CandID("123457"));
 
@@ -571,6 +621,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new In("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -578,6 +629,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
@@ -585,6 +637,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new NotNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -592,6 +645,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThanOrEqual("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -599,12 +653,14 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new LessThan("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new GreaterThan("1930-03-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -612,6 +668,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new GreaterThanOrEqual("1930-04-01"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
         // StartsWith/EndsWith/Substring not valid since it's a date.
@@ -653,6 +710,7 @@ class CandidateQueryEngineTest extends TestCase
             )
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
@@ -669,6 +727,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new IsNull())
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(0, count($result));
 
         $result = $this->engine->getCandidateMatches(
@@ -728,13 +787,15 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new Equal("TestSite"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
 
         $result = $this->engine->getCandidateMatches(
             new QueryTerm($candiddict, new NotEqual("TestSite"))
         );
-        $this->assertTrue(is_array($result));
+        $this->assertTrue(is_array($result)); // for the test
+        assert(is_array($result)); // for phan to know the type
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -763,6 +824,7 @@ class CandidateQueryEngineTest extends TestCase
             new QueryTerm($candiddict, new EndsWith("2"))
         );
         $this->assertTrue(is_array($result));
+        assert(is_array($result));
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID("123457"));
 
@@ -1702,7 +1764,7 @@ class CandidateQueryEngineTest extends TestCase
      * Assert that exactly 1 result matched and it was $candid
      *
      * @param iterable $result The result of getCandidateMatches
-     * @param string $candid The expected CandID
+     * @param string   $candid The expected CandID
      *
      * @return void
      */

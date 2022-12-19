@@ -1,5 +1,5 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
+
 namespace LORIS\candidate_parameters;
 use LORIS\Data\Scope;
 use LORIS\Data\Cardinality;
@@ -226,7 +226,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      * @param iterable         $candidates CandIDs to get data for
      * @param ?string[]        $visitlist  Possible list of visits
      *
-     * @return iterable<string, DataInstance>
+     * @return iterable<string, \LORIS\Data\DataInstance>
      */
     public function getCandidateData(
         array $items,
@@ -267,7 +267,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 $candidates,
             );
         } else {
-            $DB = \Database::singleton();
+            $DB = $this->loris->getDatabaseConnection();
             $this->createTemporaryCandIDTable($DB, "searchcandidates", $candidates);
         }
 
@@ -392,7 +392,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             );
             return 'pso.Description';
         default:
-            throw new \DomainException("Invalid field " . $dict->getName());
+            throw new \DomainException("Invalid field " . $item->getName());
         }
     }
 
@@ -412,10 +412,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         array &$prepbindings,
         ?array $visitlist = null
     ) {
-        $dict = $term->getDictionaryItem();
+        $dict = $term->dictionary;
         $this->addWhereCriteria(
             $this->_getFieldNameFromDict($dict),
-            $term->getCriteria(),
+            $term->criteria,
             $prepbindings
         );
 
