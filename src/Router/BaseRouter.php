@@ -138,8 +138,10 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
-                $module  = $this->loris->getModule("timepoint_list");
-                $mr      = new ModuleRouter($module);
+                $module  = $this->lorisinstance->getModule("timepoint_list");
+                $module->registerAutoloader();
+
+                $mr = new ModuleRouter($module);
                 return $ehandler->process($request, $mr);
             }
         }
