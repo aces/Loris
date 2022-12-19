@@ -24,15 +24,22 @@ use LORIS\Data\Query\Criteria\Substring;
 use LORIS\Data\Query\Criteria\EndsWith;
 
 /**
- * A QueryEngine is an entity which represents a set of data and
- * the ability to query against them.
+ * An SQLQueryEngine is a type of QueryEngine which queries
+ * against the LORIS SQL database. It implements most of the
+ * functionality of the QueryEngine interface, while leaving
+ * a few necessary methods abstract for the concretized QueryEngine
+ * to fill in the necessary details.
  *
- * Queries are divided into 2 phases, filtering the data down to
- * a set of CandIDs or SessionIDs, and retrieving the data for a
- * known set of CandID/SessionIDs.
+ * The concrete implementation must provide the getDataDictionary
+ * and getVisitList functions from the QueryEngine interface, but
+ * default getCandidateMatches and getCandidateData implementations
+ * are provided by the SQLQueryEngine.
  *
- * There is usually one query engine per module that deals with
- * candidate data.
+ * The implementation must provide getFieldNameFromDict,
+ * which returns a string of the database fieldname (and calls
+ * $this->addTable as many times as it needs for the joins) and
+ * getCorrespondingKeyField to get the primary key for any Cardinality::MANY
+ * fields.
  */
 abstract class SQLQueryEngine implements QueryEngine
 {
@@ -46,13 +53,48 @@ abstract class SQLQueryEngine implements QueryEngine
     }
 
     /**
-     * Return a data dictionary of data types managed by this QueryEngine.
-     * DictionaryItems are grouped into categories and an engine may know
-     * about 0 or more categories of DictionaryItems.
-     *
+     * {@inheritDoc}
+    *
      * @return \LORIS\Data\Dictionary\Category[]
      */
     abstract public function getDataDictionary() : iterable;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param \LORIS\Data\Dictionary\Category $inst       The item category
+     * @param \LORIS\Data\Dictionary\DictionaryItem $item The item itself
+     *
+     * @return string[]
+     */
+    abstract public function getVisitList(
+        \LORIS\Data\Dictionary\Category $inst,
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : iterable;
+
+    /**
+     * Return the field name that can be used to get the value for
+     * this field.
+     *
+     * The implementation should call $this->addTable() to add any
+     * tables necessary for the field name to be valid.
+     *
+     * @return string
+     */
+    abstract protected function getFieldNameFromDict(
+        \LORIS\Data\Dictionary\DictionaryItem $item
+    ) : string;
+
+    /**
+     * Return the field name that can be used to get the value for
+     * the primary key of any Cardinality::MANY fields.
+     *
+     * The implementation should call $this->addTable() to add any
+     * tables necessary for the field name to be valid.
+     *
+     * @return string
+     */
+    abstract protected function getCorrespondingKeyField($fieldname);
 
     /**
      * {@inheritDoc}
@@ -193,19 +235,11 @@ abstract class SQLQueryEngine implements QueryEngine
     }
 
     /**
-     * {@inheritDoc}
+     * Converts a Criteria object to the equivalent SQL operator.
      *
-     * @param \LORIS\Data\Dictionary\Category $inst       The item category
-     * @param \LORIS\Data\Dictionary\DictionaryItem $item The item itself
-     *
-     * @return string[]
+     * @return string
      */
-    abstract public function getVisitList(
-        \LORIS\Data\Dictionary\Category $inst,
-        \LORIS\Data\Dictionary\DictionaryItem $item
-    ) : iterable;
-
-    protected function sqlOperator($criteria)
+    protected function sqlOperator(Criteria $criteria) : string
     {
         if ($criteria instanceof LessThan) {
             return '<';
@@ -247,7 +281,13 @@ abstract class SQLQueryEngine implements QueryEngine
         throw new \Exception("Unhandled operator: " . get_class($criteria));
     }
 
-    protected function sqlValue($criteria, array &$prepbindings)
+    /**
+     * Converts a Criteria object to the equivalent SQL value, putting
+     * any bindings required into $prepbindings
+     *
+     * @return string
+     */
+    protected function sqlValue(Criteria $criteria, array &$prepbindings) : string
     {
         static $i = 1;
 
@@ -290,6 +330,16 @@ abstract class SQLQueryEngine implements QueryEngine
 
     private $tables;
 
+    /**
+     * Adds a to be joined to the internal state of this QueryEngine
+     * $tablename should be the full "LEFT JOIN tablename x" string
+     * required to be added to the query. If an identical join is
+     * already present, it will not be duplicated.
+     *
+     * @param string $tablename The join string
+     *
+     * @return void
+     */
     protected function addTable(string $tablename)
     {
         if (isset($this->tables[$tablename])) {
@@ -299,12 +349,20 @@ abstract class SQLQueryEngine implements QueryEngine
         $this->tables[$tablename] = $tablename;
     }
 
+    /**
+     * Get the full SQL join statement for this query.
+     */
     protected function getTableJoins() : string
     {
         return join(' ', $this->tables);
     }
 
     private $where;
+
+    /**
+     * Adds a where clause to the query based on converting Criteria
+     * to SQL.
+     */
     protected function addWhereCriteria(string $fieldname, Criteria $criteria, array &$prepbindings)
     {
         $this->where[] = $fieldname . ' '
@@ -312,22 +370,43 @@ abstract class SQLQueryEngine implements QueryEngine
             . $this->sqlValue($criteria, $prepbindings);
     }
 
+    /**
+     * Add a static where clause directly to the query.
+     */
     protected function addWhereClause(string $s)
     {
         $this->where[] = $s;
     }
 
+    /**
+     * Get a list of WHERE conditions.
+     */
     protected function getWhereConditions() : string
     {
         return join(' AND ', $this->where);
     }
 
+    /**
+     * Reset the internal engine state (tables and where clause)
+     */
     protected function resetEngineState()
     {
         $this->where  = [];
         $this->tables = [];
     }
 
+    /**
+     * Combines the rows from $rows into a CandID =>DataInstance for
+     * getCandidateData.
+     *
+     * The DataInstance returned is an array where the i'th index is
+     * the Candidate's value of item i from $items.
+     *
+     * @param DictionaryItem[] $items      Items to get data for
+     * @param iterable         $candidates CandIDs to get data for
+     *
+     * @return <string,DataInstance>
+     */
     protected function candidateCombine(iterable $dict, iterable $rows)
     {
         $lastcandid = null;
@@ -421,7 +500,11 @@ abstract class SQLQueryEngine implements QueryEngine
         }
     }
 
-    protected function createTemporaryCandIDTable($DB, string $tablename, array $candidates)
+    /**
+     * Create a temporary table containing the candIDs from $candidates using the
+     * LORIS database connection $DB.
+     */
+    protected function createTemporaryCandIDTable(\Database $DB, string $tablename, array $candidates)
     {
         // Put candidates into a temporary table so that it can be used in a join
         // clause. Directly using "c.CandID IN (candid1, candid2, candid3, etc)" is
@@ -437,6 +520,12 @@ abstract class SQLQueryEngine implements QueryEngine
         $q->execute([]);
     }
 
+    /**
+     * Create a temporary table containing the candIDs from $candidates on the PDO connection
+     * $PDO.
+     *
+     * Note:LORIS Database connections and PDO connections do not share temporary tables.
+     */
     protected function createTemporaryCandIDTablePDO($PDO, string $tablename, array $candidates)
     {
         $query  = "DROP TEMPORARY TABLE IF EXISTS $tablename";
@@ -465,12 +554,17 @@ abstract class SQLQueryEngine implements QueryEngine
     }
 
     protected $useBufferedQuery = false;
+
+    /**
+     * Enable or disable MySQL query buffering by PHP. Disabling query
+     * buffering is more memory efficient, but bypasses LORIS and does
+     * not share the internal state of the LORIS database such as temporary tables.
+     */
     public function useQueryBuffering(bool $buffered)
     {
         $this->useBufferedQuery = $buffered;
     }
 
-    abstract protected function getCorrespondingKeyField($fieldname);
 
     /**
      * Adds the necessary fields and tables to run the query $term
@@ -508,7 +602,4 @@ abstract class SQLQueryEngine implements QueryEngine
             $this->addWhereClause('s.Visit_label IN (' . join(",", $inset) . ')');
         }
     }
-    abstract protected function getFieldNameFromDict(
-        \LORIS\Data\Dictionary\DictionaryItem $item
-    ) : string;
 }
