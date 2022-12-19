@@ -179,10 +179,11 @@ class DocUploadForm extends Component {
       let formObject = new FormData();
       for (let key in formData) {
         if (formData[key] !== '') {
-          if (key === 'files' && document.querySelector('.fileUpload').multiple) {
-            Array.from(formData[key]).forEach((file) => {
-              formObject.append('files[]', file);
-            });
+          if (key === 'files' &&
+            document.querySelector('.fileUpload').multiple) {
+              Array.from(formData[key]).forEach((file) => {
+                formObject.append('files[]', file);
+              });
           } else {
             formObject.append(key, formData[key]);
           }
@@ -200,11 +201,12 @@ class DocUploadForm extends Component {
           if (resp.ok) {
             resp.json().then((data) => {
               if (data.error_count === 0) {
-                swal.fire('Upload Successful!', '', 'success').then((result) => {
-                  if (result.value) {
-                    this.setState({formData: {}, uploadInProgress: false});
-                    this.props.refreshPage();
-                  }
+                swal.fire('Upload Successful!', '', 'success')
+                  .then((result) => {
+                    if (result.value) {
+                      this.setState({formData: {}, uploadInProgress: false});
+                      this.props.refreshPage();
+                    }
                 });
               } else {
                 swal.fire('Upload Incomplete', data.message, 'warning');
