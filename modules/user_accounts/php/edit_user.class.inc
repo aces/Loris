@@ -255,15 +255,13 @@ class Edit_User extends \NDB_Form
             $supervisorEmails = $values['supervisorEmail'];
         }
         unset($values['supervisorEmail']);
-        if (empty($values['UserID'])) {
-            throw new \Exception("Bad request");
-        }
+
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
         }
         if ($this->isCreatingNewUser()) {
-            $values['UserID'] = trim($values['UserID']);
+            $values['UserID'] = trim($values['UserID'] ?? '');
         }
         unset($values['NA_UserID']);
         // generate new password
@@ -632,10 +630,11 @@ class Edit_User extends \NDB_Form
             unset($msg_data);
         }
         $this->tpl_data['success'] = true;
+        $username = $values['UserID'] ?? '';
         if ($this->isCreatingNewUser()) {
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
-                . $values['UserID'];
+                . $username;
         }
     }
 
