@@ -371,7 +371,10 @@ class Files extends \NDB_Page
                 continue;
             }
 
-            $response = $uploader->handle($request->withUploadedFiles([$uploadedFile]));
+            $response = $uploader->handle(
+                $request->withUploadedFiles([$uploadedFile])
+            );
+
             if (!in_array($response->getStatusCode(), [200, 201], true)) {
                 $errorResponse      = json_decode(
                     $response->getBody()->getContents()
