@@ -18,10 +18,14 @@ paths:
   /queries:
     get:
 <<<<<<< HEAD
+<<<<<<< HEAD
       summary: Get a list of a recent, shared, and study (top) queries for the current user.
 =======
       summary: Get a list of a recent, shared, and study (top) queries to display.
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+      summary: Get a list of a recent, shared, and study (top) queries for the current user.
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
       responses:
         '200':
           description: Successfully operation
@@ -67,6 +71,9 @@ paths:
                   error:
                     type: string
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
   /queries/runs:
     get:
       summary: Get a list of a recent, query runs for the current user.
@@ -77,8 +84,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QueryRunList'
+<<<<<<< HEAD
 =======
 >>>>>>> cb186bdbb ([dataquery] Define new swagger schema for data query API)
+=======
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
   /queries/{QueryID}:
     parameters:
       - name: QueryID
@@ -120,6 +130,7 @@ paths:
           description: The admin name to pin the query as. If the empty string, will be unpinned.
           schema:
             type: string
+<<<<<<< HEAD
         - name: dashboardname
           in: query
           style: pipeDelimited
@@ -157,10 +168,14 @@ paths:
           in: query
           style: pipeDelimited
           description: The admin name to pin the query as. If the empty string, will be unpinned.
+=======
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
         - name: dashboardname
           in: query
           style: pipeDelimited
           description: The admin name to pin the query to the dashboard as. If the empty string, will be unpinned.
+          schema:
+            type: string
         - name: name
           in: query
           style: pipeDelimited
@@ -276,6 +291,7 @@ components:
       type: object
       properties:
 <<<<<<< HEAD
+<<<<<<< HEAD
         queries:
           type: array
           items:
@@ -315,10 +331,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QueryRun'
+=======
+>>>>>>> 911bd8c3f (Split queries and queryruns into two different endpoints)
         queries:
           type: array
           items:
             $ref: '#/components/schemas/Query'
+    QueryRunList:
+      type: object
+      properties:
+        queryruns:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryRun'
     Query:
       type: object
       properties:
