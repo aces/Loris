@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
-import {Channel, Chunk} from '../types';
+import {Channel, Trace, Chunk} from '../types';
 
 export const SET_CHUNKS = 'SET_CHUNKS';
 export const setChunks = createAction(SET_CHUNKS);
@@ -9,7 +9,7 @@ export const SET_CHANNELS = 'SET_CHANNELS';
 export const setChannels = createAction(SET_CHANNELS);
 
 export type Action =
-| {
+| {
   type: 'SET_CHUNKS',
   payload: {
     channelIndex: number,
@@ -63,7 +63,19 @@ export const channelsReducer = (
  * @returns {Function} - A Fn that returns channelsCount empty channels
  */
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
+ /**
+  * makeTrace
+  *
+  * @returns {Trace} - An empty trace
+  */
   const makeTrace = () => ({chunks: [], type: 'line'});
+
+ /**
+  * makeChannel
+  *
+  * @param {number} index - The channel index
+  * @returns {Channel} - An empty channel
+  */
   const makeChannel = (index) => ({
     index,
     traces: R.range(0, tracesCount).map(makeTrace),

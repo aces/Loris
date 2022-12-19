@@ -21,18 +21,22 @@ type FetchedChunks = {
 };
 
 /**
+ * loadChunks
  *
- * @param {FetchedChunks} root - The fetched chunks
- * @param {Array} chunksData - The chunks data
+ * @param {FetchedChunks[]} chunksData - The fetched chunks
  * @returns {Function} - Dispatch actions to the store
  */
 export const loadChunks = (chunksData: FetchedChunks[]) => {
   return (dispatch: (_: any) => void) => {
     const channels : Channel[] = [];
 
-    let filters: Filter[] = window.EEGLabSeriesProviderStore.getState().filters;
+    const filters: Filter[] = window.EEGLabSeriesProviderStore
+                              .getState().filters;
     for (let index = 0; index < chunksData.length; index++) {
-      let {channelIndex, chunks} : {channelIndex: number, chunks: Chunk[]} = chunksData[index];
+      const {channelIndex, chunks} : {
+        channelIndex: number,
+        chunks: Chunk[]
+      } = chunksData[index];
       for (let i = 0; i < chunks.length; i++) {
         chunks[i].filters = [];
         chunks[i].values = Object.values(filters).reduce(
@@ -48,20 +52,20 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
       if (idx >= 0) {
         channels[idx].traces.push({
           chunks: chunks,
-          type: "line",
+          type: 'line',
         });
       } else {
         channels.push({
           index: channelIndex,
           traces: [{
             chunks: chunks,
-            type: "line",
-          }]
+            type: 'line',
+          }],
         });
       }
-    };
+    }
 
-    channels.sort((a,b) => a.index - b.index);
+    channels.sort((a, b) => a.index - b.index);
     dispatch(setChannels(channels));
   };
 };
