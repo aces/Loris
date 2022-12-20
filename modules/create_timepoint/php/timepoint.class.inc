@@ -178,7 +178,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         );
         $visitLabel = $visits[$values['visit']];
         $visitName  = (new VisitController(
-            $this->lorisinstance->getDatabaseConnection()
+            $this->loris->getDatabaseConnection()
         ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         \TimePoint::createNew(
@@ -270,7 +270,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         );
         $visitLabel = $visits[$values['visit']];
         $visitName  = (new VisitController(
-            $this->lorisinstance->getDatabaseConnection()
+            $this->loris->getDatabaseConnection()
         ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {

@@ -38,10 +38,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     const CONFIGURATION_ERROR = "LORIS configuration settings are invalid or "
         . "missing and as a result execution cannot proceed. Please contact "
         . "your project administrator and/or verify your LORIS configuration.";
-    protected $name;
-    protected $dir;
-
-    protected \LORIS\LorisInstance $lorisinstance;
 
     /**
      * Retrieve all active module descriptors from the given database, indexed
@@ -143,15 +139,15 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     /**
      * Creates a new module instance
      *
-     * @param \LORIS\LorisInstance $loris     The LORIS instance for the module
-     * @param string               $name      The name of the module
-     * @param string               $moduledir The directory on the filesystem
-     *                                        containing the module
+     * @param \LORIS\LorisInstance $loris The LORIS instance for the module
+     * @param string               $name  The name of the module
+     * @param string               $dir   The directory on the filesystem
+     *                                    containing the module
      */
     public function __construct(
-        \LORIS\LorisInstance $loris,
-        string $name,
-        string $moduledir
+        protected \LORIS\LorisInstance $loris,
+        protected string $name,
+        protected string $dir,
     ) {
         $loglevel = $loris->getConfiguration()
             ->getLogSettings()
@@ -164,30 +160,25 @@ abstract class Module extends \LORIS\Router\PrefixRouter
                 [
                     "/css/"    => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "css",
                         "text/css"
                     ),
                     "/js/"     => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "js",
                         "application/javascript"
                     ),
                     "/static/" => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "static",
                         ""
                     ),
                 ]
             )
         );
-
-        $this->lorisinstance = $loris;
-
-        $this->name = $name;
-        $this->dir  = $moduledir;
     }
 
     /**
@@ -346,9 +337,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             return $resp;
         }
 
-        $this->lorisinstance = $request->getAttribute("loris");
-        $pagename            = $this->getName();
-        $path = trim($request->getURI()->getPath(), "/");
+        $pagename = $this->getName();
+        $path     = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
             $pagename = explode("/", $path)[0];
