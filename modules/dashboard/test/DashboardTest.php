@@ -350,7 +350,7 @@ class DashboardTest extends LorisIntegrationTest
         $views = $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/button"
+                "/div[2]/div[1]/div[1]/div/div/button"
             )
         );
         $views->click();
