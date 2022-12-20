@@ -75,8 +75,19 @@ const getConfig = cp.spawn('php', [
   'useEEGBrowserVisualizationComponents',
 ], {});
 
+let EEGVisEnabled = false;
 getConfig.stdout.on('data', (data) => {
-  const EEGVisEnabled = JSON.parse(data);
+  try {
+    EEGVisEnabled = JSON.parse(data);
+  } catch (e) {
+    console.warn(
+      '\x1b[33m',
+      'WARNING: Unable to fetch DB config',
+      'useEEGBrowserVisualizationComponents',
+      '\x1b[0m',
+    );
+  }
+
   if (EEGVisEnabled === 'true') {
     console.info('\n ----- \n >> '
       + 'EEG Browser visualization components enabled '
@@ -99,10 +110,12 @@ getConfig.stdout.on('data', (data) => {
     );
 
     protoc.on('error', (error) => {
-      console.error('ERROR: '
-        + 'Make sure that protoc '
-        + '(https://github.com/protocolbuffers/protobuf/releases/) '
-        + 'is installed on your system '
+      console.error(
+        '\x1b[31m',
+        'ERROR: Make sure that protoc',
+        '(https://github.com/protocolbuffers/protobuf/releases/)',
+        'is installed on your system',
+        '\x1b[0m',
       );
       console.error(error);
     });
