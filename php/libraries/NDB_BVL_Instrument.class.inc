@@ -332,7 +332,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $DB = $this->loris->getDatabaseConnection();
 
         $instrumentPermissions = $DB->pselectCol(
-            "SELECT PermCode FROM testname_permission_rel WHERE Test_name=:tn",
+            "SELECT code FROM testnames_permissions_rel rel
+                LEFT JOIN test_names ON (test_names.ID=rel.TestID)
+                LEFT JOIN permissions ON (permissions.permID=rel.PermID)
+              WHERE test_names.Test_name=:tn",
             ['tn' => $this->testName]
         );
         if (empty($instrumentPermissions)) {
