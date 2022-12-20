@@ -70,7 +70,6 @@
                 <test value="InstrumentName">Instrument Display Name</test>
             </CertificationInstruments>
         </Certification>
-
     </study>
     <!-- end of study definition -->
 </config>
