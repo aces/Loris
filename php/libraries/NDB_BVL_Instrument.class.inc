@@ -364,7 +364,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $instrumentListed = false;
             // get an array of instruments
             // if one instrument, get it into an array
-            $instrumentList   = Utility::asArray(
+            $instrumentList = Utility::asArray(
                 $instrumentPermissions["instrument"]
             );
             // iterate through instruments
