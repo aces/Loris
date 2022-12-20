@@ -40,6 +40,10 @@ visit label already exists for the candidate.
 successful form submission. Click on "Ok" button and ensure that it brings you back
 to timepoint list page for that candidate and confirm that the new timepoint appears in the list.
   [Manual Testing]
-14. Check that page is inaccessible if either the user does not have data_entry
+14. Ensure that there is no empty option in the language select element and a language is automatically selected when only one 
+language exists in the `language` table.
+15. Ensure that there is an empty option in the language select element and the field is required when more than one 
+lagnuage exists in the `language` table
+16. Check that page is inaccessible if either the user does not have data_entry
 permission or the user and candidate are not the same site.
   [Manual Testing]

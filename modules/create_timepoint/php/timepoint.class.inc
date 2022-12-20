@@ -100,11 +100,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $values['visitGroups'] = $visitGroups;
 
         // List languages
-        $languages = \Utility::getLanguageList();
-        if (count($languages) > 1) {
-            $languages = [null] + $languages;
-        }
-        $values['languages'] = $languages;
+        $values['languages'] = \Utility::getLanguageList();
 
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
