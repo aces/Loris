@@ -255,7 +255,7 @@ const studyProgressionCharts = async () => {
       scanLineChart.resize();
     }
   });
-  scanLineChart.resize();
+  // scanLineChart.resize();
 
   // fetch data for the line chart.
   data = await fetchData(
@@ -329,7 +329,7 @@ const studyProgressionCharts = async () => {
       recruitmentLineChart.resize();
     }
   });
-  recruitmentLineChart.resize();
+  // recruitmentLineChart.resize();
 };
 
 export {

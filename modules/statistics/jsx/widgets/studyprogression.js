@@ -24,6 +24,11 @@ const StudyProgression = (props) => {
           ? <div className='row'>
             <div id='scanChart' className='col-xs-10'/>
             <div className='scanChartLegend legend-container col-xs-2'/>
+            <small className='col-xs-12'>
+              <i>Note that the Recruitment and Study Progression charts
+              &nbsp;include data from ineligible, excluded, and consent
+              &nbsp;withdrawn candidates.</i>
+            </small>
           </div>
           : <p>There have been no scans yet.</p>
       );
@@ -31,10 +36,16 @@ const StudyProgression = (props) => {
         json['studyprogression']['recruitment']['overall']
           ['total_recruitment'] > 0
           ? <div className='row'>
+            <h5 className='chart-title col-xs-12'>Recruitment per site</h5>
             <div id='recruitmentChart' className='col-xs-10'/>
             <div className={
               'recruitmentChartLegend legend-container col-xs-2'
             }/>
+            <small>
+              <i>Note that the Recruitment and Study Progression charts
+              &nbsp;include data from ineligible, excluded, and consent
+              &nbsp;withdrawn candidates.</i>
+            </small>
           </div>
           : <p>There have been no candidates registered yet.</p>
       );
@@ -54,21 +65,12 @@ const StudyProgression = (props) => {
         {
           content: <>
             {siteScans}
-            <small><i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
           </>,
           title: 'Study Progression - site scans',
         },
         {
           content: <>
-            <h5 className='chart-title'>Recruitment per site</h5>
             {siteRecruitments}
-            <small><i>Note that the Recruitment and Study Progression charts
-              &nbsp;include data from ineligible, excluded, and consent
-              &nbsp;withdrawn candidates.</i>
-            </small>
           </>,
           title: 'Study Progression - site recruitment',
         },
