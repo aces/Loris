@@ -368,7 +368,10 @@ class DashboardTest extends LorisIntegrationTest
             )
         )->getText();
         $this->assertStringContainsString("Recruitment - overall", $assertText1);
-        $this->assertStringContainsString("Recruitment - site breakdown", $assertText2);
+        $this->assertStringContainsString(
+            "Recruitment - site breakdown",
+            $assertText2
+        );
     }
 
     /**
