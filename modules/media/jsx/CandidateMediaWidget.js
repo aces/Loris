@@ -3,7 +3,6 @@
  * displaying the media associated with the candidate.
  *
  * @param {array} props - The React props
- *
  * @return {object} - The component
  */
 function CandidateMediaWidget(props) {

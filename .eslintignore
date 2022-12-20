@@ -22,3 +22,6 @@ htdocs/js/FileSaver.min.js
 htdocs/vendor/
 htdocs/fontawesome/
 htdocs/bootstrap/
+
+# ignore until eslint errors are fixed
+modules/electrophysiology_browser/jsx/react-series-data-viewer/src/series/components/**

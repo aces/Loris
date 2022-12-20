@@ -24,6 +24,17 @@ type CProps = {
   showMarker: boolean
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.cursor
+ * @param root0.channels
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.CursorContent
+ * @param root0.interval
+ * @param root0.showMarker
+ */
 const SeriesCursor = (
   {
     cursor,
@@ -45,6 +56,9 @@ const SeriesCursor = (
   const left = Math.min(Math.max(100 * cursor, 0), 100) + '%';
   const time = interval[0] + cursor * (interval[1] - interval[0]);
 
+  /**
+   *
+   */
   const Cursor = () => (
     <div
       style={{
@@ -58,6 +72,9 @@ const SeriesCursor = (
     />
   );
 
+  /**
+   *
+   */
   const ValueTags = () => (
     <div
       style={{
@@ -86,6 +103,9 @@ const SeriesCursor = (
     </div>
   );
 
+  /**
+   *
+   */
   const TimeMarker = () => (
     <div
       style={{
@@ -104,6 +124,9 @@ const SeriesCursor = (
     </div>
   );
 
+  /**
+   *
+   */
   const EpochMarker = () => {
     if (reversedEpochs.length > MAX_RENDERED_EPOCHS) return null;
 
@@ -152,12 +175,30 @@ const createIndices = R.memoizeWith(
   (array) => array.map((_, i) => i)
 );
 
+/**
+ *
+ * @param chunk
+ */
 const indexToTime = (chunk) => (index) =>
   chunk.interval[0] +
   (index / chunk.values.length) * (chunk.interval[1] - chunk.interval[0]);
 
-const CursorContent = ({time, channel, contentIndex, showMarker}) => {
-  const Marker = ({color}) => (
+/**
+ *
+ * @param root0
+ * @param root0.time
+ * @param root0.channel
+ * @param root0.contentIndex
+ * @param root0.showMarker
+ */
+const CursorContent = (
+  {time, channel, contentIndex, showMarker}: CursorContentProps
+) => {
+  /**
+   *
+   * @param color
+   */
+  const Marker = (color) => (
     <div
       style={{
         margin: 'auto',
@@ -175,6 +216,10 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
         const chunk = trace.chunks.find(
           (chunk) => chunk.interval[0] <= time && chunk.interval[1] >= time
         );
+        /**
+         *
+         * @param chunk
+         */
         const computeValue = (chunk) => {
           const indices = createIndices(chunk.values);
           const bisectTime = bisector(indexToTime(chunk)).left;
@@ -195,7 +240,11 @@ const CursorContent = ({time, channel, contentIndex, showMarker}) => {
               borderRadius: '3px',
             }}
           >
-            {showMarker && (<Marker color={colorOrder(contentIndex)} />)}
+            {showMarker && (
+              <Marker
+                color={colorOrder(contentIndex.toString())}
+              />
+            )}
             {chunk && Math.round(computeValue(chunk))} {SIGNAL_UNIT}
           </div>
         );

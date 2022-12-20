@@ -2,7 +2,6 @@
  * Display a message in an information panel.
  *
  * @param {object} props - React props
- *
  * @return {JSX}
  */
 function InfoPanel(props) {

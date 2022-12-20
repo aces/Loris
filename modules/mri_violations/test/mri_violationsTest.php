@@ -324,11 +324,24 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "/mri_violations/mri_protocol_violations/"
         );
         sleep(1);
-        $value = "#bc2 > a:nth-child(3)";
-        $text  = $this->webDriver->executescript(
+        $value    = "#bc2 > a:nth-child(3)";
+        $bodyText = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals("Mri Protocol Violations", $text);
+        $this->assertEquals("Mri Protocol Violations", $bodyText);
+
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -501,6 +514,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSearchButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         $this->safeGet($this->url . "/mri_violations/");
         //testing search by PatientName
         $this->_searchTest(
@@ -537,6 +553,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSaveButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         $this->safeGet($this->url . "/mri_violations/");
         $this->safeFindElement(
             WebDriverBy::Name("PatientName")
@@ -565,6 +584,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testResolvedSearchButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         //testing search by PatientName
         $this->safeGet($this->url . "/mri_violations/resolved_violations/");
 

@@ -47,6 +47,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("New Profile", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         // check EDC shows on the page
         $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
                  " div > div:nth-child(1) > label";

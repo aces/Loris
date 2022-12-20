@@ -1,9 +1,10 @@
+/* global EEG_VIS_ENABLED */
+
 /**
  * This is the React class for the eeg_session.
  *
  * @author Alizée Wickenheiser.
  * @version 0.0.1
- *
  */
 
 import React, {Component} from 'react';
@@ -16,12 +17,21 @@ import {SummaryPanel} from './components/electrophysiology_session_summary';
 import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
-import EEGLabSeriesProvider
-  from './react-series-data-viewer/src/eeglab/EEGLabSeriesProvider';
-import SeriesRenderer
-  from './react-series-data-viewer/src/series/components/SeriesRenderer';
-import EEGMontage
-  from './react-series-data-viewer/src/series/components/EEGMontage';
+
+let EEGLabSeriesProvider;
+let SeriesRenderer;
+let EEGMontage;
+if (EEG_VIS_ENABLED) {
+  EEGLabSeriesProvider = require(
+    './react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
+  ).default;
+  SeriesRenderer = require(
+    './react-series-data-viewer/src/series/components/SeriesRenderer'
+  ).default;
+  EEGMontage = require(
+    './react-series-data-viewer/src/series/components/EEGMontage'
+  ).default;
+}
 
 /**
  * Electrophysiology Session View page
@@ -271,9 +281,9 @@ class ElectrophysiologySessionView extends Component {
   /**
    * Get split data for split index
    *
-   * @param {int} physioFileID
-   * @param {int} fileIndex
-   * @param {int} splitIndex
+   * @param {number} physioFileID
+   * @param {number} fileIndex
+   * @param {number} splitIndex
    */
   getSplitData(physioFileID, fileIndex, splitIndex) {
     const dataURL = loris.BaseURL
@@ -305,7 +315,7 @@ class ElectrophysiologySessionView extends Component {
   /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @return {JSX|void} - React markup for the component
    */
   render() {
     if (!this.state.isLoaded) {
@@ -350,6 +360,7 @@ class ElectrophysiologySessionView extends Component {
               title={this.state.database[i].file.name}
               data={this.state.database[i].file.details}
             >
+              {EEG_VIS_ENABLED &&
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
                   chunksURL={
@@ -441,7 +452,7 @@ class ElectrophysiologySessionView extends Component {
                     </div>
                   </div>
                 </EEGLabSeriesProvider>
-              </div>
+              </div>}
             </FilePanel>
           </div>
         );

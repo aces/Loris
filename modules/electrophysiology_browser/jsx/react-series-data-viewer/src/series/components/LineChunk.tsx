@@ -11,13 +11,9 @@ const LineMemo = R.memoizeWith(
     `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
   + `${channelIndex}-${traceIndex}-${chunkIndex}`,
   ({
-    channelIndex,
-    traceIndex,
-    chunkIndex,
     interval,
     seriesRange,
     amplitudeScale,
-    filters,
     values,
     color,
     ...rest
@@ -59,11 +55,26 @@ type CProps = {
   chunk: Chunk,
   seriesRange: [number, number],
   amplitudeScale: number,
-  scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>],
+  scales: [
+    ScaleLinear<number, number, never>,
+    ScaleLinear<number, number, never>,
+  ],
   physioFileID: number,
   color?: string
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.channelIndex
+ * @param root0.traceIndex
+ * @param root0.chunkIndex
+ * @param root0.chunk
+ * @param root0.seriesRange
+ * @param root0.amplitudeScale
+ * @param root0.scales
+ * @param root0.physioFileID
+ */
 const LineChunk = ({
   channelIndex,
   traceIndex,
@@ -73,7 +84,6 @@ const LineChunk = ({
   amplitudeScale,
   scales,
   physioFileID,
-  color,
   ...rest
 }: CProps) => {
   const {interval, values} = chunk;

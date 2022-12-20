@@ -72,6 +72,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -86,6 +87,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -99,6 +101,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -116,6 +119,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -135,6 +139,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {

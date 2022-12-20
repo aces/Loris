@@ -7,14 +7,13 @@ import Loader from 'jsx/Loader';
  * Methylation Component.
  *
  * @description Genomic Browser Methylation tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class Methylation extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -78,7 +77,6 @@ class Methylation extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {

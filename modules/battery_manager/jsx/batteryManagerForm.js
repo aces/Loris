@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
  * Module component rendering Add tab
  *
  * @author Victoria Foing
- *
  */
 class BatteryManagerForm extends Component {
   /**

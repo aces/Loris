@@ -11,10 +11,8 @@ import DOMPurify from 'dompurify';
  * Login form.
  *
  * @description form for login.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class Login extends Component {
   /**
@@ -169,7 +167,7 @@ class Login extends Component {
   }
 
   /**
-   * @return {DOMRect}
+   * @return {DOMRect|void}
    */
   render() {
     // Waiting for async data to load.

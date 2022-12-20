@@ -112,6 +112,7 @@ class QuestionText extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -179,6 +180,7 @@ class BasicOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -247,6 +249,7 @@ class DropdownOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -408,6 +411,7 @@ class DateOptions extends Component {
   /**
    * On change
    * Keep track of the inputed years
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -523,6 +527,7 @@ class NumericOptions extends Component {
    * On change
    * Keep track of the inputed numbers, casting them to
    * integer values.
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -610,6 +615,7 @@ class ListElements extends Component {
 
   /**
    * Set the desired question type
+   *
    * @param {*} newId
    * @param {*} newValue
    */
@@ -870,6 +876,7 @@ class AddElement extends Component {
 
   /**
    * Update element state
+   *
    * @param {object} newState
    */
   updateState(newState) {
@@ -996,12 +1003,60 @@ class AddElement extends Component {
       });
     }
 
+    if (questionName.length > 64 && selected !== 'textbox'
+        && selected !== 'textarea' && selected !== 'date'
+        && selected !== 'numeric') {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 64 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the element's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
+    if (questionName.length > 57 && (selected === 'textbox'
+      || selected === 'textarea' || selected === 'date'
+      || selected === 'numeric')) {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 57 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
     if (questionName === '' && selected !== 'header' && selected !== 'label' &&
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Must specifiy name for database to save value into';
+      temp.questionName = 'Must specify name for database to save value into';
       this.setState({
         error: temp,
       });
@@ -1079,6 +1134,7 @@ class AddElement extends Component {
 
   /**
    * Add an option to the options array
+   *
    * @param {boolean} multi
    */
   addOption(multi) {

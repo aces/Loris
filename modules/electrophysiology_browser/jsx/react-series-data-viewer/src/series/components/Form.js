@@ -306,12 +306,14 @@ TextareaElement.defaultProps = {
 
 /**
  * TextboxElement - the input type='text' component.
+ *
  * @param {object} props
  * @return {JSX.Element}
  */
 export const TextboxElement = (props) => {
   /**
    * handleChange - input change by user.
+   *
    * @param {object} event - input event
    */
   const handleChange = (event) => {
@@ -327,7 +329,8 @@ export const TextboxElement = (props) => {
   };
   /**
    * Renders the React component.
-   * @return {JSX.Element} - React markup for component.
+   *
+   * @return {JSX} - React markup for component.
    */
   return (
     <>

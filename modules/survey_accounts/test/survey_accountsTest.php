@@ -184,6 +184,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("Survey Accounts", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**

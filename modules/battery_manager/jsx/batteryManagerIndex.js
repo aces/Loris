@@ -59,7 +59,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} url
    * @param {string} method
    * @param {string} state
-   *
    * @return {object} promise
    */
   fetchData(url, method, state) {
@@ -80,7 +79,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} url
    * @param {object} data
    * @param {string} method
-   *
    * @return {object} promise
    */
   postData(url, data, method) {
@@ -116,7 +114,6 @@ class BatteryManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} value - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, value) {
@@ -150,7 +147,6 @@ class BatteryManagerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -223,7 +219,7 @@ class BatteryManagerIndex extends Component {
   /**
    * Activate Test
    *
-   * @param {int} id
+   * @param {number} id
    */
   activateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
@@ -234,7 +230,7 @@ class BatteryManagerIndex extends Component {
   /**
    * Deactivate Test
    *
-   * @param {int} id
+   * @param {number} id
    */
   deactivateTest(id) {
     const test = this.state.tests.find((test) => test.id === id);
@@ -247,7 +243,6 @@ class BatteryManagerIndex extends Component {
    *
    * @param {object} test
    * @param {string} request
-   *
    * @return {object} promise
    */
   saveTest(test, request) {
@@ -407,7 +402,6 @@ class BatteryManagerIndex extends Component {
    * Checks whether the Test is a duplicate of an existing Test.
    *
    * @param {object} test
-   *
    * @return {object} promise
    */
   checkDuplicate(test) {
@@ -465,7 +459,6 @@ class BatteryManagerIndex extends Component {
    * Checks that test fields are valide
    *
    * @param {object} test
-   *
    * @return {object} promise
    */
   validateTest(test) {

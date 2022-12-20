@@ -8,7 +8,6 @@ import React, {useEffect} from 'react';
  * on the candidate profile.
  *
  * @param {object} props - React props
- *
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
@@ -74,7 +73,6 @@ function CandidateScanQCSummaryWidget(props) {
  * Get a list of unique modalities in the files passed.
  *
  * @param {object} files - The files table summary data
- *
  * @return {array}
  */
 function getModalities(files) {
@@ -89,7 +87,6 @@ function getModalities(files) {
  * Get a list of unique visits in the data passed.
  *
  * @param {object} files - The files table summary data
- *
  * @return {array}
  */
 function getVisits(files) {
@@ -115,7 +112,6 @@ function getVisits(files) {
  * @param {object} data - The unprocessed data
  * @param {array} modalities - A list of modality strings
  * @param {array} visits - A list of visit strings
- *
  * @return {array}
  */
 function getDataBreakdown(data, modalities, visits) {
@@ -155,7 +151,6 @@ function getDataBreakdown(data, modalities, visits) {
  * @param {array} modalities - a list of modalities
  * @param {array} files - the raw results of the DB
  *                        query
- *
  * @return {object}
  */
 function getDataObject(modalities, files) {
@@ -180,7 +175,6 @@ function getDataObject(modalities, files) {
  * the C3 library.
  *
  * @param {array} modalities - the list of modalities
- *
  * @return {array}
  */
 function getDataGroups(modalities) {
@@ -206,7 +200,6 @@ function getDataGroups(modalities) {
  * range to avoid overpoweringly strong colours.
  *
  * @param {array} modalities - list of modalities in data
- *
  * @return {object}
  */
 function getColorFuncs(modalities) {
