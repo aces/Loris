@@ -312,10 +312,14 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $MappedData[] = array_values($row);
         }
 
+
+        $DB = $this->loris->getDatabaseConnection();
+        $perms = $DB->pselectCol("SELECT code FROM permissions", []);
+        $fieldOptions = ['allPermissionCodes' => $perms];
         return [
             'Headers'      => $headers,
             'Data'         => $MappedData,
-            'fieldOptions' => $this->fieldOptions,
+            'fieldOptions' => $fieldOptions,
             'writable'     => $this->canWriteFiles(),
             'caninstall'   => $this->isAdminUserConfigured(),
         ];
