@@ -32,20 +32,16 @@ const Recruitment = (props) => {
         siteBreakdownData = (
           <>
             <div className='col-lg-4 col-md-4 col-sm-4'>
-              <div>
-                <h5 className='chart-title'>
-                  Total recruitment per site
-                </h5>
-                <div id='recruitmentPieChart'/>
-              </div>
+              <h5 className='chart-title'>
+                Total recruitment per site
+              </h5>
+              <div id='recruitmentPieChart'/>
             </div>
             <div className='col-lg-8 col-md-8 col-sm-8'>
-              <div>
-                <h5 className='chart-title'>
-                  Biological sex breakdown by site
-                </h5>
-                <div id='recruitmentBarChart'/>
-              </div>
+              <h5 className='chart-title'>
+                Biological sex breakdown by site
+              </h5>
+              <div id='recruitmentBarChart'/>
             </div>
           </>
         );

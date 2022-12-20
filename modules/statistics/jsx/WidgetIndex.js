@@ -20,17 +20,21 @@ const WidgetIndex = (props) => {
    * Similar to componentDidMount and componentDidUpdate.
    */
   useEffect(() => {
-    // fetch recruitment and study progression data.
-    fetchData(
-      `${props.baseURL}/Widgets`
-    ).then((json) => {
-      setRecruitmentData(json);
-      setStudyProgressionData(json);
+    /**
+     * setup - fetch recruitment and study progression data.
+     * @return {Promise<void>}
+     */
+    const setup = async () => {
+      const data = await fetchData(
+        `${props.baseURL}/Widgets`
+      );
+      setRecruitmentData(data);
+      setStudyProgressionData(data);
       // setup statistics for c3.js charts.
-      recruitmentCharts();
-      studyProgressionCharts();
-    }).catch((error) => {
-      // Error occurred.
+      await studyProgressionCharts();
+      await recruitmentCharts();
+    };
+    setup().catch((error) => {
       console.error(error);
     });
   }, []);

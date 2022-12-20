@@ -1,6 +1,7 @@
 import 'c3/c3.min.css';
 import c3 from 'c3';
 import {select} from 'd3';
+import {fetchData} from '../Fetch';
 
 const baseURL = window.location.origin;
 
@@ -70,83 +71,6 @@ const formatBarData = (data) => {
 };
 
 /**
- * recruitmentCharts - fetch data for recruitments
- */
-const recruitmentCharts = () => {
-  // fetch data for the pie chart.
-  fetch(
-    `${baseURL}/statistics/charts/siterecruitment_pie`,
-    {
-      credentials: 'same-origin',
-    },
-  ).then((response) => response.json(),
-  ).then((data) => {
-    const recruitmentPieData = formatPieData(data);
-    recruitmentPieChart = c3.generate({
-      bindto: '#recruitmentPieChart',
-      size: {
-        width: 227,
-      },
-      data: {
-        columns: recruitmentPieData,
-        type: 'pie',
-      },
-      color: {
-        pattern: siteColours,
-      },
-    });
-    elementVisibility(recruitmentPieChart.element, (visible) => {
-      if (visible) {
-        recruitmentPieChart.resize();
-      }
-    });
-  }).catch((error) => {
-    console.error(error);
-  });
-
-  // fetch data for the bar chart.
-  fetch(
-    `${baseURL}/statistics/charts/siterecruitment_bysex`,
-    {
-      credentials: 'same-origin',
-    },
-  ).then((response) => response.json(),
-  ).then((data) => {
-    const recruitmentBarData = formatBarData(data);
-    const recruitmentBarLabels = data.labels;
-    recruitmentBarChart = c3.generate({
-      bindto: '#recruitmentBarChart',
-      size: {
-        width: 461,
-      },
-      data: {
-        columns: recruitmentBarData,
-        type: 'bar',
-      },
-      axis: {
-        x: {
-          type: 'categorized',
-          categories: recruitmentBarLabels,
-        },
-        y: {
-          label: 'Candidates registered',
-        },
-      },
-      color: {
-        pattern: sexColours,
-      },
-    });
-    elementVisibility(recruitmentBarChart.element, (visible) => {
-      if (visible) {
-        recruitmentBarChart.resize();
-      }
-    });
-  }).catch((error) => {
-    console.error(error);
-  });
-};
-
-/**
  * formatLineData - used for the study progression widget
  * @param {object} data
  * @return {*[]}
@@ -193,175 +117,219 @@ const maxY = (data) => {
 };
 
 /**
- * studyProgressionCharts - fetch data for study progression
+ * recruitmentCharts - fetch data for recruitments
  */
-const studyProgressionCharts = () => {
-  // fetch data for the line chart.
-  fetch(
-    `${baseURL}/statistics/charts/scans_bymonth`,
-    {
-      credentials: 'same-origin',
+const recruitmentCharts = async () => {
+  // fetch data for the pie chart.
+  let data = await fetchData(
+    `${baseURL}/statistics/charts/siterecruitment_pie`,
+  );
+  const recruitmentPieData = formatPieData(data);
+  recruitmentPieChart = c3.generate({
+    bindto: '#recruitmentPieChart',
+    size: {
+      width: 227,
     },
-  ).then((response) => response.json(),
-  ).then((data) => {
-    let legendNames = [];
-    for (let j = 0; j < data['datasets'].length; j++) {
-      legendNames.push(data['datasets'][j].name);
+    data: {
+      columns: recruitmentPieData,
+      type: 'pie',
+    },
+    color: {
+      pattern: siteColours,
+    },
+  });
+  elementVisibility(recruitmentPieChart.element, (visible) => {
+    if (visible) {
+      recruitmentPieChart.resize();
     }
-    const scanLineData = formatLineData(data);
-    scanLineChart = c3.generate({
-      size: {
-        height: '100%',
-      },
-      bindto: '#scanChart',
-      data: {
-        x: 'x',
-        xFormat: '%m-%Y',
-        columns: scanLineData,
-        type: 'area-spline',
-      },
-      legend: {
-        show: false,
-      },
-      axis: {
-        x: {
-          type: 'timeseries',
-          tick: {
-            format: '%m-%Y',
-          },
-        },
-        y: {
-          max: maxY(data),
-          label: 'Scans',
-        },
-      },
-      zoom: {
-        enabled: true,
-      },
-      color: {
-        pattern: siteColours,
-      },
-    });
-    select('.scanChartLegend')
-      .insert('div', '.scanChart')
-      .attr('class', 'legend')
-      .selectAll('div').data(legendNames).enter()
-      .append('div')
-      .attr('data-id', function(id) {
-        return id;
-      })
-      .html(function(id) {
-        return '<span></span>' + id;
-      })
-      .each(function(id) {
-        select(this).select('span').style(
-          'background-color', scanLineChart.color(id),
-        );
-      })
-      .on('mouseover', function(id) {
-        scanLineChart.focus(id);
-      })
-      .on('mouseout', function(id) {
-        scanLineChart.revert();
-      })
-      .on('click', function(id) {
-        // todo
-        // $(this).toggleClass('c3-legend-item-hidden');
-        scanLineChart.toggle(id);
-      });
-    elementVisibility(scanLineChart.element, (visible) => {
-      if (visible) {
-        scanLineChart.resize();
-      }
-    });
-    scanLineChart.resize();
-  }).catch((error) => {
-    console.error(error);
   });
 
-  // fetch data for the line chart.
-  fetch(
-    `${baseURL}/statistics/charts/siterecruitment_line`,
-    {
-      credentials: 'same-origin',
+  // fetch data for the bar chart.
+  data = await fetchData(
+    `${baseURL}/statistics/charts/siterecruitment_bysex`,
+  );
+  const recruitmentBarData = formatBarData(data);
+  const recruitmentBarLabels = data.labels;
+  recruitmentBarChart = c3.generate({
+    bindto: '#recruitmentBarChart',
+    size: {
+      width: 461,
     },
-  ).then(
-    (response) => response.json(),
-  ).then((data) => {
-    let legendNames = [];
-    for (let j = 0; j < data['datasets'].length; j++) {
-      legendNames.push(data['datasets'][j].name);
-    }
-    const recruitmentLineData = formatLineData(data);
-    recruitmentLineChart = c3.generate({
-      size: {
-        height: '100%',
+    data: {
+      columns: recruitmentBarData,
+      type: 'bar',
+    },
+    axis: {
+      x: {
+        type: 'categorized',
+        categories: recruitmentBarLabels,
       },
-      bindto: '#recruitmentChart',
-      data: {
-        x: 'x',
-        xFormat: '%m-%Y',
-        columns: recruitmentLineData,
-        type: 'area-spline',
+      y: {
+        label: 'Candidates registered',
       },
-      legend: {
-        show: false,
-      },
-      axis: {
-        x: {
-          type: 'timeseries',
-          tick: {
-            format: '%m-%Y',
-          },
-        },
-        y: {
-          max: maxY(data),
-          label: 'Candidates registered',
-        },
-      },
-      zoom: {
-        enabled: true,
-      },
-      color: {
-        pattern: siteColours,
-      },
-    });
-    select('.recruitmentChartLegend')
-      .insert('div', '.recruitmentChart')
-      .attr('class', 'legend')
-      .selectAll('div').data(legendNames).enter()
-      .append('div')
-      .attr('data-id', function(id) {
-        return id;
-      })
-      .html(function(id) {
-        return '<span></span>' + id;
-      })
-      .each(function(id) {
-        select(this).select('span').style(
-          'background-color',
-          recruitmentLineChart.color(id));
-      })
-      .on('mouseover', function(id) {
-        recruitmentLineChart.focus(id);
-      })
-      .on('mouseout', function(id) {
-        recruitmentLineChart.revert();
-      })
-      .on('click', function(id) {
-        // todo
-        // $(this).toggleClass('c3-legend-item-hidden');
-        recruitmentLineChart.toggle(id);
-      });
-    elementVisibility(recruitmentLineChart.element, (visible) => {
-      if (visible) {
-        recruitmentLineChart.resize();
-      }
-    });
-    recruitmentLineChart.resize();
-  }).catch((error) => {
-    console.error(error);
+    },
+    color: {
+      pattern: sexColours,
+    },
   });
+  elementVisibility(recruitmentBarChart.element, (visible) => {
+    if (visible) {
+      recruitmentBarChart.resize();
+    }
+  });
+};
+
+/**
+ * studyProgressionCharts - fetch data for study progression
+ */
+const studyProgressionCharts = async () => {
+  // fetch data for the line chart.
+  let data = await fetchData(
+    `${baseURL}/statistics/charts/scans_bymonth`,
+  );
+  let legendNames = [];
+  for (let j = 0; j < data['datasets'].length; j++) {
+    legendNames.push(data['datasets'][j].name);
+  }
+  const scanLineData = formatLineData(data);
+  scanLineChart = c3.generate({
+    size: {
+      height: '100%',
+    },
+    bindto: '#scanChart',
+    data: {
+      x: 'x',
+      xFormat: '%m-%Y',
+      columns: scanLineData,
+      type: 'area-spline',
+    },
+    legend: {
+      show: false,
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: '%m-%Y',
+        },
+      },
+      y: {
+        max: maxY(data),
+        label: 'Scans',
+      },
+    },
+    zoom: {
+      enabled: true,
+    },
+    color: {
+      pattern: siteColours,
+    },
+  });
+  select('.scanChartLegend')
+    .insert('div', '.scanChart')
+    .attr('class', 'legend')
+    .selectAll('div').data(legendNames).enter()
+    .append('div')
+    .attr('data-id', function(id) {
+      return id;
+    })
+    .html(function(id) {
+      return '<span></span>' + id;
+    })
+    .each(function(id) {
+      select(this).select('span').style(
+        'background-color', scanLineChart.color(id),
+      );
+    })
+    .on('mouseover', function(id) {
+      scanLineChart.focus(id);
+    })
+    .on('mouseout', function(id) {
+      scanLineChart.revert();
+    })
+    .on('click', function(id) {
+      scanLineChart.toggle(id);
+    });
+  elementVisibility(scanLineChart.element, (visible) => {
+    if (visible) {
+      scanLineChart.resize();
+    }
+  });
+  scanLineChart.resize();
+
+  // fetch data for the line chart.
+  data = await fetchData(
+    `${baseURL}/statistics/charts/siterecruitment_line`,
+  );
+  legendNames = [];
+  for (let j = 0; j < data['datasets'].length; j++) {
+    legendNames.push(data['datasets'][j].name);
+  }
+  const recruitmentLineData = formatLineData(data);
+  recruitmentLineChart = c3.generate({
+    size: {
+      height: '100%',
+    },
+    bindto: '#recruitmentChart',
+    data: {
+      x: 'x',
+      xFormat: '%m-%Y',
+      columns: recruitmentLineData,
+      type: 'area-spline',
+    },
+    legend: {
+      show: false,
+    },
+    axis: {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: '%m-%Y',
+        },
+      },
+      y: {
+        max: maxY(data),
+        label: 'Candidates registered',
+      },
+    },
+    zoom: {
+      enabled: true,
+    },
+    color: {
+      pattern: siteColours,
+    },
+  });
+  select('.recruitmentChartLegend')
+    .insert('div', '.recruitmentChart')
+    .attr('class', 'legend')
+    .selectAll('div').data(legendNames).enter()
+    .append('div')
+    .attr('data-id', function(id) {
+      return id;
+    })
+    .html(function(id) {
+      return '<span></span>' + id;
+    })
+    .each(function(id) {
+      select(this).select('span').style(
+        'background-color',
+        recruitmentLineChart.color(id));
+    })
+    .on('mouseover', function(id) {
+      recruitmentLineChart.focus(id);
+    })
+    .on('mouseout', function(id) {
+      recruitmentLineChart.revert();
+    })
+    .on('click', function(id) {
+      recruitmentLineChart.toggle(id);
+    });
+  elementVisibility(recruitmentLineChart.element, (visible) => {
+    if (visible) {
+      recruitmentLineChart.resize();
+    }
+  });
+  recruitmentLineChart.resize();
 };
 
 export {
