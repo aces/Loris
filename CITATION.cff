@@ -255,7 +255,47 @@ authors:
     affiliation: "McGill Centre For Integrative Neuroscience"
     family-names: Ding
     given-names: Yang
-    
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Lee
+    given-names: Stella
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Ilea
+    given-names: Alex
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: McKinney
+    given-names: James
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Muehlboeck
+    given-names: Sebastian
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Corderey
+    given-names: Andrew
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Charlet
+    given-names: Matt
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Harlap
+    given-names: Jonathan
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Zijdenbos
+    given-names: Alex
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Vins
+    given-names: Dario
+  -
+    affiliation: "McGill Centre For Integrative Neuroscience"
+    family-names: Evans
+    given-names: Alan C.
+
 cff-version: "1.1.0"
 identifiers:
   -
