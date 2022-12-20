@@ -148,10 +148,6 @@ Panel.defaultProps = {
   class: 'panel-primary',
   collapsing: true,
   panelSize: null,
-  // views: [
-  //   {visible: true, content: ['example 1'], title: 'example 1'},
-  //   {visible: false, content: ['example 2'], title: 'example 2'}
-  // ]
 };
 
 export default Panel;
