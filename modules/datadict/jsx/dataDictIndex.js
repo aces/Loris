@@ -75,19 +75,42 @@ class DataDictIndex extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
+   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
     if (column === 'Description' && hasEditPermission) {
-      let updateDict = (name) => {
+      let updateDict = (rowdata) => {
+        const name = rowdata.Name;
         return (e) => {
           e.stopPropagation();
 
+          // Update the description of the selected field in the table.
+          const arrayEquals = (first, second) => {
+            return Array.isArray(first) &&
+              Array.isArray(second) &&
+              first.length === second.length &&
+              first.every((val, index) => val === second[index]);
+          };
+          const findData = Object.values(rowdata);
+          const state = Object.assign({}, this.state);
+          for (let i=0; i<state.data.length; i++) {
+            if (arrayEquals(state.data[i], findData)) {
+              if (rowdata.Description !== e.target.valueOf().innerText) {
+                rowdata['Description Status'] = 'Modified';
+                rowdata.Description = e.target.valueOf().innerText;
+                state.data[i] = Object.values(rowdata);
+                this.setState(state);
+              }
+              break;
+            }
+          }
+
+          // Update the description of the selected field in the backend.
           let formData = new FormData();
           formData.append('description', e.target.valueOf().innerText);
           formData.append('fieldname', name);
-
           fetch(loris.BaseURL + '/datadict/ajax/UpdateDataDict.php', {
             method: 'POST',
             body: formData,
@@ -105,7 +128,7 @@ class DataDictIndex extends Component {
         <td
           contentEditable="true"
           className="description"
-          onBlur={updateDict(rowData.Name)}>
+          onBlur={updateDict(rowData)}>
             {cell}
         </td>
       );
