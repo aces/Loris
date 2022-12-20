@@ -1,4 +1,4 @@
-/* eslint new-cap: ['error', {capIsNewExceptions: ['RMarkdown']}]*/
+/* eslint-disable */
 import swal from 'sweetalert2';
 
 document.addEventListener('DOMContentLoaded', () => {
