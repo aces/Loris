@@ -362,24 +362,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else { //check if user has instrument's permissions
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
-            $instrumentList   = $instrumentPermissions["instrument"];
-            if (array_key_exists("Test_name", $instrumentList)) {
-                // if only one instrument is listed in config.xml file
-                if ($instrumentList["Test_name"] == $this->testName) {
+            // get an array of instruments
+            // if one instrument, get it into an array
+            $instrumentList   = Utility::asArray(
+                $instrumentPermissions["instrument"]
+            );
+            // iterate through instruments
+            foreach ($instrumentList as $instrument) {
+                if ($instrument["Test_name"] == $this->testName) {
                     $instrumentListed = true;
                     $instrumentPerms  = Utility::asArray(
-                        $instrumentList["permission"]
+                        $instrument["permission"]
                     );
-                }
-            } else {
-                // multiple instruments listed
-                foreach ($instrumentList as $instrument) {
-                    if ($instrument["Test_name"] == $this->testName) {
-                        $instrumentListed = true;
-                        $instrumentPerms  = Utility::asArray(
-                            $instrument["permission"]
-                        );
-                    }
                 }
             }
 
