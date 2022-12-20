@@ -76,7 +76,16 @@ if ('EEG_VIS_ENABLED' in process.env) {
     'useEEGBrowserVisualizationComponents',
   ], {});
 
-  EEGVisEnabled = JSON.parse(getConfig.stdout);
+  try {
+    EEGVisEnabled = JSON.parse(getConfig.stdout);
+  } catch (e) {
+    console.warn(
+      '\x1b[33m',
+      'WARNING: Unable to fetch DB config',
+      'useEEGBrowserVisualizationComponents',
+      '\x1b[0m',
+    );
+  }
 }
 
 modulePlugins.push(
