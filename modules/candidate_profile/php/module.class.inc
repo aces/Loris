@@ -70,7 +70,7 @@ class Module extends \Module
         case 'candidate':
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
-            $modules = $this->lorisinstance->getActiveModules();
+            $modules = $this->loris->getActiveModules();
 
             $params = [];
             foreach ($modules as $module) {

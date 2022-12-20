@@ -30,7 +30,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $lorisinstance;
+    protected $loris;
     protected $user;
 
     /**
@@ -43,8 +43,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function __construct(\User $user, string $projectdir, string $moduledir)
     {
-        $this->user          = $user;
-        $this->lorisinstance = new \LORIS\LorisInstance(
+        $this->user  = $user;
+        $this->loris = new \LORIS\LorisInstance(
             \NDB_Factory::singleton()->database(),
             \NDB_Factory::singleton()->config(),
             [
@@ -72,7 +72,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         // route
         $path    = preg_replace("/\/$/", "", $path);
         $request = $request->withAttribute("user", $this->user)
-            ->withAttribute("loris", $this->lorisinstance);
+            ->withAttribute("loris", $this->loris);
 
         if ($path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
@@ -94,7 +94,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
         $factory           = \NDB_Factory::singleton();
         $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
-        $exceptionloglevel = $this->lorisinstance->getConfiguration()
+        $exceptionloglevel = $this->loris->getConfiguration()
             ->getLogSettings()
             ->getExceptionLogLevel();
 
@@ -108,7 +108,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $ehandler->setLogger(new \PSR\Log\NullLogger);
         }
 
-        if ($this->lorisinstance->hasModule($modulename)) {
+        if ($this->loris->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
 
@@ -120,7 +120,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
             $factory->setBaseURL($baseurl);
 
-            $module  = $this->lorisinstance->getModule($modulename);
+            $module  = $this->loris->getModule($modulename);
             $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
             return $ehandler->process($request, $mr);
@@ -136,7 +136,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
-                $module  = $this->lorisinstance->getModule("timepoint_list");
+                $module  = $this->loris->getModule("timepoint_list");
                 $mr      = new ModuleRouter($module);
                 return $ehandler->process($request, $mr);
             }

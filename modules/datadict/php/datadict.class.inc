@@ -60,13 +60,12 @@ class Datadict extends \DataFrameworkMenu
     {
         $instruments     = \Utility::getAllInstruments();
         $dictInstruments = [];
-        $lorisinstance   = $this->lorisinstance;
         foreach ($instruments as $instrument => $name) {
             // Since the testname does not always match the table name in the
             // database we need to instantiate the object to get the table name
             try {
                 $iObj = \NDB_BVL_Instrument::factory(
-                    $lorisinstance,
+                    $this->loris,
                     $instrument,
                     '',
                     ''
