@@ -329,48 +329,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        //get config
-        $config = \NDB_Config::singleton();
-        $instrumentPermissions = $config->getSetting("instrumentPermissions");
-        $instrumentPerms       = [];
+        $DB = $this->loris->getDatabaseConnection();
 
-        //check if instrumentPermissions are being used.
-        if (!is_array($instrumentPermissions)) {
-            //instrument permissions not used...
-            return true; //default
-        } else if (!array_key_exists(
-            'useInstrumentPermissions',
-            $instrumentPermissions
-        )
-        ) {
-            //instrument permissions not used...
-            return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
-            //instrument permissions not used...
-            return true; //default
-        } else { //check if user has instrument's permissions
-            //is the instrument listed at all in instrumentPermissions?
-            $instrumentListed = false;
-            foreach ($instrumentPermissions["instrument"] as $instrument) {
-                if ($instrument["Test_name"] == $this->testName) {
-                    $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
-                }
-            }
-
-            //no permissions defined
-            if (!$instrumentListed) {
-                return true;
-            }
-
-            //check if user possesses ANY of the required permissions
-            foreach ($instrumentPerms as $instrumentPerm) {
-                if ($user->hasPermission($instrumentPerm)) {
-                    return true;
-                }
-            }
-            return false;
+        $instrumentPermissions = $DB->pselectCol(
+            "SELECT PermCode FROM testname_permission_rel WHERE Test_name=:tn",
+            ['tn' => $this->testName]
+        );
+        if (empty($instrumentPermissions)) {
+            // no permissions configured for this instrument
+            return true;
         }
+        return $user->hasAnyPermission($instrumentPermissions);
     }
 
     /**
