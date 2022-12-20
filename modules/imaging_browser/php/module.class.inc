@@ -2,10 +2,6 @@
 namespace LORIS\imaging_browser;
 use \LORIS\candidate_profile\CandidateWidget;
 
-use \LORIS\Data\Dictionary\DictionaryItem;
-use \LORIS\Data\Scope;
-use \LORIS\Data\Cardinality;
-
 /**
  * {@inheritDoc}
  *

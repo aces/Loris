@@ -2,9 +2,6 @@
 namespace LORIS\candidate_parameters;
 use LORIS\candidate_profile\CandidateInfo;
 use LORIS\candidate_profile\CandidateWidget;
-use LORIS\Data\Scope;
-use LORIS\Data\Cardinality;
-use LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * {@inheritDoc}
