@@ -24,7 +24,7 @@ Three additional containers are included that handle Composer and NPM commands *
 
 ## Persistent MySQL Storage in Docker 
 
-If your run 2.b or 2.c, by default it has persistent data that remains after bringing containers down and back up.
+If your run 2.a or 2.b, by default it has persistent data that remains after bringing containers down and back up.
 
 1. The persistent data is under the 'mysql' folder.  
 2. Run "docker-compose exec mysql bash -l" to login mysql container. 
