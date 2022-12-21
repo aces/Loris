@@ -9,9 +9,8 @@ Next, navigate in your terminal to the directory you cloned Loris, and spin up t
 1. `make docker-install`                                   - install Loris dependencies and the upload folders
 
 2. 
-   a. `docker-compose up -d --build site`                  - run Loris standalone with the external database (optional)
-   b. `docker-compose up -d --build site mysql`            - run Loris with docker database (optional)  user: root password: secret host: mysql
-   c. `docker-compose up -d --build site mysql phpmyadmin` - run loris, docker database and phpmyadmin (optional)  user: root password: secret 
+   a. `docker-compose up -d --build site mysql`            - run Loris with docker database (optional)  user: root password: secret host: mysql
+   b. `docker-compose up -d --build site mysql phpmyadmin` - run loris, docker database and phpmyadmin (optional)  user: root password: secret 
 
 - **apache**      - `:8081`
 - **mysql**       - `:3306`
