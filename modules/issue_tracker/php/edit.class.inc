@@ -599,9 +599,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                     $msg_data
                 );
             }
-        } else {
-            // so query below doesn't break..
-            $changed_assignee = $user->getUsername();
         }
 
         $issue_change_emails = $db->pselect(
