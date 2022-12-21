@@ -556,8 +556,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @return void
      */
     function emailUser(int $issueID, string $changed_assignee,
-                       string $changed_watcher, \User $user)
-    {
+        string $changed_watcher, \User $user
+    ){
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
 
