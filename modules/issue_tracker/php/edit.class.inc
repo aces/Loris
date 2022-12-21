@@ -555,7 +555,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @return void
      */
-    function emailUser(int $issueID, string $changed_assignee, string $changed_watcher, \User $user)
+    function emailUser(int $issueID, string $changed_assignee,
+                       string $changed_watcher, \User $user)
     {
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
@@ -615,8 +616,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                         AND u.UserID = :watcher
                         AND u.UserID != :currentUser",
             [
-                'issueID'  => $issueID,
-                'watcher' => $changed_watcher,
+                'issueID'     => $issueID,
+                'watcher'     => $changed_watcher,
                 'currentUser' => $user->getUserName(),
             ]
         );
