@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 /**
  * Panel - a collapsible panel component with optional multiple views.
  *
+ * @author Alex I.
+ * @version 2.0.0
+ *
  * @param {object} props
  * @return {JSX.Element}
  */
