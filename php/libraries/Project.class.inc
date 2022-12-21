@@ -145,13 +145,11 @@ class Project implements \JsonSerializable
         ?int $recruitmentTarget = null
     ): \Project {
 
-        // TODO :: Add not null constraint to the name column of the Project table
         if (empty($projectName)) {
             throw new \LorisException("ProjectName can't be null");
         }
 
-        $factory = \NDB_Factory::singleton();
-        // TODO :: Add unique constraint to the name column of the Project table
+        $factory   = \NDB_Factory::singleton();
         $projectId = $factory->database()->pselectOne(
             "
             SELECT
