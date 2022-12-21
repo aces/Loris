@@ -1,9 +1,9 @@
 .PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata
 
 all: VERSION
+	composer install --no-dev
 	npm ci
 	npm run build
-	composer install --no-dev
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
