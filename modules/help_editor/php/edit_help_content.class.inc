@@ -152,7 +152,6 @@ class Edit_Help_Content extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . '/vendor/sweetalert/sweetalert.js',
                 $baseURL . "/help_editor/js/help_editor_helper.js",
             ]
         );
