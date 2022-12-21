@@ -247,7 +247,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->headers      = [
+        $this->headers = [
             'Instrument',
             'Instrument_Type',
             'Table_Installed',
@@ -257,20 +257,21 @@ class Instrument_Manager extends \NDB_Menu_Filter
         ];
 
         // Most of these are overwritten by toArray
-        $this->columns      = [
+        $this->columns = [
             'Test_name as Instrument',
             "'type' as Instrument_Type",
             "'table' as Table_Installed",
             "'tablevalid' as Table_Valid",
             "'pagevalid' as Pages_Valid",
-            'GROUP_CONCAT(p.code) as Permissions_Required'];
-        $this->query        = " FROM test_names tn
+            'GROUP_CONCAT(p.code) as Permissions_Required'
+        ];
+        $this->query   = " FROM test_names tn
             LEFT JOIN testnames_permissions_rel rel ON (rel.TestID=tn.ID)
             LEFT JOIN permissions p ON (rel.permID=p.permID)";
 
         $this->validFilters = [];
         $this->formToFilter = [];
-        $this->group_by = 'Instrument';
+        $this->group_by     = 'Instrument';
     }
 
     /**
@@ -293,7 +294,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $row['Table_Valid']     = $this->checkTableValid($instrument);
                 $row['Pages_Valid']     = $this->checkPagesValid($instrument);
                 if ($row['Permissions_Required'] !== null) {
-                    $row['Permissions_Required'] = explode(',', $row['Permissions_Required']);
+                    $row['Permissions_Required'] = explode(
+                        ',',
+                        $row['Permissions_Required'],
+                    );
                 }
                 return $row;
             },
@@ -312,9 +316,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $MappedData[] = array_values($row);
         }
 
-
-        $DB = $this->loris->getDatabaseConnection();
-        $perms = $DB->pselectCol("SELECT code FROM permissions", []);
+        $DB           = $this->loris->getDatabaseConnection();
+        $perms        = $DB->pselectCol("SELECT code FROM permissions", []);
         $fieldOptions = ['allPermissionCodes' => $perms];
         return [
             'Headers'      => $headers,

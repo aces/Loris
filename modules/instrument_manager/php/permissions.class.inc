@@ -104,7 +104,7 @@ class Permissions extends \NDB_Page
                     'message' => 'No permissions required for '
                         . $values['instrument']
                 ]
-                );
+            );
         } else {
             $DB->delete(
                 'testnames_permissions_rel',
@@ -112,11 +112,11 @@ class Permissions extends \NDB_Page
             );
             foreach ($values['permissions'] as $permCode) {
                 $permID = $DB->pselectOneInt(
-                   "SELECT permID FROM permissions WHERE code=:permcode",
-                   ['permcode' => $permCode],
+                    "SELECT permID FROM permissions WHERE code=:permcode",
+                    ['permcode' => $permCode],
                 );
                 $DB->insert(
-                    'testnames_permissions_rel', 
+                    'testnames_permissions_rel',
                     [
                         'TestID' => $testID,
                         'PermID' => $permID,
@@ -124,6 +124,11 @@ class Permissions extends \NDB_Page
                 );
             }
         }
-        return new \LORIS\Http\Response\JSON\OK(['message' => 'Updated required permissions for ' . $values['instrument']]);
+        return new \LORIS\Http\Response\JSON\OK(
+            [
+                'message' => 'Updated required permissions for '
+                    . $values['instrument']
+            ]
+        );
     }
 }
