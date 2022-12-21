@@ -38,22 +38,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#save-help').on('click', function(e) {
         e.preventDefault();
-        let title = document.getElementsByName('title')[0].value;
-        let content = document.getElementsByName('content')[0].value;
-        let section = document.getElementById('section').value;
-        let subsection = document.getElementById('subsection').value;
-        let helpID = document.getElementById('helpID').value;
-        let returnString = document.getElementById('return').value;
+        const title = document.getElementsByName('title')[0].value ?? '';
+        const content = document.getElementsByName('content')[0].value ?? '';
+        const section = document.getElementById('section').value ?? '';
+        const subsection = document.getElementById('subsection').value ?? '';
+        const helpID = document.getElementById('helpID').value ?? '';
+        const returnString = document.getElementById('return').value;
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('section', section);
+        formData.append('subsection', subsection);
+        formData.append('helpID', helpID);
 
         fetch(loris.BaseURL + '/help_editor/ajax/process.php', {
             method: 'POST',
-            body: {
-                title: title ? title : '',
-                content: content ? content : '',
-                section: section ? section : '',
-                subsection: subsection ? subsection : '',
-                helpID: helpID ? helpID : '',
-            },
+            body: formData,
         }).then((response) => {
             if (response.status !== 200) {
                 console.error(response.status);
