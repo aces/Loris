@@ -5,12 +5,12 @@ export const setTimeSelection = createAction(SET_TIME_SELECTION);
 
 export type Action = {
   type: 'SET_TIME_SELECTION',
-  payload?: [number, number]
+  payload?: [number, number] | null
 };
 
-export type State = [number, number];
+export type State = [number, number] | null | undefined;
 
-export type Reducer = (state?: [number, number], action?: Action) => State;
+export type Reducer = (state?: State, action?: Action) => State;
 
 /**
  * timeSelectionReducer

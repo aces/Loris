@@ -64,7 +64,6 @@ type CProps = {
   interval: [number, number],
   amplitudeScale: number,
   rightPanel: RightPanel,
-  cursor?: number,
   timeSelection?: [number, number],
   setCursor: (number) => void,
   setRightPanel: (_: RightPanel) => void,
@@ -131,7 +130,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerWidth,
   interval,
   amplitudeScale,
-  cursor,
   rightPanel,
   timeSelection,
   setCursor,
@@ -631,19 +629,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
-                    cursor={cursor}
                     channels={channels}
                     interval={interval}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       // @ts-ignore
-                      mouseMove={R.compose(setCursor, R.nth(0))}
-                      mouseDown={(v: Vector2) => {
+                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
+                      mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
                         R.compose(dragStart, R.nth(0))(v);
-                      }}
+                      }, [bounds])}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -806,10 +803,9 @@ export default connect(
     viewerHeight: state.bounds.viewerHeight,
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
-    cursor: state.cursor,
     rightPanel: state.rightPanel,
     timeSelection: state.timeSelection,
-    channels: state.dataset.channels,
+    channels: state.channels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,

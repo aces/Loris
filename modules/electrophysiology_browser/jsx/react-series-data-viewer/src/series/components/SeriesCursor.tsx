@@ -263,6 +263,7 @@ SeriesCursor.defaultProps = {
 
 export default connect(
   (state: RootState)=> ({
+    cursor: state.cursor,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
   })
