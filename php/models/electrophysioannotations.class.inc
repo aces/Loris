@@ -29,10 +29,10 @@ class ElectrophysioAnnotations
         $db = \NDB_Factory::singleton()->database();
 
         $annotationInstance = $db->pselect(
-            'SELECT i.* 
+            'SELECT i.*
                 FROM physiological_annotation_instance AS i
                 JOIN physiological_annotation_file AS f
-                ON f.AnnotationFileID = i.AnnotationFileID 
+                ON f.AnnotationFileID = i.AnnotationFileID
                 WHERE f.PhysiologicalFileID=:PFID AND f.FileType="tsv"',
             ['PFID' => $this->_physioFileID]
         );
@@ -48,11 +48,7 @@ class ElectrophysioAnnotations
 
         $annotationLabels = $db->pselect(
             'SELECT * FROM physiological_annotation_label',
-<<<<<<< HEAD
-            ['PFID' => $this->_physioFileID]
-=======
             []
->>>>>>> loris_eeg_browser
         );
 
         $this->_data = [
@@ -77,34 +73,18 @@ class ElectrophysioAnnotations
      * Will add new derivative files if none exist for the given instance.
      * Will either add new annotations or update existing ones.
      *
-<<<<<<< HEAD
-     * @param array $instance_data Instance data
-     * @param array $metadata      Metadata
-     * // ##################### EEGNET OVERRIDE START ################## //
-     * @param int|null   $instance_id   InstanceID
-     * @param int|null   $parameter_id  ParameterID
-     * // ##################### EEGNET OVERRIDE END ################## //
-=======
      * @param array    $instance_data Instance data
      * @param array    $metadata      Metadata
      * @param int|null $instance_id   InstanceID
      * @param int|null $parameter_id  ParameterID
->>>>>>> loris_eeg_browser
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-<<<<<<< HEAD
-        // ##################### EEGNET OVERRIDE START ################## //
         ?int $instance_id,
         ?int $parameter_id
-        // ##################### EEGNET OVERRIDE END ################## //
-=======
-        ?int $instance_id,
-        ?int $parameter_id
->>>>>>> loris_eeg_browser
     ): void {
 
         $factory = \NDB_Factory::singleton();
@@ -116,23 +96,12 @@ class ElectrophysioAnnotations
             //If the label is new, add to annotation label table
             //and get label ID
             $labelID = $db->pselectOne(
-<<<<<<< HEAD
-                // ##################### EEGNET OVERRIDE START ################## //
-                // Adding MAX here as a hack fix for now until LORIS-MRI 
-                // bugfix for issue https://github.com/aces/Loris-MRI/issues/763 
-                // is available and cleanup happens of the annotation_label table 
-                "SELECT MAX(AnnotationLabelID)
-                    FROM physiological_annotation_label
-                    WHERE LabelName=:label",
-                // ##################### EEGNET OVERRIDE END ################## //
-=======
                 // Adding MAX here as a hack fix for now until LORIS-MRI
                 // bugfix for issue https://github.com/aces/Loris-MRI/issues/763
                 // is available and cleanup happens of the annotation_label table
                 "SELECT MAX(AnnotationLabelID)
                     FROM physiological_annotation_label
                     WHERE LabelName=:label",
->>>>>>> loris_eeg_browser
                 ['label' => $instance_data['label_name']]
             );
             if (empty($labelID)) {
@@ -164,26 +133,15 @@ class ElectrophysioAnnotations
                 'Author'      => $metadata['author']
             ];
 
-<<<<<<< HEAD
-            // ##################### EEGNET OVERRIDE START ################## //
-=======
->>>>>>> loris_eeg_browser
             $instance = [
                 'Onset'             => $instance_data['onset'],
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
-<<<<<<< HEAD
-                'Channels'          => $instance_data['channels'] === 'all' ? null : $instance_data['channels'],
-                'Description'       => $instance_data['description']
-            ];
-            // ##################### EEGNET OVERRIDE END ################## //
-=======
                 'Channels'          => $instance_data['channels'] === 'all' ?
                                          null :
                                          $instance_data['channels'],
                 'Description'       => $instance_data['description']
             ];
->>>>>>> loris_eeg_browser
 
             //Insert new files and data into DB
             if (empty($annotationFID)) {
@@ -393,7 +351,7 @@ class ElectrophysioAnnotations
                   p.AbsoluteTime AS AbsoluteTime,
                   p.Description AS Description
                 FROM physiological_annotation_instance p
-                  LEFT JOIN physiological_annotation_label l 
+                  LEFT JOIN physiological_annotation_label l
                     ON (l.AnnotationLabelID=p.AnnotationLabelID)
                 WHERE p.AnnotationFileID=:AFID",
                 ['AFID' => $tsv[0]['id']]
@@ -497,10 +455,6 @@ class ElectrophysioAnnotations
             ['PFID' => $this->_physioFileID]
         );
 
-<<<<<<< HEAD
-        // ##################### EEGNET OVERRIDE START ################## //
-=======
->>>>>>> loris_eeg_browser
         // Get output type (raw, derivative)
         $outputType = $db->pselectOne(
             'SELECT OutputTypeName
@@ -509,10 +463,6 @@ class ElectrophysioAnnotations
                 WHERE PhysiologicalFileID=:PFID',
             ['PFID' => $this->_physioFileID]
         );
-<<<<<<< HEAD
-        // ##################### EEGNET OVERRIDE END ################## //
-=======
->>>>>>> loris_eeg_browser
 
         //Create new filepaths
         //Get data directory base path from Config
@@ -524,28 +474,16 @@ class ElectrophysioAnnotations
             ['name' => 'dataDirBasepath']
         );
         //Create path with correct structure
-<<<<<<< HEAD
-        $subPath       = strstr($physioFilePath, "sub");
-
-        // ##################### EEGNET OVERRIDE START ################## //
-        if ($outputType === 'derivative') {
-        $destinationPath = $dataDir
-=======
         $subPath = strstr($physioFilePath, "sub");
 
         if ($outputType === 'derivative') {
             $destinationPath = $dataDir
->>>>>>> loris_eeg_browser
             . "bids_imports/derivatives/loris_annotations/"
             . $subPath;
         } else {
             $destinationPath = $dataDir . $physioFilePath;
         }
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> loris_eeg_browser
         //Create directories if they don't exist
         $dirname = pathinfo($destinationPath, PATHINFO_DIRNAME);
         if (!file_exists($dirname)) {
@@ -558,10 +496,6 @@ class ElectrophysioAnnotations
             0,
             strrpos($destinationPath, "_")
         );
-<<<<<<< HEAD
-        // ##################### EEGNET OVERRIDE END ################## //
-=======
->>>>>>> loris_eeg_browser
 
         $tsv_path  = $pathWithoutEDF . "_annotations.tsv";
         $json_path = $pathWithoutEDF . "_annotations.json";

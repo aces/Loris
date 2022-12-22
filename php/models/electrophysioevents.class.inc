@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 namespace LORIS\electrophysiology_browser\Models;
-<<<<<<< HEAD
 use SodiumException;
-=======
->>>>>>> loris_eeg_browser
 
 /**
  * This object contains the methods to get
@@ -32,23 +29,17 @@ class ElectrophysioEvents
         $db = \NDB_Factory::singleton()->database();
 
         $taskEvents = $db->pselect(
-            'SELECT te.* 
+            'SELECT te.*
                 FROM physiological_task_event AS te
                 JOIN physiological_event_file AS f
-                ON f.EventFileID = te.EventFileID 
+                ON f.EventFileID = te.EventFileID
                 WHERE f.PhysiologicalFileID=:PFID AND f.FileType="tsv"',
             ['PFID' => $this->_physioFileID]
         );
 
-<<<<<<< HEAD
-        /** 
-         * TODO: Get event params and metadata. 
-         *       NOT in the scope of current task  
-=======
         /**
          * TODO: Get event params and metadata.
          *       NOT in the scope of current task
->>>>>>> loris_eeg_browser
          **/
 
         $this->_data = [
@@ -66,14 +57,8 @@ class ElectrophysioEvents
         return $this->_data;
     }
 
-<<<<<<< HEAD
-    /** 
-     * TODO: Add other features such as add, update, delete
-     *       NOT in the scope of current task 
-=======
     /**
      * TODO: Add other features such as add, update, delete
      *       NOT in the scope of current task
->>>>>>> loris_eeg_browser
      **/
 }
