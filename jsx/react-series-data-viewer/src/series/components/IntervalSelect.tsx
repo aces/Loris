@@ -210,7 +210,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           </Handles>
 
           {/* @ts-ignore */}
-          <Ticks count={10}>
+          <Ticks count={20}>
             {({ticks}) => (
               <div
                 className="slider-ticks"
