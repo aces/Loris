@@ -81,10 +81,7 @@ const EEGMontage = (
     const angleZ = (beta + startAngle);
     setAngleZ(angleZ);
   };
-
-  const dragEnd = (v: any) => {
-    setDrag( false);
-    setMouseX( v[0] - mx + mouseX);
+  
   /**
    *
    * @param v

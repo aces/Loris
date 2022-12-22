@@ -63,6 +63,7 @@ type CProps = {
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
+  domain: number,
   amplitudeScale: number,
   rightPanel: RightPanel,
   timeSelection?: [number, number],
@@ -99,6 +100,8 @@ type CProps = {
  * @param root0.viewerHeight
  * @param root0.viewerWidth
  * @param root0.interval
+ * @param root0.setInterval
+ * @param root0.domain
  * @param root0.amplitudeScale
  * @param root0.cursor
  * @param root0.rightPanel
@@ -119,6 +122,7 @@ type CProps = {
  * @param root0.setHighPassFilter
  * @param root0.setViewerWidth
  * @param root0.setViewerHeight
+ * @param root0.setFilteredEpochs
  * @param root0.dragStart
  * @param root0.dragContinue
  * @param root0.dragEnd

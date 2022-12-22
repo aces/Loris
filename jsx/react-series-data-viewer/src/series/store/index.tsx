@@ -41,7 +41,7 @@ export const rootReducer = combineReducers({
 });
 
 export const rootEpic = combineEpics(
-  createDragBoundsEpic(),
+  createDragBoundsEpic(R.prop('bounds')),
   createTimeSelectionEpic(({bounds, timeSelection}) => {
     const {interval} = bounds;
     return {interval, timeSelection};
