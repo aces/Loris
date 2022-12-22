@@ -83,9 +83,7 @@ class Annotations extends \NDB_Page
                 $request->withAttribute('filename', $filename)
             );
         case 'DELETE':
-            // ##################### EEGNET OVERRIDE START ################## //
             $parameters = json_decode((string) $request->getBody(), true);
-            // ##################### EEGNET OVERRIDE END ################## //
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
@@ -99,12 +97,10 @@ class Annotations extends \NDB_Page
 
             (new ElectrophysioAnnotations(intval($parameters['physioFileID'])))
                 ->delete(intval($parameters['instance_id']));
-                
+
             return (new \LORIS\Http\Response\JSON\OK());
         case 'POST':
-            // ##################### EEGNET OVERRIDE START ################## //
             $parameters = json_decode((string) $request->getBody(), true);
-            // ##################### EEGNET OVERRIDE END ################## //
             if (!$user->hasPermission('electrophysiology_browser_edit_annotations')
             ) {
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
@@ -115,7 +111,6 @@ class Annotations extends \NDB_Page
             }
 
             $instance_data = $parameters['instance'];
-            // ##################### EEGNET OVERRIDE START ################## //
             // $metadata      = $parameters['metadata'];
             // TODO: Figure out a better description modeled on other derivatives
             $metadata = [
@@ -123,8 +118,8 @@ class Annotations extends \NDB_Page
                 'sources' => 'EEGNet LORIS',
                 'author' => $user->getFullname()
             ];
-            
-            $instance_id   = $parameters['instance_id'] ? 
+
+            $instance_id   = $parameters['instance_id'] ?
                  intval($parameters['instance_id']) :  null;
             // ##################### EEGNET OVERRIDE END ################## //
             $parameter_id  = $parameters['parameter_id'] ?? null;
@@ -136,7 +131,7 @@ class Annotations extends \NDB_Page
             // if new annotation, get instanceID
             if (is_null($instance_id)) {
                 $instance_id = $db->pselectOne(
-                    "SELECT MAX(AnnotationInstanceID) 
+                    "SELECT MAX(AnnotationInstanceID)
                     FROM physiological_annotation_instance ai
                     JOIN physiological_annotation_file af USING (AnnotationFileID)
                     WHERE PhysiologicalFileID=:physioFileID

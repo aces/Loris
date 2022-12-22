@@ -24,6 +24,18 @@ type CProps = {
   updateFilteredEpochs: (_: void) => void,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.domain
+ * @param root0.interval
+ * @param root0.setInterval
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.updateFilteredEpochs
+ */
 const IntervalSelect: FunctionComponent<CProps> = ({
   viewerHeight,
   domain,
@@ -51,13 +63,12 @@ const IntervalSelect: FunctionComponent<CProps> = ({
 
   return (
     <div className='row'>
-      {/* ##################### EEGNET OVERRIDE START ################## */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <h5
@@ -77,7 +88,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           style={{
             marginBottom: '20px',
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <div className='btn-group'>
@@ -86,9 +97,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 if (interval[0] !== domain[0]) {
-                  setInterval([interval[0] - 50, interval[1] - 50])
+                  setInterval([interval[0] - 50, interval[1] - 50]);
                 } else {
-                  setInterval([interval[0], interval[1] - 50])
+                  setInterval([interval[0], interval[1] - 50]);
                 }
               }}
               value='<<'
@@ -98,9 +109,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 if (interval[0] !== domain[0]) {
-                  setInterval([interval[0] - 1, interval[1] - 1])
+                  setInterval([interval[0] - 1, interval[1] - 1]);
                 } else {
-                  setInterval([interval[0], interval[1] - 1])
+                  setInterval([interval[0], interval[1] - 1]);
                 }
               }}
               value='<'
@@ -110,9 +121,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 if (interval[1] !== domain[1]) {
-                  setInterval([interval[0] + 1, interval[1] + 1])
+                  setInterval([interval[0] + 1, interval[1] + 1]);
                 } else {
-                  setInterval([interval[0] + 1, interval[1]])
+                  setInterval([interval[0] + 1, interval[1]]);
                 }
               }}
               value='>'
@@ -122,9 +133,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 if (interval[1] !== domain[1]) {
-                  setInterval([interval[0] + 50, interval[1] + 50])
+                  setInterval([interval[0] + 50, interval[1] + 50]);
                 } else {
-                  setInterval([interval[0] + 50, interval[1]])
+                  setInterval([interval[0] + 50, interval[1]]);
                 }
               }}
               value='>>'
@@ -152,7 +163,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           </div>
         </div>
       </div>
-      {/* ##################### EEGNET OVERRIDE END ################## */}
       <div
         className='col-xs-offset-1 col-xs-11'
         style={{height: viewerHeight}}
@@ -176,11 +186,14 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             setIsDragging(false);
           }}
         >
+          {/* @ts-ignore */}
           <Rail>
             {({getRailProps}) => (
               <div style={railStyle} {...getRailProps()} />
             )}
           </Rail>
+
+          {/* @ts-ignore */}
           <Handles>
             {({handles, getHandleProps}) => (
               <div className="slider-handles">
@@ -195,6 +208,8 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               </div>
             )}
           </Handles>
+
+          {/* @ts-ignore */}
           <Ticks count={10}>
             {({ticks}) => (
               <div

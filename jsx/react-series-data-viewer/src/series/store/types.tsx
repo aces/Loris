@@ -10,7 +10,7 @@ export type Chunk = {
 
 export type Trace = {
   chunks: Chunk[],
-  type: "line"
+  type: 'line'
 };
 
 export type ChannelMetadata = {
@@ -30,13 +30,10 @@ export type Epoch = {
   label: string,
   comment?: string,
   hed?: string,
-  channels: number[] | "all",
-  // ##################### EEGNET OVERRIDE START ################## //
+  channels: number[] | 'all',
   annotationInstanceID?: number,
-  // ##################### EEGNET OVERRIDE END ################## //
 };
 
-// ##################### EEGNET OVERRIDE START ################## //
 export type EventMetadata = {
   instances: any[],
 }
@@ -47,8 +44,11 @@ export type AnnotationMetadata = {
   metadata: any[]
 }
 
-export type RightPanel = 'annotationForm' | 'eventList' | 'annotationList' | null;
-// ##################### EEGNET OVERRIDE END ################## //
+export type RightPanel =
+  'annotationForm'
+  | 'eventList'
+  | 'annotationList'
+  | null;
 
 export type Electrode = {
   name: string,

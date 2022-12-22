@@ -9,17 +9,17 @@ import {rootReducer, rootEpic} from '../series/store';
 import {MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
 import {
   setChannels,
+  emptyChannels,
+} from '../series/store/state/channels';
+import {
   setEpochs,
   setDatasetMetadata,
-  emptyChannels,
+  setPhysioFileID,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
-import {Channel} from '../series/store/types';
-// ##################### EEGNET OVERRIDE START ################## //
 import {AnnotationMetadata, EventMetadata} from '../series/store/types';
-// ##################### EEGNET OVERRIDE END ################## //
 
 declare global {
   interface Window {
@@ -31,11 +31,11 @@ type CProps = {
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
-  // ##################### EEGNET OVERRIDE START ################## //
   events: EventMetadata,
   annotations: AnnotationMetadata,
-  // ##################### EEGNET OVERRIDE END ################## //
+  physioFileID: number,
   limit: number,
+  children: React.ReactNode,
 };
 
 /**
@@ -43,12 +43,9 @@ type CProps = {
  */
 class EEGLabSeriesProvider extends Component<CProps> {
   private store: Store;
-  public state: {
-    channels: Channel[]
-  };
 
   /**
-   * @constructor
+   * @class
    * @param {object} props - React Component properties
    */
   constructor(props: CProps) {
@@ -60,12 +57,6 @@ class EEGLabSeriesProvider extends Component<CProps> {
       applyMiddleware(thunk, epicMiddleware)
     );
 
-    this.state = {
-      channels: [],
-    };
-
-    this.store.subscribe(this.listener.bind(this));
-
     epicMiddleware.run(rootEpic);
 
     window.EEGLabSeriesProviderStore = this.store;
@@ -74,13 +65,21 @@ class EEGLabSeriesProvider extends Component<CProps> {
       chunksURL,
       epochsURL,
       electrodesURL,
-      // ##################### EEGNET OVERRIDE START ################## //
       events,
       annotations,
-      // ##################### EEGNET OVERRIDE END ################## //
+      physioFileID,
       limit,
     } = props;
 
+    this.store.dispatch(setPhysioFileID(physioFileID));
+
+    /**
+     *
+     * @param {Function} fetcher The fn to collect the type of data
+     * @param {string} url - The url
+     * @param {string} route - The route
+     * @returns {Promise} - The data
+     */
     const racers = (fetcher, url, route = '') => {
       if (url) {
         return [fetcher(`${url}${route}`)
@@ -135,13 +134,13 @@ class EEGLabSeriesProvider extends Component<CProps> {
             hed: hed,
             channels: 'all',
             annotationInstanceID: null,
-          }
+          };
         });
-      }).then(events => {
-        let epochs = events;
-        annotations.instances.map(instance => {
+      }).then((events) => {
+        const epochs = events;
+        annotations.instances.map((instance) => {
           const label = annotations.labels
-            .find(label =>
+            .find((label) =>
               label.AnnotationLabelID == instance.AnnotationLabelID
             ).LabelName;
           epochs.push({
@@ -156,7 +155,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
           });
         });
         return epochs;
-      }).then(epochs => {
+      }).then((epochs) => {
         this.store.dispatch(
           setEpochs(
             epochs
@@ -191,24 +190,15 @@ class EEGLabSeriesProvider extends Component<CProps> {
   }
 
   /**
-   * Store update listener
-   */
-  listener() {
-    this.setState({
-      channels: this.store.getState().dataset.channels,
-    });
-  }
-
-  /**
    * Renders the React component.
    *
-   * @return {JSX} - React markup for the component
+   * @returns {JSX} - React markup for the component
    */
   render() {
-    const [signalViewer, ...rest] = this.props.children;
+    const [signalViewer, ...rest] = React.Children.toArray(this.props.children);
     return (
       <Provider store={this.store}>
-        {(this.state.channels.length > 0) && signalViewer}
+        {signalViewer}
         {rest}
       </Provider>
     );

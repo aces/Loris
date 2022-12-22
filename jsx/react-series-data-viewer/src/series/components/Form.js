@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 export const SelectElement = (props) => {
@@ -18,7 +19,7 @@ export const SelectElement = (props) => {
     }
 
     props.onUserInput(props.name, value);
-  }
+  };
 
   let multiple = props.multiple ? 'multiple' : null;
   let required = props.required ? 'required' : null;
@@ -128,7 +129,7 @@ export const SelectElement = (props) => {
       </div>
     </div>
   );
-}
+};
 
 SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
@@ -175,7 +176,7 @@ export const NumericElement = (props) => {
 
   const handleChange = (e) => {
     props.onUserInput(props.name, e.target.value);
-  }
+  };
 
   const {disabled, required} = props;
   let requiredHTML = required ? <span className="text-danger">*</span> : null;
@@ -211,7 +212,7 @@ export const NumericElement = (props) => {
       </div>
     </div>
   );
-}
+};
 
 NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
@@ -244,7 +245,7 @@ NumericElement.defaultProps = {
 export const TextareaElement = (props) => {
   const handleChange = (e) => {
     props.onUserInput(props.name, e.target.value);
-  }
+  };
 
   let disabled = props.disabled ? 'disabled' : null;
   let required = props.required ? 'required' : null;
@@ -277,7 +278,7 @@ export const TextareaElement = (props) => {
       </div>
     </div>
   );
-}
+};
 
 TextareaElement.propTypes = {
   name: PropTypes.string.isRequired,
@@ -307,12 +308,14 @@ TextareaElement.defaultProps = {
 
 /**
  * TextboxElement - the input type='text' component.
+ *
  * @param {object} props
  * @return {JSX.Element}
  */
 export const TextboxElement = (props) => {
   /**
    * handleChange - input change by user.
+   *
    * @param {object} event - input event
    */
   const handleChange = (event) => {
@@ -328,7 +331,8 @@ export const TextboxElement = (props) => {
   };
   /**
    * Renders the React component.
-   * @return {JSX.Element} - React markup for component.
+   *
+   * @return {JSX} - React markup for component.
    */
   return (
     <>

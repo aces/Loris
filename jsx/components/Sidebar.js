@@ -56,6 +56,7 @@ class Sidebar extends Component {
 
   /**
    * Save the sidebar reference
+   *
    * @param {object} node - DOM node
    */
   saveSidebarRef(node) {

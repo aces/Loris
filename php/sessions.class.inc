@@ -462,14 +462,14 @@ class Sessions extends \NDB_Page
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
 
         // ##################### EEGNET OVERRIDE START ################## //
-        /*$fileOutput = $db->pselectone(
+        $fileOutput = $db->pselectone(
             'SELECT pot.OutputTypeName
                 FROM physiological_output_type pot
                 INNER JOIN physiological_file AS pf
                 ON pf.PhysiologicalFileID=:PFID
                 AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
             ['PFID' => $physioFileID]
-        );*/
+        );
 
         // Get the annotation data
         $annotations = new ElectrophysioAnnotations(
@@ -482,15 +482,14 @@ class Sessions extends \NDB_Page
             intval($physioFileID)
         );
         $fileSummary['events'] = $events->getData();
-        
+
         $fileSummary['epochsURL'] = $db->pselectOne(
-            "SELECT FilePath 
+            "SELECT FilePath
             FROM physiological_event_file
-            WHERE PhysiologicalFileID=:physioFileID 
+            WHERE PhysiologicalFileID=:physioFileID
             AND FileType='tsv'",
             ['physioFileID' => $physioFileID]
         );
-        error_log(print_r($fileSummary['epochsURL'], true));
         // ##################### EEGNET OVERRIDE END ################## //
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);

@@ -26,6 +26,7 @@ import {
   createLowPassFilterEpic,
   createHighPassFilterEpic,
 } from './logic/highLowPass';
+import {channelsReducer} from './state/channels';
 
 export const rootReducer = combineReducers({
   bounds: boundsReducer,
@@ -36,20 +37,22 @@ export const rootReducer = combineReducers({
   rightPanel: panelReducer,
   timeSelection: timeSelectionReducer,
   montage: montageReducer,
+  channels: channelsReducer,
 });
 
 export const rootEpic = combineEpics(
-  createDragBoundsEpic(R.prop('bounds')),
+  createDragBoundsEpic(),
   createTimeSelectionEpic(({bounds, timeSelection}) => {
     const {interval} = bounds;
     return {interval, timeSelection};
   }),
-  createFetchChunksEpic(({bounds, dataset}) => ({
+  createFetchChunksEpic(({bounds, dataset, channels}) => ({
     bounds,
     dataset,
+    channels,
   })),
-  createPaginationEpic(({dataset}) => {
-    const {limit, channelMetadata, channels} = dataset;
+  createPaginationEpic(({dataset, channels}) => {
+    const {limit, channelMetadata} = dataset;
     return {limit, channelMetadata, channels};
   }),
   createScaleAmplitudesEpic(({bounds}) => {

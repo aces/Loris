@@ -1,24 +1,20 @@
-// ##################### EEGNET OVERRIDE START ################## //
 import React, {useState, useEffect} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
 import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
-// ##################### EEGNET OVERRIDE END ################## //
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
-import { RootState } from '../store';
+import {RootState} from '../store';
 
 type CProps = {
   timeSelection?: [number, number],
   epochs: EpochType[],
   filteredEpochs: number[],
-  // ##################### EEGNET OVERRIDE START ################## //
   rightPanel: RightPanel,
   setCurrentAnnotation: (_: EpochType) => void,
-  // ##################### EEGNET OVERRIDE END ################## //
   setTimeSelection: (_: [number, number]) => void,
   setRightPanel: (_: RightPanel) => void,
   toggleEpoch: (_: number) => void,
@@ -26,19 +22,31 @@ type CProps = {
   interval: [number, number],
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.rightPanel
+ * @param root0.setCurrentAnnotation
+ * @param root0.setTimeSelection
+ * @param root0.setRightPanel
+ * @param root0.toggleEpoch
+ * @param root0.updateActiveEpoch
+ * @param root0.interval
+ */
 const EventManager = ({
   epochs,
   filteredEpochs,
-  // ##################### EEGNET OVERRIDE START ################## //
   rightPanel,
   setCurrentAnnotation,
-  // ##################### EEGNET OVERRIDE END ################## //
   setTimeSelection,
   setRightPanel,
   toggleEpoch,
   updateActiveEpoch,
   interval,
 }: CProps) => {
+
   // ##################### EEGNET OVERRIDE START ################## //
   const [epochType, setEpochType] = useState((rightPanel
     && rightPanel !== 'annotationForm'
@@ -99,9 +107,9 @@ const EventManager = ({
           justifyContent: 'space-between',
         }}
       >
-        <p style={{ margin: '0px' }}>
+        <p style={{margin: '0px'}}>
           <strong>{`${epochType}s`}</strong>
-          <span style={{ fontSize: '0.75em' }}>
+          <span style={{fontSize: '0.75em'}}>
             <br />in timeline view
           </span>
         </p>
@@ -116,7 +124,7 @@ const EventManager = ({
           ></i>
           <i
             className={'glyphicon glyphicon-tags'}
-            style={{ padding: '0.5em' }}
+            style={{padding: '0.5em'}}
             onClick={() => setAllCommentsVisible(!allCommentsVisible)}
           ></i>
           <i
@@ -148,80 +156,90 @@ const EventManager = ({
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
 
+            /**
+             *
+             */
             const handleCommentVisibilityChange = () => {
               if (!visibleComments.includes(index)) {
                 setVisibleComments([
                   ...visibleComments,
-                  index
+                  index,
                 ]);
               } else {
                 setVisibleComments(visibleComments.filter(
-                  value => value !== index
+                  (value) => value !== index
                 ));
               }
-            }
+            };
 
+            /**
+             *
+             */
             const handleEditClick = () => {
               setCurrentAnnotation(epoch);
               setRightPanel('annotationForm');
               const startTime = epoch.onset;
               const endTime = epoch.duration + startTime;
               setTimeSelection([startTime, endTime]);
-            }
+            };
 
             return (
-              <>
+              <div
+                key={index}
+                className={
+                  (epoch.type == 'Annotation' ? 'annotation ' : '')
+                  + 'list-group-item list-group-item-action'
+                }
+                style={{
+                  position: 'relative',
+                }}
+              >
                 <div
-                  key={index}
-                  className={
-                    (epoch.type == 'Annotation' ? 'annotation ' : '')
-                    + 'list-group-item list-group-item-action'
-                  }
+                  className="epoch-details"
                 >
-                  <div
-                    className="epoch-details"
-                  >
-                    {epoch.label} <br/>
-                    {epoch.onset}{epoch.duration > 0
-                      && ' - ' + (epoch.onset + epoch.duration)}
-                  </div>
-                  <div
-                    className="epoch-action"
-                  >
-                    {epoch.type === 'Annotation' &&
-                      <button
-                        type="button"
-                        className={'btn btn-xs btn-primary'}
-                        onClick={() => handleEditClick()}
-                      >
-                        <i className={
-                          'glyphicon glyphicon-edit'
-                        }></i>
-                      </button>
-                    }
+                  {epoch.label} <br/>
+                  {Math.round(epoch.onset * 1000) / 1000}
+                  {epoch.duration > 0
+                    && ' - '
+                    + (Math.round((epoch.onset + epoch.duration) * 1000) / 1000)
+                  }
+                </div>
+                <div
+                  className="epoch-action"
+                >
+                  {epoch.type === 'Annotation' &&
                     <button
                       type="button"
-                      className={(visible ? '' : 'active ')
-                        + 'btn btn-xs btn-primary'}
-                      onClick={() => toggleEpoch(index)}
-                      onMouseEnter={() => updateActiveEpoch(index)}
-                      onMouseLeave={() => updateActiveEpoch(null)}
+                      className={'btn btn-xs btn-primary'}
+                      onClick={() => handleEditClick()}
                     >
                       <i className={
-                        'glyphicon glyphicon-eye-'
-                        + (visible ? 'open' : 'close')
+                        'glyphicon glyphicon-edit'
                       }></i>
                     </button>
-                    {(epoch.comment || epoch.hed) &&
-                      <button
-                        type="button"
-                        className={'btn btn-xs btn-primary'}
-                        onClick={() => handleCommentVisibilityChange()}
-                      >
-                        <i className={'glyphicon glyphicon-tags'}></i>
-                      </button>
-                    }
-                  </div>
+                  }
+                  <button
+                    type="button"
+                    className={(visible ? '' : 'active ')
+                      + 'btn btn-xs btn-primary'}
+                    onClick={() => toggleEpoch(index)}
+                    onMouseEnter={() => updateActiveEpoch(index)}
+                    onMouseLeave={() => updateActiveEpoch(null)}
+                  >
+                    <i className={
+                      'glyphicon glyphicon-eye-'
+                      + (visible ? 'open' : 'close')
+                    }></i>
+                  </button>
+                  {(epoch.comment || epoch.hed) &&
+                    <button
+                      type="button"
+                      className={'btn btn-xs btn-primary'}
+                      onClick={() => handleCommentVisibilityChange()}
+                    >
+                      <i className={'glyphicon glyphicon-tags'}></i>
+                    </button>
+                  }
                 </div>
                 {visibleComments.includes(index) &&
                   <div className="epoch-tag">
@@ -233,7 +251,7 @@ const EventManager = ({
                     }
                   </div>
                 }
-              </>
+              </div>
             );
           })}
         </div>
@@ -241,7 +259,6 @@ const EventManager = ({
     </div>
   );
 };
-// ##################### EEGNET OVERRIDE END ################## //
 
 EventManager.defaultProps = {
   timeSelection: null,
@@ -254,18 +271,14 @@ export default connect(
     timeSelection: state.timeSelection,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
-    // ##################### EEGNET OVERRIDE START ################## //
     rightPanel: state.rightPanel,
-    // ##################### EEGNET OVERRIDE END ################## //
     interval: state.bounds.interval,
   }),
   (dispatch: (_: any) => void) => ({
-    // ##################### EEGNET OVERRIDE START ################## //
     setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),
-    // ##################### EEGNET OVERRIDE END ################## //
     setTimeSelection: R.compose(
       dispatch,
       setTimeSelection

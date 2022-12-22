@@ -1,3 +1,4 @@
+/* global EEG_VIS_ENABLED */
 /**
  * This is the React class for the eeg_session.
  *
@@ -22,6 +23,7 @@ import SeriesRenderer
   from './react-series-data-viewer/src/series/components/SeriesRenderer';
 import EEGMontage
   from './react-series-data-viewer/src/series/components/EEGMontage';
+
 
 /**
  * Electrophysiology Session View page
@@ -426,9 +428,9 @@ class ElectrophysiologySessionView extends Component {
                     </>
                   }
                   {/* ##################### EEGNET OVERRIDE START ################## */}
-                  <SeriesRenderer 
+                  <SeriesRenderer
                     physioFileID={this.state.database[i].file.id}
-                    annotationMetadata={annotations}          
+                    annotationMetadata={annotations}
                   />
                   {/* ##################### EEGNET OVERRIDE END ################## */}
                   </Panel>

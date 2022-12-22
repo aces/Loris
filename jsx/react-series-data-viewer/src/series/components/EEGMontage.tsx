@@ -4,7 +4,7 @@ import {_3d} from 'd3-3d';
 import {Group} from '@visx/group';
 import ResponsiveViewer from './ResponsiveViewer';
 import {Electrode} from '../../series/store/types';
-import {setHidden} from '../../series/store/state/montage';
+import {setHidden} from '../store/state/montage';
 import React, {useState} from 'react';
 import Panel from 'Panel';
 import {RootState} from '../store';
@@ -18,13 +18,19 @@ type CProps = {
   mouseX: number,
   mouseY: number,
   setHidden: (_: number[]) => void,
+  physioFileID: number,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.electrodes
+ * @param root0.physioFileID
+ */
 const EEGMontage = (
   {
     electrodes,
-    hidden,
-    setHidden,
+    physioFileID,
   }: CProps) => {
   if (electrodes.length === 0) return null;
 
@@ -37,26 +43,33 @@ const EEGMontage = (
   const [mouseY, setMouseY] = useState(0);
   const [view3D, setView3D] = useState(false);
 
-  const scale = 1200;
-  let scatter3D = [];
-  let scatter2D = [];
+  const scatter3D = [];
+  const scatter2D = [];
   const startAngle = 0;
   const color = '#000000';
 
-  let point3D = _3d()
+  const point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
     .z((d) => d.z)
     .rotateZ( startAngle)
-    .rotateX(-startAngle)
-    .scale(scale);
+    .rotateX(-startAngle);
 
+  /**
+   *
+   * @param v
+   */
   const dragStart = (v: any) => {
     setDrag(true);
     setMx(v[0]);
     setMy(v[1]);
   };
 
+
+  /**
+   *
+   * @param v
+   */
   const dragged = (v: any) => {
     if (!drag) return;
     const beta = (v[0] - mx + mouseX) * -2 * Math.PI;
@@ -72,44 +85,131 @@ const EEGMontage = (
   const dragEnd = (v: any) => {
     setDrag( false);
     setMouseX( v[0] - mx + mouseX);
+  /**
+   *
+   * @param v
+   */
+  const dragEnd = (v: any) => {
+    setDrag(false);
+    setMouseX(v[0] - mx + mouseX);
     setMouseY(v[1] - my + mouseY);
   };
 
   /**
    * Compute the stereographic projection.
    *
-   * Given a unit sphere with radius r = 1 and center at The origin.
+   * Given a unit sphere with radius r = 1 and center at the origin.
    * Project the point p = (x, y, z) from the sphere's South pole (0, 0, -1)
    * on a plane on the sphere's North pole (0, 0, 1).
    *
    * P' = P * (2r / (r + z))
    *
    * @param {number} x - x coordinate of electrodes on a unit sphere scale
-   * @param {number} y - x coordinate of electrodes on a unit sphere scale
-   * @param {number} z - x coordinate of electrodes on a unit sphere scale
-   * @param {number} scale - Scale to change the projection point.Defaults to 1, which is on the sphere
-   *
-   * @return {number[]} : x, y positions of electrodes as projected onto a unit circle.
+   * @param {number} y - y coordinate of electrodes on a unit sphere scale
+   * @param {number} z - z coordinate of electrodes on a unit sphere scale
+   * @param {number} scale - Scale to change the projection point.
+   *                         Defaults to 1, which is on the sphere
+   * @return {number[]} : x, y positions of electrodes
+   *                      as projected onto a unit circle.
    */
   const stereographicProjection = (x, y, z, scale=1.0) => {
-    const mu = 1.0 / (scale + z);
+    const mu = (2 * scale) / (scale + z);
     return [x * mu, y * mu];
   };
 
-  electrodes.map((electrode, i) => {
-    scatter3D.push({
-      x: electrode.position[0],
-      y: electrode.position[1],
-      z: electrode.position[2],
-    });
-    const [x, y] = stereographicProjection(
-      electrode.position[0] * 10,
-      electrode.position[1] * 10,
-      electrode.position[2] * 10
+  /**
+   * Computes an axis aligned bounding box for a set of points
+   *
+   * @param {number[][]} points - an array of nD points
+   * @return {[number, number]} : a pair of lower and upper bounds
+   */
+  const boundingBox = (points) => {
+    if (points.length === 0) return [];
+    const dim = points[0].length;
+
+    return points.reduce(
+      (boundingBox, point) => {
+        for (let j=0; j < dim; ++j) {
+          boundingBox[0][j] = Math.min(boundingBox[0][j], point[j]);
+          boundingBox[1][j] = Math.max(boundingBox[1][j], point[j]);
+        }
+        return boundingBox;
+      },
+      [points[0].slice(), points[0].slice()]
     );
-    scatter2D.push({x: x * 150, y: y * 150 / 0.8});
+  };
+
+  // Find the enclosing rectangle
+  const bb = boundingBox(
+    electrodes.map(
+      (electrode) => electrode.position.slice(0, 2)
+    )
+  );
+
+  let ALSOrientation = false;
+  let headRadius = 1;
+  let headRatio = 1;
+  let montageRadius = 100;
+
+  // === Those values may need to be adjusted
+  //     depending on the coord space/net used
+  const scale3D = 10;
+  const scale2D = 5;
+  // ===
+
+  if (bb.length > 0) {
+    // Determine if the points are in an ALS or RAS coordinate system
+    const bbw = Math.abs(bb[0][0]) + Math.abs(bb[1][0]);
+    const bbh = Math.abs(bb[0][1]) + Math.abs(bb[1][1]);
+    if (bbw > bbh) ALSOrientation = true;
+
+    // Scale the sphere used for projection
+    // with the radius of the enclosing sphere
+    headRadius = Math.max(bbw, bbh)/2;
+    headRatio = Math.max(bbw, bbh) / Math.min(bbw, bbh);
+    montageRadius = stereographicProjection(
+      headRadius,
+      0,
+      0,
+      headRadius
+    )[0] * scale2D;
+  }
+
+  electrodes.map((electrode) => {
+    let electrodeCoords = electrode.position.slice();
+
+    // SVG Y axis points toward bottom
+    // Rotate the points to have the nose up
+    electrodeCoords[1] *= -1;
+
+    // We want the electrodes in the RAS orientation
+    // Convert from ALS if necessary
+    if (ALSOrientation) {
+      electrodeCoords = [
+        electrodeCoords[1],
+        -electrodeCoords[0],
+        electrodeCoords[2],
+      ];
+    }
+
+    scatter3D.push({
+      x: electrodeCoords[0] * scale3D,
+      y: electrodeCoords[1] * scale3D,
+      z: electrodeCoords[2] * scale3D,
+    });
+
+    const [x, y] = stereographicProjection(
+      electrodeCoords[0] * headRatio,
+      electrodeCoords[1],
+      electrodeCoords[2],
+      headRadius
+    );
+    scatter2D.push({x: x * scale2D, y: y * scale2D});
   });
 
+  /**
+   *
+   */
   const Montage3D = () => (
     <Group>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
@@ -122,38 +222,43 @@ const EEGMontage = (
             fill={color}
             fillOpacity='0.3'
             opacity='1'
-          />
+          >
+            <title>{electrodes[i].name}</title>
+          </circle>
         );
       })}
     </Group>
   );
 
+  /**
+   *
+   */
   const Montage2D = () => (
     <Group>
       <line
-        x1="25" y1="-135"
-        x2="0" y2="-150"
+        x1="20" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-10}
         stroke="black"
       />
       <line
-        x1="-25" y1="-135"
-        x2="0" y2="-150"
+        x1="-20" y1={-montageRadius+5}
+        x2="0" y2={-montageRadius-10}
         stroke="black"
       />
       <ellipse
-        cx="135" cy="0"
-        rx="15" ry="40"
+        cx={montageRadius} cy="0"
+        rx="10" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
       <ellipse
-        cx="-135" cy="0"
-        rx="15" ry="40"
+        cx={-montageRadius} cy="0"
+        rx="10" ry={montageRadius*0.3}
         stroke="black"
         fillOpacity='0'
       />
       <circle
-        r='138'
+        r={montageRadius}
         stroke="black"
         fill='white'
       />
@@ -163,28 +268,20 @@ const EEGMontage = (
           key={i}
         >
           <circle
-            transform='rotate(-90)'
             cx={point.x}
             cy={point.y}
-            r='8'
+            r='7'
             fill='white'
             stroke={color}
           >
             <title>{electrodes[i].name}</title>
           </circle>
           <text
-            transform={
-              'rotate(-90) rotate(90, '
-              + point.x
-              + ', '
-              + point.y
-              + ')'
-            }
             x={point.x}
             y={point.y}
             dominantBaseline="central"
             textAnchor="middle"
-            fontSize="8px"
+            fontSize="7px"
           >
             {i + 1}
             <title>{electrodes[i].name}</title>
@@ -197,7 +294,7 @@ const EEGMontage = (
   return (
     <div className='col-lg-4 col-md-6'>
       <Panel
-        id='electrode-montage'
+        id={'electrode-montage-' + physioFileID}
         title={'Electrode Map'}
       >
         <div
@@ -258,6 +355,7 @@ export default connect(
   (state: RootState) => ({
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
+    physioFileID: state.dataset.physioFileID,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

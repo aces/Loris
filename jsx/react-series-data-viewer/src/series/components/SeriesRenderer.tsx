@@ -1,10 +1,20 @@
-import React, {useCallback, useEffect, useState, FunctionComponent} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  FunctionComponent,
+} from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
-import {MAX_RENDERED_EPOCHS, MAX_CHANNELS, SIGNAL_UNIT, Vector2} from '../../vector';
+import {
+  MAX_RENDERED_EPOCHS,
+  MAX_CHANNELS,
+  SIGNAL_UNIT,
+  Vector2,
+} from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
 import LineChunk from './LineChunk';
@@ -45,20 +55,16 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel,
-// ##################### EEGNET OVERRIDE START ################## //
   AnnotationMetadata,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-// ##################### EEGNET OVERRIDE END ################## //
 
 type CProps = {
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
-  domain: number,
   amplitudeScale: number,
   rightPanel: RightPanel,
-  cursor?: number,
   timeSelection?: [number, number],
   setCursor: (number) => void,
   setRightPanel: (_: RightPanel) => void,
@@ -82,13 +88,45 @@ type CProps = {
   dragEnd: (_: number) => void,
   limit: number,
   setInterval: (_: [number, number]) => void,
-  // ##################### EEGNET OVERRIDE START ################## //
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
   annotationMetadata: AnnotationMetadata,
-  // ##################### EEGNET OVERRIDE END ################## //
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.viewerWidth
+ * @param root0.interval
+ * @param root0.amplitudeScale
+ * @param root0.cursor
+ * @param root0.rightPanel
+ * @param root0.timeSelection
+ * @param root0.setCursor
+ * @param root0.setRightPanel
+ * @param root0.channels
+ * @param root0.channelMetadata
+ * @param root0.hidden
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.activeEpoch
+ * @param root0.offsetIndex
+ * @param root0.setOffsetIndex
+ * @param root0.setAmplitudesScale
+ * @param root0.resetAmplitudesScale
+ * @param root0.setLowPassFilter
+ * @param root0.setHighPassFilter
+ * @param root0.setViewerWidth
+ * @param root0.setViewerHeight
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.limit
+ * @param root0.setCurrentAnnotation
+ * @param root0.physioFileID
+ * @param root0.annotationMetadata
+ */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
@@ -96,7 +134,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setInterval,
   domain,
   amplitudeScale,
-  cursor,
   rightPanel,
   timeSelection,
   setCursor,
@@ -120,19 +157,17 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   dragContinue,
   dragEnd,
   limit,
-  // ##################### EEGNET OVERRIDE START ################## //
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
-  // ##################### EEGNET OVERRIDE END ################## //
 }) => {
   if (channels.length === 0) return null;
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [cursor, offsetIndex, interval]);
+  const memoizedCallback = useCallback(() => {}, [/*cursor*/, offsetIndex, interval]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
-      if (cursor) { // Cursor not null implies on page / focus
+      /*if (cursor) { // Cursor not null implies on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
           switch(e.code){
             case "ArrowUp":
@@ -162,7 +197,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
           e.preventDefault(); // Make sure arrows don't scroll
         }
-      }
+      } */
 
       // Generic keybinds that don't require focus
       if (e.code === 'KeyC' && e.shiftKey) { // Close all right panels
@@ -216,7 +251,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   vec2.add(center, topLeft, bottomRight);
   vec2.scale(center, center, 1 / 2);
 
-  const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+  const scales: [
+      ScaleLinear<number, number, never>,
+      ScaleLinear<number, number, never>
+  ] = [
     scaleLinear()
       .domain(interval)
       .range([topLeft[0], bottomRight[0]]),
@@ -227,6 +265,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   * @param root0.interval
+   */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
       <>
@@ -262,14 +307,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
-                color={epochs[index].type === 'Annotation' ? '#fabb8e' : '#8eecfa'}
+                color={epochs[index]?.type === 'Annotation' ?
+                  '#fabb8e' :
+                  '#8eecfa'
+                }
                 key={`${index}`}
                 scales={scales}
                 opacity={0.7}
               />
             );
           })
-          // ##################### EEGNET OVERRIDE END ################## //
         }
         {timeSelection &&
           <Epoch
@@ -286,15 +333,19 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            // ##################### EEGNET OVERRIDE START ################## //
             color={'#d8ffcc'}
-            // ##################### EEGNET OVERRIDE END ################## //
           />
         }
       </Group>
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / MAX_CHANNELS;
     return (
@@ -319,6 +370,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
       setViewerWidth(viewerWidth);
@@ -326,7 +382,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     return (
       <>
-        <clipPath id='lineChunk' clipPathUnits='userSpaceOnUse'>
+        <clipPath
+          id={'lineChunk-' + physioFileID}
+          clipPathUnits='userSpaceOnUse'
+        >
           <rect
             x={-viewerWidth / 2}
             y={-viewerHeight / (2 * MAX_CHANNELS)}
@@ -363,7 +422,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
           const seriesRange = channelMetadata[channel.index].seriesRange;
-          const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+          const scales: [
+            ScaleLinear<number, number, never>,
+            ScaleLinear<number, number, never>
+          ] = [
             scaleLinear()
               .domain(interval)
               .range([subTopLeft[0], subBottomRight[0]]),
@@ -384,6 +446,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   seriesRange={seriesRange}
                   amplitudeScale={amplitudeScale}
                   scales={scales}
+                  physioFileID={physioFileID}
                 />
               ))
             ))
@@ -395,12 +458,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
 
+  /**
+   *
+   * @param v
+   */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
     return (dragContinue)(x);
   };
 
+  /**
+   *
+   * @param v
+   */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     document.removeEventListener('mousemove', onMouseMove);
@@ -473,7 +544,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(HIGH_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setHighPassFilter(key);
                               setHighPass(key);
                             }}
@@ -505,7 +576,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(LOW_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setLowPassFilter(key);
                               setLowPass(key);
                             }}
@@ -531,7 +602,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         style={{width: '55px'}}
                         value={offsetIndex}
                         onChange={(e) => {
-                          let value = parseInt(e.target.value);
+                          const value = parseInt(e.target.value);
                           !isNaN(value) && setOffsetIndex(value);
                         }}
                       />
@@ -620,19 +691,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
-                    cursor={cursor}
                     channels={channels}
                     interval={interval}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       // @ts-ignore
-                      mouseMove={R.compose(setCursor, R.nth(0))}
-                      mouseDown={(v: Vector2) => {
+                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
+                      mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
                         R.compose(dragStart, R.nth(0))(v);
-                      }}
+                      }, [bounds])}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -660,9 +730,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }}
             >
               <div className='col-xs-offset-1 col-xs-11'>
-                
                 {
-                // ##################### EEGNET OVERRIDE START ################## //
                   [...Array(epochs.length).keys()].filter((i) =>
                     epochs[i].type === 'Event'
                   ).length > 0 &&
@@ -721,7 +789,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       : 'Add Annotation'
                     }
                   </button>
-                  // ##################### EEGNET OVERRIDE END ################## //
                 }
 
                 <div
@@ -734,11 +801,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 >
                   {[...Array(epochs.length).keys()].filter((i) =>
                       epochs[i].onset + epochs[i].duration > interval[0]
-                    && epochs[i].onset < interval[1]
-                    // ##################### EEGNET OVERRIDE START ################## //
-                      && ((epochs[i].type === 'Event' && rightPanel === 'eventList')
-                      || (epochs[i].type === 'Annotation' && rightPanel === 'annotationList'))
-                    // ##################### EEGNET OVERRIDE END ################## //
+                      && epochs[i].onset < interval[1]
+                      && (
+                        (epochs[i].type === 'Event'
+                         && rightPanel === 'eventList')
+                        ||
+                        (epochs[i].type === 'Annotation'
+                         && rightPanel === 'annotationList')
+                      )
                     ).length >= MAX_RENDERED_EPOCHS &&
                     <div
                       style={{
@@ -756,7 +826,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           </div>
           {rightPanel &&
             <div className='col-md-3'>
-              {/* ##################### EEGNET OVERRIDE START ################## */}
               {rightPanel === 'annotationForm' &&
                 <AnnotationForm
                   physioFileID={physioFileID}
@@ -765,7 +834,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }
               {rightPanel === 'eventList' && <EventManager />}
               {rightPanel === 'annotationList' && <EventManager />}
-              {/* ##################### EEGNET OVERRIDE START ################## */}
             </div>
           }
         </div>
@@ -796,10 +864,9 @@ export default connect(
     viewerHeight: state.bounds.viewerHeight,
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
-    cursor: state.cursor,
     rightPanel: state.rightPanel,
     timeSelection: state.timeSelection,
-    channels: state.dataset.channels,
+    channels: state.channels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
@@ -807,6 +874,7 @@ export default connect(
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
     domain: state.bounds.domain,
+    physioFileID: state.dataset.physioFileID,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(
@@ -853,12 +921,10 @@ export default connect(
       dispatch,
       setFilteredEpochs
     ),
-    // ##################### EEGNET OVERRIDE START ################## //
-    setCurrentAnnotation: R.compose(
+   setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),
-    // ##################### EEGNET OVERRIDE END ################## //
     dragStart: R.compose(
       dispatch,
       startDragSelection
