@@ -61,6 +61,7 @@ const SeriesCursor = (
    */
   const Cursor = () => (
     <div
+      id={'cursor-div'}
       style={{
         position: 'absolute',
         left,

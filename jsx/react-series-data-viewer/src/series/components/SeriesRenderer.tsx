@@ -103,7 +103,6 @@ type CProps = {
  * @param root0.setInterval
  * @param root0.domain
  * @param root0.amplitudeScale
- * @param root0.cursor
  * @param root0.rightPanel
  * @param root0.timeSelection
  * @param root0.setCursor
@@ -168,10 +167,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   if (channels.length === 0) return null;
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [/*cursor*/, offsetIndex, interval]);
+  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
-      /*if (cursor) { // Cursor not null implies on page / focus
+      if (document.querySelector('#cursor-div')) { // Cursor not null implies on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
           switch(e.code){
             case "ArrowUp":
@@ -201,7 +200,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
           e.preventDefault(); // Make sure arrows don't scroll
         }
-      } */
+      }
 
       // Generic keybinds that don't require focus
       if (e.code === 'KeyC' && e.shiftKey) { // Close all right panels
