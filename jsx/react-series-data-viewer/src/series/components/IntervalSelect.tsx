@@ -61,6 +61,22 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     cursor: 'pointer',
   };
 
+  const increaseIntervalBy = (increment: number) => {
+    const intervalSize = interval[1] - interval[0];
+    setInterval([
+      Math.min(Math.ceil(domain[1]) - intervalSize, interval[0] + increment),
+      Math.min(Math.ceil(domain[1]), interval[1] + increment)
+    ]);
+  }
+
+  const decreaseIntervalBy = (decrement: number) => {
+    const intervalSize = interval[1] - interval[0];
+    setInterval([
+      Math.max(Math.floor(domain[0]), interval[0] - decrement),
+      Math.max(Math.floor(domain[0]) + intervalSize, interval[1] - decrement)
+    ]);
+  }
+
   return (
     <div className='row'>
       <div
@@ -96,11 +112,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               type='button'
               className='btn btn-primary btn-xs'
               onClick={() => {
-                if (interval[0] !== domain[0]) {
-                  setInterval([interval[0] - 50, interval[1] - 50]);
-                } else {
-                  setInterval([interval[0], interval[1] - 50]);
-                }
+                decreaseIntervalBy(interval[1] - interval[0]);
               }}
               value='<<'
             />
@@ -108,11 +120,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               type='button'
               className='btn btn-primary btn-xs'
               onClick={() => {
-                if (interval[0] !== domain[0]) {
-                  setInterval([interval[0] - 1, interval[1] - 1]);
-                } else {
-                  setInterval([interval[0], interval[1] - 1]);
-                }
+                decreaseIntervalBy(1);
               }}
               value='<'
             />
@@ -120,11 +128,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               type='button'
               className='btn btn-primary btn-xs'
               onClick={() => {
-                if (interval[1] !== domain[1]) {
-                  setInterval([interval[0] + 1, interval[1] + 1]);
-                } else {
-                  setInterval([interval[0] + 1, interval[1]]);
-                }
+                increaseIntervalBy(1);
               }}
               value='>'
             />
@@ -132,11 +136,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               type='button'
               className='btn btn-primary btn-xs'
               onClick={() => {
-                if (interval[1] !== domain[1]) {
-                  setInterval([interval[0] + 50, interval[1] + 50]);
-                } else {
-                  setInterval([interval[0] + 50, interval[1]]);
-                }
+                increaseIntervalBy(interval[1] - interval[0]);
               }}
               value='>>'
             />

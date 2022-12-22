@@ -172,7 +172,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const keybindHandler = (e) => {
       if (document.querySelector('#cursor-div')) { // Cursor not null implies on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-          switch(e.code){
+          const intervalSize = interval[1] - interval[0];
+          
+          switch(e.code) {
             case "ArrowUp":
               setOffsetIndex(offsetIndex - limit);
               break;
@@ -180,18 +182,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               setOffsetIndex(offsetIndex + limit);
               break;
             case "ArrowRight":
-              if (interval[1] !== domain[1]) { // Bounds check
-                setInterval([interval[0] + 50, interval[1] + 50]);
-              } else {
-                setInterval([interval[0] + 50, interval[1]]);
-              }
+              setInterval([
+                Math.min(Math.ceil(domain[1]) - intervalSize, interval[0] + intervalSize),
+                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize)
+              ]);
               break;
             case "ArrowLeft":
-              if (interval[0] !== domain[0]) { // Bounds check
-                setInterval([interval[0] - 50, interval[1] - 50]);
-              } else {
-                setInterval([interval[0], interval[1] - 50]);
-              }
+              setInterval([
+                Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
+                Math.max(Math.floor(domain[0]) + intervalSize, interval[1] - intervalSize)
+              ]);
               break;
             default:
               console.log('Keyboard event handler error.');
