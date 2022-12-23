@@ -61,21 +61,81 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     cursor: 'pointer',
   };
 
+  /**
+   *
+   * @param increment
+   */
   const increaseIntervalBy = (increment: number) => {
     const intervalSize = interval[1] - interval[0];
     setInterval([
-      Math.min(Math.ceil(domain[1]) - intervalSize, interval[0] + increment),
-      Math.min(Math.ceil(domain[1]), interval[1] + increment)
+      Math.min(domain[1] - intervalSize, interval[0] + increment),
+      Math.min(domain[1], interval[1] + increment)
     ]);
   }
 
+  /**
+   *
+   * @param decrement
+   */
   const decreaseIntervalBy = (decrement: number) => {
     const intervalSize = interval[1] - interval[0];
     setInterval([
-      Math.max(Math.floor(domain[0]), interval[0] - decrement),
-      Math.max(Math.floor(domain[0]) + intervalSize, interval[1] - decrement)
+      Math.max(domain[0], interval[0] - decrement),
+      Math.max(domain[0] + intervalSize, interval[1] - decrement)
     ]);
   }
+
+  /**
+   *
+   * @param value
+   */
+  const round = (value: number) => {
+    return Math.round(value * 100 +  Number.EPSILON) / 100
+  }
+
+  /**
+   *
+   * @param event
+   */
+  const handleIntervalChange = (event) => {
+    let value = parseInt(event.target.value);
+    const name = event.target.name;
+
+    if (isNaN(value)){
+      if (event.target.value === '') {
+        if (name.endsWith('lower-bound')) {
+          setInterval([0, interval[1]]);
+        } else if (name.endsWith('upper-bound')) {
+          setInterval([interval[0], 0]);
+        }
+      }
+      return;
+    }
+
+    if (name.endsWith('lower-bound')) {
+      // Prevent exceeding max, which causes render
+      setInterval([Math.min(value, domain[1]), interval[1]]);
+    } else if (name.endsWith('upper-bound')) {
+      setInterval([interval[0], value]);
+    }
+  };
+
+  /**
+   *
+   * @param event
+   */
+  const handleIntervalBlur = (event) => {
+    const value = parseInt(event.target.value);
+
+    if (isNaN(value)){
+      setInterval(interval);  // Reset
+      return;
+    }
+
+    if (interval[0] > interval[1] || interval[1] < interval[0]) {
+      setInterval([interval[1], interval[0]]);  // Invert
+    }
+  };
 
   return (
     <div className='row'>
@@ -123,6 +183,28 @@ const IntervalSelect: FunctionComponent<CProps> = ({
                 decreaseIntervalBy(1);
               }}
               value='<'
+            />
+            <input
+              name='interval-lower-bound'
+              className='input-interval-bound'
+              type='number'
+              value={round(interval[0])}
+              min={domain[0]}
+              max={domain[1]}
+              onChange={handleIntervalChange}
+              onBlur={handleIntervalBlur}
+              onFocus={(e) => e.target.select()}
+            />
+            <input
+              name='interval-upper-bound'
+              className='input-interval-bound'
+              type='number'
+              value={round(interval[1])}
+              min={domain[0]}
+              max={domain[1]}
+              onChange={handleIntervalChange}
+              onBlur={handleIntervalBlur}
+              onFocus={(e) => e.target.select()}
             />
             <input
               type='button'
