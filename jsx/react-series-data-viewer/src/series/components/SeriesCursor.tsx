@@ -21,7 +21,8 @@ type CProps = {
   filteredEpochs: number[],
   CursorContent: (_: CursorContentProps) => JSX.Element,
   interval: [number, number],
-  showMarker: boolean
+  showMarker: boolean,
+  enabled: boolean,
 };
 
 /**
@@ -34,6 +35,7 @@ type CProps = {
  * @param root0.CursorContent
  * @param root0.interval
  * @param root0.showMarker
+ * @param root0.enabled
  */
 const SeriesCursor = (
   {
@@ -44,6 +46,7 @@ const SeriesCursor = (
     CursorContent,
     interval,
     showMarker,
+    enabled,
   }: CProps
 ) => {
   if (!cursor) return null;
@@ -164,7 +167,7 @@ const SeriesCursor = (
       }}
     >
       <Cursor />
-      <ValueTags />
+      {enabled ? <ValueTags /> : null}
       <TimeMarker />
       <EpochMarker />
     </div>
@@ -261,6 +264,7 @@ SeriesCursor.defaultProps = {
   filteredEpochs: [],
   CursorContent,
   showMarker: false,
+  enabled: false
 };
 
 export default connect(

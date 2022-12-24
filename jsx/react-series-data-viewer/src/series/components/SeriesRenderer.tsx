@@ -209,6 +209,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       if (e.code === 'KeyA' && e.shiftKey) { // Open annotation form
         setRightPanel('annotationForm');
       }
+      if (e.code === 'KeyV' && e.shiftKey) { // Open annotation form
+        toggleCursor();
+      }
     }
 
     window.addEventListener('keydown', keybindHandler);
@@ -227,6 +230,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
   }, [viewerWidth]);
 
+  const [cursorEnabled, setCursorEnabled] = useState(false);
+  const toggleCursor = () => setCursorEnabled(value => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -696,6 +701,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <SeriesCursor
                     channels={channels}
                     interval={interval}
+                    enabled={cursorEnabled}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
