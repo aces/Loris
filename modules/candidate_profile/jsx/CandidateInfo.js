@@ -26,7 +26,6 @@ export class CandidateInfo extends Component {
      * months. Otherwise, it will return an age in years.
      *
      * @param {string} dob - The date of birth in format YYYY-MM-DD
-     *
      * @return {string} - A human readable string of the age.
      */
     calcAge(dob) {
@@ -47,7 +46,6 @@ export class CandidateInfo extends Component {
      *
      * @param {array} visits - An array of visits in the format of
      *                         the LORIS API
-     *
      * @return {array} - The unique list of cohorts as a string.
      */
     getCohorts(visits) {
@@ -68,7 +66,6 @@ export class CandidateInfo extends Component {
      * similar to the candidate dashboard.
      *
      * @param {array} visits - List of visits in the format returned by the LORIS API.
-     *
      * @return {object} - A React element containing a comma separated list of links.
      */
     getVisitList(visits) {

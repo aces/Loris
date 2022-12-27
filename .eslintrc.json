@@ -2,11 +2,25 @@
   "parser": "@babel/eslint-parser",
   "plugins": [
     "react",
-    "no-jquery"
+    "no-jquery",
+    "jsdoc"
+
   ],
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "jsdoc": {
+      "tagNamePreference": {
+        "return": "return",
+        "tag constructor": "constructor"
+      },
+      "preferredTypes": {
+        "Function": "function",
+        "function": "Function",
+        "Array": "array",
+        "array": "Array"
+      }
     }
   },
   "env": {
@@ -22,7 +36,12 @@
       "globalReturn": false
     }
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "google"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:jsdoc/recommended",
+    "google"
+  ],
   "rules": {
     "max-len": ["error", {
         "code": 80,
@@ -53,7 +72,8 @@
     "react/jsx-uses-vars": "error",
     "prefer-rest-params": "error",
     "array-callback-return": "off",
-    "require-jsdoc": "error",
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off",
     "no-implicit-globals": "off",
     "no-invalid-this": "off",
     "no-alert": "off",
@@ -62,14 +82,31 @@
     }],
     "no-console": ["warn", {
       "allow": ["info", "warn", "error"]
-    }]
+    }],
+    "jsdoc/require-param-description": "off",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-returns-description": "off"
   },
   "overrides": [
     {
       "files": "**/*.+(ts|tsx)",
       "plugins": ["@typescript-eslint"],
-      "extends": ["plugin:@typescript-eslint/recommended", "eslint:recommended", "plugin:react/recommended", "google"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended"
+      ],
       "rules": {
+        "jsdoc/require-jsdoc": [
+          "error",
+          {"require": {
+            "ArrowFunctionExpression": true,
+            "FunctionExpression": true,
+            "ClassDeclaration": true,
+            "MethodDefinition": true
+          }}
+        ],
+        "jsdoc/require-param-description": "error",
+        "jsdoc/require-returns": "error",
+        "jsdoc/require-returns-description": "error",
         "no-undef": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-explicit-any": "off"
@@ -246,6 +283,7 @@
     "loris": true,
     "QueryString": true,
     "swal": true,
-    "schema_urls": true
+    "schema_urls": true,
+    "JSX": true
   }
 }

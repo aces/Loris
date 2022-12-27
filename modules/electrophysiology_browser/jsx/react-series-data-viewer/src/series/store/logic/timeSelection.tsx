@@ -18,6 +18,12 @@ export const endDragSelection = createAction(END_DRAG_SELECTION);
 
 export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 
+/**
+ * createTimeSelectionEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -32,12 +38,28 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     Rx.map(R.prop('payload'))
   );
 
+  /**
+   * initInterval
+   *
+   * @param {Array} root - An array
+   * @param {number} root."0" - The mouse position
+   * @param {object} root."1" - The state
+   * @returns {Function} - Action creator for dispatching actions
+   */
   const initInterval = ([position, state]) => {
     const {interval} = R.clone(fromState(state));
     const x = Math.round(interval[0] + position * (interval[1] - interval[0]));
     return setTimeSelection([x, x]);
   };
 
+  /**
+   * updateInterval
+   *
+   * @param {Array} root - An array
+   * @param {number} root."0" - The mouse position
+   * @param {object} root."1" - The state
+   * @returns {Function} - Action creator for dispatching actions
+   */
   const updateInterval = ([position, state]) => {
     const {interval, timeSelection} = R.clone(fromState(state));
     const x = interval[0] + position * (interval[1] - interval[0]);

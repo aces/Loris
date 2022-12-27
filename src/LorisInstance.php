@@ -76,7 +76,8 @@ class LorisInstance
         $modules = [];
         foreach ($mnames as $name) {
             try {
-                $modules[] = \Module::factory($this, $name);
+                $mod       = $this->getModule($name);
+                $modules[] = $mod;
             } catch (\LorisModuleMissingException $e) {
                 error_log($e->getMessage() . " " . $e->getTraceAsString());
             }
@@ -114,6 +115,18 @@ class LorisInstance
             }
         }
         return false;
+    }
+
+    /**
+     * Get the \Module class for the module named $name,
+     * if enabled on this LORIS instance or throw an exception
+     * if it doesn't exist.
+     *
+     * @return \Module
+     */
+    public function getModule(string $name) : \Module
+    {
+        return \Module::factory($this, $name);
     }
 
     /**

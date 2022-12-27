@@ -58,7 +58,6 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
@@ -81,8 +80,7 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} name
    * @param {boolean} value
-   * @param {int} id - module id
-   *
+   * @param {number} id
    */
   toggleActive(name, value, id) {
     fetch(
@@ -134,9 +132,7 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} modulename
    * @param {boolean} value
-   *
    * @return {boolean}
-   *
    */
   setModuleDisplayStatus(modulename, value) {
     let data = this.state.data;
@@ -159,7 +155,6 @@ class ModuleManagerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {

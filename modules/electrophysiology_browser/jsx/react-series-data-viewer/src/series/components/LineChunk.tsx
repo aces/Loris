@@ -63,6 +63,18 @@ type CProps = {
   color?: string
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.channelIndex
+ * @param root0.traceIndex
+ * @param root0.chunkIndex
+ * @param root0.chunk
+ * @param root0.seriesRange
+ * @param root0.amplitudeScale
+ * @param root0.scales
+ * @param root0.physioFileID
+ */
 const LineChunk = ({
   channelIndex,
   traceIndex,

@@ -64,7 +64,6 @@ type CProps = {
   interval: [number, number],
   amplitudeScale: number,
   rightPanel: RightPanel,
-  cursor?: number,
   timeSelection?: [number, number],
   setCursor: (number) => void,
   setRightPanel: (_: RightPanel) => void,
@@ -92,12 +91,45 @@ type CProps = {
   annotationMetadata: AnnotationMetadata,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.viewerWidth
+ * @param root0.interval
+ * @param root0.amplitudeScale
+ * @param root0.cursor
+ * @param root0.rightPanel
+ * @param root0.timeSelection
+ * @param root0.setCursor
+ * @param root0.setRightPanel
+ * @param root0.channels
+ * @param root0.channelMetadata
+ * @param root0.hidden
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.activeEpoch
+ * @param root0.offsetIndex
+ * @param root0.setOffsetIndex
+ * @param root0.setAmplitudesScale
+ * @param root0.resetAmplitudesScale
+ * @param root0.setLowPassFilter
+ * @param root0.setHighPassFilter
+ * @param root0.setViewerWidth
+ * @param root0.setViewerHeight
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.limit
+ * @param root0.setCurrentAnnotation
+ * @param root0.physioFileID
+ * @param root0.annotationMetadata
+ */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
   interval,
   amplitudeScale,
-  cursor,
   rightPanel,
   timeSelection,
   setCursor,
@@ -177,6 +209,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   * @param root0.interval
+   */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
       <>
@@ -194,6 +233,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   */
   const EpochsLayer = () => {
     return (
       <Group>
@@ -236,6 +278,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / MAX_CHANNELS;
     return (
@@ -260,6 +308,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
       setViewerWidth(viewerWidth);
@@ -343,12 +396,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
 
+  /**
+   *
+   * @param v
+   */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
     return (dragContinue)(x);
   };
 
+  /**
+   *
+   * @param v
+   */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     document.removeEventListener('mousemove', onMouseMove);
@@ -568,19 +629,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
-                    cursor={cursor}
                     channels={channels}
                     interval={interval}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       // @ts-ignore
-                      mouseMove={R.compose(setCursor, R.nth(0))}
-                      mouseDown={(v: Vector2) => {
+                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
+                      mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
                         R.compose(dragStart, R.nth(0))(v);
-                      }}
+                      }, [bounds])}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -743,10 +803,9 @@ export default connect(
     viewerHeight: state.bounds.viewerHeight,
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
-    cursor: state.cursor,
     rightPanel: state.rightPanel,
     timeSelection: state.timeSelection,
-    channels: state.dataset.channels,
+    channels: state.channels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,

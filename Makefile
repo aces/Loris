@@ -1,6 +1,6 @@
 .PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
 
-all: VERSION javascript
+all: VERSION jsdev
 	composer install --no-dev
 
 # If anything changes, re-generate the VERSION file

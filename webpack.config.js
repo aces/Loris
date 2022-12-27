@@ -50,9 +50,9 @@ const resolve = {
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
-     fs: false,
-     path: false,
-   },
+    fs: false,
+    path: false,
+  },
 };
 
 const mod = {
@@ -76,7 +76,16 @@ if ('EEG_VIS_ENABLED' in process.env) {
     'useEEGBrowserVisualizationComponents',
   ], {});
 
-  EEGVisEnabled = JSON.parse(getConfig.stdout);
+  try {
+    EEGVisEnabled = JSON.parse(getConfig.stdout);
+  } catch (e) {
+    console.warn(
+      '\x1b[33m',
+      'WARNING: Unable to fetch DB config',
+      'useEEGBrowserVisualizationComponents',
+      '\x1b[0m',
+    );
+  }
 }
 
 modulePlugins.push(
@@ -129,7 +138,7 @@ let mode = 'production';
 try {
   const configFile = fs.readFileSync('project/config.xml', 'latin1');
   const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
+    .exec(configFile);
   if (res && parseInt(res[1]) == 1) mode = 'development';
 } catch (error) {
   console.error(
@@ -144,7 +153,6 @@ try {
  *
  * @param {string} mname - The LORIS module name
  * @param {array} entries - The webpack entry points for the module
- *
  * @return {object} - The webpack configuration
  */
 function lorisModule(mname, entries) {
@@ -334,7 +342,7 @@ const lorisModules = {
   ],
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
-  help_editor: ['help_editor'],
+  help_editor: ['help_editor', 'help_editor_helper'],
   brainbrowser: ['Brainbrowser'],
   imaging_uploader: ['index'],
   acknowledgements: ['acknowledgementsIndex'],

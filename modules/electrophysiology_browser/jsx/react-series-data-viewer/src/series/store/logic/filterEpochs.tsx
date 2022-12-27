@@ -17,6 +17,12 @@ export const updateActiveEpoch = createAction(UPDATE_ACTIVE_EPOCH);
 
 export type Action = (_: (_: any) => void) => void;
 
+/**
+ * createFilterEpochsEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -44,6 +50,12 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
   );
 };
 
+/**
+ * createToggleEpochEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createToggleEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -74,6 +86,12 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
   );
 };
 
+/**
+ * createActiveEpochEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createActiveEpochEpic = (fromState: (_: any) => any) => (
   action$: Observable<any>,
   state$: Observable<any>

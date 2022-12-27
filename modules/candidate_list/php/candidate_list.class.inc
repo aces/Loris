@@ -71,7 +71,7 @@ class Candidate_List extends \DataFrameworkMenu
     {
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
-        \Module::factory($this->lorisinstance, 'candidate_parameters');
+        \Module::factory($this->loris, 'candidate_parameters');
 
         // create user object
         $factory = \NDB_Factory::singleton();

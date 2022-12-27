@@ -21,6 +21,12 @@ type CProps = {
   physioFileID: number,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.electrodes
+ * @param root0.physioFileID
+ */
 const EEGMontage = (
   {
     electrodes,
@@ -49,12 +55,20 @@ const EEGMontage = (
     .rotateZ( startAngle)
     .rotateX(-startAngle);
 
+  /**
+   *
+   * @param v
+   */
   const dragStart = (v: any) => {
     setDrag(true);
     setMx(v[0]);
     setMy(v[1]);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragged = (v: any) => {
     if (!drag) return;
     const beta = (v[0] - mx + mouseX) * -2 * Math.PI;
@@ -67,6 +81,10 @@ const EEGMontage = (
     setAngleZ(angleZ);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragEnd = (v: any) => {
     setDrag(false);
     setMouseX(v[0] - mx + mouseX);
@@ -83,11 +101,10 @@ const EEGMontage = (
    * P' = P * (2r / (r + z))
    *
    * @param {number} x - x coordinate of electrodes on a unit sphere scale
-   * @param {number} y - x coordinate of electrodes on a unit sphere scale
-   * @param {number} z - x coordinate of electrodes on a unit sphere scale
+   * @param {number} y - y coordinate of electrodes on a unit sphere scale
+   * @param {number} z - z coordinate of electrodes on a unit sphere scale
    * @param {number} scale - Scale to change the projection point.
    *                         Defaults to 1, which is on the sphere
-   *
    * @return {number[]} : x, y positions of electrodes
    *                      as projected onto a unit circle.
    */
@@ -99,9 +116,8 @@ const EEGMontage = (
   /**
    * Computes an axis aligned bounding box for a set of points
    *
-   * @param {Array<number[]>} points - an array of nD points
-   *
-   * @return {number[]} : a pair of lower and upper bounds
+   * @param {number[][]} points - an array of nD points
+   * @return {[number, number]} : a pair of lower and upper bounds
    */
   const boundingBox = (points) => {
     if (points.length === 0) return [];
@@ -187,6 +203,9 @@ const EEGMontage = (
     scatter2D.push({x: x * scale2D, y: y * scale2D});
   });
 
+  /**
+   *
+   */
   const Montage3D = () => (
     <Group>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
@@ -207,6 +226,9 @@ const EEGMontage = (
     </Group>
   );
 
+  /**
+   *
+   */
   const Montage2D = () => (
     <Group>
       <line

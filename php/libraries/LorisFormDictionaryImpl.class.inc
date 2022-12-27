@@ -35,7 +35,7 @@ trait LorisFormDictionaryImpl
      * Variable from NDB_Page. Must be included in trait
      * to avoid PhanUndeclaredProperty errors.
      */
-    protected $loris;
+    protected \LORIS\LorisInstance $loris;
 
     /**
      * Recursively extract non-group elements from $elements, and

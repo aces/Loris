@@ -514,6 +514,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSearchButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         $this->safeGet($this->url . "/mri_violations/");
         //testing search by PatientName
         $this->_searchTest(
@@ -550,6 +553,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSaveButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         $this->safeGet($this->url . "/mri_violations/");
         $this->safeFindElement(
             WebDriverBy::Name("PatientName")
@@ -578,6 +584,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testResolvedSearchButton()
     {
+        $this->markTestSkipped(
+            'Skipping MRI Violation tests'
+        );
         //testing search by PatientName
         $this->safeGet($this->url . "/mri_violations/resolved_violations/");
 

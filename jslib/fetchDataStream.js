@@ -1,11 +1,10 @@
 /**
  * Process as many rows as possible from a data stream.
  *
- * @param {binary} data - a chunk of data read from the data stream
+ * @param {array} data - a chunk of data read from the data stream
  * @param {function} rowcb - The row callback function
  * @param {function} endstreamcb - The stream termination callback
  * function
- *
  * @return {object} An object containing keys "remainder" which is
  * a slice of any unprocessed data, and a key "eos" which is a boolean
  * indicating whether the end of the stream has been reached.

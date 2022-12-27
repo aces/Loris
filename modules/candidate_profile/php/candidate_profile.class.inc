@@ -74,7 +74,7 @@ class Candidate_Profile extends \NDB_Page
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        $modules = $this->lorisinstance->getActiveModules();
+        $modules = $this->loris->getActiveModules();
 
         $widgets = [];
         foreach ($modules as $module) {

@@ -9,8 +9,7 @@ import PropTypes from 'prop-types';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- **/
+ */
 const spanStyle = {
   marginLeft: '15px',
   marginRight: '15px',
@@ -66,6 +65,7 @@ class ChildTree extends Component {
 
   /**
    * Action
+   *
    * @param {object} obj
    */
   action(obj) {

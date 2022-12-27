@@ -8,10 +8,8 @@ import swal from 'sweetalert2';
  * Create Timepoint.
  *
  * @description form for create timepoint.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class CreateTimepoint extends React.Component {
   /**
@@ -261,6 +259,7 @@ class CreateTimepoint extends React.Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -319,6 +318,7 @@ class CreateTimepoint extends React.Component {
 
     /**
      * Populate the elements of messages to display.
+     *
      * @param {array} values (messages) data from server.
      * @return {array} individual messages.
      */
@@ -401,6 +401,8 @@ class CreateTimepoint extends React.Component {
       />
     ) : null;
     // Include languages select.
+    const emptyLangOption =
+      Object.keys(this.state.form.options.languages).length > 1;
     const languages = this.state.form.display.languages ? (
       <SelectElement
         id={'languageID'}
@@ -409,7 +411,7 @@ class CreateTimepoint extends React.Component {
         value={this.state.form.value.languages}
         options={this.state.form.options.languages}
         onUserInput={this.setForm}
-        emptyOption={true}
+        emptyOption={emptyLangOption}
         disabled={false}
         autoSelect={true}
         required={this.state.form.options.required.languages}
