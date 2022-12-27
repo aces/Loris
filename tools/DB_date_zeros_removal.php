@@ -30,7 +30,7 @@ $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$currentDate = date("Y-m-d");
+$currentDate    = date("Y-m-d");
 $filename       = __DIR__
     . "/../SQL/Archive/18.0/" . $currentDate ."-update_zero_fields_statements.sql";
 $output         = "";
