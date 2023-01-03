@@ -78,8 +78,8 @@ foreach ($cands as $cand) {
         continue;
     }
 
-    $site    = \Site::singleton(new CenterID((int) $cand['site']));
-    $project = \Project::getProjectFromID(new ProjectID((int) $cand['project']));
+    $site    = \Site::singleton((String) $cand['site']);
+    $project = \Project::getProjectFromID((String) $cand['project']);
 
     $externalID = (new \ExternalIDGenerator(
         $site->getSiteAlias(),
