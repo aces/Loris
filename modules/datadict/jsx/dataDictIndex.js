@@ -75,7 +75,6 @@ class DataDictIndex extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {

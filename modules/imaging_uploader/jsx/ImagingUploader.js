@@ -178,8 +178,9 @@ class ImagingUploader extends Component {
 
     if (column === 'Number Of Files Created') {
       let violatedScans;
-      // eslint-disable-next-line max-len
-      if (row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0) {
+      if (
+        row['Number Of Files Created'] - row['Number Of Files Inserted'] > 0
+      ) {
         let numViolatedScans =
              row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
