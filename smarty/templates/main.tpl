@@ -4,6 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/css/tooltip.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
@@ -26,7 +27,7 @@
             {$study_title}
         </title>
         <script type="text/javascript">
-          $(document).ready(function() {
+          document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
 
@@ -42,20 +43,18 @@
               }, ''));
             {/if}
 
-            // Initialize bootstrap tooltip for site affiliations
-            $('#site-affiliations').tooltip({
-              html: true,
-              container: 'body'
-            });
-
             // Make Navigation bar toggle change glyphicon up/down
-            $('.nav-button').on("click", function() {
-              if ($(this).hasClass('collapsed')) {
+            let navBtn = document.querySelector('.nav-button');
+            navBtn.addEventListener('click', function() {
+              let toggleIcon = document.querySelector('.toggle-icon');
+              if (navBtn.classList.contains('collapsed')) {
                 // change chevron to up
-                $('.toggle-icon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                toggleIcon.classList.remove('glyphicon-chevron-down');
+                toggleIcon.classList.add('glyphicon-chevron-up');
               } else {
                 // change chevron to down
-                $('.toggle-icon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                toggleIcon.classList.remove('glyphicon-chevron-up');
+                toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
           });
@@ -138,12 +137,9 @@
                                 </a>
                             </li>
                             <li class="nav">
-                                <a href="#"
-                                   id="site-affiliations"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   title="{$user.SitesTooltip}">
+                                <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
+                                    <span class="tooltip-text">{$user.SitesTooltip}</span>
                                 </a>
                             </li>
 
