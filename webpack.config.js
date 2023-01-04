@@ -236,6 +236,7 @@ let config = [
       Form: './jsx/Form.js',
       Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
+      Help: './jsx/Help.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -319,7 +320,7 @@ const lorisModules = {
   mri_violations: ['mriViolationsIndex'],
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
-  help_editor: ['help_editor', 'help_editor_helper'],
+  help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
   imaging_uploader: ['index'],
   acknowledgements: ['acknowledgementsIndex'],

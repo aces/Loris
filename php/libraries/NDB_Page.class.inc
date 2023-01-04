@@ -851,7 +851,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 
         $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-            $baseurl . '/js/helpHandler.js',
+            $baseurl . '/js/loris-scripts.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
@@ -872,6 +872,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Markdown.js',
+            $baseurl . '/js/components/Help.js',
         ];
         return $files;
     }

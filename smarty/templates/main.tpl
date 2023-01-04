@@ -84,10 +84,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
-                        <button type="button" class="navbar-toggle help-button">
-                            <span class="sr-only">Toggle navigation</span>
-                            <img width=17 src="{$baseurl}/images/help.gif">
-                        </button>
+                        <span class='help-container navbar-toggle'></span>
                        {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
@@ -130,11 +127,7 @@
                             </li>
                             {/if}
 
-                            <li class="hidden-xs hidden-sm">
-                                <a href="#" class="navbar-brand pull-right help-button">
-                                    <img width=17 src="{$baseurl}/images/help.gif">
-                                </a>
-                            </li>
+                            <li class="hidden-xs hidden-sm help-container"></li>
                             <li class="nav">
                                 <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
