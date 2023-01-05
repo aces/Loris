@@ -118,7 +118,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             "participant_accounts",
             [
                 'SessionID'       => '111111',
-                'Email'           => 'TestTestTest@example.com',
                 'Test_name'       => 'Test',
                 'Status'          => 'In Progress',
                 'OneTimePassword' => 'Test',
