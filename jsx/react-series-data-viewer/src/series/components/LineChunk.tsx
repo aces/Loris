@@ -7,9 +7,9 @@ import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
 
 const LineMemo = R.memoizeWith(
-  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex}) =>
+  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex, color}) =>
     `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
-  + `${channelIndex}-${traceIndex}-${chunkIndex}`,
+  + `${channelIndex}-${traceIndex}-${chunkIndex}-${color}`,
   ({
     channelIndex,
     traceIndex,
@@ -22,6 +22,7 @@ const LineMemo = R.memoizeWith(
     color,
     ...rest
 }) => {
+
     const scales = [
       scaleLinear()
         .domain(interval)
@@ -42,6 +43,7 @@ const LineMemo = R.memoizeWith(
 
     return (
       <LinePath
+        className={`channel-${channelIndex}`}
         vectorEffect="non-scaling-stroke"
         data={points}
         strokeWidth={1}
@@ -64,7 +66,8 @@ type CProps = {
     ScaleLinear<number, number, never>,
   ],
   physioFileID: number,
-  color?: string
+  color?: string,
+  isHovered: boolean
 };
 
 /**
@@ -78,6 +81,7 @@ type CProps = {
  * @param root0.amplitudeScale
  * @param root0.scales
  * @param root0.physioFileID
+ * @param root0.isHovered
  */
 const LineChunk = ({
   channelIndex,
@@ -89,6 +93,7 @@ const LineChunk = ({
   scales,
   color,
   physioFileID,
+  isHovered,
   ...rest
 }: CProps) => {
   const {interval, values} = chunk;
@@ -106,11 +111,11 @@ const LineChunk = ({
     (range[0] + range[1]) / 2
   );
 
-  const lineColor = colorOrder(channelIndex.toString()) || '#999';
+  const lineColor = isHovered ? colorOrder(channelIndex.toString()) : '#999';
 
   return (
     <Group
-      style={{clipPath: 'url(#lineChunk-' + physioFileID + ')'}}
+      // style={{clipPath: 'url(#lineChunk-' + physioFileID + ')'}}
       top={-p0[1]}
     >
       <Group
