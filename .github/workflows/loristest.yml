@@ -11,13 +11,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+        fail-fast: false
         matrix:
-            testsuite:
-            - static
-            - unit
-            - integration
+            testsuite: ['integration']
             php: ['8.1','8.2']
+            ci_node_index: [0,1,2,3]
 
+            include:
+            # add a variable but do not display it in the job's name 
+            - ci_node_total: 4
+
+            - testsuite: 'static'
+              php: '8.1'
+            - testsuite: 'static'
+              php: '8.2'
+            - testsuite: 'unit'
+              php: '8.1'
+            - testsuite: 'unit'
+              php: '8.2'
+            
     steps:
     - uses: actions/checkout@v2
 
@@ -57,3 +69,8 @@ jobs:
 
     - name: Run Test Suite
       run: npm run tests:${{ matrix.testsuite }}
+      env:
+          # Specifies how many jobs you would like to run in parallel,
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          # Use the index from matrix as an environment variable
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
