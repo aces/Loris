@@ -267,6 +267,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   ];
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+  const showAxisScaleLines = false;   // Visibility state of y-axis scale lines
 
   /**
    *
@@ -356,7 +357,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         <line y1="0" y2={viewerHeight} stroke="black" />
         {filteredChannels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
-          if (!seriesRange) return null;
+          if (!seriesRange || !showAxisScaleLines) return null;
           return (
             <Axis
               key={`${channel.index}`}
@@ -674,15 +675,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 onMouseLeave={() => setCursor(null)}
               >
                 <div style={{position: 'relative'}}>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      left: '-25px',
-                      position: 'absolute',
-                    }}
-                  >
-                    ({SIGNAL_UNIT})
-                  </div>
+                  {showAxisScaleLines
+                    ? <div
+                      style={{
+                        fontSize: 10,
+                        left: '-25px',
+                        position: 'absolute',
+                      }}
+                    >
+                      ({SIGNAL_UNIT})
+                    </div>
+                    : null
+                  }
                   <div
                     style={{
                       fontSize: 10,
