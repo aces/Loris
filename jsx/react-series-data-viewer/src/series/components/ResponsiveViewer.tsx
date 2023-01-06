@@ -89,7 +89,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflow: 'hidden'}}
+      style={{overflow: 'visible'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(

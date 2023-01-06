@@ -283,11 +283,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <Axis
             domain={interval}
             range={[0, viewerWidth]}
-            orientation='bottom'
+            orientation='top'
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
-          <Axis domain={interval} range={[0, viewerWidth]} orientation='top' />
+          <Axis domain={interval} range={[0, viewerWidth]} orientation='bottom' />
         </Group>
       </>
     );
@@ -494,7 +494,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               <div className='col-xs-offset-1 col-xs-11'>
                 <div
                   className='row'
-                  style={{paddingTop: '15px', paddingBottom: '10px'}}
+                  style={{paddingTop: '15px', paddingBottom: '20px'}}
                 >
                   <div
                     className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
@@ -690,7 +690,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <div
                     style={{
                       fontSize: 10,
-                      bottom: '-20px',
+                      bottom: '-35px',
                       right: 0,
                       position: 'absolute',
                     }}
