@@ -196,7 +196,7 @@ svg {
 /* Large Devices, Wide Screens */
 @media only screen and (min-width : 1200px) {
   .pull-right-lg {
-    float: right;
+    text-align: right;
   }
 
   .pagination-nav {

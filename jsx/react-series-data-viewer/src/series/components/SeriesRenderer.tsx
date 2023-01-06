@@ -12,6 +12,7 @@ import {scaleLinear, ScaleLinear} from 'd3-scale';
 import {
   MAX_RENDERED_EPOCHS,
   MAX_CHANNELS,
+  CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
 } from '../../vector';
@@ -22,7 +23,7 @@ import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
 import {setCursor} from '../store/state/cursor';
 import {setRightPanel} from '../store/state/rightPanel';
-import {setFilteredEpochs} from '../store/state/dataset';
+import {setFilteredEpochs, setDatasetMetadata} from '../store/state/dataset';
 import {setOffsetIndex} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
@@ -84,6 +85,7 @@ type CProps = {
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
   setFilteredEpochs: (_: number[]) => void,
+  setDatasetMetadata: (_: { limit: number }) => void,
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
@@ -122,6 +124,7 @@ type CProps = {
  * @param root0.setViewerWidth
  * @param root0.setViewerHeight
  * @param root0.setFilteredEpochs
+ * @param root0.setDatasetMetadata
  * @param root0.dragStart
  * @param root0.dragContinue
  * @param root0.dragEnd
@@ -156,6 +159,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setViewerWidth,
   setViewerHeight,
   setFilteredEpochs,
+  setDatasetMetadata,
   dragStart,
   dragContinue,
   dragEnd,
@@ -167,7 +171,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   if (channels.length === 0) return null;
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval]);
+  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
       if (document.querySelector('#cursor-div')) { // Cursor not null implies on page / focus
@@ -227,6 +231,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
   }, [viewerWidth]);
 
+  const [numDisplayedChannels, setNumDisplayedChannels] = useState(MAX_CHANNELS);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -350,7 +355,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    * @param root0.viewerHeight
    */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
-    const axisHeight = viewerHeight / MAX_CHANNELS;
+    const axisHeight = viewerHeight / numDisplayedChannels;
     return (
       <Group top={-viewerHeight/2} left={-viewerWidth/2}>
         <line y1="0" y2={viewerHeight} stroke="black" />
@@ -391,9 +396,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         >
           <rect
             x={-viewerWidth / 2}
-            y={-viewerHeight / (2 * MAX_CHANNELS)}
+            y={-viewerHeight / (2 * numDisplayedChannels)}
             width={viewerWidth}
-            height={viewerHeight / MAX_CHANNELS}
+            height={viewerHeight / numDisplayedChannels}
           />
         </clipPath>
 
@@ -405,7 +410,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(
             subTopLeft,
             topLeft,
-            vec2.fromValues(0, (i * diagonal[1]) / MAX_CHANNELS)
+            vec2.fromValues(0, (i * diagonal[1]) / numDisplayedChannels)
           );
 
           const subBottomRight = vec2.create();
@@ -414,7 +419,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               diagonal[0],
-              ((i + 1) * diagonal[1]) / MAX_CHANNELS
+              ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
 
@@ -483,6 +488,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (dragEnd)(x);
   };
 
+
+  /**
+   *
+   * @param e
+   */
+  const handleChannelChange = (e) => {
+    let numChannels = parseInt(e.target.value, 10);
+    setNumDisplayedChannels(numChannels);     // This one is the frontend controller
+    setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
+    setOffsetIndex(offsetIndex);  // Will include new channels on limit increase
+  };
+
   return (
     <>
       {channels.length > 0 ? (
@@ -496,7 +513,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   style={{paddingTop: '15px', paddingBottom: '10px'}}
                 >
                   <div
-                    className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
+                    className={rightPanel ? 'col-lg-12' : 'col-lg-6'}
                     style={{
                       paddingTop: '5px',
                       paddingBottom: '5px',
@@ -591,7 +608,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
                   <div
                     className={
-                      (rightPanel ? '' : 'pull-right-lg ')
+                      (rightPanel ? '' : 'pull-right-lg col-lg-6')
                       + 'pagination-nav'
                     }
                     style={{
@@ -599,7 +616,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }}
                   >
                     <small style={{marginRight: '10px'}}>
-                      Showing channels{' '}
+                      Displaying:&nbsp;
+                      <select value={numDisplayedChannels} onChange={handleChannelChange}>
+                        {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
+                          return <option value={numChannels}>{numChannels} channels</option>;
+                        })};
+                      </select>
+                      &nbsp;Showing channels&nbsp;
                       <input
                         type='number'
                         style={{width: '55px'}}
@@ -609,7 +632,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                           !isNaN(value) && setOffsetIndex(value);
                         }}
                       />
-                      {' '}
+                      &nbsp;
                       to {hardLimit} of {channelMetadata.length}
                     </small>
                     <div
@@ -654,13 +677,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   alignItems: 'center',
                   height: viewerHeight,
                 }}
-              >
-                {filteredChannels.map((channel) => (
+              >{/* Below slice changes labels to be subset of channel choice */}
+                {filteredChannels.slice(0, numDisplayedChannels).map((channel) => (
                   <div
                     key={channel.index}
                     style={{
                       display: 'flex',
-                      height: 1 / MAX_CHANNELS * 100 + '%',
+                      height: 1 / numDisplayedChannels * 100 + '%',
                       alignItems: 'center',
                     }}
                   >
@@ -876,6 +899,7 @@ export default connect(
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
+    limit: state.dataset.limit,
     domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
   }),
@@ -924,7 +948,11 @@ export default connect(
       dispatch,
       setFilteredEpochs
     ),
-   setCurrentAnnotation: R.compose(
+    setDatasetMetadata: R.compose(
+      dispatch,
+      setDatasetMetadata
+    ),
+    setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),

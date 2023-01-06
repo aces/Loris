@@ -31,7 +31,8 @@ export type Action =
         shapes: number[][],
         timeInterval: [number, number],
         seriesRange: [number, number],
-        limit: number
+        limit: number,
+        offsetIndex: number,
       }
     };
 
