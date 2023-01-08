@@ -69,7 +69,7 @@ class MedhubConsent extends APIBase {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
-            if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$consentList[$conName]['Date']))
+            if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$consentList[$conName]['Date'])){
                 $this->error("Invalid Date Format for" . $conName . " expected date format is yyyy-mm-dd");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
