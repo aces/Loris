@@ -119,12 +119,17 @@ function toLINST(
  */
 function optionsToLINST(string $dictionary) : string
 {
+    $dictionary = str_replace(' | | ', ' | ', $dictionary);
+    if (str_starts_with($dictionary, '| ')) {
+        $dictionary = substr($dictionary, 2);
+    }
+
     $choices      = explode(' | ', $dictionary);
     $linstChoices = [];
     foreach ($choices as $choice) {
         $matches = [];
         if (preg_match("/^(\s)*(\d+)(\s)*,(.*)$/", $choice, $matches) !== 1) {
-            throw new \DomainException("Could not parse radio option: $choice");
+            throw new \DomainException("Could not parse radio option: '$choice'");
 
         }
         $backend        = $matches[2] . '_'
