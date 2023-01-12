@@ -281,7 +281,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'VisitCount',
+        'label': 'Visit Count',
         'show': true,
         'filter': {
           name: 'visitCount',
