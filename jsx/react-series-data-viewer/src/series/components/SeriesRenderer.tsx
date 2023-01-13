@@ -61,6 +61,7 @@ import {
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from "../store/logic/cursorInteraction";
+import {setHoveredChannels} from "../store/state/cursor";
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -96,7 +97,8 @@ type CProps = {
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
   annotationMetadata: AnnotationMetadata,
-  hoveredChannels: number[]
+  hoveredChannels: number[],
+  setHoveredChannels:  (_: number[]) => void,
 };
 
 /**
@@ -135,6 +137,7 @@ type CProps = {
  * @param root0.physioFileID
  * @param root0.annotationMetadata
  * @param root0.hoveredChannels
+ * @param root0.setHoveredChannels
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -169,7 +172,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
-  hoveredChannels
+  hoveredChannels,
+  setHoveredChannels
 }) => {
   if (channels.length === 0) return null;
 
@@ -499,7 +503,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (dragEnd)(x);
   };
 
-  return (
+  /**
+   *
+   * @param channelIndex
+   */
+  const onChannelHover = (channelIndex : number) => {
+     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
+  };
+
+
+    return (
     <>
       {channels.length > 0 ? (
         <div className='row'>
@@ -678,8 +691,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       display: 'flex',
                       height: 1 / MAX_CHANNELS * 100 + '%',
                       alignItems: 'center',
-                      color: `${hoveredChannels.includes(channel.index) ? colorOrder(channel.index.toString()) : '#333'}`
+                      cursor: 'default',
+                      color: `${hoveredChannels.includes(channel.index)
+                        ? colorOrder(channel.index.toString())
+                        : '#333'}`,
                     }}
+                    onMouseEnter={() => onChannelHover(channel.index)}
+                    onMouseLeave={() => onChannelHover(-1)}
                   >
                     {channelMetadata[channel.index] &&
                     channelMetadata[channel.index].name}
@@ -967,6 +985,10 @@ export default connect(
     dragEnd: R.compose(
       dispatch,
       endDragSelection
+    ),
+    setHoveredChannels: R.compose(
+      dispatch,
+      setHoveredChannels
     ),
   })
 )(SeriesRenderer);
