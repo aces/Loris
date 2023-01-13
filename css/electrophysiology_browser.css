@@ -42,6 +42,10 @@ svg {
   user-select: none;
 }
 
+svg:not(:root) {
+  overflow: clip;
+}
+
 /* ##################### EEGNET OVERRIDE START ################## */
 .list-group-item {
   position: relative;
