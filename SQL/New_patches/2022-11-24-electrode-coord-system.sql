@@ -8,14 +8,11 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_type` (
   PRIMARY KEY (`PhysiologicalCoordSystemTypeID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
--- insert
+-- insert 5
 INSERT INTO physiological_coord_system_type
   (`Name`)
   VALUES
   ('Not registered'),
-  ('MEG'),
-  ('EEG'),
-  ('iEEG'),
   ('Fiducials'),
   ('AnatomicalLandmark'),
   ('HeadCoil'),
@@ -34,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_name` (
   PRIMARY KEY (`PhysiologicalCoordSystemNameID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
--- insert
+-- insert 19
 INSERT INTO physiological_coord_system_name
   (`Name`, `Orientation`, `Origin`)
   VALUES
@@ -69,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_unit` (
   PRIMARY KEY (`PhysiologicalCoordSystemUnitID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+-- insert 4
 INSERT INTO physiological_coord_system_unit
   (`Name`, `Symbol`)
   VALUES
@@ -78,61 +76,86 @@ INSERT INTO physiological_coord_system_unit
   ('Meter', 'm');
 
 -- -----------------------------------------------------
+-- ADDED Value
+-- to already existing `physiological_modality`
+-- -----------------------------------------------------
+
+INSERT INTO physiological_modality (`PhysiologicalModality`)
+  VALUES ('Not registered');
+
+-- -----------------------------------------------------
 -- ADDED
 -- Table `physiological_coord_system`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `physiological_coord_system` (
   `PhysiologicalCoordSystemID`  INT(10)     UNSIGNED  NOT NULL AUTO_INCREMENT,
-  `CoordNameID`                 INT(10)     UNSIGNED  NOT NULL,
-  `CoordTypeID`                 INT(10)     UNSIGNED  NOT NULL,
-  `CoordUnitID`                 INT(10)     UNSIGNED  NOT NULL,
+  `NameID`                      INT(10)     UNSIGNED  NOT NULL,
+  `TypeID`                      INT(10)     UNSIGNED  NOT NULL,
+  `UnitID`                      INT(10)     UNSIGNED  NOT NULL,
+  `ModalityID`                  INT(5)      UNSIGNED  NOT NULL,
   `FilePath`                    VARCHAR(255)          NULL,
-  `CoordNASX`                   DECIMAL(12,6)         NOT NULL,
-  `CoordNASY`                   DECIMAL(12,6)         NOT NULL,
-  `CoordNASZ`                   DECIMAL(12,6)         NOT NULL,
-  `CoordLPAX`                   DECIMAL(12,6)         NOT NULL,
-  `CoordLPAY`                   DECIMAL(12,6)         NOT NULL,
-  `CoordLPAZ`                   DECIMAL(12,6)         NOT NULL,
-  `CoordRPAX`                   DECIMAL(12,6)         NOT NULL,
-  `CoordRPAY`                   DECIMAL(12,6)         NOT NULL,
-  `CoordRPAZ`                   DECIMAL(12,6)         NOT NULL,
   PRIMARY KEY (`PhysiologicalCoordSystemID`),
   CONSTRAINT `FK_PhysCoordSystemType_type`
-    FOREIGN KEY (`CoordTypeID`)
+    FOREIGN KEY (`TypeID`)
     REFERENCES `physiological_coord_system_type` (`PhysiologicalCoordSystemTypeID`),
   CONSTRAINT `FK_PhysCoordSystemName_name`
-    FOREIGN KEY (`CoordNameID`)
+    FOREIGN KEY (`NameID`)
     REFERENCES `physiological_coord_system_name` (`PhysiologicalCoordSystemNameID`),
   CONSTRAINT `FK_PhysCoordSystemUnit_unit`
-    FOREIGN KEY (`CoordUnitID`)
-    REFERENCES `physiological_coord_system_unit` (`PhysiologicalCoordSystemUnitID`)
+    FOREIGN KEY (`UnitID`)
+    REFERENCES `physiological_coord_system_unit` (`PhysiologicalCoordSystemUnitID`),
+  CONSTRAINT `FK_PhysCoordSystemModality_modality`
+    FOREIGN KEY (`ModalityID`)
+    REFERENCES `physiological_modality` (`PhysiologicalModalityID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- insert a dummy (`not registered` coord system)
 INSERT INTO physiological_coord_system
-  (
-    `CoordNameID`, `CoordTypeID`, `CoordUnitID`, `FilePath`,
-    `CoordNASX`, `CoordNASY`, `CoordNASZ`,
-    `CoordLPAX`, `CoordLPAY`, `CoordLPAZ`,
-    `CoordRPAX`, `CoordRPAY`, `CoordRPAZ`
-  )
+  (`NameID`, `TypeID`, `UnitID`, `ModalityID`, `FilePath`)
   VALUES
   (
-    (SELECT PhysiologicalCoordSystemNameID FROM physiological_coord_system_name WHERE Name = 'Not registered'),
-    (SELECT PhysiologicalCoordSystemTypeID FROM physiological_coord_system_type WHERE Name = 'Not registered'),
-    (SELECT PhysiologicalCoordSystemUnitID FROM physiological_coord_system_unit WHERE Name = 'Not registered'),
-    NULL,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0
+    (SELECT PhysiologicalCoordSystemNameID
+      FROM physiological_coord_system_name
+      WHERE Name = 'Not registered'),
+    (SELECT PhysiologicalCoordSystemTypeID
+      FROM physiological_coord_system_type
+      WHERE Name = 'Not registered'),
+    (SELECT PhysiologicalCoordSystemUnitID
+      FROM physiological_coord_system_unit
+      WHERE Name = 'Not registered'),
+    (SELECT PhysiologicalModalityID
+      FROM physiological_modality
+      WHERE PhysiologicalModality = 'Not registered'),
+    NULL
   );
 
+-- -----------------------------------------------------
+-- ADDED
+-- Table `point_3d`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `point_3d` (
+  `Point3DID` INT(10) UNSIGNED  NOT NULL AUTO_INCREMENT,
+  `X`         DOUBLE            NULL,
+  `Y`         DOUBLE            NULL,
+  `Z`         DOUBLE            NULL,
+  PRIMARY KEY (`Point3DID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+-- -----------------------------------------------------
+-- ADDED
+-- Table `physiological_coord_system_point_3d_rel`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `physiological_coord_system_point_3d_rel` (
+  `PhysiologicalCoordSystemID` INT(10) UNSIGNED NOT NULL,
+  `Point3DID`                  INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`PhysiologicalCoordSystemID`, `Point3DID`),
+  CONSTRAINT `fk_phys_coord_system_point_3d_rel_coord_system`
+    FOREIGN KEY (`PhysiologicalCoordSystemID`)
+    REFERENCES `physiological_coord_system` (`PhysiologicalCoordSystemID`),
+  CONSTRAINT `fk_phys_coord_system_point_3d_rel_point`
+    FOREIGN KEY (`Point3DID`)
+    REFERENCES `point_3d` (`Point3DID`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- -----------------------------------------------------
 -- ADDED
@@ -150,17 +173,17 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system_electrode_rel` (
   CONSTRAINT `FK_phys_coord_system_electrode_rel_coord_system`
     FOREIGN KEY (`PhysiologicalCoordSystemID`)
     REFERENCES `physiological_coord_system` (`PhysiologicalCoordSystemID`),
-  CONSTRAINT `FK_phys_coord_system_electrode_rel_phys_file`
-    FOREIGN KEY (`PhysiologicalFileID`)
-    REFERENCES `physiological_file` (`PhysiologicalFileID`),
   CONSTRAINT `FK_phys_coord_system_electrode_rel_electrode`
     FOREIGN KEY (`PhysiologicalElectrodeID`)
-    REFERENCES `physiological_electrode` (`PhysiologicalElectrodeID`)
+    REFERENCES `physiological_electrode` (`PhysiologicalElectrodeID`),
+  CONSTRAINT `FK_phys_coord_system_electrode_rel_phys_file`
+    FOREIGN KEY (`PhysiologicalFileID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`)
+    ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-
 -- need insert before altering `physiological_electrode`
--- migrate/init every coord system already present to 'not registered'
+-- migrate/init every coord system already present to 'not registered' state
 INSERT INTO physiological_coord_system_electrode_rel
   (PhysiologicalCoordSystemID, PhysiologicalElectrodeID, PhysiologicalFileID, InsertTime)
   SELECT DISTINCT
@@ -177,11 +200,44 @@ INSERT INTO physiological_coord_system_electrode_rel
     InsertTime
   FROM physiological_electrode;
 
-
 -- -----------------------------------------------------
 -- ALTERED
 -- Table `physiological_electrode`
 -- -----------------------------------------------------
+
+-- Table point3D manages coordinates now
+-- move coordinates to point_3d table
+
+-- copy distinct coordinate to `point_3d` table
+INSERT INTO point_3d
+  (X, Y, Z)
+  SELECT distinct X, Y, Z
+  FROM physiological_electrode;
+
+-- add the point3DID column to `physiological_electrode` table
+ALTER TABLE physiological_electrode
+  ADD Point3DID INT(10) UNSIGNED NOT NULL;
+
+-- update the point3DID in `physiological_electrode` table
+UPDATE point_3d as p, physiological_electrode as e
+  SET e.Point3DID = p.Point3DID
+  WHERE p.X = e.X
+    AND p.Y = e.Y
+    AND p.Z = e.Z;
+
+-- add foreign key to validate change
+ALTER TABLE physiological_electrode
+  ADD CONSTRAINT `FK_phys_electrode_point_3d`
+  FOREIGN KEY (`Point3DID`) REFERENCES `point_3d`(`Point3DID`);
+
+-- drop coordinate from `physiological_electrode` table
+ALTER TABLE physiological_electrode
+  DROP COLUMN X;
+ALTER TABLE physiological_electrode
+  DROP COLUMN Y;
+ALTER TABLE physiological_electrode
+  DROP COLUMN Z;
+
 
 -- `InsertTime` and `PhysiologicalFileID` will be moved
 -- to the relation table `physiological_coord_system_electrode_rel`
