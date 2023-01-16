@@ -67,7 +67,7 @@ class Schedule_Module extends \DataFrameworkMenu
         $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
-        $subprojects = array_values(\Utility::getSubProjectList());
+        $subprojects = array_values(\Utility::getCohortList());
         $factory     = \NDB_Factory::singleton();
         $DB          = $factory->database();
         $appointment_types = $DB->pselect(

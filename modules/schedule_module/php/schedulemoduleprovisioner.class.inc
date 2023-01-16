@@ -100,7 +100,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     session.CandID,
     session.Visit_label,
     session.CenterID,
-    session.SubprojectID,
+    session.CohortID,
     Project.Name AS Project,
     subproject.title,
     appointment.StartsAt AS StartsAt,
@@ -124,9 +124,9 @@ JOIN
 ON
     candidate.RegistrationProjectID = Project.ProjectID
 JOIN
-    subproject
+    cohort
 ON
-    session.SubprojectID = subproject.SubprojectID
+    session.CohortID = cohort.CohortID
 JOIN
     psc
 ON
