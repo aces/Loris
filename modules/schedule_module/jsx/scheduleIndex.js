@@ -85,6 +85,7 @@ class ScheduleIndex extends Component {
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
+	window.location.reload();
       });
   }
 
@@ -223,6 +224,9 @@ class ScheduleIndex extends Component {
     })
     .then((resp) => {
       if (resp.ok) {
+	      if (this.state.data.Data.length == 1) {
+                 window.location.reload();
+	      }
             this.fetchData();
       } else {
         resp.text().then((message) => {
@@ -496,6 +500,7 @@ class ScheduleIndex extends Component {
       <div className="panel-body">
       <Tabs tabs={tabList} defaultTab="all">
          <TabPane TabId={tabList[0].id}>
+	    <>
              <FilterableDataTable
                name="schedule_module"
                data={this.state.data.Data}
@@ -504,8 +509,10 @@ class ScheduleIndex extends Component {
                actions={actions}
                filters={this.state.filters}
               />
+	    </>
          </TabPane>
          <TabPane TabId={tabList[1].id}>
+	   <>
              <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatapast}
@@ -514,8 +521,10 @@ class ScheduleIndex extends Component {
                 actions={actions}
                 filters={this.state.filters}
               />
+            </>	    
           </TabPane>
          <TabPane TabId={tabList[2].id}>
+	    <> 
              <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatanext}
@@ -524,8 +533,10 @@ class ScheduleIndex extends Component {
                 actions={actions}
                 filters={this.state.filters}
               />
+            </>	    
           </TabPane>
           <TabPane TabId={tabList[3].id}>
+	    <>
              <FilterableDataTable
                 name="schedule_module"
                 data={this.state.tabledatatoday}
@@ -534,6 +545,7 @@ class ScheduleIndex extends Component {
                 actions={actions}
                 filters={this.state.filters}
               />
+            </>	    
           </TabPane>
        </Tabs>
        </div>
