@@ -102,7 +102,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     session.CenterID,
     session.CohortID,
     Project.Name AS Project,
-    subproject.title,
+    cohort.title,
     appointment.StartsAt AS StartsAt,
     appointment_type.Name AS AppointmentTypeName,
     psc.Name,".$dataEntryColumns." FROM

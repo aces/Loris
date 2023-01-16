@@ -59,7 +59,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $this->CandID       = $row['CandID'];
         $this->Visit_label  = $row['Visit_label'];
         $this->CenterID     = $row['CenterID'];
-        $this->SubprojectID = $row['SubprojectID'];
+        $this->SubprojectID = $row['CohortID'];
         $this->Project      = $row['Project'];
         $this->Subproject   = $row['title'];
         $this->StartsAt     = $row['StartsAt'];
