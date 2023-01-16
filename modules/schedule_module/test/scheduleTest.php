@@ -107,10 +107,10 @@ class ScheduleTest extends LorisIntegrationTest
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(1)".
-                " > div > div:nth-child(1)"
+                "#body"
             )
-        )->getText();
+	)->getText();
+	print_r($bodyText);
         $this->assertStringContainsString("Add Appointment", $bodyText);
     }
     /**
