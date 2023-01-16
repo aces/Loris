@@ -101,14 +101,14 @@ class ScheduleTest extends LorisIntegrationTest
     function testAddappointment()
     {
         $this->safeGet($this->url . "/schedule_module/");
-	// click add schedule button
-	$btn = "#default-panel > div > div > div.row > div > div > button";
-	$this->safeClick(WebDriverBy::cssSelector($btn));
+        // click add schedule button
+        $btn = "#default-panel > div > div > div.row > div > div > button";
+        $this->safeClick(WebDriverBy::cssSelector($btn));
 
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "#lorisworkspace > div > div:nth-child(1)".
-		" > div > div:nth-child(1)"
+                " > div > div:nth-child(1)"
             )
         )->getText();
         $this->assertStringContainsString("Add Appointment", $bodyText);
