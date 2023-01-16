@@ -65,7 +65,11 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     const x = interval[0] + position * (interval[1] - interval[0]);
     const minSize = Math.abs(interval[1] - interval[0]) * MIN_INTERVAL_FACTOR;
     timeSelection[1] = Math.round(
-      x + Math.max(timeSelection[0] + minSize - timeSelection[1], 0)
+      x + Math.max(
+        Math.abs(timeSelection[1] - timeSelection[0]) < minSize
+          ? minSize
+          : 0
+      )
     );
 
     return setTimeSelection(timeSelection);
@@ -77,7 +81,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     Rx.map(([, state]) => {
       if (
         state.timeSelection
-        && (state.timeSelection[1] - state.timeSelection[0] < 2)
+        && (Math.abs(state.timeSelection[1] - state.timeSelection[0]) < 2)
       ) {
         return setTimeSelection(null);
       } else {
