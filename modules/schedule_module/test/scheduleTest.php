@@ -104,12 +104,12 @@ class ScheduleTest extends LorisIntegrationTest
         // click add schedule button
         $this->safeFindElement(
             WebDriverBy::cssSelector("#all .table-header .btn:nth-child(1)")
-	)->click();
+        )->click();
 
         $bodyText = $this->safeFindElement(
-	    WebDriverBy::cssSelector(
+            WebDriverBy::cssSelector(
                 "#lorisworkspace > div > div >".
-                " div > div:nth-child(1)"			
+                " div > div:nth-child(1)"
             )
         )->getText();
         $this->assertStringContainsString("Add Appointment", $bodyText);
