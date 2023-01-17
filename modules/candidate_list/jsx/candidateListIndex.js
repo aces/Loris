@@ -133,10 +133,10 @@ class CandidateListIndex extends Component {
     }
     if (column === 'Feedback') {
       switch (cell) {
-        case '1': return <td style ={{background: '#E4A09E'}}>opened</td>;
-        case '2': return <td style ={{background: '#EEEEAA'}}>answered</td>;
-        case '3': return <td style ={{background: '#99CC99'}}>closed</td>;
-        case '4': return <td style ={{background: '#99CCFF'}}>comment</td>;
+        case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
+        case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
+        case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
+        case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
         default: return <td>None</td>;
       }
     }
@@ -299,10 +299,10 @@ class CandidateListIndex extends Component {
           hide: this.state.hideFilter,
           options: {
             '0': 'None',
-            '1': 'opened',
-            '2': 'answered',
-            '3': 'closed',
-            '4': 'comment',
+            '1': 'Opened',
+            '2': 'Answered',
+            '3': 'Closed',
+            '4': 'Comment',
           },
         },
       },
