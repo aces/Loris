@@ -2,13 +2,16 @@ import React, {
   useCallback,
   useEffect,
   useState,
+  useRef,
   FunctionComponent,
+  MutableRefObject,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
+import {colorOrder} from "../../color";
 import {
   MAX_RENDERED_EPOCHS,
   MAX_CHANNELS,
@@ -21,7 +24,6 @@ import Axis from './Axis';
 import LineChunk from './LineChunk';
 import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
-import {setCursor} from '../store/state/cursor';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setFilteredEpochs, setDatasetMetadata} from '../store/state/dataset';
 import {setOffsetIndex} from '../store/logic/pagination';
@@ -59,8 +61,11 @@ import {
   AnnotationMetadata,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
+import {setCursorInteraction} from "../store/logic/cursorInteraction";
+import {setHoveredChannels} from "../store/state/cursor";
 
 type CProps = {
+  ref: MutableRefObject<any>,
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
@@ -94,6 +99,8 @@ type CProps = {
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
   annotationMetadata: AnnotationMetadata,
+  hoveredChannels: number[],
+  setHoveredChannels:  (_: number[]) => void,
 };
 
 /**
@@ -132,6 +139,8 @@ type CProps = {
  * @param root0.setCurrentAnnotation
  * @param root0.physioFileID
  * @param root0.annotationMetadata
+ * @param root0.hoveredChannels
+ * @param root0.setHoveredChannels
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -167,16 +176,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
+  hoveredChannels,
+  setHoveredChannels
 }) => {
   if (channels.length === 0) return null;
 
+  const viewerRef = useRef(null);
+  const cursorRef = useRef(null);
+  
   // Memoized to singal which vars are to be read from
   const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
-      if (document.querySelector('#cursor-div')) { // Cursor not null implies on page / focus
+      if (cursorRef.current) { // Cursor is on page / focus
         if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-          switch(e.code){
+          const intervalSize = interval[1] - interval[0];
+          
+          switch(e.code) {
             case "ArrowUp":
               setOffsetIndex(offsetIndex - limit);
               break;
@@ -184,18 +200,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               setOffsetIndex(offsetIndex + limit);
               break;
             case "ArrowRight":
-              if (interval[1] !== domain[1]) { // Bounds check
-                setInterval([interval[0] + 50, interval[1] + 50]);
-              } else {
-                setInterval([interval[0] + 50, interval[1]]);
-              }
+              setInterval([
+                Math.min(Math.ceil(domain[1]) - intervalSize, interval[0] + intervalSize),
+                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize)
+              ]);
               break;
             case "ArrowLeft":
-              if (interval[0] !== domain[0]) { // Bounds check
-                setInterval([interval[0] - 50, interval[1] - 50]);
-              } else {
-                setInterval([interval[0], interval[1] - 50]);
-              }
+              setInterval([
+                Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
+                Math.max(Math.floor(domain[0]) + intervalSize, interval[1] - intervalSize)
+              ]);
               break;
             default:
               console.log('Keyboard event handler error.');
@@ -212,6 +226,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       }
       if (e.code === 'KeyA' && e.shiftKey) { // Open annotation form
         setRightPanel('annotationForm');
+      }
+      if (e.code === 'KeyV' && e.shiftKey) { // Toggle SeriesCursor ValueTags
+        toggleCursor();
       }
     }
 
@@ -232,6 +249,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   }, [viewerWidth]);
 
   const [numDisplayedChannels, setNumDisplayedChannels] = useState(MAX_CHANNELS);
+  const [cursorEnabled, setCursorEnabled] = useState(false);
+  const toggleCursor = () => setCursorEnabled(value => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -272,6 +291,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   ];
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+  const showAxisScaleLines = false;   // Visibility state of y-axis scale lines
 
   /**
    *
@@ -287,11 +307,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <Axis
             domain={interval}
             range={[0, viewerWidth]}
-            orientation='bottom'
+            orientation='top'
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
-          <Axis domain={interval} range={[0, viewerWidth]} orientation='top' />
+          <Axis domain={interval} range={[0, viewerWidth]} orientation='bottom' />
         </Group>
       </>
     );
@@ -361,7 +381,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         <line y1="0" y2={viewerHeight} stroke="black" />
         {filteredChannels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
-          if (!seriesRange) return null;
+          if (!seriesRange || !showAxisScaleLines) return null;
           return (
             <Axis
               key={`${channel.index}`}
@@ -455,6 +475,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   amplitudeScale={amplitudeScale}
                   scales={scales}
                   physioFileID={physioFileID}
+                  isHovered={hoveredChannels.includes(channel.index)}
                 />
               ))
             ))
@@ -488,7 +509,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (dragEnd)(x);
   };
 
-
   /**
    *
    * @param e
@@ -500,6 +520,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     setOffsetIndex(offsetIndex);  // Will include new channels on limit increase
   };
 
+  /**
+   *
+   * @param channelIndex
+   */
+  const onChannelHover = (channelIndex : number) => {
+     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
+  };
+
+
   return (
     <>
       {channels.length > 0 ? (
@@ -510,7 +539,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               <div className='col-xs-offset-1 col-xs-11'>
                 <div
                   className='row'
-                  style={{paddingTop: '15px', paddingBottom: '10px'}}
+                  style={{paddingTop: '15px', paddingBottom: '20px'}}
                 >
                   <div
                     className={rightPanel ? 'col-lg-12' : 'col-lg-6'}
@@ -685,7 +714,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       display: 'flex',
                       height: 1 / numDisplayedChannels * 100 + '%',
                       alignItems: 'center',
+                      cursor: 'default',
+                      color: `${hoveredChannels.includes(channel.index)
+                        ? colorOrder(channel.index.toString())
+                        : '#333'}`,
                     }}
+                    onMouseEnter={() => onChannelHover(channel.index)}
+                    onMouseLeave={() => onChannelHover(-1)}
                   >
                     {channelMetadata[channel.index] &&
                     channelMetadata[channel.index].name}
@@ -697,19 +732,22 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 onMouseLeave={() => setCursor(null)}
               >
                 <div style={{position: 'relative'}}>
+                  {showAxisScaleLines
+                    ? <div
+                      style={{
+                        fontSize: 10,
+                        left: '-25px',
+                        position: 'absolute',
+                      }}
+                    >
+                      ({SIGNAL_UNIT})
+                    </div>
+                    : null
+                  }
                   <div
                     style={{
                       fontSize: 10,
-                      left: '-25px',
-                      position: 'absolute',
-                    }}
-                  >
-                    ({SIGNAL_UNIT})
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      bottom: '-20px',
+                      bottom: '-35px',
                       right: 0,
                       position: 'absolute',
                     }}
@@ -717,13 +755,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
+                    cursorRef={cursorRef}
                     channels={channels}
                     interval={interval}
+                    enabled={cursorEnabled}
+                    hoveredChannels={hoveredChannels}
+                    channelMetadata={channelMetadata}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
+                      ref={viewerRef}
                       // @ts-ignore
-                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
+                      mouseMove={useCallback((cursor: [number, number]) => {
+                        setCursor({
+                          cursorPosition: [cursor[0], cursor[1]],
+                          viewerRef: viewerRef
+                        });
+                      }, [])}
                       mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
@@ -902,6 +950,7 @@ export default connect(
     limit: state.dataset.limit,
     domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
+    hoveredChannels: state.cursor.hoveredChannels
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(
@@ -914,7 +963,7 @@ export default connect(
     ),
     setCursor: R.compose(
       dispatch,
-      setCursor
+      setCursorInteraction
     ),
     setRightPanel: R.compose(
       dispatch,
@@ -967,6 +1016,10 @@ export default connect(
     dragEnd: R.compose(
       dispatch,
       endDragSelection
+    ),
+    setHoveredChannels: R.compose(
+      dispatch,
+      setHoveredChannels
     ),
   })
 )(SeriesRenderer);

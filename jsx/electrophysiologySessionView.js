@@ -369,6 +369,7 @@ class ElectrophysiologySessionView extends Component {
                   annotations={annotations}
                   // ##################### EEGNET OVERRIDE END ################## //
                   electrodesURL={electrodesURL}
+                  physioFileID={this.state.database[i].file.id}
                 >
                   <Panel
                     id='channel-viewer'
