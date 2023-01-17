@@ -1,10 +1,11 @@
 import * as R from 'ramda';
-import React, { FunctionComponent, ReactNode, Children } from 'react';
+import React, {FunctionComponent, ReactNode, Children, MutableRefObject} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
 import { WithParentSizeProps } from '@visx/responsive/lib/enhancers/withParentSizeModern';
 
 type CProps = {
+  ref: MutableRefObject<any>,
   parentWidth?: number,
   parentHeight?: number,
   mouseDown?: (_: any) => void,
@@ -16,6 +17,7 @@ type CProps = {
 /**
  *
  * @param root0
+ * @param root0.ref
  * @param root0.parentWidth
  * @param root0.parentHeight
  * @param root0.mouseDown
@@ -25,6 +27,7 @@ type CProps = {
  * @param root0.children
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
+  ref,
   parentWidth,
   parentHeight,
   mouseDown,
