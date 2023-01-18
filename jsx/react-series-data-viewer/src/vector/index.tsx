@@ -22,7 +22,7 @@ export const MAX_VIEWED_CHUNKS = 3;
 
 export const MAX_CHANNELS = 32;
 
-export const CHANNEL_DISPLAY_OPTIONS = [6, 8, 12, 16, 24, 32, 64];
+export const CHANNEL_DISPLAY_OPTIONS = [4, 8, 16, 32, 64];
 
 export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 30];
 
