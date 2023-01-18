@@ -107,6 +107,7 @@ svg:not(:root) {
   height: 22px;
   font-size: 10px;
   float: left;
+  text-align: center;
 }
 
 #electrode-montage .list-group {

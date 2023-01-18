@@ -183,7 +183,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
-  
+
   // Memoized to singal which vars are to be read from
   const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit]);
   useEffect(() => { // Keypress handler
@@ -705,6 +705,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   flexDirection: 'column',
                   alignItems: 'center',
                   height: viewerHeight,
+                  paddingRight: '0px',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
                 {filteredChannels.slice(0, numDisplayedChannels).map((channel) => (
@@ -729,6 +730,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               </div>
               <div
                 className='col-xs-11'
+                style={{
+                  paddingLeft: '5px',
+                }}
                 onMouseLeave={() => setCursor(null)}
               >
                 <div style={{position: 'relative'}}>
