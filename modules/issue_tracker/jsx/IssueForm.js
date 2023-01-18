@@ -372,7 +372,7 @@ class IssueForm extends Component {
           if (newIssue) {
             formData.centerID = null;
             Object.keys(data.inactiveUsers).map((user) => {
-              delete data.assignees[user];
+              delete data.inactiveUsers[user];
             });
             data.inactiveUsers = {};
           } else {
