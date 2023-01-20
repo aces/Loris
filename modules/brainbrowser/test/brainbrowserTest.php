@@ -33,7 +33,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testBrainbrowserDoespageLoad()
     {
-        $this->safeGet($this->url . "/brainbrowser/?minc_id=[]");
+        $this->safeGet($this->url . "/brainbrowser/?minc_id");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
