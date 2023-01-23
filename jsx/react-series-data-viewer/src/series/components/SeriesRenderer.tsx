@@ -181,6 +181,34 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 }) => {
   if (channels.length === 0) return null;
 
+  const intervalChange = Math.pow(
+    10,
+    Math.max(
+      Math.floor(Math.log10(interval[1] - interval[0])) - 1,
+      -1
+    )
+  );  // Scale to interval size
+
+  const zoomIn = () => {
+    const zoomInterval = (interval[1] - interval[0]) < 0.3
+      ? 0
+      : intervalChange; // Limit zooming
+    setInterval([interval[0] + zoomInterval, interval[1] - zoomInterval]);
+  }
+
+  const zoomOut = () => {
+    setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
+  }
+
+  const zoomToSelection = () => {
+    if (timeSelection && (interval[1] - interval[0]) >= 0.1) {
+      setInterval([
+        Math.min(timeSelection[0], timeSelection[1]),
+        Math.max(timeSelection[0], timeSelection[1])
+      ]);
+    }
+  }
+
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
 
@@ -227,14 +255,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         }
       }
 
-      let intervalChange = Math.pow(
-        10,
-        Math.max(
-          Math.floor(Math.log10(interval[1] - interval[0])) - 1,
-          -1
-        )
-      );  // Scale to interval size
-
       // Generic keybinds that don't require focus
       if (e.shiftKey) {
         switch (e.code) {
@@ -245,21 +265,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             setRightPanel('annotationForm');
             break;
           case 'KeyZ':
-            if (timeSelection && (interval[1] - interval[0]) >= 0.1) {
-              setInterval([
-                Math.min(timeSelection[0], timeSelection[1]),
-                Math.max(timeSelection[0], timeSelection[1])
-              ]);
-            }
+            zoomToSelection();
             break;
-          case 'Minus': // Zoom out
-            setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
+          case 'Minus':
+            zoomOut();
             break;
-          case 'Equal': // Zoom in. This key combination is '+'
-            if ((interval[1] - interval[0]) < 0.3) {
-              intervalChange = 0;   // Limit zooming
-            }
-            setInterval([interval[0] + intervalChange, interval[1] - intervalChange]);
+          case 'Equal': // This key combination is '+'
+            zoomIn();
             break;
         }
       }
@@ -569,7 +581,28 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
             <IntervalSelect />
             <div className='row'>
-              <div className='col-xs-offset-1 col-xs-11'>
+              <div className='col-xs-1'>
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs btn-zoom'
+                  onClick={zoomIn}
+                  value='Zoom +'
+                />
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs btn-zoom'
+                  onClick={zoomOut}
+                  value='Zoom -'
+                />
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs btn-zoom'
+                  onClick={zoomToSelection}
+                  disabled={!timeSelection}
+                  value='Zoom To'
+                />
+              </div>
+              <div className='col-xs-11'>
                 <div
                   className='row'
                   style={{paddingTop: '15px', paddingBottom: '20px'}}

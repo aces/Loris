@@ -110,6 +110,10 @@ svg:not(:root) {
   text-align: center;
 }
 
+.btn-zoom {
+  margin: 2px 0;
+}
+
 #electrode-montage .list-group {
   border: 1px solid #ddd;
 }
