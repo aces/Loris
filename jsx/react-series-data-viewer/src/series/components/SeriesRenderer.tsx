@@ -185,14 +185,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const cursorRef = useRef(null);
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit]);
+  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit, timeSelection]);
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
       if (cursorRef.current) { // Cursor is on page / focus
-        if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+          e.preventDefault(); // Make sure arrows don't scroll
+
           const intervalSize = interval[1] - interval[0];
-          
-          switch(e.code) {
+          switch (e.code) {
             case "ArrowUp":
               setOffsetIndex(offsetIndex - limit);
               break;
@@ -215,20 +216,35 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               console.log('Keyboard event handler error.');
               break;
           }
+        }
 
-          e.preventDefault(); // Make sure arrows don't scroll
+        if (e.shiftKey) {
+          switch (e.code) {
+            case 'KeyV':
+              toggleCursor();
+              break;
+          }
         }
       }
 
       // Generic keybinds that don't require focus
-      if (e.code === 'KeyC' && e.shiftKey) { // Close all right panels
-        setRightPanel(null);
-      }
-      if (e.code === 'KeyA' && e.shiftKey) { // Open annotation form
-        setRightPanel('annotationForm');
-      }
-      if (e.code === 'KeyV' && e.shiftKey) { // Toggle SeriesCursor ValueTags
-        toggleCursor();
+      if (e.shiftKey) {
+        switch (e.code) {
+          case 'KeyC':
+            setRightPanel(null);
+            break;
+          case 'KeyA':
+            setRightPanel('annotationForm');
+            break;
+          case 'KeyZ':
+            if (timeSelection) {
+              setInterval([
+                Math.min(timeSelection[0], timeSelection[1]),
+                Math.max(timeSelection[0], timeSelection[1])
+              ]);
+            }
+            break;
+        }
       }
     }
 
