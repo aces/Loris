@@ -9,7 +9,7 @@ import {setInterval} from '../store/state/bounds';
 import {updateFilteredEpochs} from '../store/logic/filterEpochs';
 import {Slider, Rail, Handles, Ticks} from 'react-compound-slider';
 import {Handle, Tick} from './components';
-import React, {useState, FunctionComponent} from 'react';
+import React, {useState, FunctionComponent, useRef} from 'react';
 import {RootState} from '../store';
 import {DEFAULT_TIME_INTERVAL} from "../../vector";
 import {roundTime} from "../store/logic/timeSelection";
@@ -62,6 +62,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     cursor: 'pointer',
   };
 
+  const lowerBoundInputRef = useRef(null);
+  const upperBoundInputRef = useRef(null);
+
   /**
    *
    * @param increment
@@ -92,33 +95,35 @@ const IntervalSelect: FunctionComponent<CProps> = ({
    */
   const handleIntervalChange = (event) => {
     const value = roundTime(parseFloat(event.target.value));
-    const name = event.target.name;
 
     if (isNaN(value)){
       if (event.target.value === '') {
-        if (name.endsWith('lower-bound')) {
+        if (event.target === lowerBoundInputRef.current) {
           setInterval([0, interval[1]]);
-        } else if (name.endsWith('upper-bound')) {
+        } else if (event.target === upperBoundInputRef.current) {
           setInterval([interval[0], 0]);
         }
       }
       return;
     }
 
-    if (name.endsWith('lower-bound')) {
-      if (value > interval[1])  // This condition causes a swap
-        (document.querySelector(
-          '[name="interval-upper-bound"].input-interval-bound'
-        ) as HTMLInputElement).focus();
+    if (event.target === lowerBoundInputRef.current) {
+      if (value > interval[1]) {  // This condition causes a swap
+        upperBoundInputRef.current.focus();
+      }
+
+      if (value === interval[1])
+        return; // do nothing if change causes overlap
 
       // Prevent exceeding max, which causes render
       setInterval([Math.min(value, domain[1]), interval[1]]);
-    } else if (name.endsWith('upper-bound')) {
+    } else if (event.target === upperBoundInputRef.current) {
+      if (value < interval[0]) {  // This condition causes a swap
+        lowerBoundInputRef.current.focus();
+      }
 
-      if (value < interval[0])  // This condition causes a swap
-        (document.querySelector(
-          '[name="interval-lower-bound"].input-interval-bound'
-        ) as HTMLInputElement).focus();
+      if (value === interval[0])
+        return; // do nothing if change causes overlap
 
       setInterval([interval[0], value]);
     }
@@ -189,7 +194,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               value='<'
             />
             <input
-              name='interval-lower-bound'
+              ref={lowerBoundInputRef}
               className='input-interval-bound'
               type='number'
               value={roundTime(interval[0])}
@@ -201,7 +206,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               step={0.1}
             />
             <input
-              name='interval-upper-bound'
+              ref={upperBoundInputRef}
               className='input-interval-bound'
               type='number'
               value={roundTime(interval[1])}
