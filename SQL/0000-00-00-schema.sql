@@ -980,7 +980,8 @@ CREATE TABLE `violations_resolved` (
   `User` varchar(255) DEFAULT NULL,
   `ChangeDate` datetime DEFAULT NULL,
   `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `i_violations_resolved_extid_type` (`ExtID`,`TypeTable`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_violated_scans` (
