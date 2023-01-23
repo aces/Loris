@@ -245,7 +245,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             setRightPanel('annotationForm');
             break;
           case 'KeyZ':
-            if (timeSelection) {
+            if (timeSelection && (interval[1] - interval[0]) >= 0.1) {
               setInterval([
                 Math.min(timeSelection[0], timeSelection[1]),
                 Math.max(timeSelection[0], timeSelection[1])
