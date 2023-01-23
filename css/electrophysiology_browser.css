@@ -112,6 +112,8 @@ svg:not(:root) {
 
 .btn-zoom {
   margin: 2px 0;
+  width: 60px;
+  text-align: center;
 }
 
 #electrode-montage .list-group {

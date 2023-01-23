@@ -588,12 +588,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   onClick={zoomIn}
                   value='Zoom +'
                 />
+                <br/>
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
                   onClick={zoomOut}
                   value='Zoom -'
                 />
+                <br/>
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
