@@ -19,6 +19,17 @@ export const endDragSelection = createAction(END_DRAG_SELECTION);
 export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 
 /**
+ * roundTime
+ *
+ * @param {number} value - The initial time value
+ * @param {number} decimals - The desired decimal precision
+ * @returns {number} - The value rounded to 'decimal' decimal places
+ */
+const roundTime = (value, decimals = 3) => {
+  return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+}
+
+/**
  * createTimeSelectionEpic
  *
  * @param {Function} fromState - A function to parse the current state
@@ -48,7 +59,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
    */
   const initInterval = ([position, state]) => {
     const {interval} = R.clone(fromState(state));
-    const x = Math.round(interval[0] + position * (interval[1] - interval[0]));
+    const x = roundTime(interval[0] + position * (interval[1] - interval[0]));
     return setTimeSelection([x, x]);
   };
 
@@ -64,7 +75,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     const {interval, timeSelection} = R.clone(fromState(state));
     const x = interval[0] + position * (interval[1] - interval[0]);
     const minSize = Math.abs(interval[1] - interval[0]) * MIN_INTERVAL_FACTOR;
-    timeSelection[1] = Math.round(
+    timeSelection[1] = roundTime(
       x + Math.max(
         Math.abs(timeSelection[1] - timeSelection[0]) < minSize
           ? minSize

@@ -98,7 +98,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
    * @param event
    */
   const handleIntervalChange = (event) => {
-    let value = parseInt(event.target.value);
+    let value = parseFloat(event.target.value);
     const name = event.target.name;
 
     if (isNaN(value)){
@@ -125,7 +125,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
    * @param event
    */
   const handleIntervalBlur = (event) => {
-    const value = parseInt(event.target.value);
+    const value = parseFloat(event.target.value);
 
     if (isNaN(value)){
       setInterval(interval);  // Reset

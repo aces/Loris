@@ -62,7 +62,12 @@ const AnnotationForm = ({
   interval,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
-  const [event, setEvent] = useState([startEvent, endEvent]);
+  const [event, setEvent] = useState<(number | string)[]>(
+    [
+      startEvent,
+      endEvent
+    ]
+  );
   const [label, setLabel] = useState(
     currentAnnotation ?
     currentAnnotation.label :
@@ -101,14 +106,14 @@ const AnnotationForm = ({
    * @param val
    */
   const handleStartTimeChange = (id, val) => {
-    const value = parseInt(val);
+    const value = parseFloat(val);
     setEvent([value, event[1]]);
 
     if (validate([value, event[1]])) {
       let endTime = event[1];
 
       if (typeof endTime === 'string') {
-        endTime = parseInt(endTime);
+        endTime = parseFloat(endTime);
       }
       setTimeSelection(
         [
@@ -125,14 +130,14 @@ const AnnotationForm = ({
    * @param val
    */
   const handleEndTimeChange = (name, val) => {
-    const value = parseInt(val);
+    const value = parseFloat(val);
     setEvent([event[0], value]);
 
     if (validate([event[0], value])) {
       let startTime = event[0];
 
       if (typeof startTime === 'string') {
-        startTime = parseInt(startTime);
+        startTime = parseFloat(startTime);
       }
       setTimeSelection(
         [
@@ -209,10 +214,10 @@ const AnnotationForm = ({
     let startTime = event[0];
     let endTime = event[1];
     if (typeof startTime === 'string') {
-      startTime = parseInt(startTime);
+      startTime = parseFloat(startTime);
     }
     if (typeof endTime === 'string') {
-      endTime = parseInt(endTime);
+      endTime = parseFloat(endTime);
     }
     const duration = endTime - startTime;
 
@@ -412,13 +417,13 @@ const AnnotationForm = ({
             onUserInput={handleStartTimeChange}
           />
           <NumericElement
-              name="end-time"
-              id="end-time"
-              min="0"
-              label="End Time"
-              value={event[1]}
-              required={true}
-              onUserInput={handleEndTimeChange}
+            name="end-time"
+            id="end-time"
+            min="0"
+            label="End Time"
+            value={event[1]}
+            required={true}
+            onUserInput={handleEndTimeChange}
           />
           <SelectElement
             name="label"
@@ -438,7 +443,7 @@ const AnnotationForm = ({
           />
           <button
             type="submit"
-            disabled={isSubmitted}
+            disabled={isSubmitted || !validate(event)}
             onClick={handleSubmit}
             className="btn btn-primary btn-xs"
           >
