@@ -852,4 +852,11 @@ $(function() {
 
     return viewer;
   });
+
+  BrainBrowser.events.addEventListener('error', function() {
+    $('#loading').html(
+      'Loading error' +
+      '<p>Something went wrong while trying to render your files.</p>'
+    );
+  });
 });
