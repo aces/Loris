@@ -227,6 +227,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         }
       }
 
+      let intervalChange = Math.pow(
+        10,
+        Math.max(
+          Math.floor(Math.log10(interval[1] - interval[0])) - 1,
+          -1
+        )
+      );  // Scale to interval size
+
       // Generic keybinds that don't require focus
       if (e.shiftKey) {
         switch (e.code) {
@@ -243,6 +251,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 Math.max(timeSelection[0], timeSelection[1])
               ]);
             }
+            break;
+          case 'Minus': // Zoom out
+            setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
+            break;
+          case 'Equal': // Zoom in. This key combination is '+'
+            if ((interval[1] - interval[0]) < 0.3) {
+              intervalChange = 0;   // Limit zooming
+            }
+            setInterval([interval[0] + intervalChange, interval[1] - intervalChange]);
             break;
         }
       }

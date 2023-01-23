@@ -12,6 +12,7 @@ import {Handle, Tick} from './components';
 import React, {useState, FunctionComponent} from 'react';
 import {RootState} from '../store';
 import {DEFAULT_TIME_INTERVAL} from "../../vector";
+import {roundTime} from "../store/logic/timeSelection";
 
 type CProps = {
   viewerHeight?: number,
@@ -87,18 +88,10 @@ const IntervalSelect: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param value
-   */
-  const round = (value: number) => {
-    return Math.round(value * 100 +  Number.EPSILON) / 100
-  }
-
-  /**
-   *
    * @param event
    */
   const handleIntervalChange = (event) => {
-    let value = parseFloat(event.target.value);
+    const value = roundTime(parseFloat(event.target.value));
     const name = event.target.name;
 
     if (isNaN(value)){
@@ -113,9 +106,20 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     }
 
     if (name.endsWith('lower-bound')) {
+      if (value > interval[1])  // This condition causes a swap
+        (document.querySelector(
+          '[name="interval-upper-bound"].input-interval-bound'
+        ) as HTMLInputElement).focus();
+
       // Prevent exceeding max, which causes render
       setInterval([Math.min(value, domain[1]), interval[1]]);
     } else if (name.endsWith('upper-bound')) {
+
+      if (value < interval[0])  // This condition causes a swap
+        (document.querySelector(
+          '[name="interval-lower-bound"].input-interval-bound'
+        ) as HTMLInputElement).focus();
+
       setInterval([interval[0], value]);
     }
   };
@@ -125,7 +129,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
    * @param event
    */
   const handleIntervalBlur = (event) => {
-    const value = parseFloat(event.target.value);
+    const value = roundTime(parseFloat(event.target.value));
 
     if (isNaN(value)){
       setInterval(interval);  // Reset
@@ -188,23 +192,25 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               name='interval-lower-bound'
               className='input-interval-bound'
               type='number'
-              value={round(interval[0])}
+              value={roundTime(interval[0])}
               min={domain[0]}
               max={domain[1]}
               onChange={handleIntervalChange}
               onBlur={handleIntervalBlur}
               onFocus={(e) => e.target.select()}
+              step={0.1}
             />
             <input
               name='interval-upper-bound'
               className='input-interval-bound'
               type='number'
-              value={round(interval[1])}
+              value={roundTime(interval[1])}
               min={domain[0]}
               max={domain[1]}
               onChange={handleIntervalChange}
               onBlur={handleIntervalBlur}
               onFocus={(e) => e.target.select()}
+              step={0.1}
             />
             <input
               type='button'

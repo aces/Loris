@@ -1,4 +1,5 @@
 import {createAction} from 'redux-actions';
+import {act} from "react-dom/test-utils";
 
 export const SET_INTERVAL = 'SET_INTERVAL';
 export const setInterval = createAction(SET_INTERVAL);
@@ -42,7 +43,10 @@ const interval = (
   action?: Action
 ): [number, number] => {
   if (action && action.type === 'SET_INTERVAL') {
-    return action.payload;
+    return [
+      Math.min(action.payload[0], action.payload[1]),
+      Math.max(action.payload[0], action.payload[1])
+    ];
   }
   return state;
 };

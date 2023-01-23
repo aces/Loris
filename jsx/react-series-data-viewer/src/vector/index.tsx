@@ -14,7 +14,7 @@ export const ap = (
   p: Vector2
 ): Vector2 => vec2.fromValues(f[0](p[0]), f[1](p[1]));
 
-export const MIN_INTERVAL_FACTOR = 0.005;
+export const MIN_INTERVAL = 0.001;
 
 export const MIN_EPOCH_WIDTH = 1;
 
