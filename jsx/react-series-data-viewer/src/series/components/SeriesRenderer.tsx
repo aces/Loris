@@ -581,7 +581,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
             <IntervalSelect />
             <div className='row'>
-              <div className='col-xs-1'>
+              <div
+                className='col-xs-1'
+                style={{
+                  textAlign: 'center',
+                }}
+              >
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
