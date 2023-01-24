@@ -267,8 +267,6 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddForm() {
-    const requireEndDate = (this.state.formData.addPresent === 'No') || false;
-    const disableEndDate = (this.state.formData.addPresent === 'Yes') || false;
     return (
       <Modal
         title='Add Acknowledgement'
@@ -347,17 +345,7 @@ class AcknowledgementsIndex extends Component {
             maxYear={this.state.data.maxYear}
             minYear={this.state.formData.addStartDate
                     || this.state.data.minYear}
-            disabled={disableEndDate}
-            required={requireEndDate}
-            onUserInput={this.setFormData}
-          />
-          <SelectElement
-            name='addPresent'
-            options={this.state.data.fieldOptions.presents}
-            label='Present'
-            value={this.state.formData.addPresent}
-            emptyOption={true}
-            required={true}
+            required={false}
             onUserInput={this.setFormData}
           />
           <div>
@@ -394,7 +382,6 @@ class AcknowledgementsIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in acknowledgements.class.inc
     */
-    const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Ordering', show: true},
       {label: 'Full Name', show: true, filter: {
@@ -415,11 +402,6 @@ class AcknowledgementsIndex extends Component {
       {label: 'End Date', show: true, filter: {
         name: 'endDate',
         type: 'date',
-      }},
-      {label: 'Present', show: true, filter: {
-        name: 'present',
-        type: 'select',
-        options: options.presents,
       }},
     ];
     const actions = [
