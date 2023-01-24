@@ -382,6 +382,7 @@ class AcknowledgementsIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in acknowledgements.class.inc
     */
+    const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Ordering', show: true},
       {label: 'Full Name', show: true, filter: {
@@ -402,6 +403,11 @@ class AcknowledgementsIndex extends Component {
       {label: 'End Date', show: true, filter: {
         name: 'endDate',
         type: 'date',
+      }},
+      {label: 'Present', show: true, filter: {
+        name: 'present',
+        type: 'select',
+        options: options.presents,
       }},
     ];
     const actions = [
