@@ -201,7 +201,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   }
 
   const zoomToSelection = () => {
-    if (timeSelection && (interval[1] - interval[0]) >= 0.1) {
+    if (timeSelection && (timeSelection[1] - timeSelection[0]) >= 0.1) {
       setInterval([
         Math.min(timeSelection[0], timeSelection[1]),
         Math.max(timeSelection[0], timeSelection[1])
