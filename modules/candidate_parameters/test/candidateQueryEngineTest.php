@@ -40,7 +40,7 @@ class CandidateQueryEngineTest extends TestCase
      *
      * @return void
      */
-    function setUp()
+    function setUp() : void
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -116,7 +116,7 @@ class CandidateQueryEngineTest extends TestCase
      *
      * @return void
      */
-    function tearDown()
+    function tearDown() : void
     {
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS candidate");
     }

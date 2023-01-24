@@ -191,7 +191,8 @@ class Module extends \Module
      *
      * @return \LORIS\Data\Query\QueryEngine
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine {
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    {
         return new CandidateQueryEngine($this->loris);
     }
 }
