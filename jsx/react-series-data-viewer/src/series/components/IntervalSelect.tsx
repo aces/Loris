@@ -112,7 +112,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
         upperBoundInputRef.current.focus();
       }
 
-      if (value === interval[1])
+      if (value === roundTime(interval[1]))
         return; // do nothing if change causes overlap
 
       // Prevent exceeding max, which causes render
@@ -122,7 +122,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
         lowerBoundInputRef.current.focus();
       }
 
-      if (value === interval[0])
+      if (value === roundTime(interval[0]))
         return; // do nothing if change causes overlap
 
       setInterval([interval[0], value]);
