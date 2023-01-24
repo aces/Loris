@@ -95,7 +95,7 @@ class Module extends \Module
                 continue;
             }
 
-            $mdict = $module->getDataDictionary($this->loris);
+            $mdict = $module->getQueryEngine()->getDataDictionary();
             $mname = $module->getName();
 
             if (count($mdict) > 0) {

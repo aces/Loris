@@ -48,7 +48,7 @@ interface QueryEngine
      * @param CandID[] $candidates    Candidates to retrieve data for
      * @param ?string[] $visits       Visit labels to restrict data to
      *
-     * @return DataInstance[]
+     * @return iterable<string, DataInstance>
      */
     public function getCandidateData(array $items, iterable $candidates, ?array $visitlist) : iterable;
 

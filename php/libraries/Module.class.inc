@@ -507,17 +507,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     }
 
     /**
-     * Return a data dictionary of data types managed by this module.
-     * DictionaryItems are grouped into categories and a module may
-     * provide 0 or more categories of dictionaryitems.
+     * Gets the QueryEngine to be used for querying against this module's
+     * data.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
-     *                                    dictionary should be retrieved.
-     *
-     * @return \LORIS\Data\Dictionary\Category[]
+     * @return \LORIS\Data\Query\QueryEngine
      */
-    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
     {
-        return [];
+        return new \LORIS\Data\Query\NullQueryEngine();
     }
 }
