@@ -69,7 +69,9 @@ class Queries extends \NDB_Page
                     ]
                 );
             default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET', 'POST']);
+                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                    ['GET', 'POST']
+                );
             }
         }
         if (preg_match(
@@ -82,7 +84,7 @@ class Queries extends \NDB_Page
             case 'GET':
                 return new \LORIS\Http\Response\JSON\OK(
                     [
-                        'queryruns'  => iterator_to_array(
+                        'queryruns' => iterator_to_array(
                             $this->getRecentRuns($user),
                             false,
                         ),
@@ -260,7 +262,11 @@ class Queries extends \NDB_Page
                     $query->removeAdminPinnedQuery('topquery');
                     $resp['adminpin'] = 'Unpinned query from dataquery module';
                 } else {
-                    $query->setAdminPinnedQuery($user, $params['adminname'], 'topquery');
+                    $query->setAdminPinnedQuery(
+                        $user,
+                        $params['adminname'],
+                        'topquery'
+                    );
                     $resp['adminpin'] = 'Pinned query to dataquery module';
                 }
             }
@@ -270,7 +276,11 @@ class Queries extends \NDB_Page
                     $query->removeAdminPinnedQuery('dashboard');
                     $resp['dashboard'] = 'Unpinned query from dashboard';
                 } else {
-                    $query->setAdminPinnedQuery($user, $params['dashboardname'], 'dashboard');
+                    $query->setAdminPinnedQuery(
+                        $user,
+                        $params['dashboardname'],
+                        'dashboard'
+                    );
                     $resp['dashboard'] = 'Pinned query to dashboard';
                 }
             }
