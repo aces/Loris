@@ -100,7 +100,7 @@ class AttachmentsList extends Component {
    */
   displayAttachmentOptions(deleteData, item) {
     if (this.props.userHasPermission
-      || this.state.attachments.whoami === item.user) {
+      || this.state.issueData.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>

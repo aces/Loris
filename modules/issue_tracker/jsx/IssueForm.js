@@ -570,7 +570,6 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
 };
 
 export default IssueForm;
