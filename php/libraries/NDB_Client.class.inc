@@ -136,7 +136,7 @@ class NDB_Client
         );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
-        $sessionOptions['cookie_samesite'] = "Strict";
+        $sessionOptions['cookie_samesite'] = "Lax";
 
         // API Detect
         if (strpos(
