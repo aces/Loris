@@ -18,6 +18,7 @@ import {
   CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
+  DEFAULT_TIME_INTERVAL,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -200,6 +201,28 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
   }
 
+  const zoomReset = () => {
+    const defaultInterval = DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0];
+    const currentMidpoint = (interval[1] + interval[0]) / 2;
+    let lowerBound = currentMidpoint - defaultInterval / 2;
+    let upperBound = currentMidpoint + defaultInterval / 2;
+
+    if (lowerBound < domain[0]) {
+      const difference = domain[0] - lowerBound;
+      lowerBound = domain[0];
+      upperBound = upperBound + difference;
+    } else if (upperBound > domain[1]) {
+      const difference = upperBound - domain[1];
+      lowerBound = lowerBound - difference;
+      upperBound = domain[1];
+    }
+
+    setInterval([
+      Math.max(lowerBound, domain[0]),
+      Math.min(upperBound, domain[1])
+    ]);
+  }
+
   const zoomToSelection = () => {
     if (timeSelection && (timeSelection[1] - timeSelection[0]) >= 0.1) {
       setInterval([
@@ -266,6 +289,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             break;
           case 'KeyZ':
             zoomToSelection();
+            break;
+          case 'KeyX':
+            zoomReset();
             break;
           case 'Minus':
             zoomOut();
@@ -587,6 +613,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   textAlign: 'center',
                 }}
               >
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs btn-zoom'
+                  onClick={zoomReset}
+                  value='Reset'
+                />
+                <br/>
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
