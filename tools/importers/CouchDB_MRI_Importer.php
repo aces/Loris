@@ -11,8 +11,11 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once 'generic_includes.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../generic_includes.php';
+require_once 'CouchDB.class.inc';
+require_once 'Database.class.inc';
+require_once 'FeedbackMRI.class.inc';
 
 /**
  * Wrapper around CouchDB MRI functions
@@ -768,10 +771,4 @@ class CouchDBMRIImporter
         $feedbackMRI = new FeedbackMRI(1, null);
         return $feedbackMRI->getAllPredefinedComments($commentTypeID);
     }
-}
-
-// Don't run if we're doing the unit tests; the unit test will call run.
-if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBMRIImporter();
-    $Runner->run();
 }
