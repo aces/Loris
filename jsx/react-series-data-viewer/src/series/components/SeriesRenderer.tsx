@@ -605,52 +605,54 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       {channels.length > 0 ? (
         <div className='row'>
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
-            <IntervalSelect />
-            <div className='row'>
-              <div
-                className='col-xs-1'
+            <div
+              className='col-xs-1'
+              style={{
+                textAlign: 'center',
+                position: 'absolute',
+                marginTop: '20px',
+              }}
+            >
+              <h5
+                className='col-xs-title'
                 style={{
-                  textAlign: 'center',
+                  marginBottom: '3px',
                 }}
               >
-                <h5
-                  className='col-xs-title'
-                  style={{
-                    marginBottom: '3px'
-                  }}
-                >
-                  Zoom
-                </h5>
-                <input
-                  type='button'
-                  className='btn btn-primary btn-xs btn-zoom'
-                  onClick={zoomReset}
-                  value='Reset'
-                />
-                <br/>
-                <input
-                  type='button'
-                  className='btn btn-primary btn-xs btn-zoom'
-                  onClick={zoomIn}
-                  value='+'
-                />
-                <br/>
-                <input
-                  type='button'
-                  className='btn btn-primary btn-xs btn-zoom'
-                  onClick={zoomOut}
-                  value='-'
-                />
-                <br/>
-                <input
-                  type='button'
-                  className='btn btn-primary btn-xs btn-zoom'
-                  onClick={zoomToSelection}
-                  disabled={!timeSelection}
-                  value='Region'
-                />
-              </div>
-              <div className='col-xs-11'>
+                Zoom
+              </h5>
+              <input
+                type='button'
+                className='btn btn-primary btn-xs btn-zoom'
+                onClick={zoomReset}
+                value='Reset'
+              />
+              <br/>
+              <input
+                type='button'
+                className='btn btn-primary btn-xs btn-zoom'
+                onClick={zoomIn}
+                value='+'
+              />
+              <br/>
+              <input
+                type='button'
+                className='btn btn-primary btn-xs btn-zoom'
+                onClick={zoomOut}
+                value='-'
+              />
+              <br/>
+              <input
+                type='button'
+                className='btn btn-primary btn-xs btn-zoom'
+                onClick={zoomToSelection}
+                disabled={!timeSelection}
+                value='Region'
+              />
+            </div>
+            <IntervalSelect />
+            <div className='row'>
+              <div className='col-xs-offset-1 col-xs-11'>
                 <div
                   className='row'
                   style={{paddingTop: '15px', paddingBottom: '20px'}}
