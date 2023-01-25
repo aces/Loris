@@ -168,7 +168,8 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("leadInvestigatorEmail")
         )->sendKeys("testleadInvestigator@test.com");
-        $submit ="#propose > div > div > form > div > div:nth-child(2) > div > div:nth-child(11) > div > button";
+        $submit ="#propose > div > div > form > div > div:nth-child(2) > div >".
+        " div:nth-child(11) > div > button";
         $this->safeClick(WebDriverBy::cssSelector($submit));
         $modal    ="body > div.swal2-container.swal2-center.swal2-shown > div";
         $bodyText = $this->safeFindElement(
