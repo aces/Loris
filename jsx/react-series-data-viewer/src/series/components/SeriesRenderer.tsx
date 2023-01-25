@@ -223,14 +223,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     ]);
   }
 
+  const selectionCanBeZoomedTo = timeSelection &&
+    (timeSelection[1] - timeSelection[0]) >= 0.1;
+
   const zoomToSelection = () => {
-    if (timeSelection && (timeSelection[1] - timeSelection[0]) >= 0.1) {
+    if (selectionCanBeZoomedTo) {
       setInterval([
         Math.min(timeSelection[0], timeSelection[1]),
         Math.max(timeSelection[0], timeSelection[1])
       ]);
     }
   }
+
 
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
@@ -646,7 +650,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 type='button'
                 className='btn btn-primary btn-xs btn-zoom'
                 onClick={zoomToSelection}
-                disabled={!timeSelection}
+                disabled={!selectionCanBeZoomedTo}
                 value='Region'
               />
             </div>
