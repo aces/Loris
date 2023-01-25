@@ -153,9 +153,7 @@ class PublicaitonTest extends LorisIntegrationTest
      */
     function testCreatePublicaiton()
     {
-        $this->safeGet($this->url . "/publication/");
-        $btn = "#tab-propose";
-        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->safeGet($this->url . "/publication/#propose");
         $this->safeFindElement(
             WebDriverBy::Name("title")
         )->sendKeys("Test title");
