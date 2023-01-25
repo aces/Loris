@@ -62,7 +62,7 @@ class PublicaitonTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/publication/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#body")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
         $this->assertStringNotContainsString(
@@ -85,7 +85,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->setupPermissions(["publication_view"]);
         $this->safeGet($this->url . "/publication/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#body")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
             $this->assertStringNotContainsString(
@@ -108,7 +108,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->setupPermissions(["publication_propose"]);
         $this->safeGet($this->url . "/publication/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#body")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
                 $this->assertStringNotContainsString(
@@ -131,7 +131,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->setupPermissions(["publication_approve"]);
         $this->safeGet($this->url . "/publication/");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#body")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
                 $this->assertStringNotContainsString(
