@@ -37,7 +37,6 @@ class PublicaitonTest extends LorisIntegrationTest
     function setUp(): void
     {
         parent::setUp();
-        );
     }
 
     /**
