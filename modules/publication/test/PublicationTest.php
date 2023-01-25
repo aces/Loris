@@ -64,7 +64,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#body")
         )->getText();
-	$this->assertStringContainsString("Publications", $bodyText);
+        $this->assertStringContainsString("Publications", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -72,7 +72,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );	
+        );
     }
 
     /**
@@ -87,11 +87,11 @@ class PublicaitonTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#body")
         )->getText();
-	$this->assertStringContainsString("Publications", $bodyText);
-	        $this->assertStringNotContainsString(
-            "You do not have access to this page.",
-            $bodyText
-        );
+        $this->assertStringContainsString("Publications", $bodyText);
+            $this->assertStringNotContainsString(
+                "You do not have access to this page.",
+                $bodyText
+            );
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
@@ -112,9 +112,9 @@ class PublicaitonTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
                 $this->assertStringNotContainsString(
-            "You do not have access to this page.",
-            $bodyText
-        );
+                    "You do not have access to this page.",
+                    $bodyText
+                );
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
@@ -125,7 +125,7 @@ class PublicaitonTest extends LorisIntegrationTest
      * Tests that publicaiton loads with permission
      *
      * @return void
-     */    
+     */
     function testPublicaitonDoespageLoadWithPermissionProposeApprove()
     {
         $this->setupPermissions(["publication_approve"]);
@@ -135,9 +135,9 @@ class PublicaitonTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Publications", $bodyText);
                 $this->assertStringNotContainsString(
-            "You do not have access to this page.",
-            $bodyText
-        );
+                    "You do not have access to this page.",
+                    $bodyText
+                );
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
@@ -153,24 +153,24 @@ class PublicaitonTest extends LorisIntegrationTest
      */
     function testCreatePublicaiton()
     {
-	$this->safeGet($this->url . "/publication/");
-	$btn = "#tab-propose";
-	$this->safeClick(WebDriverBy::cssSelector($btn));
-	$this->safeFindElement(
+        $this->safeGet($this->url . "/publication/");
+        $btn = "#tab-propose";
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+        $this->safeFindElement(
             WebDriverBy::Name("title")
-	)->sendKeys("Test title");
+        )->sendKeys("Test title");
         $this->safeFindElement(
             WebDriverBy::Name("description")
-	)->sendKeys("Test description");
+        )->sendKeys("Test description");
         $this->safeFindElement(
             WebDriverBy::Name("leadInvestigator")
-	)->sendKeys("Test leadInvestigator");
+        )->sendKeys("Test leadInvestigator");
         $this->safeFindElement(
             WebDriverBy::Name("leadInvestigatorEmail")
-	)->sendKeys("testleadInvestigator@test.com");	
-	$submit="#propose > div > div > form > div > div:nth-child(2) > div > div:nth-child(11) > div > button";
-	$this->safeClick(WebDriverBy::cssSelector($submit));
-        $modal="body > div.swal2-container.swal2-center.swal2-shown > div";
+        )->sendKeys("testleadInvestigator@test.com");
+        $submit ="#propose > div > div > form > div > div:nth-child(2) > div > div:nth-child(11) > div > button";
+        $this->safeClick(WebDriverBy::cssSelector($submit));
+        $modal    ="body > div.swal2-container.swal2-center.swal2-shown > div";
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector($modal)
         )->getText();
