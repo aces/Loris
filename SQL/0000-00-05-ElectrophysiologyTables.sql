@@ -236,6 +236,7 @@ CREATE TABLE `physiological_electrode` (
 CREATE TABLE IF NOT EXISTS `physiological_coord_system_point_3d_rel` (
   `PhysiologicalCoordSystemID` INT(10) UNSIGNED NOT NULL,
   `Point3DID`                  INT(10) UNSIGNED NOT NULL,
+  `Name`                       VARCHAR(50)      NULL,
   PRIMARY KEY (`PhysiologicalCoordSystemID`, `Point3DID`),
   CONSTRAINT `fk_phys_coord_system_point_3d_rel_coord_system`
     FOREIGN KEY (`PhysiologicalCoordSystemID`)
