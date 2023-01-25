@@ -613,6 +613,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   textAlign: 'center',
                 }}
               >
+                <h5
+                  className='col-xs-title'
+                  style={{
+                    marginBottom: '3px'
+                  }}
+                >
+                  Zoom
+                </h5>
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
@@ -624,14 +632,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
                   onClick={zoomIn}
-                  value='Zoom +'
+                  value='+'
                 />
                 <br/>
                 <input
                   type='button'
                   className='btn btn-primary btn-xs btn-zoom'
                   onClick={zoomOut}
-                  value='Zoom -'
+                  value='-'
                 />
                 <br/>
                 <input
@@ -639,7 +647,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   className='btn btn-primary btn-xs btn-zoom'
                   onClick={zoomToSelection}
                   disabled={!timeSelection}
-                  value='Zoom To'
+                  value='Region'
                 />
               </div>
               <div className='col-xs-11'>

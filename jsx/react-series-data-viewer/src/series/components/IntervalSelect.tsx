@@ -157,13 +157,10 @@ const IntervalSelect: FunctionComponent<CProps> = ({
         }}
       >
         <h5
-          className='col-xs-offset-1 col-xs-11'
+          className='col-xs-offset-1 col-xs-11 col-xs-title'
           style={{
-            color: '#064785',
-            fontWeight: 'bold',
             paddingLeft: '15px',
             marginBottom: '15px',
-            textAlign: 'center',
           }}
         >
           Timeline Range View

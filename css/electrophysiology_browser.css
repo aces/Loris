@@ -116,6 +116,12 @@ svg:not(:root) {
   text-align: center;
 }
 
+.col-xs-title {
+  color: #064785;
+  font-weight: bold;
+  text-align: center;
+}
+
 #electrode-montage .list-group {
   border: 1px solid #ddd;
 }
