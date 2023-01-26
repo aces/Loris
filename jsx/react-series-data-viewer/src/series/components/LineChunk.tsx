@@ -1,7 +1,6 @@
 import * as R from 'ramda';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
 import {vec2} from 'gl-matrix';
-import {colorOrder} from '../../color';
 import {Chunk} from '../store/types';
 import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
