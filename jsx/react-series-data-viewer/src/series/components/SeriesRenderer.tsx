@@ -617,49 +617,69 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 marginTop: '20px',
               }}
             >
-              <h5
-                className='col-xs-title'
+              <div
                 style={{
-                  marginBottom: '3px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: rightPanel ? 'unset' : 'center',
                 }}
               >
-                Zoom
-              </h5>
-              <input
-                type='button'
-                className='btn btn-primary btn-xs btn-zoom'
-                onClick={zoomReset}
-                value='Reset'
-              />
-              <br/>
-              <input
-                type='button'
-                className='btn btn-primary btn-xs btn-zoom'
-                onClick={zoomIn}
-                value='+'
-              />
-              <br/>
-              <input
-                type='button'
-                className='btn btn-primary btn-xs btn-zoom'
-                onClick={zoomOut}
-                value='-'
-              />
-              <br/>
-              <input
-                type='button'
-                className='btn btn-primary btn-xs btn-zoom'
-                onClick={zoomToSelection}
-                disabled={!selectionCanBeZoomedTo}
-                value='Region'
-              />
+                <h5
+                  className='col-xs-title'
+                  style={{
+                    marginBottom: '3px',
+                    marginLeft: rightPanel ? '50px' : '0px',
+                  }}
+                >
+                  Zoom
+                </h5>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: rightPanel ? 'row' : 'column',
+                  }}
+                >
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomReset}
+                    value='Reset'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomIn}
+                    value='+'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomOut}
+                    value='-'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomToSelection}
+                    disabled={!selectionCanBeZoomedTo}
+                    value='Region'
+                  />
+                </div>
+              </div>
             </div>
             <IntervalSelect />
             <div className='row'>
               <div className='col-xs-offset-1 col-xs-11'>
                 <div
                   className='row'
-                  style={{paddingTop: '15px', paddingBottom: '20px'}}
+                  style={{
+                    paddingTop: '15px',
+                    paddingBottom: '20px',
+                    textAlign: 'center',
+                  }}
                 >
                   <div
                     className={rightPanel ? 'col-lg-12' : 'col-lg-6'}

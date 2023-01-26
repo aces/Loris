@@ -111,8 +111,9 @@ svg:not(:root) {
 }
 
 .btn-zoom {
-  margin: 2px 0;
-  width: 60px;
+  margin: 2px 1px;
+  max-width: 60px;
+  width: auto;
   text-align: center;
 }
 
