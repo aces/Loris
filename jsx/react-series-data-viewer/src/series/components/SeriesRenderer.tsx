@@ -323,6 +323,35 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
   }, [viewerWidth]);
 
+  const prevHoveredChannels = useRef([]);
+  const defaultLineColor = '#999';
+
+  useEffect(() => {
+    hoveredChannels.forEach((channelIndex) => {
+      if (prevHoveredChannels.current.includes(channelIndex))
+        return;
+
+      const classString = `.visx-linepath.channel-${channelIndex}`;
+      document.querySelectorAll(classString).forEach((line) => {
+         line.setAttribute(
+           'stroke',
+           colorOrder(channelIndex.toString()).toString()
+        );
+      });
+    });
+
+    prevHoveredChannels.current.forEach((prevChannelIndex) => {
+      if (!hoveredChannels.includes(prevChannelIndex)) {
+        const classString = `.visx-linepath.channel-${prevChannelIndex}`;
+        document.querySelectorAll(classString).forEach((line) => {
+          line.setAttribute('stroke', defaultLineColor);
+        });
+      }
+    });
+
+    prevHoveredChannels.current = hoveredChannels
+  }, [hoveredChannels]);
+
   const [numDisplayedChannels, setNumDisplayedChannels] = useState(MAX_CHANNELS);
   const [cursorEnabled, setCursorEnabled] = useState(false);
   const toggleCursor = () => setCursorEnabled(value => !value);
