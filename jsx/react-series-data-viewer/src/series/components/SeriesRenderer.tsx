@@ -14,11 +14,12 @@ import {scaleLinear, ScaleLinear} from 'd3-scale';
 import {colorOrder} from "../../color";
 import {
   MAX_RENDERED_EPOCHS,
-  MAX_CHANNELS,
+  DEFAULT_MAX_CHANNELS,
   CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
+  STACKED_SERIES_RANGE,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -224,7 +225,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   }
 
   const selectionCanBeZoomedTo = timeSelection &&
-    (timeSelection[1] - timeSelection[0]) >= 0.1;
+    Math.abs(timeSelection[1] - timeSelection[0]) >= 0.1;
 
   const zoomToSelection = () => {
     if (selectionCanBeZoomedTo) {
@@ -278,6 +279,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             case 'KeyV':
               toggleCursor();
               break;
+            case 'KeyB':
+              toggleStackedView();
+              break;
+            case 'KeyS':
+              if (stackedView)
+                toggleSingleMode();
+              break;
           }
         }
       }
@@ -326,35 +334,44 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const prevHoveredChannels = useRef([]);
   const defaultLineColor = '#999';
 
+  const setLineColor = (channelIndex: number, colored: boolean) => {
+    const classString = `.visx-linepath.channel-${channelIndex}`;
+    document.querySelectorAll(classString).forEach((line) => {
+      line.setAttribute(
+        'stroke',
+        colored
+          ? colorOrder(channelIndex.toString()).toString()
+          : defaultLineColor
+      );
+      if (stackedView && !singleMode) {
+        line.setAttribute('stroke-width', colored ? '3' : '1');
+      }
+    });
+  }
+
   useEffect(() => {
     hoveredChannels.forEach((channelIndex) => {
       if (prevHoveredChannels.current.includes(channelIndex))
         return;
-
-      const classString = `.visx-linepath.channel-${channelIndex}`;
-      document.querySelectorAll(classString).forEach((line) => {
-         line.setAttribute(
-           'stroke',
-           colorOrder(channelIndex.toString()).toString()
-        );
-      });
+      setLineColor(channelIndex, true);
     });
 
     prevHoveredChannels.current.forEach((prevChannelIndex) => {
       if (!hoveredChannels.includes(prevChannelIndex)) {
-        const classString = `.visx-linepath.channel-${prevChannelIndex}`;
-        document.querySelectorAll(classString).forEach((line) => {
-          line.setAttribute('stroke', defaultLineColor);
-        });
+        setLineColor(prevChannelIndex, false);
       }
     });
 
     prevHoveredChannels.current = hoveredChannels
   }, [hoveredChannels]);
 
-  const [numDisplayedChannels, setNumDisplayedChannels] = useState(MAX_CHANNELS);
+  const [numDisplayedChannels, setNumDisplayedChannels] = useState<number>(DEFAULT_MAX_CHANNELS);
   const [cursorEnabled, setCursorEnabled] = useState(false);
   const toggleCursor = () => setCursorEnabled(value => !value);
+  const [stackedView, setStackedView] = useState(false);
+  const toggleStackedView = () => setStackedView(value => !value);
+  const [singleMode, setSingleMode] = useState(false);
+  const toggleSingleMode = () => setSingleMode(value => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -512,6 +529,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       setViewerWidth(viewerWidth);
     }, [viewerWidth]);
 
+    const channelList: Channel[] = (stackedView && singleMode && hoveredChannels.length > 0)
+      ? filteredChannels.filter((channel) => hoveredChannels.includes(channel.index))
+      : filteredChannels;
+
     return (
       <>
         <clipPath
@@ -526,7 +547,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           />
         </clipPath>
 
-        {filteredChannels.map((channel, i) => {
+        {channelList.map((channel, i) => {
           if (!channelMetadata[channel.index]) {
             return null;
           }
@@ -534,7 +555,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(
             subTopLeft,
             topLeft,
-            vec2.fromValues(0, (i * diagonal[1]) / numDisplayedChannels)
+            vec2.fromValues(
+              0,
+              stackedView
+                ? 0
+                : (i * diagonal[1]) / numDisplayedChannels
+            )
           );
 
           const subBottomRight = vec2.create();
@@ -543,7 +569,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               diagonal[0],
-              ((i + 1) * diagonal[1]) / numDisplayedChannels
+              stackedView
+                ? diagonal[1]
+                : ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
 
@@ -553,7 +581,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           const axisEnd = vec2.create();
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
-          const seriesRange = channelMetadata[channel.index].seriesRange;
+          const seriesRange: [number, number] = stackedView
+            ? STACKED_SERIES_RANGE
+            : channelMetadata[channel.index].seriesRange;
+
           const scales: [
             ScaleLinear<number, number, never>,
             ScaleLinear<number, number, never>
@@ -580,6 +611,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   scales={scales}
                   physioFileID={physioFileID}
                   isHovered={hoveredChannels.includes(channel.index)}
+                  isStacked={stackedView}
                 />
               ))
             ))
@@ -629,7 +661,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    * @param channelIndex
    */
   const onChannelHover = (channelIndex : number) => {
-     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
+    setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
   };
 
 
@@ -874,9 +906,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       height: 1 / numDisplayedChannels * 100 + '%',
                       alignItems: 'center',
                       cursor: 'default',
-                      color: `${hoveredChannels.includes(channel.index)
+                      color: `${stackedView || hoveredChannels.includes(channel.index)
                         ? colorOrder(channel.index.toString())
                         : '#333'}`,
+                      fontWeight: `${stackedView && hoveredChannels.includes(channel.index)
+                        ? 'bold'
+                        : 'normal'}`,
                     }}
                     onMouseEnter={() => onChannelHover(channel.index)}
                     onMouseLeave={() => onChannelHover(-1)}
@@ -965,6 +1000,37 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 marginBottom: '15px',
               }}
             >
+              <div
+                className='col-xs-1'
+                style={{
+                  textAlign: 'center',
+                  position: 'absolute',
+                  bottom: '15px',
+                }}
+              >
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                  }}
+                  onClick={toggleStackedView}
+                  value={stackedView ? 'Unstack' : 'Stack'}
+                />
+                <br/>
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                    visibility: stackedView ? 'visible' : 'hidden'
+                  }}
+                  onClick={toggleSingleMode}
+                  value={`${singleMode ? 'Standard' : 'Isolate'}`}
+                />
+              </div>
               <div className='col-xs-offset-1 col-xs-11'>
                 {
                   [...Array(epochs.length).keys()].filter((i) =>
@@ -1091,7 +1157,7 @@ SeriesRenderer.defaultProps = {
   hidden: [],
   channelMetadata: [],
   offsetIndex: 1,
-  limit: MAX_CHANNELS,
+  limit: DEFAULT_MAX_CHANNELS,
 };
 
 export default connect(
