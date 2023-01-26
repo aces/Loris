@@ -685,21 +685,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   alignItems: rightPanel ? 'unset' : 'center',
                 }}
               >
-                <h5
-                  className='col-xs-title'
-                  style={{
-                    marginBottom: '3px',
-                    marginLeft: rightPanel ? '50px' : '0px',
-                  }}
-                >
+                <h5 className='col-xs-title btn-zoom'>
                   Zoom
                 </h5>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: rightPanel ? 'row' : 'column',
-                  }}
-                >
+                <div>
                   <input
                     type='button'
                     className='btn btn-primary btn-xs btn-zoom'
