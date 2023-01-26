@@ -552,6 +552,7 @@ INSERT INTO physiological_coord_system_name
   ('Allen Institute', 'RAS', 'Bregma point'),
   ('Analyze', 'LAS', ''),
   ('BTi/4D', 'ALS', 'between the ears'),
+  ('CTF', 'ALS', 'between the ears'),
   ('CTF MRI', 'ALS', 'between the ears'),
   ('CTF gradiometer', 'ALS', 'between the ears'),
   ('CapTrak', 'RAS', 'approximately between the ears'),
