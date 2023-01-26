@@ -20,9 +20,11 @@ export const MIN_EPOCH_WIDTH = 1;
 
 export const MAX_VIEWED_CHUNKS = 3;
 
-export const MAX_CHANNELS = 32;
+export const DEFAULT_MAX_CHANNELS = 32;
 
 export const CHANNEL_DISPLAY_OPTIONS = [4, 8, 16, 32, 64];
+
+export const STACKED_SERIES_RANGE: [number, number] = [-0.004, 0.004];
 
 export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 30];
 

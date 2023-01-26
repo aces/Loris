@@ -14,11 +14,12 @@ import {scaleLinear, ScaleLinear} from 'd3-scale';
 import {colorOrder} from "../../color";
 import {
   MAX_RENDERED_EPOCHS,
-  MAX_CHANNELS,
+  DEFAULT_MAX_CHANNELS,
   CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
+  STACKED_SERIES_RANGE,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -278,6 +279,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             case 'KeyV':
               toggleCursor();
               break;
+            case 'KeyB':
+              toggleStackedView();
+              break;
           }
         }
       }
@@ -352,9 +356,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     prevHoveredChannels.current = hoveredChannels
   }, [hoveredChannels]);
 
-  const [numDisplayedChannels, setNumDisplayedChannels] = useState(MAX_CHANNELS);
+
+  const [numDisplayedChannels, setNumDisplayedChannels] = useState(DEFAULT_MAX_CHANNELS);
   const [cursorEnabled, setCursorEnabled] = useState(false);
   const toggleCursor = () => setCursorEnabled(value => !value);
+  const [stackedView, setStackedView] = useState(false);
+  const toggleStackedView = () => setStackedView(value => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -534,7 +541,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(
             subTopLeft,
             topLeft,
-            vec2.fromValues(0, (i * diagonal[1]) / numDisplayedChannels)
+            vec2.fromValues(
+              0,
+              stackedView
+                ? 0
+                : (i * diagonal[1]) / numDisplayedChannels
+            )
           );
 
           const subBottomRight = vec2.create();
@@ -543,7 +555,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               diagonal[0],
-              ((i + 1) * diagonal[1]) / numDisplayedChannels
+              stackedView
+                ? diagonal[1]
+                : ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
 
@@ -553,7 +567,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           const axisEnd = vec2.create();
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
-          const seriesRange = channelMetadata[channel.index].seriesRange;
+          const seriesRange: [number, number] = stackedView
+            ? STACKED_SERIES_RANGE
+            : channelMetadata[channel.index].seriesRange;
+
           const scales: [
             ScaleLinear<number, number, never>,
             ScaleLinear<number, number, never>
@@ -580,6 +597,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   scales={scales}
                   physioFileID={physioFileID}
                   isHovered={hoveredChannels.includes(channel.index)}
+                  isStacked={stackedView}
                 />
               ))
             ))
@@ -976,6 +994,22 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 marginBottom: '15px',
               }}
             >
+              <div
+                className='col-xs-1'
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '60px',
+                  }}
+                  onClick={toggleStackedView}
+                  value={stackedView ? 'Unstack' : 'Stack'}
+                />
+              </div>
               <div className='col-xs-offset-1 col-xs-11'>
                 {
                   [...Array(epochs.length).keys()].filter((i) =>
@@ -1102,7 +1136,7 @@ SeriesRenderer.defaultProps = {
   hidden: [],
   channelMetadata: [],
   offsetIndex: 1,
-  limit: MAX_CHANNELS,
+  limit: DEFAULT_MAX_CHANNELS,
 };
 
 export default connect(

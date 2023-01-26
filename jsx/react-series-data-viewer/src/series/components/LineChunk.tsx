@@ -6,9 +6,9 @@ import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
 
 const LineMemo = R.memoizeWith(
-  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex}) =>
+  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex, isStacked}) =>
     `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
-  + `${channelIndex}-${traceIndex}-${chunkIndex}`,
+  + `${channelIndex}-${traceIndex}-${chunkIndex}-${isStacked}`,
   ({
     channelIndex,
     traceIndex,
@@ -18,6 +18,7 @@ const LineMemo = R.memoizeWith(
     amplitudeScale,
     filters,
     values,
+    isStacked,
     ...rest
 }) => {
 
@@ -64,7 +65,8 @@ type CProps = {
     ScaleLinear<number, number, never>,
   ],
   physioFileID: number,
-  isHovered: boolean
+  isHovered: boolean,
+  isStacked: boolean
 };
 
 /**
@@ -79,6 +81,7 @@ type CProps = {
  * @param root0.scales
  * @param root0.physioFileID
  * @param root0.isHovered
+ * @param root0.isStacked
  */
 const LineChunk = ({
   channelIndex,
@@ -90,6 +93,7 @@ const LineChunk = ({
   scales,
   physioFileID,
   isHovered,
+  isStacked,
   ...rest
 }: CProps) => {
   const {interval, values} = chunk;
@@ -127,6 +131,7 @@ const LineChunk = ({
           seriesRange={seriesRange}
           amplitudeScale={amplitudeScale}
           filters={chunk.filters}
+          isStacked={isStacked}
         />
       </Group>
     </Group>

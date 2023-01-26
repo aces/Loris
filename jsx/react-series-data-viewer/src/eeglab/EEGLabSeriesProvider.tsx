@@ -6,7 +6,7 @@ import {createEpicMiddleware} from 'redux-observable';
 import thunk from 'redux-thunk';
 import {fetchJSON, fetchText} from '../ajax';
 import {rootReducer, rootEpic} from '../series/store';
-import {MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
+import {DEFAULT_MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
 import {
   setChannels,
   emptyChannels,
@@ -205,7 +205,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
   }
 
   static defaultProps = {
-    limit: MAX_CHANNELS,
+    limit: DEFAULT_MAX_CHANNELS,
   };
 }
 
