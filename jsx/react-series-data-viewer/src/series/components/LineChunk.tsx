@@ -7,9 +7,9 @@ import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
 
 const LineMemo = R.memoizeWith(
-  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex, color}) =>
+  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex}) =>
     `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
-  + `${channelIndex}-${traceIndex}-${chunkIndex}-${color}`,
+  + `${channelIndex}-${traceIndex}-${chunkIndex}`,
   ({
     channelIndex,
     traceIndex,
@@ -19,7 +19,6 @@ const LineMemo = R.memoizeWith(
     amplitudeScale,
     filters,
     values,
-    color,
     ...rest
 }) => {
 
@@ -47,7 +46,7 @@ const LineMemo = R.memoizeWith(
         vectorEffect="non-scaling-stroke"
         data={points}
         strokeWidth={1}
-        stroke={color}
+        stroke={'#999'}
         {...rest}
       />
     );
@@ -66,7 +65,6 @@ type CProps = {
     ScaleLinear<number, number, never>,
   ],
   physioFileID: number,
-  color?: string,
   isHovered: boolean
 };
 
@@ -91,7 +89,6 @@ const LineChunk = ({
   seriesRange,
   amplitudeScale,
   scales,
-  color,
   physioFileID,
   isHovered,
   ...rest
@@ -110,8 +107,6 @@ const LineChunk = ({
     (scales[0](interval[0]) + scales[0](interval[1])) / 2,
     (range[0] + range[1]) / 2
   );
-
-  const lineColor = isHovered ? colorOrder(channelIndex.toString()) : '#999';
 
   return (
     <Group
@@ -133,7 +128,6 @@ const LineChunk = ({
           seriesRange={seriesRange}
           amplitudeScale={amplitudeScale}
           filters={chunk.filters}
-          color={lineColor}
         />
       </Group>
     </Group>
