@@ -167,6 +167,10 @@ function outputFiles(string $outputDir, array $instruments)
 {
     foreach ($instruments as $instname => $instrument) {
         $fp = fopen("$outputDir/$instname.linst", "w");
+        fwrite($fp, "table{@}$instname\n");
+        // FIXME: There should be a title{@} tag for it to be a valid linst
+        // that the instrument manager can recognize, but there doesn't seem
+        // to be any way to derive that from the redcap data dictionary csv?
         foreach ($instrument as $field) {
             fwrite($fp, "$field\n");
         }
