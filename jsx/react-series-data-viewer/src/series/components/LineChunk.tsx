@@ -4,6 +4,7 @@ import {vec2} from 'gl-matrix';
 import {Chunk} from '../store/types';
 import {LinePath} from '@visx/shape';
 import {Group} from '@visx/group';
+import {colorOrder} from "../../color";
 
 const LineMemo = R.memoizeWith(
   ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex, isStacked}) =>
@@ -40,13 +41,15 @@ const LineMemo = R.memoizeWith(
       )
     );
 
+
+
     return (
       <LinePath
         className={`channel-${channelIndex}`}
         vectorEffect="non-scaling-stroke"
         data={points}
         strokeWidth={1}
-        stroke={'#999'}
+        stroke={isStacked ? colorOrder(channelIndex.toString()).toString() : '#999'}
         {...rest}
       />
     );
