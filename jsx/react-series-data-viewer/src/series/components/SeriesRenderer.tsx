@@ -225,7 +225,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   }
 
   const selectionCanBeZoomedTo = timeSelection &&
-    (timeSelection[1] - timeSelection[0]) >= 0.1;
+    Math.abs(timeSelection[1] - timeSelection[0]) >= 0.1;
 
   const zoomToSelection = () => {
     if (selectionCanBeZoomedTo) {
@@ -343,7 +343,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           ? colorOrder(channelIndex.toString()).toString()
           : defaultLineColor
       );
-      if (stackedView && !singleMode) {
+      if (stackedView || cursorRef.current) {
         line.setAttribute('stroke-width', colored ? '3' : '1');
       }
     });
@@ -529,7 +529,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       setViewerWidth(viewerWidth);
     }, [viewerWidth]);
 
-    const channelList: Channel[] = (stackedView && singleMode && hoveredChannels.length > 0)
+    const channelList: Channel[] = (!
+      cursorRef.current && stackedView &&
+      singleMode && hoveredChannels.length > 0
+    )
       ? filteredChannels.filter((channel) => hoveredChannels.includes(channel.index))
       : filteredChannels;
 
