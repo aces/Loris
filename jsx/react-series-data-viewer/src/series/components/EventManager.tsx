@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
 import {toggleEpoch, updateActiveEpoch, updateFilteredEpochs} from '../store/logic/filterEpochs';
@@ -52,18 +52,36 @@ const EventManager = ({
     && rightPanel !== 'annotationForm'
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
+  const firstRender = useRef(true);
   const [activeEpochs, setActiveEpochs] = useState([]);
-  const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
+  const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
+    const epochsInRange = getEpochsInRange();
+    if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
+      return epochsInRange.some((index) => {
+        return filteredEpochs.includes(index);
+      })
+    }
+    return false;
+  });
   const [visibleComments, setVisibleComments] = useState([]);
   const [allCommentsVisible, setAllCommentsVisible] = useState(false);
 
-  useEffect(() => {
-    // Reset: turn all epochs on / off regardless of independent toggle state
-    const epochsInRange = [...Array(epochs.length).keys()].filter((index) =>
+  function getEpochsInRange() {
+    return [...Array(epochs.length).keys()].filter((index) =>
       epochs[index].onset + epochs[index].duration > interval[0]
       && epochs[index].onset < interval[1]
       && epochs[index].type === epochType
     );
+  }
+
+  useEffect(() => {
+    if (firstRender.current) {    // Leave epochs intact on initialization
+      firstRender.current = false;
+      return;
+    }
+    // Reset: turn all epochs on / off regardless of independent toggle state
+    const epochsInRange = getEpochsInRange();
+
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       epochsInRange.map((index) => {
         if ((!allEpochsVisible && filteredEpochs.includes(index))
