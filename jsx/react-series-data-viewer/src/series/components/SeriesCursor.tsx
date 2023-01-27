@@ -139,6 +139,8 @@ const SeriesCursor = (
       }}
     >
       {Math.round(time * 1000) / 1000}s
+      <br/>
+      <EpochMarker />
       <div
         style={{
           display: 'flex',
@@ -152,7 +154,8 @@ const SeriesCursor = (
           );
           if (!hoveredChannel) return;
           const hoveredChunk = hoveredChannel.traces[0].chunks.find(
-            (chunk) => chunk.interval[0] <= time && chunk.interval[1] >= time
+            (chunk) => chunk.interval[0] <= time &&
+              chunk.interval[1] >= time
           );
           if (!hoveredChunk) return;
           const chunkValue = computeValue(hoveredChunk, time);
@@ -183,18 +186,7 @@ const SeriesCursor = (
     );
 
     return index !== undefined ? (
-      <div
-        style={{
-          left,
-          top: 'calc(100% + 26px)',
-          position: 'absolute',
-          display: 'flex',
-          flexDirection: 'row',
-          backgroundColor: '#E4EBF2',
-          padding: '2px 2px',
-          borderRadius: '3px',
-        }}
-      >
+      <div>
         {epochs[index].label}
       </div>
     ) : null;
@@ -213,7 +205,7 @@ const SeriesCursor = (
       <Cursor />
       {enabled ? <ValueTags /> : null}
       <TimeMarker />
-      <EpochMarker />
+      {/*<EpochMarker />*/}
     </div>
   );
 };
