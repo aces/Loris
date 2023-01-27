@@ -192,9 +192,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   );  // Scale to interval size
 
   const zoomIn = () => {
-    const zoomInterval = (interval[1] - interval[0]) < 0.3
-      ? 0
-      : intervalChange; // Limit zooming
+    const currentInterval = interval[1] - interval[0];
+    let zoomInterval = intervalChange;
+
+    if (currentInterval < 2 * intervalChange) {
+      zoomInterval = 0;
+    } else if (currentInterval === 2 * intervalChange) {
+      zoomInterval /= 2;
+    }
+
     setInterval([interval[0] + zoomInterval, interval[1] - zoomInterval]);
   }
 
@@ -204,7 +210,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const zoomReset = () => {
     const defaultInterval = DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0];
-    const currentMidpoint = (interval[1] + interval[0]) / 2;
+    const currentMidpoint = (interval[0] + interval[1]) / 2;
     let lowerBound = currentMidpoint - defaultInterval / 2;
     let upperBound = currentMidpoint + defaultInterval / 2;
 
@@ -693,6 +699,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     type='button'
                     className='btn btn-primary btn-xs btn-zoom'
                     onClick={zoomReset}
+                    disabled={
+                      (interval[1] - interval[0]) ===
+                      (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
+                    }
                     value='Reset'
                   />
                   <br/>
@@ -700,6 +710,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     type='button'
                     className='btn btn-primary btn-xs btn-zoom'
                     onClick={zoomIn}
+                    disabled={(interval[1] - interval[0]) <= 0.1}
                     value='+'
                   />
                   <br/>
@@ -707,6 +718,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     type='button'
                     className='btn btn-primary btn-xs btn-zoom'
                     onClick={zoomOut}
+                    disabled={
+                      interval[0] === domain[0] &&
+                      interval[1] === domain[1]
+                    }
                     value='-'
                   />
                   <br/>
