@@ -339,7 +339,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     document.querySelectorAll(classString).forEach((line) => {
       line.setAttribute(
         'stroke',
-        colored
+        colored || stackedView
           ? colorOrder(channelIndex.toString()).toString()
           : defaultLineColor
       );
