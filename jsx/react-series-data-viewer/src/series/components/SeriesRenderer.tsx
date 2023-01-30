@@ -65,6 +65,7 @@ import {
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from "../store/logic/cursorInteraction";
 import {setHoveredChannels} from "../store/state/cursor";
+import {getEpochsInRange} from "../store/logic/filterEpochs";
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -453,12 +454,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );*/
     // ##################### EEGNET OVERRIDE END ################## //
 
+    const epochType = rightPanel === 'eventList'
+      ? 'Event'
+        : rightPanel === 'annotationList'
+          ? 'Annotation'
+          : null
+    ;
+    const visibleEpochs = getEpochsInRange(epochs, interval, epochType);
+
     return (
       <Group>
         {// ##################### EEGNET OVERRIDE START ################## //
-          filteredEpochs.length < MAX_RENDERED_EPOCHS &&
-          filteredEpochs.map((index) => {
-            return (
+         visibleEpochs.length < MAX_RENDERED_EPOCHS &&
+          visibleEpochs.map((index) => {
+            return filteredEpochs.includes(index) && (
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
@@ -973,6 +982,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     enabled={cursorEnabled}
                     hoveredChannels={hoveredChannels}
                     channelMetadata={channelMetadata}
+                    showEvents={rightPanel === 'eventList'}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
@@ -1107,37 +1117,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }
                   </button>
                 }
-
-                <div
-                  className='pull-right col-xs-4'
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    paddingRight: 0,
-                  }}
-                >
-                  {[...Array(epochs.length).keys()].filter((i) =>
-                      epochs[i].onset + epochs[i].duration > interval[0]
-                      && epochs[i].onset < interval[1]
-                      && (
-                        (epochs[i].type === 'Event'
-                         && rightPanel === 'eventList')
-                        ||
-                        (epochs[i].type === 'Annotation'
-                         && rightPanel === 'annotationList')
-                      )
-                    ).length >= MAX_RENDERED_EPOCHS &&
-                    <div
-                      style={{
-                        padding: '5px',
-                        background: '#eee',
-                        alignSelf: 'flex-end',
-                      }}
-                    >
-                      Too many events to display for the timeline range.
-                    </div>
-                  }
-                </div>
               </div>
             </div>
           </div>

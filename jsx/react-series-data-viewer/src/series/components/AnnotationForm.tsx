@@ -412,10 +412,13 @@ const AnnotationForm = ({
             id="start-time"
             min="0"
             label="Start Time"
-            value={Math.min(
-              parseFloat(event[0].toString()),
-              parseFloat(event[1].toString())
-            )}
+            value={event
+              ? Math.min(
+                parseFloat(event[0].toString()),
+                parseFloat(event[1].toString())
+              )
+              : ''
+            }
             required={true}
             onUserInput={handleStartTimeChange}
           />
@@ -424,10 +427,13 @@ const AnnotationForm = ({
             id="end-time"
             min="0"
             label="End Time"
-            value={Math.max(
-              parseFloat(event[0].toString()),
-              parseFloat(event[1].toString())
-            )}
+            value={event
+              ? Math.max(
+                parseFloat(event[0].toString()),
+                parseFloat(event[1].toString())
+              )
+              : ''
+            }
             required={true}
             onUserInput={handleEndTimeChange}
           />

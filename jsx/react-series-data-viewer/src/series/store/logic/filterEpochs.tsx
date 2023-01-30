@@ -114,3 +114,13 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
     })
   );
 };
+
+
+export const getEpochsInRange = (epochs, interval, epochType, withComments = false) => {
+  return [...Array(epochs.length).keys()].filter((index) =>
+    epochs[index].onset + epochs[index].duration > interval[0] &&
+    epochs[index].onset < interval[1] &&
+    epochs[index].type === epochType &&
+    (!withComments || epochs[index].hed || epochs[index].comment)
+  );
+}

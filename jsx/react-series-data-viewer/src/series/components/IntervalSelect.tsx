@@ -6,7 +6,6 @@ import {
   endDragInterval,
 } from '../store/logic/dragBounds';
 import {setInterval} from '../store/state/bounds';
-import {updateFilteredEpochs} from '../store/logic/filterEpochs';
 import {Slider, Rail, Handles, Ticks} from 'react-compound-slider';
 import {Handle, Tick} from './components';
 import React, {useState, FunctionComponent, useRef} from 'react';
@@ -22,7 +21,6 @@ type CProps = {
   dragStart: (_: [number, number]) => void,
   dragContinue: (_: [number, number]) => void,
   dragEnd: (_: [number, number]) => void,
-  updateFilteredEpochs: (_: void) => void,
 };
 
 /**
@@ -35,7 +33,6 @@ type CProps = {
  * @param root0.dragStart
  * @param root0.dragContinue
  * @param root0.dragEnd
- * @param root0.updateFilteredEpochs
  */
 const IntervalSelect: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -45,7 +42,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
   dragStart,
   dragContinue,
   dragEnd,
-  updateFilteredEpochs,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -237,7 +233,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 setInterval(DEFAULT_TIME_INTERVAL);
-                updateFilteredEpochs();
               }}
               value='Reset'
             />
@@ -246,7 +241,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
               className='btn btn-primary btn-xs'
               onClick={() => {
                 setInterval([domain[0], domain[1]]);
-                updateFilteredEpochs();
               }}
               value='Show All'
             />
@@ -356,10 +350,6 @@ export default connect(
     dragEnd: R.compose(
       dispatch,
       endDragInterval
-    ),
-    updateFilteredEpochs: R.compose(
-      dispatch,
-      updateFilteredEpochs
     ),
     setInterval: R.compose(
       dispatch,

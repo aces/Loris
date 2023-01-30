@@ -6,13 +6,14 @@ import {connect} from 'react-redux';
 import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
 import {MutableRefObject, useEffect} from 'react';
 import {RootState} from '../store';
+import {getEpochsInRange} from "../store/logic/filterEpochs";
 
 
 type CursorContentProps = {
   time: number,
   channel: Channel,
   contentIndex: number,
-  showMarker: boolean,
+  showEvents: boolean,
   hoveredChannels: number[],
   channelMetadata: ChannelMetadata[],
 };
@@ -25,7 +26,7 @@ type CProps = {
   filteredEpochs: number[],
   CursorContent: (_: CursorContentProps) => JSX.Element,
   interval: [number, number],
-  showMarker: boolean,
+  showEvents: boolean,
   enabled: boolean,
   hoveredChannels: number[],
   channelMetadata: ChannelMetadata[],
@@ -41,7 +42,7 @@ type CProps = {
  * @param root0.filteredEpochs
  * @param root0.CursorContent
  * @param root0.interval
- * @param root0.showMarker
+ * @param root0.showEvents
  * @param root0.enabled
  * @param root0.hoveredChannels
  * @param root0.channelMetadata
@@ -55,7 +56,7 @@ const SeriesCursor = (
     filteredEpochs,
     CursorContent,
     interval,
-    showMarker,
+    showEvents,
     enabled,
     hoveredChannels,
     channelMetadata
@@ -112,7 +113,7 @@ const SeriesCursor = (
             time={time}
             channel={channel}
             contentIndex={i}
-            showMarker={showMarker}
+            showEvents={showEvents}
             hoveredChannels={hoveredChannels}
             channelMetadata={channelMetadata}
           />
@@ -140,7 +141,7 @@ const SeriesCursor = (
     >
       {Math.round(time * 1000) / 1000}s
       <br/>
-      <EpochMarker />
+      {showEvents && <EpochMarker />}
       <div
         style={{
           display: 'flex',
@@ -175,14 +176,22 @@ const SeriesCursor = (
     </div>
   );
 
+
   /**
    *
    */
   const EpochMarker = () => {
-    if (reversedEpochs.length > MAX_RENDERED_EPOCHS) return null;
+    const visibleEpochs = getEpochsInRange(epochs, interval, 'Event');
+    if (visibleEpochs
+        .filter((index) => { filteredEpochs.includes(index) })
+        .length > MAX_RENDERED_EPOCHS
+    ) {
+      return null;
+    }
 
-    const index = reversedEpochs.find((index) =>
-      epochs[index].onset < time
+    const index = visibleEpochs.find((index) =>
+      epochs[index].onset < time &&
+      (epochs[index].onset + Math.max(epochs[index].duration, 0.05)) > time
     );
 
     return index !== undefined ? (
@@ -205,7 +214,6 @@ const SeriesCursor = (
       <Cursor />
       {enabled ? <ValueTags /> : null}
       <TimeMarker />
-      {/*<EpochMarker />*/}
     </div>
   );
 };
@@ -244,33 +252,18 @@ const computeValue = (chunk, time) => {
  * @param root0.time
  * @param root0.channel
  * @param root0.contentIndex
- * @param root0.showMarker
+ * @param root0.showEvents
  */
 const CursorContent = (
   {
     time,
     channel,
     contentIndex,
-    showMarker,
+    showEvents,
     hoveredChannels,
     channelMetadata
   }: CursorContentProps
 ) => {
-  /**
-   *
-   * @param color
-   */
-  const Marker = (color) => (
-    <div
-      style={{
-        margin: 'auto',
-        marginLeft: '5px',
-        marginRight: '5px',
-        padding: '5px 5px',
-        backgroundColor: color,
-      }}
-    />
-  );
 
   return (
     <div style={{margin: '0 5px', width: '120px'}}>
@@ -294,11 +287,6 @@ const CursorContent = (
               }`
             }}
           >
-            {showMarker && (
-              <Marker
-                color={colorOrder(contentIndex.toString())}
-              />
-            )}
             {channelMetadata[channel.index].name}:&nbsp;
             {chunk && Math.round(computeValue(chunk, time))} {SIGNAL_UNIT}
           </div>
@@ -313,7 +301,7 @@ SeriesCursor.defaultProps = {
   epochs: [],
   filteredEpochs: [],
   CursorContent,
-  showMarker: false,
+  showEvents: false,
   enabled: false,
 };
 

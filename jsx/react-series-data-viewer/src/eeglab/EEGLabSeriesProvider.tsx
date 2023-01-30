@@ -15,6 +15,7 @@ import {
   setEpochs,
   setDatasetMetadata,
   setPhysioFileID,
+  setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
 import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
@@ -166,7 +167,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
           )
         );
   // ##################### EEGNET OVERRIDE END ################## //
-        this.store.dispatch(updateFilteredEpochs());
+        this.store.dispatch(setFilteredEpochs(epochs.map((_, index) => index)));
       })
     ;
 
