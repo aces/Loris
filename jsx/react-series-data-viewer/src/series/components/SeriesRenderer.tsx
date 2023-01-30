@@ -349,14 +349,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           ? colorOrder(channelIndex.toString()).toString()
           : defaultLineColor
       );
-      if (stackedView || cursorRef.current) {
-        colored
-          ? colorOrder(channelIndex.toString()).toString()
-          : defaultLineColor
+
+      line.setAttribute(
+        'stroke-width',
+        colored && (!singleMode || cursorRef.current)
+          ? '3'
+          : '1'
       );
-      if (stackedView && !singleMode) {
-        line.setAttribute('stroke-width', colored ? '3' : '1');
-      }
     });
   }
 
