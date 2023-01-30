@@ -344,6 +344,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           : defaultLineColor
       );
       if (stackedView || cursorRef.current) {
+        colored
+          ? colorOrder(channelIndex.toString()).toString()
+          : defaultLineColor
+      );
+      if (stackedView && !singleMode) {
         line.setAttribute('stroke-width', colored ? '3' : '1');
       }
     });
