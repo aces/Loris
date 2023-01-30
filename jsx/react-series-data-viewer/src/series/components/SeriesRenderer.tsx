@@ -20,6 +20,7 @@ import {
   Vector2,
   DEFAULT_TIME_INTERVAL,
   STACKED_SERIES_RANGE,
+  DEFAULT_VIEWER_HEIGHT,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -667,6 +668,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     setNumDisplayedChannels(numChannels);     // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
     setOffsetIndex(offsetIndex);  // Will include new channels on limit increase
+    setViewerHeight(
+      numChannels > 4
+        ? DEFAULT_VIEWER_HEIGHT
+        : DEFAULT_VIEWER_HEIGHT * 0.8
+    );
   };
 
   /**
