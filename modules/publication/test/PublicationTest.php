@@ -119,7 +119,6 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
-    
     /**
      * Tests that publicaiton loads with permission
      *
