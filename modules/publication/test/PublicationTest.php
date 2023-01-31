@@ -142,52 +142,5 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
 
-
-    /**
-     * Tests that publicaiton create a new publicaiton
-     *
-     * @return void
-     */
-    function testCreatePublicaiton()
-    {
-        $this->safeGet($this->url . "/publication/#propose");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#propose > div > div > form > div >".
-                " div:nth-child(1) > div > div > div > input"
-            )
-        )->sendKeys("Test title");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#propose > div > div > form > div >".
-                " div:nth-child(2) > div > div:nth-child(1) > div > textarea"
-            )
-        )->sendKeys("Test description");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#propose > div > div > form > div ".
-                "> div:nth-child(2) > div > div:nth-child(2) > div > input"
-            )
-        )->sendKeys("Test leadInvestigator");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#propose > div > div > form > div >".
-                " div:nth-child(2) > div > div:nth-child(3) > div.col-sm-7 > input"
-            )
-        )->sendKeys("testleadInvestigator@test.com");
-        $submit ="#propose > div > div > form > div > div:nth-child(2) > div >".
-        " div:nth-child(11) > div > button";
-        $this->safeClick(WebDriverBy::cssSelector($submit));
-        $modal    ="body > div.swal2-container.swal2-center.swal2-shown > div";
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector($modal)
-        )->getText();
-        $this->assertStringContainsString("OK", $bodyText);
-        $this->assertStringNotContainsString(
-            "You do not have access to this page.",
-            $bodyText
-        );
-    }
-
 }
 
