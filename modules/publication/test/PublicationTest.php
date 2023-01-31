@@ -47,7 +47,6 @@ class PublicaitonTest extends LorisIntegrationTest
     function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("publication", ['Description' => 'Test description']);
     }
 
     /**
