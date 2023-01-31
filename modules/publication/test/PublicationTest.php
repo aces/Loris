@@ -47,9 +47,7 @@ class PublicaitonTest extends LorisIntegrationTest
     function tearDown(): void
     {
         parent::tearDown();
-        $this->DB->delete("issues", ['issueID' => '999999']);
-        $this->DB->delete("users", ['ID' => '999998']);
-        $this->DB->delete("psc", ['CenterID' => '55']);
+        $this->DB->delete("publication", ['Description' => 'Test description']);
     }
 
     /**
@@ -121,6 +119,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+    
     /**
      * Tests that publicaiton loads with permission
      *
@@ -155,16 +154,28 @@ class PublicaitonTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/publication/#propose");
         $this->safeFindElement(
-            WebDriverBy::Name("title")
+            WebDriverBy::cssSelector(
+                "#propose > div > div > form > div >".
+                " div:nth-child(1) > div > div > div > input"
+            )
         )->sendKeys("Test title");
         $this->safeFindElement(
-            WebDriverBy::Name("description")
+            WebDriverBy::cssSelector(
+                "#propose > div > div > form > div >".
+                " div:nth-child(2) > div > div:nth-child(1) > div > textarea"
+            )
         )->sendKeys("Test description");
         $this->safeFindElement(
-            WebDriverBy::Name("leadInvestigator")
+            WebDriverBy::cssSelector(
+                "#propose > div > div > form > div ".
+                "> div:nth-child(2) > div > div:nth-child(2) > div > input"
+            )
         )->sendKeys("Test leadInvestigator");
         $this->safeFindElement(
-            WebDriverBy::Name("leadInvestigatorEmail")
+            WebDriverBy::cssSelector(
+                "#propose > div > div > form > div >".
+                " div:nth-child(2) > div > div:nth-child(3) > div.col-sm-7 > input"
+            )
         )->sendKeys("testleadInvestigator@test.com");
         $submit ="#propose > div > div > form > div > div:nth-child(2) > div >".
         " div:nth-child(11) > div > button";
