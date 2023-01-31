@@ -33,6 +33,7 @@ be found for the image (PR #8155)
 - Add psr/log to composer (PR #8109)
 - Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
 - Add support for PHP 8.1 (PR #7989)
+- Fix Project tab of Configuration module to give correct errors, and prevent saving without Alias (PR #8349)
 ### Modules
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
