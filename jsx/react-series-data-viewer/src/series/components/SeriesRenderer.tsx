@@ -20,6 +20,7 @@ import {
   Vector2,
   DEFAULT_TIME_INTERVAL,
   STACKED_SERIES_RANGE,
+  DEFAULT_VIEWER_HEIGHT,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -232,7 +233,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   }
 
   const selectionCanBeZoomedTo = timeSelection &&
-    (timeSelection[1] - timeSelection[0]) >= 0.1;
+    Math.abs(timeSelection[1] - timeSelection[0]) >= 0.1;
 
   const zoomToSelection = () => {
     if (selectionCanBeZoomedTo) {
@@ -350,9 +351,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           ? colorOrder(channelIndex.toString()).toString()
           : defaultLineColor
       );
-      if (stackedView && !singleMode) {
-        line.setAttribute('stroke-width', colored ? '3' : '1');
-      }
+
+      line.setAttribute(
+        'stroke-width',
+        colored && (!singleMode || cursorRef.current)
+          ? '3'
+          : '1'
+      );
     });
   }
 
@@ -544,7 +549,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       setViewerWidth(viewerWidth);
     }, [viewerWidth]);
 
-    const channelList: Channel[] = (stackedView && singleMode && hoveredChannels.length > 0)
+    const channelList: Channel[] = (!
+      cursorRef.current && stackedView &&
+      singleMode && hoveredChannels.length > 0
+    )
       ? filteredChannels.filter((channel) => hoveredChannels.includes(channel.index))
       : filteredChannels;
 
@@ -669,6 +677,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     setNumDisplayedChannels(numChannels);     // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
     setOffsetIndex(offsetIndex);  // Will include new channels on limit increase
+    setViewerHeight(
+      numChannels > 4
+        ? DEFAULT_VIEWER_HEIGHT
+        : DEFAULT_VIEWER_HEIGHT * 0.8
+    );
   };
 
   /**

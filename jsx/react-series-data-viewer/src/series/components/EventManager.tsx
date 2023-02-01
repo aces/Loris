@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-import {MAX_RENDERED_EPOCHS} from '../../vector';
+import {DEFAULT_VIEWER_HEIGHT, MAX_RENDERED_EPOCHS} from '../../vector';
 import {getEpochsInRange, toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
@@ -22,6 +22,7 @@ type CProps = {
   updateActiveEpoch: (_: number) => void,
   setFilteredEpochs: (_: number[]) => void,
   interval: [number, number],
+  viewerHeight: number,
 };
 
 /**
@@ -37,6 +38,7 @@ type CProps = {
  * @param root0.updateActiveEpoch
  * @param root0.setFilteredEpochs
  * @param root0.interval
+ * @param root0.viewerHeight
  */
 const EventManager = ({
   epochs,
@@ -49,6 +51,7 @@ const EventManager = ({
   updateActiveEpoch,
   setFilteredEpochs,
   interval,
+  viewerHeight
 }: CProps) => {
 
   // ##################### EEGNET OVERRIDE START ################## //
@@ -166,7 +169,7 @@ const EventManager = ({
         <div
           className="list-group"
           style={{
-            maxHeight: '875px',
+            maxHeight: `${viewerHeight + 75}px`,
             overflowY: 'scroll',
             marginBottom: 0,
           }}
@@ -303,6 +306,7 @@ export default connect(
     filteredEpochs: state.dataset.filteredEpochs,
     rightPanel: state.rightPanel,
     interval: state.bounds.interval,
+    viewerHeight: state.bounds.viewerHeight,
   }),
   (dispatch: (_: any) => void) => ({
     setCurrentAnnotation: R.compose(

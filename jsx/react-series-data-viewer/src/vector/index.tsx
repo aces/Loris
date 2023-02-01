@@ -28,6 +28,8 @@ export const STACKED_SERIES_RANGE: [number, number] = [-0.005, 0.005];
 
 export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 30];
 
+export const DEFAULT_VIEWER_HEIGHT = 800;
+
 export const SIGNAL_SCALE = Math.pow(10, 6);
 
 export const SIGNAL_UNIT = 'µV';
