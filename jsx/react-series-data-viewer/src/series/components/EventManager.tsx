@@ -113,6 +113,11 @@ const EventManager = ({
     }
   }
 
+  const epochsInRange = getEpochsInRange(epochs, interval, epochType);
+  const visibleEpochsInRange = epochsInRange.filter(
+    (epochIndex) => filteredEpochs.includes(epochIndex)
+  );
+
   return (
     <div className="panel panel-primary event-list">
       <div
@@ -124,7 +129,9 @@ const EventManager = ({
         }}
       >
         <p style={{margin: '0px'}}>
-          <strong>{`${epochType}s (${getEpochsInRange(epochs, interval, epochType).length})`}</strong>
+          <strong>
+            {`${epochType}s (${visibleEpochsInRange.length}/${epochsInRange.length})`}
+          </strong>
           <span style={{fontSize: '0.75em'}}>
             <br />in timeline view
           </span>
