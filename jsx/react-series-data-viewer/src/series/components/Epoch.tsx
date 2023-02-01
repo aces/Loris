@@ -33,13 +33,16 @@ const Epoch = (
     color,
     opacity,
   }: CProps) => {
+  onset = isNaN(onset) ? 0 : onset;
+  duration = isNaN(duration) ? 0 : duration;
+
   const start = vec2.fromValues(
     scales[0](onset),
     scales[1](-parentHeight/2),
   );
 
   const end = vec2.fromValues(
-    scales[0](onset + duration) + MIN_EPOCH_WIDTH,
+    scales[0](onset + Math.max(duration, MIN_EPOCH_WIDTH)),
     scales[1](parentHeight/2)
   );
 
