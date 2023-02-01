@@ -181,8 +181,11 @@ const EventManager = ({
             <div
               style={{
                 padding: '5px',
-                background: '#eee',
+                background: 'rgba(238, 238, 238, 0.8)',
                 textAlign: 'center',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
               }}
             >
               Too many events to display for the timeline range.
