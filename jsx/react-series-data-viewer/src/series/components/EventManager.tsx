@@ -60,8 +60,10 @@ const EventManager = ({
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
   const [activeEpochs, setActiveEpochs] = useState([]);
+  const [epochsInRange, setEpochsInRange] = useState(
+    getEpochsInRange(epochs, interval, epochType)
+  );
   const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
-    const epochsInRange = getEpochsInRange(epochs, interval, epochType);
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       return epochsInRange.some((index) => {
         return !filteredEpochs.includes(index);
@@ -77,7 +79,7 @@ const EventManager = ({
 
   // Update window visibility state
   useEffect(() => {
-    const epochsInRange = getEpochsInRange(epochs, interval, epochType);
+    setEpochsInRange(getEpochsInRange(epochs, interval, epochType));
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       setAllEpochsVisibility(!epochsInRange.some((index) => {
         return !filteredEpochs.includes(index);
@@ -108,7 +110,6 @@ const EventManager = ({
 
 
   const setEpochsInViewVisibility = (visible) => {
-    const epochsInRange = getEpochsInRange(epochs, interval, epochType);
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       epochsInRange.map((index) => {
         if ((visible && !filteredEpochs.includes(index))
@@ -119,7 +120,6 @@ const EventManager = ({
     }
   }
 
-  const epochsInRange = getEpochsInRange(epochs, interval, epochType);
   const visibleEpochsInRange = epochsInRange.filter(
     (epochIndex) => filteredEpochs.includes(epochIndex)
   );
@@ -177,7 +177,7 @@ const EventManager = ({
             marginBottom: 0,
           }}
         >
-          {getEpochsInRange(epochs, interval, epochType).length >= MAX_RENDERED_EPOCHS &&
+          {epochsInRange.length >= MAX_RENDERED_EPOCHS &&
             <div
               style={{
                 padding: '5px',
@@ -188,7 +188,7 @@ const EventManager = ({
               Too many events to display for the timeline range.
             </div>
           }
-          {getEpochsInRange(epochs, interval, epochType).map((index) => {
+          {epochsInRange.map((index) => {
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
 
