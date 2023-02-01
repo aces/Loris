@@ -119,7 +119,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 [
-                    $currentStage => $_REQUEST['setStageUpdate'],
+                    $currentStage        => $_REQUEST['setStageUpdate'],
                     'Date_status_change' => date('Y-m-d'),
                 ]
             );
