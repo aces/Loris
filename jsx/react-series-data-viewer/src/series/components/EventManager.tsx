@@ -71,6 +71,9 @@ const EventManager = ({
   });
   const [visibleComments, setVisibleComments] = useState([]);
   const [allCommentsVisible, setAllCommentsVisible] = useState(false);
+  const totalEpochs = epochs.filter(
+    (epoch) => epoch.type === epochType
+  ).length;
 
   // Update window visibility state
   useEffect(() => {
@@ -136,7 +139,7 @@ const EventManager = ({
             {`${epochType}s (${visibleEpochsInRange.length}/${epochsInRange.length})`}
           </strong>
           <span style={{fontSize: '0.75em'}}>
-            <br />in timeline view
+            <br />in timeline view [Total: {totalEpochs}]
           </span>
         </p>
         <div style={{display: 'flex', flexDirection: 'row'}}>
