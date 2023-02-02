@@ -369,7 +369,7 @@ class ViewSession extends \NDB_Form
                 'OtherTimepoints'            => $OtherTimepoints,
                 'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
             ];
-            error_log(print_r($file['BvecFile']));
+
             $this->tpl_data['files'][] = $file;
         }
     }
