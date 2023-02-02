@@ -89,10 +89,6 @@ class Image
             $this->_filetype            = $dbrow['filetype'];
             $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
-            $this->_check_nii_filename  = $this->getHeader('check_nii_filename');
-            $this->_check_bval_filename = $this->getHeader('check_bval_filename');
-            $this->_check_bvec_filename = $this->getHeader('check_bvec_filename');
-            $this->_bids_json_filename  = $this->getHeader('bids_json_file');
         }
     }
 
@@ -350,6 +346,11 @@ class Image
      */
     public function asDTO(): \LORIS\Data\Models\ImageDTO
     {
+        $this->_check_nii_filename  = $this->getHeader('check_nii_filename');
+        $this->_check_bval_filename = $this->getHeader('check_bval_filename');
+        $this->_check_bvec_filename = $this->getHeader('check_bvec_filename');
+        $this->_bids_json_filename  = $this->getHeader('bids_json_file');
+
         return new \LORIS\Data\Models\ImageDTO(
             $this->_fileid,
             $this->_filename,
