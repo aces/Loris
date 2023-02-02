@@ -40,7 +40,7 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \LORIS\Image $image The requested image
+     * @param \LORIS\Image $image  The requested image
      * @param string       $format The format user wishes to download
      */
     public function __construct(\LORIS\Image $image, string $format)
