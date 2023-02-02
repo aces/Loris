@@ -38,6 +38,15 @@ class Image
     private \CenterID $_centerid;
 
     private $_entitytype;
+
+    private $check_nii_filename;
+
+    private $check_bval_filename;
+
+    private $check_bvec_filename;
+
+    private $bids_json_filename;
+
     /**
      * Constructor
      *
@@ -58,7 +67,7 @@ class Image
                        s.CenterID as centerid,
                        c.Entity_type as entitytype
                      FROM
-                       files f 
+                       files f
                      LEFT JOIN session s
                        ON (f.SessionID = s.ID)
                      LEFT JOIN candidate c
@@ -80,7 +89,10 @@ class Image
             $this->_filetype            = $dbrow['filetype'];
             $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
-
+            $this->_check_nii_filename  = $this->getHeader('check_nii_filename');
+            $this->_check_bval_filename = $this->getHeader('check_bval_filename');
+            $this->_check_bvec_filename = $this->getHeader('check_bvec_filename');
+            $this->_bids_json_filename  = $this->getHeader('bids_json_file');
         }
     }
 
@@ -100,7 +112,7 @@ class Image
                        SELECT
                          Value
                        FROM
-                         parameter_file pf 
+                         parameter_file pf
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
                        JOIN files f
@@ -132,7 +144,7 @@ class Image
                          pt.Name as name,
                          pf.Value as value
                        FROM
-                         parameter_file pf 
+                         parameter_file pf
                        JOIN parameter_type pt
                          USING (ParameterTypeID)
                        JOIN files f
@@ -254,6 +266,46 @@ class Image
     }
 
     /**
+     * Return a SPLFileInfo object based on this images's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getNiiFileInfo(): \SplFileInfo
+    {
+        return $this->_getFullPath($this->_check_nii_filename);
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this images's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getBvalFileInfo(): \SplFileInfo
+    {
+        return $this->_getFullPath($this->_check_bval_filename);
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this images's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getBvecFileInfo(): \SplFileInfo
+    {
+        return $this->_getFullPath($this->_check_bvec_filename);
+    }
+
+    /**
+     * Return a SPLFileInfo object based on this images's properties.
+     *
+     * @return \SplFileInfo
+     */
+    public function getBidsJsonFileInfo(): \SplFileInfo
+    {
+        return $this->_getFullPath($this->_bids_json_filename);
+    }
+
+    /**
      * Return a SPLFileInfo object based on this images's thumbnail properties.
      *
      * @return \SplFileInfo
@@ -306,7 +358,11 @@ class Image
             $this->_acquisitionprotocol,
             $this->_filetype,
             $this->_centerid,
-            $this->_entitytype
+            $this->_entitytype,
+            $this->_check_nii_filename,
+            $this->_check_bval_filename,
+            $this->_check_bvec_filename,
+            $this->_bids_json_filename
         );
     }
 }

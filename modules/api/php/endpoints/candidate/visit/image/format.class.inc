@@ -92,6 +92,18 @@ class Format extends Endpoint
         case 'thumbnail':
             $handler = new Format\Thumbnail($this->_image);
             break;
+        case 'nifti':
+            $handler = new Format\NIfTI($this->_image);
+            break;
+        case 'bval':
+            $handler = new Format\Bval($this->_image);
+            break;
+        case 'bvec':
+            $handler = new Format\Bvec($this->_image);
+            break;
+        case 'bidsjson':
+            $handler = new Format\BidsJson($this->_image);
+            break;
         default:
             return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
         }
