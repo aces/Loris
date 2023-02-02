@@ -94,7 +94,6 @@ class Format extends Endpoint
         case 'bval':
         case 'bvec':
         case 'bidsjson':
-            error_log(print_r($format, true));
             $handler = new Format\DownloadFile($this->_image, $format);
             break;
         default:

@@ -33,6 +33,9 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private $_image;
     private $_format;
+    private $_info;
+    private $_file_type;
+    private $_content_type;
 
     /**
      * Contructor
@@ -43,6 +46,36 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $this->_image = $image;
         $this->_format = $format;
+
+        switch ($this->_format) {
+            case 'thumbnail':
+                $this->_info         = $this->_image->getThumbnailFileInfo();
+                $this->_file_type    = "Thumbnail";
+                $this->_content_type = 'image/jpeg';
+                break;
+            case 'nifti':
+                $this->_info         = $this->_image->getNiiFileInfo();
+                $this->_file_type    = "NIfTI";
+                $this->_content_type = 'application/octet-stream';
+                break;
+            case 'bval':
+                $this->_info         = $this->_image->getBvalFileInfo();
+                $this->_file_type    = "NIfTI BVAL";
+                $this->_content_type = 'application/text';
+                break;
+            case 'bvec':
+                $this->_info         = $this->_image->getBvecFileInfo();
+                $this->_file_type    = "NIfTI BVEC";
+                $this->_content_type = 'application/text';
+                break;
+            case 'bidsjson':
+                $this->_info = $this->_image->getBidsJsonFileInfo();
+                $this->_file_type    = "BIDS JSON";
+                $this->_content_type = 'application/json';
+                break;
+            default:
+                return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
+        }
     }
 
     /**
@@ -102,50 +135,22 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(): ResponseInterface
     {
-        switch ($this->_format) {
-            case 'thumbnail':
-                $info         = $this->_image->getThumbnailFileInfo();
-                $file_type    = "Thumbnail";
-                $content_type = 'image/jpeg';
-                break;
-            case 'nifti':
-                $info         = $this->_image->getNiiFileInfo();
-                $file_type    = "NIfTI";
-                $content_type = 'application/octet-stream';
-                break;
-            case 'bval':
-                $info         = $this->_image->getBvalFileInfo();
-                $file_type    = "NIfTI BVAL";
-                $content_type = 'application/text';
-                break;
-            case 'bvec':
-                $info         = $this->_image->getBvecFileInfo();
-                $file_type    = "NIfTI BVEC";
-                $content_type = 'application/text';
-                break;
-            case 'bidsjson':
-                $info = $this->_image->getBidsJsonFileInfo();
-                $file_type    = "BIDS JSON";
-                $content_type = 'application/json';
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
-        }
 
-        if (!$info->isFile()) {
-            error_log("$file_type file not found");
+
+        if (!$this->_info->isFile()) {
+            error_log("$this->_file_type file not found");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        if (!$info->isReadable()) {
-            error_log("$file_type file exists but is not readable by webserver");
+        if (!$this->_info->isReadable()) {
+            error_log("$this->_file_type file exists but is not readable by webserver");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $filename = $info->getFilename();
-        $realpath = $info->getRealPath();
+        $filename = $this->_info->getFilename();
+        $realpath = $this->_info->getRealPath();
         if ($realpath === false) {
-            $realpath = $info->getPath() . "/" . $info->getFilename();
+            $realpath = $this->_info->getPath() . "/" . $this->_info->getFilename();
         }
 
         $body = new \LORIS\Http\FileStream($realpath, 'r');
@@ -154,7 +159,7 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $body,
             200,
             [
-                'Content-Type'        => $content_type,
+                'Content-Type'        => $this->_content_type,
                 'Content-Disposition' => 'attachment; filename=' . $filename,
             ]
         );
@@ -169,34 +174,15 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        switch ($this->_format) {
-            case 'thumbnail':
-                $info = $this->_image->getThumbnailFileInfo();
-                break;
-            case 'nifti':
-                $info = $this->_image->getNiiFileInfo();
-                break;
-            case 'bval':
-                $info = $this->_image->getBvalFileInfo();
-                break;
-            case 'bvec':
-                $info = $this->_image->getBvecFileInfo();
-                break;
-            case 'bidsjson':
-                $info = $this->_image->getBidsJsonFileInfo();
-                break;
-            default:
-                return '';
-        }
 
-        if (!$info->isFile() || !$info->isReadable()) {
+        if (!$this->_info->isFile() || !$this->_info->isReadable()) {
             return '';
         }
 
         $signature = [
-            'filename' => $info->getFilename(),
-            'size'     => $info->getSize(),
-            'mtime'    => $info->getMTime(),
+            'filename' => $this->_info->getFilename(),
+            'size'     => $this->_info->getSize(),
+            'mtime'    => $this->_info->getMTime(),
         ];
 
         return md5(json_encode($signature));
