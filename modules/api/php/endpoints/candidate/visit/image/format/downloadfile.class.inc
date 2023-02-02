@@ -41,40 +41,41 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Contructor
      *
      * @param \LORIS\Image $image The requested image
+     * @param string $format      The format user wishes to download
      */
     public function __construct(\LORIS\Image $image, string $format)
     {
-        $this->_image = $image;
+        $this->_image  = $image;
         $this->_format = $format;
 
         switch ($this->_format) {
-            case 'thumbnail':
-                $this->_info         = $this->_image->getThumbnailFileInfo();
-                $this->_file_type    = "Thumbnail";
-                $this->_content_type = 'image/jpeg';
-                break;
-            case 'nifti':
-                $this->_info         = $this->_image->getNiiFileInfo();
-                $this->_file_type    = "NIfTI";
-                $this->_content_type = 'application/octet-stream';
-                break;
-            case 'bval':
-                $this->_info         = $this->_image->getBvalFileInfo();
-                $this->_file_type    = "NIfTI BVAL";
-                $this->_content_type = 'application/text';
-                break;
-            case 'bvec':
-                $this->_info         = $this->_image->getBvecFileInfo();
-                $this->_file_type    = "NIfTI BVEC";
-                $this->_content_type = 'application/text';
-                break;
-            case 'bidsjson':
-                $this->_info = $this->_image->getBidsJsonFileInfo();
-                $this->_file_type    = "BIDS JSON";
-                $this->_content_type = 'application/json';
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
+        case 'thumbnail':
+            $this->_info         = $this->_image->getThumbnailFileInfo();
+            $this->_file_type    = "Thumbnail";
+            $this->_content_type = 'image/jpeg';
+            break;
+        case 'nifti':
+            $this->_info         = $this->_image->getNiiFileInfo();
+            $this->_file_type    = "NIfTI";
+            $this->_content_type = 'application/octet-stream';
+            break;
+        case 'bval':
+            $this->_info         = $this->_image->getBvalFileInfo();
+            $this->_file_type    = "NIfTI BVAL";
+            $this->_content_type = 'application/text';
+            break;
+        case 'bvec':
+            $this->_info         = $this->_image->getBvecFileInfo();
+            $this->_file_type    = "NIfTI BVEC";
+            $this->_content_type = 'application/text';
+            break;
+        case 'bidsjson':
+            $this->_info         = $this->_image->getBidsJsonFileInfo();
+            $this->_file_type    = "BIDS JSON";
+            $this->_content_type = 'application/json';
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
         }
     }
 
