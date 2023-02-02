@@ -1,0 +1,5 @@
+- [ ] Create SQL Release patch into SQL release directory and move cleanup SQL patches
+- [ ] composer update ?
+- [ ] Update README and install instructions dependencies
+- [ ] Create release notes and upgrade instructions
+- [ ] 
