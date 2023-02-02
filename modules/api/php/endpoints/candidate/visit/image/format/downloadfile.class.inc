@@ -74,8 +74,6 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_file_type    = "BIDS JSON";
             $this->_content_type = 'application/json';
             break;
-        default:
-            return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
         }
     }
 
