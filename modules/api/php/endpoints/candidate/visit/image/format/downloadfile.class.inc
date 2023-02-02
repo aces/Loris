@@ -23,7 +23,7 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
 
     /**
@@ -32,15 +32,17 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * @var \LORIS\Image
      */
     private $_image;
+    private $_format;
 
     /**
      * Contructor
      *
      * @param \LORIS\Image $image The requested image
      */
-    public function __construct(\LORIS\Image $image)
+    public function __construct(\LORIS\Image $image, string $format)
     {
         $this->_image = $image;
+        $this->_format = $format;
     }
 
     /**
@@ -100,20 +102,47 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(): ResponseInterface
     {
-        $info = $this->_image->getThumbnailFileInfo();
+        switch ($this->_format) {
+            case 'thumbnail':
+                $info         = $this->_image->getThumbnailFileInfo();
+                $file_type    = "Thumbnail";
+                $content_type = 'image/jpeg';
+                break;
+            case 'nifti':
+                $info         = $this->_image->getNiiFileInfo();
+                $file_type    = "NIfTI";
+                $content_type = 'application/octet-stream';
+                break;
+            case 'bval':
+                $info         = $this->_image->getBvalFileInfo();
+                $file_type    = "NIfTI BVAL";
+                $content_type = 'application/text';
+                break;
+            case 'bvec':
+                $info         = $this->_image->getBvecFileInfo();
+                $file_type    = "NIfTI BVEC";
+                $content_type = 'application/text';
+                break;
+            case 'bidsjson':
+                $info = $this->_image->getBidsJsonFileInfo();
+                $file_type    = "BIDS JSON";
+                $content_type = 'application/json';
+                break;
+            default:
+                return new \LORIS\Http\Response\JSON\UnsupportedMediaType();
+        }
 
         if (!$info->isFile()) {
-            error_log('Thumbnail not found');
+            error_log("$file_type file not found");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$info->isReadable()) {
-            error_log('Thumbnail exists but is not readable by webserver');
+            error_log("$file_type file exists but is not readable by webserver");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         $filename = $info->getFilename();
-
         $realpath = $info->getRealPath();
         if ($realpath === false) {
             $realpath = $info->getPath() . "/" . $info->getFilename();
@@ -125,7 +154,7 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $body,
             200,
             [
-                'Content-Type'        => 'image/jpeg',
+                'Content-Type'        => $content_type,
                 'Content-Disposition' => 'attachment; filename=' . $filename,
             ]
         );
@@ -140,7 +169,25 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $info = $this->_image->getThumbnailFileInfo();
+        switch ($this->_format) {
+            case 'thumbnail':
+                $info = $this->_image->getThumbnailFileInfo();
+                break;
+            case 'nifti':
+                $info = $this->_image->getNiiFileInfo();
+                break;
+            case 'bval':
+                $info = $this->_image->getBvalFileInfo();
+                break;
+            case 'bvec':
+                $info = $this->_image->getBvecFileInfo();
+                break;
+            case 'bidsjson':
+                $info = $this->_image->getBidsJsonFileInfo();
+                break;
+            default:
+                return '';
+        }
 
         if (!$info->isFile() || !$info->isReadable()) {
             return '';
