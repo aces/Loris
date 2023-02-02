@@ -12,8 +12,6 @@
  */
 namespace LORIS\Data\Models;
 
-use http\Encoding\Stream\Inflate;
-
 /**
  * This class defines an ImageDTO which is an immutable representation of a
  * Image object. Its purpose is to provide accessors to an Image properties.
