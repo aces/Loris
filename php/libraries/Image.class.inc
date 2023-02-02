@@ -39,13 +39,13 @@ class Image
 
     private $_entitytype;
 
-    private $check_nii_filename;
+    private $_check_nii_filename;
 
-    private $check_bval_filename;
+    private $_check_bval_filename;
 
-    private $check_bvec_filename;
+    private $_check_bvec_filename;
 
-    private $bids_json_filename;
+    private $_bids_json_filename;
 
     /**
      * Constructor
