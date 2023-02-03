@@ -39,14 +39,6 @@ class Image
 
     private $_entitytype;
 
-    private $_check_nii_filename;
-
-    private $_check_bval_filename;
-
-    private $_check_bvec_filename;
-
-    private $_bids_json_filename;
-
     /**
      * Constructor
      *
@@ -89,10 +81,6 @@ class Image
             $this->_filetype            = $dbrow['filetype'];
             $this->_centerid            = new \CenterID($dbrow['centerid']);
             $this->_entitytype          = $dbrow['entitytype'];
-            $this->_check_nii_filename  = $this->getHeader('check_nii_filename');
-            $this->_check_bval_filename = $this->getHeader('check_bval_filename');
-            $this->_check_bvec_filename = $this->getHeader('check_bvec_filename');
-            $this->_bids_json_filename  = $this->getHeader('bids_json_file');
         }
     }
 
@@ -272,7 +260,7 @@ class Image
      */
     public function getNiiFileInfo(): \SplFileInfo
     {
-        return $this->_getFullPath($this->_check_nii_filename);
+        return $this->_getFullPath($this->getHeader('check_nii_filename'));
     }
 
     /**
@@ -282,7 +270,7 @@ class Image
      */
     public function getBvalFileInfo(): \SplFileInfo
     {
-        return $this->_getFullPath($this->_check_bval_filename);
+        return $this->_getFullPath($this->getHeader('check_bval_filename'));
     }
 
     /**
@@ -292,7 +280,7 @@ class Image
      */
     public function getBvecFileInfo(): \SplFileInfo
     {
-        return $this->_getFullPath($this->_check_bvec_filename);
+        return $this->_getFullPath($this->getHeader('check_bvec_filename'));
     }
 
     /**
@@ -302,7 +290,7 @@ class Image
      */
     public function getBidsJsonFileInfo(): \SplFileInfo
     {
-        return $this->_getFullPath($this->_bids_json_filename);
+        return $this->_getFullPath($this->getHeader('bids_json_file'));
     }
 
     /**
