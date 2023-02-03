@@ -990,28 +990,34 @@ class DataQueryApp extends Component {
             let fieldSplit = fields[i].split(',');
             currow[i] = '.';
             let sd = sessiondata[session];
-            let celldata = sd[fieldSplit[0]].data[fieldSplit[1]];
-            if (!Array.isArray(celldata)) {
-              celldata = [celldata];
-            };
 
-            if (
-              sd[fieldSplit[0]]
-              && celldata?.length > 0
-              && downloadableFields[fields[i]]
-            ) {
-              // If the current field has data and is downloadable, create a download link
-              currow[i] = celldata.map((line) => {
-                fileData.push('file/'
-                  + sd[fieldSplit[0]]._id
-                  + '/'
-                  + encodeURIComponent(line)
-                );
-                return loris.BaseURL + '/mri/jiv/get_file.php?file=' + line;
-              });
-            } else if (sd[fieldSplit[0]]) {
-              // else if field is not null add data and string
-              currow[i] = celldata;
+            if (sd[fieldSplit[0]]) {
+              let celldata = sd[fieldSplit[0]].data[fieldSplit[1]];
+              if (!Array.isArray(celldata)) {
+                celldata = [celldata];
+              };
+
+              if (downloadableFields[fields[i]]) {
+                // If the current field has data and is downloadable, create a download link
+                currow[i] = celldata
+                  .filter((line) => {
+                    if (!line) {
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map((line) => {
+                    fileData.push('file/'
+                      + sd[fieldSplit[0]]._id
+                      + '/'
+                      + encodeURIComponent(line)
+                    );
+                    return loris.BaseURL + '/mri/jiv/get_file.php?file=' + line;
+                  });
+              } else {
+                // else if field is not null add data and string
+                currow[i] = celldata;
+              }
             }
           }
           rowdata.push(currow);

@@ -269,7 +269,7 @@ class ViewDataTabPane extends Component {
       return (
         <td>
           {cell.map((line) => {
-            if (line.startsWith('http')) {
+            if (typeof line === 'string' && line.startsWith('http')) {
               line = (
                 <a target='_blank' href={line}>
                   {line.split(/[\\/]/).pop()}
