@@ -346,11 +346,7 @@ class Image
             $this->_acquisitionprotocol,
             $this->_filetype,
             $this->_centerid,
-            $this->_entitytype,
-            $this->_check_nii_filename,
-            $this->_check_bval_filename,
-            $this->_check_bvec_filename,
-            $this->_bids_json_filename
+            $this->_entitytype
         );
     }
 }
