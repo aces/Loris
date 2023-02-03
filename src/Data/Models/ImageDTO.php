@@ -148,7 +148,7 @@ class ImageDTO implements
                 'filelocation'        => $this->filelocation,
                 'outputtype'          => $this->outputtype,
                 'acquisitionprotocol' => $this->acquisitionprotocol,
-                'filetype'            => $this->filetype,
+                'filetype'            => $this->filetype
                ];
     }
 
