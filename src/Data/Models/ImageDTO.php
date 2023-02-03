@@ -52,7 +52,7 @@ class ImageDTO implements
      * @param ?string $outputtype          The output type
      * @param ?string $acquisitionprotocol The aquisition protocol
      * @param ?string $filetype            The file type
-     * @param \CenterID $centerid          The image session's centerid
+     * @param \CenterID $centerid            The image session's centerid
      * @param ?string $entitytype          The image candidate's entity_type
      */
     public function __construct(
@@ -63,7 +63,7 @@ class ImageDTO implements
         ?string $acquisitionprotocol,
         ?string $filetype,
         \CenterID $centerid,
-        ?string $entitytype,
+        ?string $entitytype
     ) {
         $this->fileid       = $fileid;
         $this->filename     = $filename;
@@ -148,7 +148,7 @@ class ImageDTO implements
                 'filelocation'        => $this->filelocation,
                 'outputtype'          => $this->outputtype,
                 'acquisitionprotocol' => $this->acquisitionprotocol,
-                'filetype'            => $this->filetype
+                'filetype'            => $this->filetype,
                ];
     }
 
