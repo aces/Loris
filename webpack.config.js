@@ -316,7 +316,7 @@ const lorisModules = {
   ],
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
-  mri_violations: ['mriViolationsIndex']),
+  mri_violations: ['mriViolationsIndex'],
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
   help_editor: ['help_editor', 'help_editor_helper'],

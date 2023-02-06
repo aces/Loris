@@ -2,7 +2,6 @@
  * Return a list of filter objects shared between tabs
  *
  * @param {object} fieldoptions - The dynamic field options
-
  * @return {array}
  */
 export function unresolvedFilters(fieldoptions) {
@@ -85,11 +84,11 @@ export function unresolvedFilters(fieldoptions) {
 
 /**
  * Returns a formatter to handle the unresolved violations
- * @param {callback} mapper - a data mapper to map from ID to display
- * @param {callback} setPage - a callback to set the current page
+ *
+ * @param {function} mapper - a data mapper to map from ID to display
+ * @param {function} setPage - a callback to set the current page
  * @param {string} resolvePostURL - the URL to send a post request to when
-                                    a resolution status is selected
-
+ *                                  a resolution status is selected
  * @return {function} a formatter callback which uses mapper for data mapping
  */
 export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {

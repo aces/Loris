@@ -9,8 +9,7 @@ import React, {useEffect, useState} from 'react';
  * type.
  *
  * @param {object} props - React element props
- *
- * @return {ReactDOM}
+ * @return {JSX}
  */
 function ProtocolModal(props) {
     switch (props.Type) {
@@ -30,8 +29,7 @@ function ProtocolModal(props) {
  * scan type could not be identified.)
  *
  * @param {object} props - React element props
- *
- * @return {ReactDOM}
+ * @return {JSX}
  */
 function ProtocolViolationModal(props) {
     const [data, setData] = useState([]);
@@ -236,8 +234,7 @@ function ProtocolViolationModal(props) {
  * protocol study's constraints.)
  *
  * @param {object} props - React element props
- *
- * @return {ReactDOM}
+ * @return {JSX}
  */
 function ProtocolCheckViolationModal(props) {
     const [data, setData] = useState([]);

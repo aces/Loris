@@ -2,7 +2,6 @@
  * Return a list of filter objects shared between tabs
  *
  * @param {object} fieldoptions - the dynamic field options
- *
  * @return {array}
  */
 export function resolvedFilters(fieldoptions) {
@@ -91,8 +90,9 @@ export function resolvedFilters(fieldoptions) {
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
- * @param {callback} mapper - A data mapper for dynamic columns
- * @return {callback} a formated table cell formatter
+ *
+ * @param {function} mapper - A data mapper for dynamic columns
+ * @return {function} a formated table cell formatter
  */
 export function formatColumnResolved(mapper) {
     const Mapper = (column, cell, rowData, rowHeaders) => {

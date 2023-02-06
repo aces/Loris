@@ -16,8 +16,7 @@ import ProtocolModal from './protocolModal.js';
  * Entry point for the MRI Violatons module.
  *
  * @param {object} props - React Component properties
- *
- * @return {ReactDOM}
+ * @return {JSX}
  */
 function MRIViolationsIndex(props) {
   const [fieldOptions, setFieldOptions] = useState({});
@@ -68,8 +67,7 @@ function MRIViolationsIndex(props) {
  * Load a data table and render it
  *
  * @param {object} props - React Component properties
- *
- * @return {ReactDOM}
+ * @return {JSX}
  */
 function ViolationsTable(props) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -114,8 +112,7 @@ function ViolationsTable(props) {
  * to values.
  *
  * @param {object} fieldOptions - the dynamic field options
- *
- * @return {callable}
+ * @return {function}
  */
 function columnMapper(fieldOptions) {
     return (column, value) => {
