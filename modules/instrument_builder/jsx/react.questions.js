@@ -63,10 +63,12 @@ class LorisElement extends Component {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        options={element.Options.Values}/>;
         }
         break;
