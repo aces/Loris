@@ -1,7 +1,6 @@
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-// import TriggerableModal from 'TriggerableModal';
 import React, {useEffect, useState} from 'react';
 
 import {formatColumnUnresolved, unresolvedFilters}
@@ -37,30 +36,31 @@ function MRIViolationsIndex(props) {
   return <div>
       {violationsModal}
       <Tabs tabs={tabs} defaultTab="notresolved" updateURL={true}>
-      <TabPane TabId={tabs[0].id}>
-        <ViolationsTable
-          URL={props.unresolvedURL}
-          name="notresolved"
-          mapper={mapper}
-          formatter={formatColumnUnresolved(
-            mapper,
-            setViolationModal,
-            props.ModuleURL + '/resolve'
-         )}
-          fields={unresolvedFilters(fieldOptions)}
-          setFieldOptions={setFieldOptions}
-        />
-      </TabPane>
-      <TabPane TabId={tabs[1].id}>
-        <ViolationsTable
-          URL={props.resolvedURL}
-          name="resolved"
-          formatter={formatColumnResolved(mapper)}
-          fields={resolvedFilters(fieldOptions)}
-          mapper={mapper}
-        />
-      </TabPane>
-    </Tabs></div>;
+        <TabPane TabId={tabs[0].id}>
+          <ViolationsTable
+            URL={props.unresolvedURL}
+            name="notresolved"
+            mapper={mapper}
+            formatter={formatColumnUnresolved(
+              mapper,
+              setViolationModal,
+              props.ModuleURL + '/resolve'
+            )}
+            fields={unresolvedFilters(fieldOptions)}
+            setFieldOptions={setFieldOptions}
+          />
+        </TabPane>
+        <TabPane TabId={tabs[1].id}>
+          <ViolationsTable
+            URL={props.resolvedURL}
+            name="resolved"
+            formatter={formatColumnResolved(mapper)}
+            fields={resolvedFilters(fieldOptions)}
+            mapper={mapper}
+          />
+        </TabPane>
+    </Tabs>
+  </div>;
 }
 
 /**

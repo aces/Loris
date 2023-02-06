@@ -17,7 +17,7 @@ function ProtocolModal(props) {
           return <ProtocolViolationModal {...props} />;
         case 'protocolcheck':
           return <ProtocolCheckViolationModal {...props} />;
-        default: return <div />;
+        default: return null;
     }
 }
 
@@ -216,14 +216,14 @@ function ProtocolViolationModal(props) {
     pushgroup(curgroupname, curgroup);
 
     return <Modal onClose={props.onClose}
-        show={true}
-        width="90%"
-            title={'Violations for SeriesUID ' + props.SeriesUID}>
-            <h2>Study Protocols</h2>
-            {protocolgroups}
-        <h2>Violations</h2>
-        {violations}
-        </Modal>;
+             show={true}
+             width="90%"
+             title={'Violations for SeriesUID ' + props.SeriesUID}>
+              <h2>Study Protocols</h2>
+              {protocolgroups}
+              <h2>Violations</h2>
+              {violations}
+           </Modal>;
 }
 
 /**
@@ -254,17 +254,17 @@ function ProtocolCheckViolationModal(props) {
     }, [props.SeriesUID]);
 
     return <Modal onClose={props.onClose}
-        show={true}
-        width="90%"
-            title={'Violations for SeriesUID ' + props.SeriesUID}>
-            <h2>Scan Problems</h2>
-            <StaticDataTable Headers={
+             show={true}
+             width="90%"
+             title={'Violations for SeriesUID ' + props.SeriesUID}>
+              <h2>Scan Problems</h2>
+              <StaticDataTable Headers={
                 ['Patient Name', 'CandID', 'Visit', 'Scan Type',
                  'Protocol Group', 'Severity', 'Header', 'Value',
                  'Valid Values'] }
                 Hide={{rowsPerPage: true, defaultColumn: true}}
                 NoDynamicTable={true}
                 Data={data} />
-        </Modal>;
+           </Modal>;
 }
 export default ProtocolModal;
