@@ -28,10 +28,10 @@ export function resolvedFilters(fieldoptions) {
      },
     },
     {
-      label: 'Subproject', show: true, filter: {
-        name: 'subproject',
+      label: 'Cohort', show: true, filter: {
+        name: 'cohort',
         type: 'select',
-        options: fieldoptions.subprojects,
+        options: fieldoptions.cohorts,
      },
     },
     {

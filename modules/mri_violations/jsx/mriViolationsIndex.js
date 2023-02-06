@@ -121,9 +121,9 @@ function columnMapper(fieldOptions) {
             if (fieldOptions.projects) {
                 return fieldOptions.projects[value];
             }
-        case 'Subproject':
-            if (fieldOptions.subprojects) {
-                return fieldOptions.subprojects[value];
+        case 'Cohort':
+            if (fieldOptions.cohorts) {
+                return fieldOptions.cohorts[value];
             }
         case 'Site':
             if (fieldOptions.sites) {

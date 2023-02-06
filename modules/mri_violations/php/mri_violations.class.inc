@@ -65,7 +65,7 @@ class Mri_Violations extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         // Build a list of existing problem types based on data in db
-        $db           = $this->lorisinstance->getDatabaseConnection();
+        $db           = $this->loris->getDatabaseConnection();
         $problemTypes = array_column(
             $db->pselect(
                 "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
@@ -80,7 +80,7 @@ class Mri_Violations extends \DataFrameworkMenu
         );
 
         $protocols = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', Center_name, ScannerID,
+            "SELECT p.ID, mpg.Name as 'Protocol Group', site.Name as Center_name, ScannerID,
                     s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
@@ -91,12 +91,13 @@ class Mri_Violations extends \DataFrameworkMenu
                  ON (mpg.MriProtocolGroupID=p.MriProtocolGroupID)
              LEFT JOIN mri_scan_type as s
                  ON p.Scan_type=s.ID
+             LEFT JOIN psc site ON (p.CenterID=site.CenterID)
              ORDER BY mpg.MriProtocolGroupID ASC, p.Scan_type ASC",
             []
         );
         return [
             'projects'     => \Utility::getProjectList(),
-            'subprojects'  => \Utility::getSubprojectList(),
+            'cohorts'  => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
             'protocols'    => $protocols,
