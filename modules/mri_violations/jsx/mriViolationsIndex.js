@@ -48,6 +48,7 @@ function MRIViolationsIndex(props) {
             )}
             fields={unresolvedFilters(fieldOptions)}
             setFieldOptions={setFieldOptions}
+            noDynamicTable={true}
           />
         </TabPane>
         <TabPane TabId={tabs[1].id}>
@@ -57,6 +58,7 @@ function MRIViolationsIndex(props) {
             formatter={formatColumnResolved(mapper)}
             fields={resolvedFilters(fieldOptions)}
             mapper={mapper}
+            noDynamicTable={true}
           />
         </TabPane>
     </Tabs>
@@ -104,6 +106,7 @@ function ViolationsTable(props) {
           fields={props.fields}
           getFormattedCell={props.formatter}
           getMappedCell={props.mapper}
+          noDynamicTable={props.noDynamicTable}
         />;
 }
 
