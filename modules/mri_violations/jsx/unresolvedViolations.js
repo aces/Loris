@@ -140,6 +140,7 @@ export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
                         name={hashName}
                         className="form-control input-sm"
                         id="resolution-status"
+                        style={{width: '13em'}}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (value == 'Unresolved') {
