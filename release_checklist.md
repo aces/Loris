@@ -2,4 +2,7 @@
 - [ ] composer update ?
 - [ ] Update README and install instructions dependencies
 - [ ] Create release notes and upgrade instructions
-- [ ] 
+- [ ] is there any VERSION documentation that needs to be updated?
+- [ ] tag all PRs going into the release with proper milestone and review the ones that have "add to release notes"
+- [ ] for major and minor releases, create new branches out of the release for the bug fix to go into
+- [ ] pull release into main and other appropriate branches if it is bug fix release
