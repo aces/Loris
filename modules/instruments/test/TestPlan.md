@@ -21,9 +21,10 @@ saved data stays the same. The data that wasn't saved should be lost.
 6. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
 has the 'Send to DCC' permission.
 7. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
-8. Select a candidate with a Date Of Death (DoD) or put one in for a candidate as needed, then select an
-instrument for that candidate. Enter a date (same a step 4) posterior to the DoD. Refresh the page and check that the 
-'Candidate age' label change to 'Candidate Age at Death'.
+8. Check that an instrument with the `postMortem` variable set to true displays the label
+'Candidate Age at Death (Months)` instead of 'Candidate Age (Months)'. To set the `postMortem` variable
+for PHP instruments, assign the variable within the instrument's PHP class; for LINST instruments,
+include `postmortem{@}true` in the instrument's meta file.
 9. Check that access restriction in `config.xml` work.
  - In the `<instrumentPermissions>` section of `config.xml`
  - set the `<useInstrumentPermissions>` to `true`
