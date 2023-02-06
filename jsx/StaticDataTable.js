@@ -667,7 +667,9 @@ StaticDataTable.propTypes = {
   Hide: PropTypes.object,
   hiddenHeaders: PropTypes.array,
   DisableFilter: PropTypes.bool,
+  NoDynamicTable: PropTypes.bool,
 };
+
 StaticDataTable.defaultProps = {
   Headers: [],
   Data: {},
@@ -679,6 +681,7 @@ StaticDataTable.defaultProps = {
     defaultColumn: false,
   },
   DisableFilter: false,
+  NoDynamicTable: false,
 };
 
 let RStaticDataTable = React.createFactory(StaticDataTable);
