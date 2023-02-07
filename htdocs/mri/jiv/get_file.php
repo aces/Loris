@@ -138,7 +138,7 @@ case 'DICOMTAR':
 case 'csv':
     // Biospecimens files
     if(strpos($File, 'Open-Summary') !== false){
-        $FullPath         = '/data/biospecimens/' . basename($File);
+        $FullPath         = '/data/dqt/' . basename($File);
         $MimeType         = 'text/csv';
         $DownloadFilename = basename($File);
         break;
