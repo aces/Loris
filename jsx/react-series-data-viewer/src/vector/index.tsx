@@ -16,7 +16,7 @@ export const ap = (
 
 export const MIN_INTERVAL = 0.001;
 
-export const MIN_EPOCH_WIDTH = 1;
+export const MIN_EPOCH_WIDTH = 0.025;
 
 export const MAX_VIEWED_CHUNKS = 3;
 

@@ -232,6 +232,8 @@ const EventManager = ({
                 style={{
                   position: 'relative',
                 }}
+                onMouseEnter={() => updateActiveEpoch(index)}
+                onMouseLeave={() => updateActiveEpoch(null)}
               >
                 <div
                   className="epoch-details"
@@ -262,8 +264,6 @@ const EventManager = ({
                     className={(visible ? '' : 'active ')
                       + 'btn btn-xs btn-primary'}
                     onClick={() => toggleEpoch(index)}
-                    onMouseEnter={() => updateActiveEpoch(index)}
-                    onMouseLeave={() => updateActiveEpoch(null)}
                   >
                     <i className={
                       'glyphicon glyphicon-eye-'
