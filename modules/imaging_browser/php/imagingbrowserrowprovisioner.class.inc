@@ -172,43 +172,6 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =================================================
         // Final query
         // =================================================
-        error_log(print_r(
-            "SELECT
-              p.Name as Site,
-              c.PSCID as PSCID,
-              c.CandID as DCCID,
-              Project.Name as project,
-              s.Visit_label as visitLabel,
-              $PendingFailSubquery as Visit_QC_Status,
-              DATE_FORMAT(MIN(f.AcquisitionDate), \"%Y-%m-%d\") as First_Acquisition,
-              FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion,
-              FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC,
-              $NewDataSubquery as New_Data,
-              GROUP_CONCAT(DISTINCT OutputType) as Links,
-              s.ID as sessionID,
-              GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
-              $PendingNewquery as pending,
-              s.CenterID as CenterID,
-              c.Entity_type as entityType,
-              $modalities_subquery
-              s.ProjectID
-            FROM psc AS p
-              JOIN session s ON (s.CenterID=p.CenterID)
-              JOIN candidate c ON (c.CandID=s.CandID)
-              LEFT JOIN Project ON (s.ProjectID=Project.ProjectID)
-              JOIN files f ON (f.SessionID=s.ID)
-              LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-              LEFT JOIN mri_scan_type modality ON
-                (f.AcquisitionProtocolID=modality.ID)
-              $left_joins
-            WHERE
-              s.Active = 'Y' AND
-              f.FileType IN ('mnc', 'nii')
-            GROUP BY s.ID
-            ORDER BY c.PSCID, s.Visit_label
-            "
-        ));
-
         parent::__construct(
             "SELECT
               p.Name as Site,
