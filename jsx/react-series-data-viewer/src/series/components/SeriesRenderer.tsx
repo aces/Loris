@@ -21,6 +21,7 @@ import {
   DEFAULT_TIME_INTERVAL,
   STACKED_SERIES_RANGE,
   DEFAULT_VIEWER_HEIGHT,
+  MIN_EPOCH_WIDTH,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
@@ -466,6 +467,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           : null
     ;
     const visibleEpochs = getEpochsInRange(epochs, interval, epochType);
+    const minEpochWidth = (interval[1] - interval[0]) * MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
 
     return (
       <Group>
@@ -482,7 +484,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 }
                 key={`${index}`}
                 scales={scales}
-                opacity={0.7}
+                opacity={0.8}
+                minWidth={minEpochWidth}
               />
             );
           })
@@ -503,6 +506,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             parentHeight={viewerHeight}
             scales={scales}
             color={'#d8ffcc'}
+            minWidth={minEpochWidth}
           />
         }
       </Group>
