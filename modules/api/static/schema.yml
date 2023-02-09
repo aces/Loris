@@ -129,7 +129,7 @@ paths:
             type: string
       responses:
         '200':
-          description: An object containing the list of projects
+          description: An object containing the list of instrument summary descriptors
           content:
             application/json:
               schema:
