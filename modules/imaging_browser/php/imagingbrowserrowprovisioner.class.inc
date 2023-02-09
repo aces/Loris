@@ -112,7 +112,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // $toTable_scan_types array that conserved the order with
         // which modalities will be displayed (which is what the React
         // side expects)
-        foreach ($toTable_scan_types as $arr_idx => $type) {
+        foreach ($toTable_scan_types as $type) {
             if (!in_array($type, $scan_id_types)) {
                 continue;
             }
