@@ -107,6 +107,11 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $pass          = [];
         $coalesce_desc = [];
 
+        // in order to keep the same order as the order of modalities
+        // specified in the config module, loop through the
+        // $toTable_scan_types array that conserved the order with
+        // which modalities will be displayed (which is what the React
+        // side expects)
         foreach($toTable_scan_types as $arr_idx => $type) {
             if (!in_array($type, $scan_id_types)) {
                 continue;
