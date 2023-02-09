@@ -505,7 +505,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            color={'#d8ffcc'}
+            color={'#97b68c'}
             minWidth={minEpochWidth}
           />
         }
