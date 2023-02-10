@@ -31,7 +31,6 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @var \LORIS\Image
      */
-    private $_image;
     private $_format;
     private $_info;
     private $_file_type;
@@ -45,32 +44,31 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function __construct(\LORIS\Image $image, string $format)
     {
-        $this->_image  = $image;
         $this->_format = $format;
 
         switch ($this->_format) {
         case 'thumbnail':
-            $this->_info         = $this->_image->getThumbnailFileInfo();
+            $this->_info         = $image->getThumbnailFileInfo();
             $this->_file_type    = "Thumbnail";
             $this->_content_type = 'image/jpeg';
             break;
         case 'nifti':
-            $this->_info         = $this->_image->getNiiFileInfo();
+            $this->_info         = $image->getNiiFileInfo();
             $this->_file_type    = "NIfTI";
             $this->_content_type = 'application/octet-stream';
             break;
         case 'bval':
-            $this->_info         = $this->_image->getBvalFileInfo();
+            $this->_info         = $image->getBvalFileInfo();
             $this->_file_type    = "NIfTI BVAL";
             $this->_content_type = 'application/text';
             break;
         case 'bvec':
-            $this->_info         = $this->_image->getBvecFileInfo();
+            $this->_info         = $image->getBvecFileInfo();
             $this->_file_type    = "NIfTI BVEC";
             $this->_content_type = 'application/text';
             break;
         case 'bidsjson':
-            $this->_info         = $this->_image->getBidsJsonFileInfo();
+            $this->_info         = $image->getBidsJsonFileInfo();
             $this->_file_type    = "BIDS JSON";
             $this->_content_type = 'application/json';
             break;
