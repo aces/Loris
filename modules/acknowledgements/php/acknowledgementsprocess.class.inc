@@ -28,7 +28,7 @@ class Acknowledgementsprocess extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-	    return true;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class Acknowledgementsprocess extends \NDB_Page
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         switch ($request->getMethod()) {
-	case "POST":
+        case "POST":
             return $this->createAcknowledgement($request);
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
@@ -62,11 +62,11 @@ class Acknowledgementsprocess extends \NDB_Page
      */
     function createAcknowledgement(ServerRequestInterface $req): ResponseInterface
     {
-        $DB            = $this->loris->getDatabaseConnection();        
+        $DB     = $this->loris->getDatabaseConnection();
         $values = $req->getParsedBody();
-            if ($values['addPresent'] === 'Yes') {
-                $values['addEndDate'] = null;
-            }
+        if ($values['addPresent'] === 'Yes') {
+            $values['addEndDate'] = null;
+        }
             $affiliations = is_array($values['addAffiliations']) ?
                 implode(', ', $values['addAffiliations']) :
                 $values['addAffiliations'];
@@ -89,13 +89,13 @@ class Acknowledgementsprocess extends \NDB_Page
             ];
 
             $DB->insert('acknowledgements', $results);
-	    unset($values);
-	            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-        return (new \LORIS\Http\Response())
-            ->withStatus(200)
-            ->withHeader(
-                "Location",
-                "{$baseURL}/acknowledgements/"
-            );
+            unset($values);
+                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+            return (new \LORIS\Http\Response())
+                ->withStatus(200)
+                ->withHeader(
+                    "Location",
+                    "{$baseURL}/acknowledgements/"
+                );
     }
-}    
+}

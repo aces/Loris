@@ -43,8 +43,12 @@ class Modules extends \NDB_Page
     function _hasAccess(\User $user) : bool
     {
         return parent::_hasAccess($user) &&
-		$user->hasAnyPermission['acknowledgements_edit',
-		'acknowledgements_view'];
+        $user->hasAnyPermission(
+            [
+                'acknowledgements_edit',
+                'acknowledgements_view'
+            ]
+        );
     }
 
     /**

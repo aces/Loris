@@ -56,13 +56,13 @@ class Acknowledgements extends \DataFrameworkMenu
     {
         $yesNoOptions = [
             'Yes' => 'Yes',
-            'No' => 'No',
+            'No'  => 'No',
         ];
 
-	    return [
-	                'presents' => $yesNoOptions,
+        return [
+            'presents' => $yesNoOptions,
 
-	    ];
+        ];
 
     }
     /**

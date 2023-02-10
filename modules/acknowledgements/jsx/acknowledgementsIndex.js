@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import swal from 'sweetalert2';
@@ -81,7 +81,7 @@ class AcknowledgementsIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -92,11 +92,11 @@ class AcknowledgementsIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data }))
+      .then((data) => this.setState({data}))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -230,7 +230,7 @@ class AcknowledgementsIndex extends Component {
    * Open Modal form
    */
   openModalForm() {
-    this.setState({ showModal: true });
+    this.setState({showModal: true});
   }
 
   /**
@@ -396,40 +396,40 @@ class AcknowledgementsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      { label: 'Ordering', show: true },
+      {label: 'Ordering', show: true},
       {
         label: 'Full Name', show: true, filter: {
           name: 'fullName',
           type: 'text',
-        }
+        },
       },
       {
         label: 'Citation Name', show: true, filter: {
           name: 'citationName',
           type: 'text',
-        }
+        },
       },
-      { label: 'Affiliations', show: true },
-      { label: 'Degrees', show: true },
-      { label: 'Roles', show: true },
+      {label: 'Affiliations', show: true},
+      {label: 'Degrees', show: true},
+      {label: 'Roles', show: true},
       {
         label: 'Start Date', show: true, filter: {
           name: 'startDate',
           type: 'date',
-        }
+        },
       },
       {
         label: 'End Date', show: true, filter: {
           name: 'endDate',
           type: 'date',
-        }
+        },
       },
       {
         label: 'Present', show: true, filter: {
           name: 'present',
           type: 'select',
           options: options.presents,
-        }
+        },
       },
     ];
     const actions = [

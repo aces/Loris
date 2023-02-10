@@ -37,7 +37,7 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
     function __construct()
     {
         parent::__construct(
-		"SELECT
+            "SELECT
 		            ordering,
             full_name,
             citation_name,
@@ -50,7 +50,7 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
 	    FROM acknowledgements WHERE 1=1
             ORDER BY ordering	  
 ",
-	    [],
+            [],
         );
     }
 
@@ -65,6 +65,6 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
             return new ModuleRow($row);
-    }    
+    }
 
 }
