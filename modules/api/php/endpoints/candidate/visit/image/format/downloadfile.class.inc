@@ -25,12 +25,6 @@ use \LORIS\api\Endpoint;
  */
 class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-
-    /**
-     * The requested Image
-     *
-     * @var \LORIS\Image
-     */
     private $_format;
     private $_info;
     private $_file_type;
