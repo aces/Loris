@@ -1,0 +1,101 @@
+<?php declare(strict_types=1);
+namespace LORIS\acknowledgements;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
+/**
+ * Post method handles updating a file.
+ * Delete method handles deleting a file.
+ * Get method handles getting a file.
+ * Put method handles editing a file.
+ * This class contains functions providing upload and edit functionality for
+ * files in the acknowledgements.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class Acknowledgementsprocess extends \NDB_Page
+{
+
+    public $AjaxModule   = true;
+    public $skipTemplate = true;
+
+    /**
+     * Same as the permissions for the main menu filter page.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true only if the user has access to this page.
+     */
+    function _hasAccess(\User $user) : bool
+    {
+	    return true;
+    }
+
+    /**
+     * Handle how to operate all the files.
+     * PUT method updates a file's info.
+     * DELETE method deletes a file.
+     * POST method uploads a file.
+     * GET method gets a file.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        switch ($request->getMethod()) {
+	case "POST":
+            return $this->createAcknowledgement($request);
+        default:
+            return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                ["POST"]
+            ));
+        }
+    }
+    /**
+     * Handles the document editing process
+     *
+     * @param ServerRequestInterface $req The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    function createAcknowledgement(ServerRequestInterface $req): ResponseInterface
+    {
+        $DB            = $this->loris->getDatabaseConnection();        
+        $values = $req->getParsedBody();
+            if ($values['addPresent'] === 'Yes') {
+                $values['addEndDate'] = null;
+            }
+            $affiliations = is_array($values['addAffiliations']) ?
+                implode(', ', $values['addAffiliations']) :
+                $values['addAffiliations'];
+            $degrees      = is_array($values['addDegrees']) ?
+                implode(', ', $values['addDegrees']) :
+                $values['addDegrees'];
+            $roles        = is_array($values['addRoles']) ?
+                implode(', ', $values['addRoles']) :
+                $values['addRoles'];
+            $results      = [
+                'ordering'      => $values['addOrdering'],
+                'full_name'     => $values['addFullName'],
+                'citation_name' => $values['addCitationName'],
+                'affiliations'  => $affiliations,
+                'degrees'       => $degrees,
+                'roles'         => $roles,
+                'start_date'    => $values['addStartDate'],
+                'end_date'      => $values['addEndDate'],
+                'present'       => $values['addPresent'],
+            ];
+
+            $DB->insert('acknowledgements', $results);
+	    unset($values);
+	            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+        return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader(
+                "Location",
+                "{$baseURL}/acknowledgements/"
+            );
+    }
+}    
