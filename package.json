@@ -35,7 +35,7 @@
     "@types/react-redux": "7.1.16",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
-    "alex": ">=8.0.1",
+    "alex": ">=11.0.0",
     "babel-loader": "^8.0.5",
     "c3": "^0.7.15",
     "css-loader": "^3.4.2",
