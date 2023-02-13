@@ -43,17 +43,17 @@ abstract class Endpoint implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $interfaces = class_implements($handler);
-        if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {
-            return (new \LORIS\Middleware\ETag())->process($request, $handler);
-        }
-
         $loris    = $request->getAttribute('loris');
         $loglevel = $loris->getConfiguration()
             ->getLogSettings()
             ->getRequestLogLevel();
 
         $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
+        $interfaces = class_implements($handler);
+        if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {
+            return (new \LORIS\Middleware\ETag())->process($request, $handler);
+        }
 
         return $handler->handle($request);
     }
