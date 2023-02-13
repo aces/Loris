@@ -48,9 +48,9 @@ class Acknowledgementsprocess extends \NDB_Page
         case "POST":
             return $this->createAcknowledgement($request);
         default:
-            return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                ["POST"]
-            ));
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
     /**
@@ -97,5 +97,16 @@ class Acknowledgementsprocess extends \NDB_Page
                     "Location",
                     "{$baseURL}/acknowledgements/"
                 );
+    }
+    /**
+     * Return an array of valid HTTP methods for this endpoint
+     *
+     * @return string[] Valid versions
+     */
+    protected function allowedMethods(): array
+    {
+        return [
+            'POST',
+        ];
     }
 }
