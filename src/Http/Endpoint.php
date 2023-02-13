@@ -16,6 +16,7 @@ namespace LORIS\Http;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Log\LoggerAwareTrait;
 
 /**
  * An abstract class for common concerns of different API endpoints.
@@ -28,6 +29,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 abstract class Endpoint implements RequestHandlerInterface
 {
+    private \LORIS\Log\ErrorLogLogger $logger;
+
     /**
      * An Endpoint overrides the default LORIS middleware to remove the
      * PageDecorationMiddleware.
@@ -45,6 +48,13 @@ abstract class Endpoint implements RequestHandlerInterface
         if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {
             return (new \LORIS\Middleware\ETag())->process($request, $handler);
         }
+
+        $loris    = $request->getAttribute('loris');
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
 
         return $handler->handle($request);
     }
