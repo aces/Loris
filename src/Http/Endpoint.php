@@ -16,7 +16,6 @@ namespace LORIS\Http;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Log\LoggerAwareTrait;
 
 /**
  * An abstract class for common concerns of different API endpoints.
@@ -29,7 +28,7 @@ use \Psr\Log\LoggerAwareTrait;
  */
 abstract class Endpoint implements RequestHandlerInterface
 {
-    private \LORIS\Log\ErrorLogLogger $logger;
+    use \PSR\Log\LoggerAwareTrait;
 
     /**
      * An Endpoint overrides the default LORIS middleware to remove the
