@@ -59,11 +59,11 @@ class Acknowledgementsprocess extends \NDB_Page
      */
     function createAcknowledgement(ServerRequestInterface $req): ResponseInterface
     {
-        $DB = $this->loris->getDatabaseConnection();
+        $DB           = $this->loris->getDatabaseConnection();
         $affiliations = "";
-        $degrees = "";
-        $roles = "";
-        $values = $req->getParsedBody();
+        $degrees      = "";
+        $roles        = "";
+        $values       = $req->getParsedBody();
         if (isset($variable) && !is_null($variable)) {
             if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
