@@ -63,7 +63,6 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         $obj = [
             'CandID'    => $this->_candid,
             'Project'   => $this->_projectname,
-            'ProjectID' => $this->_projectid,
             'PSCID'     => $this->_pscid,
             'Site'      => $this->_sitename,
             'EDC'       => $this->_edc,
