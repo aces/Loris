@@ -36,7 +36,12 @@ class Module extends \Module
     public function hasAccess(\User $user) : bool
     {
         return parent::hasAccess($user) &&
-            $user->hasAnyPermission(['acknowledgements_view', 'acknowledgements_edit']);
+            $user->hasAnyPermission(
+                [
+                    'acknowledgements_view',
+                    'acknowledgements_edit'
+                ]
+            );
     }
 
     /**
