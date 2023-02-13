@@ -66,7 +66,9 @@ class Acknowledgementsprocess extends \NDB_Page
             if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
-            if (isset($values['addAffiliations']) && !is_null($values['addAffiliations'])) {
+            if (isset($values['addAffiliations'])
+                && !is_null($values['addAffiliations'])
+            ) {
                 $affiliations = is_array($values['addAffiliations']) ?
                 implode(', ', $values['addAffiliations']) :
                 $values['addAffiliations'];
