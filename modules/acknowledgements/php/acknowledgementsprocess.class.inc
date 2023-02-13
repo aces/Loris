@@ -33,10 +33,7 @@ class Acknowledgementsprocess extends \NDB_Page
 
     /**
      * Handle how to operate all the files.
-     * PUT method updates a file's info.
-     * DELETE method deletes a file.
      * POST method uploads a file.
-     * GET method gets a file.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -62,11 +59,13 @@ class Acknowledgementsprocess extends \NDB_Page
      */
     function createAcknowledgement(ServerRequestInterface $req): ResponseInterface
     {
-        $DB     = $this->loris->getDatabaseConnection();
+        $DB = $this->loris->getDatabaseConnection();
+
         $values = $req->getParsedBody();
-        if ($values['addPresent'] === 'Yes') {
-            $values['addEndDate'] = null;
-        }
+        if (isset($variable) && !is_null($variable)) {
+            if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
+                $values['addEndDate'] = null;
+            }
             $affiliations = is_array($values['addAffiliations']) ?
                 implode(', ', $values['addAffiliations']) :
                 $values['addAffiliations'];
@@ -97,6 +96,7 @@ class Acknowledgementsprocess extends \NDB_Page
                     "Location",
                     "{$baseURL}/acknowledgements/"
                 );
+        }
     }
     /**
      * Return an array of valid HTTP methods for this endpoint
