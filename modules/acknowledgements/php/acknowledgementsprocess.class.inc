@@ -84,15 +84,21 @@ class Acknowledgementsprocess extends \NDB_Page
                 $values['addRoles'];
             }
             $results = [
-                'ordering'      => $values['addOrdering'],
-                'full_name'     => $values['addFullName'],
-                'citation_name' => $values['addCitationName'],
+                'ordering'      =>
+                  isset($values['addOrdering']) ?$values['addOrdering'] : null,
+                'full_name'     =>
+                  isset($values['addFullName']) ? $values['addFullName'] : null,
+                'citation_name' =>
+                  isset($values['addCitationName'])? $values['addCitationName'] : null,
                 'affiliations'  => $affiliations ? $affiliations: null,
                 'degrees'       => $degrees ? $degrees: null,
                 'roles'         => $roles ? $roles: null,
-                'start_date'    => $values['addStartDate'],
-                'end_date'      => $values['addEndDate'],
-                'present'       => $values['addPresent']
+                'start_date'    =>
+                  isset($values['addStartDate'])? $values['addStartDate'] : null,
+                'end_date'      =>
+                  isset($values['addEndDate'])? $values['addEndDate'] : null,
+                'present'       =>
+                  isset($values['addPresent'])? $values['addPresent'] : null,
             ];
 
             $DB->insert('acknowledgements', $results);
