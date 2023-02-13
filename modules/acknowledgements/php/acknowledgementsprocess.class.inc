@@ -66,16 +66,22 @@ class Acknowledgementsprocess extends \NDB_Page
             if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
-            $affiliations = is_array($values['addAffiliations']) ?
+            if (isset($values['addAffiliations']) && !is_null($values['addAffiliations'])) {
+                $affiliations = is_array($values['addAffiliations']) ?
                 implode(', ', $values['addAffiliations']) :
                 $values['addAffiliations'];
-            $degrees      = is_array($values['addDegrees']) ?
+            }
+            if (isset($values['addDegrees']) && !is_null($values['addDegrees'])) {
+                $degrees = is_array($values['addDegrees']) ?
                 implode(', ', $values['addDegrees']) :
                 $values['addDegrees'];
-            $roles        = is_array($values['addRoles']) ?
+            }
+            if (isset($values['addRoles']) && !is_null($values['addRoles'])) {
+                $roles = is_array($values['addRoles']) ?
                 implode(', ', $values['addRoles']) :
                 $values['addRoles'];
-            $results      = [
+            }
+            $results = [
                 'ordering'      => $values['addOrdering'],
                 'full_name'     => $values['addFullName'],
                 'citation_name' => $values['addCitationName'],
