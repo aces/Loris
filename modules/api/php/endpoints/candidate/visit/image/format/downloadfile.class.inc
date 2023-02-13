@@ -127,12 +127,12 @@ class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(): ResponseInterface
     {
         if (!$this->_info->isFile()) {
-            $this->logger->notice("$this->_file_type file not found");
+            $this->logger->error("$this->_file_type file not found");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         if (!$this->_info->isReadable()) {
-            $this->logger->notice(
+            $this->logger->error(
                 "$this->_file_type file exists but is not readable by webserver"
             );
             return new \LORIS\Http\Response\JSON\NotFound();
