@@ -1831,8 +1831,6 @@ components:
           type: string
         Project:
           type: string
-        ProjectID:
-          type: integer
         PSCID:
           type: string
         Site:
