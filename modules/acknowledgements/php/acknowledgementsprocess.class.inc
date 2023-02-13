@@ -91,9 +91,9 @@ class Acknowledgementsprocess extends \NDB_Page
                 'citation_name' =>
                   isset($values['addCitationName'])?
                   $values['addCitationName'] : null,
-                'affiliations'  => $affiliations ? $affiliations: null,
-                'degrees'       => $degrees ? $degrees: null,
-                'roles'         => $roles ? $roles: null,
+                'affiliations'  => isset($affiliations) ? $affiliations: null,
+                'degrees'       => isset($degrees) ? $degrees: null,
+                'roles'         => isset($roles) ? $roles: null,
                 'start_date'    =>
                   isset($values['addStartDate'])? $values['addStartDate'] : null,
                 'end_date'      =>
