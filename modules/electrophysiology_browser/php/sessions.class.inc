@@ -559,8 +559,28 @@ class Sessions extends \NDB_Page
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
-            'label' => 'EEG File',
+            'label' => 'EEG File(s)',
         ];
+
+        $queryFDT = "SELECT
+            Value AS FilePath,
+            'physiological_fdt_file' AS FileType
+            FROM
+            physiological_parameter_file
+            JOIN parameter_type AS pt USING (ParameterTypeID)
+            WHERE
+            pt.Name='fdt_file'
+            AND PhysiologicalFileID=:PFID";
+        $queryFDT = $db->pselectRow($queryFDT, ['PFID' => $physioFileID]);
+        if (isset($queryFDT['FileType'])) {
+            $downloadLinks[] = [
+                'type'  => $queryFDT['FileType'],
+                'file'  => $queryFDT['FilePath'],
+                'label' => '',
+            ];
+        }
+
+        // Metadata
 
         $queries = [
             'physiological_electrode'          => 'physiological_electrode_file',
@@ -580,7 +600,7 @@ class Sessions extends \NDB_Page
 
         foreach ($queries as $query_key => $query_value) {
             $query_statement = "SELECT
-                            DISTINCT(FilePath), '$query_value' AS FileType
+                            DISTINCT(FilePath)
                             FROM
                             $query_key
                             WHERE
@@ -589,44 +609,19 @@ class Sessions extends \NDB_Page
                 $query_statement,
                 ['PFID' => $physioFileID]
             );
-            if (isset($query_statement['FileType'])) {
-                $downloadLinks[] = [
-                    'type'  => $query_statement['FileType'],
+            if ($query_statement) {
+                $downloadLinks[$query_value] = [
                     'file'  => $query_statement['FilePath'],
-                    'label' => $labels[$query_statement['FileType']]
+                    'label' => $labels[$query_value],
                 ];
             } else {
-                $downloadLinks[] = [
-                    'type'  => $query_value,
+                $downloadLinks[$query_value] = [
                     'file'  => '',
                     'label' => $labels[$query_value],
                 ];
             }
         }
 
-        $queryFDT = "SELECT
-                Value AS FilePath,
-                'physiological_fdt_file' AS FileType
-                FROM
-                physiological_parameter_file
-                JOIN parameter_type AS pt USING (ParameterTypeID)
-                WHERE
-                pt.Name='fdt_file'
-                AND PhysiologicalFileID=:PFID";
-        $queryFDT = $db->pselectRow($queryFDT, ['PFID' => $physioFileID]);
-        if (isset($queryFDT['FileType'])) {
-            $downloadLinks[] = [
-                'type'  => $queryFDT['FileType'],
-                'file'  => $queryFDT['FilePath'],
-                'label' => '',
-            ];
-        } else {
-            $downloadLinks[] = [
-                'type'  => 'physiological_fdt_file',
-                'file'  => '',
-                'label' => '',
-            ];
-        }
         return $downloadLinks;
     }
 

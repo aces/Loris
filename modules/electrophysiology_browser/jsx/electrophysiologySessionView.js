@@ -123,7 +123,7 @@ class ElectrophysiologySessionView extends Component {
             },
             downloads: [
               {
-                type: 'physiological_file',
+                type: 'physiological_files',
                 file: '',
               },
               {
@@ -144,10 +144,6 @@ class ElectrophysiologySessionView extends Component {
               },
               {
                 type: 'all_files',
-                file: '',
-              },
-              {
-                type: 'physiological_fdt_file',
                 file: '',
               },
             ],
@@ -226,10 +222,10 @@ class ElectrophysiologySessionView extends Component {
                 dbEntry
                 && dbEntry.file.downloads.map(
                   (group) =>
-                    group.links[1]?.file
+                    group.links['physiological_electrode_file']?.file
                     && loris.BaseURL
                       + '/electrophysiology_browser/file_reader/?file='
-                      + group.links[1].file
+                      + group.links['physiological_electrode_file'].file
               ),
             events:
               dbEntry
