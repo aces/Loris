@@ -39,8 +39,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     static $pendingNew    = 'select[name="pendingNew"]';
 
     //General locations
-    static $display     = '.table-header > div > div > div:nth-child(1)';
-    static $clearFilter = '.nav-tabs a';
+    static $display      = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter  = '.nav-tabs a';
+    static $nativeLink   = '#dynamictable tbody tr:nth-child(1) td:nth-child(12) '
+                           .'a:nth-child(1)';
+    static $selectedLink = '#dynamictable tbody tr:nth-child(1) td:nth-child(12) '
+                           .'a:nth-child(2)';
+
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -379,7 +384,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occured while loading the page.",
             $bodyText
-        );        
+        );
     }
 
     /******** A ********/
@@ -456,23 +461,18 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     */
     function testImagingBrowserViewDatasetDependingOnPermissions()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
-        // With permission imaging_browser_view_site: 0 subjects found from DCC site
+        // With permission imaging_browser_view_site: subjects from DCC site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
         $ControlPanelText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
+            WebDriverBy::cssSelector(self::$display)
         )->getText();
-        $this->assertStringContainsString("0 subject timepoint(s) selected", $ControlPanelText);
+        $this->assertStringContainsString("rows displayed of 15.", $ControlPanelText);
 
-        // With permission imaging_browser_view_allsites:
-        // 2 subjects with imaging data found
+        // With permission imaging_browser_view_allsites: all subjects
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
@@ -480,9 +480,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $ControlPanelText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".controlPanelSection")
+            WebDriverBy::cssSelector(self::$display)
         )->getText();
-        $this->assertStringContainsString("2 subject timepoint(s) selected", $ControlPanelText);
+        $this->assertStringContainsString("rows displayed of 29.", $ControlPanelText);
     }
 
     /**
@@ -621,9 +621,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingBrowserSiteDependingOnPermissions()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
         $this->safeGet(
@@ -635,7 +632,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $SiteFilterText = $this->safeFindElement(
             WebDriverBy::Name("site")
         )->getText();
-        $this->assertStringContainsString("All User Sites", $SiteFilterText);
+        $this->assertEquals("Data Coordinating Center", $SiteFilterText);
 
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -646,7 +643,17 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $SiteFilterText     = $this->safeFindElement(
             WebDriverBy::Name("site")
         )->getText();
-        $this->assertStringContainsString("All", $SiteFilterText);
+        $sites = [
+          'Data Coordinating Center',
+          'Montreal',
+          'Ottawa',
+          'Rome',
+          'Test Site AOL',
+          'Test Site BOL',
+        ];
+        foreach($sites as $site) {
+          $this->assertStringContainsString($site, $SiteFilterText);
+        }
     }
 
     /**
@@ -657,43 +664,38 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingBrowserSortableByTableHeader()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
-        $PSCIDHeader = $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::cssSelector(
-                ".info > th:nth-child(3) > a:nth-child(1)"
+                "#dynamictable .info > th:nth-child(3)"
             )
         );
-        $this->clickToLoadNewPage($PSCIDHeader);
 
         $FirstEntry = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)"
+                "#dynamictable tbody > tr:nth-child(1) td:nth-child(3)"
             )
         )->getText();
         $this->assertStringContainsString("AOL0002", $FirstEntry);
 
         // click again and make sure the order is now reversed
-        $PSCIDHeader = $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::cssSelector(
-                ".info > th:nth-child(3) > a:nth-child(1)"
+                "#dynamictable .info > th:nth-child(3)"
             )
         );
-        $this->clickToLoadNewPage($PSCIDHeader);
 
         $FirstEntry = $this->safeFindElement(
             WebDriverBy::cssSelector(
-                ".table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)"
+                "#dynamictable tbody > tr:nth-child(1) td:nth-child(3)"
             )
         )->getText();
-        $this->assertStringContainsString("BOL0003", $FirstEntry);
+        $this->assertStringContainsString("ROM300", $FirstEntry);
     }
 
     /**
@@ -715,9 +717,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $NativeLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $this->clickToLoadNewPage($NativeLink);
 
@@ -758,17 +758,15 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->safeClick(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
 
         $this->safeClick(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[1]/a/span/span')
+            WebDriverBy::cssSelector('#sidebar-content > ul:nth-child(2) li:nth-child(1) a')
         );
 
         $SelectionFilter = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
+            WebDriverBy::cssSelector('#imaging_browser_filter legend')
         )->getText();
         $this->assertStringContainsString("Selection Filter", $SelectionFilter);
 
@@ -778,29 +776,27 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->safeClick(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
 
         $this->safeClick(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[2]/a/span/span')
+            WebDriverBy::cssSelector('#sidebar-content > ul:nth-child(2) li:nth-child(2) a:nth-child(2)')
         );
 
         $SiteText2 = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="table-header-left"]/tbody/tr/td[5]')
+            WebDriverBy::cssSelector('#table-header-left tbody td:nth-child(5)')
         )->getText();
         $this->assertStringContainsString("Test Site BOL", $SiteText2);
 
         //Previous Button
         $this->safeClick(
-            WebDriverBy::xPath(
-                '//*[@id="sidebar-content"]/ul[1]/li[2]/a[1]/span/span'
+            WebDriverBy::cssSelector(
+                '#sidebar-content > ul:nth-child(2) li:nth-child(2) a:nth-child(1)'
             )
         );
 
         $SiteText1 = $this->safeFindElement(
-            WebDriverBy::xPath('//*[@id="table-header-left"]/tbody/tr/td[5]')
+            WebDriverBy::cssSelector('#table-header-left tbody td:nth-child(5)')
         )->getText();
         $this->assertStringContainsString("Test Site AOL", $SiteText1);
     }
@@ -818,9 +814,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $this->safeClick(
-            WebDriverBy::cssSelector(
-                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(12) > a:nth-child(1)'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('body')
@@ -846,9 +840,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
         $this->clickToLoadNewPage($SelectedLink);
 
@@ -886,9 +878,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $NativeLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $this->clickToLoadNewPage($NativeLink);
 
@@ -897,10 +887,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         $handleList         = $this->webDriver->getWindowHandles();
         $VisitLevelFeedback->click();
-
-        $this->markTestSkipped(
-            'Popup window can not be tested'
-        );
 
         $newHandleList = $this->webDriver->getWindowHandles();
         $diff          = array_diff($newHandleList, $handleList);
@@ -986,9 +972,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $NativeLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $this->clickToLoadNewPage($NativeLink);
 
@@ -1039,9 +1023,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
         $this->clickToLoadNewPage($SelectedLink);
 
@@ -1081,9 +1063,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
         $this->clickToLoadNewPage($SelectedLink);
 
@@ -1135,10 +1115,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->markTestSkipped(
-            'React components can not be tested'
-        );
-
         $QCStatusImageCheck = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "#image-1 > div > div > div.panel-heading > span.label.label-success"
@@ -1159,9 +1135,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
         $this->clickToLoadNewPage($SelectedLink);
 
@@ -1218,9 +1192,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $SelectedLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+            WebDriverBy::cssSelector(self::$selectedLink)
         );
         $this->clickToLoadNewPage($SelectedLink);
 
@@ -1266,9 +1238,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $NativeLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $this->clickToLoadNewPage($NativeLink);
 
@@ -1277,10 +1247,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         $handleList         = $this->webDriver->getWindowHandles();
         $VisitLevelFeedback->click();
-
-        $this->markTestSkipped(
-            'Popup windows can not be tested'
-        );
 
         $newHandleList = $this->webDriver->getWindowHandles();
         $diff          = array_diff($newHandleList, $handleList);
@@ -1334,9 +1300,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $NativeLink = $this->safeFindElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
+            WebDriverBy::cssSelector(self::$nativeLink)
         );
         $this->clickToLoadNewPage($NativeLink);
 
