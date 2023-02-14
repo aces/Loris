@@ -49,7 +49,7 @@ class CommentList extends Component {
       const item = changes[key];
       const textItems = Object.keys(item.data).map(function(index, j) {
         if (index == 'comment') {
-            comment = <div style={{marginTop: '1em'}}>
+            comment = <div className='history-comment'>
               <Markdown content={item.data[index]} />
             </div>;
             return;
