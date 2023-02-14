@@ -44,8 +44,9 @@ $loris = new \LORIS\LorisInstance(
 );
 
 // Get instrument names
-$instruments = [];
-foreach (\NDB_BVL_Instrument::getInstrumentNamesList($loris) as $testname => $fullName) {
+$instruments    = [];
+$instrumentList = \NDB_BVL_Instrument::getInstrumentNamesList($loris);
+foreach ($instrumentList as $testname => $fullName) {
     // Instantiate instrument
     try {
         $instr = \NDB_BVL_Instrument::factory(
