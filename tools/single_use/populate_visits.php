@@ -38,8 +38,9 @@ class VisitsPopulator
      */
     function __construct()
     {
-        $this->DB     = \Database::singleton();
-        $this->Config = \NDB_Config::singleton();
+        $factory      = \NDB_Factory::singleton();
+        $this->DB     = $factory->database();
+        $this->Config = $factory->config();
     }
 
     /**

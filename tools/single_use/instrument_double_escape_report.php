@@ -83,7 +83,10 @@ foreach($instrumentNames as $instrumentName) {
     $instrumentData=array();
     if ($useObjects) {
         try {
-            $instrument = \NDB_BVL_Instrument::factory($instrumentName);
+            $instrument = \NDB_BVL_Instrument::factory(
+                $lorisInstance,
+                $instrumentName
+            );
         } catch (Exception $e) {
             printError(
                 "There was an error instantiating instrument $instrumentName.
@@ -93,7 +96,11 @@ foreach($instrumentNames as $instrumentName) {
             continue;
         }
         foreach ($instrumentCIDs as $cid) {
-            $instrumentInstance = \NDB_BVL_Instrument::factory($instrumentName, $cid);
+            $instrumentInstance = \NDB_BVL_Instrument::factory(
+                $lorisInstance,
+                $instrumentName,
+                $cid
+            );
             $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ

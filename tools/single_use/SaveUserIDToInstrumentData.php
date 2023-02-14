@@ -62,10 +62,16 @@ foreach ($history as $entry) {
     $idxHist[$entry['Test_name']][] = $entry;
 }
 
-foreach (\Utility::getAllInstruments() as $testname => $fullName) {
+$instruments = \NDB_BVL_Instrument::getInstrumentNamesList($lorisInstance);
+foreach ($instruments as $testname => $fullName) {
     // Instantiate instrument object to get information
     try {
-        $instrument = \NDB_BVL_Instrument::factory($testname, '', '');
+        $instrument = \NDB_BVL_Instrument::factory(
+            $lorisInstance,
+            $testname,
+            '',
+            ''
+        );
     } catch (Exception $e) {
         echo "$testname does not seem to be a valid instrument.\n";
         continue;
@@ -115,6 +121,7 @@ foreach (\Utility::getAllInstruments() as $testname => $fullName) {
 
             try {
                 $sessionInst = \NDB_BVL_Instrument::factory(
+                    $lorisInstance,
                     $testname,
                     $commentID,
                     ''

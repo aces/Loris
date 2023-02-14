@@ -76,7 +76,7 @@ class Survey_Accounts extends \DataFrameworkMenu
     {
         return [
             'visits'      => \Utility::getVisitList(),
-            'instruments' => \Utility::getDirectInstruments(),
+            'instruments' => \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris),
         ];
     }
 

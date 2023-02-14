@@ -32,7 +32,7 @@ will result in a loss of data.
 \n";
 
 echo "Getting instrument list...\n";
-$DB = \Database::singleton();
+$DB = \NDB_Factory::singleton()->database();
 
 $loris = new \LORIS\LorisInstance(
     \NDB_Factory::singleton()->database(),
@@ -45,7 +45,7 @@ $loris = new \LORIS\LorisInstance(
 
 // Get instrument names
 $instruments = [];
-foreach (\Utility::getAllInstruments() as $testname => $fullName) {
+foreach (\NDB_BVL_Instrument::getInstrumentNamesList($loris) as $testname => $fullName) {
     // Instantiate instrument
     try {
         $instr = \NDB_BVL_Instrument::factory(
