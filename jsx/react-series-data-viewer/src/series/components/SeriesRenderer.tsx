@@ -19,7 +19,7 @@ import {
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
-  STACKED_SERIES_RANGE,
+  STATIC_SERIES_RANGE,
   DEFAULT_VIEWER_HEIGHT,
   MIN_EPOCH_WIDTH,
 } from '../../vector';
@@ -250,7 +250,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const cursorRef = useRef(null);
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [offsetIndex, interval, limit, timeSelection]);
+  const memoizedCallback = useCallback(() => {}, [
+    offsetIndex, interval, limit, timeSelection, amplitudeScale
+  ]);
+
   useEffect(() => { // Keypress handler
     const keybindHandler = (e) => {
       if (cursorRef.current) { // Cursor is on page / focus
@@ -320,6 +323,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           case 'Equal': // This key combination is '+'
             zoomIn();
             break;
+          case 'KeyN':  // Lower amplitude scale
+            setAmplitudesScale(1.1);
+            break;
+          case 'KeyM':  // Increase amplitude scale
+            setAmplitudesScale(0.9);
+            break;
         }
       }
     }
@@ -356,7 +365,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       line.setAttribute(
         'stroke-width',
         colored && (!singleMode || cursorRef.current)
-          ? '3'
+          ? '2'
           : '1'
       );
     });
@@ -381,6 +390,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const [numDisplayedChannels, setNumDisplayedChannels] = useState<number>(DEFAULT_MAX_CHANNELS);
   const [cursorEnabled, setCursorEnabled] = useState(false);
   const toggleCursor = () => setCursorEnabled(value => !value);
+  const [DCOffsetView, setDCOffsetView] = useState(true);
+  const toggleDCOffsetView = () => setDCOffsetView(value => !value);
   const [stackedView, setStackedView] = useState(false);
   const toggleStackedView = () => setStackedView(value => !value);
   const [singleMode, setSingleMode] = useState(false);
@@ -452,14 +463,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   const EpochsLayer = () => {
-    // ##################### EEGNET OVERRIDE START ################## //
-    // Override: Delete Enclosed Code
-    /*const fEpochs = [...Array(epochs.length).keys()].filter((i) =>
-      epochs[i].onset + epochs[i].duration > interval[0]
-      && epochs[i].onset < interval[1]
-    );*/
-    // ##################### EEGNET OVERRIDE END ################## //
-
     const epochType = rightPanel === 'eventList'
       ? 'Event'
         : rightPanel === 'annotationList'
@@ -553,8 +556,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       setViewerWidth(viewerWidth);
     }, [viewerWidth]);
 
-    const channelList: Channel[] = (!
-      cursorRef.current && stackedView &&
+    const channelList: Channel[] = (
+      !cursorRef.current && stackedView &&
       singleMode && hoveredChannels.length > 0
     )
       ? filteredChannels.filter((channel) => hoveredChannels.includes(channel.index))
@@ -584,8 +587,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               0,
-              stackedView
-                ? 0
+              stackedView && !singleMode
+                ? (numDisplayedChannels - 2) * diagonal[1] / (2 * numDisplayedChannels)
                 : (i * diagonal[1]) / numDisplayedChannels
             )
           );
@@ -596,8 +599,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               diagonal[0],
-              stackedView
-                ? diagonal[1]
+              stackedView && !singleMode
+                ? (numDisplayedChannels + 2) * diagonal[1] / (2 * numDisplayedChannels)
                 : ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
@@ -608,40 +611,86 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           const axisEnd = vec2.create();
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
-          const seriesRange: [number, number] = stackedView
-            ? STACKED_SERIES_RANGE
-            : channelMetadata[channel.index].seriesRange;
-
-          const scales: [
-            ScaleLinear<number, number, never>,
-            ScaleLinear<number, number, never>
-          ] = [
-            scaleLinear()
-              .domain(interval)
-              .range([subTopLeft[0], subBottomRight[0]]),
-            scaleLinear()
-              .domain(seriesRange)
-              .range([subTopLeft[1], subBottomRight[1]]),
-          ];
-
           return (
-            channel.traces.map((trace, j) => (
-              trace.chunks.map((chunk, k) => (
-                <LineChunk
-                  channelIndex={channel.index}
-                  traceIndex={j}
-                  chunkIndex={k}
-                  key={`${k}-${trace.chunks.length}`}
-                  chunk={chunk}
-                  seriesRange={seriesRange}
-                  amplitudeScale={amplitudeScale}
-                  scales={scales}
-                  physioFileID={physioFileID}
-                  isHovered={hoveredChannels.includes(channel.index)}
-                  isStacked={stackedView}
-                />
-              ))
-            ))
+            channel.traces.map((trace, j) => {
+              const numChunks = trace.chunks.length;
+              if (numChunks === 0)
+                return null;
+
+              const valuesInView = trace.chunks.map((chunk) => {
+                let includedIndices = [0, chunk.values.length];
+                if (chunk.interval[0] < interval[0]) {
+                  const startIndex = chunk.values.length * (interval[0] - chunk.interval[0]) / (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [startIndex, includedIndices[1]];
+                }
+                if (chunk.interval[1] > interval[1]) {
+                  const endIndex = chunk.values.length * (interval[1] - chunk.interval[0]) / (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [includedIndices[0], endIndex];
+                }
+                return chunk.values.slice(includedIndices[0], includedIndices[1]);
+              }).flat();
+
+              const seriesRange: [number, number] = STATIC_SERIES_RANGE;
+
+              const scales: [
+                ScaleLinear<number, number, never>,
+                ScaleLinear<number, number, never>
+              ] = [
+                scaleLinear()
+                  .domain(interval)
+                  .range([subTopLeft[0], subBottomRight[0]]),
+                scaleLinear()
+                  .domain(seriesRange)
+                  .range(
+                    stackedView
+                      ? [
+                        -viewerHeight / (2 * numDisplayedChannels),
+                        viewerHeight / (2 * numDisplayedChannels)
+                      ]
+                      : [subTopLeft[1], subBottomRight[1]]
+                  ),
+              ];
+
+              const scaleByAmplitude = scaleLinear()
+                .domain(seriesRange.map((x) => x * amplitudeScale))
+                .range([-0.5, 0.5]);
+
+              const getScaledMean = (values) => {
+                let numValues = values.length;
+                return values.reduce((a, b) => {
+                    if (isNaN(b)) {
+                      numValues--;
+                      b = 0;
+                    }
+                  return a + scaleByAmplitude(b);
+                }, 0) / numValues
+              }
+
+              const DCOffset = DCOffsetView
+                ? getScaledMean(valuesInView)
+                : 0;
+
+              return (
+                trace.chunks.map((chunk, k) => (
+                    <LineChunk
+                      channelIndex={channel.index}
+                      traceIndex={j}
+                      chunkIndex={k}
+                      key={`${k}-${trace.chunks.length}`}
+                      chunk={chunk}
+                      seriesRange={seriesRange}
+                      amplitudeScale={amplitudeScale}
+                      scales={scales}
+                      physioFileID={physioFileID}
+                      isHovered={hoveredChannels.includes(channel.index)}
+                      isStacked={stackedView}
+                      withDCOffset={DCOffset}
+                      numChannels={numDisplayedChannels}
+                      numChunks={numChunks}
+                    />
+                ))
+              )
+            })
           );
         })}
       </>
@@ -1047,7 +1096,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 style={{
                   textAlign: 'center',
                   position: 'absolute',
-                  bottom: '15px',
+                  bottom: '0',
                 }}
               >
                 <input
@@ -1057,8 +1106,19 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     width: '65px',
                     marginTop: '3px',
                   }}
+                  onClick={toggleDCOffsetView}
+                  value={`${DCOffsetView ? 'No' : 'DC'} Offset`}
+                />
+                <br/>
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                  }}
                   onClick={toggleStackedView}
-                  value={stackedView ? 'Unstack' : 'Stack'}
+                  value={stackedView ? 'Spread' : 'Stack'}
                 />
                 <br/>
                 <input

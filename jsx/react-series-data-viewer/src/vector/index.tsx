@@ -20,15 +20,15 @@ export const MIN_EPOCH_WIDTH = 0.025;
 
 export const MAX_VIEWED_CHUNKS = 3;
 
-export const DEFAULT_MAX_CHANNELS = 32;
+export const DEFAULT_MAX_CHANNELS = 16;
 
 export const CHANNEL_DISPLAY_OPTIONS = [4, 8, 16, 32, 64];
 
-export const STACKED_SERIES_RANGE: [number, number] = [-0.005, 0.005];
+export const STATIC_SERIES_RANGE: [number, number] = [-0.05, 0.05];
 
-export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 30];
+export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 5];
 
-export const DEFAULT_VIEWER_HEIGHT = 800;
+export const DEFAULT_VIEWER_HEIGHT = 700;
 
 export const SIGNAL_SCALE = Math.pow(10, 6);
 

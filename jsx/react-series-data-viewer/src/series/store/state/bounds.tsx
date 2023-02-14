@@ -76,7 +76,7 @@ const domain = (
  * @param {Action} action - The action
  * @returns {State} - The updated state
  */
-const amplitudeScale = (state = 1, action?: Action): number => {
+const amplitudeScale = (state = 0.0005, action?: Action): number => {
   if (action && action.type === 'SET_AMPLITUDE_SCALE') {
     return action.payload;
   }

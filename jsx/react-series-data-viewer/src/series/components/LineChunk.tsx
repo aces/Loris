@@ -7,21 +7,26 @@ import {Group} from '@visx/group';
 import {colorOrder} from "../../color";
 
 const LineMemo = R.memoizeWith(
-  ({interval, amplitudeScale, filters, channelIndex, traceIndex, chunkIndex, isStacked}) =>
-    `${interval.join(',')},${amplitudeScale},${filters.join('-')},`
-  + `${channelIndex}-${traceIndex}-${chunkIndex}-${isStacked}`,
+  ({amplitudeScale, filters, channelIndex, traceIndex,
+     chunkIndex, isStacked, DCOffset, numChannels, numChunks}) =>
+    `${amplitudeScale},${filters.join('-')},`
+    + `${channelIndex}-${traceIndex}-${chunkIndex},`
+    + `${isStacked},${DCOffset},${numChannels},${numChunks}`,
   ({
-    channelIndex,
-    traceIndex,
-    chunkIndex,
-    interval,
-    seriesRange,
-    amplitudeScale,
-    filters,
-    values,
-    isStacked,
-    ...rest
-}) => {
+     channelIndex,
+     traceIndex,
+     chunkIndex,
+     interval,
+     seriesRange,
+     amplitudeScale,
+     filters,
+     values,
+     isStacked,
+     DCOffset,
+     numChannels,
+     numChunks,
+     ...rest
+   }) => {
 
     const scales = [
       scaleLinear()
@@ -37,11 +42,9 @@ const LineMemo = R.memoizeWith(
         scales[0](
           interval[0] + (i / values.length) * (interval[1] - interval[0])
         ),
-        -scales[1](value)
+        -(scales[1](value) - DCOffset)
       )
     );
-
-
 
     return (
       <LinePath
@@ -69,7 +72,10 @@ type CProps = {
   ],
   physioFileID: number,
   isHovered: boolean,
-  isStacked: boolean
+  isStacked: boolean,
+  withDCOffset: number,
+  numChannels: number,
+  numChunks: number
 };
 
 /**
@@ -85,20 +91,26 @@ type CProps = {
  * @param root0.physioFileID
  * @param root0.isHovered
  * @param root0.isStacked
+ * @param root0.withDCOffset
+ * @param root0.numChannels
+ * @param root0.numChunks
  */
 const LineChunk = ({
-  channelIndex,
-  traceIndex,
-  chunkIndex,
-  chunk,
-  seriesRange,
-  amplitudeScale,
-  scales,
-  physioFileID,
-  isHovered,
-  isStacked,
-  ...rest
-}: CProps) => {
+   channelIndex,
+   traceIndex,
+   chunkIndex,
+   chunk,
+   seriesRange,
+   amplitudeScale,
+   scales,
+   physioFileID,
+   isHovered,
+   isStacked,
+   withDCOffset,
+   numChannels,
+   numChunks,
+   ...rest
+ }: CProps) => {
   const {interval, values} = chunk;
 
   if (values.length === 0) {
@@ -109,10 +121,12 @@ const LineChunk = ({
   const chunkLength = Math.abs(scales[0](interval[1]) - scales[0](interval[0]));
   const chunkHeight = Math.abs(range[1] - range[0]);
 
+
   const p0 = vec2.fromValues(
     (scales[0](interval[0]) + scales[0](interval[1])) / 2,
     (range[0] + range[1]) / 2
   );
+
 
   return (
     <Group
@@ -121,7 +135,7 @@ const LineChunk = ({
     >
       <Group
         transform={'translate(' + p0[0] + ' 0)' +
-                   'scale(' + chunkLength + ' ' + chunkHeight + ')'
+          'scale(' + chunkLength + ' ' + chunkHeight + ')'
         }
       >
         <LineMemo
@@ -135,6 +149,9 @@ const LineChunk = ({
           amplitudeScale={amplitudeScale}
           filters={chunk.filters}
           isStacked={isStacked}
+          DCOffset={withDCOffset}
+          numChannels={numChannels}
+          numChunks={numChunks}
         />
       </Group>
     </Group>
