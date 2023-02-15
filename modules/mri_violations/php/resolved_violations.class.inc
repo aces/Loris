@@ -84,5 +84,21 @@ class Resolved_Violations extends \DataFrameworkMenu
         return (new ResolvedViolationsProvisioner())
             ->filter(new UserProjectMatchOrNull);
     }
+
+    /**
+     * Overload filters to allow posssibility of a null CenterID
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
+    {
+        $provisioner = $this->getBaseDataProvisioner()->filter(
+            new UserCenterMatchOrNullOrAnyPermission(
+                $this->allSitePermissionNames()
+            )
+        );
+
+        return $provisioner;
+    }
 }
 

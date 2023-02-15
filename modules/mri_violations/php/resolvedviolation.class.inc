@@ -7,8 +7,7 @@ namespace LORIS\mri_violations;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class ResolvedViolation implements \LORIS\Data\DataInstance,
-    \LORIS\StudyEntities\SiteHaver
+class ResolvedViolation implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CenterID;
@@ -37,11 +36,14 @@ class ResolvedViolation implements \LORIS\Data\DataInstance,
      * Returns the CenterID for this instance, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match against.
      *
-     * @return \CenterID
+     * @return ?\CenterID
      */
-    public function getCenterID(): \CenterID
+    public function getCenterID(): ?\CenterID
     {
-        return new \CenterID($this->DBRow['CenterId']);
+        if ($this->DBRow['Site'] === null) {
+            return null;
+        }
+        return new \CenterID($this->DBRow['Site']);
     }
 
     /**

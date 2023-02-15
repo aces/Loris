@@ -135,11 +135,26 @@ class Mri_Violations extends \DataFrameworkMenu
             return (new ProtocolViolationProvisioner($this->seriesUID));
         case 'protocolcheck':
             return (new ProtocolCheckViolationProvisioner($this->seriesUID))
-              ->filter(new UserCenterMatchOrNull);
+            ->filter(
+                new UserCenterMatchOrNullOrAnyPermission(
+                    $this->allSitePermissionNames(),
+                )
+            );
         default:
             return (new Provisioner())
               ->filter(new UserProjectMatchOrNull);
         }
+    }
+
+    /**
+     * Overload filters to allow posssibility of a null CenterID. Filters are
+     * added in getBaseDataProvisioner depending on the type
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
+    {
+        return $this->getBaseDataProvisioner();
     }
 
     /**

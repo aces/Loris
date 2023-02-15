@@ -46,7 +46,7 @@ export function unresolvedFilters(fieldoptions) {
       },
     },
     {
-      label: 'Minc File', show: true, filter: {
+      label: 'Image File', show: true, filter: {
         name: 'mincFile',
         type: 'text',
       },

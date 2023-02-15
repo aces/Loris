@@ -53,7 +53,9 @@ function ProtocolViolationModal(props) {
 
     let violations = [];
 
+    let title = 'Violations for SeriesUID ' + props.SeriesUID;
     for (const violation of data) {
+      title = 'Violations for ' + violation[4];
       violations.push(
         <div key={violation[4]}>
           <dl style={{display: 'flex', width: '100%',
@@ -76,12 +78,20 @@ function ProtocolViolationModal(props) {
               <dd>{violation[3]}</dd>
             </div>
             <div>
-              <dt>Minc Location</dt>
+              <dt>Image Location</dt>
               <dd>{violation[4]}</dd>
             </div>
             <div>
               <dt>Patient Name</dt>
               <dd>{violation[5]}</dd>
+            </div>
+            <div>
+              <dt>Series UID</dt>
+              <dd>{props.SeriesUID}</dd>
+            </div>
+            <div>
+              <dt>Echo Time</dt>
+              <dd>{violation[8]}</dd>
             </div>
           </dl>
 
@@ -214,15 +224,16 @@ function ProtocolViolationModal(props) {
       }
     }
     pushgroup(curgroupname, curgroup);
+    console.log(props);
 
     return <Modal onClose={props.onClose}
              show={true}
              width="90%"
-             title={'Violations for SeriesUID ' + props.SeriesUID}>
+             title={title}>
+              <h2>Image Protocol</h2>
+              {violations}
               <h2>Study Protocols</h2>
               {protocolgroups}
-              <h2>Violations</h2>
-              {violations}
            </Modal>;
 }
 
