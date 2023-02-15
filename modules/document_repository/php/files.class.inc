@@ -82,9 +82,14 @@ class Files extends \NDB_Page
                         )
                     );
             }
+
+            // the file's user directory is the username of the file uploader,
+            // not the user currently requesting the download
+            $uploader = urldecode(basename(dirname($request->getUri()->getPath())));
+
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
-                    $downloadpath . $request->getAttribute('user')->getUsername()
+                    $downloadpath . $uploader
                 )
             );
             return $downloader->handle(
