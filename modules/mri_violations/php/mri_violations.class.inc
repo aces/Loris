@@ -80,7 +80,8 @@ class Mri_Violations extends \DataFrameworkMenu
         );
 
         $protocols = $db->pselect(
-            "SELECT p.ID, mpg.Name as 'Protocol Group', site.Name as Center_name, ScannerID,
+            "SELECT p.ID, mpg.Name as 'Protocol Group',
+                    site.Name as Center_name, ScannerID,
                     s.Scan_type, TR_min, TR_max, TE_min, TE_max, TI_min,
                     TI_max, slice_thickness_min, slice_thickness_max,
                     xspace_min, xspace_max, yspace_min, yspace_max, zspace_min,
@@ -97,7 +98,7 @@ class Mri_Violations extends \DataFrameworkMenu
         );
         return [
             'projects'     => \Utility::getProjectList(),
-            'cohorts'  => \Utility::getCohortList(),
+            'cohorts'      => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
             'protocols'    => $protocols,
