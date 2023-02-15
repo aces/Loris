@@ -102,12 +102,13 @@ foreach ($instruments as $instrument => $full_name) {
             $candid = $candidate['CandID'];
             $pscid  = $candidate['PSCID'];
             foreach ($cohortids as $cohortid) {
-                $session_info = $DB->pselect(
+                $session_info = $DB->pselectRow(
                     "SELECT DISTINCT s.Visit_label,s.ID from session s
                     JOIN candidate c on (c.candid=s.candid)
                     JOIN flag f on (f.sessionid=s.id)
                     WHERE s.candID = :cid AND f.test_name = :fname AND
-                    s.cohortid = :subid",
+                    s.cohortid = :subid
+                    limit =1",
                     [
                         'cid'   => $candid,
                         'fname' => $instrument,
