@@ -224,7 +224,6 @@ function ProtocolViolationModal(props) {
       }
     }
     pushgroup(curgroupname, curgroup);
-    console.log(props);
 
     return <Modal onClose={props.onClose}
              show={true}
