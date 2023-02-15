@@ -77,17 +77,22 @@ class Module extends \Module
         switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
             $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
-            $number  = (int) $DB->pselectOne(
-                "SELECT count(*) FROM " . Provisioner::getViolationsQueryTable(),
-                []
-            );
-            $label   = $number >  1 ? 'Violated scans' : 'Violated scan';
 
-            $siteLabel = $user->hasPermission('violated_scans_view_allsites')
-                ? 'Site: All' : 'Site: All User Sites';
-            $widget    = new \LORIS\dashboard\TaskWidget(
+            $provisioner = new Provisioner();
+
+            if ($user->hasPermission('violated_scans_view_allsites')) {
+                $siteLabel = 'Site: All';
+            } else {
+                $siteLabel   = 'Site: All User Sites';
+                $provisioner = $provisioner->filter(new UserCenterMatchOrNull());
+            }
+
+            $number = iterator_count($provisioner->execute($user));
+
+            $label = $number >  1 ? 'Violated scans' : 'Violated scan';
+
+            $widget = new \LORIS\dashboard\TaskWidget(
                 $label,
                 $number,
                 $link,
