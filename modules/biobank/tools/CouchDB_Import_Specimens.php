@@ -38,7 +38,7 @@ class CouchDBSpecimenImporter
             $couchConfig['adminpass']
         );
         // instanciate module to autoload classes;
-        \Module::factory("biobank");
+        $loris->getModule("biobank");
         $this->specimenController  = new \LORIS\biobank\SpecimenController(
             $loris,
             $this->user

@@ -73,7 +73,7 @@ class Module extends \Module
         }
 
         try {
-            $page = $this->loadPage($this->lorisinstance, $pagename);
+            $page = $this->loadPage($this->loris, $pagename);
             // FIXME: Hack required for breadcrumbs. This should be removed,
             // but some tests depend on it.
             if ($this->getName() === $pagename) {
