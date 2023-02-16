@@ -18,7 +18,7 @@ export const MIN_INTERVAL = 0.001;
 
 export const MIN_EPOCH_WIDTH = 0.025;
 
-export const MAX_VIEWED_CHUNKS = 3;
+export const MAX_VIEWED_CHUNKS = 4;
 
 export const DEFAULT_MAX_CHANNELS = 16;
 

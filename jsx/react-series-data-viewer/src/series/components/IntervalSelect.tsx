@@ -167,6 +167,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
             marginBottom: '20px',
             display: 'flex',
             justifyContent: 'center',
+            zIndex: '1',
           }}
         >
           <div className='btn-group'>

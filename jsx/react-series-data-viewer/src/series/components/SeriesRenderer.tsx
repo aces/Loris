@@ -812,7 +812,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             </div>
             <IntervalSelect />
             <div className='row'>
-              <div className='col-xs-offset-1 col-xs-11'>
+              <div
+                className='col-xs-offset-1 col-xs-11'
+                style={{ zIndex: '1' }}
+              >
                 <div
                   className='row'
                   style={{
