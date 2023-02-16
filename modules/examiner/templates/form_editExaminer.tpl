@@ -12,7 +12,7 @@
                     </div>
                     {/foreach}
                     <div class="row hidden-xs hidden-sm">
-                        <div class="col-md-1">
+                        <div class="col-md-3">
                             <label>Instrument</label>
                         </div>
                         <div class="col-md-2">
