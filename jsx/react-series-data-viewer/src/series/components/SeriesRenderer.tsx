@@ -613,9 +613,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
           return (
             channel.traces.map((trace, j) => {
-              const numChunks = trace.chunks.length;
-              if (numChunks === 0)
-                return null;
+              const numChunks = trace.chunks.filter((chunk) => chunk.values.length > 0).length;
 
               const valuesInView = trace.chunks.map((chunk) => {
                 let includedIndices = [0, chunk.values.length];
@@ -629,6 +627,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 }
                 return chunk.values.slice(includedIndices[0], includedIndices[1]);
               }).flat();
+
+              if (valuesInView.length === 0)
+                return;
 
               const seriesRange: [number, number] = STATIC_SERIES_RANGE;
 
@@ -660,7 +661,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 return values.reduce((a, b) => {
                     if (isNaN(b)) {
                       numValues--;
-                      b = 0;
+                      return a;
                     }
                   return a + scaleByAmplitude(b);
                 }, 0) / numValues
