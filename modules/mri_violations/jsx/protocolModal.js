@@ -163,7 +163,7 @@ function ProtocolViolationModal(props) {
                 <th>TR Range</th>
                 <th>TE Range</th>
                 <th>TI Range</th>
-                <th>slice_thickness_max</th>
+                <th>Slice Thickness Range</th>
                 <th>xspace range</th>
                 <th>yspace range</th>
                 <th>zspace range</th>
