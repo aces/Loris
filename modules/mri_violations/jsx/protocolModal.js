@@ -110,6 +110,9 @@ function ProtocolViolationModal(props) {
                 <th>Ystep</th>
                 <th>Zstep</th>
                 <th>Time</th>
+                <th>Image Type</th>
+                <th>Phase Encoding Direction</th>
+                <th>Echo Number</th>
               </tr>
               </thead>
             <tbody>
@@ -126,6 +129,9 @@ function ProtocolViolationModal(props) {
                 <td>{violation[15]}</td>
                 <td>{violation[16]}</td>
                 <td>{violation[17]}</td>
+                <td>{violation[20]}</td>
+                <td>{violation[21]}</td>
+                <td>{violation[22]}</td>
               </tr>
             </tbody>
           </table>
@@ -171,6 +177,9 @@ function ProtocolViolationModal(props) {
                 <th>ystep range</th>
                 <th>zstep range</th>
                 <th>time range</th>
+                <th>Image Type</th>
+                <th>Phase Encoding Direction</th>
+                <th>Echo Number</th>
               </tr>
             </thead>
             <tbody>
@@ -219,6 +228,9 @@ function ProtocolViolationModal(props) {
             <td>{showRange(protocol['ystep_min'], protocol['ystep_max'])}</td>
             <td>{showRange(protocol['zstep_min'], protocol['zstep_max'])}</td>
             <td>{showRange(protocol['time_min'], protocol['time_max'])}</td>
+            <td>{protocol['image_type']}</td>
+            <td>{protocol['PhaseEncodingDirection']}</td>
+            <td>{protocol['EchoNumber']}</td>
           </tr>
           );
       }
