@@ -127,7 +127,7 @@
     }
 
     .wrapper.active #sidebar-wrapper {
-        left: 200px;
+        left: -15px;
         width: 200px;
         transition: all 0.4s ease 0s;
     }
