@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file contains the NDB_Menu_Filter_media class
- *
- * PHP Version 7
- *
- * @category Module
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
- */
 namespace LORIS\media;
 
 /**
