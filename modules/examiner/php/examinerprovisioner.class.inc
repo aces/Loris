@@ -37,14 +37,17 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct()
     {
         parent::__construct(
-            "SELECT
+		"
+  select
  e.full_name as Examiner,
-	     u.Email,
-            e.examinerID as ID,
-psc.name as Site,
+             u.Email,
+ GROUP_CONCAT(DISTINCT psc.CenterID) as centerIds,
+             e.examinerID as ID,
+
  e.radiologist as Radiologist,
-GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
+ GROUP_CONCAT(DISTINCT tn.full_name SEPARATOR ', ') as
                                 Certification
+
                         FROM examiners e
                             LEFT JOIN examiners_psc_rel epr ON
                                 (epr.examinerID=e.examinerID)
@@ -52,8 +55,8 @@ GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
                             LEFT JOIN certification c ON
                                 (c.examinerID=e.examinerID and c.pass = 'certified')
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
-			    LEFT JOIN users u ON u.ID=e.userID
-group by e.full_name,psc.name,e.examinerID
+                            LEFT JOIN users u ON u.ID=e.userID
+                            group by e.examinerID
 ",
             [],
         );
@@ -69,7 +72,19 @@ group by e.full_name,psc.name,e.examinerID
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new ModuleRow($row);
+        $cids = [];
+        $pids = [];
+        if (isset($row['centerIds'])) {
+            $cids = array_map(
+                function (string $cid) : \CenterID {
+                    return new \CenterID($cid);
+                },
+                explode(',', $row['centerIds'])
+            );
+        }
+
+        $row['centerIds']  = $cids;
+        return new ModuleRow($row, $cids, $pids);	    
     }
 
 }

@@ -53,9 +53,10 @@ class Examiner extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-        return null;
+	            return ['examiner_multisite'];
     }
-     public function toJSON(): string
+    /**
+     public function ttoJSON(): string
    {
                   $config        = \NDB_Config::singleton();
        $certification = $config->getSetting('Certification');
@@ -67,7 +68,8 @@ class Examiner extends \DataFrameworkMenu
           $json_new = json_decode(parent::toJSON(),true);
           $json_new["useCertification"] = ($this->useCertification == 1) ? true : false;
           return json_encode($json_new);
-   }    
+     }   
+     */ 
     /**
      * {@inheritDoc}
      *
@@ -79,21 +81,19 @@ class Examiner extends \DataFrameworkMenu
             '1' => 'Yes',
             '0'  => 'No',
         ];
-        $user = \User::singleton();
+       $config        = \NDB_Config::singleton();
+       $certification = $config->getSetting('Certification');
 
-        // Get site options
-        if ($user->hasPermission('examiner_multisite')) {
-            // get the list of study sites - to be replaced by the Site object
-            $sites = \Utility::getSiteList();
-        } else {
-            // allow only to view own site data
-            $sites = $user->getStudySites();
-        }
+       if (isset($certification['EnableCertification'])) {
+           $this->useCertification = $certification['EnableCertification'];
+      }
 
-        return [
+          $useCertification= ($this->useCertification == 1) ? true : false;
+
+	return [
+		'sites'        => \Utility::getSiteList(false),
 		'radiologists' => $yesNoOptions,
-                'sites'        => $sites,
-
+                'useCertification' =>  $useCertification,
         ];
 
     }

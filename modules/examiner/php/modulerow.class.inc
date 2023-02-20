@@ -30,21 +30,33 @@ namespace LORIS\examiner;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ModuleRow implements \LORIS\Data\DataInstance
+class ModuleRow implements 
+	\LORIS\Data\DataInstance,
+	\LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
 
+    private array $_centerIDs;
     /**
      * Create a new HelpRow
      *
      * @param array $row The row (in the same format as \Database::pselectRow returns
      *                   returns
      */
-    public function __construct(array $row)
+    public function __construct(array $row,array $cids, array $pids)
     {
+	$this->_centerIDs  = $cids;    
         $this->DBRow = $row;
     }
-
+    /**
+     * Returns the CenterIDs for this row.
+     *
+     * @return \CenterID[] The CenterIDs
+     */
+    public function getCenterIDs() : array
+    {
+        return $this->_centerIDs;
+    }
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
