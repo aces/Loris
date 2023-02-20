@@ -108,7 +108,8 @@ class Charts extends \NDB_Page
         $DB = \NDB_Factory::singleton()->database();
 
         $recruitmentBySiteData = [];
-        $list_of_sites         = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $totalRecruitment = $DB->pselectOne(
@@ -138,7 +139,8 @@ class Charts extends \NDB_Page
     {
         $DB            = \NDB_Factory::singleton()->database();
         $sexData       = [];
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
@@ -203,7 +205,8 @@ class Charts extends \NDB_Page
         $scanData['labels'] = array_keys($labels);
 
         // Massage the data into the appropriate format per site.
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
         foreach ($list_of_sites as $siteID => $siteName) {
             $scanData['datasets'][] = [
                 "name" => $siteName,
@@ -281,14 +284,18 @@ class Charts extends \NDB_Page
             );
         }
 
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $user          = \NDB_Factory::singleton()->user();
+        $list_of_sites = $user->getStudySites();
 
         foreach ($list_of_sites as $siteID => $siteName) {
+            if (!isset($recruitmentData['labels'])) {
+                continue;
+            }
             $recruitmentData['datasets'][] = [
                 "name" => $siteName,
                 "data" => $this->_getSiteLineRecruitmentData(
                     $siteID,
-                    $recruitmentData['labels']
+                    $recruitmentData['labels'],
                 ),
             ];
         }

@@ -30,7 +30,6 @@ return [
     "unused_variable_detection" => true,
     "suppress_issue_types" => [
         "PhanUnusedPublicNoOverrideMethodParameter",
-        "PhanTypePossiblyInvalidDimOffset",
     ],
     "analyzed_file_extensions" => ["php", "inc"],
     "directory_list" => [
@@ -40,6 +39,9 @@ return [
         "src",
         "vendor",
         "test"
+    ],
+    'exclude_file_list' => [
+        'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizer/DoubleQuotedStringTest.inc'
     ],
     "exclude_analysis_directory_list" => [
         "vendor"

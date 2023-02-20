@@ -48,7 +48,7 @@ class ElectrophysioAnnotations
 
         $annotationLabels = $db->pselect(
             'SELECT * FROM physiological_annotation_label',
-            ['PFID' => $this->_physioFileID]
+            []
         );
 
         $this->_data = [
@@ -73,18 +73,18 @@ class ElectrophysioAnnotations
      * Will add new derivative files if none exist for the given instance.
      * Will either add new annotations or update existing ones.
      *
-     * @param array $instance_data Instance data
-     * @param array $metadata      Metadata
-     * @param int   $instance_id   InstanceID
-     * @param int   $parameter_id  ParameterID
+     * @param array    $instance_data Instance data
+     * @param array    $metadata      Metadata
+     * @param int|null $instance_id   InstanceID
+     * @param int|null $parameter_id  ParameterID
      *
      * @return void
      */
     function update(
         array $instance_data,
         array $metadata,
-        int $instance_id,
-        int $parameter_id
+        ?int $instance_id,
+        ?int $parameter_id
     ): void {
 
         $factory = \NDB_Factory::singleton();
@@ -96,7 +96,10 @@ class ElectrophysioAnnotations
             //If the label is new, add to annotation label table
             //and get label ID
             $labelID = $db->pselectOne(
-                "SELECT AnnotationLabelID
+                // Adding MAX here as a hack fix for now until LORIS-MRI
+                // bugfix for issue https://github.com/aces/Loris-MRI/issues/763
+                // is available and cleanup happens of the annotation_label table
+                "SELECT MAX(AnnotationLabelID)
                     FROM physiological_annotation_label
                     WHERE LabelName=:label",
                 ['label' => $instance_data['label_name']]
@@ -116,7 +119,7 @@ class ElectrophysioAnnotations
             }
 
             //If no derivative files exist, must create new files
-            $annotationFID = $db->pselect(
+            $annotationFIDs = $db->pselect(
                 "SELECT AnnotationFileID
                     FROM physiological_annotation_file
                     WHERE PhysiologicalFileID=:PFID",
@@ -134,16 +137,14 @@ class ElectrophysioAnnotations
                 'Onset'             => $instance_data['onset'],
                 'Duration'          => $instance_data['duration'],
                 'AnnotationLabelID' => $labelID,
-                'Channels'          => $instance_data['channels'],
-                'AbsoluteTime'      => $instance_data['abs_time'],
+                'Channels'          => $instance_data['channels'] === 'all' ?
+                                         null :
+                                         $instance_data['channels'],
                 'Description'       => $instance_data['description']
             ];
 
             //Insert new files and data into DB
-            if (empty($annotationFID)) {
-
-                //Create new annotation files
-                $this->_createFiles();
+            if (empty($annotationFIDs)) {
 
                 //Get new annotation file ID
                 $annotation_tsv_ID = $db->pselectOne(
@@ -273,7 +274,7 @@ class ElectrophysioAnnotations
     }
 
     /**
-     * Updates the derivative files associated with the given
+     * Updates the derivative files associated with the
      * physiological file ID
      *
      * @return void
@@ -282,6 +283,19 @@ class ElectrophysioAnnotations
     function updateFiles(): void
     {
         $db = \NDB_Factory::singleton()->database();
+
+        //If no derivative files exist, must create new files
+        $annotationFIDs = $db->pselect(
+            "SELECT AnnotationFileID
+                FROM physiological_annotation_file
+                WHERE PhysiologicalFileID=:PFID",
+            ['PFID' => $this->_physioFileID]
+        );
+        //Insert new files and data into DB
+        if (empty($annotationFIDs)) {
+            //Create new annotation files
+            $this->_createFiles();
+        }
 
         //Get data directory base path from Config
         $dataDir = $db->pselectOne(
@@ -293,7 +307,7 @@ class ElectrophysioAnnotations
         );
 
         $tsv_entries = [
-            'onset', 'duration', 'label', 'channels', 'aboslute_time', 'description'
+            'onset', 'duration', 'label', 'channels', 'absolute_time', 'description'
         ];
 
         $tsv = $db->pselect(
@@ -330,9 +344,7 @@ class ElectrophysioAnnotations
             //Update the three files with the given paths
             $labels   = []; // Label Name => Label Description
             $tsv_file = fopen($tsv_path, 'w'); //Will override all file content
-            //Add columns
-            $columns = implode("\t", $tsv_entries);
-            fwrite($tsv_file, $columns."\n");
+
             //Get all annotation instances
             //Then go thru each and get the label name + description
             //add label name to file and also to an array for json file
@@ -352,6 +364,14 @@ class ElectrophysioAnnotations
                 WHERE p.AnnotationFileID=:AFID",
                 ['AFID' => $tsv[0]['id']]
             );
+
+            if (count($instances) < 1) {
+                return;
+            }
+
+            //Add columns
+            $columns = implode("\t", $tsv_entries);
+            fwrite($tsv_file, $columns."\n");
 
             foreach ($instances as $instance) {
                 //Add labels to list for parameter file
@@ -451,6 +471,15 @@ class ElectrophysioAnnotations
             ['PFID' => $this->_physioFileID]
         );
 
+        // Get output type (raw, derivative)
+        $outputType = $db->pselectOne(
+            'SELECT OutputTypeName
+                FROM physiological_file pf
+                JOIN physiological_output_type ot USING (PhysiologicalOutputTypeID)
+                WHERE PhysiologicalFileID=:PFID',
+            ['PFID' => $this->_physioFileID]
+        );
+
         //Create new filepaths
         //Get data directory base path from Config
         $dataDir = $db->pselectOne(
@@ -461,21 +490,27 @@ class ElectrophysioAnnotations
             ['name' => 'dataDirBasepath']
         );
         //Create path with correct structure
-        $subPath       = strstr($physioFilePath, "sub");
-        $pathWithDeriv = $dataDir
+        $subPath = strstr($physioFilePath, "sub");
+
+        if ($outputType === 'derivative') {
+            $destinationPath = $dataDir
             . "bids_imports/derivatives/loris_annotations/"
             . $subPath;
+        } else {
+            $destinationPath = $dataDir . $physioFilePath;
+        }
+
         //Create directories if they don't exist
-        $dirname = pathinfo($pathWithDeriv, PATHINFO_DIRNAME);
+        $dirname = pathinfo($destinationPath, PATHINFO_DIRNAME);
         if (!file_exists($dirname)) {
             mkdir($dirname, 0777, true);
         }
 
         //Replace file type with "annotations"
         $pathWithoutEDF = substr(
-            $pathWithDeriv,
+            $destinationPath,
             0,
-            strrpos($pathWithDeriv, "_")
+            strrpos($destinationPath, "_")
         );
 
         $tsv_path  = $pathWithoutEDF . "_annotations.tsv";

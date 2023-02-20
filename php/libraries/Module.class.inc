@@ -38,47 +38,19 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     const CONFIGURATION_ERROR = "LORIS configuration settings are invalid or "
         . "missing and as a result execution cannot proceed. Please contact "
         . "your project administrator and/or verify your LORIS configuration.";
-    protected $name;
-    protected $dir;
-    protected $lorisinstance;
-
-    /**
-     * Retrieve all active module descriptors from the given database
-     *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
-     *
-     * @return \Module[]
-     */
-    static public function getActiveModules(\Database $db): array
-    {
-        $mnames = $db->pselectCol(
-            "SELECT Name FROM modules WHERE Active='Y'",
-            []
-        );
-
-        $modules = [];
-        foreach ($mnames as $name) {
-            try {
-                $modules[] = self::factory($name);
-            } catch (\LorisModuleMissingException $e) {
-                error_log($e->getMessage() . " " . $e->getTraceAsString());
-            }
-        }
-        return $modules;
-    }
 
     /**
      * Retrieve all active module descriptors from the given database, indexed
      * by their primary key in the database.
      *
-     * @param \Database $db an open connection to a database containing a 'modules'
-     *                      table
+     * @param \LORIS\LorisInstance $loris The LORIS instance with the modules
      *
      * @return \Module[]
      */
-    static public function getActiveModulesIndexed(\Database $db): array
-    {
+    static public function getActiveModulesIndexed(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $db     = $loris->getDatabaseConnection();
         $mnames = $db->pselect(
             "SELECT ID, Name FROM modules WHERE Active='Y'",
             []
@@ -86,7 +58,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         $rv = [];
         foreach ($mnames as $row) {
-            $rv[$row['ID']] = self::factory($row['Name']);
+            $rv[$row['ID']] = self::factory($loris, $row['Name']);
         }
         return $rv;
     }
@@ -100,7 +72,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * This also sets up PHP class autoloading for the module that is loaded,
      * such that files in the module/php directory can be autoloaded.
      *
-     * @param string $name The module name we'd like information about
+     * @param \Loris\LorisInstance $loris The LORIS instance containing the module
+     * @param string               $name  The module name we'd like information about
      *
      * @throws \LorisNoSuchModuleException
      * @throws \LorisModuleMissingException
@@ -108,8 +81,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      *
      * @return \Module object
      */
-    static public function factory(string $name): \Module
-    {
+    static public function factory(
+        \Loris\LorisInstance $loris,
+        string $name
+    ) : \Module {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
         $base    = $config->getSetting("base");
@@ -157,48 +132,53 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        $cls       = new $className($name, $mpath);
+        $cls       = new $className($loris, $name, $mpath);
         return $cls;
     }
 
     /**
      * Creates a new module instance
      *
-     * @param string $name      The name of the module
-     * @param string $moduledir The directory on the filesystem containing the module
+     * @param \LORIS\LorisInstance $loris The LORIS instance for the module
+     * @param string               $name  The name of the module
+     * @param string               $dir   The directory on the filesystem
+     *                                    containing the module
      */
-    public function __construct(string $name, string $moduledir)
-    {
-        $config   = \NDB_Factory::singleton()->config();
-        $loglevel = $config->getLogSettings()->getRequestLogLevel();
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        protected string $name,
+        protected string $dir,
+    ) {
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
 
         $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
         parent::__construct(
             new \ArrayIterator(
                 [
                     "/css/"    => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "css",
                         "text/css"
                     ),
                     "/js/"     => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "js",
                         "application/javascript"
                     ),
                     "/static/" => new \LORIS\Router\ModuleFileRouter(
                         $this,
-                        $moduledir,
+                        $dir,
                         "static",
                         ""
                     ),
                 ]
             )
         );
-        $this->name = $name;
-        $this->dir  = $moduledir;
     }
 
     /**
@@ -236,7 +216,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * @return bool False. Subclasses must override this function in the case
      *                  that they should be publicly available.
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         return false;
     }
@@ -300,7 +280,9 @@ abstract class Module extends \LORIS\Router\PrefixRouter
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
-        $cls->menu = $page;
+        if (property_exists($cls, 'menu')) {
+            $cls->menu = $page;
+        }
 
         return $cls;
     }
@@ -355,9 +337,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             return $resp;
         }
 
-        $this->lorisinstance = $request->getAttribute("loris");
-        $pagename            = $this->getName();
-        $path = trim($request->getURI()->getPath(), "/");
+        $pagename = $this->getName();
+        $path     = trim($request->getURI()->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
             $pagename = explode("/", $path)[0];
@@ -526,17 +507,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     }
 
     /**
-     * Return a data dictionary of data types managed by this module.
-     * DictionaryItems are grouped into categories and a module may
-     * provide 0 or more categories of dictionaryitems.
+     * Gets the QueryEngine to be used for querying against this module's
+     * data.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
-     *                                    dictionary should be retrieved.
-     *
-     * @return \LORIS\Data\Dictionary\Category[]
+     * @return \LORIS\Data\Query\QueryEngine
      */
-    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
     {
-        return [];
+        return new \LORIS\Data\Query\NullQueryEngine();
     }
 }

@@ -58,14 +58,6 @@ class NDB_Client
         // will work.
         $DB = $factory->database();
 
-        // add extra include paths. This must be done
-        // after the database is connected, since the setting
-        // can come from the database.
-        $extLibs = $config->getSetting('extLibs');
-        if (!empty($extLibs)) {
-            set_include_path($extLibs.":".get_include_path());
-        }
-
         // Register S3 stream wrapper if configured
         if (getenv('AWS_ACCESS_KEY_ID') !== false) {
             // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
@@ -205,6 +197,7 @@ class NDB_Client
 
         User::singleton($_SESSION['State']->getUsername());
 
+        session_write_close();
         // finished initializing
         return true;
     }

@@ -219,33 +219,33 @@ abstract class DataFrameworkMenu extends NDB_Menu_Filter
     }
 
     /**
-     * Format the user's subprojects to display the module filter options
+     * Format the user's cohorts to display the module filter options
      *
      * @param \User $user        User
-     * @param bool  $numericKeys If the returned subprojects keys
-     *                           should be numeric (SubprojectID)
-     *                           or strings (subproject name)
+     * @param bool  $numericKeys If the returned cohorts keys
+     *                           should be numeric (CohortID)
+     *                           or strings (cohort name)
      *
      * @return array - an associative array of the form (ID => name)
      */
-    public function getSubprojectOptions(
+    public function getCohortOptions(
         \User $user,
         bool $numericKeys = true
     ): array {
-        $subprojectOptions = array_reduce(
+        $cohortOptions = array_reduce(
             $user->getProjects(),
-            fn($subprojects, $project) =>
-                $subprojects
-                + array_column($project->getSubprojects(), 'title', 'subprojectId'),
+            fn($cohorts, $project) =>
+                $cohorts
+                + array_column($project->getCohorts(), 'title', 'cohortId'),
             []
         );
 
         if (!$numericKeys) {
-            $subprojectNames = array_values($subprojectOptions);
-            return array_combine($subprojectNames, $subprojectNames);
+            $cohortNames = array_values($cohortOptions);
+            return array_combine($cohortNames, $cohortNames);
         }
 
-        return $subprojectOptions;
+        return $cohortOptions;
     }
 
     /**

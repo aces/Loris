@@ -63,7 +63,7 @@ class FileManager extends \NDB_Page implements ETagCalculator
         $body = [
             'data'         => $data,
             'fieldOptions' => $this->_getFieldOptions(),
-            'subprojects'  => \Utility::getSubprojectList(),
+            'cohorts'      => \Utility::getCohortList(),
             'permissions'  => [
                 'user'           => $user->getUsername(),
                 'upload_allowed' => $user->hasPermission(

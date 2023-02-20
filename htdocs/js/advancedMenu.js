@@ -1,7 +1,7 @@
 /**
  * Is element set
  *
- * @return {int} - returns 0|1
+ * @return {number} - returns 0|1
  */
 function isElementSet() {
   'use strict';

@@ -18,7 +18,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
-
+use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
@@ -205,7 +205,7 @@ class Sessions extends \NDB_Page
         $subjectData['site']        = $this->timepoint->getPSC();
         $subjectData['dob']         = $candidate->getCandidateDoB();
         $subjectData['sex']         = $candidate->getCandidateSex();
-        $subjectData['subproject']  = $this->timepoint->getData('SubprojectTitle');
+        $subjectData['cohort']      = $this->timepoint->getData('CohortTitle');
         $subjectData['output_type'] = $outputType;
 
         return $subjectData;
@@ -461,9 +461,9 @@ class Sessions extends \NDB_Page
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
         $fileSummary['epochsURL']   = $db->pselectOne(
-            "SELECT FilePath 
+            "SELECT FilePath
             FROM physiological_event_file
-            WHERE PhysiologicalFileID=:physioFileID 
+            WHERE PhysiologicalFileID=:physioFileID
             AND FileType='tsv'",
             ['physioFileID' => $physioFileID]
         );
@@ -477,15 +477,25 @@ class Sessions extends \NDB_Page
             ['PFID' => $physioFileID]
         );
 
-        //Get the annotation data if the output type is derivative
-        //Get the annotation data if the output type is derivative
-        if (strcmp($fileOutput, 'derivative') == 0) {
-            $annotations = new ElectrophysioAnnotations(
-                intval($physioFileID)
-            );
-            $fileSummary['annotations'] = $annotations->getData();
-        }
+        // Get the annotation data
+        $annotations = new ElectrophysioAnnotations(
+            intval($physioFileID)
+        );
+        $fileSummary['annotations'] = $annotations->getData();
 
+        // Get the task events data
+        $events = new ElectrophysioEvents(
+            intval($physioFileID)
+        );
+        $fileSummary['events'] = $events->getData();
+
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
         $fileSummary['output_type'] = $fileOutput;
         $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
 
@@ -549,8 +559,28 @@ class Sessions extends \NDB_Page
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
-            'label' => 'EEG File',
+            'label' => 'EEG File(s)',
         ];
+
+        $queryFDT = "SELECT
+            Value AS FilePath,
+            'physiological_fdt_file' AS FileType
+            FROM
+            physiological_parameter_file
+            JOIN parameter_type AS pt USING (ParameterTypeID)
+            WHERE
+            pt.Name='fdt_file'
+            AND PhysiologicalFileID=:PFID";
+        $queryFDT = $db->pselectRow($queryFDT, ['PFID' => $physioFileID]);
+        if (isset($queryFDT['FileType'])) {
+            $downloadLinks[] = [
+                'type'  => $queryFDT['FileType'],
+                'file'  => $queryFDT['FilePath'],
+                'label' => '',
+            ];
+        }
+
+        // Metadata
 
         $queries = [
             'physiological_electrode'          => 'physiological_electrode_file',
@@ -570,7 +600,7 @@ class Sessions extends \NDB_Page
 
         foreach ($queries as $query_key => $query_value) {
             $query_statement = "SELECT
-                            DISTINCT(FilePath), '$query_value' AS FileType
+                            DISTINCT(FilePath)
                             FROM
                             $query_key
                             WHERE
@@ -579,44 +609,19 @@ class Sessions extends \NDB_Page
                 $query_statement,
                 ['PFID' => $physioFileID]
             );
-            if (isset($query_statement['FileType'])) {
-                $downloadLinks[] = [
-                    'type'  => $query_statement['FileType'],
+            if ($query_statement) {
+                $downloadLinks[$query_value] = [
                     'file'  => $query_statement['FilePath'],
-                    'label' => $labels[$query_statement['FileType']]
+                    'label' => $labels[$query_value],
                 ];
             } else {
-                $downloadLinks[] = [
-                    'type'  => $query_value,
+                $downloadLinks[$query_value] = [
                     'file'  => '',
                     'label' => $labels[$query_value],
                 ];
             }
         }
 
-        $queryFDT = "SELECT
-                Value AS FilePath,
-                'physiological_fdt_file' AS FileType
-                FROM
-                physiological_parameter_file
-                JOIN parameter_type AS pt USING (ParameterTypeID)
-                WHERE
-                pt.Name='fdt_file'
-                AND PhysiologicalFileID=:PFID";
-        $queryFDT = $db->pselectRow($queryFDT, ['PFID' => $physioFileID]);
-        if (isset($queryFDT['FileType'])) {
-            $downloadLinks[] = [
-                'type'  => $queryFDT['FileType'],
-                'file'  => $queryFDT['FilePath'],
-                'label' => '',
-            ];
-        } else {
-            $downloadLinks[] = [
-                'type'  => 'physiological_fdt_file',
-                'file'  => '',
-                'label' => '',
-            ];
-        }
         return $downloadLinks;
     }
 

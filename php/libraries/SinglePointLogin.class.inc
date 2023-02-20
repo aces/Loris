@@ -216,7 +216,10 @@ class SinglePointLogin
 
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, ["HS256"]);
+            $decoded = \Firebase\JWT\JWT::decode(
+                $token,
+                new \Firebase\JWT\Key($sharedKey, "HS256")
+            );
         } catch (Exception $e) {
             return false;
         }

@@ -82,7 +82,7 @@ class Edit_Help_Content extends \NDB_Form
             $help_file = HelpFile::factory($helpID);
             $data      = $help_file->toArray();
             $defaults['title']   = $data['topic'];
-            $defaults['content'] = utf8_encode(trim($data['content']));
+            $defaults['content'] = trim($data['content']);
             if (isset($_REQUEST['helpID'])) {
                 $this->tpl_data['module_name'] = "Help Editor";
             } else {
@@ -91,7 +91,7 @@ class Edit_Help_Content extends \NDB_Form
 
         }
         // let escaped html display as intended in form
-        $defaults['content'] = htmlspecialchars_decode($defaults['content']);
+        $defaults['content'] = htmlspecialchars_decode($defaults['content'] ?? '');
         // case where no help content exists
         if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {

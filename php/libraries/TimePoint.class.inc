@@ -140,7 +140,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
-                         s.VisitNo, s.Visit_label, s.SubprojectID, s.Submitted,
+                         s.VisitNo, s.Visit_label, s.CohortID, s.Submitted,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
@@ -170,11 +170,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $subprojectSettings   = $config->getSubprojectSettings(
-                intval($row['SubprojectID'] ?? null)
+            $cohortSettings       = $config->getCohortSettings(
+                intval($row['CohortID'] ?? null)
             );
-            $title = $subprojectSettings['title'] ?? '';
-            $this->_timePointInfo['SubprojectTitle'] = $title;
+            $title = $cohortSettings['title'] ?? '';
+            $this->_timePointInfo['CohortTitle'] = $title;
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -223,7 +223,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Registers a new timepoint into the session table
      *
      * @param \Candidate   $candidate      The Candidate to create this timepoint for
-     * @param integer      $SubprojectID   The subprojectID of the new timepoint
+     * @param integer      $CohortID       The cohortID of the new timepoint
      * @param string|null  $nextVisitLabel The visit label of the timepoint
      *                                     being created. If null,
      *                                     consecutive V1, V2, etc will be
@@ -238,7 +238,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     static function createNew(
         \Candidate $candidate,
-        int $SubprojectID,
+        int $CohortID,
         ?string $nextVisitLabel,
         \Site $psc,
         \Project $project,
@@ -246,7 +246,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     ): void {
 
         // insert into session set CandID=$candID,
-        // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
+        // CohortID=$CohortID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
         // specified here!
         $factory = NDB_Factory::singleton();
@@ -279,7 +279,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $insertData = [
             'CandID'          => $candidate->getCandID(),
-            'SubprojectID'    => $SubprojectID,
+            'CohortID'        => $CohortID,
             'VisitNo'         => $visitNo,
             'Visit_label'     => $VisitLabel,
             'CenterID'        => $psc->getCenterID()->__toString(),
@@ -301,10 +301,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param CandID     $candid       The candidate identifier
-     * @param \ProjectID $projectID    The Project identifier
-     * @param integer    $subprojectID The subprojectID
-     * @param string     $visitName    The visit name
+     * @param CandID     $candid    The candidate identifier
+     * @param \ProjectID $projectID The Project identifier
+     * @param integer    $cohortID  The cohortID
+     * @param string     $visitName The visit name
      *
      * @throws LorisException
      *
@@ -313,7 +313,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     static function isValidVisitLabel(
         CandID $candid,
         \ProjectID $projectID,
-        int $subprojectID,
+        int $cohortID,
         string $visitName
     ): void {
         // This can happen if the user quickly clicks "Create Time Point" before the
@@ -325,16 +325,16 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        // Check if visit label exists for this subproject
+        // Check if visit label exists for this cohort
         if (!array_key_exists(
             $visitName,
-            \Utility::getVisitsForSubproject(
-                $subprojectID
+            \Utility::getVisitsForCohort(
+                $cohortID
             )
         )
         ) {
             throw new \LorisException(
-                'This visit label is not valid for this subproject.'
+                'This visit label is not valid for this cohort.'
             );
         }
 
@@ -481,18 +481,18 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Returns the SubprojectID of this timepoint.
+     * Returns the CohortID of this timepoint.
      *
-     * @return int|null the SubprojectID, or null
+     * @return int|null the CohortID, or null
      */
-    function getSubprojectID(): ?int
+    function getCohortID(): ?int
     {
         /* _timePointInfo contains information that comes from the database
          * which returns values in string format. Intval is used here to
          * ensure we return a numerical ID instead of its string representation.
          */
-        if (is_numeric($this->_timePointInfo["SubprojectID"])) {
-            return intval($this->_timePointInfo["SubprojectID"]);
+        if (is_numeric($this->_timePointInfo["CohortID"])) {
+            return intval($this->_timePointInfo["CohortID"]);
         }
         return null;
     }
@@ -500,9 +500,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Gets this timepoint's screening status.
      *
-     * @return string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
+     * @return ?string 'Pass', 'Failure', 'Withdrawal', or 'In Progress'
      */
-    function getScreeningStatus(): string
+    function getScreeningStatus(): ?string
     {
         return $this->_timePointInfo["Screening"];
     }
@@ -935,7 +935,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      *
      * Rules:  1. User must have permission.
      *         2. If the stage to be started is a testing stage, then there can
-     *            be no other timepoints of the same subproject that are in a
+     *            be no other timepoints of the same cohort that are in a
      *            testing stage (screening or visit).
      *         3. If the stage to be started is not a testing stage, the the
      *            current stage status cannot be "In Progress".
@@ -959,7 +959,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Returns either EDC or DOB depending on the settings of the subproject
+     * Returns either EDC or DOB depending on the settings of the cohort
      * that this timepoint belongs to.
      *
      * @return string|null date YYYY-MM-DD
@@ -967,9 +967,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     function getEffectiveDateOfBirth(): ?string
     {
         $candidate = \Candidate::singleton($this->getCandID());
-        if (!is_null($this->getSubprojectID())) {
+        if (!is_null($this->getCohortID())) {
             $settings = \NDB_Config::singleton()
-                ->getSubprojectSettings($this->getSubprojectID());
+                ->getCohortSettings($this->getCohortID());
             if (isset($settings['options']['useEDC'])
                 && $settings['options']['useEDC'] == "true"
             ) {

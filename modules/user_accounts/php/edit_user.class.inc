@@ -223,17 +223,23 @@ class Edit_User extends \NDB_Form
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
-            // granted.
-            $permIDs = array_intersect(
-                $newPermissions,
-                $editorPermissions
-            );
+            // granted unless they are a superuser
+            if ($editor->hasPermission('superuser')) {
+                $permIDs = $newPermissions;
+            } else {
+                $permIDs = array_intersect(
+                    $newPermissions,
+                    $editorPermissions
+                );
+            }
         }
 
-        // Keep old permissions if the editor is not allowed to edit them.
+        // Keep old permissions if the editor is not allowed to edit them,
+        // unless editor is superuser
         foreach ($current_permissionids as $perm) {
             if (!in_array($perm, $newPermissions)
                 && !in_array($perm, $editorPermissions)
+                && !$editor->hasPermission('superuser')
             ) {
                 $permIDs[] = $perm;
             }
@@ -249,12 +255,13 @@ class Edit_User extends \NDB_Form
             $supervisorEmails = $values['supervisorEmail'];
         }
         unset($values['supervisorEmail']);
+
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
         }
         if ($this->isCreatingNewUser()) {
-            $values['UserID'] = trim($values['UserID']);
+            $values['UserID'] = trim($values['UserID'] ?? '');
         }
         unset($values['NA_UserID']);
         // generate new password
@@ -614,17 +621,20 @@ class Edit_User extends \NDB_Form
             $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
-            $msg_data['password'] = $values['Password_hash'];
+            if (isset($values['Password_hash'])) {
+                $msg_data['password'] = $values['Password_hash'];
+            }
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
             unset($msg_data);
         }
         $this->tpl_data['success'] = true;
+        $username = $values['UserID'] ?? '';
         if ($this->isCreatingNewUser()) {
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
-                . $values['UserID'];
+                . $username;
         }
     }
 
@@ -935,8 +945,7 @@ class Edit_User extends \NDB_Form
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
 
-        // get the editor's permissions
-        $perms = $editor->getPermissionsVerbose();
+        $perms = $editor->getPermissionsVerbose($this->loris);
 
         $lastRole = '';
         $group    = [];
@@ -1206,7 +1215,7 @@ class Edit_User extends \NDB_Form
         }
 
         if (is_null($this->identifier)
-            && ($values['NA_Password'] != 'on')
+            && (!isset($values['NA_Password']) || $values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
             $errors['Password'] = 'Password is required';
@@ -1310,9 +1319,13 @@ class Edit_User extends \NDB_Form
      */
     private function _getEmailError(\Database $DB, string $email): ?string
     {
-        // remove illegal characters
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (preg_match('/(<|>|"|&)/', $email)) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            return 'Email address can not contain any the following '.
+                'characters: <, >, & and "';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
             return "Invalid email address";
         }

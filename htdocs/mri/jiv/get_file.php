@@ -62,12 +62,20 @@ if (!validDownloadPath($File)) {
 
 // Find the extension
 $path_parts = pathinfo($File);
-$FileExt    = $path_parts['extension'];
-$FileBase   = $path_parts['basename'];
+if (!isset($path_parts['extension'])) {
+    http_response_code(400);
+    return;
+}
+$FileExt  = $path_parts['extension'];
+$FileBase = $path_parts['basename'];
 
 //make sure that we have a .nii.gz image if FileExt equal gz
 if (strcmp($FileExt, "gz") == 0) {
     $path_subparts = pathinfo($path_parts['filename']);
+    if (!isset($path_subparts['extension'])) {
+        http_response_code(400);
+        return;
+    }
     if (strcmp($path_subparts['extension'], "nii")==0) {
         $FileExt = "nii.gz";
     }
@@ -124,10 +132,7 @@ case 'xml':
     $DownloadFilename = basename($File);
     break;
 case 'edf':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'application/octet-stream';
-    $DownloadFilename = basename($File);
-    break;
+case 'fdt':
 case 'set':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'application/octet-stream';
@@ -146,6 +151,17 @@ case 'tsv':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'bvec':
+case 'bval':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'text/plain';
+    $DownloadFilename = basename($File);
+    break;
+case 'json':
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/json';
     $DownloadFilename = basename($File);
     break;
 case 'DICOMTAR':

@@ -159,6 +159,7 @@ class SelectDropdown extends Component {
 
   /**
    * Toggle the checkbox
+   *
    * @param {string} key
    */
   toggleCheckbox(key) {

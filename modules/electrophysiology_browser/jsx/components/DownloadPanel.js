@@ -55,14 +55,8 @@ class DownloadPanel extends Component {
                   margin: '0 auto',
                 }
               }>
-                {panel.links.map((download, j) => {
+                {Object.entries(panel.links).map(([type, download], j) => {
                   const disabled = (download.file === '');
-
-                  // Hide the download in this particular case
-                  // It does not make sense to display Not Available for FDT files
-                  if (disabled && download.type === 'physiological_fdt_file') {
-                    return null;
-                  }
 
                   return (
                     <div
@@ -91,17 +85,17 @@ class DownloadPanel extends Component {
                           >Not Available</a>
                         : <a
                             className='btn btn-primary download col-xs-6'
-                            href={this.state.outputType == 'derivative' &&
-                              (download.type ==
+                            href={
+                              (type ==
                               'physiological_annotation_files' ||
-                              download.type == 'all_files') ?
+                              type == 'all_files') ?
                                 this.state.annotationsAction
                                 + '?physioFileID=' + this.state.physioFileID
                                 + '&filePath=' + download.file
                                 : '/mri/jiv/get_file.php?file=' + download.file
                             }
                             target='_blank'
-                            download={this.state.downloads[0].file}
+                            download
                             style={{
                               margin: 0,
                             }}

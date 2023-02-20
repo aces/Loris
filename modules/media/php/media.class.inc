@@ -103,7 +103,7 @@ class Media extends \DataFrameworkMenu
         foreach ($instrumentsQuery as $instrument) {
             try {
                 $instrumentName = \NDB_BVL_Instrument::factory(
-                    $this->lorisinstance,
+                    $this->loris,
                     $instrument["Test_name"],
                 )->getFullname();
             } catch (\Exception $e) {
@@ -153,7 +153,7 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new MediaFileProvisioner($this->lorisinstance);
+        return new MediaFileProvisioner($this->loris);
     }
 
     /**

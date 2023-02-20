@@ -30,7 +30,6 @@ class NDB_Page implements RequestHandlerInterface
 {
     use Psr\Log\LoggerAwareTrait;
 
-    protected $lorisinstance;
     /**
      * The name of the test_name being accessed
      */
@@ -77,13 +76,6 @@ class NDB_Page implements RequestHandlerInterface
     public $template;
 
     /**
-     * The LorisInstance that this page was created to serve.
-     *
-     * @var \LORIS\LorisInstance
-     */
-    protected $loris;
-
-    /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
      * either 'json' or empty (for the default return value of HTML format).
@@ -126,13 +118,12 @@ class NDB_Page implements RequestHandlerInterface
      * @param string               $commentID  The CommentID to load the data for
      */
     function __construct(
-        \LORIS\LorisInstance $loris,
+        protected \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
-        $this->loris  = $loris;
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
@@ -708,9 +699,6 @@ class NDB_Page implements RequestHandlerInterface
                 )->withStatus(403);
         }
 
-        $loris = $request->getAttribute("loris");
-        $this->lorisinstance = $loris;
-
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
         // carried along with the request object. We use a pageclass attribute
@@ -879,7 +867,6 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
             $baseurl . '/js/components/Markdown.js',
@@ -903,8 +890,7 @@ class NDB_Page implements RequestHandlerInterface
         $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
-            $baseurl . "/js/jquery/datepicker/datepicker.css",
-            $baseurl . '/vendor/sweetalert/sweetalert.css',
+            $baseurl . "/js/jquery/datepicker/datepicker.css"
         ];
         return $files;
     }

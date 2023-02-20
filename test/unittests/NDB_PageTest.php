@@ -52,13 +52,10 @@ class NDB_PageTest extends TestCase
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
 
-        $factory = NDB_Factory::singleton();
-        $factory->setConfig($mockconfig);
-        $factory->setDatabase($mockdb);
-
-        $this->_module = new NullModule("test_module");
+        $loris         = new \LORIS\LorisInstance($mockdb, $mockconfig, []);
+        $this->_module = new NullModule($loris, "test_module");
         $this->_page   = new NDB_Page(
-            new \LORIS\LorisInstance($mockdb, $mockconfig, []),
+            $loris,
             $this->_module,
             "test_page",
             "515",
@@ -808,7 +805,6 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
-                '/vendor/sweetalert/sweetalert.min.js',
                 '/js/util/queryString.js',
                 '/js/components/Form.js',
                 '/js/components/Markdown.js'
@@ -834,8 +830,7 @@ class NDB_PageTest extends TestCase
             [
                 '/bootstrap/css/bootstrap.min.css',
                 '/bootstrap/css/custom-css.css',
-                '/js/jquery/datepicker/datepicker.css',
-                '/vendor/sweetalert/sweetalert.css'
+                '/js/jquery/datepicker/datepicker.css'
             ],
             $this->_page->getCSSDependencies()
         );

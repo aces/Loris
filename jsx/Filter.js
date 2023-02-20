@@ -10,8 +10,7 @@ import PropTypes from 'prop-types';
  * Alters the filter object and sends it to parent on every update.
  *
  * @param {props} props
- * @return {jsx}
- *
+ * @return {JSX}
  */
 function Filter(props) {
   /**
@@ -104,7 +103,7 @@ function Filter(props) {
             key: filter.name,
             name: filter.name,
             label: field.label,
-            value: (props.filters[filter.name] || {}).value || false,
+            value: (props.filters[filter.name] || {}).value || null,
             onUserInput: onFieldUpdate,
           }
         ));

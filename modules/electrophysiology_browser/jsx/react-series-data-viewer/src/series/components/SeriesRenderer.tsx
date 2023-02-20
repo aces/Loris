@@ -1,10 +1,20 @@
-import React, {useCallback, useEffect, useState, FunctionComponent} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  FunctionComponent,
+} from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
-import {MAX_RENDERED_EPOCHS, MAX_CHANNELS, SIGNAL_UNIT, Vector2} from '../../vector';
+import {
+  MAX_RENDERED_EPOCHS,
+  MAX_CHANNELS,
+  SIGNAL_UNIT,
+  Vector2,
+} from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
 import LineChunk from './LineChunk';
@@ -44,7 +54,9 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel,
+  AnnotationMetadata,
 } from '../store/types';
+import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 
 type CProps = {
   viewerWidth: number,
@@ -52,7 +64,6 @@ type CProps = {
   interval: [number, number],
   amplitudeScale: number,
   rightPanel: RightPanel,
-  cursor?: number,
   timeSelection?: [number, number],
   setCursor: (number) => void,
   setRightPanel: (_: RightPanel) => void,
@@ -75,14 +86,50 @@ type CProps = {
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
   limit: number,
+  setCurrentAnnotation: (_: EpochType) => void,
+  physioFileID: number,
+  annotationMetadata: AnnotationMetadata,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.viewerHeight
+ * @param root0.viewerWidth
+ * @param root0.interval
+ * @param root0.amplitudeScale
+ * @param root0.cursor
+ * @param root0.rightPanel
+ * @param root0.timeSelection
+ * @param root0.setCursor
+ * @param root0.setRightPanel
+ * @param root0.channels
+ * @param root0.channelMetadata
+ * @param root0.hidden
+ * @param root0.epochs
+ * @param root0.filteredEpochs
+ * @param root0.activeEpoch
+ * @param root0.offsetIndex
+ * @param root0.setOffsetIndex
+ * @param root0.setAmplitudesScale
+ * @param root0.resetAmplitudesScale
+ * @param root0.setLowPassFilter
+ * @param root0.setHighPassFilter
+ * @param root0.setViewerWidth
+ * @param root0.setViewerHeight
+ * @param root0.dragStart
+ * @param root0.dragContinue
+ * @param root0.dragEnd
+ * @param root0.limit
+ * @param root0.setCurrentAnnotation
+ * @param root0.physioFileID
+ * @param root0.annotationMetadata
+ */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
   interval,
   amplitudeScale,
-  cursor,
   rightPanel,
   timeSelection,
   setCursor,
@@ -101,11 +148,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setHighPassFilter,
   setViewerWidth,
   setViewerHeight,
-  setFilteredEpochs,
   dragStart,
   dragContinue,
   dragEnd,
   limit,
+  setCurrentAnnotation,
+  physioFileID,
+  annotationMetadata,
 }) => {
   if (channels.length === 0) return null;
 
@@ -146,7 +195,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   vec2.add(center, topLeft, bottomRight);
   vec2.scale(center, center, 1 / 2);
 
-  const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+  const scales: [
+      ScaleLinear<number, number, never>,
+      ScaleLinear<number, number, never>
+  ] = [
     scaleLinear()
       .domain(interval)
       .range([topLeft[0], bottomRight[0]]),
@@ -157,6 +209,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   * @param root0.interval
+   */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
       <>
@@ -174,6 +233,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   */
   const EpochsLayer = () => {
     return (
       <Group>
@@ -183,6 +245,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
+                color={epochs[index]?.type === 'Annotation' ?
+                  '#fabb8e' :
+                  '#8eecfa'
+                }
                 key={`${index}`}
                 scales={scales}
                 opacity={0.7}
@@ -205,13 +271,19 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            color={'#ffb2b2'}
+            color={'#d8ffcc'}
           />
         }
       </Group>
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   * @param root0.viewerHeight
+   */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / MAX_CHANNELS;
     return (
@@ -236,6 +308,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   * @param root0
+   * @param root0.viewerWidth
+   */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
       setViewerWidth(viewerWidth);
@@ -243,7 +320,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     return (
       <>
-        <clipPath id='lineChunk' clipPathUnits='userSpaceOnUse'>
+        <clipPath
+          id={'lineChunk-' + physioFileID}
+          clipPathUnits='userSpaceOnUse'
+        >
           <rect
             x={-viewerWidth / 2}
             y={-viewerHeight / (2 * MAX_CHANNELS)}
@@ -280,7 +360,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
           const seriesRange = channelMetadata[channel.index].seriesRange;
-          const scales: [ScaleLinear<number, number, never>, ScaleLinear<number, number, never>] = [
+          const scales: [
+            ScaleLinear<number, number, never>,
+            ScaleLinear<number, number, never>
+          ] = [
             scaleLinear()
               .domain(interval)
               .range([subTopLeft[0], subBottomRight[0]]),
@@ -301,6 +384,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   seriesRange={seriesRange}
                   amplitudeScale={amplitudeScale}
                   scales={scales}
+                  physioFileID={physioFileID}
                 />
               ))
             ))
@@ -312,12 +396,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
 
+  /**
+   *
+   * @param v
+   */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
     return (dragContinue)(x);
   };
 
+  /**
+   *
+   * @param v
+   */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
     document.removeEventListener('mousemove', onMouseMove);
@@ -390,7 +482,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(HIGH_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setHighPassFilter(key);
                               setHighPass(key);
                             }}
@@ -422,7 +514,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         {Object.keys(LOW_PASS_FILTERS).map((key) =>
                           <li
                             key={key}
-                            onClick={(e) => {
+                            onClick={() => {
                               setLowPassFilter(key);
                               setLowPass(key);
                             }}
@@ -448,7 +540,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         style={{width: '55px'}}
                         value={offsetIndex}
                         onChange={(e) => {
-                          let value = parseInt(e.target.value);
+                          const value = parseInt(e.target.value);
                           !isNaN(value) && setOffsetIndex(value);
                         }}
                       />
@@ -537,19 +629,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
-                    cursor={cursor}
                     channels={channels}
                     interval={interval}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       // @ts-ignore
-                      mouseMove={R.compose(setCursor, R.nth(0))}
-                      mouseDown={(v: Vector2) => {
+                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
+                      mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
                         R.compose(dragStart, R.nth(0))(v);
-                      }}
+                      }, [bounds])}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -577,27 +668,70 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }}
             >
               <div className='col-xs-offset-1 col-xs-11'>
-                {epochs.length > 0 &&
+
+                {
+                  [...Array(epochs.length).keys()].filter((i) =>
+                    epochs[i].type === 'Event'
+                  ).length > 0 &&
                   <button
                     className={
                       'btn btn-primary'
-                      + (rightPanel === 'epochList' ? ' active' : '')
+                      + (rightPanel === 'eventList' ? ' active' : '')
                     }
                     onClick={() => {
-                      rightPanel === 'epochList'
+                      rightPanel === 'eventList'
                         ? setRightPanel(null)
-                        : setRightPanel('epochList');
+                        : setRightPanel('eventList');
                     }}
                   >
-                    {rightPanel === 'epochList'
+                    {rightPanel === 'eventList'
                       ? 'Hide Event Panel'
                       : 'Show Event Panel'
                     }
                   </button>
                 }
+                {
+                  [...Array(epochs.length).keys()].filter((i) =>
+                    epochs[i].type === 'Annotation'
+                  ).length > 0 &&
+                  <button
+                    className={
+                      'btn btn-primary'
+                      + (rightPanel === 'annotationList' ? ' active' : '')
+                    }
+                    onClick={() => {
+                      rightPanel === 'annotationList'
+                        ? setRightPanel(null)
+                        : setRightPanel('annotationList');
+                    }}
+                  >
+                    {rightPanel === 'annotationList'
+                      ? 'Hide Annotation Panel'
+                      : 'Show Annotation Panel'
+                    }
+                  </button>
+                }
+                {
+                  <button
+                    className={'btn btn-primary'
+                      + (rightPanel === 'annotationForm' ? ' active' : '')
+                    }
+                    onClick={() => {
+                      rightPanel === 'annotationForm'
+                        ? setRightPanel(null)
+                        : setRightPanel('annotationForm');
+                      setCurrentAnnotation(null);
+                    }}
+                  >
+                    {rightPanel === 'annotationForm'
+                      ? 'Close Annotation Form'
+                      : 'Add Annotation'
+                    }
+                  </button>
+                }
 
                 <div
-                  className='pull-right col-xs-7'
+                  className='pull-right col-xs-4'
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -607,6 +741,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   {[...Array(epochs.length).keys()].filter((i) =>
                       epochs[i].onset + epochs[i].duration > interval[0]
                       && epochs[i].onset < interval[1]
+                      && (
+                        (epochs[i].type === 'Event'
+                         && rightPanel === 'eventList')
+                        ||
+                        (epochs[i].type === 'Annotation'
+                         && rightPanel === 'annotationList')
+                      )
                     ).length >= MAX_RENDERED_EPOCHS &&
                     <div
                       style={{
@@ -624,8 +765,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           </div>
           {rightPanel &&
             <div className='col-md-3'>
-              {rightPanel === 'annotationForm' && <AnnotationForm />}
-              {rightPanel === 'epochList' && <EventManager />}
+              {rightPanel === 'annotationForm' &&
+                <AnnotationForm
+                  physioFileID={physioFileID}
+                  annotationMetadata={annotationMetadata}
+                />
+              }
+              {rightPanel === 'eventList' && <EventManager />}
+              {rightPanel === 'annotationList' && <EventManager />}
             </div>
           }
         </div>
@@ -656,16 +803,16 @@ export default connect(
     viewerHeight: state.bounds.viewerHeight,
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
-    cursor: state.cursor,
     rightPanel: state.rightPanel,
     timeSelection: state.timeSelection,
-    channels: state.dataset.channels,
+    channels: state.channels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
+    physioFileID: state.dataset.physioFileID,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(
@@ -707,6 +854,10 @@ export default connect(
     setFilteredEpochs: R.compose(
       dispatch,
       setFilteredEpochs
+    ),
+   setCurrentAnnotation: R.compose(
+      dispatch,
+      setCurrentAnnotation
     ),
     dragStart: R.compose(
       dispatch,

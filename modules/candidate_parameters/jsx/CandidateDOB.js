@@ -38,7 +38,8 @@ class CandidateDOB extends Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -52,6 +53,7 @@ class CandidateDOB extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -171,7 +173,7 @@ class CandidateDOB extends Component {
             type: 'success',
             confrimButtonText: 'OK',
           });
-          if (result.value) {
+          if (resp.value) {
               this.fetchData();
           }
         } else {
