@@ -12,7 +12,8 @@ phpdev:
 
 javascript:
 	node –version
-	npm install
+    npm install -g npm@latest
+    node –v    
 	npm run compile
 
 dev: VERSION phpdev javascript
