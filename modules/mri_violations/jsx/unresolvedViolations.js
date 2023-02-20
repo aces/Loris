@@ -171,7 +171,7 @@ export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
                     </td>
                    );
         }
-        if (column === 'Minc File') {
+        if (column === 'Image File') {
             let log;
             if (cell === 'Could not identify scan type') {
                 log = 1;
