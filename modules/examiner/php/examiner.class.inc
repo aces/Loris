@@ -55,18 +55,19 @@ class Examiner extends \DataFrameworkMenu
     {
         return null;
     }
+     public function toJSON(): string
+   {
+                  $config        = \NDB_Config::singleton();
+       $certification = $config->getSetting('Certification');
 
-    /**
-     * Tells the base class that this page's provisioner can support
-     * the UserProjectMatch filter.
-     *
-     * @return bool false
-     */
-    public function useProjectFilter() : bool
-    {
-        return false;
-    }
+       if (isset($certification['EnableCertification'])) {
+           $this->useCertification = $certification['EnableCertification'];
+      }
 
+          $json_new = json_decode(parent::toJSON(),true);
+          $json_new["useCertification"] = ($this->useCertification == 1) ? true : false;
+          return json_encode($json_new);
+   }    
     /**
      * {@inheritDoc}
      *
@@ -78,14 +79,28 @@ class Examiner extends \DataFrameworkMenu
             '1' => 'Yes',
             '0'  => 'No',
         ];
+        $user = \User::singleton();
+
+        // Get site options
+        if ($user->hasPermission('examiner_multisite')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList();
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
 
         return [
 		'radiologists' => $yesNoOptions,
-		'sites'            => \Utility::getSiteList(false),
+                'sites'        => $sites,
 
         ];
 
     }
+        public function useProjectFilter() : bool
+    {
+        return false;
+	}
     /**
      * {@inheritDoc}
      *

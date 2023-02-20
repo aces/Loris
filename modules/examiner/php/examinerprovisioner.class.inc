@@ -38,17 +38,22 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     {
         parent::__construct(
             "SELECT
-		            ordering,
-            full_name,
-            citation_name,
-            affiliations,
-            degrees,
-            roles,
-            start_date,
-            end_date,
-            present
-	    FROM acknowledgements WHERE 1=1
-            ORDER BY ordering	  
+ e.full_name as Examiner,
+	     u.Email,
+            e.examinerID as ID,
+psc.name as Site,
+ e.radiologist as Radiologist,
+GROUP_CONCAT(tn.full_name SEPARATOR ', ') as
+                                Certification
+                        FROM examiners e
+                            LEFT JOIN examiners_psc_rel epr ON
+                                (epr.examinerID=e.examinerID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+                            LEFT JOIN certification c ON
+                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+			    LEFT JOIN users u ON u.ID=e.userID
+group by e.full_name,psc.name,e.examinerID
 ",
             [],
         );

@@ -137,20 +137,6 @@ class ExaminerIndex extends Component {
     let result = <td>{cell}</td>;
 
     switch (column) {
-      case 'Site':
-        // If user has multiple sites, join array of sites into string
-        result = (
-          <td>{cell
-            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-            .join(', ')}
-          </td>
-        );
-        if (cell.length === 0) {
-          result = (
-            <td>This user has no site affiliations</td>
-          );
-        }
-        break;
       case 'Examiner':
         const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
                   row.ID;
