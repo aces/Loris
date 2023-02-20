@@ -173,9 +173,9 @@ export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
         }
         if (column === 'Image File') {
             let log;
-            if (cell === 'Could not identify scan type') {
+            if (rowData['Type of Problem'] === 'Could not identify scan type') {
                 log = 1;
-            } else if (cell === 'Protocol Violation') {
+            } else if (rowData['Type of Problem'] === 'Protocol Violation') {
                 log = 2;
             } else {
                 log = 3;
