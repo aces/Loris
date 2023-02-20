@@ -2,6 +2,8 @@
 
 all: VERSION javascript
 	composer install --no-dev
+	npm ci
+	npm run build    
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -11,9 +13,7 @@ phpdev:
 	composer install
 
 javascript:
-	node –version
-    npm install -g npm@latest
-    node –v    
+	npm install
 	npm run compile
 
 dev: VERSION phpdev javascript
