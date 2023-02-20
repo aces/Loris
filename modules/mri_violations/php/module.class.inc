@@ -86,7 +86,7 @@ class Module extends \Module
             } else {
                 $siteLabel   = 'Site: All User Sites';
                 $provisioner = $provisioner->filter(new UserCenterMatchOrNull())
-                                           ->filter(new UserProjectMatchOrNull());
+                    ->filter(new UserProjectMatchOrNull());
             }
 
             $number = iterator_count($provisioner->execute($user));
