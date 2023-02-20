@@ -143,7 +143,8 @@ class Mri_Violations extends \DataFrameworkMenu
             );
         default:
             return (new Provisioner())
-              ->filter(new UserProjectMatchOrNull);
+              ->filter(new UserCenterMatchOrNull())
+              ->filter(new UserProjectMatchOrNull());
         }
     }
 
