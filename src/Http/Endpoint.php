@@ -28,6 +28,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 abstract class Endpoint implements RequestHandlerInterface
 {
+    use \PSR\Log\LoggerAwareTrait;
+
     /**
      * An Endpoint overrides the default LORIS middleware to remove the
      * PageDecorationMiddleware.
@@ -41,6 +43,13 @@ abstract class Endpoint implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+        $loris    = $request->getAttribute('loris');
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
         $interfaces = class_implements($handler);
         if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {
             return (new \LORIS\Middleware\ETag())->process($request, $handler);

@@ -369,6 +369,7 @@ class ViewSession extends \NDB_Form
                 'OtherTimepoints'            => $OtherTimepoints,
                 'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
             ];
+
             $this->tpl_data['files'][] = $file;
         }
     }

@@ -671,6 +671,7 @@ DownloadButton.propTypes = {
   FileName: PropTypes.string,
   BaseURL: PropTypes.string,
   Label: PropTypes.string,
+  URL: PropTypes.string,
 };
 
 
@@ -826,22 +827,30 @@ class ImageDownloadButtons extends Component {
                         BaseURL={this.props.BaseURL}
                         Label="Download NRRD"
         />
-        <DownloadButton FileName={this.props.NiiFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download NIfTI"
-        />
-        <DownloadButton FileName={this.props.BvalFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BVAL"
-        />
-        <DownloadButton FileName={this.props.BvecFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BVEC"
-        />
-        <DownloadButton FileName={this.props.JsonFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BIDS JSON"
-        />
+        { this.props.NiiFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/nifti'}
+                          Label="Download NIfTI"
+          /> :
+          null
+        }
+        {this.props.BvalFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bval'}
+                          Label="Download BVAL"
+          /> :
+          null
+        }
+        {this.props.BvecFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bvec'}
+                          Label="Download BVEC"
+          /> :
+          null
+        }
+        {this.props.JsonFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bidsjson'}
+                          Label="Download BIDS JSON"
+          /> :
+          null
+        }
         <LongitudinalViewButton FileID={this.props.FileID}
                                 BaseURL={this.props.BaseURL}
                                 OtherTimepoints={this.props.OtherTimepoints}

@@ -200,12 +200,13 @@ class IssueForm extends Component {
         </div>
       );
 
+      const descr = <Markdown content={this.state.issueData.desc} />;
       description = (
         <StaticElement
           name='description'
           label='Description'
           ref='description'
-          text={this.state.issueData.desc}
+          text={descr}
         />
       );
     }
@@ -246,7 +247,7 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
-            required={true}
+            required={false}
           />
           <SelectElement
             name='centerID'

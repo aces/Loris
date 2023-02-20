@@ -490,7 +490,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->replace('issues_watching', $nowWatching);
 
             // sending email
-            $this->emailUser($issueID, $issueValues['assignee'], $user);
+            $this->emailUser($issueID, $issueValues['assignee'], '', $user);
         }
 
         // Adding others from multiselect to watching table.
@@ -519,7 +519,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     ) {
                         continue;
                     }
-                    $this->emailUser($issueID, $usersWatching, $user);
+                    $this->emailUser($issueID, '', $usersWatching, $user);
                 }
             }
         }
@@ -550,12 +550,14 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int    $issueID          the issueID
      * @param string $changed_assignee changed assignee
+     * @param string $changed_watcher  changed watcher
      * @param \User  $user             the user requesting the change
      *
      * @return void
      */
-    function emailUser(int $issueID, string $changed_assignee, \User $user)
-    {
+    function emailUser(int $issueID, string $changed_assignee,
+        string $changed_watcher, \User $user
+    ) {
         $db      = $this->loris->getDatabaseConnection();
         $baseurl = \NDB_Factory::singleton()->settings()->getBaseURL();
 
@@ -597,9 +599,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                     $msg_data
                 );
             }
-        } else {
-            // so query below doesn't break..
-            $changed_assignee = $user->getUsername();
         }
 
         $issue_change_emails = $db->pselect(
@@ -611,12 +610,12 @@ class Edit extends \NDB_Page implements ETagCalculator
                         INNER JOIN issues_watching w ON (w.userID = u.UserID)
                     WHERE
                         w.issueID = :issueID
-                        AND w.userID = :uid
-                        AND u.UserID = :assignee",
+                        AND u.UserID = :watcher
+                        AND u.UserID != :currentUser",
             [
-                'issueID'  => $issueID,
-                'uid'      => $user->getUsername(),
-                'assignee' => $changed_assignee,
+                'issueID'     => $issueID,
+                'watcher'     => $changed_watcher,
+                'currentUser' => $user->getUserName(),
             ]
         );
 
