@@ -55,7 +55,7 @@ function MRIViolationsIndex(props) {
           <ViolationsTable
             URL={props.resolvedURL}
             name="resolved"
-            formatter={formatColumnResolved(mapper)}
+            formatter={formatColumnResolved(mapper, setViolationModal)}
             fields={resolvedFilters(fieldOptions)}
             mapper={mapper}
             noDynamicTable={true}

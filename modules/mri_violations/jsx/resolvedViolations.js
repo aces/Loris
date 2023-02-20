@@ -92,9 +92,10 @@ export function resolvedFilters(fieldoptions) {
  * Modify behaviour of specified column cells in the Data Table component
  *
  * @param {function} mapper - A data mapper for dynamic columns
+ * @param {function} setPage - a callback to set the current page
  * @return {function} a formated table cell formatter
  */
-export function formatColumnResolved(mapper) {
+export function formatColumnResolved(mapper, setPage) {
     const Mapper = (column, cell, rowData, rowHeaders) => {
         cell = mapper(column, cell);
         // Create the mapping between rowHeaders and rowData in a row object.
@@ -102,6 +103,43 @@ export function formatColumnResolved(mapper) {
         let resolutionStatusStyle;
         let resolutionStatus;
 
+        if (column === 'Problem' && cell === 'Protocol Violation') {
+            return (
+                    <td>
+                    <a href="#" onClick={
+                        () => setPage({
+                              ViolationType: 'protocolcheck',
+                              PatientName: rowData['Patient Name'],
+                              SeriesUID: rowData['Series UID'],
+                              TarchiveID: rowData['TarchiveID'],
+                              CandID: rowData.CandId,
+                          })
+                    }>Protocol Violation</a>
+                    </td>
+                   );
+        }
+        if (
+            column === 'Problem' &&
+            cell === 'Could not identify scan type'
+            ) {
+            const seriesDescription
+              = rowData['Series Description or Scan Type'];
+            return (
+                    <td>
+                    <a href= "#"
+                        onClick={() => setPage({
+                              ViolationType: 'protocolviolation',
+                              PatientName: rowData['Patient Name'],
+                              SeriesUID: rowData['Series UID'],
+                              TarchiveID: rowData['TarchiveId'],
+                              CandID: rowData.CandID,
+                              PSCID: rowData.PSCID,
+                              TimeRun: rowData['Time Run'],
+                              SeriesDescription: seriesDescription,
+                            })}>Could not identify scan type</a>
+                    </td>
+                   );
+        }
         if (column === 'Resolution Status') {
             switch (rowData['Resolution Status']) {
                 case 'unresolved':
