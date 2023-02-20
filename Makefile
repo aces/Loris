@@ -11,6 +11,7 @@ phpdev:
 	composer install
 
 javascript:
+	node –version
 	npm install
 	npm run compile
 
