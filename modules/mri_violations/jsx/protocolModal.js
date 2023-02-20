@@ -105,7 +105,7 @@ function ProtocolViolationModal(props) {
                 <th>Slice Thickness</th>
                 <th>Xspace</th>
                 <th>Yspace</th>
-                <th>zspace</th>
+                <th>Zspace</th>
                 <th>Xstep</th>
                 <th>Ystep</th>
                 <th>Zstep</th>
@@ -163,20 +163,20 @@ function ProtocolViolationModal(props) {
           <table className="table table-hover table-primary table-bordered">
             <thead>
               <tr>
-                <th>Center_name</th>
-                <th>ScannerID</th>
-                <th>Scan_type</th>
+                <th>Center Name</th>
+                <th>Scanner ID</th>
+                <th>Scan Type</th>
                 <th>TR Range</th>
                 <th>TE Range</th>
                 <th>TI Range</th>
                 <th>Slice Thickness Range</th>
-                <th>xspace range</th>
-                <th>yspace range</th>
-                <th>zspace range</th>
-                <th>xstep range</th>
-                <th>ystep range</th>
-                <th>zstep range</th>
-                <th>time range</th>
+                <th>Xspace Range</th>
+                <th>Yspace Range</th>
+                <th>Zspace Range</th>
+                <th>Xstep Range</th>
+                <th>Ystep Range</th>
+                <th>Zstep Range</th>
+                <th>Time Range</th>
                 <th>Image Type</th>
                 <th>Phase Encoding Direction</th>
                 <th>Echo Number</th>
