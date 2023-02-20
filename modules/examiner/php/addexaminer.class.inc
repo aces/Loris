@@ -126,23 +126,6 @@ if ($this->examinerExists($fullName, $siteID)) {
                 );
     }
 
-    /**
-     * Getter for the centerID of the center name
-     *
-     * @param string $siteName name of the site
-     *
-     * @return ?int
-     */
-    function getCenterID($siteName): ?int
-    {
-        $DB = \NDB_Factory::singleton()->database();
-        return $DB->pselectOneInt(
-            "SELECT CenterID
-             FROM psc
-             WHERE Name=:siteName",
-            ['siteName' => $siteName]
-        );
-    }    
     function examinerExists($fullName, $siteID)
     {
         $DB         = \NDB_Factory::singleton()->database();
