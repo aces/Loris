@@ -114,6 +114,10 @@ class VisitSummary extends \NDB_Page
                 false
             );
             if ($instrument->_hasAccess($user) == false) {
+                $this->logger->debug(
+                    "Skipping $testName"
+                    . " because user does not have permission"
+                );
                 continue;
             }
             if ($instrument === null) {
