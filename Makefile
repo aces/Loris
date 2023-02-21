@@ -8,7 +8,6 @@ VERSION: .
 	tools/gen-version.sh
 
 phpdev:
-        export NODE_OPTIONS=--openssl-legacy-provider
 	composer install
 
 javascript:
