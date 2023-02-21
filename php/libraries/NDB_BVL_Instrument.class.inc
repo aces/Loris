@@ -3093,8 +3093,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         $instrumentNames = [];
-        foreach ($instrumentNamesList as $testName => $instrument) {
-            $fullName = $instrument->getFullName();
+        foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $directEntryInstruments, true)) {
                 $instrumentNames[$testName] = $fullName;
             }

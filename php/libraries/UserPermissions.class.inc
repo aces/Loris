@@ -342,8 +342,7 @@ class UserPermissions
         ?string $permAction = null
     ): void {
 
-        // create DB object
-        $DB =& \NDB_Factory::singleton()->database();
+        $DB = \NDB_Factory::singleton()->database();
 
         //insert into the login_history
         $DB->insert(
