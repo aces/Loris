@@ -84,6 +84,13 @@ class Module extends \Module
             $page
         );
 
+        $user = $request->getAttribute("user");
+        if ($instrument->_hasAccess($user) == false) {
+            return (new \Laminas\Diactoros\Response())
+                ->withStatus(403)
+                ->withBody(new \LORIS\Http\StringStream("Permission denied"));
+        }
+
         $request = $request->withAttribute('pageclass', $instrument);
 
         return $instrument->process($request, $instrument);
@@ -151,4 +158,3 @@ class Module extends \Module
         return [];
     }
 }
-
