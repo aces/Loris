@@ -13,7 +13,6 @@ phpdev:
 	composer install
 
 dev: VERSION phpdev
-    npm cache clean --force
     npm update
     npm install -g node-gyp
     npm rebuild
