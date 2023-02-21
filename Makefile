@@ -1,9 +1,7 @@
-.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata
+.PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
 
-all: VERSION
+all: VERSION javascript
 	composer install --no-dev
-	npm ci
-	npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -12,18 +10,11 @@ VERSION: .
 phpdev:
 	composer install
 
-dev: VERSION phpdev
-    npm update
-    npm install -g node-gyp
-    npm rebuild
-    npm ci
-    npm run compile
-
-jslatest: clean
-	rm -rf package-lock.json
-	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
-	npm install
+javascript:
+	npm ci
 	npm run compile
+
+dev: VERSION phpdev javascript
 
 clean:
 	rm -f smarty/templates_c/*
@@ -54,7 +45,3 @@ check: checkstatic unittests
 
 testdata:
 	php tools/raisinbread_refresh.php
-
-login:
-	target=login npm run compile
-
