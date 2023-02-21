@@ -1,10 +1,10 @@
 /**
- * Return a list of filter objects shared between tabs
+ * Return a list of filter objects for the violation module.
  *
  * @param {object} fieldoptions - The dynamic field options
  * @return {array}
  */
-export function unresolvedFilters(fieldoptions) {
+export function violationFilters(fieldoptions) {
   let problemtypes = {};
   if (fieldoptions.problemtypes) {
       for (const ptype of fieldoptions.problemtypes) {
@@ -65,6 +65,21 @@ export function unresolvedFilters(fieldoptions) {
      },
     },
     {
+      label: 'Resolution Status', show: true, filter: {
+        name: 'resolutionStatus',
+        type: 'select',
+        options: {
+          'unresolved': 'Unresolved',
+          'reran': 'Reran',
+          'emailed': 'emailed site/pending',
+          'inserted': 'Inserted',
+          'rejected': 'Rejected',
+          'inserted_flag': 'Inserted with flag',
+          'other': 'Other',
+        },
+      },
+    },
+    {
       label: 'Series UID', show: false, filter: {
         name: 'seriesUID',
         type: 'text',
@@ -72,18 +87,17 @@ export function unresolvedFilters(fieldoptions) {
     },
     {label: 'hash', show: false},
     {label: 'JoinID', show: false},
-    {label: 'Resolution Status', show: false},
     {label: 'TarchiveID', show: false},
     {label: 'CandID', show: false},
     {label: 'PSCID', show: false},
 
-    // Add fake column for dropdown
-    {label: 'Resolution Status', show: true},
+    // Add fake column for resolution dropdown
+    {label: 'Select Resolution', show: true},
   ];
 }
 
 /**
- * Returns a formatter to handle the unresolved violations
+ * Returns a formatter to handle the violations
  *
  * @param {function} mapper - a data mapper to map from ID to display
  * @param {function} setPage - a callback to set the current page
@@ -91,10 +105,14 @@ export function unresolvedFilters(fieldoptions) {
  *                                  a resolution status is selected
  * @return {function} a formatter callback which uses mapper for data mapping
  */
-export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
+export function formatColumn(mapper, setPage, resolvePostURL) {
     const Mapper = function(column, cell, rowData, rowHeaders) {
         cell = mapper(column, cell);
         // Create the mapping between rowHeaders and rowData in a row object.
+        let fontColor = {color: '#FFFFFF'};
+        let resolutionStatusStyle;
+        let resolutionStatus;
+
         if (column === 'Type of Problem' && cell === 'Protocol Violation') {
             return (
                     <td>
@@ -133,19 +151,59 @@ export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
                    );
         }
         if (column === 'Resolution Status') {
+          switch (rowData['Resolution Status']) {
+            case 'unresolved':
+              fontColor = {color: '#000000'};
+              resolutionStatus = 'Unresolved';
+              break;
+
+            case 'reran':
+              resolutionStatusStyle = 'label-success';
+              resolutionStatus = 'Reran';
+              break;
+
+            case 'emailed':
+              resolutionStatusStyle = 'label-info';
+              resolutionStatus = 'Emailed site/pending';
+              break;
+
+            case 'rejected':
+              resolutionStatusStyle = 'label-danger';
+              resolutionStatus = 'Rejected';
+              break;
+
+            case 'inserted':
+              resolutionStatusStyle = 'label-warning';
+              resolutionStatus = 'Inserted';
+              break;
+
+            case 'other':
+              resolutionStatusStyle = 'label-primary';
+              resolutionStatus = 'Other';
+              break;
+
+            case 'inserted_flag':
+              resolutionStatusStyle = 'label-default';
+              resolutionStatus = 'Inserted with flag';
+              break;
+          }
+          return (
+            <td className= {resolutionStatusStyle} style={fontColor}>
+              {resolutionStatus}
+            </td>
+          );
+        }
+        if (column === 'Select Resolution') {
             const hashName = rowData.hash;
             return (
                     <td>
                     <select
                         name={hashName}
                         className="form-control input-sm"
-                        id="resolution-status"
+                        id="select-resolution"
                         style={{width: '13em'}}
                         onChange={(e) => {
                             const value = e.target.value;
-                            if (value == 'Unresolved') {
-                              return;
-                            }
 
                             fetch(resolvePostURL,
                             {
@@ -160,6 +218,7 @@ export function formatColumnUnresolved(mapper, setPage, resolvePostURL) {
                           }
                         }
                       >
+                      <option value=""> </option>
                       <option value="unresolved" >Unresolved</option>
                       <option value="reran" >Reran</option>
                       <option value="emailed" >Emailed site/pending</option>
