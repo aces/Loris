@@ -54,9 +54,6 @@ jobs:
       with:
         node-version: 16.x
 
-    - name: Run build
-      run: npm run build
-
     - name: Build LORIS
       run: make dev
 
