@@ -11,8 +11,7 @@ phpdev:
 	composer install
 
 javascript:
-	npm ci
-	npm install react-scripts@latest
+	npm install -g node@16
 	npm run compile
 
 dev: VERSION phpdev javascript
