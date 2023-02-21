@@ -253,7 +253,7 @@ class Unresolved extends Endpoint implements ETagCalculator
             true
         );
         if ($instrument->_hasAccess($user) == false) {
-            return new \LORIS\Http\Response\JSON\NotFound(
+            return new \LORIS\Http\Response\JSON\Forbidden(
                 'Permission denied for ' . $conflict['TableName']
             );
         }
