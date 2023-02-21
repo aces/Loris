@@ -11,6 +11,7 @@ phpdev:
 	composer install
 
 javascript:
+	npm ci
 	npm run compile
 
 dev: VERSION phpdev javascript
