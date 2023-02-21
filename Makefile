@@ -8,10 +8,11 @@ VERSION: .
 	tools/gen-version.sh
 
 phpdev:
+        export NODE_OPTIONS=--openssl-legacy-provider
 	composer install
 
 javascript:
-	npm install -g node@16
+	npm install -g node@16 --force
 	npm run compile
 
 dev: VERSION phpdev javascript
