@@ -45,21 +45,8 @@ $loris = new \LORIS\LorisInstance(
 
 // Get instrument names
 $instruments    = [];
-$instrumentList = \NDB_BVL_Instrument::getInstrumentNamesList($loris);
-foreach ($instrumentList as $testname => $fullName) {
-    // Instantiate instrument
-    try {
-        $instr = \NDB_BVL_Instrument::factory(
-            $loris,
-            $testname,
-            '',
-            ''
-        );
-    } catch (Exception $e) {
-        echo "$testname does not seem to be a valid instrument.\n";
-        continue;
-    }
-
+$instrumentList = \NDB_BVL_Instrument::getInstrumentsList($loris);
+foreach ($instrumentList as $testname => $instr) {
     if (!$instr->usesJSONData()) {
         $table = $instr->table;
         if (!$table) {

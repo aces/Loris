@@ -62,21 +62,8 @@ foreach ($history as $entry) {
     $idxHist[$entry['Test_name']][] = $entry;
 }
 
-$instruments = \NDB_BVL_Instrument::getInstrumentNamesList($lorisInstance);
-foreach ($instruments as $testname => $fullName) {
-    // Instantiate instrument object to get information
-    try {
-        $instrument = \NDB_BVL_Instrument::factory(
-            $lorisInstance,
-            $testname,
-            '',
-            ''
-        );
-    } catch (Exception $e) {
-        echo "$testname does not seem to be a valid instrument.\n";
-        continue;
-    }
-
+$instruments = \NDB_BVL_Instrument::getInstrumentsList($lorisInstance);
+foreach ($instruments as $testname => $instrument) {
     // Check if instrument saves data in JSON format i.e. no-SQL table
     $JSONData = $instrument->usesJSONData();
     $table    = null;
