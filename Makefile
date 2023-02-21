@@ -13,6 +13,8 @@ phpdev:
 	composer install
 
 dev: VERSION phpdev
+    npm cache clean --force
+    npm update
 	npm ci
 	npm run compile
 
