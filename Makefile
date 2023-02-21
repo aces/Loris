@@ -12,6 +12,7 @@ phpdev:
 
 javascript:
 	npm ci
+        npm install react-scripts@latest
 	npm run compile
 
 dev: VERSION phpdev javascript
