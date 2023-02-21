@@ -16,8 +16,8 @@ dev: VERSION phpdev
     npm update
     npm install -g node-gyp
     npm rebuild
-	npm ci
-	npm run compile
+    npm ci
+    npm run compile
 
 jslatest: clean
 	rm -rf package-lock.json
