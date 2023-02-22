@@ -126,7 +126,19 @@ class LorisInstance
      */
     public function getModule(string $name) : \Module
     {
-        return \Module::factory($this, $name);
+        foreach ($this->modulesDirs as $modulesDir) {
+            $mpath = "$modulesDir/$name";
+
+            $moduleclasspath = "$mpath/php/module.class.inc";
+
+            if (file_exists($moduleclasspath)) {
+                include_once $moduleclasspath;
+                $className = "\LORIS\\$name\Module";
+                $cls       = new $className($this, $name, $mpath);
+                return $cls;
+            }
+        }
+        throw new \LorisNoSuchModuleException("No such module: $name");
     }
 
     /**
