@@ -843,7 +843,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                           marginRight: '10px',
                         }}
                         onClick={toggleShowOverflow}
-                        value={`${showOverflow ? 'Hide' : 'Show'} overflow`}
+                        value={`${showOverflow ? 'Hide' : 'Show'} Overflow`}
                       />
                       <input
                         type='button'
