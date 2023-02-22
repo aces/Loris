@@ -11,7 +11,8 @@ type CProps = {
   mouseDown?: (_: any) => void,
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
-  mouseLeave?: (_: any) => void
+  mouseLeave?: (_: any) => void,
+  showOverflow: boolean
 };
 
 /**
@@ -25,6 +26,7 @@ type CProps = {
  * @param root0.mouseUp
  * @param root0.mouseLeave
  * @param root0.children
+ * @param root0.showOverflow
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
   ref,
@@ -35,6 +37,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
+  showOverflow,
 }) => {
   /**
    *
@@ -92,7 +95,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflowY: 'visible'}}
+      style={{overflowY: showOverflow ? 'visible' : 'hidden'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(

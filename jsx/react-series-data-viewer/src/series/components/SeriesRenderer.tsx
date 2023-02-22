@@ -396,6 +396,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const toggleStackedView = () => setStackedView(value => !value);
   const [singleMode, setSingleMode] = useState(false);
   const toggleSingleMode = () => setSingleMode(value => !value);
+  const [showOverflow, setShowOverflow] = useState(false);
+  const toggleShowOverflow = () => setShowOverflow(value => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -452,11 +454,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <Axis
             domain={interval}
             range={[0, viewerWidth]}
-            orientation='top'
+            orientation='bottom'
+            hideLine={true}
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
-          <Axis domain={interval} range={[0, viewerWidth]} orientation='bottom' />
+          <Axis domain={interval} range={[0, viewerWidth]} orientation='top' />
         </Group>
       </>
     );
@@ -822,7 +825,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   style={{
                     paddingTop: '15px',
                     paddingBottom: '20px',
-                    textAlign: 'center',
                   }}
                 >
                   <div
@@ -833,6 +835,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }}
                   >
                     <div className='btn-group'>
+                      <input
+                        type='button'
+                        className='btn btn-primary btn-xs'
+                        style={{
+                          width: '100px',
+                          marginRight: '10px',
+                        }}
+                        onClick={toggleShowOverflow}
+                        value={`${showOverflow ? 'Hide' : 'Show'} overflow`}
+                      />
                       <input
                         type='button'
                         style={{width: '25px'}}
@@ -1069,6 +1081,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         document.addEventListener('mouseup', onMouseUp);
                         R.compose(dragStart, R.nth(0))(v);
                       }, [bounds])}
+                      showOverflow={showOverflow}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
