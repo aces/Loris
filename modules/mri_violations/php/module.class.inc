@@ -79,6 +79,9 @@ class Module extends \Module
             $factory = \NDB_Factory::singleton();
             $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
 
+            if (!class_exists('Provisioner')) {
+                self::registerAutoloader();
+            }
             $provisioner = new Provisioner();
 
             if ($user->hasPermission('violated_scans_view_allsites')) {
