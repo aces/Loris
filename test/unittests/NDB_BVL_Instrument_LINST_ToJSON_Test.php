@@ -3,7 +3,8 @@ namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
+require_once __DIR__ . '/../../modules/instruments/php/schematypes/PHP.class.inc';
+require_once __DIR__ . '/../../modules/instruments/php/schematypes/LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 use PHPUnit\Framework\TestCase;
@@ -80,7 +81,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
         $i = $this
-            ->getMockBuilder('\Loris\Behavioural\NDB_BVL_Instrument_LINST')
+            ->getMockBuilder('\Loris\instruments\schematypes\LINST')
             ->disableOriginalConstructor()
             ->onlyMethods(['getFullName', 'getSessionID'])
             ->getMock();
@@ -88,7 +89,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $i->method('getSessionID')
             ->willReturn(new \SessionID(strval("123456")));
 
-        '@phan-var \Loris\Behavioural\NDB_BVL_Instrument_LINST $i';
+        '@phan-var \Loris\instruments\schematypes\LINST $i';
         $i->form     = new \LorisForm();
         $i->testName = "Test";
 
@@ -106,7 +107,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
     function _getAllMethodsExcept($methods)
     {
         $AllMethods = get_class_methods(
-            '\Loris\Behavioural\NDB_BVL_Instrument_LINST'
+            '\LORIS\instruments\schematypes\LINST'
         );
 
         return array_diff($AllMethods, $methods);

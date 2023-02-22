@@ -1,16 +1,6 @@
 <?php
-/**
- * This file contains the base class for instruments in Loris
- *
- * PHP Version 5
- *
- * @category Main
- * @package  Behavioural
- * @author   Unknown <example@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-namespace Loris\Behavioural;
+namespace LORIS\instruments\schematypes;
+
 use \LORIS\Data\Dictionary\DictionaryItem;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
@@ -21,15 +11,11 @@ use \LORIS\Data\Types\Enumeration;
 use \LORIS\Data\Types\DateType;
 
 /**
- * Base class for all NeuroDB behavioural instruments
+ * Implements the LORIS LINST instrument format
  *
- * @category Main
- * @package  Behavioural
- * @author   Unknown <example@example.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
+class LINST extends PHP
 {
     public $InstrumentType = 'LINST';
 
