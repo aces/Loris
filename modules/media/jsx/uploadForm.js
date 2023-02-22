@@ -111,8 +111,8 @@ class MediaUploadForm extends Component {
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
           {};
-          const visitErrMsg = ['No visits available for this candidate'];
-          const instErrMsg = ['No instruments available for this visit'];
+          const visitErrMsg = 'No visits available for this candidate';
+          const instErrMsg = 'No instruments available for this visit';
           return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
