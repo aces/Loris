@@ -31,8 +31,8 @@ module.
 **_Note 2:_** Schemas from modules that the user do not have access to 
 shouldn't be available.
 
-**_Note 3:_** Even if the modules described all the endpoints of a given 
-schema, the availability of the endpoint and the data it presents when "try in 
+**_Note 3:_** Even if the module has described all the endpoints of a given 
+schema, the availability of the endpoint and the data it presents when using "try it 
 out", will depend on the user's permissions.
 
 ---
