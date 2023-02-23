@@ -66,7 +66,7 @@
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
     "compile": "webpack --node-env=development",
     "build": "webpack --node-env=production",
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --progress --node-env=development",
     "postinstall": "node npm-postinstall.js"
   },
   "repository": {
