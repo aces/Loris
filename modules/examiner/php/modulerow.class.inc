@@ -40,7 +40,7 @@ class ModuleRow implements
     /**
      * Create a new HelpRow
      *
-     * @param array        $row  The row 
+     * @param array        $row  The row
      * @param \CenterID[]  $cids The CenterIDs
      * @param \ProjectID[] $pids The ProjectIDs
      *                           returns
