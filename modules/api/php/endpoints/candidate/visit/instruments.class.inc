@@ -124,6 +124,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $commentid = array_pop($entry)[$arraykey] ?? null;
 
         try {
+            $loris->getModule("instruments")->registerAutoloader();
             $instrument = \NDB_BVL_Instrument::factory(
                 $loris,
                 $instrumentname,
