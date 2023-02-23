@@ -57,6 +57,8 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $this->loris->getModule("instruments")->registerAutoloader();
+
         $path = trim($request->getURI()->getPath(), "/");
         switch ($path) {
         case 'unresolved':
@@ -68,7 +70,6 @@ class Module extends \Module
         default:
             return parent::handle($request);
         }
-
         return $handler->process($request, $handler);
     }
 

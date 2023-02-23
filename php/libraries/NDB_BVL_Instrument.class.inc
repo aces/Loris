@@ -59,7 +59,7 @@ abstract class NDB_BVL_Instrument extends \LORIS\instruments\schematypes\PHP
         ) {
             $module = $loris->getModule("instruments");
             $module->registerAutoloader();
-            $obj = new \Loris\instruments\schematypes\LINST(
+            $obj = new \LORIS\instruments\schematypes\LINST(
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.

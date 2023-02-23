@@ -92,6 +92,8 @@ class Unresolved extends Endpoint implements ETagCalculator
      */
     private function _getFieldOptions(\LORIS\LorisInstance $loris) : array
     {
+        $loris->getModule("instruments")->registerAutoloader();
+
         $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
