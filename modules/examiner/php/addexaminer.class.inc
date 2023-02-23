@@ -61,8 +61,8 @@ class AddExaminer extends \NDB_Page
     {
         $values = $req->getParsedBody();
         //Get centerID
-        $fullName = $values['addName'];
-        $siteID   = $values['addSite'];
+        $fullName = $values['addName'] ?? '';
+        $siteID   = $values['addSite'] ?? '';
 
         if ($this->examinerExists($fullName, $siteID)) {
             return  new \LORIS\Http\Response\JSON\Conflict(
