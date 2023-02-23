@@ -30,9 +30,9 @@ namespace LORIS\examiner;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ModuleRow implements 
-	\LORIS\Data\DataInstance,
-	\LORIS\StudyEntities\MultiSiteHaver
+class ModuleRow implements
+    \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\MultiSiteHaver
 {
     protected $DBRow;
 
@@ -45,8 +45,8 @@ class ModuleRow implements
      */
     public function __construct(array $row,array $cids, array $pids)
     {
-	$this->_centerIDs  = $cids;    
-        $this->DBRow = $row;
+        $this->_centerIDs = $cids;
+        $this->DBRow      = $row;
     }
     /**
      * Returns the CenterIDs for this row.

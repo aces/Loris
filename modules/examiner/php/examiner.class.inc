@@ -53,7 +53,7 @@ class Examiner extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-	            return ['examiner_multisite'];
+                return ['examiner_multisite'];
     }
     /**
      public function ttoJSON(): string
@@ -68,8 +68,8 @@ class Examiner extends \DataFrameworkMenu
           $json_new = json_decode(parent::toJSON(),true);
           $json_new["useCertification"] = ($this->useCertification == 1) ? true : false;
           return json_encode($json_new);
-     }   
-     */ 
+     }
+     */
     /**
      * {@inheritDoc}
      *
@@ -77,30 +77,30 @@ class Examiner extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $yesNoOptions = [
+        $yesNoOptions  = [
             '1' => 'Yes',
-            '0'  => 'No',
+            '0' => 'No',
         ];
-       $config        = \NDB_Config::singleton();
-       $certification = $config->getSetting('Certification');
+        $config        = \NDB_Config::singleton();
+        $certification = $config->getSetting('Certification');
 
-       if (isset($certification['EnableCertification'])) {
-           $this->useCertification = $certification['EnableCertification'];
-      }
+        if (isset($certification['EnableCertification'])) {
+            $this->useCertification = $certification['EnableCertification'];
+        }
 
-          $useCertification= ($this->useCertification == 1) ? true : false;
+          $useCertification = ($this->useCertification == 1) ? true : false;
 
-	return [
-		'sites'        => \Utility::getSiteList(false),
-		'radiologists' => $yesNoOptions,
-                'useCertification' =>  $useCertification,
+        return [
+            'sites'            => \Utility::getSiteList(false),
+            'radiologists'     => $yesNoOptions,
+            'useCertification' =>  $useCertification,
         ];
 
     }
-        public function useProjectFilter() : bool
+    public function useProjectFilter() : bool
     {
         return false;
-	}
+    }
     /**
      * {@inheritDoc}
      *
@@ -126,6 +126,6 @@ class Examiner extends \DataFrameworkMenu
                 $baseURL . "/examiner/js/examinerIndex.js",
             ]
         );
-    }    
-}    
+    }
+}
 

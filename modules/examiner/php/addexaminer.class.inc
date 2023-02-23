@@ -59,18 +59,16 @@ class AddExaminer extends \NDB_Page
      */
     function addExaminer(ServerRequestInterface $req): ResponseInterface
     {
-	    $values          = $req->getParsedBody();
-	    //Get centerID
-	$fullName = $values['addName'];
-	    $siteID = $values['addSite'];
+        $values = $req->getParsedBody();
+        //Get centerID
+        $fullName = $values['addName'];
+        $siteID   = $values['addSite'];
 
-if ($this->examinerExists($fullName, $siteID)) {
-	    return  new \LORIS\Http\Response\JSON\Conflict(
-		    'This examiner already exists.'
+        if ($this->examinerExists($fullName, $siteID)) {
+            return  new \LORIS\Http\Response\JSON\Conflict(
+                'This examiner already exists.'
             );
         }
-
-
 
         //Get radiologist value
         $radiologist = 0;
@@ -78,8 +76,8 @@ if ($this->examinerExists($fullName, $siteID)) {
             && $values['addRadiologist'] === 'true'
         ) {
             $radiologist = 1;
-	}
-	        $DB   = $this->loris->getDatabaseConnection();
+        }
+            $DB = $this->loris->getDatabaseConnection();
 
         // Check if examiner is already in the database 'examiners', if not add them
         // Assumption made that only non-users are added to the table here
@@ -115,15 +113,15 @@ if ($this->examinerExists($fullName, $siteID)) {
                 'examinerID' => $this->getExaminerID($fullName),
                 'centerID'   => $siteID,
             ]
-	);
-	  return (new \LORIS\Http\Response())
-                ->withStatus(200)
-                ->withHeader("Content-Type", "text/plain")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("Added!")
-                    )
-                );
+        );
+        return (new \LORIS\Http\Response())
+            ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
+            ->withBody(
+                new \LORIS\Http\StringStream(
+                    json_encode("Added!")
+                )
+            );
     }
 
     function examinerExists($fullName, $siteID)
@@ -164,5 +162,5 @@ if ($this->examinerExists($fullName, $siteID)) {
              WHERE full_name=:fullName AND userID IS NULL",
             ['fullName' => $fullName]
         );
-    }    
-}    
+    }
+}

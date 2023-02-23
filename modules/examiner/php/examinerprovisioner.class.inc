@@ -37,7 +37,7 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct()
     {
         parent::__construct(
-		"
+            "
   select
  e.full_name as Examiner,
              u.Email,
@@ -83,8 +83,8 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             );
         }
 
-        $row['centerIds']  = $cids;
-        return new ModuleRow($row, $cids, $pids);	    
+        $row['centerIds'] = $cids;
+        return new ModuleRow($row, $cids, $pids);
     }
 
 }
