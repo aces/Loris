@@ -3,18 +3,6 @@
 /**
  * Wrapper around CouchDB MRI functions
  *
- * PHP Version 7
- *
- * @category CouchDB_Import_Script
- * @package  Main
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-
-/**
- * Wrapper around CouchDB MRI functions
- *
  * @category CouchDB_Import_Script
  * @package  Main
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
@@ -23,8 +11,7 @@
  */
 class CouchDBMRIImporter
 {
-    var $SQLDB; // reference to the database handler, store here instead
-    // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
 
