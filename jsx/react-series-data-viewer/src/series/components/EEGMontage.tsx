@@ -20,6 +20,13 @@ type CProps = {
   setHidden: (_: number[]) => void,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.electrodes
+ * @param root0.hidden
+ * @param root0.setHidden
+ */
 const EEGMontage = (
   {
     electrodes,
@@ -38,12 +45,12 @@ const EEGMontage = (
   const [view3D, setView3D] = useState(false);
 
   const scale = 1200;
-  let scatter3D = [];
-  let scatter2D = [];
+  const scatter3D = [];
+  const scatter2D = [];
   const startAngle = 0;
   const color = '#000000';
 
-  let point3D = _3d()
+  const point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
     .z((d) => d.z)
@@ -51,12 +58,20 @@ const EEGMontage = (
     .rotateX(-startAngle)
     .scale(scale);
 
+  /**
+   *
+   * @param v
+   */
   const dragStart = (v: any) => {
     setDrag(true);
     setMx(v[0]);
     setMy(v[1]);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragged = (v: any) => {
     if (!drag) return;
     const beta = (v[0] - mx + mouseX) * -2 * Math.PI;
@@ -69,6 +84,10 @@ const EEGMontage = (
     setAngleZ(angleZ);
   };
 
+  /**
+   *
+   * @param v
+   */
   const dragEnd = (v: any) => {
     setDrag( false);
     setMouseX( v[0] - mx + mouseX);
@@ -88,7 +107,6 @@ const EEGMontage = (
    * @param {number} y - x coordinate of electrodes on a unit sphere scale
    * @param {number} z - x coordinate of electrodes on a unit sphere scale
    * @param {number} scale - Scale to change the projection point.Defaults to 1, which is on the sphere
-   *
    * @return {number[]} : x, y positions of electrodes as projected onto a unit circle.
    */
   const stereographicProjection = (x, y, z, scale=1.0) => {
@@ -110,6 +128,9 @@ const EEGMontage = (
     scatter2D.push({x: x * 150, y: y * 150 / 0.8});
   });
 
+  /**
+   *
+   */
   const Montage3D = () => (
     <Group>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
@@ -128,6 +149,9 @@ const EEGMontage = (
     </Group>
   );
 
+  /**
+   *
+   */
   const Montage2D = () => (
     <Group>
       <line

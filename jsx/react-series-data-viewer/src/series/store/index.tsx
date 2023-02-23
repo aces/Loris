@@ -27,7 +27,7 @@ import {
   createLowPassFilterEpic,
   createHighPassFilterEpic,
 } from './logic/highLowPass';
-import {createCursorInteractionEpic} from "./logic/cursorInteraction";
+import {createCursorInteractionEpic} from './logic/cursorInteraction';
 
 export const rootReducer = combineReducers({
   bounds: boundsReducer,

@@ -1,6 +1,5 @@
 import {createAction} from 'redux-actions';
-import {act} from "react-dom/test-utils";
-import {DEFAULT_VIEWER_HEIGHT} from "../../../vector";
+import {DEFAULT_VIEWER_HEIGHT} from '../../../vector';
 
 export const SET_INTERVAL = 'SET_INTERVAL';
 export const setInterval = createAction(SET_INTERVAL);
@@ -46,7 +45,7 @@ const interval = (
   if (action && action.type === 'SET_INTERVAL') {
     return [
       Math.min(action.payload[0], action.payload[1]),
-      Math.max(action.payload[0], action.payload[1])
+      Math.max(action.payload[0], action.payload[1]),
     ];
   }
   return state;
@@ -104,7 +103,10 @@ const viewerWidth = (state = 400, action?: Action): number => {
  * @param {Action} action - The action
  * @returns {State} - The updated state
  */
-const viewerHeight = (state = DEFAULT_VIEWER_HEIGHT, action?: Action): number => {
+const viewerHeight = (
+  state = DEFAULT_VIEWER_HEIGHT,
+  action?: Action
+): number => {
   if (action && action.type === 'SET_VIEWER_HEIGHT') {
     return action.payload;
   }

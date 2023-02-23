@@ -116,7 +116,19 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
 };
 
 
-export const getEpochsInRange = (epochs, interval, epochType, withComments = false) => {
+/**
+ *
+ * @param epochs
+ * @param interval
+ * @param epochType
+ * @param withComments
+ */
+export const getEpochsInRange = (
+  epochs,
+  interval,
+  epochType,
+  withComments = false,
+) => {
   return [...Array(epochs.length).keys()].filter((index) =>
     (
       (isNaN(epochs[index].onset) && interval[0] === 0)
@@ -125,8 +137,6 @@ export const getEpochsInRange = (epochs, interval, epochType, withComments = fal
         epochs[index].onset + epochs[index].duration > interval[0] &&
         epochs[index].onset < interval[1]
       )
-    ) &&
-    epochs[index].type === epochType &&
-    (!withComments || epochs[index].hed || epochs[index].comment)
+    ) && epochs[index].type
   );
-}
+};

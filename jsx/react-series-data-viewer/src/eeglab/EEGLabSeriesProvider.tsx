@@ -88,10 +88,10 @@ class EEGLabSeriesProvider extends Component<CProps> {
         // if request fails don't resolve
         .catch((error) => {
           console.error(error);
-          return new Promise((resolve) => {});
+          return Promise.resolve();
         })];
       } else {
-        return [new Promise((resolve) => {})];
+        return [Promise.resolve()];
       }
     };
 
@@ -116,11 +116,8 @@ class EEGLabSeriesProvider extends Component<CProps> {
           this.store.dispatch(setDomain(timeInterval));
           this.store.dispatch(setInterval(DEFAULT_TIME_INTERVAL));
         }
-      }
-    )
-  // ##################### EEGNET OVERRIDE START ################## //
-      .then(() => {
-        return events.instances.map(instance => {
+      }).then(() => {
+        return events.instances.map((instance) => {
           const onset = parseFloat(instance.Onset);
           const duration = parseFloat(instance.Duration);
           const label = instance.TrialType && instance.TrialType !== 'n/a' ?

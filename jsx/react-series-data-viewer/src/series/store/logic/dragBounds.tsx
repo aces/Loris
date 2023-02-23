@@ -25,6 +25,7 @@ export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
 /**
  * createDragBoundsEpic
  *
+ * @param fromState
  * @returns {Observable<Action>} - A stream of actions
  */
 export const createDragBoundsEpic = (fromState: (any) => BoundsState) => (
@@ -43,6 +44,12 @@ export const createDragBoundsEpic = (fromState: (any) => BoundsState) => (
 
   const endDrag$ = action$.pipe(ofType(END_DRAG_INTERVAL));
 
+  /**
+   *
+   * @param root0
+   * @param root0."0"
+   * @param root0."1"
+   */
   const computeNewInterval = ([selection, _]) => setInterval(selection);
 
   const startUpdates$ = startDrag$.pipe(

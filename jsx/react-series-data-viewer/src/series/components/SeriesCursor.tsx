@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
 import {MutableRefObject, useEffect} from 'react';
 import {RootState} from '../store';
-import {getEpochsInRange} from "../store/logic/filterEpochs";
+import {getEpochsInRange} from '../store/logic/filterEpochs';
 
 
 type CursorContentProps = {
@@ -59,7 +59,7 @@ const SeriesCursor = (
     showEvents,
     enabled,
     hoveredChannels,
-    channelMetadata
+    channelMetadata,
   }: CProps
 ) => {
   if (!cursorPosition) return null;
@@ -165,7 +165,7 @@ const SeriesCursor = (
             <div
               style={{
                 color: channelColor,
-                width: '100px'
+                width: '100px',
               }}
             >
             {channelName}: {Math.round(chunkValue)} {SIGNAL_UNIT}
@@ -183,7 +183,9 @@ const SeriesCursor = (
   const EpochMarker = () => {
     const visibleEpochs = getEpochsInRange(epochs, interval, 'Event');
     if (visibleEpochs
-        .filter((index) => { filteredEpochs.includes(index) })
+        .filter((index) => {
+ filteredEpochs.includes(index);
+})
         .length > MAX_RENDERED_EPOCHS
     ) {
       return null;
@@ -253,6 +255,8 @@ const computeValue = (chunk, time) => {
  * @param root0.channel
  * @param root0.contentIndex
  * @param root0.showEvents
+ * @param root0.hoveredChannels
+ * @param root0.channelMetadata
  */
 const CursorContent = (
   {
@@ -261,10 +265,9 @@ const CursorContent = (
     contentIndex,
     showEvents,
     hoveredChannels,
-    channelMetadata
+    channelMetadata,
   }: CursorContentProps
 ) => {
-
   return (
     <div style={{margin: '0 5px', width: '120px'}}>
       {channel.traces.map((trace, i) => {
@@ -284,7 +287,7 @@ const CursorContent = (
               color: `${hoveredChannels.includes(channel.index)
                 ? colorOrder(channel.index.toString())
                 : '#333'
-              }`
+              }`,
             }}
           >
             {channelMetadata[channel.index].name}:&nbsp;

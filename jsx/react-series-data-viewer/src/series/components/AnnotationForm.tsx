@@ -46,6 +46,8 @@ type CProps = {
  * @param root0.toggleEpoch,
  * @param root0.updateActiveEpoch,
  * @param root0.interval
+ * @param root0.toggleEpoch
+ * @param root0.updateActiveEpoch
  */
 const AnnotationForm = ({
   timeSelection,
@@ -65,7 +67,7 @@ const AnnotationForm = ({
   const [event, setEvent] = useState<(number | string)[]>(
     [
       startEvent,
-      endEvent
+      endEvent,
     ]
   );
   const [label, setLabel] = useState(
@@ -234,7 +236,7 @@ const AnnotationForm = ({
         label_name: label,
         label_description: label,
         channels: 'all',
-        description: comment
+        description: comment,
       },
     };
 

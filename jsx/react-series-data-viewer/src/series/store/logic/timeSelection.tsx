@@ -27,7 +27,7 @@ export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
  */
 export const roundTime = (value, decimals = 3) => {
   return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
-}
+};
 
 /**
  * createTimeSelectionEpic
@@ -84,7 +84,9 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     Rx.map(([, state]) => {
       if (
         state.timeSelection
-        && (Math.abs(state.timeSelection[1] - state.timeSelection[0]) < MIN_INTERVAL)
+        && (
+          Math.abs(state.timeSelection[1] - state.timeSelection[0]
+        ) < MIN_INTERVAL)
       ) {
         return setTimeSelection(null);
       } else {

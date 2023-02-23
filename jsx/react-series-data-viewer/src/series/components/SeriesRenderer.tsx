@@ -11,7 +11,7 @@ import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
-import {colorOrder} from "../../color";
+import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
@@ -65,9 +65,9 @@ import {
   AnnotationMetadata,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-import {setCursorInteraction} from "../store/logic/cursorInteraction";
-import {setHoveredChannels} from "../store/state/cursor";
-import {getEpochsInRange} from "../store/logic/filterEpochs";
+import {setCursorInteraction} from '../store/logic/cursorInteraction';
+import {setHoveredChannels} from '../store/state/cursor';
+import {getEpochsInRange} from '../store/logic/filterEpochs';
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -105,7 +105,7 @@ type CProps = {
   physioFileID: number,
   annotationMetadata: AnnotationMetadata,
   hoveredChannels: number[],
-  setHoveredChannels:  (_: number[]) => void,
+  setHoveredChannels: (_: number[]) => void,
 };
 
 /**
@@ -182,7 +182,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   physioFileID,
   annotationMetadata,
   hoveredChannels,
-  setHoveredChannels
+  setHoveredChannels,
 }) => {
   if (channels.length === 0) return null;
 
@@ -192,8 +192,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       Math.floor(Math.log10(interval[1] - interval[0])) - 1,
       -1
     )
-  );  // Scale to interval size
+  ); // Scale to interval size
 
+  /**
+   *
+   */
   const zoomIn = () => {
     const currentInterval = interval[1] - interval[0];
     let zoomInterval = intervalChange;
@@ -205,12 +208,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
 
     setInterval([interval[0] + zoomInterval, interval[1] - zoomInterval]);
-  }
+  };
 
+  /**
+   *
+   */
   const zoomOut = () => {
     setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
-  }
+  };
 
+  /**
+   *
+   */
   const zoomReset = () => {
     const defaultInterval = DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0];
     const currentMidpoint = (interval[0] + interval[1]) / 2;
@@ -229,55 +238,70 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     setInterval([
       Math.max(lowerBound, domain[0]),
-      Math.min(upperBound, domain[1])
+      Math.min(upperBound, domain[1]),
     ]);
-  }
+  };
 
   const selectionCanBeZoomedTo = timeSelection &&
     Math.abs(timeSelection[1] - timeSelection[0]) >= 0.1;
 
+  /**
+   *
+   */
   const zoomToSelection = () => {
     if (selectionCanBeZoomedTo) {
       setInterval([
         Math.min(timeSelection[0], timeSelection[1]),
-        Math.max(timeSelection[0], timeSelection[1])
+        Math.max(timeSelection[0], timeSelection[1]),
       ]);
     }
-  }
+  };
 
 
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
 
   // Memoized to singal which vars are to be read from
-  const memoizedCallback = useCallback(() => {}, [
-    offsetIndex, interval, limit, timeSelection, amplitudeScale
+  const memoizedCallback = useCallback(null, [
+    offsetIndex, interval, limit, timeSelection, amplitudeScale,
   ]);
 
   useEffect(() => { // Keypress handler
+    /**
+     *
+     * @param e
+     */
     const keybindHandler = (e) => {
       if (cursorRef.current) { // Cursor is on page / focus
-        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+        if ([
+          'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+        ].indexOf(e.code) > -1) {
           e.preventDefault(); // Make sure arrows don't scroll
 
           const intervalSize = interval[1] - interval[0];
           switch (e.code) {
-            case "ArrowUp":
+            case 'ArrowUp':
               setOffsetIndex(offsetIndex - limit);
               break;
-            case "ArrowDown":
+            case 'ArrowDown':
               setOffsetIndex(offsetIndex + limit);
               break;
-            case "ArrowRight":
+            case 'ArrowRight':
               setInterval([
-                Math.min(Math.ceil(domain[1]) - intervalSize, interval[0] + intervalSize),
-                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize)
+                Math.min(
+                  Math.ceil(domain[1]) - intervalSize,
+                  interval[0] + intervalSize
+                ),
+                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize),
               ]);
               break;
-            case "ArrowLeft":
+            case 'ArrowLeft':
               setInterval([
                 Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
-                Math.max(Math.floor(domain[0]) + intervalSize, interval[1] - intervalSize)
+                Math.max(
+                  Math.floor(domain[0]) + intervalSize,
+                  interval[1] - intervalSize
+                ),
               ]);
               break;
             default:
@@ -295,8 +319,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               toggleStackedView();
               break;
             case 'KeyS':
-              if (stackedView)
-                toggleSingleMode();
+              if (stackedView) {
+toggleSingleMode();
+}
               break;
           }
         }
@@ -323,20 +348,20 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           case 'Equal': // This key combination is '+'
             zoomIn();
             break;
-          case 'KeyN':  // Lower amplitude scale
+          case 'KeyN': // Lower amplitude scale
             setAmplitudesScale(1.1);
             break;
-          case 'KeyM':  // Increase amplitude scale
+          case 'KeyM': // Increase amplitude scale
             setAmplitudesScale(0.9);
             break;
         }
       }
-    }
+    };
 
     window.addEventListener('keydown', keybindHandler);
     return function cleanUp() { // Prevent multiple listeners
       window.removeEventListener('keydown', keybindHandler);
-    }
+    };
   }, [memoizedCallback]);
 
   useEffect(() => {
@@ -352,6 +377,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const prevHoveredChannels = useRef([]);
   const defaultLineColor = '#999';
 
+  /**
+   *
+   * @param channelIndex
+   * @param colored
+   */
   const setLineColor = (channelIndex: number, colored: boolean) => {
     const classString = `.visx-linepath.channel-${channelIndex}`;
     document.querySelectorAll(classString).forEach((line) => {
@@ -369,12 +399,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           : '1'
       );
     });
-  }
+  };
 
   useEffect(() => {
     hoveredChannels.forEach((channelIndex) => {
-      if (prevHoveredChannels.current.includes(channelIndex))
-        return;
+      if (prevHoveredChannels.current.includes(channelIndex)) {
+return;
+}
       setLineColor(channelIndex, true);
     });
 
@@ -384,20 +415,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       }
     });
 
-    prevHoveredChannels.current = hoveredChannels
+    prevHoveredChannels.current = hoveredChannels;
   }, [hoveredChannels]);
 
-  const [numDisplayedChannels, setNumDisplayedChannels] = useState<number>(DEFAULT_MAX_CHANNELS);
+  const [
+    numDisplayedChannels,
+    setNumDisplayedChannels,
+  ] = useState<number>(DEFAULT_MAX_CHANNELS);
   const [cursorEnabled, setCursorEnabled] = useState(false);
-  const toggleCursor = () => setCursorEnabled(value => !value);
+  const toggleCursor = () => setCursorEnabled((value) => !value);
   const [DCOffsetView, setDCOffsetView] = useState(true);
-  const toggleDCOffsetView = () => setDCOffsetView(value => !value);
+  const toggleDCOffsetView = () => setDCOffsetView((value) => !value);
   const [stackedView, setStackedView] = useState(false);
-  const toggleStackedView = () => setStackedView(value => !value);
+  const toggleStackedView = () => setStackedView((value) => !value);
   const [singleMode, setSingleMode] = useState(false);
-  const toggleSingleMode = () => setSingleMode(value => !value);
+  const toggleSingleMode = () => setSingleMode((value) => !value);
   const [showOverflow, setShowOverflow] = useState(false);
-  const toggleShowOverflow = () => setShowOverflow(value => !value);
+  const toggleShowOverflow = () => setShowOverflow((value) => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -438,7 +472,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   ];
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
-  const showAxisScaleLines = false;   // Visibility state of y-axis scale lines
+  const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
   /**
    *
@@ -465,6 +499,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  /**
+   *
+   */
   const EpochsLayer = () => {
     const epochType = rightPanel === 'eventList'
       ? 'Event'
@@ -473,11 +510,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           : null
     ;
     const visibleEpochs = getEpochsInRange(epochs, interval, epochType);
-    const minEpochWidth = (interval[1] - interval[0]) * MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
+    const minEpochWidth = (interval[1] - interval[0]) *
+      MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
 
     return (
       <Group>
-        {// ##################### EEGNET OVERRIDE START ################## //
+        {
          visibleEpochs.length < MAX_RENDERED_EPOCHS &&
           visibleEpochs.map((index) => {
             return filteredEpochs.includes(index) && (
@@ -563,7 +601,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       !cursorRef.current && stackedView &&
       singleMode && hoveredChannels.length > 0
     )
-      ? filteredChannels.filter((channel) => hoveredChannels.includes(channel.index))
+      ? filteredChannels.filter(
+        (channel) => hoveredChannels.includes(channel.index)
+      )
       : filteredChannels;
 
     return (
@@ -591,7 +631,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             vec2.fromValues(
               0,
               stackedView && !singleMode
-                ? (numDisplayedChannels - 2) * diagonal[1] / (2 * numDisplayedChannels)
+                ? (numDisplayedChannels - 2) *
+                  diagonal[1] / (2 * numDisplayedChannels)
                 : (i * diagonal[1]) / numDisplayedChannels
             )
           );
@@ -603,7 +644,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             vec2.fromValues(
               diagonal[0],
               stackedView && !singleMode
-                ? (numDisplayedChannels + 2) * diagonal[1] / (2 * numDisplayedChannels)
+                ? (numDisplayedChannels + 2) *
+                  diagonal[1] / (2 * numDisplayedChannels)
                 : ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
@@ -616,23 +658,32 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
           return (
             channel.traces.map((trace, j) => {
-              const numChunks = trace.chunks.filter((chunk) => chunk.values.length > 0).length;
+              const numChunks = trace.chunks.filter(
+                (chunk) => chunk.values.length > 0
+              ).length;
 
               const valuesInView = trace.chunks.map((chunk) => {
                 let includedIndices = [0, chunk.values.length];
                 if (chunk.interval[0] < interval[0]) {
-                  const startIndex = chunk.values.length * (interval[0] - chunk.interval[0]) / (chunk.interval[1] - chunk.interval[0]);
+                  const startIndex = chunk.values.length *
+                    (interval[0] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
                   includedIndices = [startIndex, includedIndices[1]];
                 }
                 if (chunk.interval[1] > interval[1]) {
-                  const endIndex = chunk.values.length * (interval[1] - chunk.interval[0]) / (chunk.interval[1] - chunk.interval[0]);
+                  const endIndex = chunk.values.length *
+                    (interval[1] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
                   includedIndices = [includedIndices[0], endIndex];
                 }
-                return chunk.values.slice(includedIndices[0], includedIndices[1]);
+                return chunk.values.slice(
+                  includedIndices[0], includedIndices[1]
+                );
               }).flat();
 
-              if (valuesInView.length === 0)
-                return;
+              if (valuesInView.length === 0) {
+return;
+}
 
               const seriesRange: [number, number] = STATIC_SERIES_RANGE;
 
@@ -649,7 +700,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     stackedView
                       ? [
                         -viewerHeight / (2 * numDisplayedChannels),
-                        viewerHeight / (2 * numDisplayedChannels)
+                        viewerHeight / (2 * numDisplayedChannels),
                       ]
                       : [subTopLeft[1], subBottomRight[1]]
                   ),
@@ -659,6 +710,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 .domain(seriesRange.map((x) => x * amplitudeScale))
                 .range([-0.5, 0.5]);
 
+              /**
+               *
+               * @param values
+               */
               const getScaledMean = (values) => {
                 let numValues = values.length;
                 return values.reduce((a, b) => {
@@ -667,8 +722,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       return a;
                     }
                   return a + scaleByAmplitude(b);
-                }, 0) / numValues
-              }
+                }, 0) / numValues;
+              };
 
               const DCOffset = DCOffsetView
                 ? getScaledMean(valuesInView)
@@ -693,7 +748,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       numChunks={numChunks}
                     />
                 ))
-              )
+              );
             })
           );
         })}
@@ -709,7 +764,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
-    const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
+    const x = Math.min(
+      1,
+      Math.max(0, (v.pageX - bounds.left)/bounds.width)
+    );
     return (dragContinue)(x);
   };
 
@@ -730,10 +788,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    * @param e
    */
   const handleChannelChange = (e) => {
-    let numChannels = parseInt(e.target.value, 10);
-    setNumDisplayedChannels(numChannels);     // This one is the frontend controller
+    const numChannels = parseInt(e.target.value, 10);
+    setNumDisplayedChannels(numChannels); // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
-    setOffsetIndex(offsetIndex);  // Will include new channels on limit increase
+    setOffsetIndex(offsetIndex); // Will include new channels on limit increase
     setViewerHeight(
       numChannels > 4
         ? DEFAULT_VIEWER_HEIGHT
@@ -818,7 +876,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             <div className='row'>
               <div
                 className='col-xs-offset-1 col-xs-11'
-                style={{ zIndex: '1' }}
+                style={{zIndex: '1'}}
               >
                 <div
                   className='row'
@@ -942,9 +1000,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   >
                     <small style={{marginRight: '10px'}}>
                       Displaying:&nbsp;
-                      <select value={numDisplayedChannels} onChange={handleChannelChange}>
+                      <select
+                        value={numDisplayedChannels}
+                        onChange={handleChannelChange}
+                      >
                         {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
-                          return <option value={numChannels}>{numChannels} channels</option>;
+                          return <option
+                            value={numChannels}
+                          >
+                            {numChannels} channels
+                          </option>;
                         })};
                       </select>
                       &nbsp;Showing channels&nbsp;
@@ -1004,7 +1069,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   paddingRight: '0px',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
-                {filteredChannels.slice(0, numDisplayedChannels).map((channel) => (
+                {filteredChannels
+                  .slice(0, numDisplayedChannels)
+                  .map((channel) => (
                   <div
                     key={channel.index}
                     style={{
@@ -1012,10 +1079,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       height: 1 / numDisplayedChannels * 100 + '%',
                       alignItems: 'center',
                       cursor: 'default',
-                      color: `${stackedView || hoveredChannels.includes(channel.index)
+                      color: `${stackedView ||
+                        hoveredChannels.includes(channel.index)
                         ? colorOrder(channel.index.toString())
                         : '#333'}`,
-                      fontWeight: `${stackedView && hoveredChannels.includes(channel.index)
+                      fontWeight: `${stackedView &&
+                        hoveredChannels.includes(channel.index)
                         ? 'bold'
                         : 'normal'}`,
                     }}
@@ -1073,7 +1142,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       mouseMove={useCallback((cursor: [number, number]) => {
                         setCursor({
                           cursorPosition: [cursor[0], cursor[1]],
-                          viewerRef: viewerRef
+                          viewerRef: viewerRef,
                         });
                       }, [])}
                       mouseDown={useCallback((v: Vector2) => {
@@ -1144,7 +1213,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   style={{
                     width: '65px',
                     marginTop: '3px',
-                    visibility: stackedView ? 'visible' : 'hidden'
+                    visibility: stackedView ? 'visible' : 'hidden',
                   }}
                   onClick={toggleSingleMode}
                   value={`${singleMode ? 'Standard' : 'Isolate'}`}
@@ -1266,7 +1335,7 @@ export default connect(
     limit: state.dataset.limit,
     domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
-    hoveredChannels: state.cursor.hoveredChannels
+    hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(

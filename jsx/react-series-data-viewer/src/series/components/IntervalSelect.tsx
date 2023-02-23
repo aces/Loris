@@ -10,8 +10,8 @@ import {Slider, Rail, Handles, Ticks} from 'react-compound-slider';
 import {Handle, Tick} from './components';
 import React, {useState, FunctionComponent, useRef} from 'react';
 import {RootState} from '../store';
-import {DEFAULT_TIME_INTERVAL} from "../../vector";
-import {roundTime} from "../store/logic/timeSelection";
+import {DEFAULT_TIME_INTERVAL} from '../../vector';
+import {roundTime} from '../store/logic/timeSelection';
 
 type CProps = {
   viewerHeight?: number,
@@ -69,9 +69,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     const intervalSize = interval[1] - interval[0];
     setInterval([
       Math.min(domain[1] - intervalSize, interval[0] + increment),
-      Math.min(domain[1], interval[1] + increment)
+      Math.min(domain[1], interval[1] + increment),
     ]);
-  }
+  };
 
   /**
    *
@@ -81,9 +81,9 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     const intervalSize = interval[1] - interval[0];
     setInterval([
       Math.max(domain[0], interval[0] - decrement),
-      Math.max(domain[0] + intervalSize, interval[1] - decrement)
+      Math.max(domain[0] + intervalSize, interval[1] - decrement),
     ]);
-  }
+  };
 
   /**
    *
@@ -92,7 +92,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
   const handleIntervalChange = (event) => {
     const value = roundTime(parseFloat(event.target.value));
 
-    if (isNaN(value)){
+    if (isNaN(value)) {
       if (event.target.value === '') {
         if (event.target === lowerBoundInputRef.current) {
           setInterval([0, interval[1]]);
@@ -104,22 +104,24 @@ const IntervalSelect: FunctionComponent<CProps> = ({
     }
 
     if (event.target === lowerBoundInputRef.current) {
-      if (value > interval[1]) {  // This condition causes a swap
+      if (value > interval[1]) { // This condition causes a swap
         upperBoundInputRef.current.focus();
       }
 
-      if (value === roundTime(interval[1]))
-        return; // do nothing if change causes overlap
+      if (value === roundTime(interval[1])) {
+return;
+} // do nothing if change causes overlap
 
       // Prevent exceeding max, which causes render
       setInterval([Math.min(value, domain[1]), interval[1]]);
     } else if (event.target === upperBoundInputRef.current) {
-      if (value < interval[0]) {  // This condition causes a swap
+      if (value < interval[0]) { // This condition causes a swap
         lowerBoundInputRef.current.focus();
       }
 
-      if (value === roundTime(interval[0]))
-        return; // do nothing if change causes overlap
+      if (value === roundTime(interval[0])) {
+return;
+} // do nothing if change causes overlap
 
       setInterval([interval[0], value]);
     }
@@ -132,13 +134,13 @@ const IntervalSelect: FunctionComponent<CProps> = ({
   const handleIntervalBlur = (event) => {
     const value = roundTime(parseFloat(event.target.value));
 
-    if (isNaN(value)){
-      setInterval(interval);  // Reset
+    if (isNaN(value)) {
+      setInterval(interval); // Reset
       return;
     }
 
     if (interval[0] > interval[1] || interval[1] < interval[0]) {
-      setInterval([interval[1], interval[0]]);  // Invert
+      setInterval([interval[1], interval[0]]); // Invert
     }
   };
 

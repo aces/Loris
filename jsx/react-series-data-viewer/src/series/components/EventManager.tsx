@@ -1,14 +1,18 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
-import {DEFAULT_VIEWER_HEIGHT, MAX_RENDERED_EPOCHS} from '../../vector';
-import {getEpochsInRange, toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
+import {MAX_RENDERED_EPOCHS} from '../../vector';
+import {
+  getEpochsInRange,
+  toggleEpoch,
+  updateActiveEpoch,
+} from '../store/logic/filterEpochs';
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
 import {RootState} from '../store';
-import {setFilteredEpochs} from "../store/state/dataset";
+import {setFilteredEpochs} from '../store/state/dataset';
 
 type CProps = {
   timeSelection?: [number, number],
@@ -51,9 +55,8 @@ const EventManager = ({
   updateActiveEpoch,
   setFilteredEpochs,
   interval,
-  viewerHeight
+  viewerHeight,
 }: CProps) => {
-
   // ##################### EEGNET OVERRIDE START ################## //
   const [epochType, setEpochType] = useState((rightPanel
     && rightPanel !== 'annotationForm'
@@ -67,7 +70,7 @@ const EventManager = ({
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       return epochsInRange.some((index) => {
         return !filteredEpochs.includes(index);
-      })
+      });
     }
     return true;
   });
@@ -83,7 +86,7 @@ const EventManager = ({
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       setAllEpochsVisibility(!epochsInRange.some((index) => {
         return !filteredEpochs.includes(index);
-      }));  // If one or more event isn't visible, set to be able to reveal all
+      })); // If one or more event isn't visible, set to be able to reveal all
     } else {
       setAllEpochsVisibility(false);
     }
@@ -109,6 +112,10 @@ const EventManager = ({
   }, [rightPanel]);
 
 
+  /**
+   *
+   * @param visible
+   */
   const setEpochsInViewVisibility = (visible) => {
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
       epochsInRange.map((index) => {
@@ -118,7 +125,7 @@ const EventManager = ({
         }
       });
     }
-  }
+  };
 
   const visibleEpochsInRange = epochsInRange.filter(
     (epochIndex) => filteredEpochs.includes(epochIndex)
@@ -136,7 +143,8 @@ const EventManager = ({
       >
         <p style={{margin: '0px'}}>
           <strong>
-            {`${epochType}s (${visibleEpochsInRange.length}/${epochsInRange.length})`}
+            {`${epochType}s&nbsp;
+            (${visibleEpochsInRange.length}/${epochsInRange.length})`}
           </strong>
           <span style={{fontSize: '0.75em'}}>
             <br />in timeline view [Total: {totalEpochs}]

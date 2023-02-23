@@ -68,7 +68,7 @@ const Epoch = (
 Epoch.defaultProps = {
   color: '#dae5f2',
   opacity: 1,
-  minWidth: MIN_EPOCH_WIDTH
+  minWidth: MIN_EPOCH_WIDTH,
 };
 
 export default Epoch;

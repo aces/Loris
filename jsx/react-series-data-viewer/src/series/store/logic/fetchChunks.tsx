@@ -115,7 +115,8 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
           return (
             channel &&
             channel.traces.map((_, traceIndex) => {
-              const shapeChunks = shapes.map((shape) => shape[shape.length - 2]);
+              const shapeChunks =
+                shapes.map((shape) => shape[shape.length - 2]);
 
               const chunkIntervals = shapeChunks
                 .map((numChunks, downsampling) => {
@@ -123,13 +124,19 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                     timeInterval[1] - timeInterval[0]
                   );
                   const i0 =
-                    (numChunks * Math.floor(bounds.interval[0] - bounds.domain[0])) /
-                    recordingDuration;
+                    (numChunks *
+                      Math.floor(bounds.interval[0] - bounds.domain[0])
+                    ) / recordingDuration;
                   const i1 =
-                    (numChunks * Math.ceil(bounds.interval[1] - bounds.domain[0])) /
-                    recordingDuration;
+                    (numChunks *
+                      Math.ceil(bounds.interval[1] - bounds.domain[0])
+                    ) / recordingDuration;
                   return {
-                    interval: [Math.floor(i0), Math.min(Math.ceil(i1), numChunks)],
+                    interval:
+                      [
+                        Math.floor(i0),
+                        Math.min(Math.ceil(i1), numChunks),
+                      ],
                     numChunks: numChunks,
                     downsampling,
                   };

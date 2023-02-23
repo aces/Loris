@@ -1,8 +1,7 @@
 import * as R from 'ramda';
-import React, {FunctionComponent, ReactNode, Children, MutableRefObject} from 'react';
+import React, {FunctionComponent, MutableRefObject} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
-import { WithParentSizeProps } from '@visx/responsive/lib/enhancers/withParentSizeModern';
 
 type CProps = {
   ref: MutableRefObject<any>,
