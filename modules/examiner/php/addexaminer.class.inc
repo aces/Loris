@@ -126,9 +126,9 @@ class AddExaminer extends \NDB_Page
     /**
      * Check the examiner name from the database
      *
-     * @param  string $fullName name associated to examiner in the DB table
-     * @param  string $siteID   site ID
-     * 
+     * @param string $fullName name associated to examiner in the DB table
+     * @param string $siteID   site ID
+     *
      * @return bool true or false
      */
     function examinerExists($fullName, $siteID): bool
