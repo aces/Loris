@@ -56,21 +56,6 @@ class Examiner extends \DataFrameworkMenu
                 return ['examiner_multisite'];
     }
     /**
-     public function ttoJSON(): string
-   {
-                  $config        = \NDB_Config::singleton();
-       $certification = $config->getSetting('Certification');
-
-       if (isset($certification['EnableCertification'])) {
-           $this->useCertification = $certification['EnableCertification'];
-      }
-
-          $json_new = json_decode(parent::toJSON(),true);
-          $json_new["useCertification"] = ($this->useCertification == 1) ? true : false;
-          return json_encode($json_new);
-     }
-     */
-    /**
      * {@inheritDoc}
      *
      * @return array
@@ -97,6 +82,11 @@ class Examiner extends \DataFrameworkMenu
         ];
 
     }
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
     public function useProjectFilter() : bool
     {
         return false;

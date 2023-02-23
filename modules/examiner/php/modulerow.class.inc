@@ -40,8 +40,10 @@ class ModuleRow implements
     /**
      * Create a new HelpRow
      *
-     * @param array $row The row (in the same format as \Database::pselectRow returns
-     *                   returns
+     * @param array        $row  The row (in the same format as \Database::pselectRow returns
+     * @param \CenterID[]  $cids The CenterIDs
+     * @param \ProjectID[] $pids The ProjectIDs
+     *                           returns
      */
     public function __construct(array $row,array $cids, array $pids)
     {

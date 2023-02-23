@@ -123,8 +123,14 @@ class AddExaminer extends \NDB_Page
                 )
             );
     }
-
-    function examinerExists($fullName, $siteID)
+    /**
+     * Check the examiner name from the database
+     *
+     * @param  string $fullName name associated to examiner in the DB table
+     * @param  string $siteID   site ID
+     * @return bool
+     */
+    function examinerExists($fullName, $siteID): bool
     {
         $DB         = \NDB_Factory::singleton()->database();
         $examinerID = $DB->pselectOne(
