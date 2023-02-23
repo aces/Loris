@@ -74,7 +74,7 @@ class ExaminerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
-        $tableText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Examiner", $bodyText);
