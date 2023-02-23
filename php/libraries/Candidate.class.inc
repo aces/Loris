@@ -255,6 +255,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -289,6 +290,24 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
+                );
+            }
+
+            $existing = $db->pselectOne(
+                'SELECT
+                  COUNT(*)
+                 FROM candidate
+                 WHERE PSCID = :v_pscid
+                 GROUP BY
+                   PSCID
+                ',
+                ['v_pscid' => $PSCID]
+            );
+
+            if ($existing >= 0 ) {
+                throw new \InvalidArgumentException(
+                    "PSCID must be unique",
+                    PSCID_NOT_UNIQUE
                 );
             }
 
@@ -341,7 +360,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // declare the variable to avoid static analysis warnings
         $attemptcount = 0;
 
-        $db = \NDB_Factory::singleton()->database();
         do {
             // Reset on each iteration
             $invalidID = false;
