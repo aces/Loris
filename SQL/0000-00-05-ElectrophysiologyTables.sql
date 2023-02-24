@@ -218,9 +218,22 @@ CREATE TABLE `physiological_task_event` (
     FOREIGN KEY (`PhysiologicalFileID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`)
     ON DELETE CASCADE,
-  CONSTRAINT `FK_event_file` 
-    FOREIGN KEY (`EventFileID`) 
+  CONSTRAINT `FK_event_file`
+    FOREIGN KEY (`EventFileID`)
     REFERENCES `physiological_event_file` (`EventFileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create `physiological_task_event_opt` table
+-- tracks additional events from bids archives
+CREATE TABLE `physiological_task_event_opt` (
+    `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `PhysiologicalTaskEventID` int(10) unsigned NOT NULL,
+    `TaskName` varchar(50) NOT NULL,
+    `TaskValue` varchar(255) NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_event_task_opt`
+        FOREIGN KEY (`PhysiologicalTaskEventID`)
+        REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create `physiological_event_archive` to store event archive info
@@ -252,7 +265,7 @@ CREATE TABLE `physiological_event_parameter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
 
--- Create `physiological_event_parameter_category_level` to capture 
+-- Create `physiological_event_parameter_category_level` to capture
 -- category levels from events.json
 CREATE TABLE `physiological_event_parameter_category_level` (
     `CategoricalLevelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
