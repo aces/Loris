@@ -1,11 +1,15 @@
 /* global formatColumn */
 
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<DynamicDataTable
-    DataURL={`${loris.BaseURL}/candidate_list/?format=json`}
-    getFormattedCell={formatColumn}
-    freezeColumn="PSCID"
-    />,
-    document.getElementById('datatable')
+  const root = createRoot(document.getElementById('datatable'));
+  root.render(
+    <DynamicDataTable
+      DataURL={`${loris.BaseURL}/candidate_list/?format=json`}
+      getFormattedCell={formatColumn}
+      freezeColumn="PSCID"
+    />
   );
 });
