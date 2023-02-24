@@ -116,11 +116,13 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
 };
 
 /**
+ * getEpochsInRange
  *
- * @param epochs
- * @param interval
- * @param epochType
- * @param withComments
+ * @param {Epoch[]} epochs - Array of epoch
+ * @param {[number, number]} interval - Time interval to search
+ * @param {string} epochType - Epoch type (Annotation|Event)
+ * @param {boolean} withComments - Include only if has comments
+ * @returns {Epoch[]} - Epoch[] in interval with epochType
  */
 export const getEpochsInRange = (
   epochs,
