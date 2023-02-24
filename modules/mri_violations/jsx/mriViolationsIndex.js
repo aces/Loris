@@ -138,15 +138,15 @@ function columnMapper(fieldOptions) {
 }
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = ReactDOM.createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <MRIViolationsIndex
       ModuleURL={`${loris.BaseURL}/mri_violations/`}
       unresolvedURL={`${loris.BaseURL}/mri_violations/?format=json`}
       resolvedURL={
         `${loris.BaseURL}/mri_violations/resolved_violations?format=json`
       }
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 
