@@ -50,6 +50,7 @@ export const createDragBoundsEpic = (fromState: (any) => BoundsState) => (
    * @param root0 - Payload
    * @param root0."0" - Interval
    * @param root0."1" - Unused
+   * @returns {void}
    */
   const computeNewInterval = ([selection, _]) => setInterval(selection);
 
