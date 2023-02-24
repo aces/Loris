@@ -239,6 +239,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
         );
 
+
         // Second, try to create a valid new candidate in a site that the
         // user is not affiliated with. The test user is only afficilated to
         // Data Coordinating Center
@@ -292,7 +293,8 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-        // Finally, try to create a new candidate with an invalid input
+
+        // Try to create a new candidate with an invalid input
         $json_invalid = [
             'Candidate' =>
                 [
@@ -317,5 +319,73 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response_invalid->getBody();
         $this->assertNotEmpty($body);
+    }
+
+    /**
+     * Tests the HTTP POST request for the endpoint /candidates/{candid}
+     * with user generated pscid checking for uniqueness.
+     *
+     * @return void
+     */
+    public function testPostCandidatesUserGeneratedPSCID(): void
+    {
+        // First, change the PSCID config generation to "user".
+        $seq = [
+            'seq' => [
+                0 => [
+                    '#' => '',
+                    '@' => ['type' => 'siteAbbrev'],
+                ],
+                1 => [
+                    '#' => '',
+                    '@' => [
+                        'type'   => 'alphanumeric',
+                        'length' => '4',
+                    ],
+                ],
+            ],
+        ];
+        $configMap = [
+            [
+                'PSCID',
+                [
+                    'generation' => 'user',
+                    'structure'  => $seq,
+                ],
+            ],
+        ];
+
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $configMock->method('getSetting')
+            ->will($this->returnValueMap($configMap));
+
+        \NDB_Factory::singleton()->setConfig($this->_configMock);
+
+        // Then, create a valid new candidate
+        $json_new     = [
+            'Candidate' =>
+                [
+                    'Project' => "Rye",
+                    'Site'    => "Data Coordinating Center",
+                    'EDC'     => "2020-01-03",
+                    'DoB'     => "2020-01-03",
+                    'Sex'     => "Male"
+                ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers' => $this->headers,
+                'json'    => $json_new
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(201, $response_new->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response_new->getBody();
+        $this->assertNotEmpty($body);
+
+        
     }
 }
