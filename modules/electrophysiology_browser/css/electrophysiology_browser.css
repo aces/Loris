@@ -168,4 +168,60 @@ svg:not(:root) {
 
 #eegSidebar {
   top: 0;
+  bottom: 0;
+  left: 0;
+  height: calc(100%);
+  position: fixed;
+}
+
+#page.eegBrowser {
+  vertical-align: top;
+  position: relative;
+  width: auto;
+}
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+  .pagination-nav {
+    padding-top: 8px;
+  }
+
+  #eegSidebar {
+    display: none;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+  #eegSidebar {
+    display: block;
+  }
+
+  #page.eegBrowser {
+    margin-left: 150px;
+  }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+  .event-list {
+    margin-top: 40px;
+    margin-bottom: 0;
+  }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+  .pull-right-lg {
+    text-align: right;
+  }
+
+  .pagination-nav {
+    padding-top: 0;
+  }
 }
