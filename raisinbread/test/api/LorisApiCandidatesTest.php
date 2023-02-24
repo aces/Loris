@@ -359,33 +359,77 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $configMock->method('getSetting')
             ->will($this->returnValueMap($configMap));
 
-        \NDB_Factory::singleton()->setConfig($this->_configMock);
+        \NDB_Factory::singleton()->setConfig($configMock);
 
         // Then, create a valid new candidate
-        $json_new     = [
-            'Candidate' =>
-                [
-                    'Project' => "Rye",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
-                ]
+        $json = [
+            'Candidate' => [
+                'Project' => "Rye",
+                'PSCID'   => "DCC0707",
+                'Site'    => "Data Coordinating Center",
+                'EDC'     => "2020-01-03",
+                'DoB'     => "2020-01-03",
+                'Sex'     => "Male"
+            ]
         ];
-        $response_new = $this->client->request(
+        $response = $this->client->request(
             'POST',
             "candidates",
             [
                 'headers' => $this->headers,
-                'json'    => $json_new
+                'json'    => $json
             ]
         );
         // Verify the status code
-        $this->assertEquals(201, $response_new->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_new->getBody();
-        $this->assertNotEmpty($body);
+        $this->assertEquals(201, $response->getStatusCode());
 
+        // Then, check error when missing PSCID
+        $json = [
+            'Candidate' => [
+                'Project' => "Rye",
+                'Site'    => "Data Coordinating Center",
+                'EDC'     => "2020-01-03",
+                'DoB'     => "2020-01-03",
+                'Sex'     => "Male"
+            ]
+        ];
+        $response = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(400, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertEquals($body['error'], 'PSCID must be specified');
         
+        // Then, check error when existing PSCID
+        $json = [
+            'Candidate' => [
+                'Project' => "Rye",
+                'PSCID'   => "DCC0707",
+                'Site'    => "Data Coordinating Center",
+                'EDC'     => "2020-01-03",
+                'DoB'     => "2020-01-03",
+                'Sex'     => "Male"
+            ]
+        ];
+        $response = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers' => $this->headers,
+                'json'    => $json
+            ]
+        );
+        // Verify the status code
+        $this->assertEquals(400, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertEquals($body['error'], 'PSCID must be unique');
     }
 }

@@ -241,7 +241,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $pscid,
                 $project->getId()
             );
-        } catch (\LorisException | \InvalidArgumentException $e) {
+        } catch (\Exception | \LorisException | \InvalidArgumentException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
