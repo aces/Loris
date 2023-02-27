@@ -67,5 +67,7 @@ var table = RDynamicDataTable({
      "freezeColumn" : "PSCID"
 
   });
-ReactDOM.render(table, document.getElementById("datatable"));
+const root = ReactDOM.createRoot(document.getElementById("datatable"));
+root.render(table);
+
 </script>

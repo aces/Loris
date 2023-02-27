@@ -7,6 +7,8 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * Doc index component
@@ -427,13 +429,13 @@ class DocIndex extends React.Component {
 }
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <div className="page-document">
-    <DocIndex
-      dataURL={`${loris.BaseURL}/document_repository/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-    </div>,
-    document.getElementById('lorisworkspace')
+      <DocIndex
+        dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+        hasPermission={loris.userHasPermission}
+      />
+    </div>
   );
 });

@@ -103,10 +103,16 @@ class DirectDataEntryMainPage
             throw new Exception("Data has already been submitted.", 403);
         }
 
-        $instrumentObj  = \NDB_BVL_Instrument::factory(
+        $instrumentObj = \NDB_BVL_Instrument::factory(
             $this->loris,
             $this->TestName,
         );
+
+        $user = \User::singleton();
+        if ($instrumentObj->_hasAccess($user) !== true) {
+            throw new \Exception("Permission denied", 403);
+        }
+
         $subtests       = $instrumentObj->getSubtestList();
         $this->NumPages = count($subtests) + 1;
 

@@ -1,5 +1,5 @@
+import {createRoot} from 'react-dom/client';
 import ViewProject from './viewProject';
-
 const args = QueryString.get(document.currentScript.src);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,5 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   );
 
-  ReactDOM.render(viewProject, document.getElementById('lorisworkspace'));
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(viewProject);
 });
