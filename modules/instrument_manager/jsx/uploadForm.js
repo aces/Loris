@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
 /**
- * Instrument Upload Form component
+ * Instrument Upload Form component !
  */
 class InstrumentUploadForm extends Component {
   /**
