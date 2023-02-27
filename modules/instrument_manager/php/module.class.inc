@@ -13,14 +13,17 @@
  */
 
 namespace LORIS\instrument_manager;
+
 /**
- * Class module implements the basic LORIS module functionality
+ * The module class serves as a hint that this directory contains
+ * a valid LORIS module.
  *
- * @category Behavioural
- * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @category   Core
+ * @package    Main
+ * @subpackage Core
+ * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 class Module extends \Module
 {
@@ -33,14 +36,14 @@ class Module extends \Module
      */
     public function hasAccess(\User $user) : bool
     {
-        return parent::hasAccess($user) && $user->hasAnyPermission(
-            [
-                'instrument_manager_read',
-                'instrument_manager_write'
-            ]
-        );
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
+                [
+                    'instrument_manager_read',
+                    'instrument_manager_write'
+                ]
+            );
     }
-
 
     /**
      * {@inheritDoc}
