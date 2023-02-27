@@ -108,7 +108,7 @@ class Files extends \NDB_Page
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
-        if (! $user->hasPermission('document_repository_edit')) {
+        if (! $user->hasPermission('document_repository_upload_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 self::FORBIDDEN
             );
@@ -303,7 +303,7 @@ class Files extends \NDB_Page
         $user     = $request->getAttribute('user');
         $name     = $user->getUsername();
 
-        if (! $user->hasPermission('document_repository_edit')) {
+        if (! $user->hasPermission('document_repository_upload_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 self::FORBIDDEN
             );

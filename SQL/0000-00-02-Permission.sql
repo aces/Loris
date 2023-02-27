@@ -125,7 +125,7 @@ INSERT INTO `permissions` VALUES
     (54,'module_manager_edit', 'Installed Modules',(SELECT ID FROM modules WHERE Name='module_manager'),'Edit', 2),
     (55,'candidate_dod_edit', 'Dates of Death',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
     (56,'violated_scans_view_ownsite','Violated Scans - Own Sites',(SELECT ID FROM modules WHERE Name='mri_violations'),'View','2'),
-    (57,'document_repository_edit','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Edit/Upload','2'),
+    (57,'document_repository_upload_edit','Documents',(SELECT ID FROM modules WHERE Name='document_repository'),'Edit/Upload','2'),
     (58,'survey_accounts_view', 'Candidate Surveys',(SELECT ID FROM modules WHERE Name='survey_accounts'),'View', 2),
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
