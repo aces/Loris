@@ -124,7 +124,7 @@ class InstrumentManagerIndex extends Component {
     }
 
     const feedback = () => {
-      if (!this.state.data.caninstall
+      if (!this.state.data.fieldOptions.caninstall
         && this.props.hasPermission('instrument_manager_write')) {
         return (
           <div className='alert alert-warning'>
@@ -145,7 +145,7 @@ class InstrumentManagerIndex extends Component {
             You do not have access to this page.
           </div>
         );
-      } else if (this.state.data.writable) {
+      } else if (this.state.data.fieldOptions.writable) {
         let url = loris.BaseURL.concat('/instrument_manager/?format=json');
         content = (
           <InstrumentUploadForm action={url}/>
