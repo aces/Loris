@@ -30,9 +30,7 @@ namespace LORIS\instrument_manager;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ModuleRow implements
-    \LORIS\Data\DataInstance,
-    \LORIS\StudyEntities\MultiSiteHaver
+class ModuleRow implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
 
