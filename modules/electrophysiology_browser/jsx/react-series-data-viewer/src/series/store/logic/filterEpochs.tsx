@@ -138,6 +138,8 @@ export const getEpochsInRange = (
         epochs[index].onset + epochs[index].duration > interval[0] &&
         epochs[index].onset < interval[1]
       )
-    ) && epochs[index].type
+    ) &&
+    epochs[index].type === epochType &&
+    (!withComments || epochs[index].hed || epochs[index].comment)
   );
 };
