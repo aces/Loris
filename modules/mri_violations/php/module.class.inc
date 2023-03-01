@@ -77,7 +77,8 @@ class Module extends \Module
         switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
-            $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
+            $link    = $factory->settings()->getBaseURL() . '/' . $this->getName()
+                       . '/?resolutionStatus=unresolved';
 
             if (!class_exists('Provisioner')) {
                 self::registerAutoloader();
