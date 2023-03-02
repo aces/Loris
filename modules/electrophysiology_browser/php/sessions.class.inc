@@ -579,12 +579,19 @@ class Sessions extends \NDB_Page
         ];
 
         foreach ($queries as $query_key => $query_value) {
-            $query_statement = "SELECT
-                            DISTINCT(FilePath), '$query_value' AS FileType
-                            FROM
-                            $query_key
-                            WHERE
-                            PhysiologicalFileID=:PFID";
+            if ($query_key == 'physiological_electrode') {
+                // electrode filepath linked to coordinate system
+                $query_statement = "SELECT DISTINCT e.FilePath
+                    FROM physiological_coord_system_electrode_rel AS r,
+                        physiological_electrode AS e
+                    WHERE r.PhysiologicalElectrodeID = e.PhysiologicalElectrodeID
+                        AND r.PhysiologicalFileID=:PFID";
+            } else {
+                // others metadata
+                $query_statement = "SELECT DISTINCT FilePath
+                    FROM $query_key
+                    WHERE PhysiologicalFileID=:PFID";
+            }
             $query_statement = $db->pselectRow(
                 $query_statement,
                 ['PFID' => $physioFileID]
