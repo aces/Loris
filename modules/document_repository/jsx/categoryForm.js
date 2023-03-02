@@ -70,6 +70,13 @@ class DocCategoryForm extends React.Component {
       return (<Loader/>);
     }
 
+    let disabled = true;
+    let addButton = null;
+    if (loris.userHasPermission('document_repository_categories')) {
+        disabled = false;
+        addButton = <ButtonElement label="Add Category"/>;
+    }
+
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -84,6 +91,7 @@ class DocCategoryForm extends React.Component {
               label="Category Name"
               onUserInput={this.setFormData}
               required={true}
+              disabled={disabled}
               value={this.state.formData.categoryName}
             />
             <SelectElement
@@ -91,6 +99,7 @@ class DocCategoryForm extends React.Component {
               label="Parent"
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
+              disabled={disabled}
               hasError={false}
               value={this.state.formData.parentId}
             />
@@ -98,9 +107,10 @@ class DocCategoryForm extends React.Component {
               name="comments"
               label="Comments"
               onUserInput={this.setFormData}
+              disabled={disabled}
               value={this.state.formData.comments}
             />
-            <ButtonElement label="Add Category"/>
+            {addButton}
           </FormElement>
         </div>
       </div>

@@ -116,7 +116,7 @@ INSERT INTO `permissions` VALUES
     (45,'publication_view', 'Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),'View', 2),
     (46,'publication_propose', 'Propose Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),NULL, 2),
     (47,'publication_approve', 'Accept/Reject Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),NULL, 2),
-    (48, 'candidate_dob_edit', 'Dates of Birth',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
+    (48,'candidate_dob_edit', 'Dates of Birth',(SELECT ID FROM modules WHERE Name='candidate_parameters'),'Edit', 2),
     (49,'electrophysiology_browser_view_allsites', 'EEGs - All Sites',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'View', 2),
     (50,'electrophysiology_browser_view_site', 'EEGs - Own Sites',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'View', 2),
     (51,'battery_manager_view','Battery Entries',(SELECT ID FROM modules WHERE Name='battery_manager'),'View',2),
@@ -130,7 +130,9 @@ INSERT INTO `permissions` VALUES
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2'),
-    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', '2');
+    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', '2'),
+    (63,'document_repository_categories','Categories',(SELECT ID FROM modules WHERE Name='document_repository'), 'Edit/Upload/Delete', '2'),
+    (64,'document_repository_hidden','Restricted files',(SELECT ID FROM modules WHERE Name='document_repository'), 'View', '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

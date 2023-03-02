@@ -2,6 +2,7 @@
 import Loader from 'Loader';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+
 /**
  * Document Edit Form
  *
@@ -77,6 +78,9 @@ class DocEditForm extends React.Component {
       );
     }
 
+    let categoryDisabled =
+      !loris.userHasPermission('document_repository_categories');
+
     return (
         <div>
         <FormElement
@@ -92,7 +96,7 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               hasError={false}
               required={true}
-              disabled={true}
+              disabled={categoryDisabled}
               value={this.state.docData.category}
             />
             <SelectElement

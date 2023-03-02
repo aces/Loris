@@ -115,12 +115,14 @@ class Files extends \NDB_Page
         }
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
-            'hidden_file' => $req['hiddenFile'] ?? null,
-            'instrument'  => $req['instrument'] ?? null,
-            'comments'    => $req['comments'] ?? null,
-            'version'     => $req['version'] ?? null,
-            'visitLabel'  => $req['visitLabel'] ?? null,
-            'pscid'       => $req['pscid'] ?? null,
+            'File_category' => $req['category'] ?? null,
+            'hidden_file'   => !empty($req['hiddenFile']) ?
+                $req['hiddenFile'] : null,
+            'instrument'    => $req['instrument'] ?? null,
+            'comments'      => $req['comments'] ?? null,
+            'version'       => $req['version'] ?? null,
+            'visitLabel'    => $req['visitLabel'] ?? null,
+            'pscid'         => $req['pscid'] ?? null,
         ];
         $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
@@ -233,7 +235,6 @@ class Files extends \NDB_Page
                 "File_category as category," .
                 "visitLabel, " .
                 "Instrument as instrument, " .
-                "For_site as forSite, " .
                 "comments, " .
                 "hidden_file as hiddenFile," .
                 "File_Name as fileName, " .
@@ -372,7 +373,6 @@ class Files extends \NDB_Page
         }
 
         // Prepare fields for database entry once upload has completed.
-        $site = $body['forSite']       !== '' ? $body['forSite'] : null;
         $site = $DB->pselectOne(
             "SELECT CenterID FROM psc WHERE Name=:name",
             ['name' => $site]
@@ -394,7 +394,6 @@ class Files extends \NDB_Page
             'document_repository',
             [
                 'File_category' => $category,
-                'For_site'      => $site,
                 'comments'      => $comments,
                 'version'       => $version,
                 'hidden_file'   => $hidden,

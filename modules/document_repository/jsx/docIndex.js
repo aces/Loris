@@ -1,12 +1,13 @@
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
-import EditDocCategoryForm from './editCategoryForm';
 import ParentTree from './parentTree';
 import ChildTree from './childTree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
+import EditDocCategoryForm from './editCategoryForm';
+import DeleteDocCategoryForm from './deleteCategoryForm';
 import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
@@ -297,6 +298,7 @@ class DocIndex extends React.Component {
     let uploadDoc;
     let uploadCategory;
     let editCategory;
+    let deleteCategory;
     if (loris.userHasPermission('document_repository_upload_edit')) {
       tabList.push(
         {
@@ -327,12 +329,16 @@ class DocIndex extends React.Component {
           id: 'editCategory',
           label: 'Edit Category',
         },
+        {
+          id: 'deleteCategory',
+          label: 'Delete Category',
+        },
       );
 
       let numTabs = tabList.length-1;
 
       uploadCategory = (
-        <TabPane TabId={tabList[numTabs-1].id}>
+        <TabPane TabId={tabList[numTabs-2].id}>
           <DocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/UploadCategory`}
@@ -343,10 +349,20 @@ class DocIndex extends React.Component {
       );
 
       editCategory = (
-        <TabPane TabId={tabList[numTabs].id}>
+        <TabPane TabId={tabList[numTabs-1].id}>
           <EditDocCategoryForm
             dataURL={`${loris.BaseURL}/document_repository/?format=json`}
             action={`${loris.BaseURL}/document_repository/EditCategory`}
+            refreshPage={this.fetchData}
+          />
+        </TabPane>
+      );
+
+      deleteCategory = (
+        <TabPane TabId={tabList[numTabs].id}>
+          <DeleteDocCategoryForm
+            dataURL={`${loris.BaseURL}/document_repository/?format=json`}
+            action={`${loris.BaseURL}/document_repository/DeleteCategory`}
             refreshPage={this.fetchData}
           />
         </TabPane>
@@ -427,6 +443,7 @@ class DocIndex extends React.Component {
         {uploadDoc}
         {uploadCategory}
         {editCategory}
+        {deleteCategory}
       </Tabs>
     );
   }

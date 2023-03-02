@@ -3,16 +3,16 @@ import Loader from 'Loader';
 import swal from 'sweetalert2';
 
 /**
- * Document Edit Category Form
+ * Document Delete category Form
  *
  * Fetches data from Loris backend and displays a form allowing
- * to edit a category
+ * to delete a category
  *
- * @author Pierre PAC SOO
+ * @author Rolando Acosta
  * @version 1.0.0
  *
  * */
-class EditDocCategoryForm extends React.Component {
+class DeleteDocCategoryForm extends React.Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -70,19 +70,10 @@ class EditDocCategoryForm extends React.Component {
     }
 
     let disabled = true;
-    let updateButton = null;
+    let deleteButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      updateButton = <ButtonElement label="Edit Category"/>;
-    }
-
-    let errorSameParent = false;
-
-    if (
-      this.state.formData.categoryID==this.state.formData.newParentID
-      && this.state.formData.categoryID!=null
-      ) {
-      errorSameParent = true;
+      deleteButton = <ButtonElement label="Delete Category"/>;
     }
 
     return (
@@ -92,7 +83,7 @@ class EditDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>Change Name of a category</h3><br/>
+            <h3>Delete a category</h3><br/>
             <SelectElement
               name="categoryID"
               label="Category Name:"
@@ -103,26 +94,7 @@ class EditDocCategoryForm extends React.Component {
               hasError={false}
               value={this.state.formData.categoryID}
             />
-            <TextboxElement
-              name="categoryNameChange"
-              label="New Name for Category"
-              onUserInput={this.setFormData}
-              required={true}
-              disabled={disabled}
-              value={this.state.formData.categoryNameChange}
-            />
-            <SelectElement
-              name="newParentID"
-              label="New Parent:"
-              options={this.state.data.fieldOptions.fileCategories}
-              onUserInput={this.setFormData}
-              required={false}
-              disabled={disabled}
-              hasError={errorSameParent}
-              errorMessage={'Cannot be equal to itself'}
-              value={this.state.formData.newParentID}
-            />
-            {updateButton}
+            {deleteButton}
           </FormElement>
         </div>
       </div>
@@ -140,30 +112,15 @@ class EditDocCategoryForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-    if (
-      this.state.formData.categoryID==this.state.formData.newParentID
-      && this.state.formData.categoryID!=null
-    ) {
-      swal.fire('New parent cannot be equal to itself', '', 'error');
-    } else {
-      this.editCategory();
-    }
+    this.deleteCategory();
   }
-  /**
-   * Edits the category the server
+
+  /*
+   * Delete the Category.
    */
-  editCategory() {
-    // Set form data and upload the media file
+  deleteCategory() {
     let formData = this.state.formData;
     let formObj = new FormData();
-
-    if (
-      formData.categoryID==formData.newParentID
-      && formData.categoryID!=null
-    ) {
-      swal.fire('New parent cannot be equal to itself', '', 'error');
-    }
-
     for (let key in formData) {
       if (formData[key] !== '') {
         formObj.append(key, formData[key]);
@@ -183,7 +140,7 @@ class EditDocCategoryForm extends React.Component {
         } else if (response.statusText) {
             msg = response.statusText;
         } else {
-            msg = 'Edit error!';
+            msg = 'Delete error!';
         }
         this.setState({
           errorMessage: msg,
@@ -192,7 +149,7 @@ class EditDocCategoryForm extends React.Component {
         console.error(msg);
       } else {
           swal.fire({
-            text: 'Edited Successful!',
+            text: 'Delete Successful!',
             title: '',
             type: 'success',
           }).then(function() {
@@ -200,7 +157,7 @@ class EditDocCategoryForm extends React.Component {
           });
       }
     }).catch( (error) => {
-      let msg = error.message ? error.message : 'Edit error!';
+      let msg = error.message ? error.message : 'Delete error!';
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -223,9 +180,9 @@ class EditDocCategoryForm extends React.Component {
   }
 }
 
-EditDocCategoryForm.propTypes = {
+DeleteDocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
 };
 
-export default EditDocCategoryForm;
+export default DeleteDocCategoryForm;

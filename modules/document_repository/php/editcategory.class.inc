@@ -58,19 +58,10 @@ class EditCategory extends \NDB_Page
     {
         if ($request->getMethod() == "POST") {
             $this->editDocCategory($request);
-            return (new \LORIS\Http\Response())
-                ->withStatus(200)
-                ->withHeader("Content-Type", "text/plain")
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("uploaded successfully")
-                    )
-                );
+            return new \LORIS\Http\Response\JSON\OK();
+
         } else {
-            return (new \LORIS\Http\Response())
-                ->withStatus(405)
-                ->withHeader("Content-Type", "text/plain")
-                ->withHeader("Allow", "POST");
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
         }
     }
     /**
@@ -82,13 +73,12 @@ class EditCategory extends \NDB_Page
      */
     function editDocCategory($request): void
     {
-        $DB          = \Database::singleton();
+        $DB          = \NDB_Factory::singleton()->database();
         $req         = $request->getParsedBody();
         $category_id = isset($req['categoryID']) ? $req['categoryID'] : null;
         $new_name    = isset($req['categoryNameChange']) ?
             $req['categoryNameChange'] : null;
         $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
-
         if ($new_parent != null) {
             $DB->update(
                 "document_repository_categories",
@@ -101,7 +91,7 @@ class EditCategory extends \NDB_Page
                 ]
             );
         } else {
-            $DB->run(
+            $DB->update(
                 "document_repository_categories",
                 [
                     "category_name" => $new_name,
