@@ -59,7 +59,7 @@ Several tools can be used to navigate through the Signal Viewer:
 
 
 ### Stacked View
-Hovering channel names while in or 'stacked' or 'spread (default)' view will thicken the respective signal(s). While in stacked view, a feature called "Isolate" becomes available. [[Isolate Mode Demo](#isolate-mode)]
+Hovering channel names while in 'stacked' or 'spread (default)' view will thicken the respective signal(s). While in stacked view, a feature called "Isolate" becomes available. [[Isolate Mode Demo](#isolate-mode)]
 <br/><br/>![Stacked View](./../../images/signal-stacked.png) <br/>
 
 
