@@ -885,7 +885,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   }}
                 >
                   <div
-                    className={rightPanel ? 'col-lg-12' : 'col-lg-6'}
+                    className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
                     style={{
                       paddingTop: '5px',
                       paddingBottom: '5px',
@@ -894,17 +894,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     <div className='btn-group'>
                       <input
                         type='button'
-                        className='btn btn-primary btn-xs'
-                        style={{
-                          width: '100px',
-                          marginRight: '10px',
-                        }}
-                        onClick={toggleShowOverflow}
-                        value={`${showOverflow ? 'Hide' : 'Show'} Overflow`}
-                      />
-                      <input
-                        type='button'
-                        style={{width: '25px'}}
+                        style={{width: '20px'}}
                         className='btn btn-primary btn-xs'
                         onClick={() => setAmplitudesScale(1.1)}
                         value='-'
@@ -917,7 +907,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       />
                       <input
                         type='button'
-                        style={{width: '25px'}}
+                        style={{width: '20px'}}
                         className='btn btn-primary btn-xs'
                         onClick={() => setAmplitudesScale(0.9)}
                         value='+'
@@ -986,18 +976,28 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         )}
                       </ul>
                     </div>
+                      <input
+                        type='button'
+                        className='btn btn-primary btn-xs'
+                        style={{
+                          width: '100px',
+                          marginRight: '10px',
+                        }}
+                        onClick={toggleShowOverflow}
+                        value={`${showOverflow ? 'Hide' : 'Show'} Overflow`}
+                      />
                   </div>
 
                   <div
                     className={
-                      (rightPanel ? '' : 'pull-right-lg col-lg-6')
+                      (rightPanel ? '' : 'pull-right-lg col-lg-5')
                       + 'pagination-nav'
                     }
                     style={{
                       padding: '5px 15px',
                     }}
                   >
-                    <small style={{marginRight: '10px'}}>
+                    <small style={{marginRight: '3px',}}>
                       Displaying:&nbsp;
                       <select
                         value={numDisplayedChannels}
@@ -1011,10 +1011,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                           </option>;
                         })};
                       </select>
-                      &nbsp;Showing channels&nbsp;
+                      &nbsp;Showing:&nbsp;
                       <input
                         type='number'
-                        style={{width: '55px'}}
+                        style={{width: '45px'}}
                         value={offsetIndex}
                         onChange={(e) => {
                           const value = parseInt(e.target.value);
