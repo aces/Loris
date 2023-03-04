@@ -135,23 +135,21 @@ const EEGMontage = (
     );
   };
 
+  let ALSOrientation = false;
+  let headRatio = 1;
+  let montageRadius = 100;
+
+  // === This value may need to be adjusted
+  //     if not automatically computed (see below)
+  let headRadius = 1;
+  // ===
+
   // Find the enclosing rectangle
   const bb = boundingBox(
     electrodes.map(
       (electrode) => electrode.position.slice(0, 2)
     )
   );
-
-  let ALSOrientation = false;
-  let headRadius = 1;
-  let headRatio = 1;
-  let montageRadius = 100;
-
-  // === Those values may need to be adjusted
-  //     depending on the coord space/net used
-  const scale3D = 10;
-  const scale2D = 5;
-  // ===
 
   if (bb.length > 0) {
     // Determine if the points are in an ALS or RAS coordinate system
@@ -163,13 +161,10 @@ const EEGMontage = (
     // with the radius of the enclosing sphere
     headRadius = Math.max(bbw, bbh)/2;
     headRatio = Math.max(bbw, bbh) / Math.min(bbw, bbh);
-    montageRadius = stereographicProjection(
-      headRadius,
-      0,
-      0,
-      headRadius
-    )[0] * scale2D;
   }
+
+  const scale3D = montageRadius / headRadius;
+  const scale2D = montageRadius / stereographicProjection(headRadius, 0, 0, headRadius)[0];
 
   electrodes.map((electrode) => {
     let electrodeCoords = electrode.position.slice();

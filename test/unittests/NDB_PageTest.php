@@ -805,7 +805,6 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
-                '/vendor/sweetalert/sweetalert.min.js',
                 '/js/util/queryString.js',
                 '/js/components/Form.js',
                 '/js/components/Markdown.js'
@@ -831,8 +830,7 @@ class NDB_PageTest extends TestCase
             [
                 '/bootstrap/css/bootstrap.min.css',
                 '/bootstrap/css/custom-css.css',
-                '/js/jquery/datepicker/datepicker.css',
-                '/vendor/sweetalert/sweetalert.css'
+                '/js/jquery/datepicker/datepicker.css'
             ],
             $this->_page->getCSSDependencies()
         );

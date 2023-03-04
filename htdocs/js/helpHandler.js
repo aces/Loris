@@ -38,17 +38,16 @@ $(document).ready(function() {
         // Render Markdown in wrap div.
         // If help content is from Markdown helpfile.
         if (content.format === 'markdown') {
-          ReactDOM.render(RMarkdown({content: content.content}), wrap);
+          const root = ReactDOM.createRoot(wrap);
+          root.render(RMarkdown({content: content.content}));
         } else {
           // If help content is from DB.
           wrap.innerHTML = '<hr id=\'help-separator\'>';
           if (content.topic) {
             wrap.innerHTML = '<h3>' + content.topic + '</h3>';
           }
-          ReactDOM.render(
-            RMarkdown({content: content.content}),
-            markdownContent
-          );
+          const root = ReactDOM.createRoot(markdownContent);
+          root.render(RMarkdown({content: content.content}));
           wrap.appendChild(markdownContent);
           if (content.updated) {
             wrap.innerHTML = wrap.innerHTML
@@ -94,7 +93,6 @@ $(document).ready(function() {
 
   $('.dynamictable').DynamicTable();
   $('.fileUpload').FileUpload();
-  swal.setDefaults({confirmButtonColor: '#064785'});
 });
 $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
   if (jqxhr.status === 401) {

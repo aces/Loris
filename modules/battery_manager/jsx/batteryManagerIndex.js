@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -501,12 +502,12 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

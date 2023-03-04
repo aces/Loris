@@ -1,6 +1,8 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * Publication index component
@@ -186,11 +188,10 @@ class PublicationIndex extends React.Component {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const publicationIndex = (
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>
   );
-
-  ReactDOM.render(publicationIndex, document.getElementById('lorisworkspace'));
 });

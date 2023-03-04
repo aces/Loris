@@ -1,11 +1,14 @@
 import IssueForm from './IssueForm';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * Render IssueForm on page load
  */
 window.addEventListener('load', () => {
   const id = location.href.split('/issue/')[1];
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <IssueForm
       Module='issue_tracker'
       DataURL={loris.BaseURL
@@ -16,7 +19,6 @@ window.addEventListener('load', () => {
       issue={id}
       baseURL={loris.BaseURL}
       userHasPermission={loris.userHasPermission('issue_tracker_developer')}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

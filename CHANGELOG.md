@@ -12,6 +12,7 @@ changes in the following format: PR #1234***
 ### Core
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
+- Added the NOT NULL constraint on Project Name (PR #8295)
 
 #### Updates and Improvements
 - Rename subproject to Cohort (PR #7817)

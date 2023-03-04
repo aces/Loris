@@ -4,11 +4,8 @@ import * as Rx from 'rxjs/operators';
 import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {Channel, ChannelMetadata} from '../types';
-import {
-  emptyChannels,
-  setDatasetMetadata,
-  setChannels,
-} from '../state/dataset';
+import {setChannels} from '../state/channels';
+import {setDatasetMetadata} from '../state/dataset';
 import {updateViewedChunks} from './fetchChunks';
 
 export const SET_OFFSET_INDEX = 'SET_OFFSET_INDEX';
@@ -59,8 +56,11 @@ export const createPaginationEpic = (fromState: (_: any) => State) => (
               R.prop('index'),
               R.equals(channelIndex)
             )
-          ) || emptyChannels(1, 1)[0];
-        channel.index = channelIndex;
+          ) || {
+            index: channelIndex,
+            traces: [{chunks: [], type: 'line'}],
+          };
+
         newChannels.push(channel);
         channelIndex++;
       }

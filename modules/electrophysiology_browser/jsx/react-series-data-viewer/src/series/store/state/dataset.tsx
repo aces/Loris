@@ -1,15 +1,7 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
-import {Channel, ChannelMetadata, Epoch} from '../types';
-import {Action as ChannelAction} from './channel';
-import {channelReducer} from './channel';
+import {ChannelMetadata, Epoch} from '../types';
 import {MAX_CHANNELS} from '../../../vector';
-
-export const SET_CHANNELS = 'SET_CHANNELS';
-export const setChannels = createAction(SET_CHANNELS);
-
-export const SET_ACTIVE_CHANNEL = 'SET_ACTIVE_CHANNEL';
-export const setActiveChannel = createAction(SET_ACTIVE_CHANNEL);
 
 export const SET_EPOCHS = 'SET_EPOCHS';
 export const setEpochs = createAction(SET_EPOCHS);
@@ -27,8 +19,6 @@ export const SET_DATASET_METADATA = 'SET_DATASET_METADATA';
 export const setDatasetMetadata = createAction(SET_DATASET_METADATA);
 
 export type Action =
-  | {type: 'SET_CHANNELS', payload: Channel[]}
-  | {type: 'SET_ACTIVE_CHANNEL', payload: number}
   | {type: 'SET_EPOCHS', payload: Epoch[]}
   | {type: 'SET_FILTERED_EPOCHS', payload: number[]}
   | {type: 'SET_ACTIVE_EPOCH', payload: number}
@@ -43,14 +33,11 @@ export type Action =
         seriesRange: [number, number],
         limit: number
       }
-    }
-  | ChannelAction;
+    };
 
 export type State = {
   chunksURL: string,
   channelMetadata: ChannelMetadata[],
-  channels: Channel[],
-  activeChannel: number | null,
   offsetIndex: number,
   limit: number,
   epochs: Epoch[],
@@ -73,8 +60,6 @@ export const datasetReducer = (
   state: State = {
     chunksURL: '',
     channelMetadata: [],
-    channels: [],
-    activeChannel: null,
     epochs: [],
     filteredEpochs: [],
     activeEpoch: null,
@@ -91,12 +76,6 @@ export const datasetReducer = (
     return state;
   }
   switch (action.type) {
-    case SET_CHANNELS: {
-      return R.assoc('channels', action.payload, state);
-    }
-    case SET_ACTIVE_CHANNEL: {
-      return R.assoc('activeChannel', action.payload, state);
-    }
     case SET_EPOCHS: {
       return R.assoc('epochs', action.payload, state);
     }
@@ -113,45 +92,7 @@ export const datasetReducer = (
       return R.merge(state, action.payload);
     }
     default: {
-      const activeIndex = state.channels.findIndex(
-        (c) => c.index === state.activeChannel
-      );
-      if (activeIndex < 0) {
-        return state;
-      }
-      return R.assocPath(
-        ['channels', activeIndex],
-        channelReducer(state.channels[activeIndex], action),
-        state
-      );
+      return state;
     }
   }
-};
-
-/**
- * emptyChannels
- *
- * @param {number} channelsCount - The channels count
- * @param {number} tracesCount - The traces count
- * @returns {Function} - A Fn that returns channelsCount empty channels
- */
-export const emptyChannels = (channelsCount: number, tracesCount: number) => {
-  /**
-   * makeTrace
-   *
-   * @returns {object} - An object with trace type and chunks
-   */
-  const makeTrace = () => ({chunks: [], type: 'line'});
-  /**
-   * makeChannel
-   *
-   * @param {number} index - The channel index
-   * @returns {object} - An object with channel index and traces
-   */
-  const makeChannel = (index) => ({
-    index,
-    traces: R.range(0, tracesCount).map(makeTrace),
-  });
-
-  return R.range(0, channelsCount).map(makeChannel);
 };

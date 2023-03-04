@@ -380,7 +380,7 @@ class NDB_BVL_Feedback
     function getMaxThreadStatus($select_inactive_threads): ?string
     {
         // new DB Object
-        $db =& \NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         $query   = "SELECT MAX(Status) FROM feedback_bvl_thread WHERE";
         $qparams = [];

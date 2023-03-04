@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
@@ -453,10 +454,10 @@ CreateTimepoint.propTypes = {
  * Render create_timepoint on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <CreateTimepoint
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

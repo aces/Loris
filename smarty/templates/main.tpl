@@ -29,13 +29,12 @@
           $(document).ready(function() {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-
-              ReactDOM.render(
+              const root = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
+              root.render(
                 RBreadcrumbs({
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
-                }),
-                document.getElementById("breadcrumbs")
+                })
               );
               document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
                 return carry.concat(' - ', item.text);

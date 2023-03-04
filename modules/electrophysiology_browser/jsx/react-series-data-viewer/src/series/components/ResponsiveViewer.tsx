@@ -9,7 +9,8 @@ type CProps = {
   mouseDown?: (_: any) => void,
   mouseMove?: (_: any) => void,
   mouseUp?: (_: any) => void,
-  mouseLeave?: (_: any) => void
+  mouseLeave?: (_: any) => void,
+  children: any,
 };
 
 /**

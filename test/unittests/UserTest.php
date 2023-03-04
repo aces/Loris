@@ -1132,7 +1132,7 @@ class UserTest extends TestCase
         $loris = new \LORIS\LorisInstance(
             $this->_dbMock,
             new \NDB_Config(),
-            [],
+            [__DIR__ . "/../../modules"],
         );
         $this->assertEquals(
             $this->_user->getPermissionsVerbose($loris),

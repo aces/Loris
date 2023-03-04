@@ -25,7 +25,7 @@ try {
 
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
-    $m           = Module::factory($loris, $moduleName);
+    $m           = $loris->getModule($moduleName);
     // Load help data. Try to load subpage first as its more specific and
     // will only be present some of the time. Fallback to the module name if
     // no subpage present.
