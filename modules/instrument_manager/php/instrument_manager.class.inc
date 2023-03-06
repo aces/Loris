@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_Manager extends \DataFrameworkMenu
 {
-	    private string $_path;
+    private string $_path;
 
     /**
      * Tells the base class that this page's provisioner can support the
@@ -44,9 +44,9 @@ class Instrument_Manager extends \DataFrameworkMenu
     {
 
         return [
-            'writable' => $this->canWriteFiles(),
-	    //            'caninstall' => $this->isAdminUserConfigured()
-	    'caninstall' => true
+            'writable'   => $this->canWriteFiles(),
+        //            'caninstall' => $this->isAdminUserConfigured()
+            'caninstall' => true
         ];
 
     }
@@ -67,8 +67,8 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function canWriteFiles(): bool
     {
-        $this->_factory     = \NDB_Factory::singleton();
-	$this->_path        = $this->_factory->config()->getSetting("base");
+        $this->_factory = \NDB_Factory::singleton();
+        $this->_path    = $this->_factory->config()->getSetting("base");
 
         $instrument_dir = $this->_path . 'project/instruments';
         $table_dir      = $this->_path . 'project/tables_sql';
@@ -114,7 +114,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
         return $connected;
     }
-		    
+
     /**
      * {@inheritDoc}
      *
@@ -132,4 +132,4 @@ class Instrument_Manager extends \DataFrameworkMenu
             ]
         );
     }
-}	
+}

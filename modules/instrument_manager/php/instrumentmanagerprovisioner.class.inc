@@ -41,11 +41,15 @@ class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      *
      * @var string
      */
-    private string $_path;	
+    private string $_path;
+     /**
+      * Create a ModuleManagerProvisioner, which gets modules for the
+      * module manager menu table.
+      */
     function __construct()
     {
-        $this->_factory     = \NDB_Factory::singleton();
-        $this->_path        = $this->_factory->config()->getSetting("base");	    
+        $this->_factory = \NDB_Factory::singleton();
+        $this->_path    = $this->_factory->config()->getSetting("base");
         parent::__construct(
             "SELECT
             test_name as Instrument
@@ -65,11 +69,11 @@ class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-	    $instrument = $row['Instrument'];
+        $instrument = $row['Instrument'];
                 $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
                 $row['Table_Installed'] = $this->checkTableInstalled($instrument);
                 $row['Table_Valid']     = $this->checkTableValid($instrument);
-                $row['Pages_Valid']     = $this->checkPagesValid($instrument);	    
+                $row['Pages_Valid']     = $this->checkPagesValid($instrument);
 
             return new ModuleRow($row);
     }
@@ -95,7 +99,7 @@ class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         }
 
         return 'Missing';
-    }    
+    }
     /**
      * Checks if entries exists in the subtest table for each pages of the
      * instrument's linst file.

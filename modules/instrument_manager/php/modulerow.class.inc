@@ -37,12 +37,12 @@ class ModuleRow implements \LORIS\Data\DataInstance
     /**
      * Create a new HelpRow
      *
-     * @param array        $row  The row
-     *                           returns
+     * @param array $row The row
+     *                   returns
      */
     public function __construct(array $row)
     {
-        $this->DBRow      = $row;
+        $this->DBRow = $row;
     }
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
