@@ -10,7 +10,6 @@ namespace LORIS\instrument_manager;
 class Instrument_Manager extends \DataFrameworkMenu
 {
     private string $_path;
-    private string $_factory;
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -65,8 +64,8 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function canWriteFiles(): bool
     {
-        $this->_factory = \NDB_Factory::singleton();
-        $this->_path    = $this->_factory->config()->getSetting("base");
+        $factory     = \NDB_Factory::singleton();
+        $this->_path = $factory->config()->getSetting("base");
 
         $instrument_dir = $this->_path . 'project/instruments';
         $table_dir      = $this->_path . 'project/tables_sql';
@@ -84,8 +83,9 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function isAdminUserConfigured() : bool
     {
-        $db        = $this->_factory->database();
-        $db_config = $this->_factory->config()->getSetting('database');
+        $factory   = \NDB_Factory::singleton();
+        $db        = $factory->database();
+        $db_config = $factory->config()->getSetting('database');
 
         $credentials_set = !empty($db_config['adminUser'])
             && !empty($db_config['adminPassword']);
