@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 namespace LORIS\instrument_manager;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Contains functions used to view and manage instruments installed in LORIS.
@@ -12,7 +10,7 @@ use \Psr\Http\Message\ResponseInterface;
 class Instrument_Manager extends \DataFrameworkMenu
 {
     private string $_path;
-
+    private string $_factory;
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
