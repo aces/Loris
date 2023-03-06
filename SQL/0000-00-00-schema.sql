@@ -973,6 +973,9 @@ CREATE TABLE `mri_violations_log` (
   CONSTRAINT `FK_mri_checks_group_1`
     FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE mri_violations_log
+    ADD COLUMN `all_columns_hash` binary(32) GENERATED ALWAYS AS (UNHEX(SHA2(CONCAT(SeriesUID, '-', EchoTime, '-', PhaseEncodingDirection, '-', EchoNumber, '-', Scan_type, '-', Severity, '-', Header, '-', Value, '-', ValidRange, '-', ValidRegex), 256))),
+    ADD UNIQUE INDEX `unique_mvl_entry` (`all_columns_hash`);
 
 CREATE TABLE `violations_resolved` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
