@@ -56,7 +56,8 @@ class Database implements LoggerAwareInterface
 
     /**
      * Constructor must be public for unit tests to pass, but this should not
-     * be used directly. Should only be called by singleton method.
+     * be used directly. References should only be retrieved via the LorisInstance
+     * object.
      */
     public function __construct()
     {
@@ -64,70 +65,6 @@ class Database implements LoggerAwareInterface
         // level until after the database connection is established for NDB_Config,
         // NDB_Factory will set an appropriate ApacheLogger after the fact.
         $this->setLogger(new \Psr\Log\NullLogger);
-    }
-    /**
-     * Singleton design pattern implementation - creates the object
-     * and also connects to the database if necessary.
-     *
-     * To avoid credentials being displayed in stack traces,
-     * credentials must be passed in environment variables.
-     *
-     * The caller must ensure there are variables named
-     * LORIS_$dbname_USERNAME, LORIS_$dbname_PASSWORD, and
-     * LORIS_$dbname_HOST with their respective values. This
-     * is usually done by NDB_Factory.
-     *
-     * @param string $database     the database to select
-     * @param bool   $trackChanges boolean determining if changes should be
-     *                             logged to the history table
-     *
-     * @return \Database
-     * @throws \DatabaseException
-     * @access public
-     */
-    static function &singleton(
-        string $database,
-        bool $trackChanges = true
-    ): \Database {
-        $username = getenv("LORIS_{$database}_USERNAME");
-        $password = getenv("LORIS_{$database}_PASSWORD");
-        $host     = getenv("LORIS_{$database}_HOST");
-
-        static $connections = [];
-
-        // if no arguments, try to get the first connection or choke
-        if (empty($database)
-            && empty($username)
-            && empty($password)
-            && empty($host)
-        ) {
-            if (!empty($connections)) {
-                reset($connections);
-                $connection = current($connections);
-                return $connection;
-            } else {
-                throw new DatabaseException("No database connection exists");
-            }
-        } else {
-            // name the connection.
-            if ($trackChanges) {
-                $connection = md5($database.$host.$username.$password.'yep');
-            } else {
-                $connection = md5($database.$host.$username.$password.'nope');
-            }
-
-            // create the connection if none exists
-            if (empty($connections[$connection])) {
-                $connections[$connection] = new Database();
-                $connections[$connection]->connect(
-                    $database,
-                    $trackChanges
-                );
-            }
-
-            // return the connection
-            return $connections[$connection];
-        }
     }
 
     /**
