@@ -260,17 +260,7 @@ class UserTest extends TestCase
      * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
-    /**
-     * Test double for Database object for hasLoggedIn method
-     *
-     * @note This is needed for User::hasLoggedIn because it declares and uses
-     *       the database differently than other methods in the User class.
-     *       This can be changed when the rest of the User class updates how it
-     *       declares its database. - Alexandra Livadas
-     *
-     * @var NDB_Factory
-     */
-    private $_mockFactory;
+
     /**
      * Maps config names to values
      * Used to set behaviour of NDB_Config test double
@@ -300,8 +290,6 @@ class UserTest extends TestCase
 
         $this->_mockDB      = $mockdb;
         $this->_mockConfig  = $mockconfig;
-        $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($this->_dbMock);
 
         $this->_factory->setConfig($this->_mockConfig);
 
