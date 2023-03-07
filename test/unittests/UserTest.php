@@ -290,13 +290,7 @@ class UserTest extends TestCase
         $this->_factory->reset();
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
         $database          = $this->_configMock->getSetting('database');
-        $this->_dbMock     = $this->_factory->database(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
-            true
-        );
+        $this->_dbMock     = $this->_factory->database();
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
         $mockdb     = $this->getMockBuilder('Database')->getMock();
