@@ -291,8 +291,6 @@ class UserTest extends TestCase
         $this->_mockDB      = $mockdb;
         $this->_mockConfig  = $mockconfig;
 
-        $this->_factory->setConfig($this->_mockConfig);
-
         $this->_userInfoComplete       = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
         $this->_userInfoComplete['Privilege']           = '1';
@@ -661,6 +659,9 @@ class UserTest extends TestCase
         // Cause usePwnedPasswordsAPI config option to return false.
         $mockConfig = &$this->_mockConfig;
         '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
+
+        $this->_factory->setConfig($mockConfig);
+
         $mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
@@ -695,6 +696,8 @@ class UserTest extends TestCase
         $this->_mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
+
+        $this->_factory->setConfig($mockConfig);
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
