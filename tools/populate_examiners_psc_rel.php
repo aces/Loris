@@ -21,7 +21,7 @@
 require_once 'generic_includes.php';
 
 $config = NDB_Config::singleton();
-$db     =& Database::singleton();
+$db     = $loris->getDatabaseConnection();
 
 $examinersRows = $db->pselect(
     "SELECT * FROM examiners",
