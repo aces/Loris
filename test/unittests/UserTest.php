@@ -636,6 +636,14 @@ class UserTest extends TestCase
      */
     public function testUpdate()
     {
+        // Insert the user so that it can be updated.
+        $newUserInfo           = $this->_userInfo;
+        $newUserInfo['ID']     = 2;
+        $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
+        \User::insert($newUserInfo);
+
+        // Test the update.
         $this->_otherUser = \User::factory('968776');
         $newInfo          = ['ID' => '3'];
         $this->_otherUser->update($newInfo);
