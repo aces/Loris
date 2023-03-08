@@ -119,7 +119,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                     u.Real_name
              FROM issues i
              INNER JOIN users u
-               ON(i.assignee=u.UserID)",
+               ON(i.reporter=u.UserID)",
             []
         );
         foreach ($reporter_expanded as $r_row) {
