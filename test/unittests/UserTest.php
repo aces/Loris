@@ -621,6 +621,7 @@ class UserTest extends TestCase
         $newUserInfo           = $this->_userInfo;
         $newUserInfo['ID']     = 2;
         $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
         \User::insert($newUserInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('968776', $this->_otherUser->getUsername());
