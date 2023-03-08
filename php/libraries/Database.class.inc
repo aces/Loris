@@ -108,6 +108,11 @@ class Database implements LoggerAwareInterface
 
         }
 
+            $this->_PDO = new PDO(
+                "mysql:host=$host;dbname=$database;charset=UTF8",
+                $username,
+                $password
+            );
         try {
             $this->_PDO = new PDO(
                 "mysql:host=$host;dbname=$database;charset=UTF8",
@@ -117,6 +122,7 @@ class Database implements LoggerAwareInterface
         } catch (PDOException $e) {
             // This exception will not be included in the error log as it will
             // likely include credentials.
+            throw $e;
             throw new DatabaseException(
                 "Could not establish a PDO object using the following values: "
                 . "username: `$username`, dbname: `$database`, host: `$host` "
