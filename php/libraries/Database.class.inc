@@ -26,7 +26,7 @@ class Database implements LoggerAwareInterface
      * @var    PDO
      * @access private
      */
-    private $_PDO = null;
+    var $_PDO = null;
 
     /**
      * The database handle for storing history information.
@@ -1565,8 +1565,13 @@ class Database implements LoggerAwareInterface
 
     /**
      * Close the database connection.
+     *
+     * @return void
      */
-    public function closeConnection() : void {
+    public function closeConnection() : void
+    {
         $this->_PDO = null;
+        unset($this->_PDO);
+
     }
 }
