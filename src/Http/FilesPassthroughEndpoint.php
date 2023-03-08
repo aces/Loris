@@ -50,13 +50,6 @@ abstract class FilesPassthroughEndpoint extends Endpoint
     }
 
     /**
-     * Check if a User has access to the endpoint hierarchy.
-     *
-     * @return bool
-     */
-    abstract public function _hasAccess(\User $user) : bool;
-
-    /**
      * Return the download directory on the server's filesystem which the
      * files are stored relative to. This is generally a configuration
      * variable from LORIS.

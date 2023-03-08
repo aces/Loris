@@ -18,11 +18,13 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
      */
     function _hasAccess(\User $user): bool
     {
-        return $user->hasAnyPermission([
+        return $user->hasAnyPermission(
+            [
                 'publication_view',
                 'publication_propose',
                 'publication_approve',
-        ]);
+            ]
+        );
     }
 
     /**
