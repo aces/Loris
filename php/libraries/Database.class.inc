@@ -71,6 +71,41 @@ class Database implements LoggerAwareInterface
     }
 
     /**
+     * Singleton design pattern implementation - creates the object
+     * and also connects to the database if necessary.
+     *
+     * To avoid credentials being displayed in stack traces,
+     * credentials must be passed in environment variables.
+     *
+     * The caller must ensure there are variables named
+     * LORIS_$dbname_USERNAME, LORIS_$dbname_PASSWORD, and
+     * LORIS_$dbname_HOST with their respective values. This
+     * is usually done by NDB_Factory.
+     *
+     * @param string $database     the database to select
+     * @param bool   $trackChanges boolean determining if changes should be
+     *                             logged to the history table
+     *
+     * @return     \Database
+     * @throws     \DatabaseException
+     * @access     public
+     * @deprecated
+     */
+    static function singleton(
+        string $database,
+        bool $trackChanges = true
+    ): \Database {
+        // We don't have access to $this->logger since it's a static function,
+        // so we need to use error_log() instead of $this->logger->warning().
+        error_log(
+            "Database::singleton is deprecated. "
+            . "Use the getDatabaseConnection method from your LorisInstance"
+            . " object instead."
+        );
+        return \NDB_Factory::singleton()->database();
+    }
+
+    /**
      * Creates the connection to the database server and selects the
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
