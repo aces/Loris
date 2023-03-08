@@ -18,12 +18,15 @@ class Database implements LoggerAwareInterface
     use \Psr\Log\LoggerAwareTrait;
 
     /**
-     * The database handle, created by the connect() method
+     * The database handle, created by the connect() method.
+     * This *MUST* be private to ensure close deletes the
+     * last (only) reference to it, which is how connections
+     * are closed in PDO
      *
      * @var    PDO
      * @access private
      */
-    var $_PDO = null;
+    private $_PDO = null;
 
     /**
      * The database handle for storing history information.
@@ -1558,5 +1561,12 @@ class Database implements LoggerAwareInterface
     public function getArchitecture(): string
     {
         return $this->_getServerVariable('version_comment');
+    }
+
+    /**
+     * Close the database connection.
+     */
+    public function closeConnection() : void {
+        $this->_PDO = null;
     }
 }

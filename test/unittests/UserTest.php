@@ -324,6 +324,7 @@ class UserTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+        $this->_factory->database()->closeConnection();
         $this->_factory->reset();
     }
 
