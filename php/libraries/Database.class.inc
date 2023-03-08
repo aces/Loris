@@ -1570,8 +1570,9 @@ class Database implements LoggerAwareInterface
      */
     public function closeConnection() : void
     {
+        $this->_preparedStoreHistory = null;
         $this->_PDO = null;
-        unset($this->_PDO);
+        $this->_HistoryPDO = null;
 
     }
 }
