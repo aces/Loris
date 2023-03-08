@@ -354,6 +354,7 @@ class UserTest extends TestCase
      */
     public function testGetDataForLanguagePreferences()
     {
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'],
@@ -369,6 +370,7 @@ class UserTest extends TestCase
      */
     public function testGetFullname()
     {
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['Real_name'],
@@ -384,6 +386,7 @@ class UserTest extends TestCase
      */
     public function testGetId()
     {
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['ID'],
@@ -399,6 +402,7 @@ class UserTest extends TestCase
      */
     public function testGetUsername()
     {
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['UserID'],
