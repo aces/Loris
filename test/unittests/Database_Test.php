@@ -92,11 +92,7 @@ class Database_Test extends TestCase
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
         $this->config = $this->factory->Config(CONFIG_XML);
-        $database     = $this->config->getSetting('database');
         $this->DB     = $this->factory->database();
-
-        $this->factory->setDatabase($this->DB);
-        $this->factory->setConfig($this->config);
     }
 
     /**

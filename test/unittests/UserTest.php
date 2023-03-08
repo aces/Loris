@@ -279,7 +279,6 @@ class UserTest extends TestCase
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $database          = $this->_configMock->getSetting('database');
         $this->_dbMock     = $this->_factory->database();
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
@@ -288,8 +287,8 @@ class UserTest extends TestCase
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
 
-        $this->_mockDB      = $mockdb;
-        $this->_mockConfig  = $mockconfig;
+        $this->_mockDB     = $mockdb;
+        $this->_mockConfig = $mockconfig;
 
         $this->_userInfoComplete       = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
@@ -312,6 +311,7 @@ class UserTest extends TestCase
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
     }
 
@@ -339,7 +339,6 @@ class UserTest extends TestCase
      */
     public function testFactoryRetrievesUserInfo()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
@@ -354,7 +353,6 @@ class UserTest extends TestCase
      */
     public function testGetDataForLanguagePreferences()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['language_preference'],
@@ -370,7 +368,6 @@ class UserTest extends TestCase
      */
     public function testGetFullname()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['Real_name'],
@@ -386,7 +383,6 @@ class UserTest extends TestCase
      */
     public function testGetId()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['ID'],
@@ -402,7 +398,6 @@ class UserTest extends TestCase
      */
     public function testGetUsername()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         $this->assertEquals(
             $this->_userInfoComplete['UserID'],
@@ -662,10 +657,10 @@ class UserTest extends TestCase
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $mockConfig = &$this->_mockConfig;
-        '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
 
         $this->_factory->setConfig($mockConfig);
 
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
         $mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
@@ -701,6 +696,7 @@ class UserTest extends TestCase
             ->method('settingEnabled')
             ->willReturn(false);
 
+        $mockConfig = &$this->_mockConfig;
         $this->_factory->setConfig($mockConfig);
 
         $this->_user->updatePassword(
