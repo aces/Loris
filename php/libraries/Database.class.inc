@@ -18,9 +18,12 @@ class Database implements LoggerAwareInterface
     use \Psr\Log\LoggerAwareTrait;
 
     /**
-     * The database handle, created by the connect() method
+     * The database handle, created by the connect() method.
+     * This *MUST* be private to ensure close deletes the
+     * last (only) reference to it, which is how connections
+     * are closed in PDO
      *
-     * @var    PDO
+     * @var    ?PDO
      * @access private
      */
     var $_PDO = null;
@@ -56,7 +59,8 @@ class Database implements LoggerAwareInterface
 
     /**
      * Constructor must be public for unit tests to pass, but this should not
-     * be used directly. Should only be called by singleton method.
+     * be used directly. References should only be retrieved via the LorisInstance
+     * object.
      */
     public function __construct()
     {
@@ -65,6 +69,7 @@ class Database implements LoggerAwareInterface
         // NDB_Factory will set an appropriate ApacheLogger after the fact.
         $this->setLogger(new \Psr\Log\NullLogger);
     }
+
     /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
@@ -81,53 +86,23 @@ class Database implements LoggerAwareInterface
      * @param bool   $trackChanges boolean determining if changes should be
      *                             logged to the history table
      *
-     * @return \Database
-     * @throws \DatabaseException
-     * @access public
+     * @return     \Database
+     * @throws     \DatabaseException
+     * @access     public
+     * @deprecated
      */
-    static function &singleton(
+    static function singleton(
         string $database,
         bool $trackChanges = true
     ): \Database {
-        $username = getenv("LORIS_{$database}_USERNAME");
-        $password = getenv("LORIS_{$database}_PASSWORD");
-        $host     = getenv("LORIS_{$database}_HOST");
-
-        static $connections = [];
-
-        // if no arguments, try to get the first connection or choke
-        if (empty($database)
-            && empty($username)
-            && empty($password)
-            && empty($host)
-        ) {
-            if (!empty($connections)) {
-                reset($connections);
-                $connection = current($connections);
-                return $connection;
-            } else {
-                throw new DatabaseException("No database connection exists");
-            }
-        } else {
-            // name the connection.
-            if ($trackChanges) {
-                $connection = md5($database.$host.$username.$password.'yep');
-            } else {
-                $connection = md5($database.$host.$username.$password.'nope');
-            }
-
-            // create the connection if none exists
-            if (empty($connections[$connection])) {
-                $connections[$connection] = new Database();
-                $connections[$connection]->connect(
-                    $database,
-                    $trackChanges
-                );
-            }
-
-            // return the connection
-            return $connections[$connection];
-        }
+        // We don't have access to $this->logger since it's a static function,
+        // so we need to use error_log() instead of $this->logger->warning().
+        error_log(
+            "Database::singleton is deprecated. "
+            . "Use the getDatabaseConnection method from your LorisInstance"
+            . " object instead."
+        );
+        return \NDB_Factory::singleton()->database();
     }
 
     /**
@@ -1615,5 +1590,19 @@ class Database implements LoggerAwareInterface
     public function getArchitecture(): string
     {
         return $this->_getServerVariable('version_comment');
+    }
+
+    /**
+     * Close the database connection.
+     *
+     * @return void
+     */
+    public function closeConnection(): void
+    {
+        $this->_preparedStoreHistory = null;
+
+        $this->_PDO        = null;
+        $this->_HistoryPDO = null;
+
     }
 }
