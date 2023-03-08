@@ -23,7 +23,7 @@ class Database implements LoggerAwareInterface
      * last (only) reference to it, which is how connections
      * are closed in PDO
      *
-     * @var    PDO
+     * @var    ?PDO
      * @access private
      */
     var $_PDO = null;
@@ -111,11 +111,6 @@ class Database implements LoggerAwareInterface
 
         }
 
-            $this->_PDO = new PDO(
-                "mysql:host=$host;dbname=$database;charset=UTF8",
-                $username,
-                $password
-            );
         try {
             $this->_PDO = new PDO(
                 "mysql:host=$host;dbname=$database;charset=UTF8",
@@ -125,7 +120,6 @@ class Database implements LoggerAwareInterface
         } catch (PDOException $e) {
             // This exception will not be included in the error log as it will
             // likely include credentials.
-            throw $e;
             throw new DatabaseException(
                 "Could not establish a PDO object using the following values: "
                 . "username: `$username`, dbname: `$database`, host: `$host` "
@@ -1568,10 +1562,11 @@ class Database implements LoggerAwareInterface
      *
      * @return void
      */
-    public function closeConnection() : void
+    public function closeConnection(): void
     {
         $this->_preparedStoreHistory = null;
-        $this->_PDO = null;
+
+        $this->_PDO        = null;
         $this->_HistoryPDO = null;
 
     }
