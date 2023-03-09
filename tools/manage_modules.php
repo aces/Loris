@@ -53,7 +53,7 @@ if (isset($flags['remove'])) {
     foreach ($currentModules as $module) {
         try {
             Module::factory($module);
-        } catch(\LorisNoSuchModuleException | \LorisModuleMissingException $e) {
+        } catch (\LorisNoSuchModuleException | \LorisModuleMissingException $e) {
             print "Removing $module\n";
             if ($dryrun) {
                 continue;
@@ -92,7 +92,7 @@ function addDir(string $moduledir): void
             if (is_dir("$moduledir/$module")) {
                 try {
                     Module::factory($module);
-                } catch(\LorisNoSuchModuleException
+                } catch (\LorisNoSuchModuleException
                     | \LorisModuleMissingException $e
                 ) {
                     // Wasn't a valid module, so don't add it.

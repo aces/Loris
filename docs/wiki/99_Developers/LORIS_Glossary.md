@@ -20,7 +20,7 @@ Below is a list of key terms used in LORIS. For a definition of study variables 
 
 **Caveat Emptor Flag:** false by default. Should be set to true if a candidate should be flagged as a warning for analysis.
 
-**Cohort:** subproject or subgroup of people within the study
+**Cohort:** cohort or subgroup of people within the study
 
 **CommentID:** keys the data for each instrument form entry
 
@@ -100,7 +100,7 @@ Below is a list of key terms used in LORIS. For a definition of study variables 
 
 **Visit:** In Progress, Not Started, Visit...
 
-**Visit Label:** timepoint. Note that Visit labels must be defined separately for each subproject in the fileproject/config.xml
+**Visit Label:** timepoint. Note that Visit labels must be defined separately for each cohort in the fileproject/config.xml
 
 **Visit Window:** table that must be populated with all visit labels. The Imaging Pipeline critically depends on this. The populate_visit_windows.php script populates this table based on the config.xml.
 

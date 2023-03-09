@@ -59,7 +59,7 @@ class AddSurvey extends \NDB_Form
      */
     function _validateAddSurvey($values)
     {
-        $db = \Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // Check that all required fields are present.
         if (!empty($values['Email']) ) {
@@ -188,7 +188,7 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $email = $values['Email'];
         unset($values['Email']);
         $SessionID = $db->pselectOne(
@@ -241,13 +241,13 @@ class AddSurvey extends \NDB_Form
                     'CommentID'       => $commentID,
                 ]
             );
-        } catch(\DatabaseException $e) {
+        } catch (\DatabaseException $e) {
             error_log($e->getMessage());
             $this->tpl_data['success'] = false;
         }
         $this->tpl_data['success'] = true;
 
-        if ($email) {
+        if ($email && ($values['send_email'] == 'true')) {
             $config   = \NDB_Config::singleton();
             $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
             $msg_data = [

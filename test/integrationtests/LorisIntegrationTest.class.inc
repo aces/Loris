@@ -70,7 +70,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $database = $this->config->getSetting('database');
 
-        $this->DB = Database::singleton(
+        $this->DB = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -180,17 +180,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**
@@ -385,19 +375,19 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to create a subproject
+     * Helper function to create a cohort
      *
-     * @param string $SubprojectID Name of the subproject
-     * @param string $title        Name of the subproject
+     * @param string $CohortID Name of the cohort
+     * @param string $title    Name of the cohort
      *
      * @return void
      */
-    function createSubproject($SubprojectID, $title)
+    function createCohort($CohortID, $title)
     {
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                "SubprojectID"      => $SubprojectID,
+                "CohortID"          => $CohortID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
@@ -406,16 +396,16 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to delete a subproject
+     * Helper function to delete a cohort
      *
-     * @param string $title Name of the subproject
+     * @param string $title Name of the cohort
      *
      * @return void
      */
-    function deleteSubproject($title)
+    function deleteCohort($title)
     {
         $this->DB->delete(
-            "subproject",
+            "cohort",
             [
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
@@ -582,9 +572,9 @@ abstract class LorisIntegrationTest extends TestCase
         try {
             $webElement->click();
             $clickException = null;
-        } catch(ElementNotVisibleException $e) {
+        } catch (ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceException $e) {
+        } catch (StaleElementReferenceException $e) {
             $clickException = $e;
         }
 

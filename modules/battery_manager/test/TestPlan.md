@@ -35,10 +35,10 @@ Test Battery.
   3. The **Change Status** column should be in the data table.
   4. The **Edit Metadata** column should be in the data table.
   5. Clicking on the "New Test" button should trigger a modal window displaying a form with the following fields:
-     `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
+     `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Cohort`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
   6. Clicking on Edit in **Edit Metadata** takes you to a new page with a form with the following fields:
-     `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
+     `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Cohort`, `Visit Label`, `Site`, `First Visit`,
      and `Instrument Order`.
 
 ### New Test Button
@@ -79,7 +79,7 @@ Click the "New Test" button on the upper right corner of the data table.
 **Test filters**
   1. A selection filter should be present on top of the page containing the following fields:
      - Minimum age, Maximum age, and Instrument Order (as text fields).
-     - Instrument, Stage, Subproject, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
+     - Instrument, Stage, Cohort, Visit Label, Site, First Visit, Instrument Order, and Active (as dropdown fields with blank default option).
   2. Type text in the Minimum age and verify that the table gets filtered as you type.
   3. Type text in the Maximum age and verify that the table gets filtered as you type.
   4. Select values from the dropdown filters (independently and combined) to filter table further.

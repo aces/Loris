@@ -55,7 +55,7 @@ class HelpFile
     static function &factory($helpID)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $obj = new HelpFile;
 

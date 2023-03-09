@@ -83,6 +83,7 @@ class ParticipantStatus extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -102,6 +103,7 @@ class ParticipantStatus extends Component {
 
   /**
    * On submit
+   *
    * @param {object} e - Event object
    */
   onSubmit(e) {

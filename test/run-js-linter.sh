@@ -3,7 +3,7 @@ set -euo pipefail
 # NOTE: To use this script, run `npm run lint:javascript`
 
 # Run ESLint on Loris modules
-eslint modules/
+eslint --ext=.jsx,.js,.tsx,.ts modules/
 
 # Run ESLint on generic React components
 eslint jsx/

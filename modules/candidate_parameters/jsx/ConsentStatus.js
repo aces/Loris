@@ -158,19 +158,26 @@ class ConsentStatus extends Component {
                 let consentWithdrawal = consentStatus + '_withdrawal';
                 let consentWithdrawal2 = consentStatus + '_withdrawal2';
 
-                date1 = myFormData[consentWithdrawal] ?
+                const withdrawDate1 = myFormData[consentWithdrawal] ?
                     myFormData[consentWithdrawal] : null;
-                date2 = myFormData[consentWithdrawal2] ?
+                const withdrawDate2 = myFormData[consentWithdrawal2] ?
                     myFormData[consentWithdrawal2] : null;
 
-                if (date1 !== date2) {
+                if (withdrawDate1 !== withdrawDate2) {
                     alert(label + ' withdrawal dates do not match!');
                     return;
                 }
-                if (date1 > today) {
+                if (withdrawDate1 > today) {
                     alert(
                       label
                       + ' withdrawal date cannot be later than today!'
+                    );
+                    return;
+                }
+                if (withdrawDate1 < date1) {
+                    alert(
+                      label
+                      + ' withdrawal date cannot be earlier than response date!'
                     );
                     return;
                 }
@@ -227,6 +234,7 @@ class ConsentStatus extends Component {
 
     /**
      * Render formatted history
+     *
      * @return {JSX} - React markup for the component
      */
     renderFormattedHistory() {
@@ -287,6 +295,7 @@ class ConsentStatus extends Component {
 
     /**
      * Render Consent
+     *
      * @param {string} consentName
      * @return {JSX} - React markup for the component
      */

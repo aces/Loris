@@ -1,6 +1,7 @@
 # Data Query Tool (DQT) Test Plan
 
-1. Ensure the DQT module loads only for a user that has the permission 'View Data Query Tool' (`dataquery_view`)
+1. Ensure the DQT module loads only for a user that has the permission 'Data 
+Query Tool: View/Download Cross-Modality Data' (`dataquery_view`)
 2. Verify that the permission 'View Data Query Tool' is required to access the DQT page
 3. Go to the "Define Fields" tab:
    - select an instrument in the instrument drop down, ensure the fields are displayed
@@ -16,7 +17,7 @@
      to the list of selected fields on the right side of the screen
    - ensure that the number of visits added to the query reflect the number of
      visits that were selected for the fields
-   -
+
 4. Go to the "Define Filters" tab:
    - add a filter by selecting an instrument; ensure that drop downs with field names
      are available for that instrument; select a field; ensure that a drop down with 
@@ -35,15 +36,19 @@
    - ensure that a table with results is being displayed after having run the query
    - change the "(Maximum rows per page)" drop down and ensure the table gets updated
      accordingly
-   - ensure that the first column of the data table is the "Identifiers" column that
-     contains the "PSCID,VisitLabel" information separated with a comma
+   - If the "Longitudinal" view is selected, ensure that the first column of the data table 
+     is the "Identifiers" column and contains the "PSCID" data. Switch to the "Cross-sectional" 
+     view and make sure the "Identifiers" column now contains "PSCID,VisitLabel" tuples for each row.
    - ensure that the fields that were selected are present in the resulting data table
    - ensure that the filters that were added are indeed applied to the resulting data table
-   - ensure the "Download Data as ZIP" is working
+   - ensure the "Download Table as CSV" downloads a csv format of the displayed table. Toggle 
+     between "Longitudinal" and "Cross-sectional" and make sure the downloaded CSV represents 
+     the selected view.
+   - ensure the "Download Files" button triggers the compression and download of all files 
+     available as links in the datatable. (make sure to include downloadable fields in your 
+     query to test this item, downloadable fields are identified with a little download logo 
+     in the "define fields" section)
    - ensure that clicking on the different page numbers on the right side are working
-   - change the data view from "Cross-sectional" to "Longitudinal", ensure that the 
-     data is now displayed longitudinal on the X axis with column header names changed
-     to "VisitLabel,InstrumentName" separated with a comma
 6. Click on the "Visualized Data" button:
    - ensure that a table with "Basic Statistics" (Min, Max, Standard Deviation, Mean,
      Mean Deviation, Mean Squared Error, First Quartile, Second Quartile, Third 

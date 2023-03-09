@@ -3,7 +3,6 @@
  * LORIS
  *
  * @param {array} props - The React props
- *
  * @return {object} - The rendered widget
  */
 function ConsentWidget(props) {
@@ -30,7 +29,6 @@ function ConsentWidget(props) {
  * Returns a rendered JSX component for a single consent type
  *
  * @param {array} consent - The type of consent
- *
  * @return {object}
  */
 function consentTerm(consent) {

@@ -44,6 +44,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Next Stage", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, page loads with data_entry permission
@@ -72,7 +80,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -100,7 +108,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load without permission
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -115,7 +123,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load with permission
         $this->setupPermissions(["data_entry"]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -139,7 +147,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDateError()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -155,10 +163,10 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Control");
+        $Cohort->sendKeys("Control");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
@@ -193,10 +201,10 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $scanDone->sendKeys("No");
 
-        $Subproject = $this->safeFindElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Fresh");
+        $Cohort->sendKeys("Fresh");
 
         $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")

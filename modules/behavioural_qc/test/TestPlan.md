@@ -1,20 +1,15 @@
 # Behavioural Quality Control Test Plan
 
-## [Automated testing](https://github.com/aces/Loris/blob/17.1-dev/modules/behavioural_qc/test/behavioural_qcTest.php) covers:
-* Permissions (both present and absent)
-* That body text exists
-
-## Must be manually tested:
-1. Access behavioural_qc module
-2. Upon first loading, Site filter should be set to 'All Sites' if the user has 
-'access_all_profiles' permission or 'All User Sites' otherwise.
-3. Remove the 'access all profiles' permission and test whether the site filter is 
-now populated only with sites that are study sites and to which the user has access.
-4. Make sure that the user accessible site data is only populated with the step 3 condition.
-5. Ensure that Conflict/Incomplete Candidate/Link to BVL Feedback links point to the correct place.
-6. Ensure that feedback status is correct.
-7. Repeat steps 2-8 with applying all the filters.
-8. Perform a query that returns a row with a link to BVL feedback. Click on the click to edit the feedback QC
-   status and change its value. Save the data and close the popup. Make sure that the behavioural_qc result table has been 
-   updated for that row (i.e. reflect the new Feedback status). Click on the feedback link again and check that 
-   the QC status has also been updated in the popup window.  
+1. Make sure the user can only access the module if they have the permission 
+_Behavioural Quality Control: View Flagged Behavioural Entries_ (`behavioural_quality_control_view`)
+2. Make sure that without the _Access Profile: View Candidates and
+Timepoints - All Sites_ (`access_all_profiles`) permission the user only has 
+access to data affiliated with their site and with the permission they can see data 
+from all sites.
+3. Make sure the 3 tabs load _Incomplete Forms_, _Data Conflicts_ and _Behavioural Feedback_.
+4. Make sure links on all pages are functional and redirect the user to the appropriate page. 
+Links to PSCID/DCCID should redirect to the candidate page. Links to visits  should redirect to the 
+candidate's timepoint. Links to instruments should redirect to the data entry form. Finally, feedback links 
+should open the appropriate window where the feedback was entered.
+5. Confirm that the feedback status in the _Behavioural Feedback_ tab is correct.
+6. Make sure filters function properly and select the expected data from the table in each tab.

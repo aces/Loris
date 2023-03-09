@@ -40,8 +40,15 @@ const NavigationStepper = (props) => {
       steps={steps}
       activeStep={mySteps.indexOf(props.setIndex)}
       highlightSteps={true}
+      visible={props.visible}
     />
   );
+};
+NavigationStepper.defaultProps = {
+  visible: true,
+};
+NavigationStepper.propTypes = {
+  visible: PropTypes.bool,
 };
 
 const NavigationWithSave = (props) => {
@@ -89,55 +96,41 @@ const NavigationWithSave = (props) => {
   };
 
   return (
-    <div style={{
-      padding: '0',
-      width: '100%',
-      minHeight: '0',
-      /* The proceeding pushes to bottom */
-      // position: 'fixed',
-      // bottom: '100px',
-      // left: 0,
-      // zIndex: 10,
-    }}>
-      <div style={{
-        zIndex: 10,
-        width: '350px',
-        height: '80px',
-        marginRight: '30px',
-        marginLeft: 'auto',
-        position: 'relative',
-      }}>
-        <button onClick={() => props.onClickHandler('previous')}
-                className={props.disable.previous
-                  ? 'navigation-button disabled'
-                  : 'navigation-button'}
-                style={{
-                  display: 'inline-block',
-                  marginRight: '10px',
-                }}
-                disabled={props.disable.previous}>
-          <span className='glyphicon glyphicon-chevron-left'/>
-          {getTextDescriptionPrevious(props.index)}
-        </button>
-        <button onClick={() => props.onClickHandler('save')}
-                className={'save-button'}
-                style={{
-                  display: 'inline-block',
-                  marginRight: '10px',
-                }}
-                disabled={props.disable.save}>
-          Save
-        </button>
-        <button onClick={() => props.onClickHandler('next')}
-                className={props.disable.next
-                  ? 'navigation-button disabled'
-                  : 'navigation-button'}
-                style={{display: 'inline-block'}}
-                disabled={props.disable.next}>
-          {getTextDescriptionNext(props.index)}
-          <span className='glyphicon glyphicon-chevron-right'/>
-        </button>
-      </div>
+    <div className={'navigationStepper'}
+         style={(props.visible
+           ? null
+           : {opacity: 0, position: 'absolute', right: '9999px'}
+         )}>
+      <button onClick={() => props.onClickHandler('previous')}
+              className={props.disable.previous
+                ? 'navigation-button disabled'
+                : 'navigation-button'}
+              style={{
+                display: 'inline-block',
+                marginRight: '10px',
+              }}
+              disabled={props.disable.previous}>
+        <span className='glyphicon glyphicon-chevron-left'/>
+        {getTextDescriptionPrevious(props.index)}
+      </button>
+      <button onClick={() => props.onClickHandler('save')}
+              className={'save-button'}
+              style={{
+                display: 'inline-block',
+                marginRight: '10px',
+              }}
+              disabled={props.disable.save}>
+        Save
+      </button>
+      <button onClick={() => props.onClickHandler('next')}
+              className={props.disable.next
+                ? 'navigation-button disabled'
+                : 'navigation-button'}
+              style={{display: 'inline-block'}}
+              disabled={props.disable.next}>
+        {getTextDescriptionNext(props.index)}
+        <span className='glyphicon glyphicon-chevron-right'/>
+      </button>
     </div>
   );
 };
@@ -147,13 +140,16 @@ NavigationWithSave.defaultProps = {
     save: false,
     next: false,
   },
+  visible: true,
 };
 NavigationWithSave.propTypes = {
   onClickHandler: PropTypes.func,
   disable: PropTypes.object,
+  visible: PropTypes.bool,
 };
 
 export {
   NavigationStepper,
   NavigationWithSave,
 };
+

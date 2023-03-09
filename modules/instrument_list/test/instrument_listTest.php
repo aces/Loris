@@ -52,11 +52,19 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
             "Behavioural Battery of Instruments",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
             $bodyText
         );
     }
@@ -73,7 +81,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -94,7 +102,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(

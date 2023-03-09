@@ -129,7 +129,8 @@ INSERT INTO `permissions` VALUES
     (58,'survey_accounts_view', 'Candidate Surveys',(SELECT ID FROM modules WHERE Name='survey_accounts'),'View', 2),
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View','2'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
-    (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2');
+    (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2'),
+    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit', '2');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

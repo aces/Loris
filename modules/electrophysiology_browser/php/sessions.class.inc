@@ -17,7 +17,8 @@ namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
-
+use LORIS\electrophysiology_browser\Models\ElectrophysioAnnotations;
+use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
 
 /**
  * Provides the PHP code for the menu filter for the electrophysiology browser
@@ -82,7 +83,7 @@ class Sessions extends \NDB_Page
                 new \SessionID(strval($session_id))
             );
             $this->sessionID = $session_id;
-        } catch(\LorisException $e) {
+        } catch (\LorisException $e) {
             throw new \NotFound("Session not found");
         }
 
@@ -136,7 +137,6 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
-
         return $this->getSessionData($outputType);
     }
 
@@ -150,6 +150,7 @@ class Sessions extends \NDB_Page
      */
     function getSessionData($outputType)
     {
+
         $db = \NDB_Factory::singleton()->database();
 
         $query = 'SELECT
@@ -204,11 +205,13 @@ class Sessions extends \NDB_Page
         $subjectData['site']        = $this->timepoint->getPSC();
         $subjectData['dob']         = $candidate->getCandidateDoB();
         $subjectData['sex']         = $candidate->getCandidateSex();
-        $subjectData['subproject']  = $this->timepoint->getData('SubprojectTitle');
+        $subjectData['cohort']      = $this->timepoint->getData('CohortTitle');
         $subjectData['output_type'] = $outputType;
 
         return $subjectData;
     }
+
+
 
     /**
      * Get the list of electrophysiology recordings with their recording information.
@@ -224,19 +227,17 @@ class Sessions extends \NDB_Page
         $fileCollection = [];
         $params         = [];
         $params['SID']  = $this->sessionID;
-
-        $query = 'SELECT
-                    pf.PhysiologicalFileID
-                 FROM
-                    physiological_file pf ';
+        $query          = 'SELECT
+                         pf.PhysiologicalFileID
+                       FROM
+                         physiological_file pf ';
 
         if ($outputType != 'all_types') {
-            $query .= 'LEFT JOIN physiological_output_type pot ON ';
-            $query .= 'pf.PhysiologicalOutputTypeID='
-                             .'pot.PhysiologicalOutputTypeID ';
-            $query .= 'WHERE SessionID=:SID ';
-            $query .= 'AND pot.OutputTypeName = :OTN AND pf.ParentID IS NULL ';
-
+            $query        .= 'LEFT JOIN physiological_output_type pot ON ';
+            $query        .= 'pf.PhysiologicalOutputTypeID='
+                .'pot.PhysiologicalOutputTypeID ';
+            $query        .= 'WHERE SessionID=:SID ';
+            $query        .= 'AND pot.OutputTypeName = :OTN ';
             $params['OTN'] = $outputType;
         } else {
             $query .= "WHERE SessionID=:SID AND pf.ParentID IS NULL";
@@ -261,6 +262,8 @@ class Sessions extends \NDB_Page
      */
     function getSummary(array $file) : array
     {
+        $db = \NDB_Factory::singleton()->database();
+
         $fileSummary     = [];
         $physioFileID    = intval($file['PhysiologicalFileID']);
         $physioFileObj   = new ElectrophysioFile($physioFileID);
@@ -457,8 +460,44 @@ class Sessions extends \NDB_Page
 
         $fileSummary['downloads']   = $this->getDownloadLinks($physioFileObj);
         $fileSummary['chunks_urls'] = $physioFileObj->getChunksURLs();
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
 
-        $fileSummary['splitData'] = $physioFileObj->getSplitData(0);
+        $fileOutput = $db->pselectone(
+            'SELECT pot.OutputTypeName
+                FROM physiological_output_type pot
+                INNER JOIN physiological_file AS pf
+                ON pf.PhysiologicalFileID=:PFID
+                AND pf.PhysiologicalOutputTypeID=pot.PhysiologicalOutputTypeID',
+            ['PFID' => $physioFileID]
+        );
+
+        // Get the annotation data
+        $annotations = new ElectrophysioAnnotations(
+            intval($physioFileID)
+        );
+        $fileSummary['annotations'] = $annotations->getData();
+
+        // Get the task events data
+        $events = new ElectrophysioEvents(
+            intval($physioFileID)
+        );
+        $fileSummary['events'] = $events->getData();
+
+        $fileSummary['epochsURL']   = $db->pselectOne(
+            "SELECT FilePath
+            FROM physiological_event_file
+            WHERE PhysiologicalFileID=:physioFileID
+            AND FileType='tsv'",
+            ['physioFileID' => $physioFileID]
+        );
+        $fileSummary['output_type'] = $fileOutput;
+        $fileSummary['splitData']   = $physioFileObj->getSplitData(0);
 
         return $fileSummary;
     }
@@ -471,7 +510,7 @@ class Sessions extends \NDB_Page
      * @return array array with the path to the different files associated to the
      *               electrophysiology file
      */
-    function getDownloadlinks(ElectrophysioFile $physioFile): array
+    function getDownloadLinks(ElectrophysioFile $physioFile): array
     {
         $nSplit        = intval($physioFile->getParameter('SplitCount'));
         $downloadLinks = [];
@@ -526,7 +565,7 @@ class Sessions extends \NDB_Page
         $queries = [
             'physiological_electrode'          => 'physiological_electrode_file',
             'physiological_channel'            => 'physiological_channel_file',
-            'physiological_task_event'         => 'physiological_task_event_file',
+            'physiological_event_archive'      => 'physiological_event_files',
             'physiological_annotation_archive' => 'physiological_annotation_files',
             'physiological_archive'            => 'all_files',
         ];
@@ -534,7 +573,7 @@ class Sessions extends \NDB_Page
         $labels = [
             'physiological_electrode_file'   => 'Electrodes',
             'physiological_channel_file'     => 'Channels',
-            'physiological_task_event_file'  => 'Events',
+            'physiological_event_files'      => 'Events',
             'physiological_annotation_files' => 'Annotations',
             'all_files'                      => 'All Files',
         ];
@@ -649,5 +688,4 @@ class Sessions extends \NDB_Page
             )
         );
     }
-
 }

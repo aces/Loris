@@ -1,4 +1,11 @@
-export const fetchBlob = (url: string, params?: {}) =>
+/**
+ * fetchBlob
+ *
+ * @param {string} url - The url to fetch
+ * @param {object} params - The request params
+ * @returns {Promise} - The blob data
+ */
+export const fetchBlob = (url: string, params?: RequestInit) : Promise<Blob> =>
   fetch(url, params).then((response) => {
     if (!response.ok) {
       return Promise.resolve(null) as Promise<Blob>;
@@ -6,7 +13,14 @@ export const fetchBlob = (url: string, params?: {}) =>
     return response.blob().then((data) => data);
   });
 
-export const fetchJSON = (url: string, params?: {}) =>
+/**
+ * fetchJSON
+ *
+ * @param {string} url - The url to fetch
+ * @param {object} params - The request params
+ * @returns {Promise} - The json data
+ */
+export const fetchJSON = (url: string, params?: RequestInit) =>
   fetch(url, params).then((response) => {
     if (!response.ok) {
       return Promise.resolve(null) as Promise<any>;
@@ -14,7 +28,14 @@ export const fetchJSON = (url: string, params?: {}) =>
     return response.json().then((data) => data);
   });
 
-export const fetchText = (url: string, params?: {}) =>
+/**
+ * fetchText
+ *
+ * @param {string} url - The url to fetch
+ * @param {object} params - The request params
+ * @returns {Promise} - The text data
+ */
+export const fetchText = (url: string, params?: RequestInit) =>
   fetch(url, params).then((response) => {
     if (!response.ok) {
       return Promise.resolve(null) as Promise<string>;

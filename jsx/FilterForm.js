@@ -3,7 +3,6 @@
  *
  * @author Loris Team
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -126,7 +125,6 @@ class FilterForm extends Component {
    * @param {string} type - form element type (i.e component name)
    * @param {string} key - the name of the form element
    * @param {string} value - the value of the form element
-   *
    * @return {{}} filter - filterData
    */
   setFilter(type, key, value) {

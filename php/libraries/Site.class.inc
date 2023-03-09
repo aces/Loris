@@ -26,7 +26,7 @@ class Site implements
             try {
                 $siteList[$cidS] = new Site();
                 $siteList[$cidS]->select($centerID);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $message = $e->getMessage();
                 unset($siteList[$cidS]);
                 throw new Exception("Could not select site ($message)", 0, $e);
@@ -49,7 +49,7 @@ class Site implements
         $this->_siteInfo['CenterID'] = $centerID;
 
         // make a local reference to the Database object
-        $db = \Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $query  = "SELECT Name, PSCArea, Alias, MRI_alias, Account, Study_site
                       FROM psc

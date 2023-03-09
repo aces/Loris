@@ -23,7 +23,7 @@ To install the Protocol Buffers Compiler (protoc), run:
 `apt install -y protobuf-compiler`
 
 
-## User manual
+## <a name="user-manual"></a> User manual
 
 The EEG Browser visualization component adds support for some useful visual helpers: The **Signal Viewer** and the **Electrode Map**.
 

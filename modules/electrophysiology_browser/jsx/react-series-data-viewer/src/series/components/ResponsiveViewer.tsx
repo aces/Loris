@@ -1,8 +1,7 @@
 import * as R from 'ramda';
-import React, { FunctionComponent, ReactNode, Children } from 'react';
+import React, {FunctionComponent} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
-import { WithParentSizeProps } from '@visx/responsive/lib/enhancers/withParentSizeModern';
 
 type CProps = {
   parentWidth?: number,
@@ -13,6 +12,17 @@ type CProps = {
   mouseLeave?: (_: any) => void
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.parentWidth
+ * @param root0.parentHeight
+ * @param root0.mouseDown
+ * @param root0.mouseMove
+ * @param root0.mouseUp
+ * @param root0.mouseLeave
+ * @param root0.children
+ */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
   parentWidth,
   parentHeight,
@@ -20,8 +30,12 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseMove,
   mouseUp,
   mouseLeave,
-  children
+  children,
 }) => {
+  /**
+   *
+   * @param layer
+   */
   const provision = (layer) =>
     React.cloneElement(
       layer,
@@ -41,6 +55,10 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
       .range([-parentHeight/2, parentHeight/2]),
   ];
 
+  /**
+   *
+   * @param e
+   */
   const eventToPosition = (e) => {
     const {
       top,
@@ -98,10 +116,30 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
 ResponsiveViewer.defaultProps = {
   parentWidth: 400,
   parentHeight: 300,
-  mouseMove: () => {},
-  mouseDown: () => {},
-  mouseUp: () => {},
-  mouseLeave: () => {},
+  /**
+   *
+   */
+  mouseMove: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseDown: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseUp: () => {
+    // do nothing
+  },
+  /**
+   *
+   */
+  mouseLeave: () => {
+    // do nothing
+  },
 };
 
 export default withParentSize(ResponsiveViewer);

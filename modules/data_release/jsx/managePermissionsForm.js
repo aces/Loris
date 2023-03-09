@@ -110,7 +110,7 @@ class ManagePermissionsForm extends Component {
    *
    * @param {string} userId
    * @param {string} version
-   * @param {boulean} permission
+   * @param {boolean} permission
    */
   setFormData(userId, version, permission) {
     let {data} = JSON.parse(JSON.stringify(this.state));
@@ -126,7 +126,7 @@ class ManagePermissionsForm extends Component {
   /**
    * Handles submission of the form
    *
-   * @return {promise}
+   * @return {Promise}
    */
   handleSubmit() {
     const {data} = JSON.parse(JSON.stringify(this.state));

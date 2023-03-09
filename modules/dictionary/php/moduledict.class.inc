@@ -62,7 +62,7 @@ class ModuleDict extends \NDB_Page
         \User $user,
         string $modulename
     ) : ResponseInterface {
-        $loris  = $this->lorisinstance;
+        $loris  = $this->loris;
         $module = null;
 
         foreach ($loris->getActiveModules() as $m) {

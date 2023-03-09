@@ -93,7 +93,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Data Dictionary", $bodyText);

@@ -30,22 +30,10 @@ require_once __DIR__ .
  */
 class ExaminerTest extends LorisIntegrationTest
 {
-
-    /**
-     * UI elements and locations
-     * Breadcrumb - 'Examiner'
-     * Button
-     * Table headers
-     */
-    private $_loadingUI
-        =  [
-            'Examiner'         => '#bc2 > a:nth-child(2) > div',
-            'Selection Filter' => '#lorisworkspace > div.row > '.
-                                  'div.col-sm-12.col-md-7 > div > div.panel-heading',
-            'Add Examiner'     => '#lorisworkspace > div > div:nth-child(1) > '.
-                                  'div > div:nth-child(1)',
-            'Add'              => '#examiner > div:nth-child(3) > div > button',
-        ];
+    static $examnier = 'input[name="examiner"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
 
     /**
      * Insert testing data
@@ -141,9 +129,6 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerFilterClearForm()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->safeGet($this->url . "/examiner/");
         $this->safeFindElement(
             WebDriverBy::Name("examiner")
@@ -163,58 +148,33 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerAddExaminer()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         //insert a new exmainer with name "Test_Examiner" and radiologist
         //in the TEST_Site.
         $this->safeGet($this->url . "/examiner/");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#default-panel > div > div > div.table-header ".
+                "> div > div > div:nth-child(2) > button:nth-child(1)"
+            )
+        );
         $this->safeFindElement(
             WebDriverBy::Name("addName")
         )->sendKeys("Test_Examiner");
-        $this->safeFindElement(
-            WebDriverBy::Name("addRadiologist")
-        )->click();
         $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("Montreal");
-        $this->safeFindElement(
+        $this->safeClick(
             WebDriverBy::Name("fire_away")
-        )->click();
-        $this->safeGet($this->url . "/examiner/");
-        //search the examiner which inserted
-        $this->safeFindElement(
-            WebDriverBy::Name("examiner")
-        )->sendKeys("Test_Examiner");
-        $this->safeFindElement(
-            WebDriverBy::Name("filter") // Filter button removed in
-        )->click();                     // Reactified menu filter
-        $text = $this->webDriver->executescript(
-            "return document.querySelector".
-                "('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a')".
-                ".textContent"
-        );
-        $this->assertStringContainsString("Test_Examiner", $text);
-    }
-    /**
-     * Testing UI elements when page loads
-     *
-     * @return void
-     */
-    function testPageUIs()
-    {
-        $this->markTestSkipped(
-            'Skipped tests until Travis and React get along better'
         );
         $this->safeGet($this->url . "/examiner/");
-        foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-            $this->assertStringContainsString($key, $text);
-        }
+        $this->_filterTest(
+            self::$examnier,
+            self::$display,
+            self::$clearFilter,
+            'Test_Examiner',
+            '1 row'
+        );
     }
-
 
 }
 

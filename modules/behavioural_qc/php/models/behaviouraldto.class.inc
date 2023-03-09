@@ -17,7 +17,8 @@ namespace LORIS\behavioural_qc\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class BehaviouralDTO implements \LORIS\Data\DataInstance
+class BehaviouralDTO implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     /**
      * The instrument
@@ -59,7 +60,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance
      *
      * @var string
      */
-    private $_subproject = '';
+    private $_cohort = '';
 
     /**
      * The site
@@ -118,6 +119,28 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance
     private $_feedback_status = '';
 
     /**
+     * Returns the CenterID for this instance, for filters such as
+     * \LORIS\Data\Filters\UserSiteMatch to match against.
+     *
+     * @return \CenterID
+     */
+    public function getCenterID(): \CenterID
+    {
+        return new \CenterID($this->_site);
+    }
+
+    /**
+     * Returns the ProjectID for this row, for filters such as
+     * \LORIS\Data\Filters\UserProjectMatch to match again.
+     *
+     * @return \ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        return new \ProjectID($this->_project);
+    }
+
+    /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array
@@ -130,7 +153,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance
             'pscID'           => $this->_pscID,
             'visit'           => $this->_visit,
             'project'         => $this->_project,
-            'subproject'      => $this->_subproject,
+            'cohort'          => $this->_cohort,
             'site'            => $this->_site,
             'feedbackID'      => $this->_feedbackID,
             'sessionID'       => $this->_sessionID,

@@ -84,5 +84,6 @@ h3 {
 }
 
 .history-item-user {
-    font-weight: bold;
+  font-weight: bold;
+  margin: 0 4px;
 }

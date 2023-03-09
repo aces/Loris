@@ -29,7 +29,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$db = Database::singleton();
+$db = \NDB_Factory::singleton()->database();
 
 
 $numCandidates = $db->pselectOne(

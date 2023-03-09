@@ -8,7 +8,7 @@ $(document).ready(function() {
         var Name = $(form.find(".projectName")).val();
         var Alias = $(form.find(".projectAlias")).val();
         var recruitmentTarget= $(form.find(".projectrecruitmentTarget")).val();
-        var SubprojectIDs= $(form.find(".projectSubprojectIDs")).val();
+        var CohortIDs= $(form.find(".projectCohortIDs")).val();
 
         e.preventDefault();
         var successClosure = function(i, form) {
@@ -55,7 +55,7 @@ $(document).ready(function() {
                         "Name" : Name,
                         "Alias" : Alias,
                         "recruitmentTarget" : recruitmentTarget,
-                        "SubprojectIDs" : SubprojectIDs
+                        "CohortIDs" : CohortIDs
                     },
                     "success" : successClosure(ProjectID, form),
                     "error" : errorClosure(ProjectID, form)

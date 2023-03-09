@@ -223,17 +223,23 @@ class Edit_User extends \NDB_Form
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
-            // granted.
-            $permIDs = array_intersect(
-                $newPermissions,
-                $editorPermissions
-            );
+            // granted unless they are a superuser
+            if ($editor->hasPermission('superuser')) {
+                $permIDs = $newPermissions;
+            } else {
+                $permIDs = array_intersect(
+                    $newPermissions,
+                    $editorPermissions
+                );
+            }
         }
 
-        // Keep old permissions if the editor is not allowed to edit them.
+        // Keep old permissions if the editor is not allowed to edit them,
+        // unless editor is superuser
         foreach ($current_permissionids as $perm) {
             if (!in_array($perm, $newPermissions)
                 && !in_array($perm, $editorPermissions)
+                && !$editor->hasPermission('superuser')
             ) {
                 $permIDs[] = $perm;
             }
@@ -249,12 +255,13 @@ class Edit_User extends \NDB_Form
             $supervisorEmails = $values['supervisorEmail'];
         }
         unset($values['supervisorEmail']);
+
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
         }
         if ($this->isCreatingNewUser()) {
-            $values['UserID'] = trim($values['UserID']);
+            $values['UserID'] = trim($values['UserID'] ?? '');
         }
         unset($values['NA_UserID']);
         // generate new password
@@ -272,14 +279,40 @@ class Edit_User extends \NDB_Form
         // multi-site UPDATE
         $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
+        $userNewCenterIDs = array_map(
+            function ($val) {
+                return new \CenterID($val);
+            },
+            $values['CenterIDs']
+        );
         if (!$this->isCreatingNewUser()) {
+            // Prevent deletion of rules/sites editor may not have access to edit.
+            if (!$editor->hasPermission('user_accounts_multisite')) {
+                // Collect CenterID(s) of user being modified.
+                $userCenterIDs = $user->getCenterIDs();
+                // Collect CenterID(s) of the editor modifying sites.
+                $editorCenterIDs = $editor->getCenterIDs();
+                // If the editor does not have access to all of the
+                // user's sites the difference between the two arrays
+                // will be the sites we additionally need to add to
+                // the user being modified.
+                $differenceOfCenterIDs = array_diff(
+                    $userCenterIDs,
+                    $editorCenterIDs
+                );
+                $userNewCenterIDs      = array_merge(
+                    array_intersect($userNewCenterIDs, $editorCenterIDs),
+                    $differenceOfCenterIDs
+                );
+            }
+
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
-            foreach ($us_curr_sites as $site) {
+            foreach ($userNewCenterIDs as $centerID) {
                 $DB->insert(
                     'user_psc_rel',
                     [
                         "UserID"   => $uid,
-                        "CenterID" => $site,
+                        "CenterID" => $centerID,
                     ]
                 );
             }
@@ -588,17 +621,20 @@ class Edit_User extends \NDB_Form
             $msg_data['url']   = $baseURL;
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
-            $msg_data['password'] = $values['Password_hash'];
+            if (isset($values['Password_hash'])) {
+                $msg_data['password'] = $values['Password_hash'];
+            }
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
             unset($msg_data);
         }
         $this->tpl_data['success'] = true;
+        $username = $values['UserID'] ?? '';
         if ($this->isCreatingNewUser()) {
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
-                . $values['UserID'];
+                . $username;
         }
     }
 
@@ -632,6 +668,8 @@ class Edit_User extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
+     * @suppress PhanTypeInvalidArrayKeyLiteral
+     *
      * @return void
      */
     function setup()
@@ -659,8 +697,9 @@ class Edit_User extends \NDB_Form
             // It is an existing user:
             //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
-            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
+        // Account Request Date - always displayed
+        $this->addScoreColumn('account_request_date', 'Account Request Date');
 
         // password
         if ($this->isCreatingNewUser()) {
@@ -816,9 +855,9 @@ class Edit_User extends \NDB_Form
                 "examiner_radiologist",
                 "Radiologist: ",
                 [
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
 
@@ -829,9 +868,9 @@ class Edit_User extends \NDB_Form
                 "examiner_pending",
                 "Pending Approval: ",
                 [
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                    ''  => "",
+                    'Y' => 'Yes',
+                    'N' => 'No',
                 ]
             );
             $this->addGroup(
@@ -842,8 +881,8 @@ class Edit_User extends \NDB_Form
             );
             $this->addGroup(
                 $groupB,
-                'examiner_group',
-                'Examiner Status',
+                "examiner_group",
+                "Examiner Status",
                 $this->_GUIDelimiter
             );
             unset($groupA);
@@ -855,8 +894,8 @@ class Edit_User extends \NDB_Form
         // Darwinian self-lockout. Let us help those who cannot help themselves.
         if (!$this->_isEditingOwnAccount()) {
             $this->addSelect(
-                'Pending_approval',
-                'Pending approval',
+                "Pending_approval",
+                "Pending approval",
                 [
                     'Y' => 'Yes',
                     'N' => 'No',
@@ -906,8 +945,7 @@ class Edit_User extends \NDB_Form
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
 
-        // get the editor's permissions
-        $perms = $editor->getPermissionsVerbose();
+        $perms = $editor->getPermissionsVerbose($this->loris);
 
         $lastRole = '';
         $group    = [];
@@ -1071,7 +1109,6 @@ class Edit_User extends \NDB_Form
                     $errors['UserID_Group']
                         = 'The user name must not exceed 255 characters';
                 }
-
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
@@ -1164,7 +1201,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email_Group']
+            $errors['Email']
                 = 'When generating a new password, '
                 . 'please notify the user by checking Send email to user box';
         }
@@ -1178,7 +1215,7 @@ class Edit_User extends \NDB_Form
         }
 
         if (is_null($this->identifier)
-            && ($values['NA_Password'] != 'on')
+            && (!isset($values['NA_Password']) || $values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
             $errors['Password'] = 'Password is required';
@@ -1192,7 +1229,7 @@ class Edit_User extends \NDB_Form
         if (!empty($values['Email'])) {
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
-                $errors['Email_Group'] = $emailError;
+                $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
                     $errors['__ConfirmEmail'] = 'Email and confirmed email '
@@ -1201,7 +1238,7 @@ class Edit_User extends \NDB_Form
             }
         } else {
             // No email entered: error
-            $errors['Email_Group'] = 'You must enter an email address';
+            $errors['Email'] = 'You must enter an email address';
         }
 
         //======================================
@@ -1282,9 +1319,13 @@ class Edit_User extends \NDB_Form
      */
     private function _getEmailError(\Database $DB, string $email): ?string
     {
-        // remove illegal characters
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (preg_match('/(<|>|"|&)/', $email)) {
+            // Although some of these characters are legal in emails, due to the
+            // current HTML escaping method, it is better to reject email
+            // addresses containing them
+            return 'Email address can not contain any the following '.
+                'characters: <, >, & and "';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
             return "Invalid email address";
         }

@@ -65,6 +65,7 @@ class Datadict extends \DataFrameworkMenu
             // database we need to instantiate the object to get the table name
             try {
                 $iObj = \NDB_BVL_Instrument::factory(
+                    $this->loris,
                     $instrument,
                     '',
                     ''

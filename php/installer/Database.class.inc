@@ -74,8 +74,8 @@ class Database
         if ($table == '*') {
             $table = '\*';
         }
-        $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
-            " `?([*]|${database})`?[.]`?([*]|${table})`?/";
+        $pattern = "/GRANT .*(ALL|{$privilege}).* ON" .
+            " `?([*]|{$database})`?[.]`?([*]|{$table})`?/";
 
         // Test all privileges return from SHOW GRANTS against the pattern
         return array_reduce(
@@ -179,7 +179,7 @@ class Database
             $this->PDO->exec("CREATE DATABASE $database");
             $this->PDO->exec("USE $database");
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -228,7 +228,7 @@ class Database
             }
             $this->PDO->exec("USE $database");
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->lastErr = $e->getMessage();
             return false;
@@ -248,7 +248,7 @@ class Database
             }
             $this->PDO->query("SELECT 'x'");
             return true;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

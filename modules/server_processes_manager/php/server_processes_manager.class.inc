@@ -49,11 +49,6 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        // This will update all process informations in the database
-        // Must execute this before loading the form
-        $serverProcessesMonitor = new ServerProcessesMonitor();
-        $serverProcessesMonitor->getProcessesState();
-
         // Columns displayed in the result table
         $this->columns = [
             'pid',

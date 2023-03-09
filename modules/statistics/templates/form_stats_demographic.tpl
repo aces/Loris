@@ -16,9 +16,9 @@
         <tr>
             <th colspan="2" id="demog">Demographics</th>
             {if {$CurrentProject.ID|default > 0}}
-                <th>No defined subproject</th>
+                <th>No defined cohort</th>
             {/if}
-            {foreach from=$Subprojects|default item=name key=proj}
+            {foreach from=$Cohorts|default item=name key=proj}
                 <th>{$name}</th>
             {/foreach}
             <th class="data">Total</th>
@@ -34,7 +34,7 @@
                     <td><b>0</b></td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$registered[$keyid]|default}>0}
                     <td><b>{$registered[$keyid]}</b></td>
                 {else}
@@ -57,7 +57,7 @@
                     <td class="status_active">0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$registered[$keyid]|default}>0}
                     {if {$ps_active[$keyid]|default}>0}
                         <td class="status_active">{$ps_active[$keyid]|default}<font size="1"><b>/{$registered[$keyid]|default}</b></font></td>
@@ -91,7 +91,7 @@
                     <td class="status_inactive">0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$registered[$keyid]|default}>0}
                     {if {$ps_inactive[$keyid]|default}>0}
                         <td class="status_inactive">{$ps_inactive[$keyid]}<font size="1"><b>/{$registered[$keyid]}</b></font></td>
@@ -128,7 +128,7 @@
                     <td>0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$ps_active[$keyid]|default}>0}
                     {if {$sex_male[$keyid]|default}>0}
                         <td>{$sex_male[$keyid]}<font size="1"><b>/{$ps_active[$keyid]|default}</b></font></td>
@@ -163,7 +163,7 @@
                     <td >0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$ps_active[$keyid]|default}>0}
                     {if {$sex_female[$keyid]|default}>0}
                         <td >{$sex_female[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
@@ -195,7 +195,7 @@
                     <td>0</td>
                 {/if}
             {/if}
-            {foreach from=$Subprojects|default item=proj key=keyid}
+            {foreach from=$Cohorts|default item=proj key=keyid}
                 {if {$age_avg[$keyid]|default}>0}
                     <td>{$age_avg[$keyid]}</td>
                 {else}

@@ -104,7 +104,7 @@ class NDB_BVL_Feedback
                     $sessionID,
                     $commentID
                 );
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 unset($feedbackList[$objectName]);
                 throw new Exception(
                     "Could not instantiate feedback object",
@@ -380,7 +380,7 @@ class NDB_BVL_Feedback
     function getMaxThreadStatus($select_inactive_threads): ?string
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& \NDB_Factory::singleton()->database();
 
         $query   = "SELECT MAX(Status) FROM feedback_bvl_thread WHERE";
         $qparams = [];
@@ -454,7 +454,7 @@ class NDB_BVL_Feedback
     function getSummaryOfThreads()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // get User object
         $user =& User::singleton($this->_username);
@@ -517,7 +517,7 @@ class NDB_BVL_Feedback
     function getThreadList()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // create user object
         $user =& User::singleton($this->_username);
@@ -528,7 +528,7 @@ class NDB_BVL_Feedback
         if (!empty($this->_feedbackObjectInfo['SessionID'])
             || !empty($this->_feedbackObjectInfo['CommentID'])
         ) {
-            $query .= ", s.VisitNo as Visit, s.SubprojectID, s.ID as SessionID";
+            $query .= ", s.VisitNo as Visit, s.CohortID, s.ID as SessionID";
         }
 
         $query .= ", ft.FeedbackID,
@@ -617,7 +617,7 @@ class NDB_BVL_Feedback
     static function getThreadEntries($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         //select the entries (details) for the thread
         $query
@@ -659,7 +659,7 @@ class NDB_BVL_Feedback
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
-        $DB = Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // public threads are inactive by default
         if ($public == 'Y') {
@@ -763,7 +763,7 @@ class NDB_BVL_Feedback
     function createEntry($feedbackID, $comment, $username): array
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // create SET array for the INSERT
         $setArray = [
@@ -802,7 +802,7 @@ class NDB_BVL_Feedback
         $fieldname =''
     ) {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // create the new entry - every update need to be follow up with a comment
         // FIXME: I don't think the third parameter is correct, but I'm not sure
@@ -854,7 +854,7 @@ class NDB_BVL_Feedback
     function deleteThread($feedbackID)
     {
         // new DB Object
-        $db = \Database::singleton();
+        $db = \NDB_factory::singleton()->database();
 
         // DELETE the thread's entries
         $db->delete(
@@ -880,7 +880,7 @@ class NDB_BVL_Feedback
     function deleteEntry($entryID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& \NDB_Factory::singleton()->database();
 
         // DELETE the thread entries
         $db->delete('feedback_bvl_entry', ["ID" => $entryID]);
@@ -896,7 +896,7 @@ class NDB_BVL_Feedback
     function activateThread($feedbackID=null)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $setArray = [
             "Active"   => 'Y',
@@ -947,7 +947,7 @@ class NDB_BVL_Feedback
     function closeThread(?int $feedbackID = null): int
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
         if (!empty($feedbackID)) {
@@ -1001,7 +1001,7 @@ class NDB_BVL_Feedback
      */
     function openThread(int $feedbackID): int
     {
-        $db =& Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
 
@@ -1039,7 +1039,7 @@ class NDB_BVL_Feedback
             );
         }
         // new DB Object
-        $db = Database::singleton();
+        $db = \NDB_Factory::singleton()->database();
 
         // StatusID is passed in as an integer, but the field in the database
         // is an enum, so we need to do WHERE Status+0= .. to convert it to
@@ -1048,35 +1048,5 @@ class NDB_BVL_Feedback
         $param  = ['StatID' => $statusID];
         $record = $db->pselectOne($query, $param);
         return $record;
-    }
-
-    /**
-     * This function is currently used to check whether or not to render
-     * the bvl_feedback_icon in main.tpl. It checks if the user has the
-     * bvl feedback permission first, if the user has the permissions it
-     * then checks if the user is on the timepoint_list, instrument_list
-     * or on any instrument page.
-     *
-     * Returns false if the user doesn't have the appropriate permissions
-     * or is not on one of the appropriate pages to return bvl_feedback.
-     *
-     * @param string $test_name The name of the test to be checked.
-     *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws Exception
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
-     */
-    static function bvlFeedbackPossible(string $test_name): bool
-    {
-        if (\User::singleton()->hasPermission('bvl_feedback')) {
-            if (($test_name === "timepoint_list")
-                || ($test_name === "instrument_list")
-                || ($test_name === "instruments")
-            ) {
-                return true;
-            }
-        }
-        return false; //returning false when user is not on appropriate study site
     }
 }

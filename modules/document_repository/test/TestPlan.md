@@ -42,7 +42,7 @@
 
 17. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository' 
     permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most) 
-    in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
+    in the Document Repository panel. Clicking on a document will download it. Clicking on the Document
     Repository button takes you to the Document Repository page.
     [Manual Test]
 18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document Repository panel. [Manual Test]

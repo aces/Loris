@@ -10,8 +10,6 @@ import Panel from 'Panel';
  *
  * @author Alex Ilea
  * @version 1.0.0
- * @since 2017/04/01
- *
  */
 class LogPanel extends Component {
   /**
@@ -59,7 +57,7 @@ class LogPanel extends Component {
 
           // If user clicked on the same row, it is interpreted as a de-selection:
           // deselect row and set log text to 'nothing selected'
-          if (event.currentTarget === uploadProgress.getUploadRow()) {
+          if (tr === uploadProgress.getUploadRow()) {
             uploadProgress.setUploadRow(null);
             uploadProgress.setProgressFromServer(null);
             this.setState({
@@ -69,8 +67,8 @@ class LogPanel extends Component {
             return;
           }
 
-          uploadProgress.setUploadRow(event.currentTarget);
-          event.currentTarget.style.backgroundColor = '#EFEFFB';
+          uploadProgress.setUploadRow(tr);
+          tr.style.backgroundColor = '#EFEFFB';
           this.monitorProgress(this.state.logType);
         }
       });
@@ -125,7 +123,8 @@ class LogPanel extends Component {
 
   /**
    * Starts/stops polling on the server.
-   * @param {bool} poll - pool boolean
+   *
+   * @param {boolean} poll - pool boolean
    */
   setServerPolling(poll) {
     const uploadProgress = this.uploadProgress;
@@ -178,6 +177,7 @@ class LogPanel extends Component {
 
   /**
    * On log type change
+   *
    * @param {string} name
    * @param {*} value
    */

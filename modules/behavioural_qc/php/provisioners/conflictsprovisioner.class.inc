@@ -32,7 +32,7 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
   	          t.full_name AS _test_name_display,
   	          s.visit_label AS _visit,
               s.ProjectID AS _project,
-              s.SubprojectID AS _subproject,
+              s.CohortID AS _cohort,
               f.SessionID AS _sessionID,
               f.commentid AS _commentID,
               t.Full_name AS _instrument,

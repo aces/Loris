@@ -65,6 +65,7 @@ class CandidateInfo extends Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -91,6 +92,7 @@ class CandidateInfo extends Component {
 
   /**
    * On Submit
+   *
    * @param {object} e - event object
    */
   onSubmit(e) {

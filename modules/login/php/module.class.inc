@@ -19,7 +19,7 @@ class Module extends \Module
      *
      * @return bool true
      */
-    public function isPublicModule()
+    public function isPublicModule() : bool
     {
         return true;
     }

@@ -52,7 +52,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         $user  = \User::singleton();
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             []
@@ -118,7 +118,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     function parseCategory($value): array
     {
         $id = $value['id'];
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {

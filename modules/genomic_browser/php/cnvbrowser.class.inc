@@ -83,7 +83,7 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
         $user = \NDB_Factory::singleton()->user();
 
         // Platform
-        $DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $platform_results = $DB->pselect(
             "SELECT distinct Name FROM genotyping_platform",
             []
@@ -97,7 +97,7 @@ class CnvBrowser extends \DataFrameworkMenu implements ETagCalculator
         return (new \LORIS\genomic_browser\Views\CNV(
             $platform_options,
             $this->getSiteOptions($user, false),
-            $this->getSubprojectOptions($user),
+            $this->getCohortOptions($user),
         ))->toArray();
     }
 

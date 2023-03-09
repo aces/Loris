@@ -76,7 +76,8 @@ class LorisInstance
         $modules = [];
         foreach ($mnames as $name) {
             try {
-                $modules[] = \Module::factory($name);
+                $mod       = $this->getModule($name);
+                $modules[] = $mod;
             } catch (\LorisModuleMissingException $e) {
                 error_log($e->getMessage() . " " . $e->getTraceAsString());
             }
@@ -117,6 +118,18 @@ class LorisInstance
     }
 
     /**
+     * Get the \Module class for the module named $name,
+     * if enabled on this LORIS instance or throw an exception
+     * if it doesn't exist.
+     *
+     * @return \Module
+     */
+    public function getModule(string $name) : \Module
+    {
+        return \Module::factory($this, $name);
+    }
+
+    /**
      * Returns an NDB_Config object used for interacting with configuration
      * settings for this instance.
      *
@@ -125,5 +138,24 @@ class LorisInstance
     public function getConfiguration(): \NDB_Config
     {
         return $this->config;
+    }
+
+    /**
+     * Returns a list of Site objects that are valid for this
+     * Loris instance
+     *
+     * @return \Site[]
+     */
+    public function getAllSites() : array
+    {
+        $DB      = $this->getDatabaseConnection();
+        $centers = $DB->pselectCol("SELECT CenterID FROM psc", []);
+
+        return array_map(
+            function ($center) {
+                return \Site::singleton(new \CenterID($center));
+            },
+            $centers
+        );
     }
 }

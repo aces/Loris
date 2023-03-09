@@ -29,7 +29,7 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 LPAD(candidate.CandID, 6, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
-                subproj.title AS _Subproject,
+                subproj.title AS _Cohort,
                 DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _externalID,
                 candidate.RegistrationCenterID as _centerID,
@@ -81,13 +81,13 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 LEFT JOIN (
                     SELECT
                         s.CandID,
-                        min(s.subprojectID) AS SubprojectID
+                        min(s.cohortID) AS CohortID
                     FROM
                         session s
                     GROUP BY
                         s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
-                LEFT JOIN subproject AS subproj
-                    ON (cohort.SubprojectID = subproj.SubprojectID)
+                LEFT JOIN cohort AS subproj
+                    ON (cohort.CohortID = subproj.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
             WHERE
                 candidate.Entity_type = 'Human'

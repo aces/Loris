@@ -10,7 +10,7 @@ export type Chunk = {
 
 export type Trace = {
   chunks: Chunk[],
-  type: "line"
+  type: 'line'
 };
 
 export type ChannelMetadata = {
@@ -29,10 +29,26 @@ export type Epoch = {
   type: 'Event' | 'Annotation',
   label: string,
   comment?: string,
-  channels: number[] | "all",
+  hed?: string,
+  channels: number[] | 'all',
+  annotationInstanceID?: number,
 };
 
-export type RightPanel = 'annotationForm' | 'epochList' | null;
+export type EventMetadata = {
+  instances: any[],
+}
+
+export type AnnotationMetadata = {
+  instances: any[],
+  labels: any[],
+  metadata: any[]
+}
+
+export type RightPanel =
+  'annotationForm'
+  | 'eventList'
+  | 'annotationList'
+  | null;
 
 export type Electrode = {
   name: string,

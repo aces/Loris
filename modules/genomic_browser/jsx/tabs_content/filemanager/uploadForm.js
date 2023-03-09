@@ -11,8 +11,7 @@ import Loader from 'jsx/Loader';
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
- * */
+ */
 class GenomicUploadForm extends Component {
   /**
    * @constructor
@@ -158,6 +157,7 @@ class GenomicUploadForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {

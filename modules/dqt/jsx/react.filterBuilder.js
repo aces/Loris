@@ -2,12 +2,14 @@
  *  The following file contains the components used for the filter builder tab
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
-*   @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://github.com/mohadesz/Loris-Trunk
+ *  @author   Alizée Wickenheiser <alizee.wickenheiser@mcgill.ca>
+ *  @license  GPL-3.0-or-later
+ *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
 import React, {Component} from 'react';
+import ModalImportCSV from './react.importCSV';
+import {getSessions, enumToArray} from '../js/arrayintersect';
 
 /**
  * LogicOperator Component
@@ -26,6 +28,7 @@ class LogicOperator extends Component {
 
   /**
    * Wrapper function updating operator
+   *
    * @param {object} op
    */
   changeOperator(op) {
@@ -44,10 +47,10 @@ class LogicOperator extends Component {
 
     // Set operator to OR if logicOperator is 1, AND otherwise
     if (this.props.logicOperator === 1) {
-      orClass += ' btn-primary';
+      orClass += ' btn-primary-filter';
       andClass += ' switch';
     } else {
-      andClass += ' btn-primary';
+      andClass += ' btn-primary-filter';
       orClass += ' switch';
     }
     return (
@@ -105,6 +108,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules instrument, getting the instruments available fields
+   *
    * @param {object} event
    */
   selectInstrument(event) {
@@ -122,6 +126,7 @@ class FilterRule extends Component {
 
   /**
    * Update the rules desired field, setting the rules field and field type
+   *
    * @param {object} event
    */
   fieldSelect(event) {
@@ -141,6 +146,7 @@ class FilterRule extends Component {
 
   /**
    * Update the desired rule operation for the selected field
+   *
    * @param {object} event
    */
   operatorSelect(event) {
@@ -164,6 +170,7 @@ class FilterRule extends Component {
 
   /**
    * value changed event
+   *
    * @param {object} event
    */
   valueChange(event) {
@@ -250,6 +257,7 @@ class FilterRule extends Component {
 
   /**
    * Update rule to filter for specified visit
+   *
    * @param {object} event
    */
   updateVisit(event) {
@@ -283,7 +291,9 @@ class FilterRule extends Component {
           fieldIndex = index;
         }
         return (
-          <option key={index} value={index}>{field.key[1]}</option>
+          <option key={index} value={index}>
+            {field.key[1]}
+          </option>
         );
       });
       let operators = [];
@@ -333,11 +343,10 @@ class FilterRule extends Component {
                   </option>
                 );
               });
-              value = (this.props.rule.value) ? this.props.rule.value : '';
               input = (
                 <select className='input-sm col-xs-3'
                         onChange={this.valueChange}
-                        value={value}>
+                        value={this.props.rule.value ?? ''}>
                   <option value=''/>
                   {options}
                 </select>
@@ -396,17 +405,20 @@ class FilterRule extends Component {
       );
     } else {
       // Else display dropdown for instrument select
-      let options = this.props.items.map((item, index) => {
-        return (
-          <option key={index} value={item.category}>{item.category}</option>
+      if (Array.isArray(this.props.items)) {
+        let options = this.props.items.map((item, index) => {
+          return (
+            <option key={index} value={item.category}>{item.category}</option>
+          );
+        });
+        rule = (
+          <select onChange={this.selectInstrument}
+                  className="input-sm col-xs-10">
+            <option value=''/>
+            {options}
+          </select>
         );
-      });
-      rule = (
-        <select onChange={this.selectInstrument} className="input-sm col-xs-10">
-          <option value=''/>
-          {options}
-        </select>
-      );
+      }
     }
     return (
       <div className='panel panel-default'>
@@ -446,20 +458,18 @@ class FilterGroup extends Component {
 
   /**
    * Update a specified child in the groups children
+   *
    * @param {number} index
    * @param {string} child
    */
   updateChild(index, child) {
-    console.log('updateChild() has ran!');
     let group = this.props.group;
     group.children[index] = child;
 
     if (this.props.index) {
-      console.log('if statement [true] 2');
       // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
     } else {
-      console.log('if statement [false] 2');
       // Else base filter group, update the filter in the data query component
       this.props.updateFilter(group);
     }
@@ -467,6 +477,7 @@ class FilterGroup extends Component {
 
   /**
    * Update the group's operator
+   *
    * @param {object} operator
    */
   updateGroupOperator(operator) {
@@ -487,25 +498,21 @@ class FilterGroup extends Component {
 
   /**
    * Computes the desired sessions of the current group
+   *
    * @param {number} index
    * @param {string} child
    */
   updateSessions(index, child) {
-    console.log('updateSessions() has ran!');
     // Computes the desired sessions of the current group
     const group = this.props.group;
     group.children[index] = child;
 
     // Update the groups sessions by calling the arrayintersect.js functions
     group.session = getSessions(group);
-    console.log('group.session: ');
-    console.log(group.session);
     if (this.props.index) {
-      console.log('if statement [true]');
       // If not base filter group, recursively call update parents session
       this.props.updateSessions(this.props.index, group);
     } else {
-      console.log('if statement [false]');
       // Else base filter group, update the filter in the data query component
       this.props.updateFilter(group);
     }
@@ -513,6 +520,7 @@ class FilterGroup extends Component {
 
   /**
    * Add a child to the group
+   *
    * @param {string} type
    */
   addChild(type) {
@@ -548,16 +556,15 @@ class FilterGroup extends Component {
 
   /**
    * Delete a child
+   *
    * @param {number} index
    */
   deleteChild(index) {
-    console.log('deleteChild() has ran!');
     let group = this.props.group;
     group.children.splice(index, 1);
 
     // Update the groups sessions by calling the arrayintersect.js functions
     group.session = getSessions(group);
-
     if (this.props.index) {
       // If not base filter group, recursively call update child
       this.props.updateGroup(this.props.index, group);
@@ -597,7 +604,7 @@ class FilterGroup extends Component {
         );
       } else if (child.type === 'group') {
         return (
-          <li key={index} className={'test1'}>
+          <li key={index}>
             <FilterGroup group={child}
                          items={this.props.items}
                          index={index}
@@ -669,7 +676,132 @@ class FilterBuilder extends Component {
    */
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showModalCSV: false,
+    };
+    this.openModalCSV = this.openModalCSV.bind(this);
+    this.closeModalCSV = this.closeModalCSV.bind(this);
+    this.defineCSVCandidates = this.defineCSVCandidates.bind(this);
+    this.requestSessions = this.requestSessions.bind(this);
+  }
+
+  /**
+   * Open the CSV "import data" Modal.
+   *
+   * @param {object} e
+   */
+  openModalCSV(e) {
+    e.preventDefault();
+    this.setState({showModalCSV: true});
+  }
+
+  /**
+   * Close the CSV "import data" Modal.
+   */
+  closeModalCSV() {
+    this.setState({showModalCSV: false});
+  }
+
+  /**
+   * requestSessions - get request for session mapping.
+   *
+   * @param {string} type
+   * @param {object} data
+   * @param {function} callback
+   */
+  async requestSessions(type, data, callback) {
+    // fetch CandID for PSCID (session) map
+    if (type === 'CandID') {
+      await fetch(
+      window.location.origin
+      + '/dqt/Filterbuilder',
+      {
+        credentials: 'same-origin',
+        method: 'GET',
+      }).then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            data = {
+              allCandidates: data['allCandidates'],
+              mapping: Object.assign({}, ...data['mapping']),
+            };
+            return callback(data);
+          });
+        } else {
+          response.json().then((data) => {
+            console.error(data);
+          });
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    return callback(null);
+  }
+
+  /**
+   * Define the Candidates from CSV.
+   *
+   * @param {string} type
+   * @param {number} operator
+   * @param {object} data
+   */
+  async defineCSVCandidates(type, operator, data) {
+    let session = [];
+    await this.requestSessions(type, data, (sessions) => {
+      if (sessions || type !== 'CandID') {
+        let children = [];
+        let pscidSessions = [];
+        let candidSessions = [];
+        for (const item of data) {
+          const value = item[0];
+          if (value && operator === 1) {
+            pscidSessions.push(value);
+          }
+          const rule = {
+            field: type,
+            fieldType: 'varchar(255)',
+            instrument: 'demographics',
+            operator: 'equal',
+            session: [
+              sessions ? sessions['mapping'][value] ?? '' : value,
+            ],
+            type: 'rule',
+            value: value,
+            visit: 'All',
+            fields: [{
+              id: 'DataDictionary:Demographics',
+              key: ['demographics', type],
+            }],
+          };
+          if (type === 'CandID') {
+            const sessionKey = sessions
+              ? sessions['mapping'][value] ?? '' : value;
+            candidSessions.push(sessionKey);
+            rule.candidate = {
+              allCandidates: {
+                [sessionKey]: Object.values(sessions.allCandidates[sessionKey]),
+              },
+              allSessions: {},
+            };
+            for (const key of (rule.candidate.allCandidates[sessionKey])) {
+              rule.candidate.allSessions[key] = [sessionKey];
+            }
+          }
+          children.push(rule);
+        }
+        session.push(children);
+        const filters = {
+          activeOperator: operator,
+          session: operator === 1
+            ? (type !== 'CandID' ? pscidSessions : candidSessions)
+            : [],
+          children: children,
+        };
+        this.props.loadImportedCSV(filters);
+        this.closeModalCSV();
+      }
+    });
   }
 
   /**
@@ -680,13 +812,19 @@ class FilterBuilder extends Component {
   render() {
     return (
       <div>
+        <ModalImportCSV
+          showModalCSV={this.state.showModalCSV}
+          closeModalCSV={this.closeModalCSV}
+          defineCSVCandidates={this.defineCSVCandidates}
+        />
         <div className='row'>
           <h1 className='col-xs-6'
               style={{color: '#0A3572'}}>The Query's Filter</h1>
-          {/* <button className='import-csv'> */}
-          {/* Import Population from CSV&nbsp;
-          &nbsp;<span className='glyphicon glyphicon-file'/>*/}
-          {/* </button> */}
+          <button className='import-csv'
+                  onClick={this.openModalCSV}>
+            Import Population from CSV&nbsp;&nbsp;
+            <span className='glyphicon glyphicon-file'/>
+          </button>
         </div>
         <div className='row'>
           <div className='col-xs-12'>

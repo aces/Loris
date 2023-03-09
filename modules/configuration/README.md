@@ -34,6 +34,6 @@ However, the module mostly edits the LORIS MySQL `Config` table,
 which nearly every LORIS page interacts with through the `NDB_Config`
 class.
 
-Separate subpages manage the `project`, `subproject`, and
-`project_subproject_rel` tables for an administrator to be able to
+Separate subpages manage the `project`, `cohort`, and
+`project_cohort_rel` tables for an administrator to be able to
 manage projects in LORIS without backend MySQL access.

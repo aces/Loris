@@ -25,7 +25,7 @@
             <tr class="info">
                 <th id="scantype">Scan Type</th>
                 <th colspan="2">QC Status</th>
-                {foreach from=$Subprojects item=name key=proj}
+                {foreach from=$Cohorts item=name key=proj}
                     <th>{$name}</th>
                 {/foreach}
                 <th class="data">Total</th>
@@ -36,7 +36,7 @@
                 <tr>
                     <td rowspan="4" style="vertical-align:middle" >{$scan}</td>
                     <td colspan="2"><b>Scans Inserted</b></td>
-                    {foreach from=$Subprojects item=name key=proj}
+                    {foreach from=$Cohorts item=name key=proj}
                         {if $scan_data_results[$scanid].insert_count[$proj] > 0}
                             <td><b>{$scan_data_results[$scanid].insert_count[$proj]}</b></td>
                         {else}
@@ -49,7 +49,7 @@
                 <tr class="pass">
                     <td rowspan="3" style="vertical-align:middle; background-color: #FFFFFF">QC status</td>
                     <td>Passed</td>
-                    {foreach from=$Subprojects item=name key=proj}
+                    {foreach from=$Cohorts item=name key=proj}
                         {if $scan_data_results[$scanid].qc_pass_count[$proj] > 0}
                             <td>{$scan_data_results[$scanid].qc_pass_count[$proj]}</td>
                         {else}
@@ -60,7 +60,7 @@
                 </tr>
                 <tr class="fail">
                     <td>Failed</td>
-                    {foreach from=$Subprojects item=name key=proj}
+                    {foreach from=$Cohorts item=name key=proj}
                         {if $scan_data_results[$scanid].qc_fail_count[$proj] > 0}
                             <td>{$scan_data_results[$scanid].qc_fail_count[$proj]}</td>
                         {else}
@@ -71,7 +71,7 @@
                 </tr>
                 <tr class="noqc">
                     <td>Not QCed</td>
-                    {foreach from=$Subprojects item=name key=proj}
+                    {foreach from=$Cohorts item=name key=proj}
                         {if $scan_data_results[$scanid].no_qc_count[$proj] > 0}
                             <td>{$scan_data_results[$scanid].no_qc_count[$proj]}</td>
                         {else}

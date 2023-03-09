@@ -58,18 +58,6 @@ class ValidateIDs extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // The parent handles things like hasAccess checks.
-        $resp = parent::handle($request);
-        switch ($resp->getStatusCode()) {
-        case 200:
-            // If it was a 200 code, it just means display was called and
-            // access validated. We still need to do other validations
-            // and add the result body.
-            break;
-        default:
-            return $resp;
-        }
-
         // Ensure it's a GET request.
         if ($request->getMethod() != "GET") {
             return (new \LORIS\Http\Response())

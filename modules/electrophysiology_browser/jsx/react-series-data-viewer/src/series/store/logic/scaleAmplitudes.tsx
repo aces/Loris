@@ -13,6 +13,12 @@ export const RESET_AMPLITUDES_SCALE = 'RESET_AMPLITUDES_SCALE';
 export const resetAmplitudesScale = createAction(RESET_AMPLITUDES_SCALE);
 export type Action = (_: (_: any) => void) => void;
 
+/**
+ * createScaleAmplitudesEpic
+ *
+ * @param {Function} fromState - A function to parse the current state
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createScaleAmplitudesEpic = (fromState: (_: any) => number) => (
   action$: Observable<any>,
   state$: Observable<any>
@@ -33,6 +39,11 @@ export const createScaleAmplitudesEpic = (fromState: (_: any) => number) => (
   );
 };
 
+/**
+ * createResetAmplitudesEpic
+ *
+ * @returns {Observable<Action>} - A stream of actions
+ */
 export const createResetAmplitudesEpic = () => (
   action$: Observable<any>,
 ): Observable<Action> => {

@@ -7,14 +7,13 @@ import Loader from 'jsx/Loader';
  * GWAS Component.
  *
  * @description Genomic Browser GWAS tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class GWAS extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -50,7 +49,7 @@ class GWAS extends Component {
         resp.json().then((json) => {
           const data = {
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
           };
           this.setState({
             data,
@@ -74,7 +73,6 @@ class GWAS extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {

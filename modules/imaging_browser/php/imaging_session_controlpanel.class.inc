@@ -64,7 +64,7 @@ class Imaging_Session_ControlPanel
      */
     function getData()
     {
-        $DB        = \Database::singleton();
+        $DB        = \NDB_Factory::singleton()->database();
         $config    = \NDB_Config::singleton();
         $timePoint = \TimePoint::singleton(
             new \SessionID(strval($_REQUEST['sessionID']))

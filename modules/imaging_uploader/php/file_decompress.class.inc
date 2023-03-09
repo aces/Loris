@@ -85,7 +85,7 @@ class File_Decompress
      *
      * Decompress and untars .tgz and tar.gz files
      *
-     * @return \PharData
+     * @return \PharData|null
      */
     function tgzDecompres()
     {
@@ -102,7 +102,7 @@ class File_Decompress
     /**
      * Decompress a gzipped file
      *
-     * @return \PharData
+     * @return \PharData|null
      */
     function gzipDecompress()
     {

@@ -62,7 +62,7 @@ class ErrorLogLogger implements LoggerInterface
      *
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = array()): void
     {
         // LogLevel consts are strings, not integers, so we need to
         // be explicit about which are used instead of doing a < or >

@@ -3,7 +3,6 @@
  *
  * @author Zaliqa Rosli
  * @version 1.0.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -63,6 +62,7 @@ class Card extends Component {
           initCollapsed={this.props.initCollapsed}
             style={{overflow: 'auto'}}
            panelSize={this.props.cardSize}
+          collapsing={this.props.collapsing}
         >
           <div
             onClick={this.handleClick}

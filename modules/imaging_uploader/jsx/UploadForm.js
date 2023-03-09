@@ -9,7 +9,6 @@ import swal from 'sweetalert2';
  * @author Alex Ilea
  * @author Victoria Foing
  * @version 1.0.0
- * @since 2017/04/01
  */
 class UploadForm extends Component {
   /**
@@ -229,6 +228,7 @@ class UploadForm extends Component {
   /**
    * Uploads file to the server, listening to the progress
    * in order to get the percentage uploaded as value for the progress bar
+   *
    * @param {boolean} overwriteFile
    */
   uploadFile(overwriteFile) {
@@ -296,6 +296,7 @@ class UploadForm extends Component {
 
   /**
    * Process XMLHttpRequest errors
+   *
    * @param {XMLHttpRequest} xhr - XMLHttpRequest
    */
   processError(xhr) {

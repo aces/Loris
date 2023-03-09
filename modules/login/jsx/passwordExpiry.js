@@ -6,10 +6,8 @@ import Panel from 'Panel';
  * Password expired form.
  *
  * @description form for password expired.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class PasswordExpired extends Component {
   /**
