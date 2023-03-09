@@ -13,6 +13,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once __DIR__ . '/../generic_includes.php';
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__."/../../project/config.xml");
