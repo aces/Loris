@@ -16,6 +16,14 @@ h4 {
     background: inherit; /*#064785; */
 }
 
+h4.modal-title {
+    color: white;
+}
+
+.modal-dialog .close {
+  color: white;
+}
+
 .search {
     padding-top: 20px;
 }
@@ -71,6 +79,10 @@ h4 {
 .switch {
     background: white;
     border-color: #064785;
+}
+.btn-primary-filter {
+    color: #fff;
+    background: #064785;
 }
 
 /*
@@ -153,7 +165,7 @@ h4 {
   height: 45px;
   display: flex;
   cursor: pointer;
-  font-size: 15pt;
+  font-size: 12pt;
   user-select: none;
   border-radius: 30px;
   align-items: center;
@@ -165,41 +177,10 @@ h4 {
   background-color: #96398C;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
               0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin: 10px 0;
 }
 .save-button:focus {
   outline: 0;
-}
-
-.navigation-button {
-  margin: 0;
-  border: 0;
-  color: #fff;
-  width: 120px;
-  height: 45px;
-  display: flex;
-  cursor: pointer;
-  font-size: 10pt;
-  user-select: none;
-  border-radius: 30px;
-  align-items: center;
-  vertical-align: top;
-  text-decoration: none;
-  justify-content: center;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: #3f79d6;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
-  0 2px 10px 0 rgba(0, 0, 0, 0.19);
-}
-.navigation-button:focus {
-  outline: 0;
-}
-.navigation-button .glyphicon {
-  top: 0;
-}
-.navigation-button.disabled {
-  cursor: not-allowed;
-  background-color: #dddddd;
 }
 
 .action-button .glyphicon {
@@ -281,48 +262,57 @@ h4 {
   outline: 0;
 }
 
-.run-query {
+.action-btn {
   border: 0;
   color: #fff;
-  width: 180px;
+  width: 230px;
   height: 55px;
   display: flex;
   cursor: pointer;
   font-size: 15pt;
   user-select: none;
-  margin: 20px auto 0;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
+  line-height: 1em;
+  margin: 10px auto;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+@media (max-width: 767px) {
+  .action-btn {
+    max-width: 200px;
+    width: 200px;
+    min-width: 0;
+    margin: 5px auto;
+  }
+
+  .action-btn.request-data {
+    margin-bottom: 20px;
+  }
+}
+
+.run-query {
   background-color: #0f9d58;
 }
-.run-query:focus {
+
+.action-btn:focus {
   outline: 0;
 }
-.run-query:disabled {
+
+.action-btn:disabled {
   cursor: not-allowed;
   background-color: #d5d5d5;
   pointer-events: all !important;
 }
 
 .visualized-data {
-  border: 0;
-  color: #fff;
-  width: 190px;
-  height: 55px;
-  display: flex;
-  cursor: pointer;
-  font-size: 15pt;
-  min-width: 190px;
-  user-select: none;
-  margin: 20px auto 0;
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
   background-color: #ff9a24;
 }
-.visualized-data:focus {
-  outline: 0;
+
+.request-data {
+  background-color: #3f79d6;
 }
 
 .center-items {
@@ -334,20 +324,22 @@ h4 {
   flex-wrap: wrap;
   min-width: 250px;
   margin: 0 5% 0 5%;
+  padding: 30px 0;
   align-items: center;
   justify-content: center;
   border: 1px solid #b7ccd2;
   box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  background-color: #ecf0f7;
 }
+
 .flex-row-container > .flex-row-item {
-  flex: 1 1 30%;
-  height: 100px;
+  flex: 1 1 20%;
   min-width: 250px;
 }
+
 .flex-row-item {
   margin: 0 auto 0;
   min-width: 250px;
-  background-color: #ecf0f7;
 }
 
 .flex-row-container-second {
@@ -369,5 +361,314 @@ h4 {
 .fieldVisitsRow {
   cursor: default;
   background: white;
+  color: #000;
   border-radius: 10px;
+}
+
+/*-- Tooltip --*/
+.c3-tooltip {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+    empty-cells: show;
+    -webkit-box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    -moz-box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    box-shadow: 7px 7px 12px -9px rgb(119, 119, 119);
+    opacity: 0.9;
+}
+
+.c3-tooltip tr {
+    border: 1px solid #CCC;
+}
+
+.c3-tooltip th {
+    background-color: #aaa;
+    font-size: 14px;
+    padding: 2px 5px;
+    text-align: left;
+    color: #FFF;
+}
+
+.c3-tooltip td {
+    font-size: 13px;
+    padding: 3px 6px;
+    background-color: #fff;
+    border-left: 1px dotted #999;
+}
+
+.c3-tooltip td > span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+}
+
+.c3-tooltip td.value {
+    text-align: right;
+}
+
+#hidden_diseases {
+    display: none;
+    color: black;
+    cursor: default;
+    pointer-events: none;
+}
+:checked + #hidden_diseases {
+    display: block;
+    pointer-events: none;
+}
+#diseases_label {
+    color: #074785;
+    cursor: pointer;
+    margin: auto;
+}
+:hover + #diseases_label {
+    text-decoration: underline;
+}
+
+table.statsReport {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td.statsReport, th.statsReport {
+  border: 1px solid #f5f5f5;
+  text-align: left;
+  padding: 8px;
+}
+
+tr.statsReport:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.tab-pane {
+  margin-bottom: 30px
+}
+
+.tab-pane button:not(:first-of-type) {
+  margin-top: -1px
+}
+
+.navigation-button .glyphicon {
+  padding-left: 5px;
+}
+
+.investigator .btn {
+  padding: 6px 9px;
+}
+
+@media (max-width: 767px) {
+  .investigator > div {
+    margin-bottom: 20px;
+  }
+}
+
+.modal {
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog-save-query {
+  display: inline-block;
+  text-align: left;
+  min-width: 500px;
+  min-height: 280px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.hideScrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.hideScrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+.fieldVisitsRow::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.fieldVisitsRow::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.fieldVisitsRow::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.fieldVisitsRow::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.fieldVisitsRow::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+/*
+ * Import CSV feature.
+ */
+.import-csv {
+  border: 0;
+  right: 20px;
+  color: #fff;
+  width: 250px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 12pt;
+  user-select: none;
+  position: absolute;
+  margin: 20px auto 0;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+  background-color: #9e0e4b;
+}
+.import-csv:focus {
+  outline: 0;
+}
+/*
+ * Load Query table css
+ */
+.tableNamesCell {
+    overflow-x: scroll;
+    max-width: 150px;
+    min-height: 100px;
+}
+.tableFieldsCell {
+    overflow-x: scroll;
+    max-width: 400px;
+    min-height: 100px;
+}
+.tableFiltersCell {
+    overflow-x: scroll;
+    max-width: 200px;
+    min-height: 100px;
+}
+
+.btn-breadcrumb {
+  background-color: transparent;
+  z-index: 10;
+}
+/* ProgressBar CSS */
+.progressBar {
+  width: 100%;
+  min-height: 0;
+  padding: 39px 0 32px 0;
+}
+.progressBarContainer {
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+  text-align: center;
+}
+.progress-bar-loading-text {
+  margin: 0;
+  height: 5px;
+  color: #0b3570;
+  display: block;
+  font-size: 8pt;
+}
+progress {
+  width: 100%;
+  height: 2px;
+  border: none;
+  max-width: 600px;
+  -webkit-appearance: none;
+}
+progress::-moz-progress-bar {
+  background: #0b4681;
+}
+progress::-webkit-progress-value {
+  background: #0b4681;
+}
+progress::-webkit-progress-bar {
+  background: #d4d4d4;
+}
+/* Navigation Stepper CSS */
+.navigationStepper {
+  position: absolute;
+  text-align: right;
+  margin-top: -70px;
+  z-index: 15;
+  right: 35px;
+  opacity: 1;
+  transition: opacity 3s;
+}
+.stepperContainer {
+  padding: 30px 0 0 0;
+  min-height: 0;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 1s;
+}
+.stepper {
+  width: 100%;
+  margin: 0 auto;
+  display: table;
+}
+@media only screen and (max-width: 615px) {
+  .navigationStepper {}
+  .stepperContainer {
+    margin-top: 70px;
+  }
+}
+@media screen and ( device-width: 616px ) {
+  .navigationStepper {
+    margin-top: -70px;
+  }
+  .stepperContainer {
+    margin-top: 0;
+  }
+}
+.navigation-button {
+  border: 0;
+  color: #fff;
+  min-width: 120px;
+  padding: 0 20px;
+  height: 45px;
+  display: flex;
+  cursor: pointer;
+  font-size: 12pt;
+  user-select: none;
+  border-radius: 30px;
+  align-items: center;
+  vertical-align: top;
+  text-decoration: none;
+  justify-content: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #3f79d6;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2),
+              0 2px 10px 0 rgba(0, 0, 0, 0.19);
+  margin: 10px 0;
+}
+.navigation-button:focus {
+  outline: 0;
+}
+.navigation-button .glyphicon {
+  top: 0;
+}
+.navigation-button.disabled {
+  cursor: not-allowed;
+  background-color: #dddddd;
 }

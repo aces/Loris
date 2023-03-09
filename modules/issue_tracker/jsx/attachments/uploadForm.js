@@ -12,7 +12,6 @@ import swal from 'sweetalert2';
  *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class IssueUploadAttachmentForm extends Component {
   /**
@@ -51,6 +50,7 @@ class IssueUploadAttachmentForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {

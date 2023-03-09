@@ -46,6 +46,7 @@ class DocTree extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
+                'document_repository_edit'
             ]
         );
     }
@@ -79,7 +80,7 @@ class DocTree extends \NDB_Page
      */
     public function getTreeData()
     {
-        return \Database::singleton()->pselect(
+        return $this->loris->getDatabaseConnection()->pselect(
             "SELECT * FROM document_repository_categories",
             []
         );

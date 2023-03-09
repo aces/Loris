@@ -32,7 +32,7 @@ $summary  = $_POST['summary'] === 'true';
 /* Fetch columns Inserting and InsertionComplete from table mri_upload
  * create Database object
  */
-$DB    =& Database::singleton();
+$DB    = \NDB_Factory::singleton()->database();
 $query = "SELECT Inserting, InsertionComplete 
           FROM mri_upload
           WHERE UploadId =:uploadId";

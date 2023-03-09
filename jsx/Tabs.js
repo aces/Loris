@@ -3,7 +3,6 @@
  *
  * @author Loris Team
  * @version 1.1.0
- *
  */
 
 import React, {Component} from 'react';
@@ -71,7 +70,7 @@ class Tabs extends Component {
    * tab. If this.props.updateURL is set, update the window
    * URL and scroll to the top of the page.
    *
-   * @param {int} tabId -- The tab clicked on
+   * @param {number} tabId -- The tab clicked on
    * @param {Event} e -- The click event
    */
   handleClick(tabId, e) {
@@ -219,7 +218,7 @@ class VerticalTabs extends Component {
    * tab. If this.props.updateURL is set, update the window
    * URL and scroll to the top of the page.
    *
-   * @param {int} tabId -- The tab clicked on
+   * @param {number} tabId -- The tab clicked on
    * @param {Event} e -- The click event
    */
   handleClick(tabId, e) {

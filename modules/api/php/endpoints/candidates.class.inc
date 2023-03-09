@@ -119,11 +119,36 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to candidate specific endpoint.
         try {
-            $candidate = \NDB_Factory::singleton()
-                ->candidate(new CandID($pathparts[1]));
-        } catch (\NotFound | \LorisException | \DomainException $e) {
-            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+            $candID = new CandID($pathparts[1]);
+        } catch (\DomainException $e) {
+            $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
+            if ($apiversion != "v0.0.4-dev") {
+                return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+            }
+
+            $loris  = $request->getAttribute('loris');
+            $db     = $loris->getDatabaseConnection();
+            $pscids = $db->pselect(
+                "SELECT CandID FROM candidate WHERE PSCID=:pscid",
+                ["pscid" => $pathparts[1]]
+            );
+
+            if (count($pscids) === 0) {
+                return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+            } else if (count($pscids) > 1) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Candidate identifier is not unique'
+                );
+            }
+
+            // We don't try/catch this like above because the value
+            // came from the CandID column of a database call. If
+            // something goes wrong at this point we should definitely
+            // propagate an exception..
+            $candID = new CandID($pscids[0]["CandID"]);
         }
+
+        $candidate = \NDB_Factory::singleton()->candidate($candID);
 
         $endpoint = new Candidate\Candidate($candidate);
 
@@ -210,8 +235,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $candid = \Candidate::createNew(
                 new \CenterID("$centerid"),
-                $data['Candidate']['DoB'],
-                $data['Candidate']['EDC'],
+                $data['Candidate']['DoB'] ?? null,
+                $data['Candidate']['EDC'] ?? null,
                 $sex,
                 $pscid,
                 $project->getId()

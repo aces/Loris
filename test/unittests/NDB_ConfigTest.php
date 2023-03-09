@@ -281,16 +281,16 @@ class NDB_ConfigTest extends TestCase
 
     }
     /**
-     * Test getSubprojectSettings() method. Given a projectID, it should
-     * return an array containing the subproject information.
+     * Test getCohortSettings() method. Given a projectID, it should
+     * return an array containing the cohort information.
      *
-     * @covers NDB_Config::getSubprojectSettings
+     * @covers NDB_Config::getCohortSettings
      * @return void
      */
-    public function testGetSubprojectSettings()
+    public function testGetCohortSettings()
     {
         $info1  = [
-            'SubprojectID'      => '999',
+            'CohortID'          => '999',
             'title'             => 'test',
             'useEDC'            => 'true',
             'WindowDifference'  => 'optimal',
@@ -309,24 +309,24 @@ class NDB_ConfigTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($info1);
-        $this->assertEquals($result, $this->_config->getSubprojectSettings(999));
+        $this->assertEquals($result, $this->_config->getCohortSettings(999));
 
     }
 
     /**
-     * Test getSubprojectSettings() method. Given a projectID, it should
-     * return an array containing the subproject information.
+     * Test getCohortSettings() method. Given a projectID, it should
+     * return an array containing the cohort information.
      * Giving an invalid ID, it should return an empty array.
      *
-     * @covers NDB_Config::getSubprojectSettings
+     * @covers NDB_Config::getCohortSettings
      * @return void
      */
-    public function testGetSubprojectSettingsWithFakeID()
+    public function testGetCohortSettingsWithFakeID()
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(null);
-        $this->assertEquals([], $this->_config->getSubprojectSettings(111));
+        $this->assertEquals([], $this->_config->getCohortSettings(111));
     }
 
     /**

@@ -59,7 +59,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Mark comment toggle
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markCommentToggle(index) {
     if (index === this.state.currentEntryToggled) {
@@ -75,7 +76,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Open thread
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   openThread(index) {
     this.props.open_thread(index);
@@ -83,7 +85,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Close thread
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   closeThread(index) {
     this.props.close_thread(index);
@@ -230,6 +233,7 @@ class FeedbackPanelRow extends Component {
 
   /**
    * Toggle entries
+   *
    * @param {boolean} newComment
    */
   toggleEntries(newComment) {
@@ -244,6 +248,7 @@ class FeedbackPanelRow extends Component {
 
   /**
    * New thread entry
+   *
    * @param {string} comment
    */
   newThreadEntry(comment) {
@@ -392,6 +397,7 @@ class CommentEntryForm extends Component {
 
   /**
    * Handle change
+   *
    * @param {object} event
    */
   handleChange(event) {
@@ -522,6 +528,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle select change
+   *
    * @param {object} event
    */
   handleSelectChange(event) {
@@ -530,6 +537,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle text change
+   *
    * @param {object} event
    */
   handleTextChange(event) {
@@ -538,6 +546,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle input change
+   *
    * @param {object} event
    */
   handleInputChange(event) {
@@ -852,6 +861,7 @@ class FeedbackPanel extends Component {
 
   /**
    * Add thread
+   *
    * @param {*} data - Unused
    */
   addThread(data) {
@@ -860,7 +870,8 @@ class FeedbackPanel extends Component {
 
   /**
    * Mark thread closed
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markThreadClosed(index) {
     let threads = this.state.threads;
@@ -895,7 +906,8 @@ class FeedbackPanel extends Component {
 
   /**
    * Mark thread opened
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markThreadOpened(index) {
     let threads = this.state.threads;

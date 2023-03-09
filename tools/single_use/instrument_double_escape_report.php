@@ -9,7 +9,6 @@
  *
  * This tool does not fix or modify the data in anyway, it simply reads from t
  * he database.
- *
  */
 
 require_once __DIR__."/../generic_includes.php";
@@ -19,8 +18,7 @@ $dir = __DIR__ . "/../logs/";
 if (!is_dir($dir)) {
     mkdir($dir);
 }
-$today   = getdate();
-$date    = strftime("%Y-%m-%d_%H:%M");
+$date    = date("Y-m-d_h:i");
 $logPath = "$dir/instrument_double_escape_report_$date.log";
 $logfp   = fopen($logPath, 'a');
 
@@ -31,12 +29,11 @@ if (!$logfp) {
     );
 }
 //PARSE ARGUMENTS
-$actions = array(
+$actions = [
     'use-database',
     'use-objects',
-);
-if (
-    !isset($argv[1])
+];
+if (!isset($argv[1])
     || $argv[1] === 'help'
     || in_array('-h', $argv, true)
     || !in_array($argv[1], $actions, true)
@@ -55,33 +52,33 @@ if (isset($argv[1]) && $argv[1] === 'use-objects') {
 
 // DEFINE VARIABLES
 // All instruments looked at
-$instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", array());
+$instrumentNames = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 // Array of all fields containing any escaped characters
-$escapedEntries = array();
+$escapedEntries = [];
 // Array of database tables and columns containing escaped characters.
-$escapedFields = array();
+$escapedFields = [];
 // Array of confirmed truncations based on size of fields and content
-$confirmedTruncations = array();
+$confirmedTruncations = [];
 // Boolean flag for identify non-impacted databases and terminating.
 $errorsDetected = false;
 // Array of CHARACTER_MAXIMUM_LENGTH for each affected field.
-$maxFieldLengths = array();
+$maxFieldLengths = [];
 
 $databaseName = $config->getSetting('database')['database'];
 
 // FIRST loop just reporting all potential problematic fields
-foreach($instrumentNames as $instrumentName) {
+foreach ($instrumentNames as $instrumentName) {
     printOut("Checking $instrumentName");
 
     //default value for table name
-    $tableName=$instrumentName;
+    $tableName =$instrumentName;
 
     $instrumentCIDs = $DB->pselectCol(
         "SELECT CommentID FROM flag WHERE Test_name=:tn",
-        array("tn" => $instrumentName)
+        ["tn" => $instrumentName]
     );
 
-    $instrumentData=array();
+    $instrumentData =[];
     if ($useObjects) {
         try {
             $instrument = \NDB_BVL_Instrument::factory($instrumentName);
@@ -98,18 +95,20 @@ foreach($instrumentNames as $instrumentName) {
             $instrumentCandData = $instrumentInstance->getInstanceData();
 
             // instrument name and table name might differ
-            $tableName = $instrumentInstance->table;
+            $tableName            = $instrumentInstance->table;
             $instrumentData[$cid] = $instrumentCandData;
         }
     } else if ($useDatabase) {
         //Check if table by that name exists
-        if(!$DB->tableExists($instrumentName)) {
-            printError("No table by the name `$instrumentName` was found in the
-            database. This instrument will be skipped");
+        if (!$DB->tableExists($instrumentName)) {
+            printError(
+                "No table by the name `$instrumentName` was found in the
+            database. This instrument will be skipped"
+            );
         };
         $instrumentData = $DB->pselectWithIndexKey(
             "SELECT * FROM $instrumentName",
-            array(),
+            [],
             "CommentID"
         );
     }
@@ -135,7 +134,7 @@ if ($errorsDetected) {
             "SELECT TABLE_NAME, COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH
 			FROM INFORMATION_SCHEMA.COLUMNS
 			WHERE TABLE_SCHEMA=:dbn AND TABLE_NAME=:tbl AND COLUMN_NAME IN ($fieldsList)",
-            array('dbn'=>$databaseName,'tbl' => $tableName),
+            ['dbn'=>$databaseName,'tbl' => $tableName],
             'COLUMN_NAME'
         );
     }
@@ -152,7 +151,7 @@ if ($errorsDetected) {
         }
     }
 
-    if(!empty($escapedEntries)) {
+    if (!empty($escapedEntries)) {
         printOut(
             "Below is a list of all entries in the database instruemnts which " .
             "contain escaped characters"

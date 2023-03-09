@@ -13,7 +13,6 @@ import PropTypes from 'prop-types';
  *
  * @author LORIS Team
  * @version 1.0.0
- *
  */
 class HelpEditor extends React.Component {
   /**
@@ -63,7 +62,6 @@ class HelpEditor extends React.Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {

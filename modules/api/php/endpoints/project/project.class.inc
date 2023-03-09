@@ -100,7 +100,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'candidates':
             $handler = new Candidates($this->_project);
             break;

@@ -472,8 +472,7 @@ abstract class AbstractServerProcess
                 $setValues,
                 $whereValues
             );
-        }
-        catch(\DatabaseException $exception) {
+        } catch (\DatabaseException $exception) {
             error_log(
                 "Failed to update task (pid=" . $this->getPid() . ") status: "
                 . $exception->getMessage()

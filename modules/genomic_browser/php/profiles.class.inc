@@ -84,7 +84,7 @@ class Profiles extends \DataFrameworkMenu implements ETagCalculator
 
         return (new \LORIS\genomic_browser\Views\Profiles(
             $this->getSiteOptions($user, false),
-            $this->getSubprojectOptions($user, false),
+            $this->getCohortOptions($user, false),
         ))->toArray();
     }
 

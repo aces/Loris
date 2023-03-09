@@ -35,8 +35,8 @@ function notAnswered() {
  * Appends a hidden empty value, if a multiselect dropdown has nothing selected
  * Required to trigger validation on the backend
  *
- * @param {JQuery} form <form> element
- * @param {JQuery} element <select> element
+ * @param {HTMLElement} form <form> element
+ * @param {HTMLElement} element <select> element
  */
 function addEmptyOption(form, element) {
   let selectedOptions = element.find(':selected');

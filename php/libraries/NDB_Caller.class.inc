@@ -97,22 +97,13 @@ class NDB_Caller
         $phpfile   = $base . "project/instruments/"
             . "NDB_BVL_Instrument_$test_name.class.inc";
         $linstfile = $base."project/instruments/$test_name.linst";
-        if ($this->existsAndRequire($phpfile)) {
+        if ($this->existsAndRequire($phpfile) || file_exists($linstfile)) {
             $html       = $this->loadInstrumentDirect(
                 $loris,
                 $test_name,
                 $subtest,
                 $CommentID,
                 $nextpage
-            );
-            $this->type = 'instrument';
-            return $html;
-        } else if (file_exists($linstfile)) {
-            $html       = $this->loadInstrumentDirect(
-                $loris,
-                $test_name,
-                $subtest,
-                $CommentID
             );
             $this->type = 'instrument';
             return $html;
@@ -145,23 +136,6 @@ class NDB_Caller
         string $commentID,
         ?string $redirectToOnSuccess=null
     ): string {
-        if ($page === 'finalpage') {
-            $instrument = NDB_BVL_Instrument::factory(
-                $loris,
-                $instrumentName,
-                $commentID,
-                $page
-            );
-
-            $this->instrument = $instrument;
-
-            if ($redirectToOnSuccess) {
-                header("Location: $redirectToOnSuccess");
-            }
-
-            return "";
-        }
-
         // make an instance of the instrument's object
         $instrument = NDB_BVL_Instrument::factory(
             $loris,
@@ -171,7 +145,8 @@ class NDB_Caller
         );
 
         $this->instrument = $instrument;
-        $success          = $instrument->save();
+        $success          = $page === "finalpage" ? true : $instrument->save();
+
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");
             return "";

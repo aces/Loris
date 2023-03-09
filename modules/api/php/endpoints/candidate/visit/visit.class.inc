@@ -124,7 +124,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'instruments':
             $handler = new Instruments($this->_visit);
             break;
@@ -239,9 +239,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         // validation is done, convert to an object.
         $centerid = new \CenterID("$centerid");
 
-        $subprojectid = array_search(
+        $cohortid = array_search(
             $visitinfo['Battery'],
-            \Utility::getSubprojectList()
+            \Utility::getCohortList()
         );
 
         $sessionid = array_search(
@@ -267,7 +267,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 [
                     'CenterID'        => $centerid,
                     'Visit_label'     => $visitinfo['Visit'],
-                    'SubprojectID'    => $subprojectid,
+                    'CohortID'        => $cohortid,
                     'Active'          => 'Y',
                     'Date_active'     => $today,
                     'RegisteredBy'    => $username,
@@ -287,7 +287,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
-                $subprojectid,
+                $project->getId(),
+                $cohortid,
                 $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
@@ -298,7 +299,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         \TimePoint::createNew(
             $this->_candidate,
-            $subprojectid,
+            $cohortid,
             $visitinfo['Visit'],
             \Site::singleton($centerid),
             $project

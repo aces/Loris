@@ -35,7 +35,7 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
-        switch($type) {
+        switch ($type) {
         case 'candidate':
             $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
@@ -281,11 +281,11 @@ class Module extends \Module
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
-                    "Subproject",
-                    "The LORIS subproject used for battery selection",
+                    "Cohort",
+                    "The LORIS cohort used for battery selection",
                     $sesscope,
                     new \LORIS\Data\Types\Enumeration(
-                        ...array_values(\Utility::getSubprojectList())
+                        ...array_values(\Utility::getCohortList())
                     ),
                     new Cardinality(Cardinality::SINGLE),
                 ),

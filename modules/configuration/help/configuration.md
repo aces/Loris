@@ -8,4 +8,4 @@ Some configuration settings can accept multiple values. For these settings, you 
 
 **Note:** Take caution while editing these fields. Once you click **Submit**, there is no way to undo changes, unless you re-edit and re-submit a new form.
 
-**Note:** at the top of the page, you can click the links to configure study projects and subprojects.
+**Note:** at the top of the page, you can click the links to configure study projects and cohorts.

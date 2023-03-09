@@ -1,13 +1,13 @@
 /* exported passwordVisibility */
 
 /**
- * @author Laetitia Fesselier
- * @version 1.0.0
- *
  * Display a password input
  * with a toggle option to display it in plain text
  *
  * For React integration, see React version (jsx/Password.js)
+ *
+ * @author Laetitia Fesselier
+ * @version 1.0.0
  */
 
 /**

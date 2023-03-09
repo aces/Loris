@@ -3,7 +3,6 @@
 /**
  * @author Laetitia Fesselier
  * @version 1.0.0
- *
  */
 
 import React, {Component} from 'react';

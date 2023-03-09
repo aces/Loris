@@ -80,12 +80,12 @@ class Fields extends \NDB_Page
      */
     private function _getOriginalDescription(string $name) : string
     {
-        $modules = $this->lorisinstance->getActiveModules();
+        $modules = $this->loris->getActiveModules();
 
         // Brute force finding the name since we don't know what module
         // the dictionary item came from.
         foreach ($modules as $module) {
-            $mdict = $module->getDataDictionary($this->lorisinstance);
+            $mdict = $module->getDataDictionary($this->loris);
             foreach ($mdict as $cat) {
                 foreach ($cat->getItems() as $item) {
                     $iname = $cat->getName() . '_' . $item->getName();
@@ -109,7 +109,7 @@ class Fields extends \NDB_Page
      */
     private function _replaceDescription(string $name, string $description) : string
     {
-        $DB       = $this->lorisinstance->getDatabaseConnection();
+        $DB       = $this->loris->getDatabaseConnection();
         $origdesc = $this->_getOriginalDescription($name);
 
         if ($description == $origdesc) {

@@ -82,7 +82,7 @@ class Module extends \Module
         $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
 
-        switch($type) {
+        switch ($type) {
         case 'usertasks':
             $url = 'assignee=' . $user->getUsername() . '&status=acknowledged&'.
                    'status=assigned&status=feedback&status=new&status=resolved';

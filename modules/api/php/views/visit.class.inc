@@ -47,7 +47,7 @@ class Visit
             'CandID'  => $this->_timepoint->getCandID(),
             'Visit'   => $this->_timepoint->getVisitLabel(),
             'Site'    => $this->_timepoint->getPSC(),
-            'Battery' => $this->_timepoint->getData('SubprojectTitle'),
+            'Battery' => $this->_timepoint->getData('CohortTitle'),
             'Project' => $this->_timepoint->getProject(),
         ];
 

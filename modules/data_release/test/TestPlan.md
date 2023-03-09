@@ -21,8 +21,8 @@ version is saved to the database with all values in lowercase.
  
 ## Permissions
 
-1. Give the user the `data_release_edit_file_access` *(Data Release: Grant other 
-users view-file permissions)* permission.
+1. Give the user the `data_release_edit_file_access` *(Data Release: Grant Other
+Users Access to Releases)* permission.
 
 2. Click on the 'Add Permission' button.
 

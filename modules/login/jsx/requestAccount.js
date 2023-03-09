@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import swal from 'sweetalert2';
 
 /**
  * Request account form.
  *
  * @description form for request account.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class RequestAccount extends Component {
   /**
@@ -21,9 +20,9 @@ class RequestAccount extends Component {
     this.state = {
       form: {
         value: {
-          firstname: '',
-          lastname: '',
-          email: '',
+          firstname: this.props.defaultFirstName || '',
+          lastname: this.props.defaultLastName || '',
+          email: this.props.defaultEmail || '',
           site: this.props.data.site
             ? Object.keys(this.props.data.site)['']
             : '',
@@ -96,7 +95,11 @@ class RequestAccount extends Component {
           response.json().then((data) => {
             if (data.error) {
               console.error(data.error);
-              this.setState({request: true});
+              if (data.error === 'Please provide a valid email address!') {
+                swal.fire('Error!', data.error, 'error');
+              } else {
+                this.setState({request: true});
+              }
             }
           });
         }
@@ -113,6 +116,7 @@ class RequestAccount extends Component {
   loadGoogleCaptcha() {
     /**
      * Dynamically load a script if necessary.
+     *
      * @param {string} url - script to load.
      */
     function loadScript(url) {
@@ -176,7 +180,7 @@ class RequestAccount extends Component {
             type={'text'}
             placeholder={'Last name'}
           />
-          <TextboxElement
+          <EmailElement
             name={'email'}
             value={this.state.form.value.email}
             onUserInput={this.setForm}
@@ -192,6 +196,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your site:'}
           />
           <SelectElement
             name={'project'}
@@ -200,6 +205,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
+            placeholder={'Choose your project:'}
           />
           <CheckboxElement
             name={'examiner'}

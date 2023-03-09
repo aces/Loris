@@ -121,9 +121,8 @@ class ServerProcessesMonitor
         // Try to fetch the requested processes
         try {
             $rows = $db->pselect($query, $params);
-        }
-        // If this fails, log the error and return the exception to the caller
-        catch(\DatabaseException $exception) {
+        } catch (\DatabaseException $exception) {
+            // If this fails, log the error and return the exception to the caller
             error_log(
                 "Failed to retrieve processes to monitor: "
                 . (is_null($idsToMonitor) ? "All ids "      : "IDs in ($idInClause)")

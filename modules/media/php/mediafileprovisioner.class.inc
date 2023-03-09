@@ -31,13 +31,23 @@ namespace LORIS\media;
 class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
+     * Cache of instrument->getFullname returned value.
+     * Initializing empty keys to prevent instanciation of empty testnames.
+     */
+    private $_instrumentnames = [];
+
+    /**
      * Create a MediaFileProvisioner, which gets files for the meida
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance that the module
+     *                                    is serving.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
             "SELECT m.file_name as fileName,
+                    m.instrument as testName,
                     c.PSCID as pscid,
                     s.Visit_label as visitLabel,
                     l.language_label as languageLabel,
@@ -72,6 +82,18 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new MediaFile($row);
+        $testname = $row['testName'] ?? '';
+        unset($row['testName']);
+
+        // make sure not to call the factory when $testname is null or ''
+        if (!empty($testname) && !isset($this->_instrumentnames[$testname])) {
+            $this->_instrumentnames[$testname] = \NDB_BVL_Instrument::factory(
+                $this->loris,
+                $testname,
+            )->getFullname();
+        }
+        $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
+
+        return new MediaFile($row);
     }
 }

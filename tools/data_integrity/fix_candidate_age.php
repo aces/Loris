@@ -97,6 +97,7 @@ foreach ($instruments as $testName=>$instrument) {
         // Get Instrument Instance with commentID
         try {
             $instrument = NDB_BVL_Instrument::factory(
+                $lorisInstance,
                 $testName,
                 $row['CommentID'],
                 '',

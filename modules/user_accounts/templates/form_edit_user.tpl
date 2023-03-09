@@ -71,7 +71,7 @@
             <span class="pwd-star password {if isset($form.Password_hash.required) && $form.Password_hash.required} required{/if}" style="color: red">*</span>
         </label>
         <div class="col-sm-3">
-            <input type="password" name="{$form.Password_hash.name}" />
+            <input type="password" name="{$form.Password_hash.name}" autocomplete="new-password"/>
         </div>
         <div class="col-sm-4">{$form.NA_Password.html}</div>
         {if $form.errors.Password|default}
@@ -266,9 +266,11 @@
     	</div>
     </div>
     {/if}
-
     {if $form.errors.Email|default}
     <div class="row form-group has-error">
+        <div class="col-sm-offset-2">
+            <font class="form-error">{$form.errors.Email}</font>
+        </div>
     {else}
     <div class="row form-group">
     {/if}
@@ -395,6 +397,7 @@
                 {/if}
             </div>
       {/if}
+      {if $form.Active|default}
       <div class="row form-group form-inline">
            <label class="col-sm-2">
                {$form.Active.label|default}
@@ -406,6 +409,7 @@
               {$form.Active.html|default}
           </div>
       </div>
+      {/if}
 
 	{if $form.errors.active_timeWindows|default}
 	    <div class="alert alert-danger" role="alert">

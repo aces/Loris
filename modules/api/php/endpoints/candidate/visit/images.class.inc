@@ -134,7 +134,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $version = $request->getAttribute('LORIS-API-Version');
-        switch($version) {
+        switch ($version) {
         case 'v0.0.3':
             $view = (new \LORIS\api\Views\Visit\Images(
                 $this->_visit,

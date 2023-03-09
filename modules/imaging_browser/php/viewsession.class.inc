@@ -101,7 +101,7 @@ class ViewSession extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $this->_DB = \Database::singleton();
+        $this->_DB = $this->loris->getDatabaseConnection();
 
         $this->sessionID = $_REQUEST['sessionID'];
 
@@ -111,6 +111,7 @@ class ViewSession extends \NDB_Form
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
+
             }
             $this->_setFilesData();
 
@@ -135,9 +136,9 @@ class ViewSession extends \NDB_Form
                 'Fail' => 'Fail',
             ];
             $this->tpl_data['caveat_options']    = [
-                ''    => '&nbsp;',
-                true  => 'True',
-                false => 'False',
+                ''      => '&nbsp;',
+                'true'  => 'True',
+                'false' => 'False',
             ];
             $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
@@ -193,7 +194,15 @@ class ViewSession extends \NDB_Form
                      files.File",
             $args
         );
+
         $this->tpl_data['files'] = [];
+
+        $timePoint = \TimePoint::singleton(
+            new \SessionID($this->sessionID),
+        );
+        $factory   = \NDB_Factory::singleton();
+        $baseurl   = $factory->settings()->getBaseURL();
+
         foreach ($files as $fileRow) {
             $FileObj = new \MRIFile(intval($fileRow['FileID']));
             if (empty($scannerID)) {
@@ -208,28 +217,22 @@ class ViewSession extends \NDB_Form
                 }
             }
 
-            $FullFilename     = $FileObj->getParameter('File') ?? '';
-            $checkPicFilename = $FileObj->getParameter(
-                'check_pic_filename'
-            ) ?? '';
-            $FileID           = intval($fileRow['FileID']);
-            $Filename         = $JivFilename = basename($FullFilename);
-            $CheckPic         = "/mri/jiv/get_file.php?file=pic/". $checkPicFilename;
-            $JivAddress       = str_replace(
-                '_check.jpg',
-                '',
-                $checkPicFilename
-            );
+            $FullFilename = $FileObj->getParameter('File') ?? '';
+            $FileID       = intval($fileRow['FileID']);
+            $Filename     = basename($FullFilename);
+            $APIFile      = $baseurl . "/api/v0.0.3/candidates/"
+                    . $timePoint->getCandID() . "/"
+                    . $timePoint->getVisitLabel()
+                    . "/images/"
+                    . $Filename;
+
             $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
-            $Pipeline   = $FileObj->getParameter('Pipeline');
             $OutputType = $FileObj->getParameter('OutputType');
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
-            $Algorithm           = $FileObj->getParameter('Algorithm');
             $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
-            $ProcDate            = $this->_getDate(
-                $FileObj,
+            $ProcDate            = $FileObj->getParameter(
                 'processing:processing_date'
             );
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
@@ -237,6 +240,10 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
+                2
+            );
+            $InversionTime       = number_format(
+                (float)$FileObj->getParameter('inversion_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
@@ -247,11 +254,18 @@ class ViewSession extends \NDB_Form
                 intval($FileObj->getParameter('slice_thickness')),
                 2
             );
-            $Time    = number_format(
+            $Time      = number_format(
                 intval($FileObj->getParameter('time')),
                 2
             );
-            $Comment = $FileObj->getParameter('Comment');
+            $ImageType = $FileObj->getParameter(
+                'dicominfo:image_type'
+            );
+            $PhaseEncodingDirection = $FileObj->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $EchoNumber         = $FileObj->getParameter('echo_numbers');
+            $Comment            = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
                 'processing:total_rejected'
@@ -294,6 +308,9 @@ class ViewSession extends \NDB_Form
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
             $XMLprotocol = $FileObj->getParameter('ProtocolFile');
             $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
+            $BvalFile    = $FileObj->getParameter('check_bval_filename');
+            $BvecFile    = $FileObj->getParameter('check_bvec_filename');
+            $JsonFile    = $FileObj->getParameter('bids_json_file');
             $OtherTimepoints = $this->_getFilesAcrossTimepoints(
                 (int)$FileObj->getParameter('SessionID'),
                 (int)$FileObj->getParameter('AcquisitionProtocolID')
@@ -305,16 +322,12 @@ class ViewSession extends \NDB_Form
             $file   = [
                 'FileID'                     => $FileID,
                 'Filename'                   => $Filename,
-                'CheckPic'                   => $CheckPic,
+                'APIFile'                    => $APIFile,
                 'FullFilename'               => $FullFilename,
-                'JivFilename'                => $JivFilename,
-                'JivAddress'                 => $JivAddress,
                 'New'                        => $New,
-                'Pipeline'                   => $Pipeline,
                 'OutputType'                 => $OutputType,
                 'AcquisitionProtocol'        => $AcquisitionProtocol,
                 'CoordinateSpace'            => $CoordinateSpace,
-                'Algorithm'                  => $Algorithm,
                 'AcquisitionDate'            => $AcquisitionDate,
                 'ProcDate'                   => $ProcDate,
                 'FileInsertDate'             => $FileInsertDate,
@@ -322,9 +335,13 @@ class ViewSession extends \NDB_Form
                 'SeriesNumber'               => $SeriesNumber,
                 'SeriesUID'                  => $SeriesUID,
                 'EchoTime'                   => $EchoTime,
+                'InversionTime'              => $InversionTime,
                 'RepetitionTime'             => $RepetitionTime,
                 'SliceThickness'             => $SliceThickness,
                 'Time'                       => $Time,
+                'ImageType'                  => $ImageType,
+                'PhaseEncodingDirection'     => $PhaseEncodingDirection,
+                'EchoNumber'                 => $EchoNumber,
                 'Comment'                    => $Comment,
                 'ProcessingPipeline'         => $ProcessingPipeline,
                 'TotalRejected'              => $TotalRejected,
@@ -341,10 +358,12 @@ class ViewSession extends \NDB_Form
                 'QCDate'                     => $QCDate,
                 'Caveat'                     => $caveat,
                 'SNR'                        => $SNR,
-                'SeriesUID'                  => $SeriesUID,
                 'XMLreport'                  => $XMLreport,
                 'XMLprotocol'                => $XMLprotocol,
                 'NrrdFile'                   => $NrrdFile,
+                'BvalFile'                   => $BvalFile,
+                'BvecFile'                   => $BvecFile,
+                'JsonFile'                   => $JsonFile,
                 'OtherTimepoints'            => $OtherTimepoints,
                 'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
             ];
@@ -487,8 +506,12 @@ class ViewSession extends \NDB_Form
                     $updateSet['SeriesUID'] = $file->getParameter(
                         'series_instance_uid'
                     );
-                    $updateSet['EchoTime']  = $file->getParameter('echo_time');
-                    $updateSet['FileID']    = $curFileID;
+                    $updateSet['PhaseEncodingDirection'] = $file->getParameter(
+                        'PhaseEncodingDirection'
+                    );
+                    $updateSet['EchoTime']   = $file->getParameter('echo_time');
+                    $updateSet['EchoNumber'] = $file->getParameter('echo_numbers');
+                    $updateSet['FileID']     = $curFileID;
                     $this->_DB->insert("files_qcstatus", $updateSet);
                 }
             }
@@ -524,9 +547,14 @@ class ViewSession extends \NDB_Form
                     //----------------------------------------------------------//
                     $insertSet = [];
                     $file      = new \MRIFile($curFileID);
-                    $insertSet['SeriesUID']   = $file->getParameter(
+                    $insertSet['SeriesUID'] = $file->getParameter(
                         'series_instance_uid'
                     );
+                    $insertSet['PhaseEncodingDirection'] = $file->getParameter(
+                        'PhaseEncodingDirection'
+                    );
+                    $insertSet['EchoTime']    = $file->getParameter('echo_time');
+                    $insertSet['EchoNumber']  = $file->getParameter('echo_numbers');
                     $insertSet['TarchiveID']  = $file->getParameter(
                         'TarchiveSource'
                     );
@@ -647,6 +675,12 @@ class ViewSession extends \NDB_Form
                 $params      = ['FID' => $curFileID];
                 $updateWhere = ['FileID' => $curFileID];
 
+                $file          = new \MRIFile($curFileID);
+                $seriesUID     = $file->getParameter('series_instance_uid');
+                $phase_enc_dir = $file->getParameter('PhaseEncodingDirection');
+                $echo_time     = $file->getParameter('echo_time');
+                $echo_number   = $file->getParameter('echo_numbers');
+
                 if ($curSelected == 'Unselected') {
                     if ($this->_DB->pselectOne(
                         "SELECT COUNT(*)
@@ -676,10 +710,15 @@ class ViewSession extends \NDB_Form
                             $updateWhere
                         );
                     } else {
+
                         $insertSet = [
-                            'FileID'            => $curFileID,
-                            'Selected'          => $curSelected,
-                            'QCFirstChangeTime' => time(),
+                            'FileID'                 => $curFileID,
+                            'Selected'               => $curSelected,
+                            'SeriesUID'              => $seriesUID,
+                            'EchoTime'               => $echo_time,
+                            'EchoNumber'             => $echo_number,
+                            'PhaseEncodingDirection' => $phase_enc_dir,
+                            'QCFirstChangeTime'      => time(),
                         ];
                         $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
                         $this->_DB->insert('files_qcstatus', $insertSet);
@@ -858,12 +897,12 @@ class ViewSession extends \NDB_Form
         );
 
         $subjectData = [];
-        $subjectData['sessionID']       = $_REQUEST['sessionID'];
-        $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
-        $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
-        $subjectData['visitLabel']      = $timePoint->getVisitLabel();
-        $subjectData['visitNo']         = $timePoint->getVisitNo();
-        $subjectData['site']            = $timePoint->getPSC();
+        $subjectData['sessionID']   = $_REQUEST['sessionID'];
+        $subjectData['CohortID']    = $timePoint->getCohortID();
+        $subjectData['CohortTitle'] = $timePoint->getData('CohortTitle');
+        $subjectData['visitLabel']  = $timePoint->getVisitLabel();
+        $subjectData['visitNo']     = $timePoint->getVisitNo();
+        $subjectData['site']        = $timePoint->getPSC();
         $qcstatus = $this->_DB->pselectRow(
             "SELECT MRIQCStatus, MRIQCPending, MRICaveat
             FROM session WHERE ID=:SID",

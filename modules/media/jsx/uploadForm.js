@@ -12,8 +12,7 @@ import swal from 'sweetalert2';
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
- * */
+ */
 class MediaUploadForm extends Component {
   /**
    * @constructor
@@ -203,9 +202,11 @@ class MediaUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
+/**
+ * *******************************************************************************
  *                      ******     Helper methods     *******
- *********************************************************************************/
+ ********************************************************************************
+ */
 
   /**
    * Returns a valid name for the file to be uploaded
@@ -224,6 +225,7 @@ class MediaUploadForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -318,7 +320,15 @@ class MediaUploadForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal.fire('Upload Successful!', '', 'success');
+        swal.fire(
+          'Success!',
+          'Upload of media file completed.',
+          'success'
+        ).then((result) => {
+          if (result.value) {
+            window.location.href = loris.BaseURL + '/media/';
+          }
+        });
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = 'Upload error!';
@@ -348,7 +358,6 @@ class MediaUploadForm extends Component {
       });
       swal.fire(msg, '', 'error');
     }, false);
-
     xhr.open('POST', this.props.action);
     xhr.send(formObject);
   }

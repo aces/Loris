@@ -24,8 +24,9 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
     {
         $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $db = \NDB_Factory::singleton()->database();
         for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
+            $ddeInstruments[$i] = $db->quote($ddeInstruments[$i]);
         }
         $where = "
                 AND (f.commentid NOT LIKE 'DDE_%')
@@ -45,7 +46,7 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 c.PSCID AS _pscID,
                 s.visit_label AS _visit,
                 s.ProjectID AS _project,
-                s.SubprojectID AS _subproject,
+                s.CohortID AS _cohort,
                 psc.CenterID AS _site,
                 s.ID AS _id,
                 f.SessionID as _sessionID,

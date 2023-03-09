@@ -56,7 +56,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   = \Database::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
         $user = \User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
@@ -106,7 +106,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
-                    FROM mri_protocol_violated_scans 
+                    FROM mri_protocol_violated_scans
                     WHERE (:hash = md5(concat_WS(
                               ':',minc_location,PatientName,SeriesUID,time_run)
                                    )
@@ -166,7 +166,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->columns = [
             'v.PatientName',
             'pjct.Name as Project',
-            'subpjct.title as Subproject',
+            'subpjct.title as Cohort',
             'site.Name as Site',
             'v.TimeRun',
             'v.MincFile',
@@ -184,7 +184,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->headers = [
             'PatientName',
             'Project',
-            'Subproject',
+            'Cohort',
             'Site',
             'TimeRun',
             'MincFile',
@@ -217,7 +217,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->formToFilter = [
             'PatientName' => 'v.PatientName',
             'Project'     => 'v.Project',
-            'Subproject'  => 'v.Subproject',
+            'Cohort'      => 'v.Cohort',
             'TimeRun'     => 'v.TimeRun',
             'ProblemType' => 'v.Problem',
             'Filename'    => 'v.MincFile',
@@ -229,7 +229,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         $this->validFilters = [
             'v.PatientName',
             'v.Project',
-            'v.Subproject',
+            'v.Cohort',
             'v.TimeRun',
             'v.MincFile',
             'v.Problem',
@@ -302,7 +302,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // create user object
         $user    =& \User::singleton();
         $config  =& \NDB_Config::singleton();
-        $db      =& \Database::singleton();
+        $db      = $this->loris->getDatabaseConnection();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 
@@ -319,8 +319,8 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // Build a list of existing problem types based on data in db
         $problemTypes = $db->pselect(
             "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-            UNION 
-            SELECT DISTINCT 'Could not identify scan type' 
+            UNION
+            SELECT DISTINCT 'Could not identify scan type'
             FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
@@ -348,13 +348,13 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             $list_of_projects
         );
 
-        // Subproject
-        $list_of_subprojects = ['' => 'Any'] +
-            \Utility::getSubprojectList();
+        // Cohort
+        $list_of_cohorts = ['' => 'Any'] +
+            \Utility::getCohortList();
         $this->addSelect(
-            'Subproject',
-            'Subproject',
-            $list_of_subprojects
+            'Cohort',
+            'Cohort',
+            $list_of_cohorts
         );
 
         // Get sites

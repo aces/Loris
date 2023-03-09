@@ -14,7 +14,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (10,'create_timepoint','Y'
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (11,'dashboard','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (12,'data_release','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (13,'datadict','Y');
-INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (14,'dataquery','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (15,'dicom_archive','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (16,'document_repository','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (17,'examiner','Y');

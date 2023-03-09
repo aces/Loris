@@ -62,7 +62,6 @@ class UserAccountsIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -77,6 +76,11 @@ class UserAccountsIndex extends Component {
             .join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
+        }
         break;
       case 'Project':
         // If user has multiple projects, join array of sites into string
@@ -86,6 +90,11 @@ class UserAccountsIndex extends Component {
             ).join(', ')}
           </td>
         );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no project affiliations</td>
+          );
+        }
         break;
       case 'Username':
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;

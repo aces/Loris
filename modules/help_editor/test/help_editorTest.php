@@ -72,9 +72,17 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function testHelpPageLoad()
     {
         $this->safeGet($this->url . "/help_editor/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#breadcrumbs"))
             ->getText();
         $this->assertStringContainsString("Help Editor", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }//end test_help_pageload()
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some
@@ -137,20 +145,21 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByTopic()
     {
-        $this->markTestSkipped(
-            'Modifications needed to adapt to layout changes'
-        );
-         $this->safeGet($this->url . "/help_editor/");
+        $this->safeGet($this->url . "/help_editor/");
         $this->safeFindElement(
             WebDriverBy::Name("topic")
         )->sendKeys("Test Topic");
          //click the [show data] button
-        $this->safeFindElement(
-            WebDriverBy::Name("topic")
-        )->click();
-         $this->safeGet($this->url . "/help_editor/?format=json");
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertStringContainsString("Test Topic", $bodyText);
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable>tbody:nth-child(2)>".
+                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector('.panel-body')
+        )->getText();
+        $this->assertStringContainsString("test", $bodyText);
     }
     /**
      * Tests that help editor does not load with the permission
@@ -159,20 +168,20 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorSearchByKeyword()
     {
-        $this->markTestSkipped(
-            'Modifications needed to adapt to layout changes'
+        $this->safeGet($this->url . "/help_editor/");
+        $this->safeFindElement(
+            WebDriverBy::Name("content")
+        )->sendKeys("test");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable>tbody:nth-child(2)>".
+                "tr:nth-child(1)>td:nth-child(2)>a:nth-child(1)"
+            )
         );
-         $this->safeGet($this->url . "/help_editor/");
-        $this->safeFindElement(
-            WebDriverBy::Name("keyword")
-        )->sendKeys("test content");
-         //click the [show data] button
-        $this->safeFindElement(
-            WebDriverBy::Name("keyword")
-        )->click();
-         $this->safeGet($this->url . "/help_editor/?format=json");
-         $bodyText = $this->webDriver->getPageSource();
-         $this->assertStringContainsString("test content", $bodyText);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector('.panel-body')
+        )->getText();
+        $this->assertStringContainsString("test", $bodyText);
     }
 
 }

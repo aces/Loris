@@ -94,7 +94,12 @@ class CouchDBIntegrityChecker
                 ]
             );
 
-            if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
+            if (empty($sqlDB)) {
+                print "PSCID $pscid VL $vl does not exist but $row[id] still exists.
+                Deleting Doc. \n";
+
+                $this->CouchDB->deleteDoc($row['id']);
+            } else if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
                 print "PSCID $pscid is inactive but $row[id] still exists. 
                 Deleting Doc.\n";
 

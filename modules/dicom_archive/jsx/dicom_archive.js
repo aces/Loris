@@ -15,7 +15,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author LORIS Team
  * @version 1.0.0
- *
  */
 class DicomArchive extends Component {
   /**
@@ -64,7 +63,6 @@ class DicomArchive extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {

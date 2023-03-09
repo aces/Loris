@@ -98,7 +98,7 @@ class DynamicDataTable extends Component {
   /**
    * Ajax failure callback
    *
-   * @param {jqXHR} data
+   * @param {object} data
    * @param {string} errorCode
    * @param {string} errorMsg
    */

@@ -30,7 +30,7 @@ uploaded file system where new files will be written.
 
 ## Interactions with LORIS
 
-Users can enable notifications for the document_repository in the My Preferences module. Once activated, users receive an email each time one of the following events occurs:
+Users can enable notifications for the document_repository in the "My Preferences" module. Permissions required in order to be able to change notification settings for this module are dictated by the `notification_modules_perm_rel` table of the database. Once activated, users receive an email each time one of the following events occurs:
 * Addition, deletion or modification of a file (by another user)
 * Addition of a category (by another user)
 

@@ -4,11 +4,12 @@
  *
  * PHP Version 7
  *
- * @category Data_Querying_Module
- * @package  Loris
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @category   Module
+ * @package    Loris
+ * @subpackage DQT
+ * @author     Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\dqt;
 
@@ -17,14 +18,17 @@ namespace LORIS\dqt;
  *
  * PHP Version 7
  *
- * @category Data_Querying_Module
- * @package  Loris
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @category   Module
+ * @package    Loris
+ * @subpackage DQT
+ * @author     Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris/
  */
 class Dqt extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * Check user access permission
      *
@@ -36,125 +40,6 @@ class Dqt extends \NDB_Form
     {
         // check user permissions
         return $user->hasPermission('dataquery_view');
-    }
-
-    /**
-     * Sets up the smarty template variables for the dataquery page.
-     *
-     * @return void
-     */
-    function setup()
-    {
-        parent::setup();
-
-        $user        = \User::singleton();
-        $username    = $user->getUsername();
-        $config      = \NDB_Config::singleton();
-        $couchConfig = $config->getSetting('CouchDB');
-        $couchConfigValid = isset(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            $couchConfig['port'],
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
-        if (!$couchConfigValid) {
-            error_log(
-                'Data Query Tool cannot be loaded due to missing ' .
-                'configuration settings. Ensure that `dbName`, `hostname`, ' .
-                '`port`, `admin` and `adminpass` values are properly ' .
-                'configured in project/config.xml'
-            );
-            throw new \ConfigurationException(
-                'Missing CouchDB configuration settings. Cannot load ' .
-                'Data Query Tool.'
-            );
-        }
-        $couch = \NDB_Factory::singleton()->couchDB(
-            $couchConfig['dbName'],
-            $couchConfig['hostname'],
-            intval($couchConfig['port']),
-            $couchConfig['admin'],
-            $couchConfig['adminpass']
-        );
-
-        $update = $couch->queryView(
-            "DQG-2.0",
-            "runlog",
-            [
-                "reduce"     => "false",
-                "limit"      => "1",
-                "descending" => "true",
-            ]
-        );
-        $this->tpl_data['updatetime'] = $update[0]['key'];
-
-        $categories = $couch->queryView(
-            "DQG-2.0",
-            "datadictionary",
-            [
-                "reduce"      => "true",
-                "group_level" => "1",
-            ]
-        );
-
-        $cat_tpl = [];
-        foreach ($categories as $row) {
-            if ($row['value']) {
-                $cat_tpl[$row['key'][0]] = $row['value'];
-            } else {
-                $cat_tpl[$row['key'][0]] = -1;
-            }
-        }
-        $this->tpl_data['categories'] = $cat_tpl;
-
-        $usersaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"$username\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $globalsaved = $couch->queryView(
-            "DQG-2.0",
-            "savedqueries",
-            [
-                "key"    => "\"global\"",
-                "reduce" => "false",
-            ]
-        );
-
-        $IDMapCallback = function ($row) {
-            return $row['id'];
-        };
-
-        $usersavedNames   = array_map($IDMapCallback, $usersaved);
-        $globalsavedNames = array_map($IDMapCallback, $globalsaved);
-
-        $this->tpl_data['savedqueries'] = [
-            'user'   => $usersavedNames,
-            'shared' => $globalsavedNames,
-        ];
-        $sessionResults           = $couch->queryView(
-            "DQG-2.0",
-            "sessions",
-            [
-                "reduce" => "true",
-                "group"  => "true",
-            ]
-        );
-        $this->tpl_data['visits'] = \Utility::getVisitList();
-
-        $sessions = array_map(
-            function ($element) {
-                return $element['key'];
-            },
-            $sessionResults
-        );
-
-        $this->tpl_data['sessions'] = $sessions;
     }
 
     /**
@@ -171,19 +56,30 @@ class Dqt extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/dataquery/js/arrayintersect.js",
-                $baseURL . "/dqt/js/react.fieldselector.js",
-                $baseURL . "/dqt/js/react.filterBuilder.js",
-                $baseURL . "/dqt/js/react.tabs.js",
-                $baseURL . "/dqt/js/react.sidebar.js",
-                $baseURL . "/dqt/js/react.app.js",
-                $baseURL . "/dataquery/js/jstat.js",
-                $baseURL . "/js/components/StaticDataTable.js",
-                $baseURL . "/js/flot/jquery.flot.min.js",
+                $baseURL . '/js/d3.min.js',
+                $baseURL . '/js/c3.min.js',
+                $baseURL . '/dqt/js/react.fieldselector.js',
+                $baseURL . '/dqt/js/react.filterBuilder.js',
+                $baseURL . '/dqt/js/react.tabs.js',
+                $baseURL . '/dqt/js/react.sidebar.js',
+                $baseURL . '/dqt/js/react.app.js',
+                $baseURL . '/js/flot/jquery.flot.min.js',
                 $baseURL . '/js/components/PaginationLinks.js',
-                $baseURL . "/js/jszip/jszip.min.js",
-                $baseURL . "/js/components/MultiSelectDropdown.js",
+                $baseURL . '/js/jszip/jszip.min.js',
+                $baseURL . '/js/components/MultiSelectDropdown.js',
             ]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Data Query Tool', "/$this->name")
         );
     }
 
@@ -201,7 +97,8 @@ class Dqt extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/dqt/css/dataquery.css",
+                $baseURL . '/dqt/css/dataquery.css',
+                $baseURL . '/css/c3.css',
             ]
         );
     }

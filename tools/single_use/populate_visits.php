@@ -5,7 +5,7 @@
  * table should be kept up to date manually, though the script will only
  * insert new visits, so it can be run multiple times if need be.
  *
- * The script also populates the visits_subproject_project_rel table.
+ * The script also populates the visits_cohort_project_rel table.
  *
  * PHP Version 7
  *
@@ -46,13 +46,13 @@ class VisitsPopulator
      * Checks if a Visit_label is already in the visits table and
      * if not, it inserts it.
      *
-     * @param string $visit        The Visit name to insert
-     * @param string $new_label    The new visit_label for the front end.
-     * @param int    $subprojectID The ID of the Subproject for this visit
+     * @param string $visit     The Visit name to insert
+     * @param string $new_label The new visit_label for the front end.
+     * @param int    $cohortID  The ID of the Cohort for this visit
      *
      * @return none, but as a side-effect potentially inserts into database
      */
-    function insertVisitIfMissing($visit, $new_label, $subprojectID)
+    function insertVisitIfMissing($visit, $new_label, $cohortID)
     {
         $vid = $this->DB->pselectOne(
             "SELECT VisitID FROM visit WHERE VisitName=:VN",
@@ -71,45 +71,45 @@ class VisitsPopulator
             );
         }
 
-        if (!empty($subprojectID)) {
-            $this->insertRelIfMissing($vid, $subprojectID);
+        if (!empty($cohortID)) {
+            $this->insertRelIfMissing($vid, $cohortID);
         }
     }
 
     /**
-     * Checks if a visit is already associated with a project-subproject tuple.
+     * Checks if a visit is already associated with a project-cohort tuple.
      * If not, it inserts it into the relational table
      *
      * @param string $vid The Visit ID to insert
-     * @param string $sid The subproject ID the visit is associated to
+     * @param string $sid The cohort ID the visit is associated to
      *
      * @return none, but as a side-effect potentially inserts into database
      */
     function insertRelIfMissing($vid, $sid)
     {
-        // Get all ProjectSubprojectRelIDs associated with the concerned subproject
+        // Get all ProjectCohortRelIDs associated with the concerned cohort
         $psrids = $this->DB->pselectCol(
-            "SELECT ProjectSubprojectRelID
-		FROM project_subproject_rel
-		WHERE SubprojectID=:sid",
+            "SELECT ProjectCohortRelID
+		FROM project_cohort_rel
+		WHERE CohortID=:sid",
             ['sid' => $sid],
-            "ProjectSubprojectRelID"
+            "ProjectCohortRelID"
         );
-        // For Every ProjectSubprojectRelID check if it already exists
+        // For Every ProjectCohortRelID check if it already exists
         // if not, insert it
         foreach ($psrids as $psrid) {
             $verify = $this->DB->pselectOne(
                 "SELECT 'x'
-		    FROM visit_project_subproject_rel
-		    WHERE VisitID=:vid AND ProjectSubprojectRelID=:psrid",
+		    FROM visit_project_cohort_rel
+		    WHERE VisitID=:vid AND ProjectCohortRelID=:psrid",
                 ['vid' => $vid, 'psrid' => $psrid]
             );
             if (empty($verify)) {
-                print "\t\t->Inserting Visit: $vid for Subproject: $sid".
-                " and ProjectSubprojectRel: $psrid\n";
+                print "\t\t->Inserting Visit: $vid for Cohort: $sid".
+                " and ProjectCohortRel: $psrid\n";
                 $x = $this->DB->insert(
-                    "visit_project_subproject_rel",
-                    ['VisitID' => $vid, 'ProjectSubprojectRelID'=>$psrid]
+                    "visit_project_cohort_rel",
+                    ['VisitID' => $vid, 'ProjectCohortRelID'=>$psrid]
                 );
             }
         }
@@ -128,9 +128,9 @@ class VisitsPopulator
         // Can't use Utility::getVisits() because that uses the session table..
         print "Populating from Config.xml\n";
         $vls = $this->Config->getSetting("visitLabel");
-        foreach ($vls as $subproject) {
-            $sid = $subproject['@']['subprojectID'];
-            foreach ($subproject['labelSet']['item'] as $item) {
+        foreach ($vls as $cohort) {
+            $sid = $cohort['@']['cohortID'];
+            foreach ($cohort['labelSet']['item'] as $item) {
                 $visit = $item['@']['value'];
                 $label = $item['#'];
                 if (!empty($visit)) {
@@ -140,12 +140,12 @@ class VisitsPopulator
         }
         print "Populating from SESSION table\n";
         // populate from session table for custom visit labels
-        $query         ="SELECT DISTINCT Visit_label, SubprojectID FROM session";
+        $query         ="SELECT DISTINCT Visit_label, CohortID FROM session";
         $sessionLabels = $this->DB->pselect($query, []);
         foreach ($sessionLabels as $k=>$row) {
             $visit =$row['Visit_label'];
             $label =$row['Visit_label'];
-            $sid   =$row['SubprojectID'];
+            $sid   =$row['CohortID'];
             $this->insertVisitIfMissing($visit, $label, $sid);
         }
         print "Populating from VISIT_WINDOWS table\n";

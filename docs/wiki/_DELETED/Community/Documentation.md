@@ -1,1 +1,0 @@
-If you would like to suggest any improvements to the documentation on the wiki, please send us an [[email|Get in touch]].

@@ -16,7 +16,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Victoria Foing, Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class ExaminerIndex extends Component {
   /**
@@ -132,7 +131,6 @@ class ExaminerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {

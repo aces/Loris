@@ -323,7 +323,7 @@ class File_Upload
         //If there is already a file with this name in the target directory either
         //overwrite, rename, or reject.
         if (file_exists($dest_dir.$safe_name)) {
-            switch($this->overwriteMode){
+            switch ($this->overwriteMode) {
             case "rename":
                 if ($this->renameMode=="incremental") {
                     $safe_name =$this->nameToIncremental($dest_dir, $safe_name);

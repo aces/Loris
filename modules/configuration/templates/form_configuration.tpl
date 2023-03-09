@@ -158,7 +158,7 @@
 {/function}
 
 <p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
-<p>To configure study subprojects <a href="{$baseurl|default}/configuration/subproject/">click here</a>.
+<p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.
     To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
 </p>
 <br>

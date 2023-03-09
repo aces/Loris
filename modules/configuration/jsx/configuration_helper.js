@@ -6,7 +6,7 @@ $(function() {
     $('div').tooltip();
 
     let count = 0;
-    $('.add').click(function(e) {
+    $('.add').on('click', function(e) {
         e.preventDefault();
 
         count = count + 1;
@@ -36,7 +36,7 @@ $(function() {
         }
     });
 
-    $('.btn-remove').click(function(e) {
+    $('.btn-remove').on('click', function(e) {
         e.preventDefault();
 
         let options = $(this).parent().parent().children().prop('options');
