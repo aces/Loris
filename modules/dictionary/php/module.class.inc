@@ -95,6 +95,7 @@ class Module extends \Module
                 continue;
             }
 
+            $module->registerAutoloader();
             $mdict = $module->getQueryEngine()->getDataDictionary();
             $mname = $module->getName();
 
