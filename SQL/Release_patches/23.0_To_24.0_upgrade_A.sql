@@ -1,4 +1,4 @@
-SELECT 'Running: SQL/Archive/24.0/2021-07-19-log_level.sql';
+SELECT 'Running: SQL/Archive/24.0/2019-06-01-log_level-2021-07-19.sql';
 
 ALTER TABLE `ConfigSettings` MODIFY COLUMN `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level');
 
