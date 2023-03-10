@@ -25,7 +25,7 @@ function ViewData(props) {
         fetch(
            loris.BaseURL + '/dataquery/queries',
            {
-             method: 'POST',
+             method: 'post',
              credentials: 'same-origin',
              body: JSON.stringify(payload),
            },
@@ -55,6 +55,7 @@ function ViewData(props) {
                         setResultData([...resultbuffer]);
                         setLoading(false);
                     },
+                    'post',
                 );
                 props.onRun(); // forces query list to be reloaded
 
