@@ -4,7 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
-use \LORIS\instruments\DictionaryItem;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
