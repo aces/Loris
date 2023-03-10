@@ -110,6 +110,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (121,125,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (123,127,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (124,128,'');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (125,129,'');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
