@@ -666,7 +666,7 @@ function SingleQueryDisplay(props) {
        : <div />;
          msg = <div><b>{query.Name}</b>&nbsp;{loadIcon}{unpinIcon}</div>;
      } else {
-         console.error('Invalid query. Neither shared nor recent');
+         console.error('Invalid query. Neither shared nor recent', query);
      }
 
      const queryDisplay = !showFullQuery ? <div /> :
@@ -739,11 +739,12 @@ function QueryRunList(props) {
     // runs and queries, so we need to flatten all the information into a single
     // object that it thinks is a query and not a query run.
     const queries = props.queryruns.map((val) => {
+        console.log(val);
         let flattened = {...val.Query};
-        flattened.RunTime = val.RunTime;
+        flattened.RunTime = val.Runtime;
         flattened.QueryID = val.QueryID;
         flattened.Starred = val.Starred;
-        flattened.Shared = val.Shared;
+        flattened.Public = val.Public;
         flattened.Name = val.Name;
         return flattened;
     });
