@@ -93,7 +93,7 @@ class ModuleDict extends \NDB_Page
             $scope     = $row->getScope();
             $organized[$cat][$fieldname] = [
                 'description' => $row->getDescription(),
-                'scope'       => $row->getScope(),
+                'scope'       => $scope,
                 'type'        => $row->getDataType(),
                 'cardinality' => $row->getCardinality(),
             ];
