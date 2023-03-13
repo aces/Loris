@@ -12,26 +12,22 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-set_include_path(
-    get_include_path().":".__DIR__."/../project/libraries:"
-    .":".__DIR__."/../../php/libraries:"
-);
-require_once __DIR__ . "/generic_includes.php";
+require_once __DIR__ . '/../generic_includes.php';
 
 $client = new NDB_Client();
 $client->makeCommandLine();
-$client->initialize(__DIR__."/../project/config.xml");
-$config = NDB_Config::singleton();
-
-$db       = $lorisInstance->getDatabaseConnection();
+$client->initialize(__DIR__."/../../project/config.xml");
+$config   = NDB_Config::singleton();
+$db       = $DB;
 $database = $config->getSetting('database');
 
 $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
+$currentDate    = date("Y-m-d");
 $filename       = __DIR__
-    . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
+. "/../../SQL/Archive/18.0/" . $currentDate ."-update_zero_fields_statements.sql";
 $output         = "";
 $alters         ="";
 $updates        ="";
@@ -41,7 +37,7 @@ $nonNullUpdates ="";
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
     "currently in the database. \nThe output file is SQL/Archive/18.0/".
-    "2016-06-01-update_zero_fields_statements.sql and includes foreign key ".
+    $currentDate . "-update_zero_fields_statements.sql and includes foreign key ".
     "checks disabling and re-enabling.\n".
     "\n#################################################################\n\n";
 
