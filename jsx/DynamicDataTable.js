@@ -154,7 +154,7 @@ DynamicDataTable.propTypes = {
   Filter: PropTypes.object,
   getFormattedCell: PropTypes.func,
   freezeColumn: PropTypes.string,
-  onSort: PropTypes.bool,
+  onSort: PropTypes.func,
 };
 
 DynamicDataTable.defaultProps = {
