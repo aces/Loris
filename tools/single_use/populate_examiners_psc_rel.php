@@ -18,7 +18,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'generic_includes.php';
+require_once __DIR__.'/../generic_includes.php';
 
 $config = NDB_Config::singleton();
 $db     = $loris->getDatabaseConnection();
