@@ -19,6 +19,7 @@ changes in the following format: PR #1234***
 - Create new CohortData and CohortController classes to use as data access model 
   and transfer object (PR #7817)
 - BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
+- Add Date status change value in session table (PR #8350)
 
 #### Bug Fixes
 - placeholder
