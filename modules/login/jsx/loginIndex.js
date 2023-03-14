@@ -301,6 +301,10 @@ class Login extends Component {
 
 Login.propTypes = {
   module: PropTypes.string,
+  defaultmode: PropTypes.string,
+  defaultRequestFirstName: PropTypes.string,
+  defaultRequestLastName: PropTypes.string,
+  defaultRequestEmail: PropTypes.string,
 };
 
 window.addEventListener('load', () => {

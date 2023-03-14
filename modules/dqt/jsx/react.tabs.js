@@ -184,6 +184,8 @@ FilterSelectTabPane.propTypes = {
   filter: PropTypes.object,
   Visits: PropTypes.array,
   Active: PropTypes.bool,
+  loadImportedCSV: PropTypes.func,
+  getAllSessions: PropTypes.func,
 };
 
 /**
@@ -639,6 +641,9 @@ ViewDataTabPane.propTypes = {
   RowHeaders: PropTypes.array,
   RowInfo: PropTypes.array,
   Criteria: PropTypes.object,
+  AllSessions: PropTypes.array,
+  filter: PropTypes.object,
+  Data: PropTypes.array,
 };
 
 /**

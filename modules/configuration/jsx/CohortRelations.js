@@ -41,7 +41,8 @@ class CohortRelations extends Component {
         );
   }
 }
-SubprojectRelations.propTypes = {
+
+CohortRelations.propTypes = {
   Relations: PropTypes.array,
 };
 

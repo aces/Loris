@@ -593,5 +593,6 @@ ProjectFormFields.propTypes = {
   allCollabs: PropTypes.object,
   allKWs: PropTypes.object,
   editMode: PropTypes.string,
+  projectOptions: PropTypes.object,
 };
 export default ProjectFormFields;

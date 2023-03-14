@@ -84,6 +84,7 @@ Card.propTypes = {
   style: PropTypes.object,
   cardSize: PropTypes.string,
   children: PropTypes.array,
+  collapsing: PropTypes.bool,
 };
 
 Card.defaultProps = {

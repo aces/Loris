@@ -673,6 +673,7 @@ DownloadButton.propTypes = {
   FileName: PropTypes.string,
   BaseURL: PropTypes.string,
   Label: PropTypes.string,
+  URL: PropTypes.string,
 };
 
 

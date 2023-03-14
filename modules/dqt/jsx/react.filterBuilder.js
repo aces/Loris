@@ -870,6 +870,7 @@ FilterBuilder.propTypes = {
   items: PropTypes.array,
   updateFilter: PropTypes.func,
   Visits: PropTypes.object,
+  loadImportedCSV: PropTypes.func,
 };
 
 window.LogicOperator = LogicOperator;
