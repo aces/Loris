@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -16,7 +17,6 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * @author Victoria Foing, Zaliqa Rosli
  * @version 1.0.0
- *
  */
 class ExaminerIndex extends Component {
   /**
@@ -132,7 +132,6 @@ class ExaminerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
@@ -140,9 +139,13 @@ class ExaminerIndex extends Component {
 
     switch (column) {
       case 'Examiner':
-        const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                  row.ID;
-        result = <td><a href={url}>{cell}</a></td>;
+        if (this.state.data.useCertification) {
+          const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
+                    row.ID;
+          result = <td><a href={url}>{cell}</a></td>;
+        } else {
+          result = <td>{cell}</td>;
+        }
         break;
       case 'Radiologist':
         if (row.Radiologist === '1') {
@@ -300,12 +303,12 @@ ExaminerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
       submitURL={`${loris.BaseURL}/examiner/`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
