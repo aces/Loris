@@ -103,9 +103,19 @@ export function violationFilters(fieldoptions) {
  * @param {function} setPage - a callback to set the current page
  * @param {string} resolvePostURL - the URL to send a post request to when
  *                                  a resolution status is selected
+ * @param {function} onResolutionChanged - a callback to call when the
+                                           resolution status changes
+ * @param {object} modifiedColumns - list of columns which have been modified
+ *                                   since he page load
  * @return {function} a formatter callback which uses mapper for data mapping
  */
-export function formatColumn(mapper, setPage, resolvePostURL) {
+export function formatColumn(
+    mapper,
+    setPage,
+    resolvePostURL,
+    onResolutionChanged,
+    modifiedColumns,
+) {
     const Mapper = function(column, cell, rowData, rowHeaders) {
         cell = mapper(column, cell);
         // Create the mapping between rowHeaders and rowData in a row object.
@@ -195,8 +205,12 @@ export function formatColumn(mapper, setPage, resolvePostURL) {
         }
         if (column === 'Select Resolution') {
             const hashName = rowData.hash;
+            const color = modifiedColumns[hashName] ? {
+                backgroundColor: '#d1ffcf',
+                transition: 'background-color 1s',
+            } : {};
             return (
-                    <td>
+                    <td style={color}>
                     <select
                         name={hashName}
                         className="form-control input-sm"
@@ -214,6 +228,8 @@ export function formatColumn(mapper, setPage, resolvePostURL) {
                                     value: value,
                                     hash: hashName,
                                 }),
+                            }).then(() => {
+                                onResolutionChanged(hashName);
                             });
                           }
                         }

@@ -16,6 +16,7 @@ import ProtocolModal from './protocolModal.js';
 function MRIViolationsIndex(props) {
   const [fieldOptions, setFieldOptions] = useState({});
   const [violationModal, setViolationModal] = useState(false);
+  const [modifiedColumns, setModifiedColumns] = useState({});
 
   const mapper = columnMapper(fieldOptions);
 
@@ -34,7 +35,13 @@ function MRIViolationsIndex(props) {
         formatter={formatColumn(
           mapper,
           setViolationModal,
-          props.ModuleURL + '/resolve'
+          props.ModuleURL + '/resolve',
+          (hashname) => {
+              let newColumns = {...modifiedColumns};
+              newColumns[hashname] = true;
+              setModifiedColumns(newColumns);
+          },
+          modifiedColumns,
         )}
         fields={violationFilters(fieldOptions)}
         setFieldOptions={setFieldOptions}
