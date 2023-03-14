@@ -967,7 +967,6 @@ CREATE TABLE `mri_violations_log` (
   `PhaseEncodingDirection` VARCHAR(3) DEFAULT NULL,
   `EchoNumber` VARCHAR(20) DEFAULT NULL,  `MriProtocolChecksGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`LogID`),
-  UNIQUE KEY `unique_mvl_entry` (`SeriesUID`, `EchoTime`, `PhaseEncodingDirection`, `EchoNumber`, `Scan_type`, `Severity`, `Header`, `Value`, `ValidRange`, `ValidRegex`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
   CONSTRAINT `FK_mri_checks_group_1`
