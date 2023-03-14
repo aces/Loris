@@ -85,7 +85,7 @@ class Fields extends \NDB_Page
         // Brute force finding the name since we don't know what module
         // the dictionary item came from.
         foreach ($modules as $module) {
-            $mdict = $module->getDataDictionary($this->loris);
+            $mdict = $module->getQueryEngine()->getDataDictionary();
             foreach ($mdict as $cat) {
                 foreach ($cat->getItems() as $item) {
                     $iname = $cat->getName() . '_' . $item->getName();

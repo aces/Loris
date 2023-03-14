@@ -1,12 +1,13 @@
-/* global ReactDOM */
-
 import ImagingUploader from './ImagingUploader';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
 
 /**
  * Render imaging_uploader on page load
  */
 document.addEventListener('DOMContentLoaded', function() {
-  const imagingUploader = (
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <div className='page-imaging-uploader'>
       <ImagingUploader
         Module='imaging_uploader'
@@ -14,6 +15,4 @@ document.addEventListener('DOMContentLoaded', function() {
       />
     </div>
   );
-
-  ReactDOM.render(imagingUploader, document.getElementById('lorisworkspace'));
 });

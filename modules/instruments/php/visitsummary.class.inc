@@ -52,6 +52,7 @@ class VisitSummary extends \NDB_Page
             return $this->_handleGET(
                 new CandID($params['CandID']),
                 $params['VisitLabel'],
+                $user,
             );
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
@@ -61,15 +62,16 @@ class VisitSummary extends \NDB_Page
     }
 
     /**
-     * Helper to specifically handle PATCH HTTP methods to the endpoint.
+     * Helper to specifically handle GET HTTP methods to the endpoint.
      *
      * @param CandID $candid     The CandID for the visit.
      * @param string $visitLabel The visit label string.
+     * @param \User  $user       The user accessing the endpoint
      *
      * @return ResponseInterface
      */
     private function _handleGET(
-        CandID $candid, string $visitLabel
+        CandID $candid, string $visitLabel, \User $user
     ) : ResponseInterface {
         $DB = \NDB_Factory::singleton()->database();
 
@@ -111,6 +113,13 @@ class VisitSummary extends \NDB_Page
                 '',
                 false
             );
+            if ($instrument->_hasAccess($user) == false) {
+                $this->logger->debug(
+                    "Skipping $testName"
+                    . " because user does not have permission"
+                );
+                continue;
+            }
             if ($instrument === null) {
                 $bvl_result[$key]['Completion'] = 0;
             } else {

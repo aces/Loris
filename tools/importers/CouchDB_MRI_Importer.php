@@ -3,20 +3,6 @@
 /**
  * Wrapper around CouchDB MRI functions
  *
- * PHP Version 7
- *
- * @category CouchDB_Import_Script
- * @package  Main
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once 'generic_includes.php';
-
-/**
- * Wrapper around CouchDB MRI functions
- *
  * @category CouchDB_Import_Script
  * @package  Main
  * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
@@ -25,8 +11,7 @@ require_once 'generic_includes.php';
  */
 class CouchDBMRIImporter
 {
-    var $SQLDB; // reference to the database handler, store here instead
-    // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
 
@@ -438,7 +423,7 @@ class CouchDBMRIImporter
                 $row['PSCID'],
                 $row['Visit_label'],
             ];
-            $docid      = 'MRI_Files:' . join($identifier, '_');
+            $docid      = 'MRI_Files:' . join('_', $identifier);
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
             unset($doc['SessionID']);
@@ -768,10 +753,4 @@ class CouchDBMRIImporter
         $feedbackMRI = new FeedbackMRI(1, null);
         return $feedbackMRI->getAllPredefinedComments($commentTypeID);
     }
-}
-
-// Don't run if we're doing the unit tests; the unit test will call run.
-if (!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBMRIImporter();
-    $Runner->run();
 }

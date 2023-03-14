@@ -195,6 +195,7 @@ CREATE TABLE `session` (
   `Date_screening` date DEFAULT NULL,
   `Visit` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_visit` date DEFAULT NULL,
+  `Date_status_change` date DEFAULT NULL,
   `Approval` enum('In Progress','Pass','Failure') DEFAULT NULL,
   `Date_approval` date DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -281,12 +282,10 @@ CREATE TABLE `flag` (
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
-  KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
   KEY `flag_SessionID` (`SessionID`),
   KEY `flag_Test_name` (`Test_name`),
@@ -980,7 +979,8 @@ CREATE TABLE `violations_resolved` (
   `User` varchar(255) DEFAULT NULL,
   `ChangeDate` datetime DEFAULT NULL,
   `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `i_violations_resolved_extid_type` (`ExtID`,`TypeTable`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_violated_scans` (
@@ -1283,7 +1283,6 @@ CREATE TABLE `participant_accounts` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `SessionID` int(6) DEFAULT NULL,
   `Test_name` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL,
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
   `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,

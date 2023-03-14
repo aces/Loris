@@ -18,6 +18,8 @@ buttons at the top of the data table.
 
 4. Upload a file with a version that includes Uppercase letters. Ensure that the
 version is saved to the database with all values in lowercase.
+
+5. Upload a file with no version. Ensure that it is uploaded properly without any error. 
  
 ## Permissions
 
@@ -40,20 +42,23 @@ permission was added for him/her.
 'Data Release Version' and ensure that the user can see all data release files
 associated to that data release version.
 
-7. Repeat steps 2 to 5 but this time select both a 'Data Release File' and a
+7. Repeat steps 2 to 5 but instead of selecting a 'Data Release File', select a
+'Data Release Version' and select ‘Unversioned’. Ensure that the user can see all data release files associated with ‘Unversioned’.
+
+8. Repeat steps 2 to 5 but this time select both a 'Data Release File' and a
 'Data Release Version'. An data entry error should be shown.
 
-8. Click on the 'Manage Permissions' button.
+9. Click on the 'Manage Permissions' button.
 
-9. Try adding/removing permissions to specific release versions for specific users.
+10. Try adding/removing permissions to specific release versions for specific users.
 
-10. Ensure that an unmodified checkbox does not give or revoke any access permissions 
+11. Ensure that an unmodified checkbox does not give or revoke any access permissions 
 from the user.
 
-11. Ensure that when a box is unchecked, the user's access to any of the released 
+12. Ensure that when a box is unchecked, the user's access to any of the released 
 files with that version is revoked.
 
-12. Ensure that when a box is checked, the user is granted access to all files within 
+13. Ensure that when a box is checked, the user is granted access to all files within 
 that release version.
 
 

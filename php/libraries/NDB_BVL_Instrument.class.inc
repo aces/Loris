@@ -308,17 +308,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
-        $user   = \User::singleton();
-        $access = $obj->_hasAccess($user);
-
-        // check that user has access
-        if ($access == false) {
-            throw new Exception(
-                "You do not have access to this page.",
-                403
-            );
-        }
-
         return $obj;
     }
 
@@ -380,9 +369,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     return true;
                 }
             }
-
-            //no user permissions match required instrument permissions
-            throw new Exception("You do not have access to this page.", 403);
+            return false;
         }
     }
 
@@ -440,8 +427,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config = NDB_Config::singleton();
         $base   = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
-
+        $this->logger->debug("Running scoring script $scorer");
         if (file_exists($scorer)) {
+            if (is_executable($scorer) === false) {
+                $this->logger->critical(
+                    "Scoring script $scorer exists but is not executable"
+                );
+                throw new \ConfigurationException(
+                    "Scoring script not executable"
+                );
+            }
             $output = [];
             exec(
                 escapeshellarg($scorer) . " " . escapeshellarg(
@@ -451,8 +446,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "An error occurred while running the scoring
-                algorithm of instrument ".$this->testName.".";
+                $this->logger->warning(
+                    "An error occurred while running the scoring
+                    algorithm of instrument ".$this->testName."."
+                );
             }
         }
     }

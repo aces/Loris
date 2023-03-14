@@ -108,7 +108,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            $this->testName.'_Candidate_age',
+                            $this->testName.'_Candidate_Age',
                             'Candidate Age (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
@@ -120,14 +120,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate_Age_at_Death'
+                    'Candidate Age at Death (Months)'
                 );
                 $this->dictionary = array_merge(
                     $this->dictionary,
                     [
                         new DictionaryItem(
-                            $this->testName.'_Candidate_age',
-                            'Candidate Age At Death (Months)',
+                            $this->testName.'_Candidate_Age',
+                            'Candidate Age at Death (Months)',
                             $scope,
                             new \LORIS\Data\Types\Duration(),
                             new Cardinality(Cardinality::SINGLE),
@@ -922,6 +922,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 break;
             case 'jsondata':
                 $this->jsonData = trim($pieces[1]) === 'true';
+                break;
+            case 'postmortem':
+                $this->postMortem = trim($pieces[1]) === 'true';
                 break;
             default:
                 break;

@@ -117,7 +117,8 @@ var table = RDynamicDataTable({
      "freezeColumn" : "PatientName"
 
   });
-ReactDOM.render(table, document.getElementById("datatable"));
+const root = ReactDOM.createRoot(document.getElementById("datatable"));
+root.render(table);
 
 </script>
 

@@ -7,6 +7,7 @@
  * @version 0.0.1
  */
 
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -123,7 +124,7 @@ class ElectrophysiologySessionView extends Component {
             },
             downloads: [
               {
-                type: 'physiological_file',
+                type: 'physiological_files',
                 file: '',
               },
               {
@@ -144,10 +145,6 @@ class ElectrophysiologySessionView extends Component {
               },
               {
                 type: 'all_files',
-                file: '',
-              },
-              {
-                type: 'physiological_fdt_file',
                 file: '',
               },
             ],
@@ -226,10 +223,10 @@ class ElectrophysiologySessionView extends Component {
                 dbEntry
                 && dbEntry.file.downloads.map(
                   (group) =>
-                    group.links[1]?.file
+                    group.links['physiological_electrode_file']?.file
                     && loris.BaseURL
                       + '/electrophysiology_browser/file_reader/?file='
-                      + group.links[1].file
+                      + group.links['physiological_electrode_file'].file
               ),
             events:
               dbEntry
@@ -541,6 +538,9 @@ window.onload = function() {
   rootDOM.appendChild(EEGSessionViewAppDOM);
 
   // Render the React Components.
-  ReactDOM.render(eegSessionView, document.getElementById('eegSessionView'));
-  ReactDOM.render(eegSidebar, document.getElementById('eegSidebar'));
+  const mainRoot = createRoot(document.getElementById('eegSessionView'));
+  mainRoot.render(eegSessionView);
+
+  const sidebarRoot = createRoot(document.getElementById('eegSidebar'));
+  sidebarRoot.render(eegSidebar);
 };
