@@ -78,10 +78,6 @@
     </study>
     <!-- end of study definition -->
 
-    <gui>
-        <showDatabaseQueries>0</showDatabaseQueries>
-    </gui>
-
     <!-- used by _hasAccess in NDB_BVL_Instrument to determine
          what permissions should be required for each instrument
          on a configurable basis. -->

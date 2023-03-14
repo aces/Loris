@@ -44,8 +44,6 @@ class Database implements LoggerAwareInterface
      */
     var $lastInsertID;
 
-    var $_showQueries = false;
-
     var $_trackChanges = true;
 
     var $_preparedStoreHistory;
@@ -133,7 +131,6 @@ class Database implements LoggerAwareInterface
 
         if (class_exists('NDB_Config')) {
             $config =& NDB_Config::singleton();
-            $this->_showQueries = $config->getSetting('showDatabaseQueries');
 
             // get history database from config
             $dbsettings = $config->getSetting("database");
@@ -541,7 +538,7 @@ class Database implements LoggerAwareInterface
             $set = $this->_HTMLEscapeArray($set);
         }
         /* This is still here to print the easily readable version on
-         * the top of the page when showDatabaseQueries is on. It isn't
+         * the top of the page when debug log level is on. It isn't
          * actually executed. */
         $query  = "UPDATE $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set, 'set_');
@@ -1244,7 +1241,7 @@ class Database implements LoggerAwareInterface
     }
 
     /**
-     * Print a query if showDatabaseQueries defined in config file
+     * Logs a query if debug log level is on.
      *
      * @param string                $query  The query to replace
      * @param array<string, string> $params The prepared statement parameters
@@ -1263,12 +1260,6 @@ class Database implements LoggerAwareInterface
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
         $this->logger->debug($query, []);
-        if (!$this->_showQueries) {
-            return;
-        }
-        print "$this->_databaseName:"
-            . date("j-M-Y G:i:s", time())
-            .": $query<br>\n";
     }
 
     /**
