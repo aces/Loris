@@ -11,7 +11,9 @@ if ($configSettings['useInstrumentPermissions'] === 'false') {
     return;
 }
 
-foreach (\Utility::associativeToNumericArray($configSettings['instrument']) as $row) {
+foreach (
+    \Utility::associativeToNumericArray($configSettings['instrument']) as $row
+) {
     $testID = $DB->pselectOne(
         "SELECT ID FROM test_names WHERE test_name=:tn",
         ['tn' => $row['Test_name']],
