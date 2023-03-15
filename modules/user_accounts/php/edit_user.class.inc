@@ -1200,6 +1200,7 @@ class Edit_User extends \NDB_Form
         if (isset($values['NA_Password'])
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
+            && empty($this->identifier)
         ) {
             $errors['Email']
                 = 'When generating a new password, '
