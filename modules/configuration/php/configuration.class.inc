@@ -26,6 +26,8 @@ namespace LORIS\configuration;
  */
 class Configuration extends \NDB_Form
 {
+    public $skipTemplate = true;
+
     /**
      * _has_access returns true
      * if the user has the specific permission
@@ -47,6 +49,7 @@ class Configuration extends \NDB_Form
     function setup()
     {
         parent::setup();
+        /*
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
 
@@ -93,6 +96,7 @@ class Configuration extends \NDB_Form
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
         ];
+        */
     }
 
     /**
@@ -101,6 +105,7 @@ class Configuration extends \NDB_Form
      *
      * @return array of parent config items
      */
+        /*
     function _getParentConfigLabels()
     {
         $DB = $this->loris->getDatabaseConnection();
@@ -113,7 +118,9 @@ class Configuration extends \NDB_Form
         );
 
         return $parentConfigItems;
+
     }
+    */
 
     /**
      * Returns an array of configuration settings in a tree format.
@@ -123,6 +130,7 @@ class Configuration extends \NDB_Form
      *
      * @return array of config settings
      */
+     /*
     function _getConfigSettingTree()
     {
         $config = \NDB_Config::singleton();
@@ -182,6 +190,7 @@ class Configuration extends \NDB_Form
 
         return $configs;
     }
+    */
 
     /**
      * Include the column formatter required to display the feedback link colours
@@ -197,7 +206,7 @@ class Configuration extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/configuration/js/configuration_helper.js",
+                $baseURL . "/configuration/js/index.js",
             ]
         );
     }
