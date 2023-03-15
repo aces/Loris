@@ -341,6 +341,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $comment['fieldChanged'] = 'Visit Label';
             } else if ($comment['fieldChanged'] === 'assignee' || $comment['fieldChanged'] === 'lastUpdatedBy') {
                 $comment['newValue'] = $this->formatUserInformation($comment['newValue']);
+            }
         }
         return $unformattedComments; //now formatted I guess
     }
