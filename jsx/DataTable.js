@@ -230,8 +230,7 @@ class DataTable extends Component {
       if (val === '.') {
         // hack to handle non-existent items in DQT
         val = null;
-      } else if (isNumber && this.state.sort.column === -1) {
-        // only No. column will conver to number, otherwise string
+      } else if (isNumber) {
         // perform type conversion (from string to int/float)
         val = Number(val);
       } else if (isString) {
