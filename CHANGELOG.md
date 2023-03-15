@@ -13,6 +13,9 @@ changes in the following format: PR #1234***
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
 - Added the NOT NULL constraint on Project Name (PR #8295)
+- Migrated instrument permissions from config.xml to database and added the ability
+  to manage instrument permissions in the frontend from the `instrument_manager`
+  module. (PR #8302)
 
 #### Updates and Improvements
 - Rename subproject to Cohort (PR #7817)
