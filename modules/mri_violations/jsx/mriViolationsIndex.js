@@ -1,6 +1,7 @@
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
 import {formatColumn, violationFilters} from './violations.js';
 
@@ -49,6 +50,12 @@ function MRIViolationsIndex(props) {
   </div>;
 }
 
+MRIViolationsIndex.propTypes = {
+    ModuleURL: PropTypes.string,
+    SeriesUID: PropTypes.string,
+    dataURL: PropTypes.string,
+};
+
 /**
  * Load a data table and render it
  *
@@ -92,6 +99,15 @@ function ViolationsTable(props) {
           getMappedCell={props.mapper}
         />;
 }
+
+ViolationsTable.propTypes = {
+    URL: PropTypes.string,
+    setFieldOptions: PropTypes.func,
+    name: PropTypes.string,
+    fields: PropTypes.array,
+    formatter: PropTypes.func,
+    mapper: PropTypes.func,
+};
 
 /**
  * A helper to generate a column mapper callback which maps fieldOptions

@@ -148,6 +148,8 @@ FormElement.propTypes = {
   }),
   onSubmit: PropTypes.func,
   onUserInput: PropTypes.func,
+  children: PropTypes.array,
+  fileUpload: PropTypes.bool,
 };
 
 FormElement.defaultProps = {
@@ -237,6 +239,7 @@ FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
   legend: PropTypes.string,
+  children: PropTypes.array,
 };
 
 FieldsetElement.defaultProps = {
@@ -436,6 +439,7 @@ SearchableDropdown.propTypes = {
   errorMessage: PropTypes.string,
   placeHolder: PropTypes.string,
   onUserInput: PropTypes.func,
+  sortByValue: PropTypes.bool,
 };
 
 SearchableDropdown.defaultProps = {
@@ -661,6 +665,7 @@ SelectElement.propTypes = {
   onUserInput: PropTypes.func,
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
+  sortByValue: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -1869,6 +1874,7 @@ NumericElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+  errorMessage: PropTypes.string,
 };
 
 NumericElement.defaultProps = {
@@ -2118,6 +2124,7 @@ StaticElement.propTypes = {
     PropTypes.string,
     PropTypes.element,
   ]),
+  class: PropTypes.string,
 };
 
 StaticElement.defaultProps = {
@@ -2375,6 +2382,8 @@ ButtonElement.propTypes = {
   disabled: PropTypes.bool,
   style: PropTypes.object,
   onUserInput: PropTypes.func,
+  columnSize: PropTypes.string,
+  buttonClass: PropTypes.string,
 };
 
 ButtonElement.defaultProps = {
@@ -2506,6 +2515,10 @@ class LorisElement extends Component {
     return elementHtml;
   }
 }
+LorisElement.propTypes = {
+  element: PropTypes.object,
+  onUserInput: PropTypes.string,
+};
 
 /**
  * Radio Component

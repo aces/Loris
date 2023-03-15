@@ -184,6 +184,8 @@ class DocCategoryForm extends React.Component {
 DocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  refreshPage: PropTypes.func,
+  newCategoryState: PropTypes.func,
 };
 
 export default DocCategoryForm;

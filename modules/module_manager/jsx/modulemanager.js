@@ -223,6 +223,8 @@ class ModuleManagerIndex extends Component {
 
 ModuleManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string,
+  hasEditPermission: PropTypes.bool,
 };
 
 window.addEventListener('load', () => {

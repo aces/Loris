@@ -1,5 +1,6 @@
 import Card from 'Card';
 import React, {useState, useEffect, useRef} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Create a three column grid of cards using a CSS grid.
@@ -119,5 +120,8 @@ function CSSGrid(props) {
         <div ref={cardsRef} style={grid}>{cards}</div>
     );
 }
+CSSGrid.propTypes = {
+    Cards: PropTypes.array,
+};
 
 export default CSSGrid;

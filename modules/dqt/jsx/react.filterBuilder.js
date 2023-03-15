@@ -10,6 +10,7 @@
 import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
 import {getSessions, enumToArray} from '../js/arrayintersect';
+import PropTypes from 'prop-types';
 
 /**
  * LogicOperator Component
@@ -65,6 +66,10 @@ class LogicOperator extends Component {
     );
   }
 }
+LogicOperator.propTypes = {
+  updateGroupOperator: PropTypes.func,
+  logicOperator: PropTypes.number,
+};
 
 /**
  * FilterRule Component
@@ -436,6 +441,15 @@ class FilterRule extends Component {
     );
   }
 }
+FilterRule.propTypes = {
+  rule: PropTypes.object,
+  updateRule: PropTypes.func,
+  index: PropTypes.number,
+  updateSessions: PropTypes.func,
+  Visits: PropTypes.object,
+  items: PropTypes.array,
+  deleteRule: PropTypes.func,
+};
 
 /**
  * FilterGroup Component
@@ -663,6 +677,16 @@ class FilterGroup extends Component {
     );
   }
 }
+FilterGroup.propTypes = {
+  group: PropTypes.object,
+  index: PropTypes.number,
+  updateGroup: PropTypes.func,
+  updateFilter: PropTypes.func,
+  updateSessions: PropTypes.func,
+  items: PropTypes.array,
+  Visits: PropTypes.object,
+  deleteGroup: PropTypes.func,
+};
 
 /**
  * FilterBuilder Component
@@ -841,6 +865,13 @@ class FilterBuilder extends Component {
     );
   }
 }
+FilterBuilder.propTypes = {
+  filter: PropTypes.object,
+  items: PropTypes.array,
+  updateFilter: PropTypes.func,
+  Visits: PropTypes.object,
+  loadImportedCSV: PropTypes.func,
+};
 
 window.LogicOperator = LogicOperator;
 window.FilterRule = FilterRule;

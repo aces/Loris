@@ -1,5 +1,6 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 /**
  * View project component
@@ -557,5 +558,9 @@ class ViewProject extends React.Component {
     );
   }
 }
+ViewProject.propTypes = {
+  action: PropTypes.string,
+  DataURL: PropTypes.string,
+};
 
 export default ViewProject;
