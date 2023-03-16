@@ -147,11 +147,7 @@ class AddExaminer extends \NDB_Page
             ]
         );
 
-        if (empty($examinerID)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($examinerID);
     }
     /**
      * Getter for the examinerID value from the database
