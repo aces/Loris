@@ -1,5 +1,7 @@
 import RMarkdown from 'jsx/Markdown';
 import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
+import {createRoot} from 'react-dom/client';
 
 /**
  * Help Widget
@@ -138,12 +140,16 @@ const Help = (props) => {
   );
 };
 
+Help.propTypes = {
+  content: PropTypes.element,
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const helpContainers = document.getElementsByClassName('help-container');
   for (let i = 0; i < helpContainers.length; i++) {
-    ReactDOM.render(
-      <Help/>,
-      helpContainers.item(i)
+    const root = createRoot(helpContainers.item(i));
+    root.render(
+      <Help/>
     );
   }
 });

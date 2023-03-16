@@ -1,7 +1,9 @@
-import swal from 'sweetalert2';
 import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
+import {createRoot} from 'react-dom/client';
 import {unmountComponentAtNode, createPortal} from 'react-dom';
 import Help from 'jsx/Help';
+import swal from 'sweetalert2';
 
 /**
  * Help Editor Form Page.
@@ -159,10 +161,20 @@ const HelpEditorForm = (props) => {
   );
 };
 
+HelpEditorForm.propTypes = {
+  title: PropTypes.string,
+  content: PropTypes.element,
+  module: PropTypes.string,
+  section: PropTypes.string,
+  subsection: PropTypes.string,
+  helpid:PropTypes.number,
+  url: PropTypes.string,
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.getElementById('app');
-  ReactDOM.render(
-    <HelpEditorForm {...app.dataset} />,
-    document.getElementById('lorisworkspace')
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
+    <HelpEditorForm {...app.dataset} />
   );
 });
