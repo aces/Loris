@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
  *
  * @author Alex I.
  * @version 2.0.0
- *
  * @param {object} props
  * @return {JSX.Element}
  */
@@ -64,18 +63,16 @@ const Panel = (props) => {
       );
     }
     panelViews = (
-      <div className='pull-right'>
-        <div className='btn-group views'>
-          <button type='button'
-                  className='btn btn-default btn-xs dropdown-toggle'
-                  data-toggle='dropdown'>
-            Views<span className='caret'/>
-          </button>
-          <ul className='dropdown-menu pull-right'
-              role='menu'>
-            {views}
-          </ul>
-        </div>
+      <div className='btn-group views'>
+        <button type='button'
+                className='btn btn-default btn-xs dropdown-toggle'
+                data-toggle='dropdown'>
+          Views<span className='caret'/>
+        </button>
+        <ul className='dropdown-menu pull-right'
+            role='menu'>
+          {views}
+        </ul>
       </div>
     );
   }
@@ -92,16 +89,16 @@ const Panel = (props) => {
           ? props.views[activeView]['title']
           : props.title}
       </h3>
+      {panelViews}
       {props.collapsing
         ? <span className={collapsed ?
-          'glyphicon pull-right glyphicon-chevron-down' :
-          'glyphicon pull-right glyphicon-chevron-up'}
+          'glyphicon glyphicon-chevron-down' :
+          'glyphicon glyphicon-chevron-up'}
                 onClick={toggleCollapsed}
                 data-toggle='collapse'
                 data-target={`#${props.id}`}
                 style={{cursor: 'pointer'}}/>
         : null}
-      {panelViews}
     </div>
   ) : '';
 
@@ -130,6 +127,7 @@ const Panel = (props) => {
 };
 Panel.propTypes = {
   initCollapsed: PropTypes.bool,
+  collapsed: PropTypes.bool,
   parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
