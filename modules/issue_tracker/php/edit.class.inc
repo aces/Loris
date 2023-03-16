@@ -268,12 +268,9 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ['issueID' => $issueID]
             ) ?? [];
             // format users
-            $issueData['reporter']
-                = $this->formatUserInformation($issueData['reporter']);
-            $issueData['assignee']
-                = $this->formatUserInformation($issueData['assignee']);
-            $issueData['lastUpdatedBy']
-                = $this->formatUserInformation($issueData['lastUpdatedBy']);
+            $issueData['reporter']      = $this->formatUserInformation($issueData['reporter']);
+            $issueData['assignee']      = $this->formatUserInformation($issueData['assignee']);
+            $issueData['lastUpdatedBy'] = $this->formatUserInformation($issueData['lastUpdatedBy']);
             // return
             return $issueData;
         }
@@ -345,7 +342,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
                 $comment['newValue'] = $visitLabel;
                 $comment['fieldChanged'] = 'Visit Label';
-            } else if ($comment['fieldChanged'] === 'assignee' 
+            } else if ($comment['fieldChanged'] === 'assignee'
                 || $comment['fieldChanged'] === 'lastUpdatedBy'
             ) {
                 $comment['newValue']
@@ -823,7 +820,7 @@ class Edit extends \NDB_Page implements ETagCalculator
     function formatUserInformation(string $userid)
     {
         $user = \User::factory($userid);
-        $un = $user->getUsername();
+        $un   = $user->getUsername();
         if (empty($un)) {
             // e.g. in case of anonymous user
             return $user->getFullname();
