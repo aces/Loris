@@ -54,7 +54,14 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
         $row['Table_Installed'] = $this->checkTableInstalled($instrument);
         $row['Table_Valid']     = $this->checkTableValid($instrument);
-        $row['Pages_Valid']     = $this->checkPagesValid($instrument);
+	$row['Pages_Valid']     = $this->checkPagesValid($instrument);
+	                if ($row['Permissions_Required'] !== null) {
+                    $row['Permissions_Required'] = explode(
+                        ',',
+                        $row['Permissions_Required'],
+                    );
+			}
+
         $this->DBRow            = $row;
     }
     /**

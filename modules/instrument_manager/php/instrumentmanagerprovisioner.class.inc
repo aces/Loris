@@ -38,8 +38,16 @@ class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
     {
         parent::__construct(
             "SELECT
-            test_name as Instrument
-	    FROM test_names
+	    tn.test_name as Instrument,
+            'type' as Instrument_Type,
+            'table' as Table_Installed,
+            'tablevalid' as Table_Valid,
+            'pagevalid' as Pages_Valid,
+            GROUP_CONCAT(p.code) as Permissions_Required
+            FROM test_names tn
+            LEFT JOIN testnames_permissions_rel rel ON (rel.TestID=tn.ID)
+	    LEFT JOIN permissions p ON (rel.permID=p.permID)
+            group by Instrument
             ",
             [],
         );

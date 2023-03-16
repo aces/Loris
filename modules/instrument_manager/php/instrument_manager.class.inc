@@ -227,8 +227,11 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-
-        return [
+        $factory   = \NDB_Factory::singleton();
+        $db        = $factory->database();
+        $perms        = $db->pselectCol("SELECT code FROM permissions", []);
+	    return [
+            'allPermissionCodes' => $perms, 
             'writable'   => $this->canWriteFiles(),
             'caninstall' => $this->isAdminUserConfigured()
         ];
