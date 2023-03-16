@@ -293,6 +293,12 @@ class InstrumentManagerIndex extends Component {
   }
 }
 
+InstrumentManagerIndex.propTypes = {
+    BaseURL: PropTypes.string,
+    dataURL: PropTypes.string.isRequired,
+    hasPermission: PropTypes.func.isRequired,
+};
+
 /**
  * Create a componenet to select permissions from a list of available
  * permissions.
@@ -321,9 +327,10 @@ function PermissionSelect(props) {
            />;
 }
 
-InstrumentManagerIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
-  hasPermission: PropTypes.func.isRequired,
+PermissionSelect.propTypes = {
+    codes: PropTypes.array,
+    selected: PropTypes.array,
+    modifySelected: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
