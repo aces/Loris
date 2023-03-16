@@ -439,8 +439,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         $issueID = intval($values['issueID']);
-
-        $issueValues['lastUpdatedBy'] = $this->formatUserInformation($user->getUserName());
+        $issueValues['lastUpdatedBy'] = $user->getUserName();
 
         $validatedInput = $this->validateInput($validateValues, $user);
         if (!is_array($validatedInput)) { // Error exists.
@@ -465,6 +464,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->insert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
+
+        // convert the aspect of 'lastUpdatedBy' to Fullname
+        // once the db has registered the username (userID)
+        $issueValues['lastUpdatedBy'] = $this->formatUserInformation($user->getUserName());
 
         $this->updateHistory($historyValues, $issueID, $user);
         $this->updateComments($values['comment'], $issueID, $user);
