@@ -183,7 +183,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         );
         // An exit code of 0 is a success and 1 means failure
         if ($status) {
-            error_log(
+            $this->logger->error(
                 "The installation of $instrument.sql failed. "
                 . "Either: the instrument table exists (but is not in the "
                 . "test_names table), or "
