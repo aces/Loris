@@ -45,18 +45,17 @@ class ModuleRow implements \LORIS\Data\DataInstance
      * Create a new HelpRow
      *
      * @param array $row The row
-     *                   returns
      */
     public function __construct(array $row)
     {
-        $this->_factory     = \NDB_Factory::singleton();
-        $this->_path        = $this->_factory->config()->getSetting("base");	    
-        $instrument = $row['Instrument'];
-                $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
-                $row['Table_Installed'] = $this->checkTableInstalled($instrument);
-                $row['Table_Valid']     = $this->checkTableValid($instrument);
-                $row['Pages_Valid']     = $this->checkPagesValid($instrument);
-        $this->DBRow = $row;
+        $this->_factory = \NDB_Factory::singleton();
+        $this->_path    = $this->_factory->config()->getSetting("base");
+        $instrument     = $row['Instrument'];
+        $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
+        $row['Table_Installed'] = $this->checkTableInstalled($instrument);
+        $row['Table_Valid']     = $this->checkTableValid($instrument);
+        $row['Pages_Valid']     = $this->checkPagesValid($instrument);
+        $this->DBRow            = $row;
     }
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
@@ -318,7 +317,12 @@ class ModuleRow implements \LORIS\Data\DataInstance
             }
         }
         return 'Appears Valid';
-    }    
+    }
+    /**
+     * jsonSerialize function
+     *
+     * @return array response
+     */
     public function jsonSerialize() : array
     {
         return $this->DBRow;
