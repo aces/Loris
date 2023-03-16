@@ -19,7 +19,7 @@ if (isset($argv[1]) && $argv[1] === "confirm") {
     $confirm = true;
 }
 
-$db = \Database::singleton();
+$db = $lorisInstance->getDatabaseConnection();
 
 // Find CandIDs where there are multiple first visits
 $query_candID = "SELECT CandID 

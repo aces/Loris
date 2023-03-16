@@ -8,7 +8,7 @@
  *  @license  GPL-3.0-or-later
  *  @see {@link https://github.com/aces/Loris"|Loris}
  */
-
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {NavigationStepper, NavigationWithSave} from './react.navigationStepper';
@@ -1522,6 +1522,10 @@ DataQueryApp.propTypes = {
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
+  AllSessions: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 DataQueryApp.defaultProps = {
   title: 'Fields',
@@ -1538,10 +1542,10 @@ DataQueryApp.defaultProps = {
  * Render DataQueryApp on page load.
  */
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <DataQueryApp
       baseURL={loris.BaseURL}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

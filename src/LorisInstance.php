@@ -117,6 +117,7 @@ class LorisInstance
         return false;
     }
 
+    private array $moduleInstances;
     /**
      * Get the \Module class for the module named $name,
      * if enabled on this LORIS instance or throw an exception
@@ -126,7 +127,24 @@ class LorisInstance
      */
     public function getModule(string $name) : \Module
     {
-        return \Module::factory($this, $name);
+        if (isset($this->moduleInstances[$name])) {
+            return $this->moduleInstances[$name];
+        }
+        foreach ($this->modulesDirs as $modulesDir) {
+            $mpath = "$modulesDir/$name";
+
+            $moduleclasspath = "$mpath/php/module.class.inc";
+
+            if (file_exists($moduleclasspath)) {
+                include_once $moduleclasspath;
+                $className = "\LORIS\\$name\Module";
+                $cls       = new $className($this, $name, $mpath);
+                $this->moduleInstances[$name] = $cls;
+                $cls->registerAutoloader();
+                return $cls;
+            }
+        }
+        throw new \LorisNoSuchModuleException("No such module: $name");
     }
 
     /**

@@ -7,6 +7,7 @@
  * @version 0.0.1
  */
 
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -491,6 +492,7 @@ class ElectrophysiologySessionView extends Component {
 
 ElectrophysiologySessionView.propTypes = {
   module: PropTypes.string.isRequired,
+  sessionid: PropTypes.string,
 };
 ElectrophysiologySessionView.defaultProps = {
   module: '',
@@ -537,6 +539,9 @@ window.onload = function() {
   rootDOM.appendChild(EEGSessionViewAppDOM);
 
   // Render the React Components.
-  ReactDOM.render(eegSessionView, document.getElementById('eegSessionView'));
-  ReactDOM.render(eegSidebar, document.getElementById('eegSidebar'));
+  const mainRoot = createRoot(document.getElementById('eegSessionView'));
+  mainRoot.render(eegSessionView);
+
+  const sidebarRoot = createRoot(document.getElementById('eegSidebar'));
+  sidebarRoot.render(eegSidebar);
 };

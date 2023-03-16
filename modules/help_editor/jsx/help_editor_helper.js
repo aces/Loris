@@ -17,10 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
         wrap.setAttribute('id', 'help-wrapper');
         wrap.innerHTML = '<h1>' + title + '</h1>';
         let markdownContent = document.createElement('div');
-        ReactDOM.render(
-            RMarkdown({content: content}),
-            markdownContent
-        );
+        const root = ReactDOM.createRoot(markdownContent);
+        root.render(RMarkdown({content: content}));
+
         wrap.appendChild(markdownContent);
         btn.appendChild(button);
         btn.className='btn btn-default';

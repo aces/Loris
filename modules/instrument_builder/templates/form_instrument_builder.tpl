@@ -12,8 +12,6 @@ table th {
 </style>
 <script>
     var builderApp = RInstrumentBuilderApp();
-    ReactDOM.render(
-        builderApp,
-        document.getElementById("builder")
-    );
+    const root = ReactDOM.createRoot(document.getElementById("builder"));
+    root.render(builderApp);
 </script>

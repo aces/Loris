@@ -278,7 +278,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$feedback,
             self::$display,
             self::$clearFilter,
-            "closed",
+            "Closed",
             '11 rows'
         );
         $this->_filterTest(

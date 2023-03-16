@@ -101,6 +101,7 @@ FilePanel.propTypes = {
     id: PropTypes.string,
     title: PropTypes.string,
     data: PropTypes.array,
+    children: PropTypes.array,
 };
 
 FilePanel.defaultProps = {

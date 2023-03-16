@@ -132,6 +132,9 @@ class DownloadPanel extends Component {
 
 DownloadPanel.propTypes = {
   downloads: PropTypes.array,
+  physioFileID: PropTypes.number,
+  outputType: PropTypes.string,
+  id: PropTypes.string,
 };
 
 DownloadPanel.defaultProps = {

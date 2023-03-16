@@ -25,7 +25,7 @@ interface IHandleProps {
  * @param root0.handle.percent
  * @param root0.getHandleProps
  */
-export const Handle: React.SFC<IHandleProps> = ({
+export const Handle: React.FC<IHandleProps> = ({
   domain: [min, max],
   handle: {id, value, percent},
   getHandleProps,

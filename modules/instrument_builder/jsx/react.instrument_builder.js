@@ -477,6 +477,7 @@ DisplayElements.propTypes = {
   updateElement: PropTypes.func,
   editElement: PropTypes.func,
   deleteElement: PropTypes.func,
+  elements: PropTypes.array,
 };
 
 /**

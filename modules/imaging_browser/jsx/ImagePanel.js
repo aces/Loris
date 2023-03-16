@@ -98,6 +98,7 @@ ImagePanelHeader.propTypes = {
   HeadersExpanded: PropTypes.string,
   FileID: PropTypes.string,
   Filename: PropTypes.string,
+  Expanded: PropTypes.bool,
 };
 
 /**
@@ -429,6 +430,7 @@ ImagePanelQCStatusSelector.propTypes = {
   FileNew: PropTypes.string,
   HasQCPerm: PropTypes.string,
   QCStatus: PropTypes.string,
+  FileID: PropTypes.string,
 };
 
 
@@ -671,6 +673,7 @@ DownloadButton.propTypes = {
   FileName: PropTypes.string,
   BaseURL: PropTypes.string,
   Label: PropTypes.string,
+  URL: PropTypes.string,
 };
 
 
@@ -726,7 +729,7 @@ class ImageQCCommentsButton extends Component {
     );
   }
 }
-DownloadButton.propTypes = {
+ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
 };
@@ -956,6 +959,7 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
+  HeaderInfo: PropTypes.object,
 };
 
 
@@ -1053,6 +1057,7 @@ class ImagePanel extends Component {
 }
 ImagePanel.propTypes = {
   FileID: PropTypes.string,
+  Filename: PropTypes.string,
   FileNew: PropTypes.string,
   HasQCPerm: PropTypes.string,
   QCStatus: PropTypes.string,

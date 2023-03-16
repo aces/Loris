@@ -163,6 +163,10 @@ class ManagePermissionsForm extends Component {
 ManagePermissionsForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  options: PropTypes.object,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
+  fetchData: PropTypes.func,
 };
 
 export default ManagePermissionsForm;

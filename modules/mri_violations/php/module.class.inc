@@ -77,8 +77,12 @@ class Module extends \Module
         switch ($type) {
         case "usertasks":
             $factory = \NDB_Factory::singleton();
-            $link    = $factory->settings()->getBaseURL() . '/' . $this->getName();
+            $link    = $factory->settings()->getBaseURL() . '/' . $this->getName()
+                       . '/?resolutionStatus=unresolved';
 
+            if (!class_exists('Provisioner')) {
+                self::registerAutoloader();
+            }
             $provisioner = new Provisioner();
 
             if ($user->hasPermission('violated_scans_view_allsites')) {
@@ -89,7 +93,15 @@ class Module extends \Module
                     ->filter(new UserProjectMatchOrNull());
             }
 
-            $number = iterator_count($provisioner->execute($user));
+            $violations = (new \LORIS\Data\Table())
+                ->withDataFrom($provisioner)
+                ->toArray($user);
+            $number     = 0;
+            foreach ($violations as $violation) {
+                if ($violation['Resolution_status'] == 'unresolved') {
+                    $number += 1;
+                }
+            }
 
             $label = $number >  1 ? 'Violated scans' : 'Violated scan';
 

@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
@@ -71,9 +72,7 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
-    <ConflictResolver />,
-    document.getElementById('lorisworkspace')
-  );
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(<ConflictResolver />);
 });
 
