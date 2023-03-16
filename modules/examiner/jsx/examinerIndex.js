@@ -155,7 +155,6 @@ class ExaminerIndex extends Component {
         }
         break;
       case 'Site':
-        console.log(cell);
         // If user has multiple sites, join array of sites into string
         result = (
           <td>{cell
