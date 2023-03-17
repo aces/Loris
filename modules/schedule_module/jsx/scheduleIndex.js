@@ -97,9 +97,11 @@ class ScheduleIndex extends Component {
       })
       .then((resp) => resp.json())
       .then((data) => {
+	      console.log(data);
        if (type === 'DCCID' ) {
          this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
-      } else {
+      } 
+       if (type === 'PSCID' ) {
          this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
       }
          this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
@@ -252,7 +254,7 @@ class ScheduleIndex extends Component {
    const rowObj = {
         AppointmentID: row.Delete,
         StartsAt: row['Starts At'],
-        DCCID: row.CandID,
+        DCCID: row.DCCID,
         PSCID: row.PSCID,
         Session: sessionID,
         AppointmentDate: row.Date,
@@ -286,11 +288,11 @@ class ScheduleIndex extends Component {
     let result = <td>{cell}</td>;
     switch (column) {
     case 'PSCID':
-      let url = loris.BaseURL + '/' + row['CandID'] + '/';
+      let url = loris.BaseURL + '/' + row['DCCID'] + '/';
       result = <td><a href ={url}>{cell}</a></td>;
       break;
     case 'Visit Label':
-      let visit = loris.BaseURL + '/instrument_list/?candID=' + row['CandID'] + '&sessionID=' + row['Edit'];
+      let visit = loris.BaseURL + '/instrument_list/?candID=' + row['DCCID'] + '&sessionID=' + row['Edit'];
       result = <td><a href ={visit}>{cell}</a></td>;
       break;
     case 'Edit':
@@ -338,6 +340,7 @@ class ScheduleIndex extends Component {
     }
   }
   renderScheduleForm() {
+	  console.log(this.state.formData);
   let year = new Date();
   let minYear = year.getFullYear();
     const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
@@ -421,7 +424,7 @@ class ScheduleIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'DCCID', show: true, filter: {
-        name: 'CandID',
+        name: 'DCCID',
         type: 'text',
       }},
       {label: 'PSCID', show: true, filter: {

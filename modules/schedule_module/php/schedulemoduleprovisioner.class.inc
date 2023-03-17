@@ -97,7 +97,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     date(appointment.StartsAt) as day,
     time(appointment.StartsAt) as time,
     candidate.PSCID, 
-    session.CandID,
+    session.CandID AS DCCID,
     session.Visit_label,
     session.CenterID,
     session.CohortID,

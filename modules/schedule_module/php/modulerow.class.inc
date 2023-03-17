@@ -32,7 +32,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $Day;
     protected $Time;
     protected $PSCID;
-    protected $CandID;
+    protected $DCCID;
     protected $Visit_label;
     protected $CenterID;
     protected $SubprojectID;
@@ -56,7 +56,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $this->Day          = $row['day'];
         $this->Time         = substr($row['time'], 0, -3);
         $this->PSCID        = $row["PSCID"];
-        $this->CandID       = $row['CandID'];
+        $this->DCCID       = $row['DCCID'];
         $this->Visit_label  = $row['Visit_label'];
         $this->CenterID     = $row['CenterID'];
         $this->SubprojectID = $row['CohortID'];
@@ -77,7 +77,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
     {
         return
             [
-                'CandID'              => $this->CandID,
+                'DCCID'              => $this->DCCID,
                 'PSCID'               => $this->PSCID,
                 'site'                => $this->site,
                 'VisitLabel'          => $this->Visit_label,
