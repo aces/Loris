@@ -403,6 +403,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 
 #### DQT
 - Improve the visibility of some dropdown elements (PR #6602)
+- ADD delete the saved query feature (PR #8078)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database
