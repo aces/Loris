@@ -83,7 +83,7 @@ Card.propTypes = {
   initCollapsed: PropTypes.bool,
   style: PropTypes.object,
   cardSize: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.node,
   collapsing: PropTypes.bool,
 };
 

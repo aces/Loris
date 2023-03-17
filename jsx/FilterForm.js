@@ -227,7 +227,7 @@ FilterForm.propTypes = {
   height: PropTypes.string,
   title: PropTypes.string,
   onUpdate: PropTypes.func,
-  children: PropTypes.element,
+  children: PropTypes.node,
   formElements: PropTypes.object,
 };
 

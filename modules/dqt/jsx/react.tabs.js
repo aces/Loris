@@ -72,7 +72,7 @@ TabPane.propTypes = {
   Loading: PropTypes.bool,
   TabId: PropTypes.string,
   Title: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 
 /**
