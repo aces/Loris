@@ -2664,7 +2664,7 @@ class RadioElement extends React.Component {
 
     const styleRow = {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: this.props.vertical ? 'column' : 'row',
       flexWrap: 'wrap',
       width: '100%',
     };
@@ -2772,6 +2772,7 @@ RadioElement.propTypes = {
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  vertical: PropTypes.bool,
   checked: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
@@ -2780,6 +2781,7 @@ RadioElement.propTypes = {
 RadioElement.defaultProps = {
   disabled: false,
   required: false,
+  vertical: false,
   errorMessage: '',
   elementClass: 'row form-group',
   onUserInput: function() {
