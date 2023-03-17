@@ -41,6 +41,10 @@ changes in the following format: PR #1234***
 - Added SQL tables to save coordinate system data imported through BIDS files (PR #8242)
   - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #885)
 
+#### Issue Tracker
+
+- Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
+
 ### Tools
 - placeholder
 
