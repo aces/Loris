@@ -68,7 +68,7 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
         $this->resetPermissions();
 
         // Check write permission, 'instrument_manager_write'
-        $this->setupPermissions(['instrument_manager_write']);
+        $this->setupPermissions(['instrument_manager_write','instrument_manager_read']);
         $this->safeGet($this->url . "/instrument_manager/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
