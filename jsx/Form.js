@@ -2549,7 +2549,7 @@ class RadioElement extends React.Component {
 
     const styleRow = {
       display: 'flex',
-      flexDirection: this.props.vertical == false ? 'row' : 'column',
+      flexDirection: this.props.vertical ? 'column' : 'row',
       flexWrap: 'wrap',
       width: '100%',
     };
