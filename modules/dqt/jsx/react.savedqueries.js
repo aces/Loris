@@ -234,6 +234,7 @@ function publicquerydelete() {
 ManageSavedQueryRow.propTypes = {
   Name: PropTypes.object,
   Query: PropTypes.object,
+  author: PropTypes.string,
 };
 
 ManageSavedQueryRow.defaultProps = {
@@ -314,6 +315,7 @@ SavedQueriesList.propTypes = {
   queriesLoaded: PropTypes.bool,
   onSelectQuery: PropTypes.func,
   globalQueries: PropTypes.array,
+  author: PropTypes.string,
 };
 SavedQueriesList.defaultProps = {
   queryDetails: {},
