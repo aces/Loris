@@ -37,6 +37,10 @@ changes in the following format: PR #1234***
   - Use the optimal signal sampling that fulfills number of chunk displayed < MAX_VIEWED_CHUNKS
   - Fixes UI panels open/close glitches
 
+#### Issue Tracker
+
+- Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
+
 ### Tools
 - placeholder
 
