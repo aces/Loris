@@ -36,6 +36,8 @@ changes in the following format: PR #1234***
   - Electrode 2D montage: detect if the coordinate space is in the ALS orientation to convert to RAS (nose up)
   - Use the optimal signal sampling that fulfills number of chunk displayed < MAX_VIEWED_CHUNKS
   - Fixes UI panels open/close glitches
+- Added tracking of any additional task events property data imported through BIDS files (PR #8237)
+- Added tracking of any coordinate systems data imported through BIDS files (PR #8242)
 
 ### Tools
 - placeholder
