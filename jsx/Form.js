@@ -1852,6 +1852,7 @@ class NumericElement extends Component {
             id={this.props.id}
             min={this.props.min}
             max={this.props.max}
+            step={this.props.step}
             value={this.props.value || ''}
             disabled={disabled}
             required={required}
@@ -1868,6 +1869,7 @@ NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
   min: PropTypes.number,
   max: PropTypes.number,
+  step: PropTypes.string,
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
@@ -1881,6 +1883,7 @@ NumericElement.defaultProps = {
   name: '',
   min: null,
   max: null,
+  step: '1',
   label: '',
   value: '',
   id: null,
