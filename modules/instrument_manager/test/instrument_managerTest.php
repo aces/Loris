@@ -74,7 +74,6 @@ class InstrumentManagerTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Instrument Manager", $bodyText);
-
         $this->resetPermissions();
     }
     /**
