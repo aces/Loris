@@ -450,6 +450,7 @@ function editConsentStatusFields(\Database $db)
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
         $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldDate       = $candidateConsent[$consentID]['DateGiven'] ?? null;
         $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
         $validated     = false;
 
@@ -505,7 +506,14 @@ function editConsentStatusFields(\Database $db)
                 echo('A status is missing for at least one consent type.
                       Please select a valid status for all consent types.');
                 return;
+            } elseif (!empty($oldStatus)
+                || !empty($oldDate)
+                || !empty($oldWithdrawal)
+            ) {
+                // Only update empty fields if they were not already empty
+                $validated = true;
             }
+
             break;
         }
 

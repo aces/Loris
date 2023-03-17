@@ -26,7 +26,7 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface
+class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 {
     use Psr\Log\LoggerAwareTrait;
 
@@ -124,6 +124,8 @@ class NDB_Page implements RequestHandlerInterface
         string $identifier,
         string $commentID
     ) {
+        parent::__construct($loris);
+
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 

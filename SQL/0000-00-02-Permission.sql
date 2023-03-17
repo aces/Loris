@@ -152,3 +152,11 @@ CREATE TABLE `notification_modules_perm_rel` (
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='publication' AND (p.code='publication_view' OR p.code='publication_propose' OR p.code='publication_approve');
+
+CREATE TABLE `testnames_permissions_rel` (
+    `TestID` int(10) unsigned NOT NULL,
+    `permID` int(10) unsigned NOT NULL,
+    PRIMARY KEY  (`TestID`,`permID`),
+    CONSTRAINT `FK_testnames_permissions_rel_test` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`),
+    CONSTRAINT `FK_testnames_permissions_rel_perm` FOREIGN KEY (`permID`) REFERENCES `permissions` (`permID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

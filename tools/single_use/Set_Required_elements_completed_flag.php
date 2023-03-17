@@ -38,16 +38,6 @@ to remove the old column from instrument tables.
 ####################################################################################
 
 \n";
-$DB = \Database::singleton();
-
-$loris = new \LORIS\LorisInstance(
-    \NDB_Factory::singleton()->database(),
-    \NDB_Factory::singleton()->config(),
-    [
-        "project/modules",
-        "modules",
-    ]
-);
 
 $confirm = isset($argv[1]) && strtolower($argv[1]) === 'confirm';
 
@@ -65,7 +55,7 @@ foreach ($flagData as $cmid => $data) {
     // instantiate instrument
     try {
         $instrument = NDB_BVL_Instrument::factory(
-            $loris,
+            $lorisInstance,
             $data['Test_name'],
             $cmid,
             ''

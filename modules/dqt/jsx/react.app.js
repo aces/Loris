@@ -1522,6 +1522,10 @@ DataQueryApp.propTypes = {
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
+  AllSessions: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 DataQueryApp.defaultProps = {
   title: 'Fields',

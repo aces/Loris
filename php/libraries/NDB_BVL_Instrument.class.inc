@@ -329,48 +329,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        //get config
-        $config = \NDB_Config::singleton();
-        $instrumentPermissions = $config->getSetting("instrumentPermissions");
-        $instrumentPerms       = [];
+        $DB = $this->loris->getDatabaseConnection();
 
-        //check if instrumentPermissions are being used.
-        if (!is_array($instrumentPermissions)) {
-            //instrument permissions not used...
-            return true; //default
-        } else if (!array_key_exists(
-            'useInstrumentPermissions',
-            $instrumentPermissions
-        )
-        ) {
-            //instrument permissions not used...
-            return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
-            //instrument permissions not used...
-            return true; //default
-        } else { //check if user has instrument's permissions
-            //is the instrument listed at all in instrumentPermissions?
-            $instrumentListed = false;
-            foreach ($instrumentPermissions["instrument"] as $instrument) {
-                if ($instrument["Test_name"] == $this->testName) {
-                    $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
-                }
-            }
-
-            //no permissions defined
-            if (!$instrumentListed) {
-                return true;
-            }
-
-            //check if user possesses ANY of the required permissions
-            foreach ($instrumentPerms as $instrumentPerm) {
-                if ($user->hasPermission($instrumentPerm)) {
-                    return true;
-                }
-            }
-            return false;
+        $instrumentPermissions = $DB->pselectCol(
+            "SELECT code FROM testnames_permissions_rel rel
+                LEFT JOIN test_names ON (test_names.ID=rel.TestID)
+                LEFT JOIN permissions ON (permissions.permID=rel.PermID)
+              WHERE test_names.Test_name=:tn",
+            ['tn' => $this->testName]
+        );
+        if (empty($instrumentPermissions)) {
+            // no permissions configured for this instrument
+            return true;
         }
+        return $user->hasAnyPermission($instrumentPermissions);
     }
 
     /**
@@ -427,8 +399,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config = NDB_Config::singleton();
         $base   = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
-
+        $this->logger->debug("Running scoring script $scorer");
         if (file_exists($scorer)) {
+            if (is_executable($scorer) === false) {
+                $this->logger->critical(
+                    "Scoring script $scorer exists but is not executable"
+                );
+                throw new \ConfigurationException(
+                    "Scoring script not executable"
+                );
+            }
             $output = [];
             exec(
                 escapeshellarg($scorer) . " " . escapeshellarg(
@@ -438,8 +418,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "An error occurred while running the scoring
-                algorithm of instrument ".$this->testName.".";
+                $this->logger->warning(
+                    "An error occurred while running the scoring
+                    algorithm of instrument ".$this->testName."."
+                );
             }
         }
     }

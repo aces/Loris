@@ -18,10 +18,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * This class compares what's in a CouchDB Loris DQT instance against the
@@ -36,8 +33,7 @@ require_once 'Database.class.inc';
  */
 class CouchDBIntegrityChecker
 {
-    var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
 

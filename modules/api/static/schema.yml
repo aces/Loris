@@ -1823,7 +1823,9 @@ components:
       type: object
       properties:
         Candidates:
-          $ref: '#/components/schemas/Candidate'
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
     Candidate:
       type: object
       properties:
@@ -1844,6 +1846,7 @@ components:
           enum:
             - Female
             - Male
+            - Other
     NewCandidate:
       type: object
       properties:
@@ -1916,7 +1919,9 @@ components:
         Meta:
           $ref: '#/components/schemas/InstrumentMeta'
         $InstrumentShortName:
-          $ref: '#/components/schemas/InstrumentData'
+          type: object
+          additionalProperties:
+            type: string
     InstrumentMeta:
       type: object
       properties:
@@ -1928,10 +1933,6 @@ components:
           type: string
         DDE:
           type: boolean
-    InstrumentData:
-      type: object
-      additionalProperties:
-        type: string
     InstrumentFlags:
       type: object
       properties:
@@ -2220,6 +2221,7 @@ components:
           enum:
             - Female
             - Male
+            - Other
     InstrumentFlags_Flags:
       type: object
       properties:

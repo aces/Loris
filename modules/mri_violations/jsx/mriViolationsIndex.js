@@ -1,12 +1,9 @@
-import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
-import {formatColumnUnresolved, unresolvedFilters}
-    from './unresolvedViolations.js';
-import {formatColumnResolved, resolvedFilters}
-    from './resolvedViolations.js';
+import {formatColumn, violationFilters} from './violations.js';
 
 import ProtocolModal from './protocolModal.js';
 
@@ -20,10 +17,7 @@ import ProtocolModal from './protocolModal.js';
 function MRIViolationsIndex(props) {
   const [fieldOptions, setFieldOptions] = useState({});
   const [violationModal, setViolationModal] = useState(false);
-  const tabs = [
-    {id: 'notresolved', label: 'Not Resolved'},
-    {id: 'resolved', label: 'Resolved'},
-  ];
+  const [modifiedColumns, setModifiedColumns] = useState({});
 
   const mapper = columnMapper(fieldOptions);
 
@@ -35,35 +29,32 @@ function MRIViolationsIndex(props) {
 
   return <div>
       {violationsModal}
-      <Tabs tabs={tabs} defaultTab="notresolved" updateURL={true}>
-        <TabPane TabId={tabs[0].id}>
-          <ViolationsTable
-            URL={props.unresolvedURL}
-            name="notresolved"
-            mapper={mapper}
-            formatter={formatColumnUnresolved(
-              mapper,
-              setViolationModal,
-              props.ModuleURL + '/resolve'
-            )}
-            fields={unresolvedFilters(fieldOptions)}
-            setFieldOptions={setFieldOptions}
-            noDynamicTable={true}
-          />
-        </TabPane>
-        <TabPane TabId={tabs[1].id}>
-          <ViolationsTable
-            URL={props.resolvedURL}
-            name="resolved"
-            formatter={formatColumnResolved(mapper, setViolationModal)}
-            fields={resolvedFilters(fieldOptions)}
-            mapper={mapper}
-            noDynamicTable={true}
-          />
-        </TabPane>
-    </Tabs>
+      <ViolationsTable
+        URL={props.dataURL}
+        name="violations"
+        mapper={mapper}
+        formatter={formatColumn(
+          mapper,
+          setViolationModal,
+          props.ModuleURL + '/resolve',
+          (hashname) => {
+              let newColumns = {...modifiedColumns};
+              newColumns[hashname] = true;
+              setModifiedColumns(newColumns);
+          },
+          modifiedColumns,
+        )}
+        fields={violationFilters(fieldOptions)}
+        setFieldOptions={setFieldOptions}
+      />
   </div>;
 }
+
+MRIViolationsIndex.propTypes = {
+    ModuleURL: PropTypes.string,
+    SeriesUID: PropTypes.string,
+    dataURL: PropTypes.string,
+};
 
 /**
  * Load a data table and render it
@@ -106,9 +97,17 @@ function ViolationsTable(props) {
           fields={props.fields}
           getFormattedCell={props.formatter}
           getMappedCell={props.mapper}
-          noDynamicTable={props.noDynamicTable}
         />;
 }
+
+ViolationsTable.propTypes = {
+    URL: PropTypes.string,
+    setFieldOptions: PropTypes.func,
+    name: PropTypes.string,
+    fields: PropTypes.array,
+    formatter: PropTypes.func,
+    mapper: PropTypes.func,
+};
 
 /**
  * A helper to generate a column mapper callback which maps fieldOptions
@@ -142,11 +141,8 @@ window.addEventListener('load', () => {
   root.render(
     <MRIViolationsIndex
       ModuleURL={`${loris.BaseURL}/mri_violations/`}
-      unresolvedURL={`${loris.BaseURL}/mri_violations/?format=json`}
-      resolvedURL={
-        `${loris.BaseURL}/mri_violations/resolved_violations?format=json`
-      }
-    />
+      dataURL={`${loris.BaseURL}/mri_violations/?format=json`}
+    />,
   );
 });
 

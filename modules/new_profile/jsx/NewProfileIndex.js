@@ -2,6 +2,7 @@ import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * New Profile Form
@@ -321,6 +322,11 @@ class NewProfileIndex extends React.Component {
     );
   }
 }
+NewProfileIndex.propTypes = {
+  dataURL: PropTypes.string,
+  submitURL: PropTypes.string,
+};
+
 window.addEventListener('load', () => {
   const root = createRoot(document.getElementById('lorisworkspace'));
   root.render(

@@ -132,6 +132,10 @@ Step.propTypes = {
   onClick: PropTypes.func,
   active: PropTypes.bool,
   highlightSteps: PropTypes.bool,
+  width: PropTypes.number,
+  index: PropTypes.number,
+  length: PropTypes.number,
+  activeIndex: PropTypes.number,
 };
 
 /**
@@ -184,6 +188,11 @@ const StepperPanel = (props) => {
       {props.content}
     </div>
   );
+};
+StepperPanel.propTypes = {
+  TabId: PropTypes.string,
+  active: PropTypes.bool,
+  content: PropTypes.element,
 };
 
 /**
