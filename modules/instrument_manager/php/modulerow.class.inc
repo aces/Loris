@@ -54,15 +54,15 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
         $row['Table_Installed'] = $this->checkTableInstalled($instrument);
         $row['Table_Valid']     = $this->checkTableValid($instrument);
-	$row['Pages_Valid']     = $this->checkPagesValid($instrument);
-	                if ($row['Permissions_Required'] !== null) {
-                    $row['Permissions_Required'] = explode(
-                        ',',
-                        $row['Permissions_Required'],
-                    );
-			}
+        $row['Pages_Valid']     = $this->checkPagesValid($instrument);
+        if ($row['Permissions_Required'] !== null) {
+            $row['Permissions_Required'] = explode(
+                ',',
+                $row['Permissions_Required'],
+            );
+        }
 
-        $this->DBRow            = $row;
+        $this->DBRow = $row;
     }
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
@@ -326,7 +326,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
         return 'Appears Valid';
     }
     /**
-     * jsonSerialize function
+     * JsonSerialize function
      *
      * @return array response
      */

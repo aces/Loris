@@ -32,7 +32,7 @@ class Instrument_Manager extends \DataFrameworkMenu
                                   'installation failed. Please contact your ' .
                                   'administrator.';
     const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
-                                  'instrument needs to be installed manually.';	
+                                  'instrument needs to be installed manually.';
     private string $_path;
     /**
      * Checking permissions
@@ -44,7 +44,7 @@ class Instrument_Manager extends \DataFrameworkMenu
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
-    }    
+    }
     /**
      * Handle a PSR7 Request for that endpoint.
      *
@@ -197,7 +197,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
 
         return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
-    }	
+    }
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -227,13 +227,13 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $factory   = \NDB_Factory::singleton();
-        $db        = $factory->database();
-        $perms        = $db->pselectCol("SELECT code FROM permissions", []);
-	    return [
-            'allPermissionCodes' => $perms, 
-            'writable'   => $this->canWriteFiles(),
-            'caninstall' => $this->isAdminUserConfigured()
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $perms   = $db->pselectCol("SELECT code FROM permissions", []);
+        return [
+            'allPermissionCodes' => $perms,
+            'writable'           => $this->canWriteFiles(),
+            'caninstall'         => $this->isAdminUserConfigured()
         ];
 
     }
@@ -311,8 +311,8 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function instrumentExists(string $instrument): bool
     {
-        $factory   = \NDB_Factory::singleton();	    
-        $count = $factory->database()->pselectOne(
+        $factory = \NDB_Factory::singleton();
+        $count   = $factory->database()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
             [':v_instrument' => $instrument]
         );
