@@ -94,20 +94,95 @@ ConfigurationSection.propTypes = {
 };
 
 function ItemDisplay(props) {
-    return <div className="form-group" style={{display: 'flex'}}>
-        <div style={{width: '25%'}} title={props.Description}>
-            <label className="control-label">
-                {props.Label}
-            </label>
-        </div>
-        <div style={{width: '75%'}}>
-            <ItemValue DataType={props.DataType}
-                AllowMultiple={props.AllowMultiple}
-                Disabled={props.Disabled}
-                Value={props.Value}
-            />
-        </div>
-    </div>;
+    if (props.AllowMultiple) {
+        console.error('Multiple not implemented');
+        return <div>Multiple not implemented</div>;
+    }
+    switch (props.DataType) {
+        case 'path': // fallthrough
+        case 'web_path': // fallthrough
+        case 'text':
+            return <TextboxElement
+                     name={props.Name}
+                     label={props.Label}
+                     disabled={props.Disabled}
+                     value={props.Value}
+                   />;
+        case 'boolean':
+            return <RadioElement
+                     name={props.Name}
+                     label={props.Label}
+                     disabled={props.Disabled}
+                     checked={props.Value ? 'yes' : 'no'}
+                     options={{'yes': 'Yes', 'no': 'No'}}
+                   />;
+        case 'email':
+            return <EmailElement
+                     name={props.Name}
+                     label={props.Label}
+                     disabled={props.Disabled}
+                     value={props.Value}
+                   />;
+        case 'textarea':
+            return <TextareaElement
+                     name={props.Name}
+                     label={props.Label}
+                     disabled={props.Disabled}
+                     value={props.Value}
+                   />;
+        case 'date_format':
+            return <SelectElement
+                     name={props.Name}
+                     label={props.Label}
+                     options={
+                        {
+                            'Ymd': 'Ymd (EX: 2015-12-28)',
+                            'Ym': 'Ym (EX: 2015-12',
+                        }
+                     }
+                     disabled={props.Disabled}
+                     value={props.Value}
+                />;
+        case 'lookup_center':
+            return <SelectElement
+                     name={props.Name}
+                     label={props.Label}
+                     options={
+                        {
+                            'PatientID': 'PatientID',
+                            'PatientName': 'PatientName',
+                        }
+                     }
+                     disabled={props.Disabled}
+                     value={props.Value}
+                />;
+        case 'log_level':
+            return <SelectElement
+                     name={props.Name}
+                     label={props.Label}
+                     options={
+                        {
+                            'none': 'None',
+                            'debug': 'Debug',
+                            'info': 'Info',
+                            'notice': 'Notice',
+                            'warning': 'Warning',
+                            'error': 'Error',
+                            'critical': 'Critical',
+                            'alert': 'Alert',
+                            'emergency': 'Emergency',
+                        }
+                     }
+                     disabled={props.Disabled}
+                     value={props.Value}
+                />;
+        case 'scan_type':
+        case 'instrument':
+        console.error(props.DataType, ' not implemented');
+        return <div>{props.DataType} not implemented</div>;
+        default:
+            throw new Error('Invalid DataType ' + props.DataType);
+    }
 }
 ItemDisplay.propTypes = {
     Name: PropTypes.string,
@@ -124,34 +199,6 @@ ItemDisplay.propTypes = {
     ]),
 };
 
-function ItemValue(props) {
-    if (props.AllowMultiple) {
-        console.error('Multiple not implemented');
-        return <div>Multiple not implemented</div>;
-    }
-    switch (props.DataType) {
-        case 'text':
-            return <TextElement label="" />;
-        case 'boolean':
-        case 'email':
-        case 'instrument':
-        case 'textarea':
-        case 'scan_type':
-        case 'date_format':
-        case 'lookup_center':
-        case 'path':
-        case 'web_path':
-        case 'log_level':
-        console.error(props.DataType, ' not implemented');
-        return <div>{props.DataType} not implemented</div>;
-        default:
-            throw new Error('Invalid DataType ' + props.DataType);
-    }
-}
-ItemValue.propTypes = {
-    DataType: PropTypes.string.isRequired,
-    AllowMultiple: PropTypes.string.isRequired,
-};
 function CategoryDisplay(props) {
     return <div>{props.items ? props.items.map((item) => {
                 return <ItemDisplay key={item.ID}

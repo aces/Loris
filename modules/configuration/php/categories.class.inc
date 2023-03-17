@@ -12,7 +12,7 @@ class Categories extends \LORIS\Http\Endpoint {
             return $this->getCategoryList();
         }
         $matches = [];
-        if (preg_match("#^(/categories/*)([[:alnum:]]*)$#", $path, $matches) === 1) {
+        if (preg_match("#^(/categories/*)([[:alnum:]_]*)$#", $path, $matches) === 1) {
             return $this->getCategory($matches[2]);
         }
 
@@ -100,6 +100,15 @@ class Categories extends \LORIS\Http\Endpoint {
                         default:
                             throw new \ConfigurationException("Multiple config settings for setting that does not allow multiple");
                         }
+                    }
+                }
+                if ($setting['DataType'] == "boolean") {
+                    if ($setting['Value'] === "false") {
+                        $setting['Value'] = false;
+                    } else if ($setting['Value'] === "true") {
+                        $setting['Value'] = true;
+                    } else {
+                        $setting['Value'] = !empty($setting['Value']);
                     }
                 }
             }
