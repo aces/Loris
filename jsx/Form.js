@@ -1048,6 +1048,7 @@ class TextareaElement extends Component {
             name={this.props.name}
             id={this.props.id}
             value={this.props.value || ''}
+            placeholder={this.props.placeholder}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -1063,6 +1064,7 @@ TextareaElement.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
+  placeholder: PropTypes.string,
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -1075,6 +1077,7 @@ TextareaElement.defaultProps = {
   name: '',
   label: '',
   value: '',
+  placeholder: '',
   id: null,
   disabled: false,
   required: false,
