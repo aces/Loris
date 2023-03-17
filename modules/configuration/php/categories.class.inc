@@ -34,8 +34,20 @@ class Categories extends \LORIS\Http\Endpoint {
                 []
         );
 
+        $scans      = $DB->pselect(
+                "SELECT Scan_type
+                FROM mri_scan_type",
+                []
+                );
+        foreach ($scans as $type) {
+            $val = $type['Scan_type'];
+            $scan_types[$val] = $val;
+        }
+
         return new \LORIS\Http\Response\JSON\OK([
             'categories' => $parentConfigItems,
+            'instruments' => \Utility::getAllInstruments(),
+            'scan_types' => $scan_types,
         ]);
     }
     public function getCategory(string $category) : ResponseInterface {

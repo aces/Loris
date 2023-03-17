@@ -81,6 +81,8 @@ function ConfigurationSection(props) {
         <CategoryDisplay
            items={categoryItems}
            BaseURL={props.BaseURL}
+           Instruments={props.Instruments}
+           ScanTypes={props.ScanTypes}
         />
     </div>;
 }
@@ -91,13 +93,25 @@ ConfigurationSection.propTypes = {
     activeCategory: PropTypes.string,
     setActiveCategory: PropTypes.func,
     categories: PropTypes.array,
+
+    Instruments: PropTypes.object,
+    ScanTypes: PropTypes.object,
 };
 
 function ItemDisplay(props) {
     if (props.AllowMultiple) {
-        console.error('Multiple not implemented');
-        return <div>Multiple not implemented</div>;
+        return <MultiItemDisplay
+                    DataType={props.DataType}
+                    Name={props.Name}
+                    Label={props.Label}
+                    disabled={props.Disabled}
+                    Values={props.Value || []}
+
+                    Instruments={props.Instruments}
+                    ScanTypes={props.ScanTypes}
+                />;
     }
+
     switch (props.DataType) {
         case 'path': // fallthrough
         case 'web_path': // fallthrough
@@ -176,10 +190,22 @@ function ItemDisplay(props) {
                      disabled={props.Disabled}
                      value={props.Value}
                 />;
-        case 'scan_type':
         case 'instrument':
-        console.error(props.DataType, ' not implemented');
-        return <div>{props.DataType} not implemented</div>;
+            return <SelectElement
+                     name={props.Name}
+                     label={props.Label}
+                     options={props.Instruments}
+                     disabled={props.Disabled}
+                     value={props.Value}
+                />;
+        case 'scan_type':
+            return <SelectElement
+                     name={props.Name}
+                     label={props.Label}
+                     options={props.ScanTypes}
+                     disabled={props.Disabled}
+                     value={props.Value}
+                />;
         default:
             throw new Error('Invalid DataType ' + props.DataType);
     }
@@ -196,7 +222,91 @@ ItemDisplay.propTypes = {
     Value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.array,
+        PropTypes.bool,
     ]),
+
+    Instruments: PropTypes.object,
+    ScanTypes: PropTypes.object,
+};
+
+function MultiItemDisplay(props) {
+    // Use the same bootstrap styling as the elements in jsx/Form.js to ensure
+    // the alignment is the same.
+    const rows = props.Values.map((item, i) => {
+        let input;
+        switch (props.DataType) {
+        case 'instrument':
+            input = <SelectElement
+                     name={''}
+                     label={''}
+                     options={props.Instruments}
+                     disabled={props.Disabled}
+                     value={item}
+                />;
+            break;
+        case 'scan_type':
+            input = <SelectElement
+                     name={''}
+                     label={''}
+                     options={props.ScanTypes}
+                     disabled={props.Disabled}
+                     value={item}
+                />;
+            break;
+        case 'text':
+            input = <TextboxElement
+                     name={''}
+                     label={''}
+                     disabled={props.Disabled}
+                     value={item}
+                />;
+            break;
+        default:
+            // These are the only 3 that we currently have so the only
+            // three types of AllowMultiple items we need to support
+            throw new Error(
+                'Unhandled AllowMultiple element datatype' + props.DataType
+            );
+        }
+
+        return (
+            <div className="row" key={i}>
+                <div className="col-sm-11">{input}</div>
+                <div className="col-sm-1">
+                    <button className="btn btn-success add" type="button">
+                        <span className="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        );
+    });
+    rows.push(<div className="row" key="newItem">
+                <div className="col-sm-11">&nbsp;</div>
+                <div className="col-sm-1">
+                    <button className="btn btn-success remove" type="button">
+                        <span className="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+    </div>);
+    return (
+      <div className="row form-group">
+          <label className="col-sm-3 control-label" htmlFor={props.Label}>
+              {props.Label}
+          </label>
+          <div className='col-sm-9'>{rows}</div>
+      </div>
+    );
+}
+
+MultiItemDisplay.propTypes = {
+    Label: PropTypes.string,
+    Values: PropTypes.array,
+    DataType: PropTypes.string,
+
+    Disabled: PropTypes.bool,
+
+    Instruments: PropTypes.object,
+    ScanTypes: PropTypes.object,
 };
 
 function CategoryDisplay(props) {
@@ -211,16 +321,22 @@ function CategoryDisplay(props) {
 
                             Disabled={item.Disabled}
                             Value={item.Value}
+                            Instruments={props.Instruments}
+                            ScanTypes={props.ScanTypes}
                     />;
             }): ''}
             </div>;
 }
 CategoryDisplay.propTypes = {
     items: PropTypes.array,
+    Instruments: PropTypes.object,
+    ScanTypes: PropTypes.object,
 };
 
 function ConfigurationIndex(props) {
     const [categories, setCategories] = useState([]);
+    const [instruments, setInstruments] = useState({});
+    const [scantypes, setScanTypes] = useState({});
     const [activeCategory, setActiveCategory] = useState('');
     useEffect(() => {
         fetch(props.BaseURL + '/configuration/categories')
@@ -232,6 +348,8 @@ function ConfigurationIndex(props) {
         })
         .then((data) => {
             setCategories(data.categories);
+            setInstruments(data.instruments);
+            setScanTypes(data.scan_types);
             if (data.categories.length >= 1) {
                 setActiveCategory(data.categories[0].Name);
             }
@@ -247,6 +365,8 @@ function ConfigurationIndex(props) {
                 setActiveCategory={setActiveCategory}
                 categories={categories}
                 BaseURL={props.BaseURL}
+                Instruments={instruments}
+                ScanTypes={scantypes}
             />
     </div>;
 }
