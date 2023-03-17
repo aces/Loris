@@ -36,7 +36,6 @@ const resolve = {
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
     Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
-    Markdown: path.resolve(__dirname, './jsx/Markdown'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
@@ -46,6 +45,7 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
+    Help: path.resolve(__dirname, './jsx/Help'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -234,7 +234,6 @@ let config = [
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
       Form: './jsx/Form.js',
-      Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
       Help: './jsx/Help.js',
     },

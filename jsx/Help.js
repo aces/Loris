@@ -1,7 +1,6 @@
-import RMarkdown from 'jsx/Markdown';
-import React, {useState, useEffect} from 'react';
+import Markdown from 'jsx/Markdown';
+import React, {useState, useEffect, createFactory} from 'react';
 import PropTypes from 'prop-types';
-import {createRoot} from 'react-dom/client';
 
 /**
  * Help Widget
@@ -20,23 +19,27 @@ import {createRoot} from 'react-dom/client';
  * @return {JSX}
  */
 const Help = (props) => {
-  const [isActive, setIsActive] = useState(props.content ? true : false);
-  const [format, setFormat] = useState(null);
+  // If props.children is true,
+  // we are using the component to preview the changes done in Help Editor
+  // The Component is active (visible) on load
+  const [isActive, setIsActive] = useState(props.children ? true : false);
   const [content, setContent] = useState(null);
   const [isMounted, setIsMounted] = useState(true);
 
   const getParams = {
-    testName: loris.TestName,
-    ...(loris.Subtest !== '' && {subtest: loris.Subtest}),
+    testName: props.testname,
+    ...(props.subtest !== '' && {subtest: props.subtest}),
   };
 
-  useEffect(() => {
-    props.content && setContent(props.content);
-  }, [props.content]);
+  let editBtn = null;
 
   useEffect(() => {
-    !props.content && fetch(
-      loris.BaseURL
+    props.children && setContent(props.children);
+  }, [props.children]);
+
+  useEffect(() => {
+    !props.children && fetch(
+      props.baseURL
       + '/help_editor/ajax/help.php?'
       + new URLSearchParams(getParams),
       {method: 'GET'},
@@ -47,22 +50,50 @@ const Help = (props) => {
       }
       response.json().then(
         (data) => {
+          // Prevent state update after the component
+          // has been unmounted
           if (!isMounted) return;
-          setFormat(data.format);
 
           // Render Markdown in wrap div.
           // If help content is from Markdown helpfile.
-          if (format === 'markdown') {
-            setContent(<RMarkdown content={data.content}/>);
+          if (data.source === 'helpfile') {
+            setContent(<Markdown content={data.content}/>);
           } else {
             // If help content is from DB.
             setContent(
-              <>
+              <div>
                 {data.topic && <h3>{data.topic}</h3>}
-                <div><RMarkdown content={data.content}/></div>
+                <div><Markdown content={data.content}/></div>
                 {data.updated && <><hr/>Last updated: {data.updated}</>}
-              </>
+              </div>
             );
+          }
+
+          // If help content comes from DB `help` table
+          // and can be edited online.
+          if (
+            data.editable
+            && data.source !== 'helpfile'
+            && !props.children
+          ) {
+            editBtn = <button
+              className="btn btn-default"
+              style={{
+                float: 'right',
+                margin: '10px',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(
+                  props.baseURL
+                  + '/help_editor/edit_help_content/?section='
+                  + getParams.testName
+                  + '&subsection='
+                  + getParams.subtest,
+                  '_self'
+                );
+              }}
+            >Edit</button>;
           }
         }
       );
@@ -74,47 +105,19 @@ const Help = (props) => {
     return () => setIsMounted(false);
   }, []);
 
-  let editBtn = null;
-  // If help content comes from DB `help` table and can
-  // be edited online.
-  if (
-    loris.userHasPermission('context_help')
-    && format !== 'markdown'
-    && !props.content
-  ) {
-    editBtn = <button
-      className="btn btn-default"
-      style={{
-        float: 'right',
-        margin: '10px',
-      }}
-      onClick={(e) => {
-        e.preventDefault();
-        window.open(
-          loris.BaseURL
-          + '/help_editor/edit_help_content/?section='
-          + getParams.testName
-          + '&subsection='
-          + getParams.subtest,
-          '_self'
-        );
-      }}
-    >Edit</button>;
-  }
-
   /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   return (
-    <>
+    <div>
       <button
         type="button"
         className={'help-button' + (isActive ? ' help-open' : '')}
         onClick={() => setIsActive(!isActive)}
       >
-        <img width="17" src="http://localhost/images/help.gif" />
+        <img width="17" src={props.baseURL + '/images/help.gif'} />
       </button>
 
       <div
@@ -136,22 +139,17 @@ const Help = (props) => {
           {content}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 Help.propTypes = {
-  content: PropTypes.element,
+  children: PropTypes.node,
+  testname: PropTypes.string,
+  subtest: PropTypes.string,
+  baseURL: PropTypes.string.isRequired,
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const helpContainers = document.getElementsByClassName('help-container');
-  for (let i = 0; i < helpContainers.length; i++) {
-    const root = createRoot(helpContainers.item(i));
-    root.render(
-      <Help/>
-    );
-  }
-});
+window.RHelp = createFactory(Help);
 
 export default Help;

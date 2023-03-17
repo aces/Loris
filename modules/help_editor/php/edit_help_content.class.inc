@@ -27,8 +27,6 @@ use \Psr\Http\Message\ResponseInterface;
 
 class Edit_Help_Content extends \NDB_Form
 {
-    public $skipTemplate = true;
-
     /**
      * Determine if user has permission to access this page
      *
@@ -91,15 +89,12 @@ class Edit_Help_Content extends \NDB_Form
                 htmlspecialchars($gets['subsection']) : null,
             'helpid'     => isset($gets['helpID']) ?
                 htmlspecialchars($gets['helpID']) : null,
-            'url'        => $_SERVER['HTTP_REFERER'] ?? null,
-            'module'     => 'Help Editor',
         ];
 
         if (!empty($data['section'])) {
             try {
                 $data['helpid'] = HelpFile::hashToID(md5($data['section']));
             } catch (\NotFound $e) {
-
             }
         }
 
@@ -107,7 +102,6 @@ class Edit_Help_Content extends \NDB_Form
             try {
                 $data['helpid'] = HelpFile::hashToID(md5($data['subsection']));
             } catch (\NotFound $e) {
-
             }
         }
 
@@ -115,10 +109,6 @@ class Edit_Help_Content extends \NDB_Form
             $help_data       = HelpFile::factory($data['helpid'])->toArray();
             $data['title']   = $help_data['topic'];
             $data['content'] = htmlspecialchars_decode(trim($help_data['content']));
-
-            if (!isset($gets['helpID'])) {
-                $data['module'] = $help_data['topic'];
-            }
         }
 
         // case where no help content exists
@@ -135,19 +125,9 @@ class Edit_Help_Content extends \NDB_Form
             }
         }
 
-        return (new \LORIS\Http\Response())->withBody(
-            new \LORIS\Http\StringStream(
-                '<div id="app" ' .
-                    array_reduce(
-                        array_keys($data),
-                        function ($str, $k) use ($data) {
-                            return "$str data-$k=\"$data[$k]\"";
-                        },
-                        ""
-                    )
-                . '></div>'
-            )
-        );
+        $this->tpl_data = $data;
+        return (new \LORIS\Http\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
     /**

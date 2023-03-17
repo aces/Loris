@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {createRoot} from 'react-dom/client';
-import {unmountComponentAtNode, createPortal} from 'react-dom';
+import {createPortal} from 'react-dom';
+import Markdown from 'jsx/Markdown';
 import Help from 'jsx/Help';
 import swal from 'sweetalert2';
 
@@ -20,25 +20,19 @@ import swal from 'sweetalert2';
 const HelpEditorForm = (props) => {
   const [title, setTitle] = useState(props.title ?? '');
   const [content, setContent] = useState(props.content ?? '');
-
-  const returnLabel = 'Return to ' + props.module;
+  const helpPreview = [];
   const helpContainers = document.getElementsByClassName('help-container');
 
-  useEffect(() => {
-    Array.from(helpContainers).forEach((helpContainer) =>
-      unmountComponentAtNode(helpContainer)
-    );
-  }, []);
-
-  const helpPreview = [];
   Array.from(helpContainers).forEach((helpContainer) => {
     helpPreview.push(createPortal(
-      <Help content={
-        <>
+      <Help
+        testname={loris.TestName}
+        subtest={loris.Subtest}
+        baseURL={loris.BaseURL}
+      >
           <h1>{title}</h1>
-          {content}
-        </>
-      } />,
+          <Markdown content={content} />
+      </Help>,
       helpContainer
     ));
   });
@@ -55,14 +49,6 @@ const HelpEditorForm = (props) => {
   };
 
   /**
-   * Reset the form
-   */
-  const reset = () => {
-    setTitle(props.title ?? '');
-    setContent(props.content ?? '');
-  };
-
-  /**
    * Save the form and display a success/error message
    */
   const save = () => {
@@ -74,32 +60,26 @@ const HelpEditorForm = (props) => {
     formData.append('helpID', props.helpid ?? '');
 
     fetch(loris.BaseURL + '/help_editor/ajax/process.php', {
-        method: 'POST',
-        body: formData,
+      method: 'POST',
+      body: formData,
     }).then((response) => {
         if (response.status !== 200) {
-            console.error(response.status);
-            return;
+          console.error(response.status);
+          return;
         }
         swal.fire({
-            title: 'Content update successful!',
-            type: 'success',
-            showCancelButton: true,
-            confirmButtonText: returnLabel,
-            cancelButtonText: 'Close',
-        }).then((result) => {
-            if (result.value) {
-                location.href = document.referrer;
-            }
+          title: 'Content update successful!',
+          type: 'success',
+          confirmButtonText: 'Close',
         });
     }).catch((error) => {
-        console.error(error);
-        swal.fire({
-            title: 'Content update unsuccessful.',
-            text: 'Something went wrong',
-            type: 'error',
-            confirmButtonText: 'Try again',
-        });
+      console.error(error);
+      swal.fire({
+        title: 'Content update unsuccessful.',
+        text: 'Something went wrong',
+        type: 'error',
+        confirmButtonText: 'Try again',
+      });
     });
   };
 
@@ -128,8 +108,7 @@ const HelpEditorForm = (props) => {
             />
             <div className="col-sm-9 col-sm-offset-3">
               <p><small>
-                Use the help button to open the help dialog
-                and preview the changes.
+                Open the help dialog to preview the changes.
               </small></p>
               <input
                 className="btn btn-sm btn-primary"
@@ -138,19 +117,6 @@ const HelpEditorForm = (props) => {
                 value="Save"
                 type="submit"
                 onClick={save}
-              />
-              <input
-                type="button"
-                name="reset"
-                value="Reset"
-                className="btn btn-sm btn-primary"
-                onClick={reset}
-              />
-              <input
-                className="btn btn-sm btn-primary"
-                onClick={() => location.href=props.url}
-                value={returnLabel}
-                type="button"
               />
             </div>
           </div>
@@ -163,18 +129,11 @@ const HelpEditorForm = (props) => {
 
 HelpEditorForm.propTypes = {
   title: PropTypes.string,
-  content: PropTypes.element,
-  module: PropTypes.string,
+  content: PropTypes.string,
   section: PropTypes.string,
   subsection: PropTypes.string,
-  helpid:PropTypes.number,
+  helpid: PropTypes.string,
   url: PropTypes.string,
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const app = document.getElementById('app');
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
-    <HelpEditorForm {...app.dataset} />
-  );
-});
+window.RHelpEditorForm = React.createFactory(HelpEditorForm);

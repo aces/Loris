@@ -871,7 +871,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/components/Breadcrumbs.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Form.js',
-            $baseurl . '/js/components/Markdown.js',
             $baseurl . '/js/components/Help.js',
         ];
         return $files;

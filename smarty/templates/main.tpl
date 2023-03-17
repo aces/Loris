@@ -30,8 +30,8 @@
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              const root = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              root.render(
+              const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
+              breadcrumbsRoot.render(
                 RBreadcrumbs({
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
@@ -40,6 +40,19 @@
               document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
                 return carry.concat(' - ', item.text);
               }, ''));
+            {/if}
+            {if !$breadcrumbs|strstr:'"Edit Help Content"'}
+              const helpContainers = document.getElementsByClassName('help-container');
+              for (let i = 0; i < helpContainers.length; i++) {
+                const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
+                helpRoot.render(
+                  RHelp({
+                    testname: loris.TestName,
+                    subtest: loris.Subtest,
+                    baseURL: loris.BaseURL,
+                  })
+                );
+              }
             {/if}
 
             // Make Navigation bar toggle change glyphicon up/down

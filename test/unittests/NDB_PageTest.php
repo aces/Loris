@@ -807,7 +807,6 @@ class NDB_PageTest extends TestCase
                 '/js/components/Breadcrumbs.js',
                 '/js/util/queryString.js',
                 '/js/components/Form.js',
-                '/js/components/Markdown.js',
                 '/js/components/Help.js',
             ],
             $this->_page->getJSDependencies()
