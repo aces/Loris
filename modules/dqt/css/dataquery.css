@@ -556,7 +556,7 @@ tr.statsReport:nth-child(even) {
 }
 .tableFieldsCell {
     overflow-x: scroll;
-    max-width: 400px;
+    max-width: 280px;
     min-height: 100px;
 }
 .tableFiltersCell {

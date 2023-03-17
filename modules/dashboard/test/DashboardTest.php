@@ -584,6 +584,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan2()
     {
+        $this->setupConfigSetting('recruitmentTarget', '');
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
@@ -592,6 +593,7 @@ class DashboardTest extends LorisIntegrationTest
             "Please add a recruitment target for Overall Recruitment.",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
     /**
      * Put a recruitment target in the configuration module and check that
@@ -610,12 +612,12 @@ class DashboardTest extends LorisIntegrationTest
 
         $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->clear();
         $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->sendKeys('888');
         $this->safeFindElement(
@@ -665,9 +667,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div/div[1]/div[3]"
-            )
+            WebDriverBy::cssSelector("#scan-line-chart-panel")
         )->getText();
         $this->assertStringContainsString(
             "Scan sessions per site",

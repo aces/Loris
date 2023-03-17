@@ -11,6 +11,8 @@
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import StaticDataTable from '../../../jsx/StaticDataTable';
+import swal from 'sweetalert2';
+
 const {jStat} = require('jstat');
 import JSZip from 'jszip';
 
@@ -1197,6 +1199,39 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
+  /**
+   * @deleteclick
+   */
+         deleteclick() {
+          let id = this.props.Query['_id'];
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
+              + encodeURIComponent(id);
+              fetch(deleteurl, {
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('delete Successful!', '', 'success');
+                  } else {
+                   swal.fire('delete Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }
 
   /**
    * Renders the React component.
@@ -1305,6 +1340,17 @@ class ManageSavedQueryRow extends Component {
             {filters}
           </div>
         </td>
+        <td>
+          <div className={'tableNamesCell'}>
+           <button className='btn btn-danger'
+             onClick={()=> {
+              this.deleteclick();
+             }}
+           >
+            delete
+          </button>
+          </div>
+        </td>
       </tr>
     );
   }
@@ -1377,6 +1423,7 @@ let ManageSavedQueriesTabPane = (props) => {
           <th>Query Name</th>
           <th>Fields</th>
           <th>Filters</th>
+          <th>Delete</th>
         </tr>
         </thead>
         <tbody>
