@@ -64,7 +64,7 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new ModuleRow($row);
+            return new AcknowledgementRow($row);
     }
 
 }
