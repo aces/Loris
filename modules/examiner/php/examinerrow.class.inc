@@ -30,7 +30,7 @@ namespace LORIS\examiner;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ModuleRow implements
+class ExaminerRow implements
     \LORIS\Data\DataInstance,
     \LORIS\StudyEntities\MultiSiteHaver
 {
