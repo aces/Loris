@@ -75,7 +75,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-	$loris = $request->getAttribute('loris');    
+        $loris = $request->getAttribute('loris');
         // Ensure the user is allowed to upload.
         if (! $request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
@@ -227,8 +227,8 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $db      = $this->loris->getDatabaseConnection();
-        $perms   = $db->pselectCol("SELECT code FROM permissions", []);
+        $db    = $this->loris->getDatabaseConnection();
+        $perms = $db->pselectCol("SELECT code FROM permissions", []);
         return [
             'allPermissionCodes' => $perms,
             'writable'           => $this->canWriteFiles(),
@@ -253,7 +253,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function canWriteFiles(): bool
     {
-        $this->_path =  $this->loris->getConfiguration()->getSetting('base');
+        $this->_path    =  $this->loris->getConfiguration()->getSetting('base');
         $instrument_dir = $this->_path . 'project/instruments';
         $table_dir      = $this->_path . 'project/tables_sql';
 
@@ -307,7 +307,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function instrumentExists(string $instrument): bool
     {
-        $count  = $this->loris->getDatabaseConnection()->pselectOne(
+        $count = $this->loris->getDatabaseConnection()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
             [':v_instrument' => $instrument]
         );
