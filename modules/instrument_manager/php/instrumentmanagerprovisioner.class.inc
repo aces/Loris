@@ -8,7 +8,7 @@
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -24,7 +24,7 @@ namespace LORIS\instrument_manager;
  * @category   Core
  * @package    Main
  * @subpackage Core
- * @author     Dave MacFarlane <dave.macfarlane@mcin.ca>
+ * @author     Shen Wang <wangshen.mcin@gmail.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
@@ -63,6 +63,6 @@ class InstrumentManagerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-            return new ModuleRow($row);
+            return new InstrumentRow($row);
     }
 }

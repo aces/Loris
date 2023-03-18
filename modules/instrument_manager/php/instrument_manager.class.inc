@@ -75,7 +75,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        $loris = $request->getAttribute('loris');
+	$loris = $request->getAttribute('loris');    
         // Ensure the user is allowed to upload.
         if (! $request->getAttribute('user')->hasPermission(
             'instrument_manager_write'
@@ -227,8 +227,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function getFieldOptions() : array
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
+        $db      = $this->loris->getDatabaseConnection();
         $perms   = $db->pselectCol("SELECT code FROM permissions", []);
         return [
             'allPermissionCodes' => $perms,
@@ -254,9 +253,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function canWriteFiles(): bool
     {
-        $factory     = \NDB_Factory::singleton();
-        $this->_path = $factory->config()->getSetting("base");
-
+        $this->_path =  $this->loris->getConfiguration()->getSetting('base');
         $instrument_dir = $this->_path . 'project/instruments';
         $table_dir      = $this->_path . 'project/tables_sql';
 
@@ -273,9 +270,8 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function isAdminUserConfigured() : bool
     {
-        $factory   = \NDB_Factory::singleton();
-        $db        = $factory->database();
-        $db_config = $factory->config()->getSetting('database');
+        $db        = $this->loris->getDatabaseConnection();
+        $db_config = $this->loris->getConfiguration()->getSetting('database');
 
         $credentials_set = !empty($db_config['adminUser'])
             && !empty($db_config['adminPassword']);
@@ -311,8 +307,7 @@ class Instrument_Manager extends \DataFrameworkMenu
      */
     protected function instrumentExists(string $instrument): bool
     {
-        $factory = \NDB_Factory::singleton();
-        $count   = $factory->database()->pselectOne(
+        $count  = $this->loris->getDatabaseConnection()->pselectOne(
             'SELECT count(*) FROM test_names WHERE Test_name=:v_instrument',
             [':v_instrument' => $instrument]
         );
