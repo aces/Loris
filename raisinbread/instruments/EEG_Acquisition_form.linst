@@ -1,0 +1,97 @@
+testname{@}EEG_Acquisition_form
+table{@}EEG_Acquisition_form
+title{@}EEG_Acquisition_form
+header{@}{@}EEG Acquisition form
+date{@}Date_taken{@}Date of Administration{@}{@}
+static{@}Candidate_Age{@}Candidate Age (Months)
+static{@}Window_Difference{@}Window Difference (+/- Days)
+select{@}Examiner{@}Examiner{@}
+header{@}{@}<b><h3>General informations</h3></b>
+text{@}research_staff_one{@}Research staff 1 initials
+text{@}research_staff_two{@}Research staff 2 initials
+text{@}research_staff_three{@}Research staff 3 initials
+text{@}session_testing_room{@}Testing room information
+select{@}subject_behavioral_assistant_present{@}Is there a behavioral assistant?{@}'yes'=>'Yes'{-}'no'=>'No'
+text{@}subject_behavioral_assistant{@}Subject Behavioral assistant initials
+select{@}subject_medication{@}Is subject under medication?{@}'yes'=>'Yes'{-}'no'=>'No'
+textarea{@}subject_medication_dosage{@}Describe the medication and dosage
+select{@}head_measurement_unit{@}What is the unit used for head measurement?{@}'cm'=>'Centimeters (cm)'{-}'in'=>'Inches (in)'
+text{@}head_measurement{@}What is the head measurement value?
+select{@}head_measurement_status{@}What is the head measurement value?{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}ekg_collected{@}EKG Collected?{@}'yes'=>'Yes'{-}'no'=>'No'
+select{@}participant_away_60cm_from_monitor{@}Participant is 60cm away from monitor?{@}'yes'=>'Yes'{-}'no'=>'No'
+textarea{@}participant_away_60cm_from_monitor_reason{@}If No, please explain the reason
+header{@}{@}<b><h3>Net informations</h3></b>
+text{@}net_id{@}What is the net identifier?
+select{@}impedance_measured_before_netting{@}Impedances measure before netting?{@}'yes'=>'Yes'{-}'no'=>'No'
+text{@}impedance_measure{@}Register the impedance measured
+select{@}bad_channels_measured_after_netting{@}Bad channels measured after netting?{@}'yes'=>'Yes'{-}'no'=>'No'
+textarea{@}bad_channels{@}Register all bad channels
+header{@}{@}<h6>For net placement question:<br/> <b>Excellent</b> - meets all criteria for proper net placement.<br/> <b>Average</b> - any 1-2cm shift from proper placement (1 pinky finger width distance).<br/> <b>Poor</b> - any >2 cm shift from proper placement (>1 pinky finger width distance). </h6>
+select{@}net_placement{@}Net placement{@}'na'=>'n/a'{-}'excellent'=>'Excellent'{-}'average'=>'Average'{-}'poor'=>'Poor'
+textarea{@}net_placement_comment{@}Any comment on net placement
+select{@}net_placement_photos_taken{@}Placement photos taken?{@}'yes'=>'Yes'{-}'no'=>'No'
+select{@}acquisition_software{@}Acquisition software used{@}'eemagine'=>'Eemagine'{-}'neuro_scan'=>'(Neuro)scan'{-}'insep'=>'InsEP'{-}'biosemi'=>'BioSemi'{-}'netstation'=>'NetStation'{-}'brain_vision_recorder'=>'Brain Vision Recorder'{-}'emotiv'=>'Emotiv'{-}'actiview605_lores'=>'ActiView605-Lores'{-}'eeprobe'=>'EEProbe'{-}'tmsi'=>'TMSi'{-}'other'=>'Other'
+text{@}acquisition_software_other{@}If other, please specify
+select{@}recording_reference{@}Recording reference used{@}'left_mastoid'=>'left mastoid'{-}'right_mastoid'=>'right mastoid'{-}'left_earlobe'=>'left earlobe'{-}'right_earlobe'=>'right earlobe'{-}'physically_linked_mastoids'=>'physically linked mastoids'{-}'physically_linked_earlobes'=>'physically linked earlobes'{-}'cz'=>'Cz'{-}'tip_nose'=>'tip of the nose'{-}'balanced_non_cephalic_reference'=>'balanced non-cephalic reference'{-}'other'=>'Other'
+text{@}recording_reference_other{@}If other, please specify
+text{@}number_active_channels{@}Number of active channels
+select{@}number_active_channels_status{@}Number of active channels{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}eog_channels{@}EOG channels{@}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'
+text{@}eog_channels_other{@}If other, please specify
+textarea{@}artefacted_channels{@}Artefacted channels
+header{@}{@}<b><h3>EEG Acquisition</h3></b>
+select{@}bad_electrodes_present{@}Were there any bad electrodes during impedances?{@}'yes'=>'Yes'{-}'no'=>'No'
+textarea{@}bad_electrodes{@}If Yes, please register all bad electrodes
+textarea{@}hardware_filters_applied{@}What hardware filters were applied before acquisition?
+textarea{@}software_filters_applied{@}What software filters were applied during acquisition?
+time{@}eeg_session_start_time{@}EEG session Start time
+select{@}eeg_session_start_time_status{@}EEG session Start time{@}NULL=>''{-}'dnk'=>'DNK'{-}'refusal'=>'Refusal'{-}'not_answered'=>'Not Answered'
+time{@}eeg_session_end_time{@}EEG session End time
+select{@}eeg_session_end_time_status{@}EEG session End time{@}NULL=>''{-}'dnk'=>'DNK'{-}'refusal'=>'Refusal'{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Resting state task</h3>
+header{@}{@}<h6>*scroll through <u>all channels</u> to check for good signal after starting video<br/> (if bad signal: pause task, continue task when signal looks good in recording)</h6>
+select{@}resting_state_eeg_acquired{@}Resting State EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
+textarea{@}resting_state_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}resting_state_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
+select{@}resting_state_eeg_mood_rating{@}Resting State EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
+textarea{@}resting_state_eeg_mood_rating_comments{@}Any comment on the mood?
+textarea{@}resting_state_comments{@}Any comment on the resting state?
+header{@}{@}<h3>VEP task</h3>
+select{@}paradigm_vep_used{@}VEP paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h6>*scroll through <u>all channels</u> to check for good signal after starting video<br/> (if bad signal: pause task, continue task when signal looks good in recording)</h6>
+select{@}vep_eeg_acquired{@}VEP EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
+textarea{@}vep_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}vep_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
+select{@}vep_eeg_mood_rating{@}VEP EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
+textarea{@}vep_eeg_mood_rating_comments{@}Any comment on the mood?
+textarea{@}vep_comments{@}Any comment on the VEP task?
+header{@}{@}<h3>AEP task</h3>
+select{@}paradigm_aep_used{@}AEP paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h6>*scroll through <u>all channels</u> to check for good signal after starting video<br/> (if bad signal: pause task, continue task when signal looks good in recording)</h6>
+select{@}aep_eeg_acquired{@}AEP EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
+textarea{@}aep_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}aep_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
+select{@}aep_eeg_mood_rating{@}AEP EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
+textarea{@}aep_eeg_mood_rating_comments{@}Any comment on the mood?
+textarea{@}aep_comments{@}Any comment on the AEP task?
+header{@}{@}<h3>MMN task</h3>
+select{@}paradigm_mmn_used{@}MMN paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h6>*scroll through <u>all channels</u> to check for good signal after starting video<br/> (if bad signal: pause task, continue task when signal looks good in recording)</h6>
+select{@}mmn_eeg_acquired{@}MMN EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
+textarea{@}mmn_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}mmn_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
+select{@}mmn_eeg_mood_rating{@}MMN EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
+textarea{@}mmn_eeg_mood_rating_comments{@}Any comment on the mood?
+textarea{@}mmn_comments{@}Any comment on the MMN task?
+header{@}{@}<h3>Faces task</h3>
+select{@}paradigm_faces_used{@}Human Faces paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h6>*scroll through <u>all channels</u> to check for good signal after starting video<br/> (if bad signal: pause task, continue task when signal looks good in recording)</h6>
+select{@}faces_eeg_acquired{@}Faces EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
+textarea{@}faces_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}faces_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
+select{@}faces_eeg_mood_rating{@}Faces EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
+textarea{@}faces_eeg_mood_rating_comments{@}Any comment on the mood?
+textarea{@}faces_comments{@}Any comment on the Faces task?
+header{@}{@}<b><h3>General session comments and notes</h3></b>
+textarea{@}general_comments{@}General session notes, any important details (e.g. technical error, issue with net, etc.)
