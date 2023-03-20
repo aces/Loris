@@ -71,7 +71,7 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $route    = explode('/', $request->getUri()->getPath());
+            $route = explode('/', $request->getUri()->getPath());
             if ($route[2] == 'meta') {
                 $id = urldecode(basename($request->getUri()->getPath()));
                 return (new \LORIS\Http\Response())
