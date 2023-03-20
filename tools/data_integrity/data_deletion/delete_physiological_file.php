@@ -286,7 +286,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         echo "----------------------------\n";
 
         // delete from the physiological_event_parameter_category_level table
-        $EventParameterIDs = $DB->pselect(
+        $EventParameterIDs = $DB->pselectCol(
             'SELECT EventParameterID
             FROM physiological_event_parameter
             JOIN physiological_event_file USING(EventFileID)
@@ -298,13 +298,13 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             foreach ($EventParameterIDs as $EventParameterID) {
                 $DB->delete(
                     "physiological_event_parameter_category_level",
-                    ["EventParameterID" => $EventParameterID['EventParameterID']]
+                    ["EventParameterID" => $EventParameterID]
                 );
             }
         }
 
         // delete from the physiological_event_parameter table
-        $EventFileIDs = $DB->pselect(
+        $EventFileIDs = $DB->pselectCol(
             'SELECT EventFileID
             FROM physiological_event_file
             WHERE PhysiologicalFileID=:pfid',
@@ -315,13 +315,13 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             foreach ($EventFileIDs as $EventFileID) {
                 $DB->delete(
                     "physiological_event_parameter",
-                    ["EventFileID" => $EventFileID['EventFileID']]
+                    ["EventFileID" => $EventFileID]
                 );
             }
         }
 
         // delete from the physiological_annotation_* tables
-        $AnnotationFileIDs = $DB->pselect(
+        $AnnotationFileIDs = $DB->pselectCol(
             'SELECT AnnotationFileID
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:pfid',
@@ -332,19 +332,19 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             foreach ($AnnotationFileIDs as $AnnotationFileID) {
                 $DB->delete(
                     "physiological_annotation_instance",
-                    ["AnnotationFileID" => $AnnotationFileID['AnnotationFileID']]
+                    ["AnnotationFileID" => $AnnotationFileID]
                 );
                 $DB->delete(
                     "physiological_annotation_rel",
-                    ["AnnotationTSV" => $AnnotationFileID['AnnotationFileID']]
+                    ["AnnotationTSV" => $AnnotationFileID]
                 );
                 $DB->delete(
                     "physiological_annotation_rel",
-                    ["AnnotationJSON" => $AnnotationFileID['AnnotationFileID']]
+                    ["AnnotationJSON" => $AnnotationFileID]
                 );
                 $DB->delete(
                     "physiological_annotation_parameter",
-                    ["AnnotationFileID" => $AnnotationFileID['AnnotationFileID']]
+                    ["AnnotationFileID" => $AnnotationFileID]
                 );
             }
         }
