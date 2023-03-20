@@ -204,7 +204,7 @@ function ProtocolViolationModal(props) {
               <td>{protocol['Center_name']}</td>
               <td>{protocol['ScannerID']}</td>
               <td>{protocol['Scan_type']}</td>
-              <td colspan="11">
+              <td colSpan="11">
                 Series Description Regex:
                   <span style={{fontWeight: 'bold'}}>
                     {protocol['series_description_regex']}
