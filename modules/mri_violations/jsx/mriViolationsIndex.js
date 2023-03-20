@@ -123,14 +123,17 @@ function columnMapper(fieldOptions) {
             if (fieldOptions.projects) {
                 return fieldOptions.projects[value];
             }
+            break;
         case 'Cohort':
             if (fieldOptions.cohorts) {
                 return fieldOptions.cohorts[value];
             }
+            break;
         case 'Site':
             if (fieldOptions.sites) {
                 return fieldOptions.sites[value];
             }
+            break;
         }
         return value;
     };

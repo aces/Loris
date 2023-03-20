@@ -61,7 +61,7 @@
     "react/no-deprecated": "off",
     "react/no-string-refs": "off",
     "no-case-declarations": "off",
-    "no-fallthrough": "off",
+    "no-fallthrough": "error",
     "react/jsx-no-undef": "off",
     "react/prop-types": "error",
     "no-undef": "error",
