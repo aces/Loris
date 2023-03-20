@@ -49,6 +49,7 @@ CategorySelection.propTypes = {
 
 function ConfigurationSection(props) {
     const [categoryItems, setCategoryItems] = useState([]);
+    const [forceReload, setForceReload] = useState(0);
     useEffect(() => {
         if (props.activeCategory === '') {
             // not yet loaded
@@ -69,7 +70,7 @@ function ConfigurationSection(props) {
         }).catch((error) => {
             swal.fire('Configuration Error!', error.toString(), 'error');
         });
-    }, [props.activeCategory]);
+    }, [props.activeCategory, forceReload]);
 
     return <div style={{display: 'flex'}}>
         <CategorySelection
@@ -83,6 +84,7 @@ function ConfigurationSection(props) {
            BaseURL={props.BaseURL}
            Instruments={props.Instruments}
            ScanTypes={props.ScanTypes}
+           reloadPage={() => setForceReload(forceReload+1)}
         />
     </div>;
 }
@@ -106,9 +108,11 @@ function ItemDisplay(props) {
                     Label={props.Label}
                     disabled={props.Disabled}
                     Values={props.Value || []}
+                    BaseURL={props.BaseURL}
 
                     Instruments={props.Instruments}
                     ScanTypes={props.ScanTypes}
+                    reloadPage={props.reloadPage}
                 />;
     }
 
@@ -211,6 +215,9 @@ function ItemDisplay(props) {
     }
 }
 ItemDisplay.propTypes = {
+    BaseURL: PropTypes.string.isRequired,
+    reloadPage: PropTypes.func,
+
     Name: PropTypes.string,
     Description: PropTypes.string,
     Label: PropTypes.string,
@@ -232,35 +239,73 @@ ItemDisplay.propTypes = {
 function MultiItemDisplay(props) {
     // Use the same bootstrap styling as the elements in jsx/Form.js to ensure
     // the alignment is the same.
-    const rows = props.Values.map((item, i) => {
-        let input;
+    const [isAdding, setIsAdding] = useState(false);
+
+    const saveValues = (newvalues) => {
+        fetch(
+                props.BaseURL + '/configuration/setting/' + props.Name,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        setting: props.Name,
+                        values: newvalues,
+                    }),
+                },
+            ).then((resp) => {
+                if (!resp.ok) {
+                    throw new Error('Could not save ' + props.Name);
+                }
+                return resp.json();
+            }).then((data) => {
+                props.reloadPage();
+                swal.fire(
+                    'Success!',
+                    'Successfully saved ' + props.Name,
+                    'success'
+                );
+            }).catch((error) => {
+              swal.fire('Error', error.toString(), 'error');
+            });
+    };
+
+    const inputForDataType = (type, value, idx) => {
+        const saveChange = (name, newval) => {
+            const newvalues = [...props.Values];
+            if (idx === 'new') {
+                newvalues.push(newval);
+            } else {
+                newvalues[idx] = newval;
+            }
+            saveValues(newvalues);
+        };
+
         switch (props.DataType) {
         case 'instrument':
-            input = <SelectElement
+            return <SelectElement
                      name={''}
                      label={''}
                      options={props.Instruments}
                      disabled={props.Disabled}
-                     value={item}
+                     value={value}
+                     onUserInput={saveChange}
                 />;
-            break;
         case 'scan_type':
-            input = <SelectElement
+            return <SelectElement
                      name={''}
                      label={''}
                      options={props.ScanTypes}
                      disabled={props.Disabled}
-                     value={item}
+                     value={value}
+                     onUserInput={saveChange}
                 />;
-            break;
         case 'text':
-            input = <TextboxElement
+            return <TextboxElement
                      name={''}
                      label={''}
                      disabled={props.Disabled}
-                     value={item}
+                     value={value}
+                     onUserInput={saveChange}
                 />;
-            break;
         default:
             // These are the only 3 that we currently have so the only
             // three types of AllowMultiple items we need to support
@@ -268,26 +313,52 @@ function MultiItemDisplay(props) {
                 'Unhandled AllowMultiple element datatype' + props.DataType
             );
         }
+    };
 
+    const rows = props.Values.map((item, i) => {
         return (
             <div className="row" key={i}>
-                <div className="col-sm-11">{input}</div>
+                <div className="col-sm-11">
+                    {inputForDataType(props.DataType, item, i)}
+                </div>
                 <div className="col-sm-1">
-                    <button className="btn btn-success add" type="button">
+                    <button className="btn btn-success add" type="button"
+                        onClick={() => {
+                            const newvalues = props.Values.filter(
+                                (el, idx) => idx != i
+                            );
+                            saveValues(newvalues);
+                        }}
+                    >
                         <span className="glyphicon glyphicon-remove"></span>
                     </button>
                 </div>
             </div>
         );
     });
-    rows.push(<div className="row" key="newItem">
-                <div className="col-sm-11">&nbsp;</div>
-                <div className="col-sm-1">
-                    <button className="btn btn-success remove" type="button">
-                        <span className="glyphicon glyphicon-plus"></span>
-                    </button>
-                </div>
-    </div>);
+    if (isAdding) {
+        rows.push(<div className="row" key="newItem">
+                    <div className="col-sm-11">
+                        {inputForDataType(props.DataType, null, 'new')}
+                    </div>
+                    <div className="col-sm-1">
+                        <button className="btn btn-success remove" type="button"
+                            onClick={() => setIsAdding(false)}>
+                            <span className="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </div>
+        </div>);
+    } else {
+        rows.push(<div className="row" key="newItem">
+                    <div className="col-sm-11">&nbsp;</div>
+                    <div className="col-sm-1">
+                        <button className="btn btn-success remove" type="button"
+                            onClick={() => setIsAdding(true)}>
+                            <span className="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </div>
+        </div>);
+    }
     return (
       <div className="row form-group">
           <label className="col-sm-3 control-label" htmlFor={props.Label}>
@@ -300,6 +371,7 @@ function MultiItemDisplay(props) {
 
 MultiItemDisplay.propTypes = {
     Label: PropTypes.string,
+    Name: PropTypes.string.isRequired,
     Values: PropTypes.array,
     DataType: PropTypes.string,
 
@@ -307,11 +379,16 @@ MultiItemDisplay.propTypes = {
 
     Instruments: PropTypes.object,
     ScanTypes: PropTypes.object,
+
+    BaseURL: PropTypes.string.isRequired,
+    reloadPage: PropTypes.func,
 };
 
 function CategoryDisplay(props) {
     return <div>{props.items ? props.items.map((item) => {
                 return <ItemDisplay key={item.ID}
+                            BaseURL={props.BaseURL}
+                            reloadPage={props.reloadPage}
                             Name={item.Name}
                             Description={item.Description}
                             Label={item.Label}
@@ -331,6 +408,9 @@ CategoryDisplay.propTypes = {
     items: PropTypes.array,
     Instruments: PropTypes.object,
     ScanTypes: PropTypes.object,
+
+    reloadPage: PropTypes.func,
+    BaseURL: PropTypes.string,
 };
 
 function ConfigurationIndex(props) {
