@@ -71,25 +71,26 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $filename = urldecode(basename($request->getUri()->getPath()));
             $route    = explode('/', $request->getUri()->getPath());
             if ($route[2] == 'meta') {
+                $id = urldecode(basename($request->getUri()->getPath()));
                 return (new \LORIS\Http\Response())
                     ->withHeader("Content-Type", "text/plain")
                     ->withBody(
                         new \LORIS\Http\StringStream(
-                            json_encode($this->getUploadDocFields($filename))
+                            json_encode($this->getUploadDocFields($id))
                         )
                     );
             }
 
-            // the file's user directory is the username of the file uploader,
-            // not the user currently requesting the download
-            $uploader = urldecode(basename(dirname($request->getUri()->getPath())));
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
 
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
-                    $downloadpath . $uploader
+                    $downloadpath
                 )
             );
             return $downloader->handle(
