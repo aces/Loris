@@ -65,7 +65,7 @@
     "react/prop-types": "error",
     "no-undef": "error",
     "react/jsx-key": "off",
-    "no-extra-semi": "off",
+    "no-extra-semi": "error",
     "no-prototype-builtins": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",

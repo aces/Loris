@@ -1640,7 +1640,7 @@ class DateElement extends Component {
           {requiredHTML}
         </label>;
         classSz = 'col-sm-9';
-    };
+    }
     return (
       <div className={elementClass}>
         {labelHTML}
@@ -1938,7 +1938,7 @@ class NumericElement extends Component {
           {requiredHTML}
         </label>;
         classSz = 'col-sm-9';
-    };
+    }
 
     return (
       <div className={elementClass}>
