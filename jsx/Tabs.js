@@ -167,7 +167,7 @@ Tabs.propTypes = {
   defaultTab: PropTypes.string,
   updateURL: PropTypes.bool,
   onTabChange: PropTypes.func,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
@@ -322,7 +322,7 @@ VerticalTabs.propTypes = {
   defaultTab: PropTypes.string,
   updateURL: PropTypes.bool,
   onTabChange: PropTypes.func,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 VerticalTabs.defaultProps = {
   onTabChange: function() {},
@@ -364,7 +364,7 @@ TabPane.propTypes = {
   TabId: PropTypes.string.isRequired,
   Title: PropTypes.string,
   activeTab: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 
 export {

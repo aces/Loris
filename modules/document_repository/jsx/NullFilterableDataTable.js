@@ -27,7 +27,7 @@ class NullFilterableDataTable extends Component {
   }
 }
 NullFilterableDataTable.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 
 export default NullFilterableDataTable;

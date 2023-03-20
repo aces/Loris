@@ -194,7 +194,7 @@ FilterableDataTable.propTypes = {
   getMappedCell: PropTypes.array,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 
 export default FilterableDataTable;

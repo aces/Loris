@@ -35,7 +35,7 @@ class SliderPanel extends Component {
 }
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.node,
 };
 
 
@@ -506,7 +506,7 @@ class AccordionPanel extends Component {
 }
 AccordionPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.object,
+  children: PropTypes.node,
 };
 
 
