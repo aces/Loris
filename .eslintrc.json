@@ -281,7 +281,7 @@
     "loris": true,
     "QueryString": true,
     "swal": true,
-    "schema_urls": true,
+    "schemaUrls": true,
     "JSX": true
   }
 }

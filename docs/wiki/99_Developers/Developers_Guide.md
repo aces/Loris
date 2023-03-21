@@ -62,7 +62,7 @@ This will change several configurations in your LORIS project to allow for more 
 GitHub Actions is our continuous integration suite which runs on every PR in GitHub. These commands can catch small formatting errors that will cause the GitHub Actions build to fail.
 
     make checkstatic  # includes these 3 commands: 
-                      # npm run lint:php, npm run lint:javascript, vendor/bin/phan
+                      # npm run lint:php, npm run lint:js, vendor/bin/phan
 
     vendor/bin/phpcs --standard=test/LorisCS.xml modules/candidate_list/php/candidate_list.class.inc
                       # phpcs allows you to specifically check the formatting of one file 

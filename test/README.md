@@ -43,7 +43,7 @@ npm run lint:php
 **To run Javascript linting:**
 
 ```
-npm run lint:javascript
+npm run lint:js
 ```
   
 ## Advanced Workflow

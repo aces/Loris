@@ -29,5 +29,5 @@
     }
   </style>
   <script>
-  const schema_urls = {$schema_urls};
+  const schemaUrls = {$schema_urls};
   </script>

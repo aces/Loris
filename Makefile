@@ -33,7 +33,7 @@ clean:
 checkstatic: phpdev
 	npm run lint:php
 	vendor/bin/phan
-	npm run lint:javascript
+	npm run lint:js
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
