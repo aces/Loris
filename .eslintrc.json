@@ -196,8 +196,6 @@
     {
       "files": [
         "modules/candidate_parameters/**",
-        "modules/bvl_feedback/**",
-        "modules/dataquery/**",
         "modules/dqt/**",
         "modules/configuration/jsx/configuration_helper.js"
       ],
