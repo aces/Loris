@@ -239,7 +239,6 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
         );
 
-
         // Second, try to create a valid new candidate in a site that the
         // user is not affiliated with. The test user is only afficilated to
         // Data Coordinating Center
@@ -293,8 +292,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
 
-
-        // Try to create a new candidate with an invalid input
+        // Finally, try to create a new candidate with an invalid input
         $json_invalid = [
             'Candidate' =>
                 [
@@ -321,4 +319,3 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
     }
 }
-
