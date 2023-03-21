@@ -101,6 +101,7 @@ ConfigurationSection.propTypes = {
 };
 
 function ItemDisplay(props) {
+    const [newValue, setNewValue] = useState(props.Value);
     if (props.AllowMultiple) {
         return <MultiItemDisplay
                     DataType={props.DataType}
@@ -116,6 +117,36 @@ function ItemDisplay(props) {
                 />;
     }
 
+    const saveChange = (name, newvalue) => {
+        if (newvalue == props.Value) {
+            return;
+        }
+        fetch(
+                props.BaseURL + '/configuration/setting/' + props.Name,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        setting: props.Name,
+                        value: newvalue,
+                    }),
+                },
+            ).then((resp) => {
+                if (!resp.ok) {
+                    throw new Error('Could not save ' + props.Name);
+                }
+                return resp.json();
+            }).then((data) => {
+                props.reloadPage();
+                swal.fire(
+                    'Success!',
+                    'Successfully saved ' + props.Name,
+                    'success'
+                );
+            }).catch((error) => {
+              swal.fire('Error', error.toString(), 'error');
+            });
+    };
+
     switch (props.DataType) {
         case 'path': // fallthrough
         case 'web_path': // fallthrough
@@ -124,7 +155,9 @@ function ItemDisplay(props) {
                      name={props.Name}
                      label={props.Label}
                      disabled={props.Disabled}
-                     value={props.Value}
+                     value={newValue}
+                     onUserInput={(name, val) => setNewValue(val)}
+                     onUserBlur={saveChange}
                    />;
         case 'boolean':
             return <RadioElement
@@ -133,20 +166,25 @@ function ItemDisplay(props) {
                      disabled={props.Disabled}
                      checked={props.Value ? 'yes' : 'no'}
                      options={{'yes': 'Yes', 'no': 'No'}}
+                     onUserInput={saveChange}
                    />;
         case 'email':
             return <EmailElement
                      name={props.Name}
                      label={props.Label}
                      disabled={props.Disabled}
-                     value={props.Value}
+                     value={newValue}
+                     onUserInput={(name, val) => setNewValue(val)}
+                     onUserBlur={saveChange}
                    />;
         case 'textarea':
             return <TextareaElement
                      name={props.Name}
                      label={props.Label}
                      disabled={props.Disabled}
-                     value={props.Value}
+                     value={newValue}
+                     onUserInput={(name, val) => setNewValue(val)}
+                     onUserBlur={saveChange}
                    />;
         case 'date_format':
             return <SelectElement
@@ -155,11 +193,12 @@ function ItemDisplay(props) {
                      options={
                         {
                             'Ymd': 'Ymd (EX: 2015-12-28)',
-                            'Ym': 'Ym (EX: 2015-12',
+                            'Ym': 'Ym (EX: 2015-12)',
                         }
                      }
                      disabled={props.Disabled}
                      value={props.Value}
+                     onUserInput={saveChange}
                 />;
         case 'lookup_center':
             return <SelectElement
@@ -173,6 +212,7 @@ function ItemDisplay(props) {
                      }
                      disabled={props.Disabled}
                      value={props.Value}
+                     onUserInput={saveChange}
                 />;
         case 'log_level':
             return <SelectElement
@@ -193,6 +233,7 @@ function ItemDisplay(props) {
                      }
                      disabled={props.Disabled}
                      value={props.Value}
+                     onUserInput={saveChange}
                 />;
         case 'instrument':
             return <SelectElement
@@ -201,6 +242,7 @@ function ItemDisplay(props) {
                      options={props.Instruments}
                      disabled={props.Disabled}
                      value={props.Value}
+                     onUserInput={saveChange}
                 />;
         case 'scan_type':
             return <SelectElement
@@ -209,6 +251,7 @@ function ItemDisplay(props) {
                      options={props.ScanTypes}
                      disabled={props.Disabled}
                      value={props.Value}
+                     onUserInput={saveChange}
                 />;
         default:
             throw new Error('Invalid DataType ' + props.DataType);

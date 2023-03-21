@@ -61,7 +61,22 @@ class Setting extends \LORIS\Http\Endpoint {
             $DB->commit();
             return new \LORIS\Http\Response\JSON\OK(['ok' => true]);
         }
-        return new \LORIS\Http\Response\JSON\NotImplemented();
+        $valueId = $DB->pselectOne(
+            "SELECT ID FROM Config WHERE ConfigID=:cid",
+            ['cid' => $settingData['ID']]
+        );
+        if ($valueId=== null) {
+            $DB->unsafeInsert("Config",
+                ['ConfigID' => $settingData['ID'], 'Value' => $input['value']]
+            );
+        } else {
+            $DB->unsafeUpdate(
+                "Config",
+                ['Value' => $input['value']],
+                ['ID' => $valueId]
+            );
+        }
+        return new \LORIS\Http\Response\JSON\OK(['ok' => true]);
     }
 }
 
