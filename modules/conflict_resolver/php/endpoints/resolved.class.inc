@@ -77,22 +77,22 @@ class Resolved extends Endpoint implements ETagCalculator
      * Returns a list of instruments to use as the "Source From"
      * filter options
      *
-     * @param \LORIS\LorisInstance $loris The loris instance for which to get the
-     *                                    options.
+     * @param \User                $user  The user from which to retrieve the options
+     * @param \LORIS\LorisInstance $loris The LorisInstance from which to retrieve
+     *                                    the options
      *
      * @return array Dynamic field options
      */
-    private function _getFieldOptions(\LORIS\LorisInstance $loris) : array
-    {
-        $sites       = array_values(\Utility::getSiteList(false));
+    private function _getFieldOptions(
+        \User $user,
+        \LORIS\LorisInstance $loris
+    ) : array {
         $visitlabels = array_values(\Utility::getVisitList());
-        $projects    = array_values(\Utility::getProjectList());
-
         return [
-            'site'       => array_combine($sites, $sites),
+            'site'       => \Utility::getSiteOptions($user, false),
             'instrument' => \NDB_BVL_Instrument::getInstrumentNamesList($loris),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
-            'project'    => array_combine($projects, $projects),
+            'project'    => \Utility::getProjectOptions($user, false),
         ];
     }
 
@@ -146,7 +146,7 @@ class Resolved extends Endpoint implements ETagCalculator
             $loris = $request->getAttribute('loris');
             $body  = [
                 'data'         => $conflicts,
-                'fieldOptions' => $this->_getFieldOptions($loris),
+                'fieldOptions' => $this->_getFieldOptions($user, $loris),
             ];
 
             $this->_cache = $body;

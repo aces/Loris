@@ -83,8 +83,8 @@ class Profiles extends \DataFrameworkMenu implements ETagCalculator
         $user = \NDB_Factory::singleton()->user();
 
         return (new \LORIS\genomic_browser\Views\Profiles(
-            $this->getSiteOptions($user, false, $this->allSitePermissionNames()),
-            $this->getCohortOptions($user, false),
+            \Utility::getSiteOptions($user, false, $this->allSitePermissionNames()),
+            \Utility::getCohortOptions($user, false),
         ))->toArray();
     }
 

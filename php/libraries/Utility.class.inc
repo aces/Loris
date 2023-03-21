@@ -1020,4 +1020,100 @@ class Utility
         }
         return $formData;
     }
+
+    /**
+     * Format the user's projects to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned projects keys
+     *                           should be numeric (ProjectID) or project name
+     *
+     * @return array - an associative array of the form (ID|mame => name)
+     */
+    public static function getProjectOptions(
+        \User $user,
+        bool  $numericKeys = true
+    ): array {
+        $projects     = $user->getProjects();
+        $projectNames = array_map(
+            fn($project) => $project->getName(),
+            $projects
+        );
+
+        if ($numericKeys) {
+            $projectIDs = array_map(
+                fn($project) => strval($project->getId()),
+                $projects
+            );
+            return array_combine($projectIDs, $projectNames);
+        }
+
+        return array_combine($projectNames, $projectNames);
+    }
+
+    /**
+     * Format the user's cohorts to display the module filter options
+     *
+     * @param \User $user        User
+     * @param bool  $numericKeys If the returned cohorts keys
+     *                           should be numeric (CohortID)
+     *                           or strings (cohort name)
+     *
+     * @return array - an associative array of the form (ID => name)
+     */
+    public static function getCohortOptions(
+        \User $user,
+        bool $numericKeys = true
+    ): array {
+        $cohortOptions = array_reduce(
+            $user->getProjects(),
+            fn($cohorts, $project) =>
+                $cohorts
+                + array_column($project->getCohorts(), 'title', 'cohortId'),
+            []
+        );
+
+        if (!$numericKeys) {
+            $cohortNames = array_values($cohortOptions);
+            return array_combine($cohortNames, $cohortNames);
+        }
+
+        return $cohortOptions;
+    }
+
+    /**
+     * Format the user's sites to display the module filter options
+     *
+     * @param \User  $user               User
+     * @param bool   $numericKeys        If the returned sites keys should be
+     *                                   numeric (CenterID) or strings (site
+     *                                   name)
+     * @param ?array $allsitesPermission A list of permission
+     *                                   which gives access to all sites
+     * @param bool   $studySite          If the returned sites should be
+     *                                   study sites only
+     *
+     * @return array An associative array of the form (ID|name => name)
+     */
+    public static function getSiteOptions(
+        \User $user,
+        bool $numericKeys = true,
+        ?array $allsitesPermission = ['access_all_profiles'],
+        bool $studySite = true
+    ): array {
+        // If the user has any of the All Site permissions,
+        // get the list of all study sites
+        if ($allsitesPermission && $user->hasAnyPermission($allsitesPermission)) {
+            $siteOptions = \Utility::getSiteList($studySite);
+        } else {
+            $siteOptions = $user->getStudySites();
+        }
+
+        if (!$numericKeys) {
+            $siteNames = array_values($siteOptions);
+            return array_combine($siteNames, $siteNames);
+        }
+
+        return $siteOptions;
+    }
 }

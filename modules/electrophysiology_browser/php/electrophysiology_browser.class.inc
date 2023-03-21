@@ -81,12 +81,12 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         }
 
         return [
-            'sites'    => $this->getSiteOptions(
+            'sites'    => \Utility::getSiteOptions(
                 $user,
                 false,
                 $this->allSitePermissionNames()
             ),
-            'projects' => $this->getProjectOptions($user, false),
+            'projects' => \Utility::getProjectOptions($user, false),
             'types'    => $list_of_types
         ];
     }
