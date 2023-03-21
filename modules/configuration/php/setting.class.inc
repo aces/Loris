@@ -2,7 +2,6 @@
 namespace LORIS\configuration;
 
 use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 /**
@@ -30,6 +29,9 @@ class Setting extends \LORIS\Http\Endpoint
         $matches = [];
         if (preg_match("#^(/setting/*)([[:alnum:]_]*)$#", $path, $matches) === 1) {
             $requestdata = json_decode((string) $request->getBody(), true);
+            if (!is_array($requestdata)) {
+                return new \LORIS\Http\Response\JSON\BadRequest("Invalid input");
+            }
             if ($requestdata["setting"] != $matches[2]) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
                     "Setting does not match URL"

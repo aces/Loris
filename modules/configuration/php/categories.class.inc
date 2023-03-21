@@ -159,7 +159,7 @@ class Categories extends \LORIS\Http\Endpoint
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
                     ['ID' => $setting['ID']]
                 );
-                if ($value) {
+                if ($value !== null) {
                     if ($setting['AllowMultiple']) {
                         $setting['Value'] = array_column($value, 'Value');
                     } else {
@@ -178,12 +178,13 @@ class Categories extends \LORIS\Http\Endpoint
                     }
                 }
                 if ($setting['DataType'] == "boolean") {
-                    if ($setting['Value'] === "false") {
+                    $settingValue = $setting['Value'] ?? "false";
+                    if ($settingValue === "false") {
                         $setting['Value'] = false;
-                    } else if ($setting['Value'] === "true") {
+                    } else if ($settingValue === "true") {
                         $setting['Value'] = true;
                     } else {
-                        $setting['Value'] = !empty($setting['Value']);
+                        $setting['Value'] = !empty($settingValue);
                     }
                 }
             }
