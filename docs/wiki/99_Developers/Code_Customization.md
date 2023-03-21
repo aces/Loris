@@ -29,10 +29,6 @@ Template stored under `project/templates/` will override the file of the same na
 For projects wishing to customize existing modules, the recommended best practice is to copy *all* module code from `modules/_module_name_/*` to `project/modules/_module_name_/*` and modify code there.  
 This will use the `project/` override functionality of Loris.  These changes should be added and committed to your project-specific private repo. 
 
-## Manage additional composer dependencies
-
-In case your project requires additional composer dependencies or different dependency version requirements, you can create a composer.json file in `project/` by running `composer init`. Any existing or new dependencies in this file will be merged with the main composer dependencies in `vendor/` after `composer update` has been run.
-
 ## Manage additional npm dependencies
 
 To add new npm packages to your project, you can create a package.json file in `project/` by running `npm init`. Any dependencies in this file will be automatically installed under `project/` when make or npm ci/npm install is run from loris root.
