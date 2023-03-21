@@ -42,4 +42,3 @@ faces_eeg_mood_ratin{-}Required when Faces is used{-}paradigm_faces_used{@}=={@}
 faces_eeg_mood_rating_comments{-}Not Required{-}faces_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
 faces_comments{-}Not Required{-}faces_comments{@}=={@}NEVER_REQUIRED
 general_comments{-}Not Required{-}general_comments{@}=={@}NEVER_REQUIRED
-            
