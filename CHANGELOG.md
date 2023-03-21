@@ -62,7 +62,9 @@ Now the options correctly display in order of how they are defined in the instru
 SQL schema, and automated testing (PR #8313)
 
 ### Notes For Existing Projects
-- placeholder
+- API: Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
+provided as the body of a PUT/PATCH request. The values of all fields are now defined by
+the `Data` key instead of `$InstrumentName` (PR #7857)
 
 
 ### Notes For Developers
