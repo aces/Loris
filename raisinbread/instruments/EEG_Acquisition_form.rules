@@ -1,7 +1,8 @@
+general_comments{-}Not Required{-}general_comments{@}=={@}NEVER_REQUIRED
 research_staff_two{-}Not Required{-}research_staff_two{@}=={@}NEVER_REQUIRED
 research_staff_three{-}Not Required{-}research_staff_three{@}=={@}NEVER_REQUIRED
 session_testing_room{-}Not Required{-}session_testing_room{@}=={@}NEVER_REQUIRED
-subject_behavioral_assistant{-}Required if there is a behavioural assistant{-}subject_behavioral_assistant_present{@}=={@}yes
+behavioural_assistant{-}Required if there is a behavioural assistant{-}behavioural_assistant_present{@}=={@}yes
 subject_medication_dosage{-}Required if there is an ongoing medication{-}subject_medication{@}=={@}yes
 participant_away_60cm_from_monitor_reason{-}Required if participant cannot be 60cm away from montior{-}participant_away_60cm_from_monitor{@}=={@}no
 impedance_measure{-}Required when impedance is measured{-}impedance_measured_before_netting{@}=={@}yes
@@ -17,28 +18,27 @@ software_filters_applied{-}Not Required{-}software_filters_applied{@}=={@}NEVER_
 resting_state_eeg_incomplete_reason{-}Required when resting state acquiring is incomplete{-}resting_state_eeg_acquired{@}=={@}incomplete
 resting_state_eeg_mood_rating_comments{-}Not Required{-}resting_state_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
 resting_state_comments{-}Not Required{-}resting_state_comments{@}=={@}NEVER_REQUIRED
-vep_eeg_acquire{-}Required when VEP is used{-}paradigm_vep_used{@}=={@}yes
-vep_eeg_incomplete_reason{-}Required when VEP acquiring is incomplete{-}vep_eeg_acquired{@}=={@}incomplete
-vep_attempt{-}Required when VEP is used{-}paradigm_vep_used{@}=={@}yes
-vep_eeg_mood_ratin{-}Required when VEP is used{-}paradigm_vep_used{@}=={@}yes
-vep_eeg_mood_rating_comments{-}Not Required{-}vep_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
-vep_comments{-}Not Required{-}vep_comments{@}=={@}NEVER_REQUIRED
-aep_eeg_acquire{-}Required when AEP is used{-}paradigm_aep_used{@}=={@}yes
-aep_eeg_incomplete_reason{-}Required when AEP acquiring is incomplete{-}aep_eeg_acquired{@}=={@}incomplete
-aep_attempt{-}Required when AEP is used{-}paradigm_aep_used{@}=={@}yes
-aep_eeg_mood_ratin{-}Required when AEP is used{-}paradigm_aep_used{@}=={@}yes
-aep_eeg_mood_rating_comments{-}Not Required{-}aep_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
-aep_comments{-}Not Required{-}aep_comments{@}=={@}NEVER_REQUIRED
-mmn_eeg_acquire{-}Required when MMN is used{-}paradigm_mmn_used{@}=={@}yes
-mmn_eeg_incomplete_reason{-}Required when AEP acquiring is incomplete{-}mmn_eeg_acquired{@}=={@}incomplete
-mmn_attempt{-}Required when MMN is used{-}paradigm_mmn_used{@}=={@}yes
-mmn_eeg_mood_ratin{-}Required when MMN is used{-}paradigm_mmn_used{@}=={@}yes
-mmn_eeg_mood_rating_comments{-}Not Required{-}mmn_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
-mmn_comments{-}Not Required{-}mmn_comments{@}=={@}NEVER_REQUIRED
-faces_eeg_acquire{-}Required when Faces is used{-}paradigm_faces_used{@}=={@}yes
-faces_eeg_incomplete_reason{-}Required when Faces acquiring is incomplete{-}faces_eeg_acquired{@}=={@}incomplete
-faces_attempt{-}Required when Faces is used{-}paradigm_faces_used{@}=={@}yes
-faces_eeg_mood_ratin{-}Required when Faces is used{-}paradigm_faces_used{@}=={@}yes
-faces_eeg_mood_rating_comments{-}Not Required{-}faces_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
-faces_comments{-}Not Required{-}faces_comments{@}=={@}NEVER_REQUIRED
-general_comments{-}Not Required{-}general_comments{@}=={@}NEVER_REQUIRED
+task1_eeg_acquire{-}Required when Task 1 is used{-}task1_paradigm_used{@}=={@}yes
+task1_eeg_incomplete_reason{-}Required when task 1 acquiring is incomplete{-}task1_eeg_acquired{@}=={@}incomplete
+task1_attempt{-}Required when Task 1 is used{-}task1_paradigm_used{@}=={@}yes
+task1_eeg_mood_ratin{-}Required when Task 1 is used{-}task1_paradigm_used{@}=={@}yes
+task1_eeg_mood_rating_comments{-}Not Required{-}task1_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task1_comments{-}Not Required{-}vep_comments{@}=={@}NEVER_REQUIRED
+task2_eeg_acquire{-}Required when Task 2 is used{-}task2_paradigm_used{@}=={@}yes
+task2_eeg_incomplete_reason{-}Required when task 2 acquiring is incomplete{-}task2_eeg_acquired{@}=={@}incomplete
+task2_attempt{-}Required when Task 2 is used{-}task2_paradigm_used{@}=={@}yes
+task2_eeg_mood_ratin{-}Required when Task 2 is used{-}task2_paradigm_used{@}=={@}yes
+task2_eeg_mood_rating_comments{-}Not Required{-}task2_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task2_comments{-}Not Required{-}aep_comments{@}=={@}NEVER_REQUIRED
+task3_eeg_acquire{-}Required when Task 3 is used{-}task3_paradigm_used{@}=={@}yes
+task3_eeg_incomplete_reason{-}Required when task 3 acquiring is incomplete{-}task3_eeg_acquired{@}=={@}incomplete
+task3_attempt{-}Required when Task 3 is used{-}task3_paradigm_used{@}=={@}yes
+task3_eeg_mood_ratin{-}Required when Task 3 is used{-}task3_paradigm_used{@}=={@}yes
+task3_eeg_mood_rating_comments{-}Not Required{-}task3_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task3_comments{-}Not Required{-}mmn_comments{@}=={@}NEVER_REQUIRED
+task4_eeg_acquire{-}Required when Task 4 is used{-}task4_paradigm_used{@}=={@}yes
+task4_eeg_incomplete_reason{-}Required when task 4 acquiring is incomplete{-}task4_eeg_acquired{@}=={@}incomplete
+task4_attempt{-}Required when Task 4 is used{-}task4_paradigm_used{@}=={@}yes
+task4_eeg_mood_ratin{-}Required when Task 4 is used{-}task4_paradigm_used{@}=={@}yes
+task4_eeg_mood_rating_comments{-}Not Required{-}task4_eeg_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task4_comments{-}Not Required{-}faces_comments{@}=={@}NEVER_REQUIRED
