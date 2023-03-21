@@ -82,8 +82,8 @@ class Categories extends \LORIS\Http\Endpoint
                FROM mri_scan_type",
             []
         );
-        $scan_types = [];
 
+        $scan_types = [];
         foreach ($scans as $type) {
             $val = $type['Scan_type'];
             $scan_types[$val] = $val;

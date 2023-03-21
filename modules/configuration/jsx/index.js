@@ -3,6 +3,13 @@ import {useEffect, useState} from 'react';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 
+/**
+ * React component to handle the helpful text at the start of the
+ * configuration page
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function IntroText(props) {
     return <div>
         <p>Please enter the various configuration variables into the
@@ -22,6 +29,12 @@ IntroText.propTypes = {
     BaseURL: PropTypes.string.isRequired,
 };
 
+/**
+ * React component to handle choosing a category of settings
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function CategorySelection(props) {
     const catlist = props.categories.map((item) => {
             return <li key={item.Name}
@@ -47,6 +60,14 @@ CategorySelection.propTypes = {
     setActive: PropTypes.func,
 };
 
+/**
+ * React component to handle the part of the page where setting
+ * modification is done. The ConfigurationSection encompasses both
+ * choosing the category and setting the setting values.
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function ConfigurationSection(props) {
     const [categoryItems, setCategoryItems] = useState([]);
     const [forceReload, setForceReload] = useState(0);
@@ -100,6 +121,12 @@ ConfigurationSection.propTypes = {
     ScanTypes: PropTypes.object,
 };
 
+/**
+ * React component to display a single configuration option.
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function ItemDisplay(props) {
     const [newValue, setNewValue] = useState(props.Value);
     if (props.AllowMultiple) {
@@ -279,6 +306,13 @@ ItemDisplay.propTypes = {
     ScanTypes: PropTypes.object,
 };
 
+/**
+ * React component to display a single configuration option which has
+ * the AllowMultiple setting set.
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function MultiItemDisplay(props) {
     // Use the same bootstrap styling as the elements in jsx/Form.js to ensure
     // the alignment is the same.
@@ -427,6 +461,15 @@ MultiItemDisplay.propTypes = {
     reloadPage: PropTypes.func,
 };
 
+/**
+ * React component to display a category of items. The CategoryDisplay
+ * only handles the part of the page related to displaying the settings.
+ * The selection of the category is done by the CategorySelection component
+ * and wrapped with this in a ConfigurationSection
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function CategoryDisplay(props) {
     return <div>{props.items ? props.items.map((item) => {
                 return <ItemDisplay key={item.ID}
@@ -456,6 +499,12 @@ CategoryDisplay.propTypes = {
     BaseURL: PropTypes.string,
 };
 
+/**
+ * Entrypoint for the configuration page.
+ *
+ * @param {object} props - React props
+ * @return {JSX}
+ */
 function ConfigurationIndex(props) {
     const [categories, setCategories] = useState([]);
     const [instruments, setInstruments] = useState({});
