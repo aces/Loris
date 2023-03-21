@@ -54,32 +54,32 @@ select{@}resting_state_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'
 select{@}resting_state_eeg_mood_rating{@}Resting State EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
 textarea{@}resting_state_eeg_mood_rating_comments{@}Comments on subject mood:
 textarea{@}resting_state_comments{@}Comments on the resting state:
-header{@}{@}<h3>Task 1: VEP</h3>
-select{@}task1_paradigm_used{@}VEP paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h3>Task 1</h3>
+select{@}task1_paradigm_used{@}Task 1 used?{@}'yes'=>'Yes'{-}'no'=>'No'
 select{@}task1_eeg_acquired{@}Task 1 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
 textarea{@}task1_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
 select{@}task1_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
 select{@}task1_eeg_mood_rating{@}Task 1 EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
 textarea{@}task1_eeg_mood_rating_comments{@}Comments on subject mood:
 textarea{@}task1_comments{@}Comments on the task 1:
-header{@}{@}<h3>Task 2: AEP</h3>
-select{@}task2_paradigm_used{@}AEP paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h3>Task 2</h3>
+select{@}task2_paradigm_used{@}Task 2 used?{@}'yes'=>'Yes'{-}'no'=>'No'
 select{@}task2_eeg_acquired{@}Task 2 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
 textarea{@}task2_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
 select{@}task2_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
 select{@}task2_eeg_mood_rating{@}Task 2 EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
 textarea{@}task2_eeg_mood_rating_comments{@}Comments on subject mood:
 textarea{@}task2_comments{@}Comments on the task 2:
-header{@}{@}<h3>Task 3: MMN</h3>
-select{@}task3_paradigm_used{@}MMN paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h3>Task 3</h3>
+select{@}task3_paradigm_used{@}Task 3 used?{@}'yes'=>'Yes'{-}'no'=>'No'
 select{@}task3_eeg_acquired{@}Task 3 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
 textarea{@}task3_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
 select{@}task3_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
 select{@}task3_eeg_mood_rating{@}Task 3 EEG Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'
 textarea{@}task3_eeg_mood_rating_comments{@}Comments on subject mood:
 textarea{@}task3_comments{@}Comments on the task 3:
-header{@}{@}<h3>Task 4: Faces</h3>
-select{@}task4_paradigm_used{@}Human Faces paradigm used?{@}'yes'=>'Yes'{-}'no'=>'No'
+header{@}{@}<h3>Task 4</h3>
+select{@}task4_paradigm_used{@}Task 4 used?{@}'yes'=>'Yes'{-}'no'=>'No'
 select{@}task4_eeg_acquired{@}Task 4 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'
 textarea{@}task4_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
 select{@}task4_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'
