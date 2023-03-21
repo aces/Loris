@@ -2,61 +2,118 @@
 namespace LORIS\configuration;
 
 use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class Categories extends \LORIS\Http\Endpoint {
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+/**
+ * The categoriesclass is an endpoint that handles incoming requests
+ * to /configuration/categories/* to get the settings in an organized
+ * fashion.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class Categories extends \LORIS\Http\Endpoint
+{
+    /**
+     * Handle an incoming request to the /configuration/categories/* pages.
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $path = $request->getUri()->getPath();
         if (preg_match("#^/categories(/)*$#", $path) === 1) {
             return $this->getCategoryList();
         }
-        $matches = [];
-        if (preg_match("#^(/categories/*)([[:alnum:]_]*)$#", $path, $matches) === 1) {
+        $matches   = [];
+        $doesMatch = preg_match(
+            "#^(/categories/*)([[:alnum:]_]*)$#",
+            $path,
+            $matches
+        );
+        if ($doesMatch === 1) {
             return $this->getCategory($matches[2]);
         }
-
 
         return new \LORIS\Http\Response\JSON\NotFound();
     }
 
-    public function loadResources() {
+    /**
+     * Stub function so that it's definite when module
+     * loadPage calls it.
+     *
+     * @return void
+     */
+    public function loadResources()
+    {
     }
-    public function _hasAccess(\User $user) : bool {
+
+    /**
+     * Check the user permissions to access this page.
+     *
+     * @param \User $user The user accessing the page
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
         return $user->hasPermission('config');
     }
-    public function getCategoryList() : ResponseInterface {
+
+    /**
+     * Gets a list of categories available in the database and generate
+     * a response.
+     *
+     * @return ResponseInterface
+     */
+    public function getCategoryList() : ResponseInterface
+    {
         $DB = $this->loris->getDatabaseConnection();
         $parentConfigItems = $DB->pselect(
-                "SELECT Label, Name 
+            "SELECT Label, Name 
                 FROM ConfigSettings 
                 WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
-                []
+            []
         );
 
-        $scans      = $DB->pselect(
-                "SELECT Scan_type
-                FROM mri_scan_type",
-                []
-                );
+        $scans = $DB->pselect(
+            "SELECT Scan_type
+               FROM mri_scan_type",
+            []
+        );
+        $scan_types = [];
+
         foreach ($scans as $type) {
             $val = $type['Scan_type'];
             $scan_types[$val] = $val;
         }
 
-        return new \LORIS\Http\Response\JSON\OK([
-            'categories' => $parentConfigItems,
-            'instruments' => \Utility::getAllInstruments(),
-            'scan_types' => $scan_types,
-        ]);
+        return new \LORIS\Http\Response\JSON\OK(
+            [
+                'categories'  => $parentConfigItems,
+                'instruments' => \Utility::getAllInstruments(),
+                'scan_types'  => $scan_types,
+            ]
+        );
     }
-    public function getCategory(string $category) : ResponseInterface {
+
+    /**
+     * Gets a category of settings from the database and returns a response
+     *
+     * @param string $category the category to get
+     *
+     * @return ResponseInterface
+     */
+    public function getCategory(string $category) : ResponseInterface
+    {
         $DB = $this->loris->getDatabaseConnection();
+
         $parentID = $DB->pselectOneInt(
-                "SELECT ID
+            "SELECT ID
                 FROM ConfigSettings 
                 WHERE Parent IS NULL AND Name=:cat",
-                ['cat' => $category]
+            ['cat' => $category]
         );
         if ($parentID === null) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -64,7 +121,9 @@ class Categories extends \LORIS\Http\Endpoint {
 
         // Get the names and meta-information for the config settings in the database
         $configs = $DB->pselect(
-            "SELECT * FROM ConfigSettings WHERE Visible=1 AND Parent=:pid ORDER BY OrderNumber",
+            "SELECT * FROM ConfigSettings
+                WHERE Visible=1 AND Parent=:pid
+                ORDER BY OrderNumber",
             ['pid' => $parentID]
         );
 
@@ -72,7 +131,8 @@ class Categories extends \LORIS\Http\Endpoint {
 
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
-        // Update the value for the setting to the value from the config.xml and the value from the database if not in the config.xml
+        // Update the value for the setting to the value from the config.xml
+        // and the value from the database if not in the config.xml
         foreach ($configs as &$setting) {
             if ($setting['AllowMultiple'] == "0") {
                 $setting['AllowMultiple'] = false;
@@ -103,14 +163,17 @@ class Categories extends \LORIS\Http\Endpoint {
                     if ($setting['AllowMultiple']) {
                         $setting['Value'] = array_column($value, 'Value');
                     } else {
-                        switch(count($value)) {
+                        switch (count($value)) {
                         case 0:
                             break;
                         case 1:
                             $setting['Value'] = $value[0]['Value'];
                             break;
                         default:
-                            throw new \ConfigurationException("Multiple config settings for setting that does not allow multiple");
+                            throw new \ConfigurationException(
+                                "Multiple config settings for setting that "
+                                . "does not allow multiple"
+                            );
                         }
                     }
                 }

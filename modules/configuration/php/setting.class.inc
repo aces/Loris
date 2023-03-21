@@ -5,8 +5,23 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class Setting extends \LORIS\Http\Endpoint {
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+/**
+ * The setting class is an endpoint that handles incoming requests
+ * to /configuration/setting/* to manage updating settings.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class Setting extends \LORIS\Http\Endpoint
+{
+    /**
+     * {@inheritDoc}
+     *
+     * @param ServerRequestInterface $request The incoming request
+     *
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         // if method != PUT BadMethod
         $path = $request->getUri()->getPath();
         if (preg_match("#^/setting(/)*$#", $path) === 1) {
@@ -16,27 +31,54 @@ class Setting extends \LORIS\Http\Endpoint {
         if (preg_match("#^(/setting/*)([[:alnum:]_]*)$#", $path, $matches) === 1) {
             $requestdata = json_decode((string) $request->getBody(), true);
             if ($requestdata["setting"] != $matches[2]) {
-                return new \LORIS\Http\Response\JSON\BadRequest("Setting does not match URL");
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    "Setting does not match URL"
+                );
 
             }
-            return $this->saveValue($matches[2], $requestdata);
+            return $this->_saveValue($matches[2], $requestdata);
         }
         return new \LORIS\Http\Response\JSON\NotFound();
     }
 
-    public function loadResources() {
+    /**
+     * Function called by Module::loadPage. A stub is required for the
+     * endpoint to load.
+     *
+     * @return void
+     */
+    public function loadResources()
+    {
     }
-    public function _hasAccess(\User $user) : bool {
+
+    /**
+     * Determine access to the page for Module::loadPage
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
         return $user->hasPermission('config');
     }
 
-    private function saveValue(string $setting, array $input) : ResponseInterface {
+    /**
+     * Save a value into the database.
+     *
+     * @param string $setting The setting name to be saved
+     * @param array  $input   The parsed JSON object submitted by the user
+     *
+     * @return ResponseInterface
+     */
+    private function _saveValue(string $setting, array $input) : ResponseInterface
+    {
         $DB = $this->loris->getDatabaseConnection();
+
         $settingData = $DB->pselectRow(
-                "SELECT ID, AllowMultiple
-                FROM ConfigSettings 
+            "SELECT ID, AllowMultiple FROM ConfigSettings 
                 WHERE Name=:setting",
-                ['setting' => $setting]
+            ['setting' => $setting]
         );
         if ($settingData === null) {
             return new \LORIS\Http\Response\JSON\NotFound("Setting not found");
@@ -45,7 +87,9 @@ class Setting extends \LORIS\Http\Endpoint {
             // It's an AllowMultiple element type, the values are in values
             // validate input.values
             if (!isset($input['values'])) {
-                return new \LORIS\Http\Response\JSON\BadRequest("Missing setting values");
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    "Missing setting values"
+                );
             }
             $DB->beginTransaction();
             $DB->delete("Config", ['ConfigID' => $settingData['ID']]);
@@ -54,7 +98,7 @@ class Setting extends \LORIS\Http\Endpoint {
                     "Config",
                     [
                         'ConfigID' => $settingData['ID'],
-                        'Value' => $value,
+                        'Value'    => $value,
                     ]
                 );
             }
@@ -66,7 +110,8 @@ class Setting extends \LORIS\Http\Endpoint {
             ['cid' => $settingData['ID']]
         );
         if ($valueId=== null) {
-            $DB->unsafeInsert("Config",
+            $DB->unsafeInsert(
+                "Config",
                 ['ConfigID' => $settingData['ID'], 'Value' => $input['value']]
             );
         } else {
