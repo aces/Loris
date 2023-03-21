@@ -1199,9 +1199,6 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
-  /**
-   * @deleteclick
-   */
          deleteclick() {
           let id = this.props.Query['_id'];
           swal.fire({
