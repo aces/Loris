@@ -277,7 +277,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 ['v_pscid' => $PSCID]
             );
 
-            if ($existing >= 0 ) {
+            if ($existing > 0) {
                 throw new \InvalidArgumentException(
                     "PSCID must be unique",
                     PSCID_NOT_UNIQUE
