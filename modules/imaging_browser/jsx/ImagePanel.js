@@ -59,17 +59,15 @@ class ImagePanelHeader extends Component {
               </span>;
     }
     let headerButton = (
-      <div className="pull-right">
-        <div className="btn-group views">
-          <button
-            type="button"
-            className="btn btn-default btn-xs dropdown-toggle"
-            onClick={this.props.onToggleHeaders}
-            aria-expanded={this.props.HeadersExpanded}>
-            Header Info
-          </button>
-          <span className="caret"></span>
-        </div>
+      <div className="btn-group views">
+        <button
+          type="button"
+          className="btn btn-default btn-xs dropdown-toggle"
+          onClick={this.props.onToggleHeaders}
+          aria-expanded={this.props.HeadersExpanded}>
+          Header Info
+        </button>
+        <span className="caret"></span>
       </div>
     );
     return (
@@ -84,8 +82,8 @@ class ImagePanelHeader extends Component {
           {this.props.Filename}
         </h3>
         {QCStatusLabel}
-        {arrow}
         {headerButton}
+        {arrow}
       </div>
     );
   }

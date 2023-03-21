@@ -760,6 +760,16 @@ a.btn.btn-primary:hover:not(.download, .split-nav) {
     box-shadow: 2px 3px 4px 1px rgba(0,0,0,0.175);
 }
 
+.panel-heading {
+    display: flex;
+    align-items: center;
+}
+
+.panel-title {
+    width: 100%;
+    padding-right: 10px;
+}
+
 .panel-default {
     border-color: #C3D5DB;
 }
