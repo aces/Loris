@@ -24,6 +24,8 @@ changes in the following format: PR #1234***
 - BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
 - Add Date status change value in session table (PR #8350)
 - Fixed the Candidate Age at Death field label and Data Dictionary item for LINST instruments (PR #8362)
+- Allow clearing a previously entered consent status in candidate parameters (PR #7772)
+- Add code sanitizer before dangerouslySetInnerHTML is used in login to protect against XSS attacks (PR #7491)
 
 #### Bug Fixes
 - placeholder
