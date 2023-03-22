@@ -52,7 +52,7 @@
     "react/no-direct-mutation-state": "off",
     "react/jsx-no-target-blank": "off",
     "react/no-unknown-property": "error",
-    "react/no-find-dom-node": "off",
+    "react/no-find-dom-node": "error",
     "no-empty": "off",
     "no-redeclare": "off",
     "no-inner-declarations": "off",
