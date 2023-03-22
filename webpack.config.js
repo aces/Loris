@@ -1,4 +1,3 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
@@ -17,6 +16,7 @@ const optimization = {
           compress: false,
           ecma: 6,
           mangle: false,
+          extractComments: false,
         },
       }).apply(compiler);
     },
@@ -210,19 +210,6 @@ const plugins = [
     ],
   }),
 ];
-
-process.env.NODE_ENV == 'development' && plugins.push(new ESLintPlugin({
-    extensions: ['ts', 'tsx', 'js', 'jsx'],
-    files: [
-      'modules/',
-      'jsx/',
-      'jslib/',
-      'htdocs/js/',
-      'webpack.config.js',
-      'npm-postinstall.js',
-    ],
-    cache: true,
-}));
 
 let config = [
   // Core components
