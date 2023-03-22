@@ -97,7 +97,6 @@ class ScheduleIndex extends Component {
       })
       .then((resp) => resp.json())
       .then((data) => {
-	      console.log(data);
        if (type === 'DCCID' ) {
          this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
       } 
@@ -340,7 +339,6 @@ class ScheduleIndex extends Component {
     }
   }
   renderScheduleForm() {
-	  console.log(this.state.formData);
   let year = new Date();
   let minYear = year.getFullYear();
     const title = this.state.editModal ? 'Edit Appointment' : 'Add Appointment';
