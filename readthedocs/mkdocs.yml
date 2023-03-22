@@ -50,7 +50,6 @@ nav:
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
         - 'SQL Modeling Standard': 'docs/SQLModelingStandard.md'
         - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
-        - 'Code Customization': 'docs/wiki/99_Developers/Code_Customization.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
         - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
         - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
