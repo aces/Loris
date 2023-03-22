@@ -102,7 +102,7 @@ class IssueTrackerIndex extends Component {
         break;
       default:
         result = <td>None</td>;
-      };
+      }
       break;
     case 'Site':
       // if cell is an array containing all sites values

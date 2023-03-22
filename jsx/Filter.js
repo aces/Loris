@@ -133,7 +133,7 @@ function Filter(props) {
           </ul>
         </li>
       );
-    };
+    }
   };
 
   const filterActions = (

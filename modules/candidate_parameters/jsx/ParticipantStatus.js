@@ -124,7 +124,7 @@ class ParticipantStatus extends Component {
           </div>
         );
       }
-    };
+    }
 
     let disabled = true;
     let updateButton = null;

@@ -16,7 +16,7 @@ function CandidateIssuesWidget(props) {
             comments = ' ('+ issue.comments + ' comment';
             if (issue.comments != '1') {
                 comments += 's';
-            };
+            }
             comments += ')';
         }
         return (<li key={issue.ID}>

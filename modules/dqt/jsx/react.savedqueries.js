@@ -100,7 +100,7 @@ function publicquerydelete() {
               });
            }
           });
-        };
+        }
   useEffect(() => {
     let fields = [];
     let filters = [];

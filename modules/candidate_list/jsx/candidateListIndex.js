@@ -110,7 +110,7 @@ class CandidateListIndex extends Component {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('hide', hideFilter);
     history.replaceState(history.state, '', `?${searchParams.toString()}`);
-  };
+  }
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
