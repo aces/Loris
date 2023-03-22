@@ -53,6 +53,10 @@ Now the options correctly display in order of how they are defined in the instru
 - Added `postMortem` functionality for LINST instruments, fixing display of 'Candidate Age at Death' when `postMortem` is set to true (PR #8362)
 - Added/modified documentation for configuring 'Candidate Age at Death' field display in instruments (PR #8362)
 
+#### Issue Tracker
+
+- Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
+
 ### Tools
 - placeholder
 
