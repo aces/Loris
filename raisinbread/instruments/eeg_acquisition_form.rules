@@ -4,7 +4,7 @@ research_staff_three{-}Not Required{-}research_staff_three{@}=={@}NEVER_REQUIRED
 session_testing_room{-}Not Required{-}session_testing_room{@}=={@}NEVER_REQUIRED
 behavioural_assistant{-}Required if there is a behavioural assistant{-}behavioural_assistant_present{@}=={@}yes
 subject_medication_dosage{-}Required if there is an ongoing medication{-}subject_medication{@}=={@}yes
-participant_away_60cm_from_monitor_reason{-}Required if participant cannot be 60cm away from montior{-}participant_away_60cm_from_monitor{@}=={@}no
+subject_away_60cm_from_monitor{-}Required if subject cannot be 60cm away from montior{-}participant_away_60cm_from_monitor{@}=={@}no
 impedance_measure{-}Required when impedance is measured{-}impedance_measured_before_netting{@}=={@}yes
 bad_channels{-}Required when bad channels are present{-}bad_channels_measured_after_netting{@}=={@}yes
 net_placement_comment{-}Required when net placement is not available{-}net_placement{@}=={@}na
