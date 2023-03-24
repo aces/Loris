@@ -314,6 +314,7 @@ const lorisModules = {
   module_manager: ['modulemanager'],
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
+  statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],

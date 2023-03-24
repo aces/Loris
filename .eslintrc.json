@@ -47,6 +47,8 @@
         "tabWidth": 2,
         "ignoreComments": true
     }],
+    "no-unexpected-multiline": "off",
+    "no-unused-vars": "warn",
     "no-useless-escape": "off",
     "no-dupe-keys": "off",
     "react/no-direct-mutation-state": "off",
