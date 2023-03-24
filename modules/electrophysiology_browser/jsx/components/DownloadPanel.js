@@ -95,7 +95,6 @@ class DownloadPanel extends Component {
                                 : '/mri/jiv/get_file.php?file=' + download.file
                             }
                             target='_blank'
-                            download
                             style={{
                               margin: 0,
                             }}
