@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -154,6 +155,20 @@ class ExaminerIndex extends Component {
           result = <td>None</td>;
         }
         break;
+      case 'Site':
+        // If user has multiple sites, join array of sites into string
+        result = (
+          <td>{cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
+          </td>
+        );
+        if (cell.length === 0) {
+          result = (
+            <td>This user has no site affiliations</td>
+          );
+        }
+        break;
     }
     return result;
   }
@@ -259,18 +274,19 @@ class ExaminerIndex extends Component {
         type: 'text',
       }},
       {label: 'Email', show: true},
-      {label: 'ID', show: false},
       {label: 'Site', show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
+      {label: 'ID', show: false},
       {label: 'Radiologist', show: true, filter: {
         name: 'radiologist',
         type: 'select',
         options: options.radiologists,
       }},
-      {label: 'Certification', show: this.state.data.useCertification},
+      {label: 'Certification',
+        show: this.state.data.fieldOptions.useCertification},
     ];
     const actions = [
       {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
@@ -295,15 +311,16 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  submitURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
-      submitURL={`${loris.BaseURL}/examiner/`}
+      submitURL={`${loris.BaseURL}/examiner/addExaminer`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

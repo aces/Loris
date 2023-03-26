@@ -144,6 +144,8 @@ BatteryManagerForm.propTypes = {
   test: PropTypes.object.isRequired,
   setTest: PropTypes.func.isRequired,
   options: PropTypes.object.isRequired,
+  add: PropTypes.bool,
+  errors: PropTypes.object,
 };
 
 export default BatteryManagerForm;

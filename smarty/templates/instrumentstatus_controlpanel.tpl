@@ -6,10 +6,8 @@
     </ul>
     <script type="text/javascript" src="{$baseurl}/instruments/js/ControlpanelDeleteInstrumentData.js"></script>
     <script type="text/javascript">
-    ReactDOM.render(
-        RControlpanelDeleteInstrumentData(),
-        document.getElementById("deleteInstrumentBtn")
-    );
+    const root = ReactDOM.createRoot(document.getElementById("deleteInstrumentBtn"));
+    root.render(RControlpanelDeleteInstrumentData());
     </script>
 {/if}
 <h3 class="controlPanelSection">Administration</h3>

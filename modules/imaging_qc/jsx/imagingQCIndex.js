@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -43,6 +44,7 @@ class ImagingQCIndex extends Component {
                        + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
+        break;
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
           let imgURL = loris.BaseURL
@@ -50,6 +52,7 @@ class ImagingQCIndex extends Component {
                        + row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
+        break;
       case 'Tarchive':
         if (cell == 'In DICOM') {
           let tarchiveURL = loris.BaseURL +
@@ -227,12 +230,12 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <ImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
 

@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Display a message in an information panel.
  *
@@ -28,5 +30,8 @@ function InfoPanel(props) {
          </div>
    );
 }
+InfoPanel.propTypes = {
+    children: PropTypes.node,
+};
 
 export default InfoPanel;

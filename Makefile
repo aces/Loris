@@ -1,7 +1,9 @@
-.PHONY: clean dev all check checkstatic unittests test phpdev javascript testdata
+.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata
 
-all: VERSION jsdev
+all: VERSION
 	composer install --no-dev
+	npm ci
+	npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -10,7 +12,7 @@ VERSION: .
 phpdev:
 	composer install
 
-jsdev:
+dev: VERSION phpdev
 	npm ci
 	npm run compile
 
@@ -19,8 +21,6 @@ jslatest: clean
 	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
 	npm install
 	npm run compile
-
-dev: VERSION phpdev jsdev
 
 clean:
 	rm -f smarty/templates_c/*
@@ -33,7 +33,7 @@ clean:
 checkstatic: phpdev
 	npm run lint:php
 	vendor/bin/phan
-	npm run lint:javascript
+	npm run lint:js
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
@@ -52,6 +52,12 @@ check: checkstatic unittests
 testdata:
 	php tools/raisinbread_refresh.php
 
+instrument_manager:
+	target=instrument_manager npm run compile
+
 login:
 	target=login npm run compile
+
+mri_violations:
+	target=mri_violations npm run compile
 

@@ -1,7 +1,5 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const cp = require('child_process');
@@ -18,6 +16,7 @@ const optimization = {
           compress: false,
           ecma: 6,
           mangle: false,
+          extractComments: false,
         },
       }).apply(compiler);
     },
@@ -37,7 +36,6 @@ const resolve = {
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
     Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
-    Markdown: path.resolve(__dirname, './jsx/Markdown'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
@@ -47,6 +45,7 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
+    Help: path.resolve(__dirname, './jsx/Help'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -134,19 +133,6 @@ mod.rules.push(
   },
 );
 
-let mode = 'production';
-try {
-  const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-    .exec(configFile);
-  if (res && parseInt(res[1]) == 1) mode = 'development';
-} catch (error) {
-  console.error(
-    'Error - Can\'t read config.xml file. '
-    + 'Webpack mode set to production.'
-  );
-}
-
 /**
  * Creates a webpack config entry for a LORIS module named
  * mname.
@@ -181,24 +167,53 @@ function lorisModule(mname, entries) {
       'react-dom': 'ReactDOM',
     },
     devtool: 'source-map',
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': `"${mode}"`,
-      }),
-      ...modulePlugins,
-    ],
+    plugins: modulePlugins,
     optimization: optimization,
     resolve: resolve,
     module: mod,
-    mode: 'none',
     stats: 'errors-only',
   };
 }
 
+const plugins = [
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, 'node_modules/react/umd'),
+        to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+        force: true,
+        globOptions: {
+          ignore: ['react.profiling.min.js'],
+        },
+        filter: async (path) => {
+          const file = path.split('\\').pop().split('/').pop();
+          const keep = [
+            'react.development.js',
+            'react.production.min.js',
+          ];
+          return keep.includes(file);
+        },
+      },
+      {
+        from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
+        to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
+        force: true,
+        filter: async (path) => {
+          const file = path.split('\\').pop().split('/').pop();
+          const keep = [
+            'react-dom.development.js',
+            'react-dom.production.min.js',
+          ];
+          return keep.includes(file);
+        },
+      },
+    ],
+  }),
+];
+
 let config = [
   // Core components
   {
-    mode: mode,
     entry: {
       DynamicDataTable: './jsx/DynamicDataTable.js',
       PaginationLinks: './jsx/PaginationLinks.js',
@@ -206,8 +221,8 @@ let config = [
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
       Form: './jsx/Form.js',
-      Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
+      Help: './jsx/Help.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -220,53 +235,7 @@ let config = [
       'react-dom': 'ReactDOM',
     },
     devtool: 'source-map',
-    plugins: [
-      new ESLintPlugin({
-        extensions: ['ts', 'tsx', 'js', 'jsx'],
-        files: [
-          'modules/',
-          'jsx/',
-          'jslib/',
-          'htdocs/js/',
-          'webpack.config.js',
-          'npm-postinstall.js',
-        ],
-        cache: true,
-      }),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, 'node_modules/react/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            force: true,
-            globOptions: {
-              ignore: ['react.profiling.min.js'],
-            },
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react.development.js',
-                'react.production.min.js',
-              ];
-              return keep.includes(file);
-            },
-          },
-          {
-            from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            force: true,
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react-dom.development.js',
-                'react-dom.production.min.js',
-              ];
-              return keep.includes(file);
-            },
-          },
-        ],
-      }),
-    ],
+    plugins: plugins,
     optimization: optimization,
     resolve: resolve,
     module: mod,
@@ -334,15 +303,10 @@ const lorisModules = {
   ],
   instrument_manager: ['instrumentManagerIndex'],
   survey_accounts: ['surveyAccountsIndex'],
-  mri_violations: [
-    'mri_protocol_check_violations_columnFormatter',
-    'columnFormatter',
-    'columnFormatterUnresolved',
-    'mri_protocol_violations_columnFormatter',
-  ],
+  mri_violations: ['mriViolationsIndex'],
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
-  help_editor: ['help_editor', 'help_editor_helper'],
+  help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
   imaging_uploader: ['index'],
   acknowledgements: ['acknowledgementsIndex'],
@@ -350,6 +314,7 @@ const lorisModules = {
   module_manager: ['modulemanager'],
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
+  statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],

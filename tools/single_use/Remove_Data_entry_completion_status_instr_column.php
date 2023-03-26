@@ -32,24 +32,14 @@ will result in a loss of data.
 \n";
 
 echo "Getting instrument list...\n";
-$DB = \Database::singleton();
-
-$loris = new \LORIS\LorisInstance(
-    \NDB_Factory::singleton()->database(),
-    \NDB_Factory::singleton()->config(),
-    [
-        "project/modules",
-        "modules",
-    ]
-);
-
+$DB = $lorisInstance->getDatabaseConnection();
 // Get instrument names
 $instruments = [];
 foreach (\Utility::getAllInstruments() as $testname => $fullName) {
     // Instantiate instrument
     try {
         $instr = \NDB_BVL_Instrument::factory(
-            $loris,
+            $lorisInstance,
             $testname,
             '',
             ''

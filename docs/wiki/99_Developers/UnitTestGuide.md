@@ -395,7 +395,6 @@ This can be used for almost any class within LORIS. In the section right below, 
 
 
 ```
-    $DB      = \Database::singleton();
     $config  = \NDB_Config::singleton();
     $user    = \User::singleton();
 ```
@@ -406,7 +405,6 @@ Please update the code to use this LORIS standard declaration:
 
 ```
     $factory = NDB_Factory::singleton();
-    $DB      = $factory->database();
     $config  = $factory->config();
     $user    = $factory->user();
 ```
@@ -526,20 +524,11 @@ protected function setUp(): void \
     $this->_factory->setTesting(false);
     
     $this->_configMock = $this->_factory->Config(CONFIG_XML);
-    $database          = $this->_configMock->getSetting('database');
-	
-    $this->_dbMock     = \Database::singleton(
-        $database['database'],
-        $database['username'],
-        $database['password'],
-        $database['host'],
-        true
-    );
-
+    $this->_dbMock     = $this->_factory->database();
 } 
 
 ```
-As you can see, the `$this->_dbMock` object is now declared as a `\Database::singleton()` rather than as a mock object. This is why it is not a pure unit test and why we cannot use the same “expects” method as in the previous section. 
+As you can see, the `$this->_dbMock` object is now declared as a Database object rather than as a mock object. This is why it is not a pure unit test and why we cannot use the same “expects” method as in the previous section. 
 
 	
 The **tearDown** function is the same as before:

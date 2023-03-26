@@ -61,7 +61,7 @@ class Data_Release extends \NDB_Menu_Filter
         // set the class variables
         $this->columns = [
             'file_name AS fileName',
-            'version',
+            'IF(version is null or version ="","Unversioned", version) AS version',
             'upload_date AS uploadDate',
             'dr.id as dataReleaseID',
         ];

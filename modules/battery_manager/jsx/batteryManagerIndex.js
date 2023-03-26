@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -125,6 +126,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Active':
         switch (value) {
           case 'Y':
@@ -132,6 +134,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Change Status':
         return '';
       case 'Edit Metadata':
@@ -501,12 +504,12 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });

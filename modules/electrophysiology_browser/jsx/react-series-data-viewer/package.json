@@ -5,8 +5,8 @@
   "description": "react-series-data-viewer React component",
   "dependencies": {
     "@visx/axis": "^3.0.0",
-    "@visx/group": "^1.0.0",
-    "@visx/responsive": "^1.3.0",
+    "@visx/group": "^2.10.0",
+    "@visx/responsive": "^2.10.0",
     "@visx/shape": "^3.0.0",
     "d3-3d": "0.0.10",
     "d3-array": "^1.2.4",
@@ -17,9 +17,9 @@
     "gl-matrix": "^2.8.1",
     "google-protobuf": "^3.6.1",
     "ramda": "^0.25.0",
-    "react": "^16.12.0",
-    "react-compound-slider": "^3.3.1",
-    "react-dom": "^16.13.1",
+    "react": "^18.2.0",
+    "react-compound-slider": "^3.4.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
     "redux": "^4.0.0",
     "redux-actions": "^2.6.1",
@@ -31,8 +31,8 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@types/react": "^16.12.0",
-    "@types/react-dom": "^16.9.9",
+    "@types/react": "^18.0.26",
+    "@types/react-dom": "^18.0.9",
     "@types/react-redux": "7.1.16"
   },
   "license": "MIT",

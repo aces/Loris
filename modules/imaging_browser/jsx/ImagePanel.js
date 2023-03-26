@@ -59,17 +59,15 @@ class ImagePanelHeader extends Component {
               </span>;
     }
     let headerButton = (
-      <div className="pull-right">
-        <div className="btn-group views">
-          <button
-            type="button"
-            className="btn btn-default btn-xs dropdown-toggle"
-            onClick={this.props.onToggleHeaders}
-            aria-expanded={this.props.HeadersExpanded}>
-            Header Info
-          </button>
-          <span className="caret"></span>
-        </div>
+      <div className="btn-group views">
+        <button
+          type="button"
+          className="btn btn-default btn-xs dropdown-toggle"
+          onClick={this.props.onToggleHeaders}
+          aria-expanded={this.props.HeadersExpanded}>
+          Header Info
+        </button>
+        <span className="caret"></span>
       </div>
     );
     return (
@@ -84,8 +82,8 @@ class ImagePanelHeader extends Component {
           {this.props.Filename}
         </h3>
         {QCStatusLabel}
-        {arrow}
         {headerButton}
+        {arrow}
       </div>
     );
   }
@@ -98,6 +96,7 @@ ImagePanelHeader.propTypes = {
   HeadersExpanded: PropTypes.string,
   FileID: PropTypes.string,
   Filename: PropTypes.string,
+  Expanded: PropTypes.bool,
 };
 
 /**
@@ -429,6 +428,7 @@ ImagePanelQCStatusSelector.propTypes = {
   FileNew: PropTypes.string,
   HasQCPerm: PropTypes.string,
   QCStatus: PropTypes.string,
+  FileID: PropTypes.string,
 };
 
 
@@ -671,6 +671,7 @@ DownloadButton.propTypes = {
   FileName: PropTypes.string,
   BaseURL: PropTypes.string,
   Label: PropTypes.string,
+  URL: PropTypes.string,
 };
 
 
@@ -726,7 +727,7 @@ class ImageQCCommentsButton extends Component {
     );
   }
 }
-DownloadButton.propTypes = {
+ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
 };
@@ -956,6 +957,7 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
+  HeaderInfo: PropTypes.object,
 };
 
 
@@ -1053,6 +1055,7 @@ class ImagePanel extends Component {
 }
 ImagePanel.propTypes = {
   FileID: PropTypes.string,
+  Filename: PropTypes.string,
   FileNew: PropTypes.string,
   HasQCPerm: PropTypes.string,
   QCStatus: PropTypes.string,

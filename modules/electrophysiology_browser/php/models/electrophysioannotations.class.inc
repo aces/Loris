@@ -119,7 +119,7 @@ class ElectrophysioAnnotations
             }
 
             //If no derivative files exist, must create new files
-            $annotationFID = $db->pselect(
+            $annotationFIDs = $db->pselect(
                 "SELECT AnnotationFileID
                     FROM physiological_annotation_file
                     WHERE PhysiologicalFileID=:PFID",
@@ -144,10 +144,7 @@ class ElectrophysioAnnotations
             ];
 
             //Insert new files and data into DB
-            if (empty($annotationFID)) {
-
-                //Create new annotation files
-                $this->_createFiles();
+            if (empty($annotationFIDs)) {
 
                 //Get new annotation file ID
                 $annotation_tsv_ID = $db->pselectOne(
@@ -277,7 +274,7 @@ class ElectrophysioAnnotations
     }
 
     /**
-     * Updates the derivative files associated with the given
+     * Updates the derivative files associated with the
      * physiological file ID
      *
      * @return void
@@ -286,6 +283,19 @@ class ElectrophysioAnnotations
     function updateFiles(): void
     {
         $db = \NDB_Factory::singleton()->database();
+
+        //If no derivative files exist, must create new files
+        $annotationFIDs = $db->pselect(
+            "SELECT AnnotationFileID
+                FROM physiological_annotation_file
+                WHERE PhysiologicalFileID=:PFID",
+            ['PFID' => $this->_physioFileID]
+        );
+        //Insert new files and data into DB
+        if (empty($annotationFIDs)) {
+            //Create new annotation files
+            $this->_createFiles();
+        }
 
         //Get data directory base path from Config
         $dataDir = $db->pselectOne(
@@ -334,9 +344,7 @@ class ElectrophysioAnnotations
             //Update the three files with the given paths
             $labels   = []; // Label Name => Label Description
             $tsv_file = fopen($tsv_path, 'w'); //Will override all file content
-            //Add columns
-            $columns = implode("\t", $tsv_entries);
-            fwrite($tsv_file, $columns."\n");
+
             //Get all annotation instances
             //Then go thru each and get the label name + description
             //add label name to file and also to an array for json file
@@ -356,6 +364,14 @@ class ElectrophysioAnnotations
                 WHERE p.AnnotationFileID=:AFID",
                 ['AFID' => $tsv[0]['id']]
             );
+
+            if (count($instances) < 1) {
+                return;
+            }
+
+            //Add columns
+            $columns = implode("\t", $tsv_entries);
+            fwrite($tsv_file, $columns."\n");
 
             foreach ($instances as $instance) {
                 //Add labels to list for parameter file

@@ -383,7 +383,9 @@ class DataTable extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    $('.dynamictable').DynamicTable();
+    if (!this.props.noDynamicTable) {
+      $('.dynamictable').DynamicTable();
+    }
   }
 
   /**
@@ -648,6 +650,14 @@ DataTable.propTypes = {
   actions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
+  noDynamicTable: PropTypes.bool,
+  getMappedCell: PropTypes.func,
+  fields: PropTypes.array,
+  RowNameMap: PropTypes.array,
+  filters: PropTypes.object,
+  freezeColumn: PropTypes.string,
+  loading: PropTypes.element,
+  folder: PropTypes.element,
 };
 DataTable.defaultProps = {
   headers: [],
@@ -660,6 +670,7 @@ DataTable.defaultProps = {
     defaultColumn: false,
   },
   nullTableShow: false,
+  noDynamicTable: false,
 };
 
 export default DataTable;
