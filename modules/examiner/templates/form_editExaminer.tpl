@@ -34,6 +34,7 @@
                         {$form.$name.html}
                     </div>
                     {/foreach}
+                    <hr class="row hidden-xs hidden-sm">
                     <div class="row">
                         {if not $success|default}
                         <div class="col-xs-12">
