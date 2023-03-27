@@ -21,14 +21,14 @@
                         <div class="col-md-2 col-md-offset-1">
                             <label>Certification Date</label>
                         </div>
-                        <div class="col-md-4 col-md-offset-1">
+                        <div class="col-md-2 col-md-offset-1">
                             <label>Comments</label>
                         </div>
                     </div>
                     <hr class="row hidden-xs hidden-sm">
                     {foreach from=$instruments key=ID item=name}
                     <div class="row">
-                        <div class="col-md-1">
+                        <div class="col-md-3">
                             <label>{$form.$name.label}</label>
                         </div>
                         {$form.$name.html}
