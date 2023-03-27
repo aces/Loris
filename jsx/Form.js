@@ -148,7 +148,7 @@ FormElement.propTypes = {
   }),
   onSubmit: PropTypes.func,
   onUserInput: PropTypes.func,
-  children: PropTypes.array,
+  children: PropTypes.node,
   fileUpload: PropTypes.bool,
 };
 
@@ -239,7 +239,7 @@ FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
   legend: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.node,
 };
 
 FieldsetElement.defaultProps = {
@@ -1640,7 +1640,7 @@ class DateElement extends Component {
           {requiredHTML}
         </label>;
         classSz = 'col-sm-9';
-    };
+    }
     return (
       <div className={elementClass}>
         {labelHTML}
@@ -1938,7 +1938,7 @@ class NumericElement extends Component {
           {requiredHTML}
         </label>;
         classSz = 'col-sm-9';
-    };
+    }
 
     return (
       <div className={elementClass}>

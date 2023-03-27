@@ -126,6 +126,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Active':
         switch (value) {
           case 'Y':
@@ -133,6 +134,7 @@ class BatteryManagerIndex extends Component {
           case 'N':
             return 'No';
         }
+        break;
       case 'Change Status':
         return '';
       case 'Edit Metadata':

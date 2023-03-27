@@ -356,27 +356,31 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/button"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1) .views button"
             )
         );
         $views->click();
 
         $assertText1 = $this->safeFindElement(
-            WebDriverBy::XPath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[1]/a"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(1)"
             )
         )->getText();
+
         $assertText2 = $this->safeFindElement(
-            WebDriverBy::XPath(
-                "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[2]/a"
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(2)"
             )
         )->getText();
-        $this->assertStringContainsString("View overall recruitment", $assertText1);
-        $this->assertStringContainsString("View site breakdown", $assertText2);
+
+        $this->assertStringContainsString("Recruitment - overall", $assertText1);
+        $this->assertStringContainsString(
+            "Recruitment - site breakdown",
+            $assertText2
+        );
     }
 
     /**
@@ -667,8 +671,11 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#scan-line-chart-panel")
+            WebDriverBy::cssSelector(
+                "#statistics_studyprogression .panel-body div:nth-child(1)"
+            )
         )->getText();
+
         $this->assertStringContainsString(
             "Scan sessions per site",
             $testText

@@ -173,7 +173,7 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.node,
   width: PropTypes.string,
 };
 

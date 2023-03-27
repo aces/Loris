@@ -74,7 +74,7 @@ TabPane.propTypes = {
   Loading: PropTypes.bool,
   TabId: PropTypes.string,
   Title: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.node,
 };
 
 /**
@@ -1199,9 +1199,6 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
-  /**
-   * @deleteclick
-   */
          deleteclick() {
           let id = this.props.Query['_id'];
           swal.fire({

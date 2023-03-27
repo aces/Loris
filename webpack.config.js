@@ -1,4 +1,3 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
@@ -17,6 +16,7 @@ const optimization = {
           compress: false,
           ecma: 6,
           mangle: false,
+          extractComments: false,
         },
       }).apply(compiler);
     },
@@ -36,7 +36,6 @@ const resolve = {
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
     Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
-    Markdown: path.resolve(__dirname, './jsx/Markdown'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
@@ -46,6 +45,7 @@ const resolve = {
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
+    Help: path.resolve(__dirname, './jsx/Help'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -211,19 +211,6 @@ const plugins = [
   }),
 ];
 
-process.env.NODE_ENV == 'development' && plugins.push(new ESLintPlugin({
-    extensions: ['ts', 'tsx', 'js', 'jsx'],
-    files: [
-      'modules/',
-      'jsx/',
-      'jslib/',
-      'htdocs/js/',
-      'webpack.config.js',
-      'npm-postinstall.js',
-    ],
-    cache: true,
-}));
-
 let config = [
   // Core components
   {
@@ -234,8 +221,8 @@ let config = [
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
       Form: './jsx/Form.js',
-      Markdown: './jsx/Markdown.js',
       CSSGrid: './jsx/CSSGrid.js',
+      Help: './jsx/Help.js',
     },
     output: {
       path: __dirname + '/htdocs/js/components/',
@@ -319,7 +306,7 @@ const lorisModules = {
   mri_violations: ['mriViolationsIndex'],
   user_accounts: ['userAccountsIndex'],
   examiner: ['examinerIndex'],
-  help_editor: ['help_editor', 'help_editor_helper'],
+  help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
   imaging_uploader: ['index'],
   acknowledgements: ['acknowledgementsIndex'],
@@ -327,6 +314,7 @@ const lorisModules = {
   module_manager: ['modulemanager'],
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
+  statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],

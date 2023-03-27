@@ -31,7 +31,7 @@ function InfoPanel(props) {
    );
 }
 InfoPanel.propTypes = {
-    children: PropTypes.array,
+    children: PropTypes.node,
 };
 
 export default InfoPanel;

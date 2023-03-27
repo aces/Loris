@@ -104,11 +104,13 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         foreach ($assignee_expanded as $a_row) {
-            $assignees[$a_row['UserID']] = $a_row['Real_name'];
+            $assignees[$a_row['UserID']]
+                = $this->formatUserInformation($a_row['UserID']);
         }
 
         foreach ($inactive_users_expanded as $u_row) {
-            $inactive_users[$u_row['UserID']] = $u_row['Real_name'];
+            $inactive_users[$u_row['UserID']]
+                = $this->formatUserInformation($u_row['UserID']);
         }
 
         $otherWatchers = [];
@@ -118,7 +120,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
         foreach ($potential_watchers_expanded as $w_row) {
             if ($w_row['UserID'] != $user->getUsername()) {
-                $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
+                $otherWatchers[$w_row['UserID']]
+                    = $this->formatUserInformation($w_row['UserID']);
             }
         }
 
@@ -251,7 +254,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $db = $this->loris->getDatabaseConnection();
 
         if (!empty($issueID)) {
-            return $db->pselectRow(
+            $issueData = $db->pselectRow(
                 "SELECT
                             i.*,
                             c.PSCID,
@@ -264,10 +267,22 @@ class Edit extends \NDB_Page implements ETagCalculator
                             issueID = :issueID",
                 ['issueID' => $issueID]
             ) ?? [];
+            // format users
+            $issueData['reporter']      = $this->formatUserInformation(
+                $issueData['reporter']
+            );
+            $issueData['assignee']      = $this->formatUserInformation(
+                $issueData['assignee']
+            );
+            $issueData['lastUpdatedBy'] = $this->formatUserInformation(
+                $issueData['lastUpdatedBy']
+            );
+            // return
+            return $issueData;
         }
 
         return [
-            'reporter'      => $user->getUsername(),
+            'reporter'      => $this->formatUserInformation($user->getUsername()),
             'dateCreated'   => date('Y-m-d H:i:s'),
             'centerID'      => $user->getCenterIDs(),
             'status'        => 'new',
@@ -308,6 +323,9 @@ class Edit extends \NDB_Page implements ETagCalculator
         // looping by reference so can edit in place
         $modules = \Module::getActiveModulesIndexed($this->loris);
         foreach ($unformattedComments as &$comment) {
+            // for all users that added a comment, get their full name
+            $comment['addedBy'] = $this->formatUserInformation($comment['addedBy']);
+            // specific changes
             if ($comment['fieldChanged'] === 'module') {
                 $mid = $comment['newValue'];
                 $comment['newValue'] = $modules[$mid]->getLongName();
@@ -330,6 +348,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
                 $comment['newValue'] = $visitLabel;
                 $comment['fieldChanged'] = 'Visit Label';
+            } else if ($comment['fieldChanged'] === 'assignee'
+                || $comment['fieldChanged'] === 'lastUpdatedBy'
+            ) {
+                $comment['newValue']
+                    = $this->formatUserInformation($comment['newValue']);
             }
         }
         return $unformattedComments; //now formatted I guess
@@ -429,7 +452,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $issueID = intval($values['issueID']);
 
-        $issueValues['lastUpdatedBy'] = $user->getUsername();
+        $issueValues['lastUpdatedBy'] = $user->getUserName();
 
         $validatedInput = $this->validateInput($validateValues, $user);
         if (!is_array($validatedInput)) { // Error exists.
@@ -454,6 +477,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->insert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
+
+        // convert the aspect of 'lastUpdatedBy' to Fullname
+        // once the db has registered the username (userID)
+        $issueValues['lastUpdatedBy']
+            = $this->formatUserInformation($user->getUserName());
 
         $this->updateHistory($historyValues, $issueID, $user);
         $this->updateComments($values['comment'], $issueID, $user);
@@ -786,6 +814,25 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
         return $changedValues;
+    }
+
+    /**
+     * Get a formatted string from user information.
+     *
+     * @param string $userid a username/userid
+     *
+     * @return string a formatted string "fullname (userid)"
+     */
+    function formatUserInformation(string $userid)
+    {
+        $user = \User::factory($userid);
+        $un   = $user->getUsername();
+        if (empty($un)) {
+            // e.g. in case of anonymous user
+            return $user->getFullname();
+        } else {
+            return $user->getFullname() . " (" . $un . ")";
+        }
     }
 
     /**
