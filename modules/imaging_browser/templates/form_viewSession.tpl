@@ -64,17 +64,17 @@
                   "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
                   "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
                 },
-
                 'Fullname' : "{$files[file].FullFilename}",
                 "XMLProtocol" : "{$files[file].XMLprotocol}",
                 "XMLReport" : "{$files[file].XMLreport}",
                 "NrrdFile" : "{$files[file].NrrdFile}",
+                "NiiFile" : "{$files[file].NiiFile}",
                 "BvalFile" : "{$files[file].BvalFile}",
                 "BvecFile" : "{$files[file].BvecFile}",
                 "JsonFile" : "{$files[file].JsonFile}",
                 "OtherTimepoints" : "{$files[file].OtherTimepoints}",
                 "SeriesUID": "{$files[file].SeriesUID}"
-              })
+              }),
             );
           </script>
        {/section}

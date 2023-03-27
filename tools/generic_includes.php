@@ -23,7 +23,6 @@ $configFile = __DIR__."/../project/config.xml";
 $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
-$DB            = NDB_Factory::singleton()->database();
 $config        = NDB_Config::singleton();
 $lorisInstance = new \LORIS\LorisInstance(
     $DB,
@@ -33,3 +32,4 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
+$DB            = $lorisInstance->getDatabaseConnection();

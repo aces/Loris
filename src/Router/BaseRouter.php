@@ -94,15 +94,12 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
         $factory           = \NDB_Factory::singleton();
         $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
-        $exceptionloglevel = $this->loris->getConfiguration()
-            ->getLogSettings()
-            ->getExceptionLogLevel();
+        $logSettings       = $this->loris->getConfiguration()->getLogSettings();
+        $exceptionloglevel = $logSettings->getExceptionLogLevel();
 
         if ($exceptionloglevel != "none") {
             $ehandler->setLogger(
-                new \LORIS\Log\ErrorLogLogger(
-                    $factory->config()->getLogSettings()->getExceptionLogLevel()
-                )
+                new \LORIS\Log\ErrorLogLogger($exceptionloglevel)
             );
         } else {
             $ehandler->setLogger(new \PSR\Log\NullLogger);
@@ -122,7 +119,14 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
             $module = $this->loris->getModule($modulename);
             $module->registerAutoloader();
-
+            $requestloglevel = $logSettings->getRequestLogLevel();
+            if ($requestloglevel != "none") {
+                $module->setLogger(
+                    new \LORIS\Log\ErrorLogLogger($requestloglevel)
+                );
+            } else {
+                $module->setLogger(new \PSR\Log\NullLogger);
+            }
             $mr      = new ModuleRouter($module);
             $request = $request->withURI($suburi);
             return $ehandler->process($request, $mr);
@@ -138,9 +142,18 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
-                $module  = $this->loris->getModule("timepoint_list");
+
+                $module = $this->loris->getModule("timepoint_list");
                 $module->registerAutoloader();
 
+                $requestloglevel = $logSettings->getRequestLogLevel();
+                if ($requestloglevel != "none") {
+                    $module->setLogger(
+                        new \LORIS\Log\ErrorLogLogger($requestloglevel)
+                    );
+                } else {
+                    $module->setLogger(new \PSR\Log\NullLogger);
+                }
                 $mr = new ModuleRouter($module);
                 return $ehandler->process($request, $mr);
             }

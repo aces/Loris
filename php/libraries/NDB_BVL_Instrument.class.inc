@@ -195,7 +195,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array containing all multiselect elements in an instrument.
      */
-    protected $selectMultipleElements;
+    protected $selectMultipleElements = [];
 
     /**
      * Factory generates a new instrument instance of type
@@ -3060,8 +3060,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         $instrumentNames = [];
-        foreach ($instrumentNamesList as $testName => $instrument) {
-            $fullName = $instrument->getFullName();
+        foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $directEntryInstruments, true)) {
                 $instrumentNames[$testName] = $fullName;
             }
@@ -3071,5 +3070,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
+    }
+
+    /**
+     * Gets the current instrument instance selectMultipleElements
+     *
+     * @return array the select multiple elements of this instrument.
+     * @access public
+     */
+    public function getSelectMultipleElements(): array
+    {
+        return $this->selectMultipleElements;
     }
 }
