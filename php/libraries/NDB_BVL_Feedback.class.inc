@@ -166,8 +166,7 @@ class NDB_BVL_Feedback
      */
     function _setCandidateProfileInfo(): void
     {
-        // new DB Object
-        $db = NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         // SELECT section
         $query = "SELECT c.CandID";
@@ -242,7 +241,7 @@ class NDB_BVL_Feedback
         $query = "SELECT Feedback_type as Type, Name, Description
             FROM feedback_bvl_type";
 
-        $result = NDB_Factory::singleton()->database()
+        $result = \NDB_Factory::singleton()->database()
             ->pselect($query, []);
 
         $list = [];
@@ -266,7 +265,7 @@ class NDB_BVL_Feedback
      */
     public function getFeedbackTypeIdByName($name): ?int
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query = "SELECT  `Feedback_type`
@@ -301,7 +300,7 @@ class NDB_BVL_Feedback
             $description = null;
         }
 
-        $db = NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         $values = [
             'Name'        => $name,
@@ -321,7 +320,6 @@ class NDB_BVL_Feedback
     function getThreadType($feedbackID): ?string
     {
 
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         $query = "SELECT Name FROM feedback_bvl_thread
@@ -379,7 +377,6 @@ class NDB_BVL_Feedback
      */
     function getMaxThreadStatus($select_inactive_threads): ?string
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         $query   = "SELECT MAX(Status) FROM feedback_bvl_thread WHERE";
@@ -453,7 +450,6 @@ class NDB_BVL_Feedback
      */
     function getSummaryOfThreads()
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         // get User object
@@ -516,7 +512,6 @@ class NDB_BVL_Feedback
      */
     function getThreadList()
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         // create user object
@@ -616,7 +611,6 @@ class NDB_BVL_Feedback
      */
     static function getThreadEntries($feedbackID)
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         //select the entries (details) for the thread
@@ -658,7 +652,6 @@ class NDB_BVL_Feedback
      */
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
-        // new DB Object
         $DB = \NDB_Factory::singleton()->database();
 
         // public threads are inactive by default
@@ -762,7 +755,6 @@ class NDB_BVL_Feedback
      */
     function createEntry($feedbackID, $comment, $username): array
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         // create SET array for the INSERT
@@ -801,7 +793,6 @@ class NDB_BVL_Feedback
         $status='',
         $fieldname =''
     ) {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         // create the new entry - every update need to be follow up with a comment
@@ -853,7 +844,6 @@ class NDB_BVL_Feedback
      */
     function deleteThread($feedbackID)
     {
-        // new DB Object
         $db = \NDB_factory::singleton()->database();
 
         // DELETE the thread's entries
@@ -879,8 +869,7 @@ class NDB_BVL_Feedback
      */
     function deleteEntry($entryID)
     {
-        // new DB Object
-        $db =& \NDB_Factory::singleton()->database();
+        $db = \NDB_Factory::singleton()->database();
 
         // DELETE the thread entries
         $db->delete('feedback_bvl_entry', ["ID" => $entryID]);
@@ -895,7 +884,6 @@ class NDB_BVL_Feedback
      */
     function activateThread($feedbackID=null)
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         $setArray = [
@@ -946,7 +934,6 @@ class NDB_BVL_Feedback
      */
     function closeThread(?int $feedbackID = null): int
     {
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         $whereStr = 'Public = \'Y\' AND Active = \'Y\' ';
@@ -1038,7 +1025,6 @@ class NDB_BVL_Feedback
                 . "Error, empty status ID\n"
             );
         }
-        // new DB Object
         $db = \NDB_Factory::singleton()->database();
 
         // StatusID is passed in as an integer, but the field in the database

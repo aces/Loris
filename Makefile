@@ -6,13 +6,15 @@ all: VERSION
 	npm run build
 
 # If anything changes, re-generate the VERSION file
-VERSION: .
+VERSION:
 	tools/gen-version.sh
 
 phpdev:
 	composer install
 
-dev: VERSION phpdev
+dev: 
+	VERSION
+	phpdev
 	npm ci
 	npm run compile
 

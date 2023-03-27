@@ -1,6 +1,6 @@
 # Imaging Browser: View Session
 
-This page displays a candidate's scans collected from a single timepoint. Click on any image to launch the BrainBrowser visualization tool. With every file displayed, there are different actions you can take, such as change the file's QC status, add or edit the QC comments, download the MINC file, or see a longitudinal view (in BrainBrowser). Click **Header Info** to see further scan parameters from the DICOM header.
+This page displays a candidate's scans collected from a single timepoint. Click on any image to launch the BrainBrowser visualization tool. With every file displayed, there are different actions you can take, such as change the file's QC status, add or edit the QC comments, download the imaging files (MINC/NIfTI), or see a longitudinal view (in BrainBrowser). Click **Header Info** to see further scan parameters from the DICOM header.
 
 To the right of image thumbnails, there is a list of scan parameters including QC Status, "Selected" (indicating which scan will be available in the data query tool when there are multiple scans of a single modality), and a Caveat flag (True/False). Within the same
 panel, you click **Header Info** located in the top right corner to expand the panel, revealing further scan parameters from the

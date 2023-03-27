@@ -151,10 +151,6 @@ UPDATE users u, history h
 
 SELECT 'Running: SQL/Archive/24.0/2020-06-16-Add_Date_Format_to_ConfigSettings_DataType.sql';
 
--- Add date_format option to DataType
-ALTER TABLE ConfigSettings
-	MODIFY COLUMN `DataType` enum('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path') DEFAULT NULL;
-
 -- Update DataType of dobFormat
 UPDATE ConfigSettings
 	SET DataType='date_format' WHERE Name='dobFormat';
@@ -998,16 +994,6 @@ INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
 INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
     ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file')
     ON DUPLICATE KEY UPDATE Alias='PixelPaddingValue', Description='Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120';
-
-SELECT 'Running: SQL/Archive/24.0/2021-07-19-log_level.sql';
-
-ALTER TABLE `ConfigSettings` MODIFY COLUMN `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level');
-
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('logs', 'Settings related to logging', 1, 0, 'Log Settings', 12);
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'database_log_level', 'Verbosity of database logging', 1, 0, 'log_level', ID, 'Database Log Level', 3 FROM ConfigSettings WHERE Name='logs';
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'request_log_level', 'Verbosity of HTTP request logs', 1, 0, 'log_level', ID, 'HTTP Request Log Level', 3 FROM ConfigSettings WHERE Name='logs';
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'exception_log_level', 'Verbosity of PHP exception logging', 1, 0, 'log_level', ID, 'Exception Log Level', 3 FROM ConfigSettings WHERE Name='logs';
-
 
 SELECT 'Running: SQL/Archive/24.0/2021-07-28_add_EchoTime_field_to_violation_tables.sql';
 

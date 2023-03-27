@@ -74,9 +74,14 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
+        $instruments
+            = \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList(
+                $this->loris
+            );
+
         return [
             'visits'      => \Utility::getVisitList(),
-            'instruments' => \Utility::getDirectInstruments(),
+            'instruments' => $instruments,
         ];
     }
 
