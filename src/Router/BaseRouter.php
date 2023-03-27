@@ -48,8 +48,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             \NDB_Factory::singleton()->database(),
             \NDB_Factory::singleton()->config(),
             [
-                $projectdir . "/modules",
-                $moduledir,
+             $projectdir . "/modules",
+             $moduledir,
             ]
         );
     }
