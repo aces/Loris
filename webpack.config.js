@@ -16,8 +16,8 @@ const optimization = {
           compress: false,
           ecma: 6,
           mangle: false,
-          extractComments: false,
         },
+        extractComments: false,
       }).apply(compiler);
     },
   ],
