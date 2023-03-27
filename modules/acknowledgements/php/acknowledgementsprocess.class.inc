@@ -64,7 +64,7 @@ class Acknowledgementsprocess extends \NDB_Page
         $degrees      = "";
         $roles        = "";
         $values       = $req->getParsedBody();
-        if (isset($variable) && !is_null($variable)) {
+        if (isset($values) && !is_null($values)) {
             if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
             }
