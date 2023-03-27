@@ -30,8 +30,8 @@
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              const root = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              root.render(
+              const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
+              breadcrumbsRoot.render(
                 RBreadcrumbs({
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
@@ -40,6 +40,19 @@
               document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
                 return carry.concat(' - ', item.text);
               }, ''));
+            {/if}
+            {if !$breadcrumbs|strstr:'"Edit Help Content"'}
+              const helpContainers = document.getElementsByClassName('help-container');
+              for (let i = 0; i < helpContainers.length; i++) {
+                const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
+                helpRoot.render(
+                  RHelp({
+                    testname: loris.TestName,
+                    subtest: loris.Subtest,
+                    baseURL: loris.BaseURL,
+                  })
+                );
+              }
             {/if}
 
             // Make Navigation bar toggle change glyphicon up/down
@@ -84,10 +97,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
-                        <button type="button" class="navbar-toggle help-button">
-                            <span class="sr-only">Toggle navigation</span>
-                            <img width=17 src="{$baseurl}/images/help.gif">
-                        </button>
+                        <span class='help-container navbar-toggle'></span>
                        {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
@@ -130,11 +140,7 @@
                             </li>
                             {/if}
 
-                            <li class="hidden-xs hidden-sm">
-                                <a href="#" class="navbar-brand pull-right help-button">
-                                    <img width=17 src="{$baseurl}/images/help.gif">
-                                </a>
-                            </li>
+                            <li class="hidden-xs hidden-sm help-container"></li>
                             <li class="nav">
                                 <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}

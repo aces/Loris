@@ -32,4 +32,4 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
-$DB = $lorisInstance->getDatabaseConnection();
+$DB            = $lorisInstance->getDatabaseConnection();

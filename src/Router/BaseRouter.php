@@ -48,8 +48,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             \NDB_Factory::singleton()->database(),
             \NDB_Factory::singleton()->config(),
             [
-             $projectdir . "/modules",
-             $moduledir,
+                $projectdir . "/modules",
+                $moduledir,
             ]
         );
     }
@@ -143,7 +143,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
 
-                $module  = $this->loris->getModule("timepoint_list");
+                $module = $this->loris->getModule("timepoint_list");
                 $module->registerAutoloader();
 
                 $requestloglevel = $logSettings->getRequestLogLevel();
