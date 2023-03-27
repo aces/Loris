@@ -45,7 +45,7 @@ svg {
 .list-group-item {
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
@@ -65,13 +65,14 @@ svg {
   justify-content: center;
   align-items: center;
   position: absolute;
-  right: 0;
+  right: 10px;
 }
 
 .epoch-tag {
   padding: 5px;
   background: #e7e4e4;
   border-left: 5px solid #797878;
+  width: 100%;
 }
 
 .epoch-tag p {

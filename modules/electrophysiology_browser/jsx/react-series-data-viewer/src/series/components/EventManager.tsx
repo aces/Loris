@@ -187,9 +187,6 @@ const EventManager = ({
                   (epoch.type == 'Annotation' ? 'annotation ' : '')
                   + 'list-group-item list-group-item-action'
                 }
-                style={{
-                  position: 'relative',
-                }}
               >
                 <div
                   className="epoch-details"
