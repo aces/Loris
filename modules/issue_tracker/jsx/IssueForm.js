@@ -153,6 +153,7 @@ class IssueForm extends Component {
                        baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
+                       whoami={this.state.issueData.whoami}
       />
     );
 
@@ -570,7 +571,6 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
 };
 
 export default IssueForm;
