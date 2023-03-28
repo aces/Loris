@@ -237,11 +237,6 @@ const EventManager = ({
                   (epoch.type == 'Annotation' ? 'annotation ' : '')
                   + 'list-group-item list-group-item-action'
                 }
-                style={{
-                  position: 'relative',
-                }}
-                onMouseEnter={() => updateActiveEpoch(index)}
-                onMouseLeave={() => updateActiveEpoch(null)}
               >
                 <div
                   className="epoch-details"
