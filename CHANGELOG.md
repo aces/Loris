@@ -184,6 +184,7 @@ if a candidate has some visits that the user should not see. Fixes error where p
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Adding `GET /sites` endpoint to list available sites in version 0.0.4-dev.
 - Addition of a PATCH request for `/candidates/$CandID/$VisitLabel` to start next 
 stage when the payload contains a "Visit" stage with "In Progress" as Status, 
 when the current status of the Visit stage is "Not Started". (PR #7479)

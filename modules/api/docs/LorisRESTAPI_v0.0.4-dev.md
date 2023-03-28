@@ -1136,3 +1136,33 @@ Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
+
+
+## 7.0 Sites API
+
+The Sites API list available sites for the requesting user.
+
+```
+GET /sites
+```
+
+Will return a list of sites in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
+
+```js
+{
+  "Sites" : [
+    {
+      "Name": "string",
+      "Alias": "string",
+      "MRI alias": "string"
+    },
+    ...
+  ]
+}
+```
+
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
+
+* Note that only the `Name` property is unique across all sites.
+
