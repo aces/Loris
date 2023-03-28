@@ -197,7 +197,6 @@ class DocUploadForm extends Component {
         body: formObject,
       })
         .then((resp) => {
-          console.error(resp);
           if (resp.ok) {
             resp.json().then((data) => {
               if (data.error_count === 0) {
@@ -209,6 +208,7 @@ class DocUploadForm extends Component {
                     }
                 });
               } else {
+                console.error(resp);
                 swal.fire('Upload Incomplete', data.message, 'warning');
               }
             }).catch((error) => {
@@ -221,6 +221,7 @@ class DocUploadForm extends Component {
             });
           } else {
             resp.json().then((data) => {
+              console.error(resp);
               swal.fire('Could not upload files', data.error, 'error');
             }).catch((error) => {
               console.error(error);
