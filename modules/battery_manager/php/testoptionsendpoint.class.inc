@@ -63,7 +63,9 @@ class TestOptionsEndpoint extends \NDB_Page
             $this->loris->getDatabaseConnection()
         );
         return [
-            'instruments' => \Utility::getAllInstruments(),
+            'instruments' => \NDB_BVL_Instrument::getInstrumentNamesList(
+                $this->loris
+            ),
             'stages'      => $this->_getStageList(),
             'subprojects' => \Utility::getSubprojectList(null),
             'visits'      => $visitController->getAllVisits(),
