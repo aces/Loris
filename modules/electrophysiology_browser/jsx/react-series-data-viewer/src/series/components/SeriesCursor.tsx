@@ -61,12 +61,12 @@ const SeriesCursor = (
     channelMetadata,
   }: CProps
 ) => {
-  if (!cursorPosition) return null;
-
   let reversedEpochs = [...filteredEpochs].reverse();
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
   }, [filteredEpochs]);
+
+  if (!cursorPosition) return null;
 
   const left = Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%';
   const time = interval[0] + cursorPosition[0] * (interval[1] - interval[0]);
@@ -162,6 +162,7 @@ const SeriesCursor = (
           const channelColor = colorOrder(channelIndex.toString()).toString();
           return (
             <div
+              key={channelIndex.toString()}
               style={{
                 color: channelColor,
                 width: '100px',

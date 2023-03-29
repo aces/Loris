@@ -184,7 +184,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   hoveredChannels,
   setHoveredChannels,
 }) => {
-  if (channels.length === 0) return null;
 
   const intervalChange = Math.pow(
     10,
@@ -799,6 +798,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
+  const updateCursorCallback = useCallback((cursor: [number, number]) => {
+    setCursor({
+      cursorPosition: [cursor[0], cursor[1]],
+      viewerRef: viewerRef,
+    });
+  }, []);
+
+  /**
+   *
+   * @param v
+   */
+  const updateTimeSelectionCallback = useCallback((v: Vector2) => {
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    R.compose(dragStart, R.nth(0))(v);
+  }, [bounds]);
+
   /**
    *
    * @param channelIndex
@@ -1005,6 +1021,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       >
                         {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
                           return <option
+                            key={`${numChannels}`}
                             value={numChannels}
                           >
                             {numChannels} channels
@@ -1138,17 +1155,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     <ResponsiveViewer
                       ref={viewerRef}
                       // @ts-ignore
-                      mouseMove={useCallback((cursor: [number, number]) => {
-                        setCursor({
-                          cursorPosition: [cursor[0], cursor[1]],
-                          viewerRef: viewerRef,
-                        });
-                      }, [])}
-                      mouseDown={useCallback((v: Vector2) => {
-                        document.addEventListener('mousemove', onMouseMove);
-                        document.addEventListener('mouseup', onMouseUp);
-                        R.compose(dragStart, R.nth(0))(v);
-                      }, [bounds])}
+                      mouseMove={updateCursorCallback}
+                      mouseDown={updateTimeSelectionCallback}
                       showOverflow={showOverflow}
                     >
                       <EpochsLayer/>

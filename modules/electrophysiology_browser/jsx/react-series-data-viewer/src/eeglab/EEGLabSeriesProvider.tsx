@@ -18,7 +18,6 @@ import {
   setFilteredEpochs,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {updateFilteredEpochs} from '../series/store/logic/filterEpochs';
 import {setElectrodes} from '../series/store/state/montage';
 import {AnnotationMetadata, EventMetadata} from '../series/store/types';
 

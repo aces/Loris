@@ -5,6 +5,7 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {setFilteredEpochs, setActiveEpoch} from '../state/dataset';
 import {MAX_RENDERED_EPOCHS} from '../../../vector';
+import {Epoch} from '../types';
 
 export const UPDATE_FILTERED_EPOCHS = 'UPDATE_FILTERED_EPOCHS';
 export const updateFilteredEpochs = createAction(UPDATE_FILTERED_EPOCHS);

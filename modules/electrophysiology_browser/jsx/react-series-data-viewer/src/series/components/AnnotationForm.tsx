@@ -29,6 +29,7 @@ type CProps = {
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
+  domain: [number, number],
 };
 
 /**
@@ -46,6 +47,7 @@ type CProps = {
  * @param root0.toggleEpoch,
  * @param root0.updateActiveEpoch,
  * @param root0.interval
+ * @param root0.domain
  * @param root0.toggleEpoch
  * @param root0.updateActiveEpoch
  */
@@ -62,6 +64,7 @@ const AnnotationForm = ({
   toggleEpoch,
   updateActiveEpoch,
   interval,
+  domain,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
   const [event, setEvent] = useState<(number | string)[]>(
@@ -412,13 +415,14 @@ const AnnotationForm = ({
           <NumericElement
             name="start-time"
             id="start-time"
-            min="0"
+            min={0}
+            max={Math.max(0, domain[1])}
             label="Start Time"
             value={event
               ? Math.min(
-                parseFloat(event[0] ? event[0].toString() : ''),
-                parseFloat(event[1] ? event[1].toString() : '')
-              )
+                parseFloat(event[0] ? event[0].toString() : '0'),
+                parseFloat(event[1] ? event[1].toString() : '0')
+              ).toString()
               : ''
             }
             required={true}
@@ -427,13 +431,14 @@ const AnnotationForm = ({
           <NumericElement
             name="end-time"
             id="end-time"
-            min="0"
+            min={0}
+            max={Math.max(0, domain[1])}
             label="End Time"
             value={event
               ? Math.max(
-                parseFloat(event[0] ? event[0].toString() : ''),
-                parseFloat(event[1] ? event[1].toString() : '')
-              )
+                parseFloat(event[0] ? event[0].toString() : '0'),
+                parseFloat(event[1] ? event[1].toString() : '0')
+              ).toString()
               : ''
             }
             required={true}
@@ -507,6 +512,7 @@ export default connect(
     filteredEpochs: state.dataset.filteredEpochs,
     currentAnnotation: state.currentAnnotation,
     interval: state.bounds.interval,
+    domain: state.bounds.domain,
   }),
   (dispatch: (any) => void) => ({
     setTimeSelection: R.compose(
