@@ -91,7 +91,7 @@ class ResetPassword extends Component {
           name={'resetPassword'}
           action={''}
           id={'form'}
-          fileUpload={'false'}
+          fileUpload={false}
           onSubmit={this.handleSubmit}
         >
           <StaticElement

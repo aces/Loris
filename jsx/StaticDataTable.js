@@ -668,7 +668,7 @@ StaticDataTable.propTypes = {
   hiddenHeaders: PropTypes.array,
   DisableFilter: PropTypes.bool,
   NoDynamicTable: PropTypes.bool,
-  freezeColumn: PropTypes.bool,
+  freezeColumn: PropTypes.string,
   RowNameMap: PropTypes.string,
   Filter: PropTypes.object,
 };

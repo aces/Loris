@@ -153,7 +153,7 @@ class RequestAccount extends Component {
           name={'requestAccount'}
           action={''}
           id={'form'}
-          fileUpload={'false'}
+          fileUpload={false}
           onSubmit={this.handleSubmit}
         >
           <StaticElement
