@@ -3,6 +3,7 @@ import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Publication index component
@@ -186,6 +187,9 @@ class PublicationIndex extends React.Component {
     return <td className={classes}>{cell}</td>;
   }
 }
+PublicationIndex.propTypes = {
+  DataURL: PropTypes.string,
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = createRoot(document.getElementById('lorisworkspace'));

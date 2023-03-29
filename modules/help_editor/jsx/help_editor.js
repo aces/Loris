@@ -40,7 +40,7 @@ class HelpEditor extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true})); ;
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**

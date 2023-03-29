@@ -41,6 +41,7 @@ class DataQueryApp extends Component {
       queryIDs: {
         user: [],
         shared: [],
+        author: [],
       },
       savedQueries: {},
       queriesLoaded: false,
@@ -689,23 +690,23 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    for (let i = 0; i < fieldsList.length; i++) {
-      $.ajax({
-        url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
-        success: (data) => {
-          if (data[0] && data[0].value.IsFile) {
-            let key = data[0].key[0] + ',' + data[0].key[1];
+    $.ajax({
+      url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
+      success: (data) => {
+        for (let i = 0; i < fieldsList.length; i++) {
+          if (data[i] && data[i].value.IsFile) {
+            let key = data[i].key[0] + ',' + data[i].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
             this.setState({
               downloadableFields: downloadable,
             });
           }
-        },
-        data: {key: fieldsList[i]},
-        dataType: 'json',
-      });
-    }
+        }
+      },
+      data: {keys: JSON.stringify(fieldsList)},
+      dataType: 'json',
+    });
   }
 
   /**
@@ -1346,6 +1347,7 @@ class DataQueryApp extends Component {
                       <SavedQueriesList
                         userQueries={this.state.queryIDs.user}
                         globalQueries={this.state.queryIDs.shared}
+                        author={this.state.queryIDs.author}
                         queryDetails={this.state.savedQueries}
                         queriesLoaded={this.state.queriesLoaded}
                         onSelectQuery={this.loadSavedQuery}
@@ -1522,6 +1524,10 @@ DataQueryApp.propTypes = {
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
+  AllSessions: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 DataQueryApp.defaultProps = {
   title: 'Fields',

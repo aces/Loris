@@ -95,7 +95,6 @@ class DownloadPanel extends Component {
                                 : '/mri/jiv/get_file.php?file=' + download.file
                             }
                             target='_blank'
-                            download
                             style={{
                               margin: 0,
                             }}
@@ -132,6 +131,9 @@ class DownloadPanel extends Component {
 
 DownloadPanel.propTypes = {
   downloads: PropTypes.array,
+  physioFileID: PropTypes.number,
+  outputType: PropTypes.string,
+  id: PropTypes.string,
 };
 
 DownloadPanel.defaultProps = {

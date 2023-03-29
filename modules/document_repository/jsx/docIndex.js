@@ -9,6 +9,7 @@ import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Doc index component
@@ -172,6 +173,8 @@ class DocIndex extends React.Component {
       case 'File Name':
         let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
+                          + encodeURIComponent(row['Uploaded By'])
+                          + '/'
                           + encodeURIComponent(row['File Name']);
         result = <td>
           <a
@@ -427,6 +430,10 @@ class DocIndex extends React.Component {
     );
   }
 }
+DocIndex.propTypes = {
+  dataURL: PropTypes.string,
+  hasPermission: PropTypes.func,
+};
 
 window.addEventListener('load', () => {
   const root = createRoot(document.getElementById('lorisworkspace'));

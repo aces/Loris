@@ -456,8 +456,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $pageNum = $_REQUEST['pageID'];
         }
 
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $resultsPerPage = 25;
         $limit          = " LIMIT $resultsPerPage"
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
@@ -551,14 +550,11 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setDataTable()
     {
-        // create instance of config object
-        $config =& NDB_Config::singleton();
-        // configure the page pagination
-        $rowsPerPage = $config->getSetting('rowsPerPage');
+        $rowsPerPage = 25;
 
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
-        $this->setTemplateVar('rowsPerPage', $rowsPerPage);
+        $this->setTemplateVar('rowsPerPage', strval($rowsPerPage));
         $this->setTemplateVar('pageID', $pageID);
 
         if (isset($_GET['filter'])

@@ -109,8 +109,14 @@ class MediaUploadForm extends Component {
                         && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
-      {};
-    return (
+          {};
+          const visitErrMsg = visits && visits.length === 0 ?
+            'No visits available for this candidate' :
+            '';
+          const instErrMsg = instruments && instruments.length === 0 ?
+            'No instruments available for this visit' :
+            '';
+          return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
           <FormElement
@@ -140,6 +146,7 @@ class MediaUploadForm extends Component {
               name='visitLabel'
               label='Visit Label'
               options={visits}
+              placeholder={visitErrMsg}
               onUserInput={this.setFormData}
               ref='visitLabel'
               required={true}
@@ -150,6 +157,7 @@ class MediaUploadForm extends Component {
               name='instrument'
               label='Instrument'
               options={instruments}
+              placeholder={instErrMsg}
               onUserInput={this.setFormData}
               ref='instrument'
               required={false}
@@ -427,6 +435,7 @@ MediaUploadForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   insertRow: PropTypes.func.isRequired,
+  maxUploadSize: PropTypes.string,
 };
 
 export default MediaUploadForm;

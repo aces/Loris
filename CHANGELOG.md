@@ -13,34 +13,65 @@ changes in the following format: PR #1234***
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
 - Added the NOT NULL constraint on Project Name (PR #8295)
+- Added ability to display images in issue tracker tickets (PR #8346)
+- Migrated instrument permissions from config.xml to database and added the ability
+  to manage instrument permissions in the frontend from the `instrument_manager`
+  module. (PR #8302)
 
 #### Updates and Improvements
-- Rename subproject to Cohort (PR #7817)
+- Rename subproject to Cohort (PR #7817, applied changes in LORIS-MRI PR #882)
 - Create new CohortData and CohortController classes to use as data access model 
   and transfer object (PR #7817)
 - BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
+- Add Date status change value in session table (PR #8350)
+- Fixed the Candidate Age at Death field label and Data Dictionary item for LINST instruments (PR #8362)
+- Allow clearing a previously entered consent status in candidate parameters (PR #7772)
+- Add code sanitizer before dangerouslySetInnerHTML is used in login to protect against XSS attacks (PR #7491)
 
 #### Bug Fixes
 - placeholder
 
 ### Modules
-#### ModuleName
-- placeholder
 
+#### API
+- Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
+provided as the body of a PUT/PATCH request. The values of all fields are now defined by
+the `Data` key instead of `$InstrumentName` (PR #7857)
+#### Candidate Parameters
+- Added date restriction for consent withdrawal so that withdrawal date cannot be earlier
+than the given consent response date (PR #8298)
 #### EEG Browser
 - Visualization:
   - Electrode 2D montage: detect if the coordinate space is in the ALS orientation to convert to RAS (nose up)
   - Use the optimal signal sampling that fulfills number of chunk displayed < MAX_VIEWED_CHUNKS
   - Fixes UI panels open/close glitches
+- Added a SQL table to save any additional task events property data imported through BIDS files (PR #8237)
+  - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #873)
+- Added SQL tables to save coordinate system data imported through BIDS files (PR #8242)
+  - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #885)
+#### Instrument Builder
+- Fixed display order of select options that were previously ordered alphabetically.
+Now the options correctly display in order of how they are defined in the instrument. (PR #8361)
+#### Instruments
+- Added `postMortem` functionality for LINST instruments, fixing display of 'Candidate Age at Death' when `postMortem` is set to true (PR #8362)
+- Added/modified documentation for configuring 'Candidate Age at Death' field display in instruments (PR #8362)
+
+#### Issue Tracker
+
+- Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
 
 ### Tools
 - placeholder
 
 ### Clean Up
-- placeholder
+- Fixed inconsistency in candidate consent data and history in Raisinbread (PR #8297)
+- Removed references to `participant_accounts` `Email` column in Raisinbread,
+SQL schema, and automated testing (PR #8313)
 
 ### Notes For Existing Projects
-- placeholder
+- API: Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
+provided as the body of a PUT/PATCH request. The values of all fields are now defined by
+the `Data` key instead of `$InstrumentName` (PR #7857)
 
 
 ### Notes For Developers
@@ -155,6 +186,7 @@ if a candidate has some visits that the user should not see. Fixes error where p
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Adding `GET /sites` endpoint to list available sites in version 0.0.4-dev.
 - Addition of a PATCH request for `/candidates/$CandID/$VisitLabel` to start next 
 stage when the payload contains a "Visit" stage with "In Progress" as Status, 
 when the current status of the Visit stage is "Not Started". (PR #7479)
@@ -395,6 +427,7 @@ or not matching password confirmation. (PR #6615, #6705, #6611)
 
 #### DQT
 - Improve the visibility of some dropdown elements (PR #6602)
+- ADD delete the saved query feature (PR #8078)
 
 ### Clean Up
 - New tool for detection of multiple first visits for a candidate (prevents a database

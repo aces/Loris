@@ -329,9 +329,9 @@ class DataDictIndex extends Component {
     );
   }
 }
-
 DataDictIndex.propTypes = {
-    dataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {

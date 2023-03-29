@@ -1,3 +1,7 @@
+.navbar {
+  margin-bottom: 0
+}
+
 .img-checkpic {
     height: 180px;
     border: 0;
@@ -75,7 +79,6 @@ h3 {
 
 .views {
     margin-right: 10px;
-    margin-top: -2px;
 }
 
 .mri-second-row-panel {

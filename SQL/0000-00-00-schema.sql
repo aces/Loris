@@ -195,6 +195,7 @@ CREATE TABLE `session` (
   `Date_screening` date DEFAULT NULL,
   `Visit` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_visit` date DEFAULT NULL,
+  `Date_status_change` date DEFAULT NULL,
   `Approval` enum('In Progress','Pass','Failure') DEFAULT NULL,
   `Date_approval` date DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',

@@ -251,6 +251,7 @@ class MediaEditForm extends Component {
 MediaEditForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  fetchData: PropTypes.func,
 };
 
 export default MediaEditForm;

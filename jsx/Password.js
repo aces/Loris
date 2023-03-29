@@ -6,6 +6,7 @@
  */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import '../htdocs/css/password.css';
 
 /**
@@ -82,6 +83,11 @@ class Password extends Component {
     );
   }
 }
+Password.propTypes = {
+  inputName: PropTypes.string,
+  class: PropTypes.string,
+  placeholder: PropTypes.string,
+};
 Password.defaultProps = {
   inputName: 'password',
   class: '',

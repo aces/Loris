@@ -1,5 +1,3 @@
-/* exported RMarkdown */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 const ReactMarkdown = require('react-markdown');
@@ -35,10 +33,5 @@ class Markdown extends Component {
 Markdown.propTypes = {
   content: PropTypes.string.isRequired,
 };
-
-let RMarkdown = React.createFactory(Markdown);
-
-window.Markdown = Markdown;
-window.RMarkdown = RMarkdown;
 
 export default Markdown;

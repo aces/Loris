@@ -133,7 +133,7 @@ function Filter(props) {
           </ul>
         </li>
       );
-    };
+    }
   };
 
   const filterActions = (
@@ -178,6 +178,11 @@ Filter.propTypes = {
   columns: PropTypes.number,
   title: PropTypes.string,
   fields: PropTypes.array.isRequired,
+  removeFilter: PropTypes.func,
+  addFilter: PropTypes.func,
+  filterPresets: PropTypes.array,
+  updateFilters: PropTypes.func,
+  clearFilters: PropTypes.func,
 };
 
 export default Filter;

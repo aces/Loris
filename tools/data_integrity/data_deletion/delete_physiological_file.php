@@ -285,38 +285,8 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         echo "\Deleting DB entries\n";
         echo "----------------------------\n";
 
-        // delete from the physiological_archive table
-        $DB->delete(
-            "physiological_archive",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        // delete from the physiological_file table
-        $DB->delete(
-            "physiological_file",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        // delete from the physiological_task_event table
-        $DB->delete(
-            "physiological_task_event",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        // delete from the physiological_event_file table
-        $DB->delete(
-            "physiological_event_file",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        // delete from the physiological_event_archive table
-        $DB->delete(
-            "physiological_event_archive",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
         // delete from the physiological_event_parameter_category_level table
-        $EventParameterIDs = $DB->pselect(
+        $EventParameterIDs = $DB->pselectCol(
             'SELECT EventParameterID
             FROM physiological_event_parameter
             JOIN physiological_event_file USING(EventFileID)
@@ -334,7 +304,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         }
 
         // delete from the physiological_event_parameter table
-        $EventFileIDs = $DB->pselect(
+        $EventFileIDs = $DB->pselectCol(
             'SELECT EventFileID
             FROM physiological_event_file
             WHERE PhysiologicalFileID=:pfid',
@@ -350,8 +320,8 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
-        // delete from the physiological_annotation_instance table
-        $AnnotationFileIDs = $DB->pselect(
+        // delete from the physiological_annotation_* tables
+        $AnnotationFileIDs = $DB->pselectCol(
             'SELECT AnnotationFileID
             FROM physiological_annotation_file
             WHERE PhysiologicalFileID=:pfid',
@@ -362,6 +332,18 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             foreach ($AnnotationFileIDs as $AnnotationFileID) {
                 $DB->delete(
                     "physiological_annotation_instance",
+                    ["AnnotationFileID" => $AnnotationFileID]
+                );
+                $DB->delete(
+                    "physiological_annotation_rel",
+                    ["AnnotationTSV" => $AnnotationFileID]
+                );
+                $DB->delete(
+                    "physiological_annotation_rel",
+                    ["AnnotationJSON" => $AnnotationFileID]
+                );
+                $DB->delete(
+                    "physiological_annotation_parameter",
                     ["AnnotationFileID" => $AnnotationFileID]
                 );
             }
@@ -394,6 +376,42 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         // delete from the physiological_parameter_file table
         $DB->delete(
             "physiological_parameter_file",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_archive table
+        $DB->delete(
+            "physiological_archive",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_event_archive table
+        $DB->delete(
+            "physiological_event_archive",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_task_event table
+        $DB->delete(
+            "physiological_task_event",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_event_file table
+        $DB->delete(
+            "physiological_event_file",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_chunk_process table
+        $DB->delete(
+            "physiological_chunk_process",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        // delete from the physiological_file table
+        $DB->delete(
+            "physiological_file",
             ["PhysiologicalFileID" => $physioFileID]
         );
     } elseif ($printToSQL) {

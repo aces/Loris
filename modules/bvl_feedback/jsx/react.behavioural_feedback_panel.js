@@ -35,7 +35,7 @@ class SliderPanel extends Component {
 }
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.node,
 };
 
 
@@ -173,6 +173,7 @@ FeedbackPanelContent.propTypes = {
   candID: PropTypes.string,
   commentID: PropTypes.string,
   sessionID: PropTypes.string,
+  commentToggled: PropTypes.func,
 };
 
 
@@ -362,6 +363,11 @@ FeedbackPanelRow.propTypes = {
   feedbackID: PropTypes.string,
   candID: PropTypes.string,
   onClickOpen: PropTypes.func,
+  status: PropTypes.string,
+  onClickClose: PropTypes.func,
+  commentToggle: PropTypes.func,
+  user: PropTypes.string,
+  commentToggled: PropTypes.func,
 };
 
 
@@ -500,7 +506,7 @@ class AccordionPanel extends Component {
 }
 AccordionPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.object,
+  children: PropTypes.node,
 };
 
 
@@ -984,6 +990,8 @@ FeedbackPanel.propTypes = {
   candID: PropTypes.string,
   sessionID: PropTypes.string,
   commentID: PropTypes.string,
+  pscid: PropTypes.string,
+  feedbackTypes: PropTypes.object,
 };
 
 let RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);

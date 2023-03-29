@@ -4,6 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/css/tooltip.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
@@ -26,11 +27,11 @@
             {$study_title}
         </title>
         <script type="text/javascript">
-          $(document).ready(function() {
+          document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              const root = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              root.render(
+              const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
+              breadcrumbsRoot.render(
                 RBreadcrumbs({
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
@@ -40,21 +41,32 @@
                 return carry.concat(' - ', item.text);
               }, ''));
             {/if}
-
-            // Initialize bootstrap tooltip for site affiliations
-            $('#site-affiliations').tooltip({
-              html: true,
-              container: 'body'
-            });
+            {if !$breadcrumbs|strstr:'"Edit Help Content"'}
+              const helpContainers = document.getElementsByClassName('help-container');
+              for (let i = 0; i < helpContainers.length; i++) {
+                const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
+                helpRoot.render(
+                  RHelp({
+                    testname: loris.TestName,
+                    subtest: loris.Subtest,
+                    baseURL: loris.BaseURL,
+                  })
+                );
+              }
+            {/if}
 
             // Make Navigation bar toggle change glyphicon up/down
-            $('.nav-button').on("click", function() {
-              if ($(this).hasClass('collapsed')) {
+            let navBtn = document.querySelector('.nav-button');
+            navBtn.addEventListener('click', function() {
+              let toggleIcon = document.querySelector('.toggle-icon');
+              if (navBtn.classList.contains('collapsed')) {
                 // change chevron to up
-                $('.toggle-icon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                toggleIcon.classList.remove('glyphicon-chevron-down');
+                toggleIcon.classList.add('glyphicon-chevron-up');
               } else {
                 // change chevron to down
-                $('.toggle-icon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                toggleIcon.classList.remove('glyphicon-chevron-up');
+                toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
           });
@@ -85,10 +97,7 @@
                             <span class="sr-only">Toggle navigation</span>
                             <span class="toggle-icon glyphicon glyphicon-chevron-down" style="color:white"></span>
                         </button>
-                        <button type="button" class="navbar-toggle help-button">
-                            <span class="sr-only">Toggle navigation</span>
-                            <img width=17 src="{$baseurl}/images/help.gif">
-                        </button>
+                        <span class='help-container navbar-toggle'></span>
                        {if $bvl_feedback|default}
                        <button type="button" class="navbar-toggle">
                             <span class="sr-only">Toggle navigation</span>
@@ -131,18 +140,11 @@
                             </li>
                             {/if}
 
-                            <li class="hidden-xs hidden-sm">
-                                <a href="#" class="navbar-brand pull-right help-button">
-                                    <img width=17 src="{$baseurl}/images/help.gif">
-                                </a>
-                            </li>
+                            <li class="hidden-xs hidden-sm help-container"></li>
                             <li class="nav">
-                                <a href="#"
-                                   id="site-affiliations"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   title="{$user.SitesTooltip}">
+                                <a href="#" class="css-tooltip">
                                     Site Affiliations: {$userNumSites}
+                                    <span class="tooltip-text">{$user.SitesTooltip}</span>
                                 </a>
                             </li>
 
@@ -295,35 +297,5 @@
         {if $FormAction}
         </form>
         {/if}
-
-        <a id="login-modal-button" href="#" data-toggle="modal" data-target="#login-modal" style="display: none;">Login</a>
-
-        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Login to Your Account
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <font color="red" align="middle" id="login-modal-error" style="display: none;">
-                                    Incorrect username or password
-                                </font>
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input id="modal-username" name="username" class="form-control" type="text" value="" placeholder="User">
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input id="modal-password" name="password" class="form-control" type="password" placeholder="Password">
-                            </div>
-                            <div class="form-group col-xs-12">
-                                <input class="btn btn-primary col-xs-12" id="modal-login" name="login" type="submit" value="Login">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </body>
 </html>

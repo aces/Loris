@@ -492,6 +492,7 @@ class ElectrophysiologySessionView extends Component {
 
 ElectrophysiologySessionView.propTypes = {
   module: PropTypes.string.isRequired,
+  sessionid: PropTypes.string,
 };
 ElectrophysiologySessionView.defaultProps = {
   module: '',

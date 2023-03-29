@@ -33,7 +33,7 @@ clean:
 checkstatic: phpdev
 	npm run lint:php
 	vendor/bin/phan
-	npm run lint:javascript
+	npm run lint:js
 
 # The 'alex' tool scans documentation for condescending language.
 # Arguments:
@@ -52,8 +52,12 @@ check: checkstatic unittests
 testdata:
 	php tools/raisinbread_refresh.php
 
+instrument_manager:
+	target=instrument_manager npm run compile
+
 login:
 	target=login npm run compile
 
 mri_violations:
 	target=mri_violations npm run compile
+
