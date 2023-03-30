@@ -17,5 +17,9 @@ CREATE TABLE `electrophysiology_uploader` (
 INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
 
 -- Add new configurations for eeg uploader
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
+    SELECT 'EEGUploadIncomingPath', 'Path to the upload directory for incoming EEG studies', 1, 0, 'text', ID, 'EEG Incoming Directory', 7 FROM ConfigSettings WHERE Name="paths";
 
+-- Add new permissions for eeg uploader
+INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
+    ('monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2');

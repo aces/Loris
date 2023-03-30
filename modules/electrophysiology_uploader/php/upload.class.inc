@@ -208,14 +208,15 @@ class Upload extends \NDB_Page
 
         $db->insert('electrophysiology_uploader', $saveValues);
 
-        // Send notification to specific users
-        $to_list   = [
-            'santiago.morales@usc.edu',
-            'lyoder@umd.edu',
-            'fox@umd.edu',
-            'mmcsw1@umd.edu',
-            'mantunez@umd.edu'
-        ];
+        // Send notification to eeg managers
+        $emails    = $db->pselectCol(
+            "SELECT Email
+              FROM users u
+              JOIN user_perm_rel upr ON upr.userID = u.ID
+              JOIN permissions p ON upr.permID = p.permID
+              WHERE p.code='monitor_eeg_uploads'",
+            []
+        );
         $timepoint = \TimePoint::singleton(new \SessionID($sessionID));
         $msg_data  = [
             'Site'           => $timepoint->getPSC(),
@@ -227,8 +228,7 @@ class Upload extends \NDB_Page
             'UploadLocation' => $saveValues['UploadLocation'],
             'UploadUrl'      => null,
         ];
-
-        foreach ($to_list as $email) {
+        foreach ($emails as $email) {
             \Email::send(
                 $email,
                 'new_electrophysiology_upload.tpl',

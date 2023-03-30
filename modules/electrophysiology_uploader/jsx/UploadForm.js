@@ -16,6 +16,16 @@ export default function UploadForm(props) {
   const [uploadProgress, setuploadProgress] = useState(-1);
 
   /**
+   * Reset form
+   */
+  const resetForm = () => {
+    setFormData({});
+    setErrorMessage({});
+    setHasError({});
+    setuploadProgress(-1);
+  };
+
+  /**
    * Updates values in formData
    *
    * @param {string} field
@@ -139,7 +149,6 @@ export default function UploadForm(props) {
           pscid: null,
           visit: null,
         });
-
         setHasError({
           eegFile: false,
           candID: false,
@@ -149,15 +158,15 @@ export default function UploadForm(props) {
 
         let text = '';
         if (props.autoLaunch === 'true' || props.autoLaunch === '1') {
-          text = 'Processing of this file by the MRI pipeline has started\n'
-            + 'Select this upload in the result table '
-            + 'to view the processing progress';
+          text = 'Processing of this file by the EEG pipeline has started';
         }
         swal.fire({
           title: 'Upload Successful!',
           text: text,
           type: 'success',
         });
+
+        resetForm();
       } else {
         processError(xhr);
       }
