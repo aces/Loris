@@ -485,14 +485,19 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       <>
         <Group top={-viewerHeight/2} left={-viewerWidth/2}>
           <Axis
+            top={0.5}
             domain={interval}
             range={[0, viewerWidth]}
             orientation='bottom'
-            hideLine={true}
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
-          <Axis domain={interval} range={[0, viewerWidth]} orientation='top' />
+          <Axis
+            top={-0.5}
+            domain={interval}
+            range={[0, viewerWidth]}
+            orientation='top'
+          />
         </Group>
       </>
     );
