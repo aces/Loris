@@ -196,7 +196,7 @@ class Login extends Component {
           <FormElement
             name={'loginIndex'}
             action={''}
-            fileUpload={'false'}
+            fileUpload={false}
             onSubmit={this.handleSubmit}
           >
             <TextboxElement
