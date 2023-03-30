@@ -122,6 +122,14 @@ class Upload extends \NDB_Page
         $candID       = $values['candID'] ?? null;
         $visitLabel   = $values['visit'] ?? null;
 
+        if (empty($request->getUploadedFiles()) && empty($values)) {
+            $upload_max_size = \Utility::getMaxUploadSize();
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "The uploaded file size ($upload_max_size) exceeds " .
+                "the upload_max_filesize or post_max_size directive in php.ini"
+            );
+        }
+
         if (is_null($uploadedFile)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'No file uploaded'
