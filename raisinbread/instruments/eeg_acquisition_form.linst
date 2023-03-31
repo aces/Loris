@@ -27,7 +27,6 @@ select{@}impedance_measured_before_applied{@}Impedances measure before applicati
 numeric{@}impedance_measure{@}Impedance measured:
 select{@}bad_electrodes_present{@}Were there any bad electrodes during impedances?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}bad_electrodes{@}If Yes, please register all bad electrodes
-textarea{@}hardware_filters_applied{@}What hardware filters were applied before acquisition?
 select{@}bad_channels_measured_after_applied{@}Bad channels measured after application on subject?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}bad_channels{@}Bad channels:
 header{@}{@}<h6>About placement:<br/> <b>Excellent</b> - meets all criteria for proper placement.<br/> <b>Average</b> - 1-2cm shift from proper placement (1 pinky finger width distance).<br/> <b>Poor</b> - >2 cm shift from proper placement (>1 pinky finger width distance). </h6>
@@ -45,6 +44,7 @@ text{@}eog_channels_other{@}If other, please specify
 textarea{@}artefacted_channels{@}Artefacted channels
 header{@}{@}<b><h3>EEG Acquisition</h3></b>
 textarea{@}software_filters_applied{@}What software filters were applied during acquisition?
+textarea{@}hardware_filters_applied{@}What hardware filters were applied before acquisition?
 time{@}eeg_session_start_time{@}EEG session Start time
 select{@}eeg_session_start_time_status{@}EEG session Start time{@}NULL=>''{-}'dnk'=>'DNK'{-}'not_answered'=>'Not Answered'
 time{@}eeg_session_end_time{@}EEG session End time
