@@ -9,11 +9,13 @@ $options = getopt(
     [
         "output-dir:",
         "file:",
+        "trim-formname",
     ]
 );
 
 $inputFile = $options['f'] ?? $options['file'] ?? '';
 $outputDir = $options['output-dir'] ?? '';
+$trimName  = isset($options['trim-formname']);
 
 if (empty($inputFile) || empty($outputDir)) {
     showHelp();
@@ -36,17 +38,37 @@ if ($fp === false) {
 
 $headers     = fgetcsv($fp);
 $instruments = [];
+$badMap = 0;
+$mapped = 0;
 while ($row = fgetcsv($fp)) {
     $inst = $row[1];
     if (!isset($instruments[$inst])) {
         $instruments[$inst] = [];
     }
-    $linstFormat = toLINST($row[3], $row[0], $row[4], $row[5]);
+    $fieldname = $row[0];
+    if ($trimName) {
+        $formname = $row[1];
+        if (strpos($fieldname, $formname) !== 0) {
+            $badMap++;
+            fwrite(STDERR, "Field $fieldname does not have form name $formname as a prefix\n");
+        } else {
+            // debug
+            //$oldname = $fieldname;
+            $mapped++;
+            $fieldname = preg_replace("/^" . preg_quote($formname) . "(_*)/", "", $fieldname);
+            // fwrite(STDERR, "Field $oldname became $fieldname\n");
+        }
+    }
+
+    $linstFormat = toLINST($row[3], $fieldname, $row[4], $row[5]);
     if (!empty($linstFormat)) {
         $instruments[$inst][] = $linstFormat;
     }
 }
 fclose($fp);
+if ($trimName) {
+    fwrite(STDERR, "Could not map $badMap fields\nMapped $mapped fields\n");
+}
 
 outputFiles($outputDir, $instruments);
 
@@ -151,7 +173,7 @@ function showHelp()
     global $argv;
     fprintf(
         STDERR,
-        "Usage: $argv[0] --file=filename --output-dir=instrumentdirectory\n"
+        "Usage: $argv[0] --file=filename --output-dir=instrumentdirectory [--trim-formname]\n"
     );
 }
 
