@@ -42,7 +42,7 @@ select{@}number_active_channels_status{@}Number of active channels{@}NULL=>''{-}
 select{@}eog_channels{@}EOG channels{@}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'
 text{@}eog_channels_other{@}If other, please specify
 textarea{@}artefacted_channels{@}Artefacted channels
-header{@}{@}<b><h3>EEG Acquisition</h3></b>
+header{@}{@}<b><h3>Filters</h3></b>
 textarea{@}software_filters_applied{@}What software filters were applied during acquisition?
 textarea{@}hardware_filters_applied{@}What hardware filters were applied before acquisition?
 time{@}eeg_session_start_time{@}EEG session Start time
