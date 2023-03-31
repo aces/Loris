@@ -128,8 +128,8 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
     echo "\nArchives\n";
     echo "----------------------------\n";
-    $archives = $DB->pselect(
-        'SELECT FilePath, InsertTime
+    $archives = $DB->pselectCol(
+        'SELECT FilePath
         FROM physiological_archive
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
@@ -138,30 +138,30 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
     echo "\nPhysiological File\n";
     echo "----------------------------\n";
-    $file = $DB->pselectRow(
-        'SELECT FilePath, OutputTypeName, SessionID
+    $eeg_files = $DB->pselectCol(
+        'SELECT DISTINCT FilePath
         FROM physiological_file
         JOIN `physiological_output_type` USING(PhysiologicalOutputTypeID)
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
-    print_r($file);
+    print_r($eeg_files);
 
     echo "\nPhysiological Metadata File\n";
     echo "----------------------------\n";
-    $metadata_file = $DB->pselectRow(
-        'SELECT ppf.Value AS FilePath
+    $metadata_files = $DB->pselectCol(
+        'SELECT DISTINCT ppf.Value AS FilePath
         FROM physiological_parameter_file as ppf
         LEFT JOIN parameter_type as pt USING (ParameterTypeID)
         WHERE PhysiologicalFileID=:pfid
         AND pt.Name = "eegjson_file"',
         ['pfid' => $physioFileID]
     );
-    print_r($metadata_file);
+    print_r($metadata_files);
 
     echo "\nChannels\n";
     echo "----------------------------\n";
-    $channels = $DB->pselect(
+    $channels = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_channel
         WHERE PhysiologicalFileID=:pfid',
@@ -171,37 +171,39 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
     echo "\nElectrodes\n";
     echo "----------------------------\n";
-    $electrodes = $DB->pselect(
+    $electrodes = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_electrode
+        JOIN physiological_coord_system_electrode_rel
+        USING (PhysiologicalElectrodeID)
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
     print_r($electrodes);
 
-    echo "\nEvents Files\n";
+    echo "\nEvent Files\n";
     echo "----------------------------\n";
-    $events_files = $DB->pselect(
+    $event_files = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_event_file
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
-    print_r($events_files);
+    print_r($event_files);
 
-    echo "\nEvents Archives\n";
+    echo "\nEvent Archives\n";
     echo "----------------------------\n";
-    $events_archives = $DB->pselect(
+    $event_archives = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_event_archive
         WHERE PhysiologicalFileID=:pfid',
         ['pfid' => $physioFileID]
     );
-    print_r($events_archives);
+    print_r($event_archives);
 
     echo "\nAnnotations Files\n";
     echo "----------------------------\n";
-    $annotations_files = $DB->pselect(
+    $annotations_files = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_annotation_file
         WHERE PhysiologicalFileID=:pfid',
@@ -209,9 +211,9 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
     );
     print_r($annotations_files);
 
-    echo "\nAnnotations Archives";
+    echo "\nAnnotations Archives\n";
     echo "----------------------------\n";
-    $annotations_archives = $DB->pselect(
+    $annotations_archives = $DB->pselectCol(
         'SELECT DISTINCT FilePath
         FROM physiological_annotation_archive
         WHERE PhysiologicalFileID=:pfid',
@@ -221,7 +223,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
     echo "\nChunks\n";
     echo "----------------------------\n";
-    $chunks = $DB->pselect(
+    $chunks = $DB->pselectCol(
         'SELECT ppf.Value AS FilePath
         FROM physiological_parameter_file as ppf
         LEFT JOIN parameter_type as pt USING (ParameterTypeID)
@@ -243,46 +245,55 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
         $files = [];
         foreach ($archives as $archive) {
-            $files[] = $data_path . $archive['FilePath'];
+            $files[] = $data_path . $archive;
         }
 
-        $files[] = $data_path . $file['FilePath'];
-        $files[] = $data_path . $metadata_file['FilePath'];
+        foreach ($eeg_files as $eeg_file) {
+            $files[] = $data_path . $eeg_file;
+        }
+
+        foreach ($metadata_files as $metadata_file) {
+            $files[] = $data_path . $metadata_file;
+        }
 
         foreach ($channels as $channel) {
-            $files[] = $data_path . $channel['FilePath'];
+            $files[] = $data_path . $channel;
         }
 
         foreach ($electrodes as $electrode) {
-            $files[] = $data_path . $electrode['FilePath'];
+            $files[] = $data_path . $electrode;
         }
 
-        foreach ($events_files as $events_file) {
-            $files[] = $data_path . $events_file['FilePath'];
+        foreach ($event_files as $event_file) {
+            $files[] = $data_path . $event_file;
         }
 
-        foreach ($events_archives as $events_archive) {
-            $files[] = $data_path . $events_archive['FilePath'];
+        foreach ($event_archives as $event_archive) {
+            $files[] = $data_path . $event_archive;
         }
 
         foreach ($annotations_files as $annotation_file) {
-            $files[] = $data_path . $annotation_file['FilePath'];
+            $files[] = $data_path . $annotation_file;
         }
 
         foreach ($annotations_archives as $annotations_archive) {
-            $files[] = $data_path . $annotations_archive['FilePath'];
+            $files[] = $data_path . $annotations_archive;
         }
 
         foreach ($files as $file) {
             echo "Deleting $file\n";
-            unlink($file);
+            try {
+                unlink($file);
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
         }
 
         foreach ($chunks as $chunk) {
-            deleteDirectory(dirname($data_path . $chunk['FilePath']));
+            deleteDirectory(dirname($data_path . $chunk));
         }
 
-        echo "\Deleting DB entries\n";
+        echo "\nDeleting DB entries\n";
         echo "----------------------------\n";
 
         // delete from the physiological_event_parameter_category_level table
@@ -368,8 +379,25 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         );
 
         // delete from the physiological_electrode table
+        $PhysiologicalElectrodeIDs = $DB->pselectCol(
+            'SELECT PhysiologicalElectrodeID
+            FROM physiological_coord_system_electrode_rel
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalElectrodeIDs)) {
+            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
+                $DB->delete(
+                    "physiological_electrode",
+                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID]
+                );
+            }
+        }
+
+        // delete from the physiological_coord_system_electrode_rel table
         $DB->delete(
-            "physiological_electrode",
+            "physiological_coord_system_electrode_rel",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
@@ -400,12 +428,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         // delete from the physiological_event_file table
         $DB->delete(
             "physiological_event_file",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
-        // delete from the physiological_chunk_process table
-        $DB->delete(
-            "physiological_chunk_process",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
@@ -555,7 +577,12 @@ function deleteDirectory($dir)
     }
 
     if (!is_dir($dir)) {
-        return unlink($dir);
+        try {
+            return unlink($dir);
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            return false;
+        }
     }
 
     foreach (scandir($dir) as $item) {
