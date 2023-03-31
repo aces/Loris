@@ -9,37 +9,37 @@ text{@}research_staff_one{@}Research staff 1 initials
 text{@}research_staff_two{@}Research staff 2 initials
 text{@}research_staff_three{@}Research staff 3 initials
 text{@}session_testing_room{@}Testing room information
-select{@}behavioural_assistant_present{@}Is there a behavioural assistant?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}behavioural_assistant_present{@}Is there a behavioural assistant?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 text{@}behavioural_assistant{@}Behavioural assistant initials
-select{@}subject_medication{@}Is subject under medication?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}subject_medication{@}Is subject under medication?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}subject_medication_dosage{@}Describe the medication and dosage
-select{@}head_measurement_taken{@}Was head measured?{@}'yes'=>'Yes'{-}'no'=>'No'
-select{@}head_measurement_unit{@}What is the unit used for head measurement?{@}'cm'=>'Centimeters (cm)'{-}'in'=>'Inches (in)'
+select{@}head_measurement_taken{@}Was head measured?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'
+select{@}head_measurement_unit{@}What is the unit used for head measurement?{@}NULL=>''{-}'cm'=>'Centimeters (cm)'{-}'in'=>'Inches (in)'
 numeric{@}head_measurement{@}What is the head measurement value?
 select{@}head_measurement_status{@}What is the head measurement value?{@}NULL=>''{-}'not_answered'=>'Not Answered'
-select{@}ecg_collected{@}ECG Collected?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
-select{@}subject_away_60cm_from_monitor{@}Subject is 60cm away from monitor?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}ecg_collected{@}ECG Collected?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}subject_away_60cm_from_monitor{@}Subject is 60cm away from monitor?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}subject_away_60cm_from_monitor_reason{@}If No, please explain the reason
-select{@}head_rest_used{@}Was a head rest used?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}head_rest_used{@}Was a head rest used?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 header{@}{@}<b><h3>Device information</h3></b>
 text{@}device_id{@}Device ID:
-select{@}impedance_measured_before_applied{@}Impedances measure before application on subject?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}impedance_measured_before_applied{@}Impedances measure before application on subject?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 numeric{@}impedance_measure{@}Impedance measured:
-select{@}bad_electrodes_present{@}Were there any bad electrodes during impedances?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}bad_electrodes_present{@}Were there any bad electrodes during impedances?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}bad_electrodes{@}If Yes, please register all bad electrodes
-select{@}bad_channels_measured_after_applied{@}Bad channels measured after application on subject?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}bad_channels_measured_after_applied{@}Bad channels measured after application on subject?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
 textarea{@}bad_channels{@}Bad channels:
 header{@}{@}<h6>About placement:<br/> <b>Excellent</b> - meets all criteria for proper placement.<br/> <b>Average</b> - 1-2cm shift from proper placement (1 pinky finger width distance).<br/> <b>Poor</b> - >2 cm shift from proper placement (>1 pinky finger width distance). </h6>
-select{@}placement_rating{@}Rate placement:{@}'na'=>'n/a'{-}'excellent'=>'Excellent'{-}'average'=>'Average'{-}'poor'=>'Poor'
+select{@}placement_rating{@}Rate placement:{@}NULL=>''{-}'na'=>'n/a'{-}'excellent'=>'Excellent'{-}'average'=>'Average'{-}'poor'=>'Poor'
 textarea{@}placement_comment{@}Comments on placement
-select{@}placement_photos_taken{@}Placement photos taken?{@}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
-select{@}acquisition_software{@}Acquisition software used{@}'eemagine'=>'Eemagine'{-}'neuro_scan'=>'(Neuro)scan'{-}'insep'=>'InsEP'{-}'biosemi'=>'BioSemi'{-}'netstation'=>'NetStation'{-}'brain_vision_recorder'=>'Brain Vision Recorder'{-}'emotiv'=>'Emotiv'{-}'actiview605_lores'=>'ActiView605-Lores'{-}'eeprobe'=>'EEProbe'{-}'tmsi'=>'TMSi'{-}'other'=>'Other'
+select{@}placement_photos_taken{@}Placement photos taken?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'dnk'=>'Do not know'
+select{@}acquisition_software{@}Acquisition software used{@}NULL=>''{-}'eemagine'=>'Eemagine'{-}'neuro_scan'=>'(Neuro)scan'{-}'insep'=>'InsEP'{-}'biosemi'=>'BioSemi'{-}'netstation'=>'NetStation'{-}'brain_vision_recorder'=>'Brain Vision Recorder'{-}'emotiv'=>'Emotiv'{-}'actiview605_lores'=>'ActiView605-Lores'{-}'eeprobe'=>'EEProbe'{-}'tmsi'=>'TMSi'{-}'other'=>'Other'
 text{@}acquisition_software_other{@}If other, please specify
-select{@}recording_reference{@}Recording reference used{@}'left_mastoid'=>'left mastoid'{-}'right_mastoid'=>'right mastoid'{-}'left_earlobe'=>'left earlobe'{-}'right_earlobe'=>'right earlobe'{-}'physically_linked_mastoids'=>'physically linked mastoids'{-}'physically_linked_earlobes'=>'physically linked earlobes'{-}'cz'=>'Cz'{-}'tip_nose'=>'tip of the nose'{-}'balanced_non_cephalic_reference'=>'balanced non-cephalic reference'{-}'other'=>'Other'
+select{@}recording_reference{@}Recording reference used{@}NULL=>''{-}'left_mastoid'=>'left mastoid'{-}'right_mastoid'=>'right mastoid'{-}'left_earlobe'=>'left earlobe'{-}'right_earlobe'=>'right earlobe'{-}'physically_linked_mastoids'=>'physically linked mastoids'{-}'physically_linked_earlobes'=>'physically linked earlobes'{-}'cz'=>'Cz'{-}'tip_nose'=>'tip of the nose'{-}'balanced_non_cephalic_reference'=>'balanced non-cephalic reference'{-}'other'=>'Other'
 text{@}recording_reference_other{@}If other, please specify
 text{@}number_active_channels{@}Number of active channels
 select{@}number_active_channels_status{@}Number of active channels{@}NULL=>''{-}'not_answered'=>'Not Answered'
-select{@}eog_channels{@}EOG channels{@}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'
+select{@}eog_channels{@}EOG channels{@}NULL=>''{-}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'
 text{@}eog_channels_other{@}If other, please specify
 textarea{@}artefacted_channels{@}Artefacted channels
 header{@}{@}<b><h3>Filters</h3></b>
