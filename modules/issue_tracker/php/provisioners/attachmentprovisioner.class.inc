@@ -42,9 +42,9 @@ class AttachmentProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 deleted,
                 user,
                 description,
-		file_size,
+                file_size,
                 date_deleted,
-		mime_type
+                mime_type
             FROM
                 issues_attachments
             WHERE
