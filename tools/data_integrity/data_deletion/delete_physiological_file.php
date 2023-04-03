@@ -181,6 +181,19 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
     );
     print_r($electrodes);
 
+    echo "\nCoordinate Systems\n";
+    echo "----------------------------\n";
+    $coordinate_systems = $DB->pselectCol(
+        'SELECT DISTINCT FilePath
+        FROM physiological_coord_system
+        JOIN physiological_coord_system_electrode_rel
+        USING (PhysiologicalCoordSystemID)
+        WHERE PhysiologicalFileID=:pfid
+        AND FilePath IS NOT NULL',
+        ['pfid' => $physioFileID]
+    );
+    print_r($coordinate_systems);
+
     echo "\nEvent Files\n";
     echo "----------------------------\n";
     $event_files = $DB->pselectCol(
@@ -262,6 +275,10 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
 
         foreach ($electrodes as $electrode) {
             $files[] = $data_path . $electrode;
+        }
+
+        foreach ($coordinate_systems as $coordinate_system) {
+            $files[] = $data_path . $coordinate_system;
         }
 
         foreach ($event_files as $event_file) {
@@ -395,6 +412,23 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        // delete from the physiological_coord_system table
+        $PhysiologicalCoordSystemIDs = $DB->pselectCol(
+            'SELECT PhysiologicalCoordSystemID
+            FROM physiological_coord_system_electrode_rel
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalCoordSystemIDs)) {
+            foreach ($PhysiologicalCoordSystemIDs as $PhysiologicalCoordSystemID) {
+                $DB->delete(
+                    "physiological_coord_system",
+                    ["PhysiologicalCoordSystemID" => $PhysiologicalCoordSystemID]
+                );
+            }
+        }
+
         // delete from the physiological_coord_system_electrode_rel table
         $DB->delete(
             "physiological_coord_system_electrode_rel",
@@ -418,6 +452,23 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             "physiological_event_archive",
             ["PhysiologicalFileID" => $physioFileID]
         );
+
+        // delete from the physiological_task_event_opt table
+        $PhysiologicalTaskEventIDs = $DB->pselectCol(
+            'SELECT PhysiologicalTaskEventID
+            FROM physiological_task_event
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalTaskEventIDs)) {
+            foreach ($PhysiologicalTaskEventIDs as $PhysiologicalTaskEventID) {
+                $DB->delete(
+                    "physiological_task_event_opt",
+                    ["PhysiologicalTaskEventID" => $PhysiologicalTaskEventID]
+                );
+            }
+        }
 
         // delete from the physiological_task_event table
         $DB->delete(
@@ -455,6 +506,25 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $output,
             $DB
         );
+
+        // delete from the physiological_task_event_opt table
+        $PhysiologicalTaskEventIDs = $DB->pselectCol(
+            'SELECT PhysiologicalTaskEventID
+            FROM physiological_task_event
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalTaskEventIDs)) {
+            foreach ($PhysiologicalTaskEventIDs as $PhysiologicalTaskEventID) {
+                _printResultsSQL(
+                    "physiological_task_event_opt",
+                    ["PhysiologicalTaskEventID" => $PhysiologicalTaskEventID],
+                    $output,
+                    $DB
+                );
+            }
+        }
 
         //delete from the physiological_task_event table
         _printResultsSQL(
@@ -499,9 +569,47 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $DB
         );
 
-        //delete from the physiological_electrode table
+        // delete from the physiological_electrode table
+        $PhysiologicalElectrodeIDs = $DB->pselectCol(
+            'SELECT PhysiologicalElectrodeID
+            FROM physiological_coord_system_electrode_rel
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalElectrodeIDs)) {
+            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
+                _printResultsSQL(
+                    "physiological_electrode",
+                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID],
+                    $output,
+                    $DB
+                );
+            }
+        }
+
+        // delete from the physiological_coord_system table
+        $PhysiologicalCoordSystemIDs = $DB->pselectCol(
+            'SELECT PhysiologicalCoordSystemID
+            FROM physiological_coord_system_electrode_rel
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalCoordSystemIDs)) {
+            foreach ($PhysiologicalCoordSystemIDs as $PhysiologicalCoordSystemID) {
+                _printResultsSQL(
+                    "physiological_coord_system",
+                    ["PhysiologicalCoordSystemID" => $PhysiologicalCoordSystemID],
+                    $output,
+                    $DB
+                );
+            }
+        }
+
+        // delete from the physiological_coord_system_electrode_rel table
         _printResultsSQL(
-            "physiological_electrode",
+            "physiological_coord_system_electrode_rel",
             ["PhysiologicalFileID" => $physioFileID],
             $output,
             $DB
