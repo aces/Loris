@@ -6,7 +6,7 @@ behavioural_assistant{-}Required if there is a behavioural assistant{-}behaviour
 subject_medication_dosage{-}Required if there is an ongoing medication{-}subject_medication{@}=={@}yes
 head_measurement_unit{-}Required if head measurement was taken{-}head_measurement_taken{@}=={@}yes
 head_measurement{-}Required if head measurement was taken{-}head_measurement_taken{@}=={@}yes
-subject_away_60cm_from_monitor_reason{-}Required if subject cannot be 60cm away from montior{-}subject_away_60cm_from_monitor{@}=={@}no
+subject_away_60cm_from_monitor_reason{-}Required if subject cannot be 60cm away from monitor{-}subject_away_60cm_from_monitor{@}=={@}no
 impedance_measure{-}Required when impedance is measured{-}impedance_measured_before_applied{@}=={@}yes
 bad_electrodes{-}Required when bad electrodes are present{-}bad_electrodes_present{@}=={@}yes
 bad_channels{-}Required when bad channels are present{-}bad_channels_measured_after_applied{@}=={@}yes
