@@ -161,7 +161,8 @@ class UploadHelper
             'deleted'     => 0,
             'user'        => $fileToUpload->inserted_by,
             'description' => $fileToUpload->description,
-            'file_size'   => $fileToUpload->size,
+	    'file_size'   => $fileToUpload->size,
+	    'date_deleted'=> date('Y-m-d h:i:s', time()),
             'mime_type'   => $fileToUpload->mime_type
         ];
         try {

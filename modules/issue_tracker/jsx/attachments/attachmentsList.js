@@ -178,7 +178,7 @@ class AttachmentsList extends Component {
         <div style={footerCSS}>
           <ButtonElement
             onUserInput={this.deleteAttachment}
-            label={'Delete attachment'}
+            label={'Delete attachments'}
           />
         </div>
       </Modal>
@@ -191,9 +191,48 @@ class AttachmentsList extends Component {
         const deleteData = JSON.stringify(item);
         // Hide "soft" deleted attachments
         if (parseInt(item.deleted) === 1) {
-          continue;
-        }
-        attachmentsRows.unshift(
+            attachmentsRows.unshift(
+              <Fragment key={key}>
+            <div className='row'>
+              <hr/>
+              <div className='col-md-3'>
+                <div className='col-md-5'><b>Date of attachment: </b></div>
+                <div className='col-md-7'>{item.date_added}</div>
+              </div>
+              <div className='col-md-8'>
+                <div className='col-md-1'><b>File: </b></div>
+                <div className='col-md-7'>{item.file_name}</div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-md-3'>
+                <div className='col-md-5'><b>Date of deletion: </b></div>
+                <div className='col-md-7'>{item.date_deleted}
+              </div>
+              </div>
+              <div className='col-md-8'>
+                <div className='col-md-1'><b>Status: </b></div>
+                <div className='col-md-7'>Attachment has been deleted</div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-md-3'>
+                <div className='col-md-5'><b>User: </b></div>
+                <div className='col-md-7'>{item.user}</div>
+              </div>
+              <div className='col-md-8'>
+                {item.description ? (
+                  <>
+                    <div className='col-md-2'><b>Description: </b></div>
+                    <div className='col-md-10'>{item.description}</div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+           </Fragment>
+        );
+        } else {
+          attachmentsRows.unshift(
           <Fragment key={key}>
             <div className='row'>
               <hr/>
@@ -203,7 +242,9 @@ class AttachmentsList extends Component {
               </div>
               <div className='col-md-8'>
                 <div className='col-md-1'><b>File: </b></div>
-                <div className='col-md-11'><i>{item.file_name}</i></div>
+                <div className='col-md-11'>
+                  <i>{item.file_name}</i>
+                </div>
               </div>
             </div>
             <div className='row'>
@@ -223,6 +264,7 @@ class AttachmentsList extends Component {
             {this.displayAttachmentOptions(deleteData, item)}
           </Fragment>
         );
+       }
       }
     }
     const issueAttachments = attachmentsRows.length > 0 ? (
