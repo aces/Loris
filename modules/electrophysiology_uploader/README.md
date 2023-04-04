@@ -13,11 +13,11 @@ for registered LORIS candidates and timepoints.
 ## Scope
 
 The electrophysiology uploader has the following built-in capabilities to facilitate 
-timely eeg insertion into the LORIS database. Specifically, it allows to browse
+timely EEG insertion into the LORIS database. Specifically, it allows the user to browse
 uploaded recordings using the `Browse` tab and upload recordings using the `Upload` 
 tab.
 
-EEG recordings can be reuploaded multiple times. Previous upload attempts will be backup in _EEGUploadIncomingPath_/archives/.
+EEG recordings can be re-uploaded multiple times. Previous upload attempts will be backed up in _EEGUploadIncomingPath_/archives/.
 
 ## Permissions
 
