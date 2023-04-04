@@ -125,8 +125,8 @@ class Upload extends \NDB_Page
         if (empty($request->getUploadedFiles()) && empty($values)) {
             $upload_max_size = \Utility::getMaxUploadSize();
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                "The uploaded file size ($upload_max_size) exceeds " .
-                "the upload_max_filesize or post_max_size directive in php.ini"
+                "The uploaded file size exceeds the upload_max_filesize " .
+                "or post_max_size directive in php.ini ($upload_max_size)"
             );
         }
 
@@ -176,7 +176,10 @@ class Upload extends \NDB_Page
             );
         }
 
-        // Check for existing files
+        // Check for an existing file
+        // If found, add a timestamp suffix to avoid collision
+        // with any other existing upload attempt
+        // and move the renamed file in _EEGUploadIncomingPath_/archives/
         $targetPath = $targetdir->getPathname() . '/' . $filename;
         if (file_exists($targetPath)) {
             $archiveFilename = str_replace(

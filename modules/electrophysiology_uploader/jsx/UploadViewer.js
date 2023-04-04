@@ -77,14 +77,12 @@ export default function UploadViewer(props) {
   ];
 
   return (
-    <>
-      <FilterableDataTable
-        name='eeg_upload_viewer'
-        data={props.data}
-        fields={fields}
-        getFormattedCell={formatColumn}
-      />
-    </>
+    <FilterableDataTable
+      name='eeg_upload_viewer'
+      data={props.data}
+      fields={fields}
+      getFormattedCell={formatColumn}
+    />
   );
 }
 

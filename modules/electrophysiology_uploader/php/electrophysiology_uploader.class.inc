@@ -50,7 +50,7 @@ class Electrophysiology_Uploader extends \DataFrameworkMenu
      */
     public function useProjectFilter(): bool
     {
-        return false;
+        return true;
     }
 
     /**
