@@ -426,17 +426,16 @@ class Files extends \NDB_Page
         }
 
         if (count($addedFiles) > 0) {
-            $uploadNotifier     = new \NDB_Notifier(
+            $uploadNotifier = new \NDB_Notifier(
                 "document_repository",
                 "upload"
             );
-            $msg_data           = [
+            $msg_data       = [
                 'newDocument' => 'Document Repository',
                 'documents'   => $addedFiles,
             ];
             $uploadNotifier->notify($msg_data);
         }
-
 
         $uploadResponse  = '<div class="upload-response">';
         $uploadResponse .= join("<br/><br/>", $responseMessages);
