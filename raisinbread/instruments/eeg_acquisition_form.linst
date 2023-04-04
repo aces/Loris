@@ -1,0 +1,120 @@
+title{@}EEG Acquisition Form
+date{@}Date_taken{@}Date of Administration{@}{@}
+static{@}Candidate_Age{@}Candidate Age (Months)
+static{@}Window_Difference{@}Window Difference (+/- Days)
+select{@}Examiner{@}Examiner{@}NULL=>''
+textarea{@}general_comments{@}General session notes, any important details (e.g. technical error, issue with net, etc.)
+select{@}general_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<b><h3>General information</h3></b>
+text{@}research_staff_one{@}Research staff 1 initials
+select{@}research_staff_one_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}research_staff_two{@}Research staff 2 initials
+select{@}research_staff_two_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}research_staff_three{@}Research staff 3 initials
+select{@}research_staff_three_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}session_testing_room{@}Testing room information
+select{@}session_testing_room_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}behavioural_assistant_present{@}Is there a behavioural assistant?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+text{@}behavioural_assistant{@}Behavioural assistant initials
+select{@}behavioural_assistant_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}subject_medication{@}Is subject under medication?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+textarea{@}subject_medication_dosage{@}Specify medication and dosage
+select{@}subject_medication_dosage_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}head_measurement_taken{@}Was head measured?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_answered'=>'Not Answered'
+select{@}head_measurement_unit{@}What is the unit used for head measurement?{@}NULL=>''{-}'cm'=>'Centimeters (cm)'{-}'in'=>'Inches (in)'{-}'not_answered'=>'Not Answered'
+numeric{@}head_measurement{@}What is the head measurement value?{@}undefined{@}undefined
+select{@}head_measurement_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}ecg_collected{@}ECG Collected?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+select{@}subject_away_60cm_from_monitor{@}Subject is 60cm away from monitor?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+textarea{@}subject_away_60cm_from_monitor_reason{@}If No, please explain the reason
+select{@}subject_away_60cm_from_monitor_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}head_rest_used{@}Was a head rest used?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+header{@}{@}<b><h3>Device information</h3></b>
+text{@}device_id{@}Device ID
+select{@}device_id_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}impedance_measured_before_applied{@}Impedances measure before application on subject?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+numeric{@}impedance_measure{@}Impedance measured{@}undefined{@}undefined
+select{@}impedance_measure_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}bad_electrodes_present{@}Were there any bad electrodes during impedances?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+textarea{@}bad_electrodes{@}If Yes, please register all bad electrodes
+select{@}bad_electrodes_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}bad_channels_measured_after_applied{@}Bad channels measured after application on subject?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+textarea{@}bad_channels{@}Bad channels
+select{@}bad_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h6>About placement:<br/> <b>Excellent</b> - meets all criteria for proper placement.<br/> <b>Average</b> - 1-2cm shift from proper placement (1 pinky finger width distance).<br/> <b>Poor</b> - >2 cm shift from proper placement (>1 pinky finger width distance). </h6>
+select{@}placement_rating{@}Rate placement{@}NULL=>''{-}'na'=>'n/a'{-}'excellent'=>'Excellent'{-}'average'=>'Average'{-}'poor'=>'Poor'{-}'not_answered'=>'Not Answered'
+textarea{@}placement_comment{@}Comments on placement
+select{@}placement_comment_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}placement_photos_taken{@}Placement photos taken?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+select{@}acquisition_software{@}Acquisition software used{@}NULL=>''{-}'eemagine'=>'Eemagine'{-}'neuro_scan'=>'(Neuro)scan'{-}'insep'=>'InsEP'{-}'biosemi'=>'BioSemi'{-}'netstation'=>'NetStation'{-}'brain_vision_recorder'=>'Brain Vision Recorder'{-}'emotiv'=>'Emotiv'{-}'actiview605_lores'=>'ActiView605-Lores'{-}'eeprobe'=>'EEProbe'{-}'tmsi'=>'TMSi'{-}'other'=>'Other'{-}'not_answered'=>'Not Answered'
+text{@}acquisition_software_other{@}If other, please specify
+select{@}acquisition_software_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}recording_reference{@}Recording reference used{@}NULL=>''{-}'left_mastoid'=>'left mastoid'{-}'right_mastoid'=>'right mastoid'{-}'left_earlobe'=>'left earlobe'{-}'right_earlobe'=>'right earlobe'{-}'physically_linked_mastoids'=>'physically linked mastoids'{-}'physically_linked_earlobes'=>'physically linked earlobes'{-}'cz'=>'Cz'{-}'tip_nose'=>'tip of the nose'{-}'balanced_non_cephalic_reference'=>'balanced non-cephalic reference'{-}'other'=>'Other'{-}'not_answered'=>'Not Answered'
+text{@}recording_reference_other{@}If other, please specify
+select{@}recording_reference_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}number_active_channels{@}Number of active channels
+select{@}number_active_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}eog_channels{@}EOG channels{@}NULL=>''{-}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'{-}'not_answered'=>'Not Answered'
+text{@}eog_channels_other{@}If other, please specify
+select{@}eog_channels_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}artefacted_channels{@}Artefacted channels
+select{@}artefacted_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<b><h3>Filters</h3></b>
+textarea{@}software_filters_applied{@}What software filters were applied during acquisition?
+select{@}software_filters_applied_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}hardware_filters_applied{@}What hardware filters were applied before acquisition?
+select{@}hardware_filters_applied_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}eeg_session_start_time{@}EEG session Start time
+select{@}eeg_session_start_time_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}eeg_session_end_time{@}EEG session End time
+select{@}eeg_session_end_time_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Resting state task</h3>
+select{@}resting_state_eeg_acquired{@}Resting State EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'{-}'not_answered'=>'Not Answered'
+textarea{@}resting_state_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}resting_state_eeg_incomplete_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}resting_state_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'{-}'not_answered'=>'Not Answered'
+select{@}resting_state_subject_mood_rating{@}Resting State Subject Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'{-}'not_answered'=>'Not Answered'
+textarea{@}resting_state_subject_mood_rating_comments{@}Comments on subject mood
+select{@}resting_state_subject_mood_rating_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}resting_state_comments{@}Comments on the resting state
+select{@}resting_state_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Task 1</h3>
+select{@}task1_eeg_acquired{@}Task 1 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'{-}'not_answered'=>'Not Answered'
+textarea{@}task1_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}task1_eeg_incomplete_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}task1_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'{-}'not_answered'=>'Not Answered'
+select{@}task1_subject_mood_rating{@}Task 1 Subject Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'{-}'not_answered'=>'Not Answered'
+textarea{@}task1_subject_mood_rating_comments{@}Comments on subject mood
+select{@}task1_subject_mood_rating_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}task1_comments{@}Comments on Task 1
+select{@}task1_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Task 2</h3>
+select{@}task2_eeg_acquired{@}Task 2 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'{-}'not_answered'=>'Not Answered'
+textarea{@}task2_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}task2_eeg_incomplete_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}task2_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'{-}'not_answered'=>'Not Answered'
+select{@}task2_subject_mood_rating{@}Task 2 Subject Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'{-}'not_answered'=>'Not Answered'
+textarea{@}task2_subject_mood_rating_comments{@}Comments on subject mood
+select{@}task2_subject_mood_rating_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}task2_comments{@}Comments on Task 2
+select{@}task2_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Task 3</h3>
+select{@}task3_eeg_acquired{@}Task 3 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'{-}'not_answered'=>'Not Answered'
+textarea{@}task3_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}task3_eeg_incomplete_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}task3_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'{-}'not_answered'=>'Not Answered'
+select{@}task3_subject_mood_rating{@}Task 3 Subject Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'{-}'not_answered'=>'Not Answered'
+textarea{@}task3_subject_mood_rating_comments{@}Comments on subject mood
+select{@}task3_subject_mood_rating_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}task3_comments{@}Comments on Task 3
+select{@}task3_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+header{@}{@}<h3>Task 4</h3>
+select{@}task4_eeg_acquired{@}Task 4 EEG Acquired?{@}NULL=>''{-}'not_started'=>'Not Started'{-}'complete'=>'Complete'{-}'incomplete'=>'Incomplete'{-}'not_answered'=>'Not Answered'
+textarea{@}task4_eeg_incomplete_reason{@}If Incomplete, why were you unable to complete the task?
+select{@}task4_eeg_incomplete_reason_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}task4_attempts{@}Number of attempts{@}NULL=>''{-}'1'=>'1'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'more_than_5'=>'More than 5'{-}'not_answered'=>'Not Answered'
+select{@}task4_subject_mood_rating{@}Task 4 Subject Mood Rating{@}NULL=>''{-}'1'=>'1 - Screaming, fussed out'{-}'2'=>'2'{-}'3'=>'3'{-}'4'=>'4'{-}'5'=>'5 - Very calm the whole time'{-}'not_answered'=>'Not Answered'
+textarea{@}task4_subject_mood_rating_comments{@}Comments on subject mood
+select{@}task4_subject_mood_rating_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}task4_comments{@}Comments on Task 4
+select{@}task4_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
