@@ -395,7 +395,7 @@ class FieldSelector extends Component {
       fetch(loris.BaseURL
         + '/AjaxHelper.php'
         + '?Module=dqt'
-        + '&script=datadictionary.php',
+        + '&script=datadictionary.php'
         + '&category=' + category)
       .then((resp) => resp.json())
       .then( (data) => {

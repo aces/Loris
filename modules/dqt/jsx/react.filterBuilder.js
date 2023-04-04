@@ -116,7 +116,7 @@ class FilterRule extends Component {
     if (event.target.value) {
       rule.instrument = event.target.value;
       fetch(
-        loris.BaseURL + + '/dqt/ajax/datadictionary.php?category='
+        loris.BaseURL + '/dqt/ajax/datadictionary.php?category='
             + rule.instrument,
         {credentials: 'same-origin'},
       )
