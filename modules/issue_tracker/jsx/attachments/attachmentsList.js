@@ -193,7 +193,7 @@ class AttachmentsList extends Component {
         if (parseInt(item.deleted) === 1) {
             attachmentsRows.unshift(
               <Fragment key={key}>
-            <div className='row'>
+              <div className='row'>
               <hr/>
               <div className='col-md-3'>
                 <div className='col-md-5'><b>Date of attachment: </b></div>
