@@ -332,6 +332,7 @@ class Files extends \NDB_Page
 
         $responseMessages = [];
         $errorCounter     = 0;
+        $addedFiles       = [];
 
         foreach ($uploadedFiles as $uploadedFile) {
             $filename = urldecode($uploadedFile->getClientFilename());
@@ -420,17 +421,22 @@ class Files extends \NDB_Page
                 ]
             );
 
+            $addedFiles[]       = $filename;
+            $responseMessages[] = "$filename: Success";
+        }
+
+        if (count($addedFiles) > 0) {
             $uploadNotifier     = new \NDB_Notifier(
                 "document_repository",
                 "upload"
             );
             $msg_data           = [
                 'newDocument' => 'Document Repository',
-                'document'    => $filename,
+                'documents'   => $addedFiles,
             ];
-            $responseMessages[] = "$filename: Success";
             $uploadNotifier->notify($msg_data);
         }
+
 
         $uploadResponse  = '<div class="upload-response">';
         $uploadResponse .= join("<br/><br/>", $responseMessages);
