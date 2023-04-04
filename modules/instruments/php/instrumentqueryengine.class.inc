@@ -13,6 +13,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
     protected $loris;
 
     /**
+     * Cache of an instrument's visits for getVisitList
+     */
+    private $visitcache = [];
+
+
+    /**
      * Constructor
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
@@ -231,8 +237,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             }
         }
     }
-
-    private $visitcache = [];
 
     /**
      * Get list of visits that an instrument is valid at
