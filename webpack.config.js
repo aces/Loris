@@ -292,6 +292,11 @@ const lorisModules = {
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
+  ],
   imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
