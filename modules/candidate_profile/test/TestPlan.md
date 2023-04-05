@@ -5,7 +5,7 @@
    a CandID that the logged in user has access to. The page should load
    with (at a minimum) a "Candidate Info" card. Ensure that the links
    in the "Visits" work.
-2. Access the module the using same URL while logged out. Ensure there is a permission
+2. Access the module using the same URL while logged out. Ensure there is a permission
    denied page with an appropriate HTTP response code and no cards are
    displayed.
 3. Log back in, and access a URL for a candidate that the user should
