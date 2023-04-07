@@ -44,7 +44,7 @@ Test Battery.
 ### New Test Button
 
 **Testing add functionality**
-Click the "New Test" button on the upper right corner of the data table.
+Click the "New Test" button in the upper right corner of the data table.
   1. Check that you cannot add an entry without filling out the required fields: `Instrument`, `Minimum age (days)`, `Maximum age (days)`, `Stage`.
   2. Check that you can only enter positive numbers (including 0) in Minimum age (days) and Maximum age (days).
   3. Check that you can only enter positive numbers (including 0) in Instrument order.
@@ -68,7 +68,7 @@ Click the "New Test" button on the upper right corner of the data table.
 
 **Testing Change Status column**
   1. Press the `Deactivate` button in the `Change Status` column on an entry in the data table.
-     - Ensure that when you press "Yes", a success message appears and the page refreshes.
+     - Ensure that when you press "Yes", a success message appears and the table data refreshes.
      - Ensure the entry has the new Active status in the data table.
   2. Repeat step 1 using the `Activate` button.
 
