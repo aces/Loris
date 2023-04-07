@@ -56,7 +56,7 @@ is selected, the file name should should start with [PSCID]\_[Visit Label]\_[Ins
   5. After you selected the file click on **Upload File**
     - An error dialog should appear to notify that you must name the file according to the requested format (unless already done so)
     - Once file is named properly clicking on **Upload File** button should trigger file upload and display a progress bar.
-  6. Once the file finished uploading a modal containing a success message should appear with an 'OK' button.
+  6. Once the file finished uploading, a modal containing a success message should appear with an 'OK' button.
   7. Click on the 👉 **OK** button and the page should refresh to the browse tab. Make sure the file you just uploaded is shown in the data table.
 
 **Test file browsing** 
