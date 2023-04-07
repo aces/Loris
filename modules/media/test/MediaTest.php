@@ -132,7 +132,7 @@ class MediaTest extends LorisIntegrationTest
 
     }
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
      * @param string  $element The input element loaction
      * @param string  $table   The first row location in the table
