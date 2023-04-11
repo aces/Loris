@@ -829,18 +829,30 @@ class ImageDownloadButtons extends Component {
                         BaseURL={this.props.BaseURL}
                         Label="Download NRRD"
         />
-        <DownloadButton FileName={this.props.BvalFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BVAL"
-        />
-        <DownloadButton FileName={this.props.BvecFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BVEC"
-        />
-        <DownloadButton FileName={this.props.JsonFile}
-                        BaseURL={this.props.BaseURL}
-                        Label="Download BIDS JSON"
-        />
+        { this.props.NiiFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/nifti'}
+                          Label="Download NIfTI"
+          /> :
+          null
+        }
+        {this.props.BvalFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bval'}
+                          Label="Download BVAL"
+          /> :
+          null
+        }
+        {this.props.BvecFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bvec'}
+                          Label="Download BVEC"
+          /> :
+          null
+        }
+        {this.props.JsonFile ?
+          <DownloadButton URL={this.props.APIFile + '/format/bidsjson'}
+                          Label="Download BIDS JSON"
+          /> :
+          null
+        }
         <LongitudinalViewButton FileID={this.props.FileID}
                                 BaseURL={this.props.BaseURL}
                                 OtherTimepoints={this.props.OtherTimepoints}
@@ -857,6 +869,7 @@ ImageDownloadButtons.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
@@ -925,6 +938,7 @@ class ImagePanelBody extends Component {
           XMLProtocol={this.props.XMLProtocol}
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
+          NiiFile={this.props.NiiFile}
           BvalFile={this.props.BvalFile}
           BvecFile={this.props.BvecFile}
           JsonFile={this.props.JsonFile}
@@ -951,6 +965,7 @@ ImagePanelBody.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
@@ -1042,6 +1057,7 @@ class ImagePanel extends Component {
               XMLProtocol={this.props.XMLProtocol}
               XMLReport={this.props.XMLReport}
               NrrdFile={this.props.NrrdFile}
+              NiiFile={this.props.NiiFile}
               BvalFile={this.props.BvalFile}
               BvecFile={this.props.BvecFile}
               JsonFile={this.props.JsonFile}
@@ -1068,6 +1084,7 @@ ImagePanel.propTypes = {
   XMLProtocol: PropTypes.string,
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
+  NiiFile: PropTypes.string,
   BvalFile: PropTypes.string,
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,

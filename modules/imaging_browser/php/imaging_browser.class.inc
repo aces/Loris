@@ -137,6 +137,12 @@ class Imaging_Browser extends \DataFrameworkMenu
         $config = \NDB_Config::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
+        // get entity type options
+        $entityType = [
+            'Human'   => 'Human',
+            'Scanner' => 'Scanner',
+        ];
+
         return [
             'sites'         => $siteList,
             'projects'      => $list_of_projects,
@@ -144,6 +150,7 @@ class Imaging_Browser extends \DataFrameworkMenu
             'sequenceTypes' => $sequenceTypes,
             'pendingNew'    => $pending,
             'configLabels'  => $toTable_scan_types,
+            'entityType'    => $entityType,
         ];
 
     }

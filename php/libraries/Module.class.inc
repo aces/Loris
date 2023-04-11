@@ -104,12 +104,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         protected string $name,
         protected string $dir,
     ) {
-        $loglevel = $loris->getConfiguration()
-            ->getLogSettings()
-            ->getRequestLogLevel();
-
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
-
         parent::__construct(
             new \ArrayIterator(
                 [

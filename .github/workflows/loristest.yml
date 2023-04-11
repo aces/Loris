@@ -18,7 +18,7 @@ jobs:
             ci_node_index: [0,1,2,3]
 
             include:
-            # add a variable but do not display it in the job's name 
+            # add a variable but do not display it in the job's name
             - ci_node_total: 4
 
             - testsuite: 'static'
@@ -29,7 +29,7 @@ jobs:
               php: '8.1'
             - testsuite: 'unit'
               php: '8.2'
-            
+
     steps:
     - uses: actions/checkout@v2
 
@@ -63,7 +63,7 @@ jobs:
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler 
+                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 

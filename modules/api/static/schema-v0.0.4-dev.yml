@@ -30,6 +30,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
+  /sites:
+    get:
+      tags:
+        - Sites
+      summary: List all sites available to the requesting user
+      responses:
+        '200':
+          description: A list of all sites for the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sites'
   /projects:
     get:
       tags:
@@ -1703,6 +1715,22 @@ paths:
                 format: binary
 components:
   schemas:
+    Sites:
+      type: object
+      properties:
+        Sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    Site:
+      type: object
+      properties:
+        Name:
+          type: string
+        Alias:
+          type: string
+        MRI alias:
+          type: string
     Project:
       type: object
       properties:

@@ -42,6 +42,7 @@ class VisitsPopulator
     {
         $this->DB     = $DB;
         $this->Config = \NDB_Config::singleton();
+
     }
 
     /**

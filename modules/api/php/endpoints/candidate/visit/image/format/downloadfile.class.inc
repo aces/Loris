@@ -23,24 +23,50 @@ use \LORIS\api\Endpoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class DownloadFile extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
-
-    /**
-     * The requested Image
-     *
-     * @var \LORIS\Image
-     */
-    private $_image;
+    private $_format;
+    private $_info;
+    private $_file_type;
+    private $_content_type;
 
     /**
      * Contructor
      *
-     * @param \LORIS\Image $image The requested image
+     * @param \LORIS\Image $image  The requested image
+     * @param string       $format The format user wishes to download
      */
-    public function __construct(\LORIS\Image $image)
+    public function __construct(\LORIS\Image $image, string $format)
     {
-        $this->_image = $image;
+        $this->_format = $format;
+
+        switch ($this->_format) {
+        case 'thumbnail':
+            $this->_info         = $image->getThumbnailFileInfo();
+            $this->_file_type    = "Thumbnail";
+            $this->_content_type = 'image/jpeg';
+            break;
+        case 'nifti':
+            $this->_info         = $image->getNiiFileInfo();
+            $this->_file_type    = "NIfTI";
+            $this->_content_type = 'application/octet-stream';
+            break;
+        case 'bval':
+            $this->_info         = $image->getBvalFileInfo();
+            $this->_file_type    = "NIfTI BVAL";
+            $this->_content_type = 'application/text';
+            break;
+        case 'bvec':
+            $this->_info         = $image->getBvecFileInfo();
+            $this->_file_type    = "NIfTI BVEC";
+            $this->_content_type = 'application/text';
+            break;
+        case 'bidsjson':
+            $this->_info         = $image->getBidsJsonFileInfo();
+            $this->_file_type    = "BIDS JSON";
+            $this->_content_type = 'application/json';
+            break;
+        }
     }
 
     /**
@@ -100,23 +126,22 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handleGET(): ResponseInterface
     {
-        $info = $this->_image->getThumbnailFileInfo();
-
-        if (!$info->isFile()) {
-            error_log('Thumbnail not found');
+        if (!$this->_info->isFile()) {
+            $this->logger->error("$this->_file_type file not found");
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        if (!$info->isReadable()) {
-            error_log('Thumbnail exists but is not readable by webserver');
+        if (!$this->_info->isReadable()) {
+            $this->logger->error(
+                "$this->_file_type file exists but is not readable by webserver"
+            );
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $filename = $info->getFilename();
-
-        $realpath = $info->getRealPath();
+        $filename = $this->_info->getFilename();
+        $realpath = $this->_info->getRealPath();
         if ($realpath === false) {
-            $realpath = $info->getPath() . "/" . $info->getFilename();
+            $realpath = $this->_info->getPath() . "/" . $this->_info->getFilename();
         }
 
         $body = new \LORIS\Http\FileStream($realpath, 'r');
@@ -125,7 +150,7 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $body,
             200,
             [
-                'Content-Type'        => 'image/jpeg',
+                'Content-Type'        => $this->_content_type,
                 'Content-Disposition' => 'attachment; filename=' . $filename,
             ]
         );
@@ -140,16 +165,15 @@ class Thumbnail extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $info = $this->_image->getThumbnailFileInfo();
 
-        if (!$info->isFile() || !$info->isReadable()) {
+        if (!$this->_info->isFile() || !$this->_info->isReadable()) {
             return '';
         }
 
         $signature = [
-            'filename' => $info->getFilename(),
-            'size'     => $info->getSize(),
-            'mtime'    => $info->getMTime(),
+            'filename' => $this->_info->getFilename(),
+            'size'     => $this->_info->getSize(),
+            'mtime'    => $this->_info->getMTime(),
         ];
 
         return md5(json_encode($signature));

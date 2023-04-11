@@ -13,6 +13,7 @@ changes in the following format: PR #1234***
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
 - Added the NOT NULL constraint on Project Name (PR #8295)
+- Added ability to display images in issue tracker tickets (PR #8346)
 - Migrated instrument permissions from config.xml to database and added the ability
   to manage instrument permissions in the frontend from the `instrument_manager`
   module. (PR #8302)
@@ -24,6 +25,8 @@ changes in the following format: PR #1234***
 - BVL Feedback widget only shows notifications for the users sites / projects (PR #7848)
 - Add Date status change value in session table (PR #8350)
 - Fixed the Candidate Age at Death field label and Data Dictionary item for LINST instruments (PR #8362)
+- Allow clearing a previously entered consent status in candidate parameters (PR #7772)
+- Add code sanitizer before dangerouslySetInnerHTML is used in login to protect against XSS attacks (PR #7491)
 
 #### Bug Fixes
 - placeholder
@@ -183,6 +186,7 @@ if a candidate has some visits that the user should not see. Fixes error where p
 #### API
 - Creation of a new version of the API under development (v0.0.4-dev) (PR #6944)
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
+- Adding `GET /sites` endpoint to list available sites in version 0.0.4-dev.
 - Addition of a PATCH request for `/candidates/$CandID/$VisitLabel` to start next 
 stage when the payload contains a "Visit" stage with "In Progress" as Status, 
 when the current status of the Visit stage is "Not Started". (PR #7479)
