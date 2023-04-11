@@ -1089,7 +1089,7 @@ ImagePanel.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeaderInfo: PropTypes.string,
+  HeaderInfo: PropTypes.object,
   HeadersExpanded: PropTypes.string,
   APIFile: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
