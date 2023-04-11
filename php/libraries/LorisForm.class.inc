@@ -224,7 +224,12 @@ class LorisForm
         $el['type'] = 'text';
         return $el;
     }
-
+    public function addEmail($name, $label, $attribs=[])
+    {
+        $el         =& $this->addBase($name, $label, $attribs);
+        $el['type'] = 'email';
+        return $el;
+    }
     /**
      * Reimplementation of HTML_QuickForm's "addTextArea" API.
      *
@@ -422,7 +427,10 @@ class LorisForm
             break;
         case 'static':
             $el = $this->addStatic($name, $label);
-            break;
+	    break;
+        case 'email':
+            $el = $this->addEmail($name, $label,$attribs);
+            break;	    
         case 'textarea':
             $el = $this->addTextArea($name, $label, $attribs);
             break;
@@ -1544,13 +1552,61 @@ class LorisForm
         case 'time':
             return $this->timeHTML($el);
         case 'link':
-            return $this->linkHTML($el);
+		return $this->linkHTML($el);
+        case 'email':
+            return $this->emailHTML($el);		
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
         );
     }
+    function emailHTML($el, $type='email')
+    {
+        $cls      = '';
+        $disabled = '';
+        $readonly = '';
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
+        }
+        if (isset($el['readonly'])) {
+            $readonly = 'readonly';
+        }
+        $value = $this->getValue($el['name']);
+        return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                isset($el['onchange']) && $el['onchange']
+                ? " onchange=\"{$el['onchange']}\"" : ''
+              )
+            . (
+                isset($el['oninvalid']) && $el['oninvalid']
+                ? " oninvalid=\"{$el['oninvalid']}\"" : ''
+              )
+            . (
+                isset($el['pattern']) && $el['pattern']
+                ? " pattern=\"{$el['pattern']}\"" : ''
+              )
+            . (
+                isset($el['required']) && $el['required']
+                ? ' required' : ''
+              )
+            . (
+                isset($el['placeholder']) && $el['placeholder']
+                ? " placeholder=\"{$el['placeholder']}\"" : ''
+              )
 
+            . (
+                (!empty($value) || $value === '0')
+                ? ' value="' . $this->getValue($el['name']) . '"'
+                : ''
+              )
+            . $disabled
+            . ' '
+            . $readonly
+            .">";
+    }
     /**
      * Generates the HTML for a header type element
      *

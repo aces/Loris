@@ -268,7 +268,22 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
         $this->form->addElement('text', $field, $label, $options, $attribs);
     }
-
+    /**
+     * Adds a email element to the current page with no accompanying
+     * not answered option
+     *
+     * @param string $field   The name of the text element to add
+     * @param string $label   Label to attach to the text element
+     * @param array  $options QuickForm options to pass to addElement
+     * @param array  $attribs QuickForm attributes to pass to addElement
+     *
+     * @return void
+     */
+    function addBasicEmail($field, $label, $options=[], $attribs=[])
+    {
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
+        $this->form->addElement('email', $field, $label, $options, $attribs);
+    }
     /**
      * Adds a text area to the current page with no accompanying not answered
      * option.
