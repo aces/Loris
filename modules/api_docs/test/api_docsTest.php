@@ -59,6 +59,9 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
         $accessText = $this->safeFindElement(
             WebDriverBy::id("lorisworkspace")
         )->getText();
-        $this->assertStringContainsString("You do not have access to this page", $accessText);
+        $this->assertStringContainsString(
+            "You do not have access to this page",
+            $accessText
+        );
     }
 }
