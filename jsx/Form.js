@@ -2221,9 +2221,9 @@ class StaticElement extends Component {
       <div className="row form-group">
         {label}
         <div className={this.props.class}>
-          <p className={this.props.textClass}>
+          <div className={this.props.textClass}>
             {this.props.text}
-          </p>
+          </div>
         </div>
       </div>
     );

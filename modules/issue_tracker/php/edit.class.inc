@@ -271,9 +271,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData['reporter']      = $this->formatUserInformation(
                 $issueData['reporter']
             );
-            $issueData['assignee']      = $this->formatUserInformation(
-                $issueData['assignee']
-            );
+            $issueData['assignee']      = $issueData['assignee'] ?
+                $this->formatUserInformation(
+                    $issueData['assignee']
+                ) :
+                null;
             $issueData['lastUpdatedBy'] = $this->formatUserInformation(
                 $issueData['lastUpdatedBy']
             );
