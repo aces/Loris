@@ -68,9 +68,6 @@ class StaticDataTable extends Component {
       } else {
         $('#dynamictable').DynamicTable();
       }
-      if (this.state.Hide.defaultColumn) {
-        $('#dynamictable').find('tbody td:eq(0)').hide();
-      }
     }
     if (!this.props.DisableFilter) {
       // Retrieve module preferences
