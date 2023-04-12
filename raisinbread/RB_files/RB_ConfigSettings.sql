@@ -119,5 +119,7 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (127,'default_project','Default project used when creating scan candidate or visit',1,0,'text',69,'Default project',12);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (128,'default_cohort','Default cohort used when creating scan visit',1,0,'text',69,'Default cohort',13);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (129,'UserMaximumDaysInactive','The maximum number of days since last login before making a user inactive.',1,0,'text',1,'Maximum Days Before Making User Inactive',30);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (130,'DownloadPath','Where files are downloaded',1,0,'text',26,'Downloads',6);
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
