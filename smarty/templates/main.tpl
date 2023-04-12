@@ -31,8 +31,7 @@
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
               const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              breadcrumbsRoot.render(
-                RBreadcrumbs({
+              breadcrumbsRoot.render(React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
                 })
@@ -46,7 +45,7 @@
               for (let i = 0; i < helpContainers.length; i++) {
                 const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
                 helpRoot.render(
-                  RHelp({
+                  React.createElement(RHelp, {
                     testname: loris.TestName,
                     subtest: loris.Subtest,
                     baseURL: loris.BaseURL,
