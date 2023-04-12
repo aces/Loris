@@ -68,7 +68,7 @@
         <div class="filename clickable" id="filename-{{VOLID}}">
           Loading filename....
         </div>
-        <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
+        <span class="glyphicon glyphicon-chevron-down clickable"></span>
       </div>
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls">
