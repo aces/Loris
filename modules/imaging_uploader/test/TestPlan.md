@@ -64,7 +64,7 @@
 11. Upload a new, valid, anonymized `.tar.gz` DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
     file appears in the table after loading is complete. 
     [Manual Testing]
-12. In the Study section of the Admin/Configuration module, ensure the 'ImagingUploader Auto launch' option is set to 'No'. 
+12. In the Study section of the Admin/Configuration module, `Study` tab, ensure the 'ImagingUploader Auto launch' option is set to 'No'. 
     Click on the show-data button and check the contents of the upload table after the successful upload done in 8. Ensure that
     the Progress column entry for that UploadID displays 'Not Started'. 
     Launch the imaging insertion scripts from a terminal window. Ensure the Progress column entry for that UploadID displays
