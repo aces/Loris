@@ -395,6 +395,33 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        // delete from the point_3d table (all ref from physiological_electrode)
+        // only select point that are not in multiple electrode declaration
+        // i.e. same value but not from the same Electrode file
+        $ElectrodePointIDs = $DB->pselectCol(
+            'SELECT DISTINCT e1.Point3DID
+            FROM point_3d AS p1
+                INNER JOIN physiological_electrode AS e1 ON (p1.Point3DID = e1.Point3DID)
+                INNER JOIN physiological_coord_system_electrode_rel AS r1 ON (e1.PhysiologicalElectrodeID = r1.PhysiologicalElectrodeID)
+            WHERE r1.PhysiologicalFileID=:pfid AND e1.Point3DID NOT IN (
+                SELECT DISTINCT e2.Point3DID
+                FROM point_3d AS p2
+                    INNER JOIN physiological_electrode AS e2 ON (p2.Point3DID = e2.Point3DID)
+                    INNER JOIN physiological_coord_system_electrode_rel AS r2 ON (e2.PhysiologicalElectrodeID = r2.PhysiologicalElectrodeID)
+                WHERE r2.PhysiologicalFileID<>:pfid
+            )',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($ElectrodePointIDs)) {
+            foreach ($ElectrodePointIDs as $ElectrodePointID) {
+                $DB->delete(
+                    "point_3d",
+                    ["Point3DID" => $ElectrodePointID]
+                );
+            }
+        }
+
         // delete from the physiological_electrode table
         $PhysiologicalElectrodeIDs = $DB->pselectCol(
             'SELECT PhysiologicalElectrodeID
