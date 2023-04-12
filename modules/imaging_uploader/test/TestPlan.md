@@ -64,7 +64,7 @@
 11. Upload a new, valid, anonymized `.tar.gz` DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
     file appears in the table after loading is complete. 
     [Manual Testing]
-12. In the Study section of the Admin/Configuration module, ensure the 'ImagingUploader Auto launch' option is set to 'No'. 
+12. In the Study section of the Admin/Configuration module, `Study` tab, ensure the 'ImagingUploader Auto launch' option is set to 'No'. 
     Click on the show-data button and check the contents of the upload table after the successful upload done in 8. Ensure that
     the Progress column entry for that UploadID displays 'Not Started'. 
     Launch the imaging insertion scripts from a terminal window. Ensure the Progress column entry for that UploadID displays
@@ -84,9 +84,9 @@
     page with all the valid scans for this candidate loaded in the result table.
     [Manual Testing]
 14. Go in the profile details for the candidate found in step 13 and go into the visit table. Check that the MR Scan 
-    done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and ensure you 
-    are taken to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded 
-    in the result table.
+    done column is set to 'Y' for the visit at which the scan was done. Click on the `View Imaging Data` link at the bottom
+    of the page and ensure you are taken to the Imaging Browser page with the valid scans performed for that candidate at 
+    that visit loaded in the result table.
     [Manual Testing]
 15. Go the the Imaging Uploader page and search for the upload done in step 11 using (in turn) the CandID, PSCID and
     visit label. Verify that the upload done in step 11 is shown in the table each time. 
