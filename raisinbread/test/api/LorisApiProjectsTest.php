@@ -543,17 +543,17 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             true
         );
 
-        // $this->assertSame(
-        //     gettype($instrumentProjectArray),
-        //     'array'
-        // );
+        $this->assertSame(
+            gettype($instrumentProjectArray),
+            'array'
+        );
 
         // == Meta tag
 
-        // $this->assertArrayHasKey(
-        //     'Meta',
-        //     $instrumentProjectArray
-        // );
+        $this->assertArrayHasKey(
+            'Meta',
+            $instrumentProjectArray
+        );
 
         $instrumentMeta = $instrumentProjectArray['Meta'];
 
