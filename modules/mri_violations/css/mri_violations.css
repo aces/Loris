@@ -1,0 +1,9 @@
+.violation-description-list {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.violation-description-list > div {
+  margin: 0 5px;
+}
