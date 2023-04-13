@@ -1,5 +1,4 @@
 <?php
-use function PHPUnit\Framework\assertSame;
 
 require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
