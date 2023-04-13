@@ -2,6 +2,8 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {createRoot} from 'react-dom/client';
+
 
 import {formatColumn, violationFilters} from './violations.js';
 
@@ -140,7 +142,7 @@ function columnMapper(fieldOptions) {
 }
 
 window.addEventListener('load', () => {
-  const root = ReactDOM.createRoot(document.getElementById('lorisworkspace'));
+  const root = createRoot(document.getElementById('lorisworkspace'));
   root.render(
     <MRIViolationsIndex
       ModuleURL={`${loris.BaseURL}/mri_violations/`}
