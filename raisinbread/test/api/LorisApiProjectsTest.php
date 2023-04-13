@@ -541,6 +541,11 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             true
         );
 
+        $this->assertSame(
+            gettype($instrumentProjectArray),
+            'array'
+        );
+
         // == Meta tag
 
         $this->assertArrayHasKey(
@@ -746,6 +751,11 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 $response->getBody()->getContents()
             ),
             true
+        );
+
+        $this->assertSame(
+            gettype($projectsRecordingsArray),
+            'array'
         );
 
         $this->assertArrayHasKey(
