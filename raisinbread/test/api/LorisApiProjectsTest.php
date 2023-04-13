@@ -1,4 +1,5 @@
 <?php
+use function PHPUnit\Framework\assertSame;
 
 require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
@@ -535,8 +536,10 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $instrumentProjectArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
+            mb_convert_encoding(
+                $response->getBody()->getContents(), 
+                'UTF-8', 
+                'ISO-8859-1'
             ),
             true
         );
@@ -747,8 +750,10 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $projectsRecordingsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
+            mb_convert_encoding(
+                $response->getBody()->getContents(), 
+                'UTF-8', 
+                'ISO-8859-1'
             ),
             true
         );
