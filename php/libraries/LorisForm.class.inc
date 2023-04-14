@@ -224,6 +224,16 @@ class LorisForm
         $el['type'] = 'text';
         return $el;
     }
+    /**
+     * Reimplementation of HTML_QuickForm's "addEmail" API.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $attribs An array of other attributes that should
+     *                        get added.
+     *
+     * @return &array
+     */
     public function addEmail($name, $label, $attribs=[])
     {
         $el         =& $this->addBase($name, $label, $attribs);
@@ -427,10 +437,10 @@ class LorisForm
             break;
         case 'static':
             $el = $this->addStatic($name, $label);
-	    break;
+            break;
         case 'email':
-            $el = $this->addEmail($name, $label,$attribs);
-            break;	    
+            $el = $this->addEmail($name, $label, $attribs);
+            break;
         case 'textarea':
             $el = $this->addTextArea($name, $label, $attribs);
             break;
@@ -1552,14 +1562,24 @@ class LorisForm
         case 'time':
             return $this->timeHTML($el);
         case 'link':
-		return $this->linkHTML($el);
+            return $this->linkHTML($el);
         case 'email':
-            return $this->emailHTML($el);		
+            return $this->emailHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
         );
     }
+    /**
+     * Generates the HTML for a email type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a email
+     *
+     *@param string $type Email type
+     *
+     * @return string The HTML for the given email element
+     */
     function emailHTML($el, $type='email')
     {
         $cls      = '';
