@@ -142,9 +142,9 @@ class New_Profile extends \NDB_Form
         $dobFormat = $config->getSetting('dobFormat');
         $edc       = $config->getSetting('useEDC');
         $sex       = [
-            'male'   => 'Male',
-            'female' => 'Female',
-            'other'  => 'Other',
+            'Male'   => 'Male',
+            'Female' => 'Female',
+            'Other'  => 'Other',
         ];
         $pscidSet  = "false";
         $minYear   = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
