@@ -1573,10 +1573,9 @@ class LorisForm
     /**
      * Generates the HTML for a email type element
      *
-     * @param array $el An array of the form used by $this->form
-     *                  for a email
-     *
-     *@param string $type Email type
+     * @param array  $el   An array of the form used by $this->form
+     *                     for a email
+     * @param string $type Email type
      *
      * @return string The HTML for the given email element
      */
