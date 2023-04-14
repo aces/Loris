@@ -779,7 +779,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Candidate'],
+            gettype($recordings['Candidate']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -787,7 +787,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['PSCID'],
+            gettype($recordings['PSCID']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -795,7 +795,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Visit'],
+            gettype($recordings['Visit']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -803,7 +803,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Visit_date'],
+            gettype($recordings['Visit_date']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -811,7 +811,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Site'],
+            gettype($recordings['Site']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -819,7 +819,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['File'],
+            gettype($recordings['File']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -827,7 +827,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Modality'],
+            gettype($recordings['Modality']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -835,7 +835,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['InsertTime'],
+            gettype($recordings['InsertTime']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -843,7 +843,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             $recordings
         );
         $this->assertSame(
-            $recordings['Link'],
+            gettype($recordings['Link']),
             'string'
         );
     }
