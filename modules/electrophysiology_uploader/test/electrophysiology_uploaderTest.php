@@ -30,7 +30,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     private $_loadingBrowseUI = [
         [
             "label"    => "Stie",
-            "selector" => "#electrophysiology_filter>div",
+            "selector" => "#eeg_upload_viewer_filter>div",
         ],
                                  // expected_headers
         [
@@ -100,7 +100,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#breadcrumbs")
+            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
         )->getText();
         $this->assertStringContainsString(
             "Electrophysiology Upload",
@@ -130,12 +130,12 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
-            "You do not have access to this page.",
+            "Not Found",
             $bodyText
         );
     }
     /**
-     * Tests that, when loading the 
+     * Tests that, when loading the
      *   Electrophysiology_uploader module with permission,
      * "You do not have access to this page." not appears in the body.
      *
@@ -143,9 +143,11 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testElectrophysiologyUploaderLoadWithPermission()
     {
-	$this->setupPermissions(["electrophysiology_browser_view_allsites",
-	    "electrophysiology_browser_view_site"
-	]);
+        $this->setupPermissions(
+            ["electrophysiology_browser_view_allsites",
+                "electrophysiology_browser_view_site"
+            ]
+        );
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -163,12 +165,15 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoadingUIS()
     {
-	$this->_testPageUIs("/electrophysiology_uploader/",
-		$this->_loadingBrowseUI);
+        $this->_testPageUIs(
+            "/electrophysiology_uploader/",
+            $this->_loadingBrowseUI
+        );
         // click upload tab
-	$this->_testPageUIs("/electrophysiology_uploader/#upload",
-		$this->_loadingUploadUI
-	);
+        $this->_testPageUIs(
+            "/electrophysiology_uploader/#upload",
+            $this->_loadingUploadUI
+        );
     }
     /**
      * This function could test UI elements in each Tabs.
