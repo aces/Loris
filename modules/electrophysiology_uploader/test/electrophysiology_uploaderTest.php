@@ -116,7 +116,8 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         );
     }
     /**
-     * Tests that, when loading the Electrophysiology_uploader module without permission,
+     * Tests that, when loading the Electrophysiology_uploader
+     *  module without permission,
      * "You do not have access to this page." appears in the body.
      *
      * @return void
@@ -134,14 +135,17 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         );
     }
     /**
-     * Tests that, when loading the Electrophysiology_uploader module with permission,
+     * Tests that, when loading the 
+     *   Electrophysiology_uploader module with permission,
      * "You do not have access to this page." not appears in the body.
      *
      * @return void
      */
     function testElectrophysiologyUploaderLoadWithPermission()
     {
-        $this->setupPermissions(["electrophysiology_uploader"]);
+	$this->setupPermissions(["electrophysiology_browser_view_allsites",
+	    "electrophysiology_browser_view_site"
+	]);
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -159,9 +163,12 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoadingUIS()
     {
-        $this->_testPageUIs("/electrophysiology_uploader/", $this->_loadingBrowseUI);
+	$this->_testPageUIs("/electrophysiology_uploader/",
+		$this->_loadingBrowseUI);
         // click upload tab
-        $this->_testPageUIs("/electrophysiology_uploader/#upload", $this->_loadingUploadUI);
+	$this->_testPageUIs("/electrophysiology_uploader/#upload",
+		$this->_loadingUploadUI
+	);
     }
     /**
      * This function could test UI elements in each Tabs.
