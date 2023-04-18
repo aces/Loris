@@ -26,10 +26,10 @@ To install the Protocol Buffers Compiler (protoc), run:
 
 The EEG Browser visualization component adds support for some useful visual helpers: The **Signal Viewer** and the **Electrode Map**.
 
-![Overall View](./../../images/overall-view.png)
+![Overall View](https://images.loris.ca/eeg-browser/overall-view.png)
 
 ### Signal Viewer
-![Signal Viewer](./../../images/signal-values-details.png) <br/><br/>
+![Signal Viewer](https://images.loris.ca/eeg-browser/signal-values-details.png) <br/><br/>
 Several tools can be used to navigate through the Signal Viewer:
  - The **Zoom Controls** (1) can be used to increase or reduce the time interval while maintaining the same midpoint.
    - *Reset*: Set 'zoom' level to default value (5 second interval).
@@ -53,19 +53,19 @@ Several tools can be used to navigate through the Signal Viewer:
    - If the selected timeline range contains more than 500 events, a message inside the panel indicates the user to reduce the boundaries of the timeline in order to display the event data.
 <br/><br/>
 <p style="text-align: center;">
-  <img width src="./../../images/signal-values.png"/><br/>
+  <img width src="https://images.loris.ca/eeg-browser/signal-values.png"/><br/>
   <sub>Signal Viewer with hovered signal value and event data displayed.</sub>
 </p>
 
 
 ### Stacked View
 Hovering channel names while in 'stacked' or 'spread (default)' view will thicken the respective signal(s). While in stacked view, a feature called "Isolate" becomes available. [[Isolate Mode Demo](#isolate-mode)]
-<br/><br/>![Stacked View](./../../images/signal-stacked.png) <br/>
+<br/><br/>![Stacked View](https://images.loris.ca/eeg-browser/signal-stacked.png) <br/>
 
 
 ### Isolate Mode
 Hovering channel names while in 'isolate' mode will make that signal the only visible signal on the plot.
-<br/><br/>![Isolate Mode](./../../images/signal-isolated.png) <br/>
+<br/><br/>![Isolate Mode](https://images.loris.ca/eeg-browser/signal-isolated.png) <br/>
 
 
 ### Electrode Map 
@@ -73,7 +73,8 @@ The current implementation of the Electrode Map supports 2 display modes: 2D and
 
 | 2D View | 3D View |
 |:-------------------------:|:-------------------------:|
-|<img width="300" src="./../../images/electrodes-2d-hover.png"/><br/> The 2D view is a stereographic projection of the electrodes position. Electrodes are indexed and their name is displayed on mouse hover.  | <img width="300" src="./../../images/electrodes-3d.png" /><br/> The 3D view displays the exact position of the electrodes on the brain. |
+|<img width="300" src="https://images.loris.ca/eeg-browser/electrodes-2d-hover.png"/><br/> The 2D view is a stereographic projection of the electrodes position. Electrodes are indexed and their name is 
+displayed on mouse hover.  | <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-3d.png" /><br/> The 3D view displays the exact position of the electrodes on the brain. |
 
 
 ### Future developements to come
