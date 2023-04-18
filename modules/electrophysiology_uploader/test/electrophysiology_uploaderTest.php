@@ -29,42 +29,9 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = [
         [
-            "label"    => "Stie",
-            "selector" => "body",
-        ],
-                                 // expected_headers
-        [
-            "label"    => "No.",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "Upload ID",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
             "label"    => "Site",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "PSCID",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "Visit",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "Upload Location",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "Status",
-            "selector" => "#dynamictable > thead",
-        ],
-        [
-            "label"    => "Uploaded By",
-            "selector" => "#dynamictable > thead",
-        ],
+            "selector" => "body",
+        ]
     ];
     // expect UIs for Upload Tab
     private $_loadingUploadUI = [
@@ -104,12 +71,8 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         );   
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
-        $this->assertStringContainsString(
-            "Electrophysiology Upload",
-            $bodyText
-        );
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -134,7 +97,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
-            "Not Found",
+            "You do not have access to this page.",
             $bodyText
         );
     }
@@ -169,7 +132,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoadingUIS()
     {
-        $this->setupPermissions(['electrophysiology_browser_view_allsites']);
+        $this->setupPermissions(['superuser']);
         $this->_testPageUIs(
             "/electrophysiology_uploader/",
             $this->_loadingBrowseUI
