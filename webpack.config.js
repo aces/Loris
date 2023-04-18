@@ -338,7 +338,7 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
 
   for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
+    config.push(lorisModule(module, files));
   }
 }
 
