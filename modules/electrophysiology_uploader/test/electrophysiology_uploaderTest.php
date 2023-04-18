@@ -113,7 +113,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
          $this->DB->update(
             "psc",
-                'Study_site'        => 'N',
+                ['Study_site'        => 'N'],
             ['CenterID' => '1']
         );
     }
