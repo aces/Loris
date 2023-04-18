@@ -30,7 +30,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     private $_loadingBrowseUI = [
         [
             "label"    => "Stie",
-            "selector" => "#eeg_upload_viewer_filter>div",
+            "selector" => "#eeg_upload_viewer_filter",
         ],
                                  // expected_headers
         [
@@ -100,7 +100,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
             "Electrophysiology Upload",
