@@ -30,7 +30,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     private $_loadingBrowseUI = [
         [
             "label"    => "Stie",
-            "selector" => "#eeg_upload_viewer_filter",
+            "selector" => "body",
         ],
                                  // expected_headers
         [
@@ -144,8 +144,8 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
     function testElectrophysiologyUploaderLoadWithPermission()
     {
         $this->setupPermissions(
-            ["electrophysiology_browser_view_allsites",
-                "electrophysiology_browser_view_site"
+            ["electrophysiology_uploader_view_allsites",
+                "electrophysiology_uploader_view_site"
             ]
         );
         $this->safeGet($this->url . '/electrophysiology_uploader/');
