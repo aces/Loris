@@ -90,34 +90,6 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
         ],
     ];
     /**
-     * Inserting testing data
-     *
-     * @return void
-     */
-    function setUp() : void
-    {
-        parent::setUp();
-        $this->DB->update(
-            "psc",
-                ['Study_site'        => 'Y'],
-            ['CenterID' => '1']
-        );
-    }
-    /**
-     * Deleting testing data
-     *
-     * @return void
-     */
-    function tearDown() : void
-    {
-        parent::tearDown();
-         $this->DB->update(
-            "psc",
-                ['Study_site'        => 'N'],
-            ['CenterID' => '1']
-        );
-    }
-    /**
      * Tests that, when loading the Electrophysiology_uploader module, some
      * text appears in the body.
      *
