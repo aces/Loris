@@ -98,7 +98,11 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testElectrophysiologyUploaderDoespageLoad()
     {
-        $this->setupPermissions(['superuser']);	    
+        $this->setupPermissions(
+            ["electrophysiology_browser_view_allsites",
+                "electrophysiology_browser_view_site"
+            ]
+        );   
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -166,7 +170,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoadingUIS()
     {
-        $this->setupPermissions(['superuser']);	    
+        $this->setupPermissions(['electrophysiology_browser_view_allsites']);
         $this->_testPageUIs(
             "/electrophysiology_uploader/",
             $this->_loadingBrowseUI
