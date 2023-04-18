@@ -1,5 +1,3 @@
-/* exported RStaticDataTable */
-
 /**
  * This file contains React component for Static Data Table
  *
@@ -684,9 +682,6 @@ StaticDataTable.defaultProps = {
   NoDynamicTable: false,
 };
 
-let RStaticDataTable = React.createFactory(StaticDataTable);
-
 window.StaticDataTable = StaticDataTable;
-window.RStaticDataTable = RStaticDataTable;
 
 export default StaticDataTable;
