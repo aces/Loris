@@ -284,7 +284,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // Get expected format from config
         $dobFormat = $config->getSetting('dobFormat');
         $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
-        $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+        $dob       = DateTime::createFromFormat($dobFormat, $dateOfBirth);
 
         if ($dob === false) {
             throw new InvalidArgumentException(
