@@ -135,7 +135,6 @@ $(function() {
     });
 
     /**
-     * @doc function
      * @name viewer.setAutoResize
      * @param {boolean} flag Whether we should auto-resize the views.
      * @param {string} className The name of the class associated with volume
@@ -152,7 +151,6 @@ $(function() {
     };
 
     /**
-     * @doc function
      * @name viewer.doAutoResize
      * @description
      * This function implements auto-resizing of the volume panels
