@@ -654,17 +654,25 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'textarea',
             'time',
         ];
+
+        $this->assertArrayHasKey(
+            'Type',
+            $elementGroup
+        );
+        $this->assertSame(
+            gettype($elementGroup['Type']),
+            'string'
+        );
         $this->assertContains(
             $elementGroup['Type'],
             $elementType
         );
-
         $this->assertArrayHasKey(
-            'GroupType',
+            'Name',
             $elementGroup
         );
         $this->assertSame(
-            gettype($elementGroup['GroupType']),
+            gettype($elementGroup['Name']),
             'string'
         );
         $this->assertArrayHasKey(
@@ -676,52 +684,11 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertArrayHasKey(
-            'Elements',
+            'Options',
             $elementGroup
         );
         $this->assertSame(
-            gettype($elementGroup['Elements']),
-            'array'
-        );
-
-        // == sub elements
-
-        $groupSubElements = $elementGroup['Elements'];
-
-        $this->assertArrayHasKey(
-            'Type',
-            $groupSubElements
-        );
-        $this->assertSame(
-            gettype($groupSubElements['Type']),
-            'string'
-        );
-        $this->assertContains(
-            $groupSubElements['Type'],
-            $elementType
-        );
-        $this->assertArrayHasKey(
-            'Name',
-            $groupSubElements
-        );
-        $this->assertSame(
-            gettype($groupSubElements['Name']),
-            'string'
-        );
-        $this->assertArrayHasKey(
-            'Description',
-            $groupSubElements
-        );
-        $this->assertSame(
-            gettype($groupSubElements['Description']),
-            'string'
-        );
-        $this->assertArrayHasKey(
-            'Options',
-            $groupSubElements
-        );
-        $this->assertSame(
-            gettype($groupSubElements['Options']),
+            gettype($elementGroup['Options']),
             'array'
         );
     }
