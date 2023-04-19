@@ -68,7 +68,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             ["electrophysiology_browser_view_allsites",
                 "electrophysiology_browser_view_site"
             ]
-        );   
+        );
         $this->safeGet($this->url . '/electrophysiology_uploader/');
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#lorisworkspace")
