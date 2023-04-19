@@ -774,6 +774,11 @@ $(function() {
     }); // Should cursors in all panels be synchronized?
 
     mincIDs = getQueryVariable('minc_id');
+    if (mincIDs[0] === '[') {
+      // An array was passed. Get rid of the brackets
+      mincIDs = mincIDs.substring(1, mincIDs.length - 1);
+    }
+
     if (getQueryVariable('overlay') === 'true') {
       bboptions.overlay = {
         template: {
