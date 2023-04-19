@@ -513,60 +513,11 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         );
     }
 
-    /**
-     * Tests the HTTP GET request for the
-     * endpoint /projects/{project}/instruments/{instrument}
-     *
-     * @return void
-     */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
         $response = $this->client->request(
             'GET',
-         //   "projects/$this->projectName/instruments/$this->instrumentName",
-            "projects/$this->projectName/instruments/bmi",
-	    [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $instrumentProjectArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-	print_r($instrumentProjectArray);
-        $response = $this->client->request(
-            'GET',
-         //   "projects/$this->projectName/instruments/$this->instrumentName",
-            "projects/$this->projectName/instruments/radiology_review",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $instrumentProjectArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-print_r($instrumentProjectArray);	
-        $response = $this->client->request(
-            'GET',
-         //   "projects/$this->projectName/instruments/$this->instrumentName",
-            "projects/$this->projectName/instruments/medical_history",
+            "projects/$this->projectName/instruments/$this->instrumentName",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -584,9 +535,7 @@ print_r($instrumentProjectArray);
             true
         );
 print_r($instrumentProjectArray);
-
-
-$this->assertSame(
+        $this->assertSame(
             gettype($instrumentProjectArray),
             'array'
         );
@@ -770,7 +719,6 @@ $this->assertSame(
             'array'
         );
     }
-
     /**
      * Tests the HTTP GET request for the endpoint /projects/{project}/recordings
      *
