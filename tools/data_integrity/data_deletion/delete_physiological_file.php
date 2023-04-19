@@ -410,15 +410,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             ['pfid' => $physioFileID]
         );
 
-        if (!empty($PhysiologicalElectrodeIDs)) {
-            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
-                $DB->delete(
-                    "physiological_electrode",
-                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID]
-                );
-            }
-        }
-
         print("Delete physiological_coord_system_point_3d_rel\n");
         // delete all couple from `physiological_coord_system_point_3d_rel`
         // that are linked to the selected physiological file
@@ -468,13 +459,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
-        print("Delete physiological_coord_system_electrode_rel\n");
-        // delete from the physiological_coord_system_electrode_rel table
-        $DB->delete(
-            "physiological_coord_system_electrode_rel",
-            ["PhysiologicalFileID" => $physioFileID]
-        );
-
         print("Delete physiological_coord_system\n");
         // delete `physiological_coord_system` if not linked to any other
         // `physiological_coord_system_electrode_rel`
@@ -496,6 +480,24 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
                 $DB->delete(
                     "physiological_coord_system",
                     ["PhysiologicalCoordSystemID" => $PhysiologicalCoordSystemID]
+                );
+            }
+        }
+
+        print("Delete physiological_coord_system_electrode_rel\n");
+        // delete from the physiological_coord_system_electrode_rel table
+        $DB->delete(
+            "physiological_coord_system_electrode_rel",
+            ["PhysiologicalFileID" => $physioFileID]
+        );
+
+        print("Delete physiological_electrode\n");
+        // delete from the physiological_electrode table
+        if (!empty($PhysiologicalElectrodeIDs)) {
+            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
+                $DB->delete(
+                    "physiological_electrode",
+                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID]
                 );
             }
         }
@@ -641,25 +643,6 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $DB
         );
 
-        // delete from the physiological_electrode table
-        $PhysiologicalElectrodeIDs = $DB->pselectCol(
-            'SELECT PhysiologicalElectrodeID
-            FROM physiological_coord_system_electrode_rel
-            WHERE PhysiologicalFileID=:pfid',
-            ['pfid' => $physioFileID]
-        );
-
-        if (!empty($PhysiologicalElectrodeIDs)) {
-            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
-                _printResultsSQL(
-                    "physiological_electrode",
-                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID],
-                    $output,
-                    $DB
-                );
-            }
-        }
-
         // delete all couple from `physiological_coord_system_point_3d_rel`
         // that are linked to the selected physiological file
         $CoordSystemPointRel = $DB->pselect(
@@ -718,6 +701,25 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             $output,
             $DB
         );
+
+        // delete from the physiological_electrode table
+        $PhysiologicalElectrodeIDs = $DB->pselectCol(
+            'SELECT PhysiologicalElectrodeID
+            FROM physiological_coord_system_electrode_rel
+            WHERE PhysiologicalFileID=:pfid',
+            ['pfid' => $physioFileID]
+        );
+
+        if (!empty($PhysiologicalElectrodeIDs)) {
+            foreach ($PhysiologicalElectrodeIDs as $PhysiologicalElectrodeID) {
+                _printResultsSQL(
+                    "physiological_electrode",
+                    ["PhysiologicalElectrodeID" => $PhysiologicalElectrodeID],
+                    $output,
+                    $DB
+                );
+            }
+        }
 
         // delete `physiological_coord_system` if not linked to any other
         // `physiological_coord_system_electrode_rel`
