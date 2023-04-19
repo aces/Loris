@@ -534,6 +534,8 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        print_r($body);
+
         $instrumentProjectArray = json_decode(
             (string) utf8_encode(
                 $response->getBody()->getContents()
