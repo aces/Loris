@@ -105,6 +105,7 @@ class Upload extends \NDB_Page
         );
     }
 
+
     /**
      * Processes the values & saves to database and return a json response.
      *
@@ -136,6 +137,26 @@ class Upload extends \NDB_Page
             );
         }
 
+        $candID = $db->pselectOne(
+            "
+            SELECT candID
+            FROM candidate
+            WHERE CandID = :candID
+            AND PSCID = :pscid
+            AND Active = 'Y'
+            ",
+            [
+                'candID' => $candID,
+                'pscid'  => $pscid
+            ]
+        );
+
+        if (is_null($candID)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Candidate with matching candID/PSCID pair does not exist'
+            );
+        }
+
         $sessionID = $db->pselectOne(
             "
             SELECT s.ID
@@ -144,6 +165,7 @@ class Upload extends \NDB_Page
             WHERE s.Visit_label = :visit
                 AND s.CandID = :candID
                 AND c.PSCID = :pscid
+                AND s.Active = 'Y'
                 ",
             [
                 'visit'  => $visitLabel,
@@ -158,15 +180,14 @@ class Upload extends \NDB_Page
             );
         }
 
-        $config   = \NDB_Config::singleton();
         $filename = urldecode($uploadedFile->getClientFilename());
-
         if ($filename !== "{$pscid}_{$candID}_{$visitLabel}_bids.tar.gz") {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Filename does not match expected name, please verify.'
             );
         }
 
+        $config    = \NDB_Config::singleton();
         $targetdir = new \SplFileInfo($config->getSetting('EEGUploadIncomingPath'));
         try {
             $uploader = (new \LORIS\FilesUploadHandler($targetdir));
@@ -180,6 +201,7 @@ class Upload extends \NDB_Page
         // If found, add a timestamp suffix to avoid collision
         // with any other existing upload attempt
         // and move the renamed file in _EEGUploadIncomingPath_/archives/
+        $filename   = urldecode($uploadedFile->getClientFilename());
         $targetPath = $targetdir->getPathname() . '/' . $filename;
         if (file_exists($targetPath)) {
             $archiveFilename = str_replace(

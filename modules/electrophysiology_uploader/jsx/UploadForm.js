@@ -61,7 +61,7 @@ export default function UploadForm(props) {
     // Make sure file is of type .tar.gz format
     const properExt = new RegExp('\.(tar.gz)$');
     const pNameElements = [data.pscid, data.candID, data.visit, 'bids'];
-    const fileNameConvention = pNameElements.join('_');
+    const fileNameConvention = pNameElements.join('_') + '.tar.gz';
     if (!fileName.match(properExt)) {
       swal.fire({
         title: 'Invalid extension for the uploaded file!',
@@ -87,17 +87,17 @@ export default function UploadForm(props) {
       return;
     }
 
-    if (!fileName.match(fileNameConvention)) {
+    if (fileName !== fileNameConvention) {
       swal.fire({
         title: 'Invalid filename!',
         text: 'Filename should be of the form '
-              + '[PSCID]_[CandID]_[VisitLabel]_bids',
+              + '[PSCID]_[CandID]_[VisitLabel]_bids.tar.gz',
         type: 'error',
         confirmButtonText: 'OK',
       });
 
       setErrorMessage({
-        eegFile: 'The file ' + fileName + ' does not respect name convention ',
+        eegFile: 'The file does not respect name convention',
         candID: null,
         pscid: null,
         visit: null,
