@@ -313,6 +313,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         echo "\nDeleting DB entries\n";
         echo "----------------------------\n";
 
+        print("Delete physiological_event_parameter_category_level\n");
         // delete from the physiological_event_parameter_category_level table
         $EventParameterIDs = $DB->pselectCol(
             'SELECT EventParameterID
@@ -331,6 +332,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_event_parameter\n");
         // delete from the physiological_event_parameter table
         $EventFileIDs = $DB->pselectCol(
             'SELECT EventFileID
@@ -348,6 +350,7 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_annotation_*\n");
         // delete from the physiological_annotation_* tables
         $AnnotationFileIDs = $DB->pselectCol(
             'SELECT AnnotationFileID
@@ -377,25 +380,29 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_annotation_file\n");
         // delete from the physiological_annotation_file table
         $DB->delete(
             "physiological_annotation_file",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_annotation_archive\n");
         // delete from the physiological_annotation_archive table
         $DB->delete(
             "physiological_annotation_archive",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_channel\n");
         // delete from the physiological_channel table
         $DB->delete(
             "physiological_channel",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
-        // delete from the `physiological_electrode` table
+        print("Delete physiological_electrode\n");
+        // delete from the physiological_electrode table
         $PhysiologicalElectrodeIDs = $DB->pselectCol(
             'SELECT PhysiologicalElectrodeID
             FROM physiological_coord_system_electrode_rel
@@ -412,13 +419,16 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_coord_system_point_3d_rel\n");
         // delete all couple from `physiological_coord_system_point_3d_rel`
         // that are linked to the selected physiological file
         $CoordSystemPointRel = $DB->pselect(
             'SELECT ppr.PhysiologicalCoordSystemID, ppr.Point3DID
             FROM physiological_coord_system_point_3d_rel AS ppr
-                INNER JOIN physiological_coord_system AS p USING (PhysiologicalCoordSystemID)
-                INNER JOIN physiological_coord_system_electrode_rel AS per USING (PhysiologicalCoordSystemID)
+                INNER JOIN physiological_coord_system AS p
+                    USING (PhysiologicalCoordSystemID)
+                INNER JOIN physiological_coord_system_electrode_rel AS per
+                    USING (PhysiologicalCoordSystemID)
             WHERE per.PhysiologicalFileID=:pfid',
             ['pfid' => $physioFileID]
         );
@@ -427,13 +437,16 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
                 $DB->delete(
                     "physiological_coord_system_point_3d_rel",
                     [
-                        "PhysiologicalCoordSystemID" => $row["PhysiologicalCoordSystemID"],
-                        "Point3DID"                  => $row["Point3DID"]
+                        "PhysiologicalCoordSystemID" =>
+                            $row["PhysiologicalCoordSystemID"],
+                        "Point3DID"                  =>
+                            $row["Point3DID"]
                     ]
                 );
             }
         }
 
+        print("Delete point_3d\n");
         // delete from `point_3d` not linked to any `physiological_electrode`
         // and `physiological_coord_system_point_3d_rel`
         $Point3DIDs = $DB->pselectCol(
@@ -455,21 +468,26 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_coord_system_electrode_rel\n");
         // delete from the physiological_coord_system_electrode_rel table
         $DB->delete(
             "physiological_coord_system_electrode_rel",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_coord_system\n");
         // delete `physiological_coord_system` if not linked to any other
-        // `physiological_coord_system_electrode_rel` or `physiological_coord_system_point_3d_rel`
+        // `physiological_coord_system_electrode_rel`
+        // or `physiological_coord_system_point_3d_rel`
         $PhysiologicalCoordSystemIDs = $DB->pselectCol(
             'SELECT PhysiologicalCoordSystemID
             FROM physiological_coord_system
             WHERE PhysiologicalCoordSystemID NOT IN (
-                SELECT PhysiologicalCoordSystemID FROM physiological_coord_system_point_3d_rel
+                SELECT PhysiologicalCoordSystemID
+                FROM physiological_coord_system_point_3d_rel
             ) AND PhysiologicalCoordSystemID NOT IN (
-                SELECT PhysiologicalCoordSystemID FROM physiological_coord_system_electrode_rel
+                SELECT PhysiologicalCoordSystemID
+                FROM physiological_coord_system_electrode_rel
             )',
             []
         );
@@ -482,24 +500,28 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_parameter_file\n");
         // delete from the physiological_parameter_file table
         $DB->delete(
             "physiological_parameter_file",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_archive\n");
         // delete from the physiological_archive table
         $DB->delete(
             "physiological_archive",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_event_archive\n");
         // delete from the physiological_event_archive table
         $DB->delete(
             "physiological_event_archive",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_task_event_opt\n");
         // delete from the physiological_task_event_opt table
         $PhysiologicalTaskEventIDs = $DB->pselectCol(
             'SELECT PhysiologicalTaskEventID
@@ -517,18 +539,21 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
             }
         }
 
+        print("Delete physiological_task_event\n");
         // delete from the physiological_task_event table
         $DB->delete(
             "physiological_task_event",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_event_file\n");
         // delete from the physiological_event_file table
         $DB->delete(
             "physiological_event_file",
             ["PhysiologicalFileID" => $physioFileID]
         );
 
+        print("Delete physiological_file\n");
         // delete from the physiological_file table
         $DB->delete(
             "physiological_file",
@@ -640,8 +665,10 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         $CoordSystemPointRel = $DB->pselect(
             'SELECT ppr.PhysiologicalCoordSystemID, ppr.Point3DID
             FROM physiological_coord_system_point_3d_rel AS ppr
-                INNER JOIN physiological_coord_system AS p USING (PhysiologicalCoordSystemID)
-                INNER JOIN physiological_coord_system_electrode_rel AS per USING (PhysiologicalCoordSystemID)
+                INNER JOIN physiological_coord_system AS p
+                    USING (PhysiologicalCoordSystemID)
+                INNER JOIN physiological_coord_system_electrode_rel AS per
+                    USING (PhysiologicalCoordSystemID)
             WHERE per.PhysiologicalFileID=:pfid',
             ['pfid' => $physioFileID]
         );
@@ -650,8 +677,10 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
                 _printResultsSQL(
                     "physiological_coord_system_point_3d_rel",
                     [
-                        "PhysiologicalCoordSystemID" => $row["PhysiologicalCoordSystemID"],
-                        "Point3DID"                  => $row["Point3DID"]
+                        "PhysiologicalCoordSystemID" =>
+                            $row["PhysiologicalCoordSystemID"],
+                        "Point3DID"                  =>
+                            $row["Point3DID"]
                     ],
                     $output,
                     $DB
@@ -691,14 +720,17 @@ function deletePhysiologicalFile($physioFileID, $confirm, $printToSQL, $DB, &$ou
         );
 
         // delete `physiological_coord_system` if not linked to any other
-        // `physiological_coord_system_electrode_rel` or `physiological_coord_system_point_3d_rel`
+        // `physiological_coord_system_electrode_rel`
+        // or `physiological_coord_system_point_3d_rel`
         $PhysiologicalCoordSystemIDs = $DB->pselectCol(
             'SELECT PhysiologicalCoordSystemID
             FROM physiological_coord_system
             WHERE PhysiologicalCoordSystemID NOT IN (
-                SELECT PhysiologicalCoordSystemID FROM physiological_coord_system_point_3d_rel
+                SELECT PhysiologicalCoordSystemID
+                    FROM physiological_coord_system_point_3d_rel
             ) AND PhysiologicalCoordSystemID NOT IN (
-                SELECT PhysiologicalCoordSystemID FROM physiological_coord_system_electrode_rel
+                SELECT PhysiologicalCoordSystemID
+                    FROM physiological_coord_system_electrode_rel
             )',
             []
         );
