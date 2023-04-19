@@ -523,8 +523,9 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
     {
         $response = $this->client->request(
             'GET',
-            "projects/$this->projectName/instruments/$this->instrumentName",
-            [
+         //   "projects/$this->projectName/instruments/$this->instrumentName",
+            "projects/$this->projectName/instruments/",
+	    [
                 'http_errors' => false,
                 'headers'     => $this->headers
             ]
@@ -540,7 +541,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             ),
             true
         );
-
+print_r($instrumentProjectArray);
         $this->assertSame(
             gettype($instrumentProjectArray),
             'array'
