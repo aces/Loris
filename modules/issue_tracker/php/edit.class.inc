@@ -112,6 +112,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             $inactive_users[$u_row['UserID']]
                 = $this->formatUserInformation($u_row['UserID']);
         }
+        if (empty($inactive_users)) {
+            // Force an empty array to be parsed
+            // as an JSON object
+            $inactive_users = new \stdClass;
+        }
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
