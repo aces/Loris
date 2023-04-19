@@ -11,7 +11,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/api/test/</directory>
+            <directory>../raisinbread/test/api/</directory>
         </testsuite>
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
