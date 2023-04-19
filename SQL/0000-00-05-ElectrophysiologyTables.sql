@@ -484,12 +484,14 @@ CREATE TABLE `physiological_annotation_rel` (
 -- Create EEG upload table
 CREATE TABLE `electrophysiology_uploader` (
     `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `UploadedBy` varchar(255) NOT NULL DEFAULT '',
-    `UploadDate` DateTime DEFAULT NULL,
-    `UploadLocation` varchar(255) NOT NULL DEFAULT '',
-    `Status` enum('Not Started', 'In Progress', 'Complete', 'Failed') DEFAULT 'Not Started',
-    `SessionID` int(10) unsigned NOT NULL default '0',
-    `MetaData` TEXT default NULL,
+    `UploadedBy` varchar(255) NOT NULL,
+    `UploadDate` DateTime NOT NULL,
+    `UploadLocation` varchar(255) NOT NULL,
+    `Status` enum('Not Started', 'Decompressed', 'In Progress', 'Complete', 'Failed') DEFAULT 'Not Started',
+    `SessionID` int(10) unsigned,
+    `Checksum` varchar(40) DEFAULT NULL,
+    `AssemblyLocation` varchar(255) DEFAULT NULL,
+    `MetaData` TEXT DEFAULT NULL,
     PRIMARY KEY (`UploadID`),
     KEY (`SessionID`),
     CONSTRAINT `FK_eegupload_SessionID`
