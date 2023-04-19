@@ -87,7 +87,8 @@
     "jsdoc/require-param-description": "off",
     "jsdoc/require-returns": "off",
     "jsdoc/require-returns-description": "off",
-    "jsdoc/check-tag-names": "error"
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error"
   },
   "overrides": [
     {
