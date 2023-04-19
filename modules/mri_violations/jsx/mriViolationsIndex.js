@@ -140,8 +140,9 @@ function columnMapper(fieldOptions) {
 }
 
 window.addEventListener('load', () => {
-  const root = ReactDOM.createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  ReactDOM.createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <MRIViolationsIndex
       ModuleURL={`${loris.BaseURL}/mri_violations/`}
       dataURL={`${loris.BaseURL}/mri_violations/?format=json`}

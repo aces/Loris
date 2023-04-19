@@ -80,10 +80,9 @@ ElectrophysiologyUploader.propTypes = {
  * Render imaging_uploader on page load
  */
 document.addEventListener('DOMContentLoaded', function() {
-  const root = createRoot(
+  createRoot(
     document.getElementById('lorisworkspace')
-  );
-  root.render(
+  ).render(
     <ElectrophysiologyUploader
       Module='imaging_uploader'
       DataURL={loris.BaseURL + '/electrophysiology_uploader'}

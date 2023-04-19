@@ -66,8 +66,9 @@ GenomicBrowser.propTypes = {
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <GenomicBrowser
       baseURL={loris.BaseURL}
     />
