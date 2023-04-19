@@ -20,7 +20,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
 
-    protected $instrumentName = "testtest";
+    protected $instrumentName = "bmi";
 
     /**
      * Tests the HTTP GET request for the endpoint /projects
