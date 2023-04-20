@@ -34,5 +34,5 @@ INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Acti
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (161,'medical_history',1,2147483647,'Y','Visit',NULL,'V6',NULL,'N',NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (162,'bmi',1,2147483647,'Y','Visit',1,'V1',NULL,NULL,NULL);
 INSERT INTO `test_battery` (`ID`, `Test_name`, `AgeMinDays`, `AgeMaxDays`, `Active`, `Stage`, `CohortID`, `Visit_label`, `CenterID`, `firstVisit`, `instr_order`) VALUES (163,'bmi',1,2147483647,'Y','Visit',2,'V1',NULL,NULL,NULL);
-                                                                                                 UNLOCK TABLES;
+UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
