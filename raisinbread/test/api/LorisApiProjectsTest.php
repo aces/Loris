@@ -18,7 +18,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
-    protected $projectName = "Pumpernickel";
+    protected $projectName = "Rye";
 
     protected $instrumentName = "bmi";
 
