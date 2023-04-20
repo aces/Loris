@@ -684,9 +684,14 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
             'array'
         );
 
+        $this->assertArrayHasKey(
+            '0',
+            $elementGroup['Elements']
+        );
+
         // == sub elements
 
-        $groupSubElements = $elementGroup['Elements'];
+        $groupSubElements = $elementGroup['Elements']['0'];
 
         $this->assertArrayHasKey(
             'Type',
