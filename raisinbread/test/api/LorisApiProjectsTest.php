@@ -20,7 +20,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
 
-    protected $instrumentName = "aosi";
+    protected $instrumentName = "bmi";
 
     /**
      * Tests the HTTP GET request for the endpoint /projects
@@ -536,7 +536,7 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 
         $instrumentProjectArray = json_decode(
             (string) utf8_encode(
-                $response->getBody()->getContents()
+                strstr($response->getBody()->getContents(),"{")
             ),
             true
         );
@@ -747,10 +747,8 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $projectsRecordingsArray = json_decode(
-            mb_convert_encoding(
-                $response->getBody()->getContents(), 
-                'UTF-8', 
-                'ISO-8859-1'
+            (string) utf8_encode(
+                strstr($response->getBody()->getContents(),"{")
             ),
             true
         );
