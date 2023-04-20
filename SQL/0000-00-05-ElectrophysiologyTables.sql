@@ -495,7 +495,9 @@ CREATE TABLE `electrophysiology_uploader` (
     PRIMARY KEY (`UploadID`),
     KEY (`SessionID`),
     CONSTRAINT `FK_eegupload_SessionID`
-        FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
+        FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+    CONSTRAINT `FK_eegupload_UploadedBy`
+        FOREIGN KEY (`UploadedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Insert into physiological_output_type
