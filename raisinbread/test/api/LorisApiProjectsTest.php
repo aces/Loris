@@ -532,7 +532,7 @@ print_r($body);
 print_r("=====================");
         $instrumentProjectArray = json_decode(
             (string) utf8_encode(
-                $body
+                strstr("{",response->getBody()->getContent())
             ),
             true
         );
