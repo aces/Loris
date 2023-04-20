@@ -1,5 +1,5 @@
 INSERT INTO `electrophysiology_uploader` (`UploadID`,`MetaData`,`UploadDate`,`SessionID`,`UploadLocation`,`Status`,`UploadedBy`) 
-values('1','Montreal','2023-04-19 14:43:22','02','archives/MTL001_300001_V1_bids_1681247806.tar.gz','Not Started','George Murad');
+values('1','Montreal','2023-04-19 14:43:22','1','archives/MTL001_300001_V1_bids_1681247806.tar.gz','Not Started','George Murad');
 
 INSERT INTO `electrophysiology_uploader` (`UploadID`,`MetaData`,`UploadDate`,`SessionID`,`UploadLocation`,`Status`,`UploadedBy`) 
 values('2','Data Coordinating Center','2023-04-19 13:53:55','1347','archives/MTL001_300001_V1_bids_1681247865.tar.gz','Not Started','Shen');
