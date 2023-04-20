@@ -527,10 +527,11 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+$body = strstr("{",$body);
 
         $instrumentProjectArray = json_decode(
             (string) utf8_encode(
-                $response->getBody()->getContents()
+                $body
             ),
             true
         );
