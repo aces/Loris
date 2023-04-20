@@ -79,6 +79,7 @@ jobs:
           # set sandbox to 1 before running the tests
           # since some tests only run in sandbox environments
           sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
+          docker-compose up --build
           npm run tests:${{ matrix.testsuite }}
       env:
           # Specifies how many jobs you would like to run in parallel,
