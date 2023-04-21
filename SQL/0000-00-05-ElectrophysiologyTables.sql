@@ -490,7 +490,6 @@ CREATE TABLE `electrophysiology_uploader` (
     `Status` enum('Not Started', 'Decompressed', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
     `SessionID` int(10) unsigned,
     `Checksum` varchar(40) DEFAULT NULL,
-    `AssemblyLocation` varchar(255) DEFAULT NULL,
     `MetaData` TEXT DEFAULT NULL,
     PRIMARY KEY (`UploadID`),
     KEY (`SessionID`),
