@@ -317,9 +317,15 @@ class ViewSession extends \NDB_Form
                 (int)$FileObj->getParameter('AcquisitionProtocolID')
             );
 
-            $caveatViolationsResolvedID
+            $manualCaveatViolationsResolvedID
                 = $this->_getManualCaveatViolationsResolvedID($FileID);
-            $caveat = $caveatViolationsResolvedID ? 1 : 0;
+            $caveat = $manualCaveatViolationsResolvedID ? 1 : 0;
+            $foundProtocolViolations = $this->_getProtocolViolations($FileID);
+            $editableCaveat = true;
+            if ($foundProtocolViolations) {
+                $caveat = 1;
+                $editableCaveat = false;
+            }
             $file   = [
                 'FileID'                     => $FileID,
                 'Filename'                   => $Filename,
@@ -367,7 +373,8 @@ class ViewSession extends \NDB_Form
                 'BvecFile'                   => $BvecFile,
                 'JsonFile'                   => $JsonFile,
                 'OtherTimepoints'            => $OtherTimepoints,
-                'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
+                'CaveatViolationsResolvedID' => $manualCaveatViolationsResolvedID,
+                'EditableCaveat'             => $editableCaveat,
             ];
 
             $this->tpl_data['files'][] = $file;
@@ -400,6 +407,29 @@ class ViewSession extends \NDB_Form
         ";
 
         return $this->_DB->pselectOneInt($query, ['fileID' => $fileID]);
+    }
+
+    /**
+     * Gets the ID of the record in table violations_resolved associated
+     * to the manual caveat set on a given file.
+     *
+     * @param $fileID int the ID of the record in table files.
+     *
+     * @return ?array array of IDs of the associated records in table
+     *              mri_violations_log or null if there is none.
+     */
+    function _getProtocolViolations(int $fileID): ?array
+    {
+        $query = "
+            SELECT mvl.LogID
+            FROM files f
+            JOIN mri_violations_log mvl
+              ON (mvl.MincFile = f.File)
+            WHERE f.FileID =:fileID
+            AND mvl.Header NOT LIKE 'Manual Caveat Set by %';
+        ";
+
+        return $this->_DB->pselect($query, ['fileID' => $fileID]);
     }
 
     /**
@@ -537,11 +567,11 @@ class ViewSession extends \NDB_Form
                     ['FileID' => $curFileID]
                 );
 
-                $caveatViolationsResolvedID
+                $manualCaveatViolationsResolvedID
                     = $this->_getManualCaveatViolationsResolvedID($curFileID);
                 // If Caveat was set to true and there is not already a manual
                 // caveat for that scan, then the user wants to create one
-                if ($curCaveat === '1' && !$caveatViolationsResolvedID) {
+                if ($curCaveat === '1' && !$manualCaveatViolationsResolvedID) {
                     //----------------------------------------------------------//
                     // Insert a record in mri_violations_log to indicate that   //
                     // there is an MRI violation for that scan. The Header      //
@@ -622,9 +652,9 @@ class ViewSession extends \NDB_Form
                         ['Caveat' => 1],
                         ['FileID' => $curFileID],
                     );
-                } elseif ($curCaveat === '0' && $caveatViolationsResolvedID) {
+                } elseif ($curCaveat === '0' && $manualCaveatViolationsResolvedID) {
                     $quotedViolationsResolvedID
-                        = $this->_DB->quote("$caveatViolationsResolvedID");
+                        = $this->_DB->quote("$manualCaveatViolationsResolvedID");
                     $query = "
                         DELETE FROM mri_violations_log
                         WHERE LogID = (
@@ -638,7 +668,7 @@ class ViewSession extends \NDB_Form
 
                     $this->_DB->delete(
                         'violations_resolved',
-                        ['ID' => $caveatViolationsResolvedID]
+                        ['ID' => $manualCaveatViolationsResolvedID]
                     );
 
                     $quotedFileID = $this->_DB->quote($curFileID);
