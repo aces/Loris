@@ -41,7 +41,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
     protected $started;
     protected $AppointmentTypeName;
     protected $site;
-    protected $dataEntryStatus;
     protected $ProjectID;
     /**
      * Create a new ModuleRow Instance.
@@ -65,7 +64,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $this->StartsAt     = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
         $this->site            = $row['Name'];
-        $this->dataEntryStatus = $row['dataEntryStatus'];
     }
 
     /**
@@ -87,7 +85,6 @@ class ModuleRow implements \LORIS\Data\DataInstance
                 'Day'                 => $this->Day,
                 'Time'                => $this->Time,
                 'StartsAt'            =>$this->StartsAt,
-                'dataEntryStatus'     => $this->dataEntryStatus,
                 'SessionID'           =>$this->SessionID,
                 'AppointmentID'       =>$this->AppointmentID,
                 'AppointmentTypeName' => $this->AppointmentTypeName,

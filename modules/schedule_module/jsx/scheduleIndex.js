@@ -463,7 +463,6 @@ class ScheduleIndex extends Component {
         type: 'time',
       }},
       {label: 'Starts At', show: true},
-      {label: 'Data Entry Status', show: true},
       {label: 'Edit', show: true,
        name: 'edit',
       },

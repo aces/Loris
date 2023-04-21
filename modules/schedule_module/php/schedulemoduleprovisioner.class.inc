@@ -13,12 +13,6 @@
  */
 
 namespace LORIS\schedule_module;
-require 'data_entry.class.inc';
-require 'DataEntrySelectClause.class.inc';
-require 'MriDataEntryExpression.class.inc';
-require 'BloodCollectionDataEntryExpression.class.inc';
-require 'BehavioralDataEntryExpression.class.inc';
-// require 'MriDataEntryExpression.class.inc';
 /**
  * This class implements a data provisioner to get all modules
  * for the schedule_module menu page.
@@ -65,31 +59,6 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      */
     public function getQuery() : string
     {
-        $dataEntryColumns          = (new DataEntrySelectClause())
-            ->register("Behavioral", new BehavioralDataEntryExpression())
-            ->register("MRI", new MriDataEntryExpression())
-            ->register("Blood Collection", new BloodCollectionDataEntryExpression())
-            ->getColumns();
-        $dataEntryStatusExpression = "
-    (
-        CASE
-            WHEN NOT (NOW() > StartsAt) THEN
-                'Upcoming'
-            WHEN hasDataEntryComplete THEN
-                IF(
-                    (hasDataEntryInProgress OR hasDataEntryNotStarted),
-                    'In Progress',
-                    'Complete'
-                )
-            WHEN hasDataEntryInProgress THEN
-                'In Progress'
-            WHEN hasDataEntryNotStarted THEN
-                'Not Started'
-            ELSE
-                'No Data Found'
-        END
-    )
-    ";
         $subquery = "SELECT
     appointment.AppointmentID, 
     appointment.SessionID,
@@ -105,7 +74,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     cohort.title,
     appointment.StartsAt AS StartsAt,
     appointment_type.Name AS AppointmentTypeName,
-    psc.Name,".$dataEntryColumns." FROM
+    psc.Name  FROM
     appointment
 JOIN
     appointment_type
@@ -132,9 +101,7 @@ JOIN
 ON
     session.CenterID = psc.CenterID";
 
-        $subquery =str_replace("\n", " ", $subquery);
-        $query    =  "select *, {$dataEntryStatusExpression} AS dataEntryStatus  FROM
-            ({$subquery}) AS subQuery";
+        $query =str_replace("\n", " ", $subquery);
             return $query;
     }
 }
