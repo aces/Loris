@@ -21,22 +21,19 @@ if ($tab === '') {
 }
 
 $user = \User::singleton();
-if (
-    ($tab == 'candidateDOB') &&
-    (!$user->hasPermission('candidate_dob_edit'))
-   ) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-} elseif (
-    ($tab == 'candidateDOD') &&
-    (!$user->hasPermission('candidate_dod_edit'))
+if (($tab == 'candidateDOB')
+    && (!$user->hasPermission('candidate_dob_edit'))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
-} elseif (
-    ($tab != 'candidateDOB') &&
-    ($tab != 'candidateDOD') &&
-    !$user->hasPermission('candidate_parameter_edit')
+} elseif (($tab == 'candidateDOD')
+    && (!$user->hasPermission('candidate_dod_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab != 'candidateDOB')
+    && ($tab != 'candidateDOD')
+    && !$user->hasPermission('candidate_parameter_edit')
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
