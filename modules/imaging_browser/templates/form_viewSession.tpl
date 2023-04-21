@@ -34,8 +34,7 @@
                 'FileNew'  : {if $files[file].New}true{else}false{/if},
                 "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
-                "Caveat" : "{if $files[file].Caveat}true{else}false{/if}",
-                "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
+                "Caveat" : "{$files[file].Caveat}",
                 "EditableCaveat": "{$files[file].EditableCaveat}",
                 "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                 'HeaderInfo' : {

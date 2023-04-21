@@ -373,7 +373,6 @@ class ViewSession extends \NDB_Form
                 'BvecFile'                   => $BvecFile,
                 'JsonFile'                   => $JsonFile,
                 'OtherTimepoints'            => $OtherTimepoints,
-                'CaveatViolationsResolvedID' => $manualCaveatViolationsResolvedID,
                 'EditableCaveat'             => $editableCaveat,
             ];
 
