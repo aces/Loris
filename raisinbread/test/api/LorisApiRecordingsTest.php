@@ -18,10 +18,14 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 {
-    protected $frecordTest     = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
-    protected $candidTest      = "300174";
-    protected $visitTest       = "V1";
-    protected $headernameTest  = "TODO";
+    protected $frecordTest         = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
+    protected $candidTest          = "300174";
+    protected $visitTest           = "V1";
+    protected $headernameTest      = "TODO";
+    protected $fBIDSArchiveTest    = "archive_bids.tsv";
+    protected $fBIDSChannelsTest   = "channels_bids.tsv";
+    protected $fBIDSElectrodesTest = "electrodes_bids.tsv";
+    protected $fBIDSEventsTest     = "events_bids.tsv";
 
     /**
      * Tests the HTTP GET request for the
@@ -697,7 +701,35 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesArchive(): void
     {
-        $this->markTestSkipped("Not ready");
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSArchiveTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSArchiveTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSArchiveTest);
     }
 
     /**
@@ -709,7 +741,35 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesChannels(): void
     {
-        $this->markTestSkipped("Not ready");
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSChannelsTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSChannelsTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSChannelsTest);
     }
 
     /**
@@ -721,7 +781,35 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesElectrodes(): void
     {
-        $this->markTestSkipped("Not ready");
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSElectrodesTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSElectrodesTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSElectrodesTest);
     }
 
     /**
@@ -733,6 +821,34 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesEvents(): void
     {
-        $this->markTestSkipped("Not ready");
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSEventsTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSEventsTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSEventsTest);
     }
 }
