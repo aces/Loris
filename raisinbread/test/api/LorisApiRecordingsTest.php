@@ -35,9 +35,9 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-            $this->markTestIncomplete(
-              "rewrite after #8036 [EEG] Database Architecture for HED Tags"
-            );
+        $this->markTestIncomplete(
+            "rewrite after #8036 [EEG] Database Architecture for HED Tags"
+        );
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings",
@@ -125,7 +125,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
 
     /**
-     * TODO: validate test
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/metadata
      *
@@ -175,7 +174,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
 
     /**
-     * TODO: validate test + header name value
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/metadata/{headername}
      *
@@ -229,13 +227,12 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdffileChannels(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
+            // $this->markTestIncomplete(
+            //   "rewrite"
+            // );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/" .
-            "recordings/$this->frecordTest/channels",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/channels",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -414,13 +411,12 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
+            // $this->markTestIncomplete(
+            //   "rewrite"
+            // );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/electrodes",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/electrodes",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -557,13 +553,12 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
+            // $this->markTestIncomplete(
+            //   "rewrite"
+            // );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/events/meta",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/events",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -693,7 +688,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
     
     /**
-     * TODO
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/archive
      *
@@ -733,7 +727,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
 
     /**
-     * TODO
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/channels
      *
@@ -773,7 +766,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
 
     /**
-     * TODO
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/electrodes
      *
@@ -813,7 +805,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     }
 
     /**
-     * TODO
      * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/events
      *
