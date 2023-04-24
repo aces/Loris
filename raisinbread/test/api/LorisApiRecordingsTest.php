@@ -21,7 +21,7 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
     protected $frecordTest         = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $candidTest          = "300174";
     protected $visitTest           = "V1";
-    protected $headernameTest      = "TODO";
+    protected $headernameTest      = "json_file";
     protected $fBIDSArchiveTest    = "archive_bids.tsv";
     protected $fBIDSChannelsTest   = "channels_bids.tsv";
     protected $fBIDSElectrodesTest = "electrodes_bids.tsv";
