@@ -41,7 +41,9 @@ foreach ($resolvedViolationsList as $violationArr) {
 /**
  * Selects all violations resolved and new hash.
  *
- * @return array of seriesUID without Scan_type set in mri_violations_log
+ * @param Database $db database handler
+ *
+ * @return array of violation resolved and new hash details
  * @throws DatabaseException
  */
 function selectViolationsResolved($db)
