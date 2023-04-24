@@ -39,8 +39,6 @@ prepended with the Patient Name.
 19. There will be a Caveat link just above the Caveat drop-down in the image panel of a given scan if and only if there is an MRI violation with:
        i) the same path as the image file
        ii) the same SeriesUID as the image's SeriesUID
-       iii) header set to 'Manual Caveat set by <username>'
-       iv) resolution type set to 'Inserted with flag'
     Search in the MRI violations' Resolved tab using the scan's SeriesUID and image file path to verify this. Note that you can see the header
     of an MRI violation by clicking on the 'Protocol Violation' link in the 'Problem' column.
 20. In the imaging browser, pick a scan that does not have a Caveat link. Use the drop-down to set the Caveat to true and save your modification.

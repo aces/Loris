@@ -491,9 +491,10 @@ class ImagePanelQCCaveatSelector extends Component {
   render() {
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
-    if (this.props.SeriesUID && this.props.Caveat === '1') {
+    if (this.props.FullName && this.props.Caveat === '1') {
         mriViolationsLink = '/mri_violations/?' +
-          'seriesUID=' + this.props.SeriesUID;
+          'mincFile=' + this.props.FullName +
+          '&seriesUID=' + this.props.SeriesUID;
     }
 
     return (
@@ -521,6 +522,7 @@ ImagePanelQCCaveatSelector.propTypes = {
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
   EditableCaveat: PropTypes.bool,
+  FullName: PropTypes.string,
 };
 
 
@@ -599,6 +601,7 @@ class ImagePanelQCPanel extends Component {
           Caveat={this.props.Caveat}
           SeriesUID={this.props.SeriesUID}
           EditableCaveat={this.props.EditableCaveat}
+          FullName={this.props.FullName}
         />
         <ImagePanelQCSNRValue
           FileID={this.props.FileID}
@@ -618,6 +621,7 @@ ImagePanelQCPanel.propTypes = {
   SeriesUID: PropTypes.string,
   SNR: PropTypes.string,
   EditableCaveat: PropTypes.bool,
+  FullName: PropTypes.string,
 };
 
 
@@ -921,6 +925,7 @@ class ImagePanelBody extends Component {
               SNR={this.props.SNR}
               SeriesUID={this.props.SeriesUID}
               EditableCaveat={this.props.EditableCaveat}
+              FullName={this.props.Fullname}
             />
           </div>
         </div>
