@@ -99,7 +99,7 @@ class Resolve extends \NDB_Page
                 FROM mri_protocol_violated_scans
                 WHERE (:hash = md5(concat_WS(
                           ':',minc_location,PatientName,SeriesUID,time_run,
-                                PhaseEncodingDirection,EchoTime,EchoNumber)
+                                PhaseEncodingDirection,TE_range,EchoNumber)
                                )
                 )",
                 ['hash' => $hash]

@@ -56,7 +56,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        md5(
                          concat_WS(
                            ':',minc_location,PatientName,SeriesUID,time_run,
-                           PhaseEncodingDirection,EchoTime,EchoNumber
+                           PhaseEncodingDirection,TE_range,EchoNumber
                          )
                        ) AS hash,
                        mpvs.ID AS join_id,
