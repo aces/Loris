@@ -344,9 +344,9 @@ class Recording
                          pe.Name                as electrodename,
                          pet.ElectrodeType      as electrodetype,
                          pem.ElectrodeMaterial  as electrodematerial,
-                         pe.X                   as x,
-                         pe.Y                   as y,
-                         pe.Z                   as z,
+                         po.X                   as x,
+                         po.Y                   as y,
+                         po.Z                   as z,
                          pe.Impedance           as Impedance,
                          pe.FilePath            as filepath
                        FROM
@@ -355,6 +355,8 @@ class Recording
                          USING (PhysiologicalElectrodeTypeID)
                        JOIN physiological_electrode_material pem
                          USING (PhysiologicalElectrodeMaterialID)
+                       JOIN point_3d po
+                         USING (Point3DID)
                        WHERE
                          pe.PhysiologicalFileID = :v_fileid
                       ',
@@ -389,9 +391,11 @@ class Recording
                          pte.EventType    as eventtype,
                          pte.TrialType    as trialtype,
                          pte.ResponseTime as responsetime,
-                         pte.FilePath     as filepath
+                         pef.FilePath     as filepath
                        FROM
-                         physiological_task_event pte 
+                         physiological_task_event pte
+                        JOIN physiological_event_file pef
+                         USING (EventFileID)
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',
