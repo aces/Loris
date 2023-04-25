@@ -210,8 +210,8 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
         $this->assertSame(gettype($meta['CandID']), 'string');
         $this->assertArrayHasKey('Visit', $meta);
         $this->assertSame(gettype($meta['Visit']), 'string');
-        $this->assertArrayHasKey('Filename', $meta);
-        $this->assertSame(gettype($meta['Filename']), 'string');
+        $this->assertArrayHasKey('File', $meta);
+        $this->assertSame(gettype($meta['File']), 'string');
         $this->assertArrayHasKey('Header', $meta);
         $this->assertSame(gettype($meta['Header']), 'string');
 
