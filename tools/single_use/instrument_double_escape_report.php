@@ -123,7 +123,7 @@ foreach($instrumentNames as $instrumentName) {
     foreach ($instrumentData as $cid => $instrumentCandData) {
         foreach ($instrumentCandData as $field => $value) {
             // regex detecting any escaped character in the database
-            if (!empty($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
+            if (!empty($value) && is_string($value) && preg_match('/&(amp;)+(gt;|lt;|quot;|amp;)/', $value)) {
                 $escapedEntries[$tableName][$cid][$field] = $value;
                 $escapedFields[$tableName][] = $field;
                 $errorsDetected = true;
