@@ -11,7 +11,6 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverSelect;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -126,7 +125,6 @@ class ScheduleTest extends LorisIntegrationTest
     function testEditappointment()
     {
         $this->safeGet($this->url . "/schedule_module/");
-        $ok         = self::$alertOk;
         $editButton = self::$edit;
         $ms         = self::$msg;
         $btn        = self::$create;
