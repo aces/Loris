@@ -35,9 +35,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-        $this->markTestIncomplete(
-            "rewrite after #8036 [EEG] Database Architecture for HED Tags"
-        );
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings",
@@ -411,9 +408,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-            // $this->markTestIncomplete(
-            //   "rewrite"
-            // );
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/electrodes",
@@ -553,9 +547,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-            // $this->markTestIncomplete(
-            //   "rewrite"
-            // );
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/events",
