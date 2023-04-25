@@ -122,7 +122,7 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
 // Use mapping arrays to replace old `LorisMenu` ID values in issues_history
 // `newValue` column with new `modules` table ID values where fieldChanged = 'module'.
 $result_history = $DB->pselect(
-    'SELECT issueHistoryID, newValue as module FROM issues_history WHERE fieldChange=\'module\'',
+    'SELECT issueHistoryID, newValue as module FROM issues_history WHERE fieldChanged=\'module\'',
     []
 );
 $issueHistoryMapping = [];
