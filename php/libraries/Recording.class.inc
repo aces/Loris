@@ -85,16 +85,18 @@ class Recording
                      ) pc
                        ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT pcser.PhysiologicalFileID, pe.FilePath
-                       FROM physiological_electrode pe
-                        INNER JOIN physiological_coord_system_electrode_rel pcser 
-                          USING (PhysiologicalElectrodeID)
+                       SELECT pcser.PhysiologicalFileID, pe2.FilePath
+                       FROM physiological_electrode pe2,
+                        physiological_coord_system_electrode_rel pcser
+                       WHERE pe2.PhysiologicalElectrodeID=pcser.PhysiologicalElectrodeID
                        LIMIT 1
                      ) pe
                        ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_task_event
+                       SELECT pte.PhysiologicalFileID, pef.FilePath
+                       FROM physiological_task_event pte
+                        INNER JOIN physiological_event_file pef
+                        USING (EventFileID)
                        LIMIT 1
                      ) pte
                        ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
