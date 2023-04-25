@@ -15,7 +15,7 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors} = this.props;
+    const {test, options, setTest, add, errors,handleSubmit} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -44,7 +44,10 @@ class BatteryManagerForm extends Component {
     };
 
     return (
-      <FormElement>
+      <FormElement
+        name="battery_manager_form"
+        onSubmit={handleSubmit}
+      >
         <StaticElement
           label="Note"
           text={renderHelpText()}
@@ -134,6 +137,9 @@ class BatteryManagerForm extends Component {
           min="0"
           max="127" // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
+        />
+         <ButtonElement
+          label="Submit"
         />
       </FormElement>
     );
