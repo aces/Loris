@@ -130,8 +130,9 @@ HelpEditor.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <HelpEditor
       Module="help_editor"
       dataURL={loris.BaseURL + '/help_editor/?format=json'}

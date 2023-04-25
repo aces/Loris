@@ -5,8 +5,9 @@ const pageURL = window.location.href;
 const id = pageURL.substr(pageURL.lastIndexOf('/') + 1);
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-edit-form">
       <div className="row">
         <div className="col-md-9 col-lg-7">

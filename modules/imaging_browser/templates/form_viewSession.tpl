@@ -18,10 +18,9 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-            const image_{$files[file].FileID}_root = ReactDOM.createRoot(
+            ReactDOM.createRoot(
               document.getElementById("image-{$files[file].FileID}")
-            );
-            image_{$files[file].FileID}_root.render(
+            ).render(
               RImagePanel({
                 'BaseURL' : "{$baseurl}",
 

@@ -30,8 +30,10 @@
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              breadcrumbsRoot.render(React.createElement(Breadcrumbs, {
+              ReactDOM.createRoot(
+                document.getElementById("breadcrumbs")
+              ).render(
+                React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
                 })
@@ -43,8 +45,9 @@
             {if !$breadcrumbs|strstr:'"Edit Help Content"'}
               const helpContainers = document.getElementsByClassName('help-container');
               for (let i = 0; i < helpContainers.length; i++) {
-                const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
-                helpRoot.render(
+                ReactDOM.createRoot(
+                  helpContainers.item(i)
+                ).render(
                   React.createElement(RHelp, {
                     testname: loris.TestName,
                     subtest: loris.Subtest,
