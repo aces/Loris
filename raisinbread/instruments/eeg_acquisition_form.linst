@@ -3,9 +3,9 @@ date{@}Date_taken{@}Date of Administration{@}{@}
 static{@}Candidate_Age{@}Candidate Age (Months)
 static{@}Window_Difference{@}Window Difference (+/- Days)
 select{@}Examiner{@}Examiner{@}NULL=>''
+header{@}{@}<b><h3>General information</h3></b>
 textarea{@}general_comments{@}General session notes, any important details (e.g. technical error, issue with net, etc.)
 select{@}general_comments_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
-header{@}{@}<b><h3>General information</h3></b>
 text{@}research_staff_one{@}Research staff 1 initials
 select{@}research_staff_one_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 text{@}research_staff_two{@}Research staff 2 initials
@@ -41,6 +41,9 @@ select{@}bad_electrodes_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 select{@}bad_channels_measured_after_applied{@}Bad channels measured after application on subject?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
 textarea{@}bad_channels{@}Bad channels
 select{@}bad_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}artefacted_channels_present{@}Were there any Artefacted channels?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'not_known'=>'Not known'{-}'not_answered'=>'Not Answered'
+textarea{@}artefacted_channels{@}Artefacted channels
+select{@}artefacted_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 header{@}{@}<h6>About placement:<br/> <b>Excellent</b> - meets all criteria for proper placement.<br/> <b>Average</b> - 1-2cm shift from proper placement (1 pinky finger width distance).<br/> <b>Poor</b> - >2 cm shift from proper placement (>1 pinky finger width distance). </h6>
 select{@}placement_rating{@}Rate placement{@}NULL=>''{-}'na'=>'n/a'{-}'excellent'=>'Excellent'{-}'average'=>'Average'{-}'poor'=>'Poor'{-}'not_answered'=>'Not Answered'
 textarea{@}placement_comment{@}Comments on placement
@@ -52,13 +55,11 @@ select{@}acquisition_software_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not 
 select{@}recording_reference{@}Recording reference used{@}NULL=>''{-}'left_mastoid'=>'left mastoid'{-}'right_mastoid'=>'right mastoid'{-}'left_earlobe'=>'left earlobe'{-}'right_earlobe'=>'right earlobe'{-}'physically_linked_mastoids'=>'physically linked mastoids'{-}'physically_linked_earlobes'=>'physically linked earlobes'{-}'cz'=>'Cz'{-}'tip_nose'=>'tip of the nose'{-}'balanced_non_cephalic_reference'=>'balanced non-cephalic reference'{-}'other'=>'Other'{-}'not_answered'=>'Not Answered'
 text{@}recording_reference_other{@}If other, please specify
 select{@}recording_reference_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
-text{@}number_active_channels{@}Number of active channels
+numeric{@}number_active_channels{@}Number of active channels
 select{@}number_active_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 select{@}eog_channels{@}EOG channels{@}NULL=>''{-}'no_eog_channels'=>'no EOG channels'{-}'two_heog_channels_only'=>'two HEOG channels only'{-}'two_veog_channels_only'=>'two VEOG channels only'{-}'two_heog_two_veog_channels'=>'two HEOG and two VEOG channels'{-}'other'=>'Other'{-}'not_answered'=>'Not Answered'
 text{@}eog_channels_other{@}If other, please specify
 select{@}eog_channels_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
-textarea{@}artefacted_channels{@}Artefacted channels
-select{@}artefacted_channels_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 header{@}{@}<b><h3>Filters</h3></b>
 textarea{@}software_filters_applied{@}What software filters were applied during acquisition?
 select{@}software_filters_applied_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
