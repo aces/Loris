@@ -1,23 +1,24 @@
+table{@}bmi
 title{@}BMI Calculator
 date{@}Date_taken{@}Date of Administration{@}2006{@}2012
 static{@}Candidate_Age{@}Candidate Age (Months)
 static{@}Window_Difference{@}Window Difference (+/- Days)
 select{@}Examiner{@}Examiner{@}NULL=>''
 static{@}{@}Note: Please enter measurements in Imperial OR Metric units
-select{@}unit_classification{@}Choose unit of measurement{@}NULL=>''{-}'metric'=>'Metric'{-}'imperial'=>'Imperial'
+select{@}unit_classification{@}Choose unit of measurement{@}NULL=>''{-}'metric'=>'Metric'{-}'imperial'=>'Imperial'{-}'standard'=>'Standard'{-}'not_answered'=>'Not Answered'
 page{@}{@}Imperial units
 static{@}{@}Imperial units
-numeric{@}height_feet{@}Your height (feet) :
+numeric{@}height_feet{@}Your height (feet) :{@}undefined{@}undefined
 select{@}height_feet_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
-numeric{@}height_inches{@}Your height (inches) :
+numeric{@}height_inches{@}Your height (inches) :{@}undefined{@}undefined
 select{@}height_inches_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 numeric{@}weight_lbs{@}Your weight (lbs) :{@}50{@}500
 select{@}weight_lbs_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 page{@}{@}Metric Units
 static{@}{@}Metric units
-numeric{@}height_cms{@}Your height (cms) :
+numeric{@}height_cms{@}Your height (cms) :{@}undefined{@}undefined
 select{@}height_cms_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
-numeric{@}weight_kgs{@}Your weight (kgs) :
+numeric{@}weight_kgs{@}Your weight (kgs) :{@}undefined{@}undefined
 select{@}weight_kgs_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 page{@}{@}Results
 static{@}bmi{@}Your BMI
