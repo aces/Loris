@@ -160,7 +160,7 @@ class ScheduleTest extends LorisIntegrationTest
             $this->safeFindElement(
                 WebDriverBy::cssSelector(
                     "
-                .col-sm-12:nth-child(6) .form-control"
+                #addScheduleForm > div > div:nth-child(6) > div>div>select"
                 )
             )
         );
@@ -171,7 +171,7 @@ class ScheduleTest extends LorisIntegrationTest
             )
         )->click();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$ms")
+            WebDriverBy::cssSelector("#swal2-content")
         )->getText();
         $this->assertStringContainsString("Appointment modified.", $bodyText);
 
