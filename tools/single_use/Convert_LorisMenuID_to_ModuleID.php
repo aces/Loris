@@ -220,7 +220,7 @@ if ($confirm) {
     echo "Run this tool again with the argument 'confirm' to ".
         "perform the changes.\n".
         "Note: The module field for issues for which a mapping between LorisMenu and 
-        modules can not be found will be nullified.\n\n";
+        modules can not be found will be nullified.\n".
         "Note: The row of issues_history for which a mapping between LorisMenu and 
         modules can not be found will be deleted.\n\n";
 }
