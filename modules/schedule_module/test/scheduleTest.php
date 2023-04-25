@@ -147,7 +147,7 @@ class ScheduleTest extends LorisIntegrationTest
             )
         )->getText();
         $this->assertStringContainsString(
-            "This appointment already exists",
+            "OK",
             $bodyText
         );
         // change time and save it again
@@ -196,7 +196,7 @@ class ScheduleTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("$ms")
         )->getText();
         $this->assertStringContainsString(
-            "You won't be able to revert this!",
+            "Yes, delete it!",
             $bodyText
         );
     }

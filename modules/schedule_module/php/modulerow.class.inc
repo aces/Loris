@@ -63,7 +63,7 @@ class ModuleRow implements \LORIS\Data\DataInstance
         $this->Subproject   = $row['title'];
         $this->StartsAt     = $row['StartsAt'];
         $this->AppointmentTypeName = $row['AppointmentTypeName'];
-        $this->site            = $row['Name'];
+        $this->site = $row['Name'];
     }
 
     /**
