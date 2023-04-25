@@ -357,8 +357,10 @@ class Recording
                          USING (PhysiologicalElectrodeMaterialID)
                        JOIN point_3d po
                          USING (Point3DID)
+                       JOIN physiological_coord_system_electrode_rel pcser
+                         USING (PhysiologicalElectrodeID)
                        WHERE
-                         pe.PhysiologicalFileID = :v_fileid
+                        pcser.PhysiologicalFileID = :v_fileid
                       ',
                 ['v_fileid' => $this->_fileid]
             );
