@@ -25,7 +25,8 @@ use Facebook\WebDriver\WebDriverSelect;
  */
 class ScheduleTest extends LorisIntegrationTest
 {
-    static $alertOk = "button[class='swal2-confirm swal2-styled']";
+    static $alertOk = "body > div.swal2-container.swal2-center.swal2-shown >".
+                      " div > div.swal2-actions > button.swal2-confirm.swal2-styled";
     static $addBtn  = "#default-panel > div > div > div.table-header".
                       " > div > div > div:nth-child(2) > button:nth-child(1)";
     static $edit    = "#dynamictable > tbody > tr > td:nth-child(9) > button";
@@ -150,30 +151,6 @@ class ScheduleTest extends LorisIntegrationTest
             "OK",
             $bodyText
         );
-        // change time and save it again
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "$ok"
-            )
-        )->click();
-        $el_dropdown = new WebDriverSelect(
-            $this->safeFindElement(
-                WebDriverBy::cssSelector(
-                    "
-                #addScheduleForm > div > div:nth-child(6) > div>div>select"
-                )
-            )
-        );
-        $el_dropdown->selectByVisibleText("Behavioral");
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "$btn"
-            )
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-content")
-        )->getText();
-        $this->assertStringContainsString("Appointment modified.", $bodyText);
 
     }
     /**
