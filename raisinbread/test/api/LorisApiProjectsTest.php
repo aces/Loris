@@ -20,6 +20,8 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
     protected $projectName = "Pumpernickel";
 
+    protected $instrumentName = "bmi";
+
     /**
      * Tests the HTTP GET request for the endpoint /projects
      *
@@ -519,6 +521,335 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
      */
     public function testGetProjectsProjectInstrumentsInstrument(): void
     {
-        $this->markTestSkipped('Missing data in docker image');
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/instruments/$this->instrumentName",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $instrumentProjectArray = json_decode(
+            (string) utf8_encode(
+                strstr($response->getBody()->getContents(),"{")
+            ),
+            true
+        );
+
+        $this->assertSame(
+            gettype($instrumentProjectArray),
+            'array'
+        );
+
+        // == Meta tag
+
+        $this->assertArrayHasKey(
+            'Meta',
+            $instrumentProjectArray
+        );
+
+        $instrumentMeta = $instrumentProjectArray['Meta'];
+
+        $this->assertSame(
+            gettype($instrumentMeta),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            'InstrumentVersion',
+            $instrumentMeta
+        );
+        $this->assertSame(
+            gettype($instrumentMeta['InstrumentVersion']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'InstrumentFormatVersion',
+            $instrumentMeta
+        );
+        $this->assertSame(
+            gettype($instrumentMeta['InstrumentFormatVersion']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'ShortName',
+            $instrumentMeta
+        );
+        $this->assertSame(
+            gettype($instrumentMeta['ShortName']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'LongName',
+            $instrumentMeta
+        );
+        $this->assertSame(
+            gettype($instrumentMeta['LongName']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'IncludeMetaDataFields',
+            $instrumentMeta
+        );
+        $this->assertSame(
+            gettype($instrumentMeta['IncludeMetaDataFields']),
+            'string'
+        );
+
+        // == Elements tag
+
+        $this->assertArrayHasKey(
+            'Elements',
+            $instrumentProjectArray
+        );
+        $this->assertSame(
+            gettype($instrumentProjectArray['Elements']),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            '0',
+            $instrumentProjectArray['Elements']
+        );
+
+        $elementGroup = $instrumentProjectArray['Elements']['0'];
+
+        $this->assertSame(
+            gettype($elementGroup),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            'Type',
+            $elementGroup
+        );
+        $this->assertSame(
+            gettype($elementGroup['Type']),
+            'string'
+        );
+
+        $elementType = [
+            // a group of elements...
+            'ElementGroup',
+            // ... or one element type
+            'advcheckbox',
+            'date',
+            'file',
+            'group',
+            'header',
+            'hidden',
+            'link',
+            'page',
+            'password',
+            'radio',
+            'select',
+            'static',
+            'submit',
+            'text',
+            'textarea',
+            'time',
+        ];
+        $this->assertContains(
+            $elementGroup['Type'],
+            $elementType
+        );
+
+        $this->assertArrayHasKey(
+            'GroupType',
+            $elementGroup
+        );
+        $this->assertSame(
+            gettype($elementGroup['GroupType']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Description',
+            $elementGroup
+        );
+        $this->assertSame(
+            gettype($elementGroup['Description']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Elements',
+            $elementGroup
+        );
+        $this->assertSame(
+            gettype($elementGroup['Elements']),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            '0',
+            $elementGroup['Elements']
+        );
+
+        // == sub elements
+
+        $groupSubElements = $elementGroup['Elements']['0'];
+
+        $this->assertArrayHasKey(
+            'Type',
+            $groupSubElements
+        );
+        $this->assertSame(
+            gettype($groupSubElements['Type']),
+            'string'
+        );
+        $this->assertContains(
+            $groupSubElements['Type'],
+            $elementType
+        );
+        $this->assertArrayHasKey(
+            'Name',
+            $groupSubElements
+        );
+        $this->assertSame(
+            gettype($groupSubElements['Name']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Description',
+            $groupSubElements
+        );
+        $this->assertSame(
+            gettype($groupSubElements['Description']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Options',
+            $groupSubElements
+        );
+        $this->assertSame(
+            gettype($groupSubElements['Options']),
+            'array'
+        );
+    }
+
+    /**
+     * Tests the HTTP GET request for the endpoint /projects/{project}/recordings
+     *
+     * @return void
+     */
+    public function testGetProjectsRecordings(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "projects/$this->projectName/recordings",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $projectsRecordingsArray = json_decode(
+            (string) utf8_encode(
+                strstr($response->getBody()->getContents(),"{")
+            ),
+            true
+        );
+
+        $this->assertSame(
+            gettype($projectsRecordingsArray),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            'Recordings',
+            $projectsRecordingsArray
+        );
+        $this->assertSame(
+            gettype($projectsRecordingsArray['Recordings']),
+            'array'
+        );
+
+        $this->assertArrayHasKey(
+            '0',
+            $projectsRecordingsArray['Recordings']
+        );
+
+        $recordings = $projectsRecordingsArray['Recordings']['0'];
+
+        $this->assertArrayHasKey(
+            'Candidate',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Candidate']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'PSCID',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['PSCID']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Visit']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Visit_date',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Visit_date']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Site',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Site']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'File',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['File']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Modality',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Modality']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'InsertTime',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['InsertTime']),
+            'string'
+        );
+        $this->assertArrayHasKey(
+            'Link',
+            $recordings
+        );
+        $this->assertSame(
+            gettype($recordings['Link']),
+            'string'
+        );
     }
 }
