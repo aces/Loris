@@ -120,11 +120,14 @@ foreach ($correctMapping as $issueID => $modulesTableID) {
 }
 
 // Use mapping arrays to replace old `LorisMenu` ID values in issues_history
-// `newValue` column with new `modules` table ID values where fieldChanged = 'module'.
+// `newValue` column with new `modules` table ID values
+// where fieldChanged = 'module'.
 $result_history = $DB->pselect(
-    'SELECT issueHistoryID, newValue as module FROM issues_history WHERE fieldChanged=\'module\'',
+    'SELECT issueHistoryID, newValue as module FROM issues_history 
+        WHERE fieldChanged=\'module\'',
     []
 );
+
 $issueHistoryMapping = [];
 foreach ($result_history as $row) {
     $issueHistoryMapping[$row['issueHistoryID']] = $row['module'];
@@ -138,8 +141,8 @@ foreach ($issueHistoryMapping as $issueHistoryID => $menuTableID) {
     // `LorisMenu` table.
     // Using the module name, look up the new ID in the `modules` table.
     if (!array_key_exists($menuTableID, $menuTableMapping)) {
-        echo "[!] Issue History ID: $issueHistoryID. Could not find key `$menuTableID` in ".
-            "LorisMenu mapping array\n";
+        echo "[!] Issue History ID: $issueHistoryID. Could not find key ".
+            "`$menuTableID` in LorisMenu mapping array\n";
         $incorrectHistoryMapping[] = $issueHistoryID;
         continue;
     }
@@ -160,7 +163,8 @@ $patch_history = [];
 foreach ($correctHistoryMapping as $issueHistoryID => $modulesTableID) {
     $result       = $DB->pselect(
         "SELECT ih.issueHistoryID,lm.Link as module FROM LorisMenu lm 
-        INNER JOIN issues_history ih ON (ih.newValue=lm.ID AND ih.issueHistoryID=:ihd) 
+        INNER JOIN issues_history ih
+        ON (ih.newValue=lm.ID AND ih.issueHistoryID=:ihd) 
         WHERE ih.fieldChanged='module'",
         ['ihd' => $issueHistoryID]
     );
@@ -191,7 +195,11 @@ if ($confirm) {
     }
 
     foreach ($patch_history as $issueHistoryID=>$modulesTableID) {
-        $DB->update('issues_history', ['newValue'=>$modulesTableID], ['issueHistoryID'=>$issueHistoryID]);
+        $DB->update(
+            'issues_history',
+            ['newValue'=>$modulesTableID],
+            ['issueHistoryID'=>$issueHistoryID]
+        );
     }
     foreach ($incorrectHistoryMapping as $issueID) {
         $DB->delete('issues_history', ['issueHistoryID'=>$issueHistoryID]);
@@ -209,7 +217,8 @@ if ($confirm) {
     }
 
     foreach ($patch_history as $issueHistoryID=>$modulesTableID) {
-        echo "UPDATE `issues_history` SET newValue=$modulesTableID WHERE issueHistoryID=$issueHistoryID;\n";
+        echo "UPDATE `issues_history` SET newValue=$modulesTableID ".
+            "WHERE issueHistoryID=$issueHistoryID;\n";
     }
     foreach ($incorrectHistoryMapping as $issueHistoryID) {
         echo "DELETE FROM `issues_history` WHERE issueHistoryID=$issueHistoryID;\n";
