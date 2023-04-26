@@ -91,9 +91,9 @@ class ImagePanelHeader extends Component {
 
 ImagePanelHeader.propTypes = {
   QCStatus: PropTypes.string,
-  onToggleBody: PropTypes.string,
-  onToggleHeaders: PropTypes.string,
-  HeadersExpanded: PropTypes.string,
+  onToggleBody: PropTypes.func,
+  onToggleHeaders: PropTypes.func,
+  HeadersExpanded: PropTypes.bool,
   FileID: PropTypes.string,
   Filename: PropTypes.string,
   Expanded: PropTypes.bool,
@@ -335,7 +335,7 @@ class ImageQCDropdown extends Component {
 ImageQCDropdown.propTypes = {
   Label: PropTypes.string,
   url: PropTypes.string,
-  editable: PropTypes.string,
+  editable: PropTypes.bool,
   options: PropTypes.object,
   FileID: PropTypes.string,
   FormName: PropTypes.string,
@@ -425,8 +425,8 @@ class ImagePanelQCStatusSelector extends Component {
   }
 }
 ImagePanelQCStatusSelector.propTypes = {
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   FileID: PropTypes.string,
 };
@@ -465,7 +465,7 @@ class ImagePanelQCSelectedSelector extends Component {
 }
 ImagePanelQCSelectedSelector.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   Selected: PropTypes.string,
 };
 
@@ -524,7 +524,7 @@ class ImagePanelQCCaveatSelector extends Component {
 }
 ImagePanelQCCaveatSelector.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,
@@ -617,9 +617,9 @@ class ImagePanelQCPanel extends Component {
 }
 ImagePanelQCPanel.propTypes = {
   FileID: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
-  FileNew: PropTypes.string,
+  FileNew: PropTypes.bool,
   Selected: PropTypes.string,
   Caveat: PropTypes.string,
   SeriesUID: PropTypes.string,
@@ -952,8 +952,8 @@ class ImagePanelBody extends Component {
 }
 ImagePanelBody.propTypes = {
   FileID: PropTypes.string,
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   Caveat: PropTypes.string,
   Selected: PropTypes.string,
@@ -970,7 +970,7 @@ ImagePanelBody.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeadersExpanded: PropTypes.string,
+  HeadersExpanded: PropTypes.bool,
   CaveatViolationsResolvedID: PropTypes.string,
   HeaderInfo: PropTypes.object,
 };
@@ -1072,8 +1072,8 @@ class ImagePanel extends Component {
 ImagePanel.propTypes = {
   FileID: PropTypes.string,
   Filename: PropTypes.string,
-  FileNew: PropTypes.string,
-  HasQCPerm: PropTypes.string,
+  FileNew: PropTypes.bool,
+  HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   Caveat: PropTypes.string,
   Selected: PropTypes.string,
@@ -1089,7 +1089,7 @@ ImagePanel.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeaderInfo: PropTypes.string,
+  HeaderInfo: PropTypes.object,
   HeadersExpanded: PropTypes.string,
   APIFile: PropTypes.string,
   CaveatViolationsResolvedID: PropTypes.string,

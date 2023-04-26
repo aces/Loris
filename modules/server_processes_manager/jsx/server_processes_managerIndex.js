@@ -123,8 +123,9 @@ ServerProcessesManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ServerProcessesManagerIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
     />

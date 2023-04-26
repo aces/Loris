@@ -13,7 +13,6 @@
         "d3-dsv": "^1.0.10",
         "d3-scale": "^4.0.2",
         "d3-scale-chromatic": "^3.0.0",
-        "differenceequationsignal1d": "^0.1.1",
         "gl-matrix": "^2.8.1",
         "google-protobuf": "^3.6.1",
         "ramda": "^0.25.0",

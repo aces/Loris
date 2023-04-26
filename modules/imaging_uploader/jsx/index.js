@@ -6,8 +6,9 @@ import React from 'react';
  * Render imaging_uploader on page load
  */
 document.addEventListener('DOMContentLoaded', function() {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className='page-imaging-uploader'>
       <ImagingUploader
         Module='imaging_uploader'

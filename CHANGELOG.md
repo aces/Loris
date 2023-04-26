@@ -17,8 +17,12 @@ changes in the following format: PR #1234***
 - Migrated instrument permissions from config.xml to database and added the ability
   to manage instrument permissions in the frontend from the `instrument_manager`
   module. (PR #8302)
+- new postinstall script that automatically installs /project and eeg-browser additional npm dependencies 
+  when `make` or `npm ci` is executed (PR #8244)
+
 
 #### Updates and Improvements
+- Upgrade react to version 18 (PR #8188)
 - Rename subproject to Cohort (PR #7817, applied changes in LORIS-MRI PR #882)
 - Create new CohortData and CohortController classes to use as data access model 
   and transfer object (PR #7817)
@@ -27,9 +31,15 @@ changes in the following format: PR #1234***
 - Fixed the Candidate Age at Death field label and Data Dictionary item for LINST instruments (PR #8362)
 - Allow clearing a previously entered consent status in candidate parameters (PR #7772)
 - Add code sanitizer before dangerouslySetInnerHTML is used in login to protect against XSS attacks (PR #7491)
+- npm package freeze with versionning of `package-lock.json` and switch from `npm install` to `npm ci` (PR #8224)
+- New imaging config to set:
+  - createVisit
+  - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
+  - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
+- Help and help editor reactification (PR #8309)
 
 #### Bug Fixes
-- placeholder
+- Fix a Fatal error on the Genomic Browser tabs (PR #8468)
 
 ### Modules
 
@@ -37,31 +47,54 @@ changes in the following format: PR #1234***
 - Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
 provided as the body of a PUT/PATCH request. The values of all fields are now defined by
 the `Data` key instead of `$InstrumentName` (PR #7857)
+- Fix Candidate endpoint error:
+The candidates/{CanID} endpoint throws a fatal error if a missing but valid (format pass validation) CanID is provided (PR #8417)
+
+
 #### Candidate Parameters
 - Added date restriction for consent withdrawal so that withdrawal date cannot be earlier
 than the given consent response date (PR #8298)
+
 #### EEG Browser
 - Visualization:
   - Electrode 2D montage: detect if the coordinate space is in the ALS orientation to convert to RAS (nose up)
   - Use the optimal signal sampling that fulfills number of chunk displayed < MAX_VIEWED_CHUNKS
-  - Fixes UI panels open/close glitches
+  - Fixes UI panels open/close glitches (PR #8238)
+  - Upgrade codebase to Typescript 4.0 syntax (PR #8211)
+  - New config (GUI/useEEGBrowserVisualizationComponents) to enable the EEG visualization (PR #8263)
+  - Annotations: HED tags support (PR #8236)
 - Added a SQL table to save any additional task events property data imported through BIDS files (PR #8237)
   - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #873)
 - Added SQL tables to save coordinate system data imported through BIDS files (PR #8242)
   - Added method to extract from BIDS files in LORIS-MRI (LORIS-MRI PR #885)
+- Fix a few issues with EEGLAB set/fdt files:
+  - Download link broken
+  - Incorrect placement, it should be logically after the .set file (PR #8323)
+- Download All files fails when no annotations exists (PR #8323)
+- Clean dependency tree and fix security issues (PR #8486)
+
 #### Instrument Builder
 - Fixed display order of select options that were previously ordered alphabetically.
 Now the options correctly display in order of how they are defined in the instrument. (PR #8361)
+
 #### Instruments
 - Added `postMortem` functionality for LINST instruments, fixing display of 'Candidate Age at Death' when `postMortem` is set to true (PR #8362)
 - Added/modified documentation for configuring 'Candidate Age at Death' field display in instruments (PR #8362)
 
 #### Issue Tracker
-
 - Modified username (i.e. user ID) to full names throughout the main table, edit form and history sections (PR #8451)
 
+#### EEG uploader
+- New module (PR #8409)
+
+#### Dashboard
+- Reactification (PR #8476)
+
+#### Statistics
+- Reactification (PR #8476)
+
 ### Tools
-- placeholder
+- Fix CouchDB_MRI_Importer.php script for PHP > 8.0 (PR #8369) 
 
 ### Clean Up
 - Fixed inconsistency in candidate consent data and history in Raisinbread (PR #8297)
@@ -73,10 +106,9 @@ SQL schema, and automated testing (PR #8313)
 provided as the body of a PUT/PATCH request. The values of all fields are now defined by
 the `Data` key instead of `$InstrumentName` (PR #7857)
 
-
 ### Notes For Developers
-- placeholder
-
+- Require jsodc comments to have correct `@return` and `@param` values in javascript (PR #8266)
+- Disable ESLint on build (prod instances) (PR #8229)
 
 
 

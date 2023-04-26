@@ -39,7 +39,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                     );
 
-        $tpl_data['css'] = $this->BaseURL . '/main.css';
+        $tpl_data['css'] = 'main.css';
 
         //Display the footer links, as specified in the config file
         $links =$this->Config->getExternalLinks('FooterLink');

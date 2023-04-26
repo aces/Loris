@@ -152,9 +152,6 @@ Breadcrumbs.propTypes = {
   breadcrumbs: PropTypes.array,
 };
 
-let RBreadcrumbs = React.createFactory(Breadcrumbs);
-
 window.Breadcrumbs = Breadcrumbs;
-window.RBreadcrumbs = RBreadcrumbs;
 
 export default Breadcrumbs;
