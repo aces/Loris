@@ -18,9 +18,9 @@ is correct.
 'an examiner is required'.
 5. If the instrument has multiple pages (on the left pane), move from page to page and check that the
 saved data stays the same. The data that wasn't saved should be lost.
-6. Make sure that the 'Clear Instrument' button on the left pane is only visible when the user
+6. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
 has the `Send to DCC` (_"Send to DCC"_) permission.
-7. Click on the 'Clear Instrument' button and check if the instrument's data is cleared.
+7. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
 8. Check that an instrument with the `postMortem` variable set to true displays the label
 'Candidate Age at Death (Months)' instead of 'Candidate Age (Months)'. To set the `postMortem` variable
 for PHP instruments, assign the variable within the instrument's PHP class; for LINST instruments,
