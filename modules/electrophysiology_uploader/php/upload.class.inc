@@ -137,13 +137,12 @@ class Upload extends \NDB_Page
             );
         }
 
-        $candID = $db->pselectOne(
+        $cand = $db->pselectRow(
             "
-            SELECT candID
+            SELECT candID, Active
             FROM candidate
             WHERE CandID = :candID
             AND PSCID = :pscid
-            AND Active = 'Y'
             ",
             [
                 'candID' => $candID,
@@ -151,21 +150,26 @@ class Upload extends \NDB_Page
             ]
         );
 
-        if (is_null($candID)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Candidate with matching candID/PSCID pair does not exist'
+        if (is_null($cand['candID'])) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                'Candidate with matching CandID/PSCID pair does not exist'
             );
         }
 
-        $sessionID = $db->pselectOne(
+        if ($cand['Active'] !== 'Y') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Candidate associated with CandID {$candID} is inactive."
+            );
+        }
+
+        $session = $db->pselectOne(
             "
-            SELECT s.ID
+            SELECT s.ID, s.Active
             FROM session s
                 LEFT JOIN candidate c ON (c.CandID = s.CandID)
             WHERE s.Visit_label = :visit
                 AND s.CandID = :candID
                 AND c.PSCID = :pscid
-                AND s.Active = 'Y'
                 ",
             [
                 'visit'  => $visitLabel,
