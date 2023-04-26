@@ -137,13 +137,12 @@ class Upload extends \NDB_Page
             );
         }
 
-        $candID = $db->pselectOne(
+        $candStatus = $db->pselectOne(
             "
-            SELECT candID
+            SELECT Active
             FROM candidate
             WHERE CandID = :candID
             AND PSCID = :pscid
-            AND Active = 'Y'
             ",
             [
                 'candID' => $candID,
@@ -151,32 +150,40 @@ class Upload extends \NDB_Page
             ]
         );
 
-        if (is_null($candID)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Candidate with matching candID/PSCID pair does not exist'
+        if (is_null($candStatus)) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                'Candidate with matching CandID/PSCID pair does not exist'
             );
         }
 
-        $sessionID = $db->pselectOne(
+        if ($candStatus !== 'Y') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Candidate associated with CandID {$candID} is inactive."
+            );
+        }
+
+        $session = $db->pselectRow(
             "
-            SELECT s.ID
-            FROM session s
-                LEFT JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE s.Visit_label = :visit
-                AND s.CandID = :candID
-                AND c.PSCID = :pscid
-                AND s.Active = 'Y'
-                ",
+            SELECT ID, Active
+            FROM session
+            WHERE Visit_label = :visit
+            AND CandID = :candID
+            ",
             [
                 'visit'  => $visitLabel,
-                'candID' => $candID,
-                'pscid'  => $pscid
+                'candID' => $candID
             ]
         );
 
-        if (is_null($sessionID)) {
+        if (is_null($session)) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                "Visit {$visitLabel} for candidate {$candID} does not exist"
+            );
+        }
+
+        if ($session['Active'] !== 'Y') {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit for candidate does not exist'
+                "Visit {$visitLabel} for CandID {$candID} is inactive."
             );
         }
 
@@ -236,7 +243,7 @@ class Upload extends \NDB_Page
             'UploadedBy'     => $user->getUsername(),
             'UploadDate'     => date('Y-m-d H:i:s'),
             'UploadLocation' => "$filename",
-            'SessionID'      => $sessionID,
+            'SessionID'      => $session['ID'],
         ];
 
         $db->insert('electrophysiology_uploader', $saveValues);
@@ -250,7 +257,7 @@ class Upload extends \NDB_Page
               WHERE p.code='monitor_eeg_uploads'",
             []
         );
-        $timepoint = \TimePoint::singleton(new \SessionID($sessionID));
+        $timepoint = \TimePoint::singleton(new \SessionID($session['ID']));
         $msg_data  = [
             'Site'           => $timepoint->getPSC(),
             'PSCID'          => $pscid,
