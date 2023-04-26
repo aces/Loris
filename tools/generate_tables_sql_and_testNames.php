@@ -19,11 +19,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-// require all relevant OO class libraries
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/Database.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
+require_once __DIR__ . "/generic_includes.php";
 
 $data = stream_get_contents(STDIN);
 
@@ -37,16 +33,17 @@ foreach ($instruments as $instrument) {
     $items = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
+        $output  = "";
         $bits    = explode("{@}", trim($item));
         if (preg_match("/Examiner[0-9]*/", $bits[1])) {
             continue;
         }
         switch ($bits[0]) {
-            // generate the CREATE TABLE syntax
+        // generate the CREATE TABLE syntax
         case "table":
             $tablename = $bits[1];
-            $filename  = "../project/tables_sql/".$tablename.".sql";
-            $output    = "CREATE TABLE `$tablename` (
+            $filename  = __DIR__ . "/../project/tables_sql/".$tablename.".sql";
+            $output   .= "CREATE TABLE `$tablename` (
                 `CommentID` varchar(255) NOT NULL default '',
                 `UserID` varchar(255) default NULL,
                 `Examiner` varchar(255) default NULL,
@@ -56,7 +53,9 @@ foreach ($instruments as $instrument) {
             break;
 
         case "page":
-            $pages[] = $bits[2];
+            if (array_key_exists(2, $bits)) {
+                $pages[] = htmlspecialchars($bits[2]);
+            }
             continue 2;
 
         // no SQL need to be generated.
@@ -90,12 +89,16 @@ foreach ($instruments as $instrument) {
                 $bits[0] = "varchar(255)";
             }
 
-            $bits[2] = htmlspecialchars($bits[2]);
             $output .= "`$bits[1]` $bits[0] default NULL,\n";
         }
     }
     $output .= "PRIMARY KEY (`CommentID`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     print "Filename: $filename\n";
+    $dirname = dirname($filename);
+    if (!is_dir($dirname)) {
+        mkdir($dirname, 0755, true);
+    }
+
     $fp = fopen($filename, "w");
     fwrite($fp, $output);
     $sql = "REPLACE INTO test_names (Test_name, Full_name, Sub_group) "
