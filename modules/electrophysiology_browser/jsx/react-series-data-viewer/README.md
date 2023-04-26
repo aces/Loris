@@ -1,5 +1,13 @@
 # EEG Browser Visualization
 
+## Installation requirements
+
+The visualization components require Protocol Buffers v3.0.0 or higher.
+For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
+
+To enable the visualization components, set the `useEEGBrowserVisualizationComponents` config (Configuration/GUI) to true and run `make dev` or `npm install && npm run compile` from the loris root directory.
+
+
 ## Main dependencies
 
 - [Ramda](https://ramdajs.com)
