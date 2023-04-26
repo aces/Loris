@@ -6,7 +6,7 @@ CREATE TABLE `bmi` (
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,
-`unit_classification` enum('metric','imperial','standard','not_answered') default NULL,
+`unit_classification` enum('metric','imperial') default NULL,
 `height_feet` numeric default NULL,
 `height_feet_status` enum('not_answered') default NULL,
 `height_inches` numeric default NULL,
