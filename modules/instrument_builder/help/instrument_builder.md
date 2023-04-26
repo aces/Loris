@@ -37,9 +37,10 @@ _Data entry fields_ :
 
 - Numeric : for numbers - e.g. height, weight, etc. Ranges can be specified to enforce valid data entry.
 
-Note: _"not_answered"_ will be automatically added as the last option for any dropdown. In the case of the others data entry fields types the "not_answered" option will appear next to the element.
+Note: _"not_answered"_ will be automatically added as the last option for any dropdown.
 The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.
 
+Note: An accompanying dropdown field with a _"not_answered"_ option will be automatically added to all other data entry fields that are not dropdown nor multiselect. The accompanying dropdown will appear next to the data entry field.
 _Formatting fields_ for cosmetic/visual form features:
 
 - Blank Line : for separating blocks of questions. Leave blank "Question Name" and "Question Text".	
