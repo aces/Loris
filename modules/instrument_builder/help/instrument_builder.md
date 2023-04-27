@@ -41,6 +41,7 @@ Note: _"not_answered"_ will be automatically added as the last option for any dr
 The next time you add a dropdown field, you'll see your last options list is suggested for convenience - click "reset" to clear them.
 
 Note: An accompanying dropdown field with a _"not_answered"_ option will be automatically added to all other data entry fields that are not dropdown nor multiselect. The accompanying dropdown will appear next to the data entry field.
+
 _Formatting fields_ for cosmetic/visual form features:
 
 - Blank Line : for separating blocks of questions. Leave blank "Question Name" and "Question Text".	
