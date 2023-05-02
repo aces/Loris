@@ -98,7 +98,8 @@ class Resolve extends \NDB_Page
                 "SELECT ID
                 FROM mri_protocol_violated_scans
                 WHERE (:hash = md5(concat_WS(
-                          ':',minc_location,PatientName,SeriesUID,time_run)
+                          ':',minc_location,PatientName,SeriesUID,time_run,
+                                PhaseEncodingDirection,TE_range,EchoNumber)
                                )
                 )",
                 ['hash' => $hash]
@@ -113,7 +114,8 @@ class Resolve extends \NDB_Page
                 "SELECT LogID
                 FROM mri_violations_log
                 WHERE (:hash = md5(concat_WS(
-                                ':',MincFile,PatientName,SeriesUID,TimeRun)
+                                ':',MincFile,PatientName,SeriesUID,TimeRun,
+                                PhaseEncodingDirection,EchoTime,EchoNumber)
                                )
                 )",
                 ['hash' => $hash]
@@ -129,7 +131,8 @@ class Resolve extends \NDB_Page
                 "SELECT ID
                 FROM MRICandidateErrors
                 WHERE (:hash = md5(concat_WS(
-                                ':',MincFile,PatientName,SeriesUID,TimeRun)
+                                ':',MincFile,PatientName,SeriesUID,TimeRun,
+                                PhaseEncodingDirection,EchoTime,EchoNumber)
                                )
                 )",
                 ['hash' => $hash]

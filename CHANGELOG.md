@@ -90,6 +90,13 @@ Now the options correctly display in order of how they are defined in the instru
 #### Dashboard
 - Reactification (PR #8476)
 
+#### MRI violation
+- Reactification (PR #7473)
+- Fixes links to BrainBrowser from the MRI violations module (PR #8392)
+- Remove MRI violation module tabs (PR #8399)
+- Fix multiple rows for file protocol violations not resolvable (PR #8661)
+- Fix hashing algorithm for `violations_resolved` table's `hash` column (PR #8664)
+
 #### Statistics
 - Reactification (PR #8476)
 
@@ -105,6 +112,10 @@ SQL schema, and automated testing (PR #8313)
 - API: Modified in v0.0.4-dev the candidate instrument data format returned by a GET request or
 provided as the body of a PUT/PATCH request. The values of all fields are now defined by
 the `Data` key instead of `$InstrumentName` (PR #7857)
+- Run the script `tools/single_use/update_violations_resolved_hashes.sql.php` to update hashes
+  for the `violations_resolved` table according to the new hashing nomenclature. Not doing so 
+  will result in duplication of data in the `violations_resolved` table when users update
+  a resolution status for a violation.
 
 ### Notes For Developers
 - Require jsodc comments to have correct `@return` and `@param` values in javascript (PR #8266)
