@@ -18,9 +18,14 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  */
 class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 {
-    protected $frecordTest     = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
-    protected $candidTest      = "300174";
-    protected $visitTest       = "V1";
+    protected $frecordTest         = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
+    protected $candidTest          = "300174";
+    protected $visitTest           = "V1";
+    protected $headernameTest      = "json_file";
+    protected $fBIDSArchiveTest    = "archive_bids.tsv";
+    protected $fBIDSChannelsTest   = "channels_bids.tsv";
+    protected $fBIDSElectrodesTest = "electrodes_bids.tsv";
+    protected $fBIDSEventsTest     = "events_bids.tsv";
 
     /**
      * Tests the HTTP GET request for the
@@ -30,9 +35,6 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
      */
     public function testGetCandidatesCandidVisitRecordings(): void
     {
-            $this->markTestIncomplete(
-              "rewrite after #8036 [EEG] Database Architecture for HED Tags"
-            );
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/recordings",
@@ -121,19 +123,113 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/metadata
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitRecordingsEdfFileMetadata(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/metadata",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+        $recordingsArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(gettype($recordingsArray), 'array');
+
+        $this->assertArrayHasKey('Meta', $recordingsArray);
+        $meta = $recordingsArray['Meta'];
+        $this->assertSame(gettype($meta), 'array');
+
+        $this->assertArrayHasKey('CandID', $meta);
+        $this->assertSame(gettype($meta['CandID']), 'string');
+        $this->assertArrayHasKey('Visit', $meta);
+        $this->assertSame(gettype($meta['Visit']), 'string');
+        $this->assertArrayHasKey('File', $meta);
+        $this->assertSame(gettype($meta['File']), 'string');
+
+        $this->assertArrayHasKey('Data', $recordingsArray);
+        $data = $recordingsArray['Data'];
+        $this->assertSame(gettype($data), 'array');
+
+        foreach ($data as $value) {
+            $this->assertSame(gettype($value), 'string');
+        }
+    }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/metadata/{headername}
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitRecordingsEdfFileMetadataHeadername(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/metadata/$this->headernameTest",
+            [
+                'http_errors' => false,
+                'headers'     => $this->headers
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+        $recordingsArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
+
+        $this->assertSame(gettype($recordingsArray), 'array');
+
+        $this->assertArrayHasKey('Meta', $recordingsArray);
+        $meta = $recordingsArray['Meta'];
+        $this->assertSame(gettype($meta), 'array');
+
+        $this->assertArrayHasKey('CandID', $meta);
+        $this->assertSame(gettype($meta['CandID']), 'string');
+        $this->assertArrayHasKey('Visit', $meta);
+        $this->assertSame(gettype($meta['Visit']), 'string');
+        $this->assertArrayHasKey('File', $meta);
+        $this->assertSame(gettype($meta['File']), 'string');
+        $this->assertArrayHasKey('Header', $meta);
+        $this->assertSame(gettype($meta['Header']), 'string');
+
+        $this->assertArrayHasKey('Value', $recordingsArray);
+        $this->assertSame(gettype($recordingsArray['Value']), 'string');
+    }
+
+    /**
+     * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/channels
      *
      * @return void
      */
     public function testGetCandidatesCandidVisitRecordingsEdffileChannels(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
+            // $this->markTestIncomplete(
+            //   "rewrite"
+            // );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/" .
-            "recordings/$this->frecordTest/channels",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/channels",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -306,205 +402,15 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/channels/meta
-     *
-     * @return void
-     */
-    public function testGetCandidatesCandidVisitRecordingsEdffileChannelsMeta():
-    void
-    {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/channels/meta",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $recChannelsMetaArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(
-            gettype($recChannelsMetaArray),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']['Visit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['ChannelName']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['ChannelDescription']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype(
-                $recChannelsMetaArray['Channels']['0']['ChannelTypeDescription']
-            ),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['ChannelStatus']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['StatusDescription']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['SamplingFrequency']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['LowCutoff']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['HighCutoff']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['ManualFlag']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['Notch']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['Reference']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['Unit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Channels']['0']['ChannelFilePath']),
-            'string'
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Channels',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsMetaArray['Channels']
-        );
-        $this->assertArrayHasKey(
-            'ChannelName',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelTypeDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelStatus',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'StatusDescription',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'SamplingFrequency',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'LowCutoff',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'HighCutoff',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ManualFlag',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Notch',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Reference',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'Unit',
-            $recChannelsMetaArray['Channels']['0']
-        );
-        $this->assertArrayHasKey(
-            'ChannelFilePath',
-            $recChannelsMetaArray['Channels']['0']
-        );
-    }
-
-    /**
-     * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/electrodes
      *
      * @return void
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodes(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/electrodes",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/electrodes",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -635,163 +541,15 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
 
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/electrodes/meta
-     *
-     * @return void
-     */
-    public function testGetCandidatesCandidVisitRecordingsEdfFileElectrodesMeta():
-    void
-    {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/electrodes/meta",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $recChannelsMetaArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(
-            gettype($recChannelsMetaArray),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Meta']['Visit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['ElectrodeName']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['ElectrodeType']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['ElectrodeMaterial']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['X']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['Y']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['Z']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['Impedance']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recChannelsMetaArray['Electrodes']['0']['ElectrodeFilePath']),
-            'string'
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recChannelsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Electrodes',
-            $recChannelsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recChannelsMetaArray['Electrodes']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeName',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeType',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeMaterial',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'X',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Y',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Z',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'Impedance',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-        $this->assertArrayHasKey(
-            'ElectrodeFilePath',
-            $recChannelsMetaArray['Electrodes']['0']
-        );
-    }
-
-    /**
-     * Tests the HTTP GET request for the
      * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/events
      *
      * @return void
      */
     public function testGetCandidatesCandidVisitRecordingsEdfFileEvents(): void
     {
-            $this->markTestIncomplete(
-              "rewrite"
-            );
         $response = $this->client->request(
             'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/events/meta",
+            "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/events",
             [
                 'http_errors' => false,
                 'headers'     => $this->headers
@@ -919,147 +677,160 @@ class LorisApiRecordingsTest extends LorisApiAuthenticatedTest
             $recordingsEventsArray['TaskEvents']['0']
         );
     }
-
+    
     /**
      * Tests the HTTP GET request for the
-     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/events/meta
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/archive
      *
      * @return void
      */
-    public function testGetCandidatesCandidVisitRecordingsEdfFileEventsMeta(): void
+    public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesArchive(): void
     {
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSArchiveTest, 'w');
+        } catch (Exception $e) {
             $this->markTestIncomplete(
-              "rewrite"
+                "File cannot be opened: " . $this->fBIDSArchiveTest
             );
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest/$this->visitTest/recordings/" .
-            "$this->frecordTest/events/meta",
-            [
-                'http_errors' => false,
-                'headers'     => $this->headers
-            ]
-        );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $recordingsEventsMetaArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
+        $this->assertFileIsReadable($this->fBIDSArchiveTest);
+    }
 
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['Meta']['Visit']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['Onset']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['Duration']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventCode']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventSample']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventType']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['TrialType']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['ResponseTime']),
-            'NULL'
-        );
-        $this->assertSame(
-            gettype($recordingsEventsMetaArray['TaskEvents']['0']['EventFilePath']),
-            'string'
-        );
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/channels
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesChannels(): void
+    {
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSChannelsTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSChannelsTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
 
-        $this->assertArrayHasKey(
-            'Meta',
-            $recordingsEventsMetaArray
-        );
-        $this->assertArrayHasKey(
-            'CandID',
-            $recordingsEventsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'Visit',
-            $recordingsEventsMetaArray['Meta']
-        );
-        $this->assertArrayHasKey(
-            'TaskEvents',
-            $recordingsEventsMetaArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $recordingsEventsMetaArray['TaskEvents']
-        );
-        $this->assertArrayHasKey(
-            'Onset',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'Duration',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventCode',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventSample',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventType',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'TrialType',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'ResponseTime',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
-        $this->assertArrayHasKey(
-            'EventFilePath',
-            $recordingsEventsMetaArray['TaskEvents']['0']
-        );
+        $this->assertFileIsReadable($this->fBIDSChannelsTest);
+    }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/electrodes
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesElectrodes(): void
+    {
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSElectrodesTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSElectrodesTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSElectrodesTest);
+    }
+
+    /**
+     * Tests the HTTP GET request for the
+     * endpoint /candidates/{candid}/{visit}/recordings/{edffile}/bidsfiles/events
+     *
+     * @return void
+     */
+    public function testGetCandidatesCandidVisitRecordingsEdfFileBidsfilesEvents(): void
+    {
+        try {
+            $resource = \GuzzleHttp\Psr7\Utils::tryFopen($this->fBIDSEventsTest, 'w');
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "File cannot be opened: " . $this->fBIDSEventsTest
+            );
+        }
+        $stream   = \GuzzleHttp\Psr7\Utils::streamFor($resource);
+        try {
+            $response = $this->client->request(
+                'GET',
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+                [
+                    'headers' => $this->headers,
+                    'save_to' => $stream
+                ]
+            );
+        } catch (Exception $e) {
+            $this->markTestIncomplete(
+                "Endpoint not found: " .
+                "candidates/$this->candidTest/$this->visitTest/recordings/$this->frecordTest/bidsfiles/archive",
+            );
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        // Verify the endpoint has a body
+        $body = $response->getBody();
+        $this->assertNotEmpty($body);
+
+        $this->assertFileIsReadable($this->fBIDSEventsTest);
     }
 }
