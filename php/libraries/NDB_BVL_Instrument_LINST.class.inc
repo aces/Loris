@@ -71,8 +71,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $scope = new Scope(Scope::SESSION);
-
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
