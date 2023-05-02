@@ -69,7 +69,7 @@ class Mri_Violations extends \DataFrameworkMenu
         $problemTypes = array_column(
             $db->pselect(
                 "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
-                    UNION 
+                    UNION
                  SELECT DISTINCT 'Could not identify scan type'
                       FROM mri_protocol_violated_scans
                     UNION
@@ -174,6 +174,24 @@ class Mri_Violations extends \DataFrameworkMenu
             $deps,
             [
                 $baseURL . "/mri_violations/js/mriViolationsIndex.js",
+            ]
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies() : array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/mri_violations/css/mri_violations.css",
             ]
         );
     }
