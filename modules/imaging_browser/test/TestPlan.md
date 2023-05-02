@@ -35,7 +35,7 @@ prepended with the Patient Name.
 18. Scan-level Caveat emptor are viewable to all, modifiable if and only if user has permission `imaging_browser_qc` and there are no
     pipeline protocol violations associated to the image in the MRI violation module (`Manual Caveat Set by...` protocol violation
     with no other protocol violations can be modified). Example in raisinbread: `OTT170_300170_V1` `fieldmapBOLD` images have
-    pipeline protocol violations associated to the image in the MRI violation module and therefore should Caveat should not be editable.
+    pipeline protocol violations associated to the image in the MRI violation module and therefore Caveat should not be editable.
 19. There will be a Caveat link just above the Caveat drop-down in the image panel of a given scan if and only if there is an MRI violation with:
        i) the same path as the image file
        ii) the same SeriesUID as the image's SeriesUID
