@@ -184,10 +184,9 @@ class ImagingUploader extends Component {
         let numViolatedScans =
              row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
-        let patientName = row.PatientName;
-        violatedScans = <a
-          onClick={this.openViolatedScans.bind(null, patientName)}
-        >
+        const violUrl = loris.BaseURL +
+                         '/mri_violations/?patientName=' + row.PatientName;
+        violatedScans = <a href={violUrl}>
            ({numViolatedScans} violated scans)
         </a>;
       }
@@ -202,18 +201,6 @@ class ImagingUploader extends Component {
     }
 
     return (<td style={cellStyle}>{cell}</td>);
-  }
-
-  /**
-   * Opens MRI Violations for when there are violated scans
-   *
-   * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
-   * @param {object} e - event info
-   */
-  openViolatedScans(patientName, e) {
-    loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName,
-    })(e);
   }
 
   /**

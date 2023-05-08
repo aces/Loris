@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
 import {ChannelMetadata, Epoch} from '../types';
-import {MAX_CHANNELS} from '../../../vector';
+import {DEFAULT_MAX_CHANNELS} from '../../../vector';
 
 export const SET_EPOCHS = 'SET_EPOCHS';
 export const setEpochs = createAction(SET_EPOCHS);
@@ -31,7 +31,8 @@ export type Action =
         shapes: number[][],
         timeInterval: [number, number],
         seriesRange: [number, number],
-        limit: number
+        limit: number,
+        offsetIndex: number,
       }
     };
 
@@ -65,7 +66,7 @@ export const datasetReducer = (
     activeEpoch: null,
     physioFileID: null,
     offsetIndex: 1,
-    limit: MAX_CHANNELS,
+    limit: DEFAULT_MAX_CHANNELS,
     shapes: [],
     timeInterval: [0, 1],
     seriesRange: [-1, 2],

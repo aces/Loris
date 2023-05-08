@@ -334,8 +334,9 @@ PermissionSelect.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <InstrumentManagerIndex
       BaseURL={loris.BaseURL}
       dataURL={`${loris.BaseURL}/instrument_manager/?format=json`}

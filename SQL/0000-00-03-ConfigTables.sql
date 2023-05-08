@@ -218,9 +218,6 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/" FRO
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/publication_uploads/to_be_deleted/" FROM ConfigSettings WHERE Name="publication_deletions";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%MINCToolsPath%" FROM ConfigSettings WHERE Name="MINCToolsPath";
 
-
-INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
-INSERT INTO Config (ConfigID, Value) SELECT ID, 25 FROM ConfigSettings WHERE Name="rowsPerPage";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHERE Name="useEEGBrowserVisualizationComponents";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "localhost" FROM ConfigSettings WHERE Name="host";

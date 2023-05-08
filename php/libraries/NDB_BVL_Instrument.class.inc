@@ -4,6 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -1390,6 +1391,26 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
+    /**
+     * Gets the value of a field $field for this instrument for a
+     * DictionaryItem that was retrieved from getDataDictionary.
+     *
+     * This differs from getFieldValue in that getFieldValue takes
+     * a string and validates that it is in the dictionary in O(n)
+     * time while getDictionaryValue assumes the DictionaryItem
+     * exists and returns the value in O(1) time.
+     *
+     * @param DictionaryItem $field The field to get from this instrument
+
+     * @return mixed
+     */
+    function getDictionaryValue(DictionaryItem $field)
+    {
+        $allValues = $this->getInstanceData();
+        $fieldName = substr($field->getName(), strlen($this->testName)+1);
+
+        return $allValues[$fieldName];
+    }
 
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains

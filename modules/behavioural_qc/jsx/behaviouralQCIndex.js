@@ -51,8 +51,9 @@ BehaviouralQC.propTypes = {
  * Render Behavioural Quality Control on page load.
  */
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BehaviouralQC
       baseURL={loris.BaseURL}
     />

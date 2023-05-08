@@ -55,7 +55,8 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        SeriesUID,
                        md5(
                          concat_WS(
-                           ':',minc_location,PatientName,SeriesUID,time_run
+                           ':',minc_location,PatientName,SeriesUID,time_run,
+                           PhaseEncodingDirection,TE_range,EchoNumber
                          )
                        ) AS hash,
                        mpvs.ID AS join_id,
@@ -87,7 +88,10 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        'Protocol Violation',
                        SeriesUID,
                        md5(
-                         concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                         concat_WS(
+                           ':', MincFile, PatientName, SeriesUID, TimeRun,
+                           PhaseEncodingDirection,EchoTime,EchoNumber
+                         )
                        ) AS hash,
                        mrl.LogID AS join_id,
                        p.CenterID AS Site,
@@ -118,7 +122,10 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                          Reason,
                          SeriesUID,
                          md5(
-                           concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                           concat_WS(
+                             ':', MincFile, PatientName, SeriesUID, TimeRun,
+                             PhaseEncodingDirection,EchoTime,EchoNumber
+                           )
                          ) AS hash,
                          MRICandidateErrors.ID AS join_id,
                          null,

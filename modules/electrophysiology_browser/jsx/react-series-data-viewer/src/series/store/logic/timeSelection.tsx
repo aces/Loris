@@ -5,7 +5,7 @@ import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
 import {setTimeSelection} from '../state/timeSelection';
 import {Action as BoundsAction} from '../state/bounds';
-import {MIN_INTERVAL_FACTOR} from '../../../vector';
+import {MIN_INTERVAL} from '../../../vector';
 
 export const START_DRAG_SELECTION = 'START_DRAG_SELECTION';
 export const startDragSelection = createAction(START_DRAG_SELECTION);
@@ -17,6 +17,17 @@ export const END_DRAG_SELECTION = 'END_DRAG_SELECTION';
 export const endDragSelection = createAction(END_DRAG_SELECTION);
 
 export type Action = BoundsAction | { type: 'UPDATE_VIEWED_CHUNKS' };
+
+/**
+ * roundTime
+ *
+ * @param {number} value - The initial time value
+ * @param {number} decimals - The desired decimal precision
+ * @returns {number} - The value rounded to 'decimal' decimal places
+ */
+export const roundTime = (value, decimals = 3) => {
+  return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+};
 
 /**
  * createTimeSelectionEpic
@@ -48,7 +59,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
    */
   const initInterval = ([position, state]) => {
     const {interval} = R.clone(fromState(state));
-    const x = Math.round(interval[0] + position * (interval[1] - interval[0]));
+    const x = roundTime(interval[0] + position * (interval[1] - interval[0]));
     return setTimeSelection([x, x]);
   };
 
@@ -63,11 +74,7 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
   const updateInterval = ([position, state]) => {
     const {interval, timeSelection} = R.clone(fromState(state));
     const x = interval[0] + position * (interval[1] - interval[0]);
-    const minSize = Math.abs(interval[1] - interval[0]) * MIN_INTERVAL_FACTOR;
-    timeSelection[1] = Math.round(
-      x + Math.max(timeSelection[0] + minSize - timeSelection[1], 0)
-    );
-
+    timeSelection[1] = roundTime(x);
     return setTimeSelection(timeSelection);
   };
 
@@ -77,7 +84,9 @@ export const createTimeSelectionEpic = (fromState: (_: any) => any) => (
     Rx.map(([, state]) => {
       if (
         state.timeSelection
-        && (state.timeSelection[1] - state.timeSelection[0] < 2)
+        && (
+          Math.abs(state.timeSelection[1] - state.timeSelection[0]
+        ) < MIN_INTERVAL)
       ) {
         return setTimeSelection(null);
       } else {

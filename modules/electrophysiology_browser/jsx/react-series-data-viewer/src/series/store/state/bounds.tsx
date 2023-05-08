@@ -1,4 +1,5 @@
 import {createAction} from 'redux-actions';
+import {DEFAULT_VIEWER_HEIGHT} from '../../../vector';
 
 export const SET_INTERVAL = 'SET_INTERVAL';
 export const setInterval = createAction(SET_INTERVAL);
@@ -42,7 +43,10 @@ const interval = (
   action?: Action
 ): [number, number] => {
   if (action && action.type === 'SET_INTERVAL') {
-    return action.payload;
+    return [
+      Math.min(action.payload[0], action.payload[1]),
+      Math.max(action.payload[0], action.payload[1]),
+    ];
   }
   return state;
 };
@@ -71,7 +75,7 @@ const domain = (
  * @param {Action} action - The action
  * @returns {State} - The updated state
  */
-const amplitudeScale = (state = 1, action?: Action): number => {
+const amplitudeScale = (state = 0.0005, action?: Action): number => {
   if (action && action.type === 'SET_AMPLITUDE_SCALE') {
     return action.payload;
   }
@@ -99,7 +103,10 @@ const viewerWidth = (state = 400, action?: Action): number => {
  * @param {Action} action - The action
  * @returns {State} - The updated state
  */
-const viewerHeight = (state = 400, action?: Action): number => {
+const viewerHeight = (
+  state = DEFAULT_VIEWER_HEIGHT,
+  action?: Action
+): number => {
   if (action && action.type === 'SET_VIEWER_HEIGHT') {
     return action.payload;
   }

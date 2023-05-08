@@ -504,8 +504,9 @@ BatteryManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <BatteryManagerIndex
       testEndpoint={`${loris.BaseURL}/battery_manager/testendpoint/`}
       optionEndpoint={`${loris.BaseURL}/battery_manager/testoptionsendpoint`}
