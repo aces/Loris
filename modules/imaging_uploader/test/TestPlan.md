@@ -79,14 +79,13 @@
       the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincCreated column has a 
       clickable link that takes the user to the MRI violations page, displaying the violated scans of this upload.
     [Manual Testing]      
-13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Ensure 
-    that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
-    page with all the valid scans for this candidate loaded in the result table.
+13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Click on the
+    `View Imaging datasets` button and verify that it takes you to the Imaging Browser page with all the valid scans for
+    this candidate loaded in the result table.
     [Manual Testing]
-14. Go in the profile details for the candidate found in step 13 and go into the visit table. Check that the MR Scan 
-    done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and ensure you 
-    are taken to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded 
-    in the result table.
+14. Go in the profile details for the candidate found in step 13 and go into the visit table. Ensure that column
+    `MR Scan Done` is set to `Y`. Click on the `View Imaging data` button at the bottom of the page and verify that it takes
+    you to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded in the result table.
     [Manual Testing]
 15. Go the the Imaging Uploader page and search for the upload done in step 11 using (in turn) the CandID, PSCID and
     visit label. Verify that the upload done in step 11 is shown in the table each time. 
@@ -99,11 +98,11 @@
 18. Upload a valid, anonymized `.tar.gz` DICOM archive but with a patient name (PSCID, CandID, Visit label) that does not
     match the one stored in the DICOM files of the archive (for example, patient name DICOM header = `MTL0001_111111_V01`
     but `.tar.gz` name being `MTL0002_222222_V01` which corresponds to another valid candidate).
-    Check that an appropriate message is written in the Console Output (i.e. "`The PatientName read from the DICOM header
-    does not start with MTL0002_222222_V01 from the mri_upload table`").
+    Check that an appropriate message is written in the Log Viewer UI bloc (i.e. "`The PatientName read from the DICOM
+    header does not start with MTL0002_222222_V01 from the mri_upload table`").
     [Manual Testing]
 19. Set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
-	<LORIS MRI code dir>/dicom-archive/.loris-mri) and comment out the definition of the @db array. Once these operations
+	`<LORIS MRI code dir>/dicom-archive/.loris-mri`) and comment out the definition of the @db array. Once these operations
 	are done, upload any valid scan: check in the server processes manager that this fails with an error code of 4.
 	Now try to upload the scan again. When the system asks you if you want to overwrite the existing 
 	archive, answer 'Yes'. Check that this reupload fails with error code 4 (and not 2). 
@@ -133,4 +132,3 @@
     the value in the 'Progress' column for this scan is set to 'Failure'. Also check that a message in the log panel indicate that
     there is something wrong with the setup of the LORIS-MRI code base.
     [Manual Testing]
-    

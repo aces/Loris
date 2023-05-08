@@ -170,8 +170,9 @@ ElectrophysiologyBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ElectrophysiologyBrowserIndex
       dataURL={`${loris.BaseURL}/electrophysiology_browser/?format=json`}
     />

@@ -1,0 +1,34 @@
+general_comments{-}Not Required{-}general_comments{@}=={@}NEVER_REQUIRED
+research_staff_two{-}Not Required{-}research_staff_two{@}=={@}NEVER_REQUIRED
+research_staff_three{-}Not Required{-}research_staff_three{@}=={@}NEVER_REQUIRED
+session_testing_room{-}Not Required{-}session_testing_room{@}=={@}NEVER_REQUIRED
+behavioural_assistant{-}Required if there is a behavioural assistant{-}behavioural_assistant_present{@}=={@}yes
+subject_medication_dosage{-}Required if there is an ongoing medication{-}subject_medication{@}=={@}yes
+head_measurement_unit{-}Required if head measurement was taken{-}head_measurement_taken{@}=={@}yes
+head_measurement{-}Required if head measurement was taken{-}head_measurement_taken{@}=={@}yes
+subject_away_60cm_from_monitor_reason{-}Required if subject cannot be 60cm away from monitor{-}subject_away_60cm_from_monitor{@}=={@}no
+impedance_measure{-}Required when impedance is measured{-}impedance_measured_before_applied{@}=={@}yes
+bad_electrodes{-}Required when bad electrodes are present{-}bad_electrodes_present{@}=={@}yes
+bad_channels{-}Required when bad channels are present{-}bad_channels_measured_after_applied{@}=={@}yes
+placement_comment{-}Required when placement is not available{-}placement_rating{@}=={@}na
+acquisition_software_other{-}Required when acquisition software is other{-}acquisition_software{@}=={@}other
+recording_reference_other{-}Required when recording reference is other{-}recording_reference{@}=={@}other
+eog_channels_other{-}Required when EOG channels is other{-}eog_channels{@}=={@}other
+artefacted_channels{-}Not Required{-}artefacted_channels{@}=={@}NEVER_REQUIRED
+hardware_filters_applied{-}Not Required{-}hardware_filters_applied{@}=={@}NEVER_REQUIRED
+software_filters_applied{-}Not Required{-}software_filters_applied{@}=={@}NEVER_REQUIRED
+resting_state_eeg_incomplete_reason{-}Required when resting state acquiring is incomplete{-}resting_state_eeg_acquired{@}=={@}incomplete
+resting_state_subject_mood_rating_comments{-}Not Required{-}resting_state_subject_mood_rating_comments{@}=={@}NEVER_REQUIRED
+resting_state_comments{-}Not Required{-}resting_state_comments{@}=={@}NEVER_REQUIRED
+task1_eeg_incomplete_reason{-}Required when task 1 acquiring is incomplete{-}task1_eeg_acquired{@}=={@}incomplete
+task1_subject_mood_rating_comments{-}Not Required{-}task1_subject_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task1_comments{-}Not Required{-}vep_comments{@}=={@}NEVER_REQUIRED
+task2_eeg_incomplete_reason{-}Required when task 2 acquiring is incomplete{-}task2_eeg_acquired{@}=={@}incomplete
+task2_subject_mood_rating_comments{-}Not Required{-}task2_subject_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task2_comments{-}Not Required{-}aep_comments{@}=={@}NEVER_REQUIRED
+task3_eeg_incomplete_reason{-}Required when task 3 acquiring is incomplete{-}task3_eeg_acquired{@}=={@}incomplete
+task3_subject_mood_rating_comments{-}Not Required{-}task3_subject_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task3_comments{-}Not Required{-}mmn_comments{@}=={@}NEVER_REQUIRED
+task4_eeg_incomplete_reason{-}Required when task 4 acquiring is incomplete{-}task4_eeg_acquired{@}=={@}incomplete
+task4_subject_mood_rating_comments{-}Not Required{-}task4_subject_mood_rating_comments{@}=={@}NEVER_REQUIRED
+task4_comments{-}Not Required{-}faces_comments{@}=={@}NEVER_REQUIRED

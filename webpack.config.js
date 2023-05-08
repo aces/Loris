@@ -258,7 +258,7 @@ const lorisModules = {
     'ConsentWidget',
   ],
   configuration: ['CohortRelations', 'configuration_helper'],
-  conflict_resolver: ['conflict_resolver'],
+  conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
@@ -291,6 +291,11 @@ const lorisModules = {
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
+  ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
   ],
   imaging_browser: [
     'ImagePanel',
@@ -333,7 +338,7 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
 
   for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
+    config.push(lorisModule(module, files));
   }
 }
 

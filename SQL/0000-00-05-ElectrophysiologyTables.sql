@@ -481,6 +481,24 @@ CREATE TABLE `physiological_annotation_rel` (
         REFERENCES `physiological_annotation_file` (`AnnotationFileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create EEG upload table
+CREATE TABLE `electrophysiology_uploader` (
+    `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `UploadedBy` varchar(255) NOT NULL,
+    `UploadDate` DateTime NOT NULL,
+    `UploadLocation` varchar(255) NOT NULL,
+    `Status` enum('Not Started', 'Extracted', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
+    `SessionID` int(10) unsigned,
+    `Checksum` varchar(40) DEFAULT NULL,
+    `MetaData` TEXT DEFAULT NULL,
+    PRIMARY KEY (`UploadID`),
+    KEY (`SessionID`),
+    CONSTRAINT `FK_eegupload_SessionID`
+        FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+    CONSTRAINT `FK_eegupload_UploadedBy`
+        FOREIGN KEY (`UploadedBy`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Insert into physiological_output_type
 INSERT INTO physiological_output_type
   (`OutputTypeName`, `OutputTypeDescription`)

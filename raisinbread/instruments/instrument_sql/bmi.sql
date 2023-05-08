@@ -1,15 +1,12 @@
 CREATE TABLE `bmi` (
 `CommentID` varchar(255) NOT NULL default '',
-
-                            `UserID` varchar(255) default NULL,
-
-                            `Examiner` varchar(255) default NULL,
-
-                            `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`UserID` varchar(255) default NULL,
+`Examiner` varchar(255) default NULL,
+`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,
-`unit_classification` enum('metric','standard') default NULL,
+`unit_classification` enum('metric','imperial') default NULL,
 `height_feet` numeric default NULL,
 `height_feet_status` enum('not_answered') default NULL,
 `height_inches` numeric default NULL,
@@ -22,6 +19,5 @@ CREATE TABLE `bmi` (
 `weight_kgs_status` enum('not_answered') default NULL,
 `bmi` varchar(255) default NULL,
 `bmi_category` varchar(255) default NULL,
-PRIMARY KEY  (`CommentID`)
-
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+PRIMARY KEY (`CommentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

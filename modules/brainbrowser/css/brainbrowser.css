@@ -188,3 +188,9 @@ body {
         margin: 0 10px 0 0;
     }
 }
+
+#loading p {
+    text-transform: none;
+    font-size: 26px;
+    font-weight: normal;
+}

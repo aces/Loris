@@ -1,5 +1,3 @@
-/* exported RPaginationLinks */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -142,9 +140,6 @@ PaginationLinks.defaultProps = {
   Active: 1,
 };
 
-let RPaginationLinks = React.createFactory(PaginationLinks);
-
 window.PaginationLinks = PaginationLinks;
-window.RPaginationLinks = RPaginationLinks;
 
 export default PaginationLinks;

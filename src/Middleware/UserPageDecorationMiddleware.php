@@ -131,7 +131,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
-        $tpl_data['css'] = $this->BaseURL . '/main.css';
+        $tpl_data['css'] = 'main.css';
 
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 

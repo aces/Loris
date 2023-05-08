@@ -940,6 +940,8 @@ CREATE TABLE `MRICandidateErrors` (
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
   `EchoTime` double DEFAULT NULL,
+  `PhaseEncodingDirection` VARCHAR(3)  DEFAULT NULL,
+  `EchoNumber`             VARCHAR(20) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_tarchive_MRICandidateError_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
