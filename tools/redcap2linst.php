@@ -146,8 +146,11 @@ Zipcode
     case 'dropdown':
         // Radio or dropdown maps to a select and the options are in the
         // same format in the dictionary.
-        return "select{@}$redcapfieldname{@}$label{@}"
-            . optionsToLINST($redcapChoices);
+        $selectoptions = optionsToLINST($redcapChoices);
+        if (!empty($selectoptions)) {
+            $selectoptions = "NULL=>''{-}" . $selectoptions;
+        }
+        return "select{@}$redcapfieldname{@}$label{@}$selectoptions";
     case 'checkbox':
         // checkboxes are the same format as radios but allow multiple options,
         // so map to a selectmultiple instead of a select
