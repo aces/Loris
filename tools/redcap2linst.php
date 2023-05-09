@@ -191,7 +191,7 @@ function optionsToLINST(string $dictionary) : string
         $dictionary = substr($dictionary, 2);
     }
 
-    $choices      = explode(' | ', $dictionary);
+    $choices      = explode('|', $dictionary);
     $linstChoices = [];
     foreach ($choices as $choice) {
         $matches = [];
