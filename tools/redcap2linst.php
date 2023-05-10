@@ -5,19 +5,33 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 
 $options = getopt(
-    "f:",
+    "f:r:",
     [
         "output-dir:",
         "file:",
+        "redcap-api:",
+        "redcap-token:",
         "trim-formname",
     ]
 );
 
-$inputFile = $options['f'] ?? $options['file'] ?? '';
-$outputDir = $options['output-dir'] ?? '';
-$trimName  = isset($options['trim-formname']);
+$inputFile    = $options['f'] ?? $options['file'] ?? '';
+$redcapAPIURL = $options['r'] ?? $options['redcap-api'] ?? '';
+$redcapToken  = $options['redcap-token'] ?? '';
+$outputDir    = $options['output-dir'] ?? '';
+$trimName     = isset($options['trim-formname']);
 
-if (empty($inputFile) || empty($outputDir)) {
+if (empty($inputFile) && empty($redcapAPIURL)) {
+    fprintf(STDERR, "Either --file or --redcap-api must be provided.\n\n");
+    showHelp();
+    exit(1);
+}
+if (!empty($redcapAPIURL) && empty($options['redcap-token'])) {
+    fprintf(STDERR, "Either --redcap-api specified but missing redcap-token.\n\n");
+    showHelp();
+    exit(1);
+}
+if (empty($outputDir)) {
     showHelp();
     exit(1);
 }
@@ -30,11 +44,7 @@ if (!is_writeable($outputDir)) {
     exit(1);
 }
 
-$fp = fopen($inputFile, "r");
-if ($fp === false) {
-    fprintf(STDERR, "Could not open file $inputFile\n");
-    exit(1);
-}
+$fp = getDictionaryCSVStream($redcapAPIURL, $redcapToken, $inputFile);
 
 $headers     = fgetcsv($fp);
 $instruments = [];
@@ -70,7 +80,7 @@ if ($trimName) {
     fwrite(STDERR, "Could not map $badMap fields\nMapped $mapped fields\n");
 }
 
-outputFiles($outputDir, $instruments);
+outputFiles($outputDir, $instruments, getTestNameMapping($redcapAPIURL, $redcapToken));
 
 /**
  * Take a single line from the redcap dictionary and returns the
@@ -224,7 +234,7 @@ function showHelp()
     global $argv;
     fprintf(
         STDERR,
-        "Usage: $argv[0] --file=filename --output-dir=instrumentdirectory [--trim-formname]\n"
+        "Usage: $argv[0] [--file=filename | --redcap-api=endpoint --redcap-token=token] --output-dir=instrumentdirectory [--trim-formname]\n"
     );
 }
 
@@ -236,14 +246,16 @@ function showHelp()
  *
  * @return void
  */
-function outputFiles(string $outputDir, array $instruments)
+function outputFiles(string $outputDir, array $instruments, array $testnameMap)
 {
     foreach ($instruments as $instname => $instrument) {
         $fp = fopen("$outputDir/$instname.linst", "w");
         fwrite($fp, "table{@}$instname\n");
-        // FIXME: There should be a title{@} tag for it to be a valid linst
-        // that the instrument manager can recognize, but there doesn't seem
-        // to be any way to derive that from the redcap data dictionary csv?
+        if (isset($testnameMap[$instname])) {
+            fwrite($fp, "title{@}" . $testnameMap[$instname] . "\n");
+        } else {
+            fwrite(STDERR, "Could not get title for $instname for LINST file\n");
+        }
 
         // Standard LORIS metadata fields that the instrument builder adds
         // and LINST class automatically adds to instruments.
@@ -257,4 +269,62 @@ function outputFiles(string $outputDir, array $instruments)
         fclose($fp);
 
     }
+}
+
+/**
+ * Gets a file pointer pointing to the CSV stream.
+ */
+function getDictionaryCSVStream($redcapAPIURL, $redcapAPIToken, $inputFile) {
+    // If a local input file was specified just open it
+    if (!empty($inputFile)) {
+        $fp = fopen($inputFile, "r");
+        if ($fp === false) {
+            fprintf(STDERR, "Could not open file $inputFile\n");
+            exit(1);
+        }
+        return $fp;
+    }
+    $output = REDCapAPIRequest($redcapAPIURL, $redcapAPIToken, 'metadata', 'csv');
+    // fgetcsv expects a filepointer, so convert the string to a data stream.
+    $fp = fopen("data://text/plain;base64," . base64_encode($output), "r");
+    if ($fp === false) {
+        fprintf(STDERR, "Could not open stream\n");
+        exit(1);
+    }
+    return $fp;
+}
+
+function getTestNameMapping($redcapAPIURL, $redcapAPIToken) {
+    if (empty($redcapAPIURL) && empty($redcapAPIToken)) {
+        return [];
+    }
+    $result = REDCapAPIRequest($redcapAPIURL, $redcapAPIToken, 'instrument', 'json');
+    $converted = [];
+    foreach (json_decode($result) as $row) {
+        $converted[$row->instrument_name] = $row->instrument_label;
+    }
+    return $converted;
+}
+
+function REDCapAPIRequest($redcapAPIURL, $redcapAPIToken, $content, $format) {
+    $data = array(
+            'token' => $redcapAPIToken,
+            'content' => $content,
+            'format' => $format,
+            'returnFormat' => 'json',
+     );
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $redcapAPIURL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data, '', '&'));
+    $output = curl_exec($ch);
+    curl_close($ch);
+    return $output;
 }
