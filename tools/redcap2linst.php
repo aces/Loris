@@ -244,6 +244,13 @@ function outputFiles(string $outputDir, array $instruments)
         // FIXME: There should be a title{@} tag for it to be a valid linst
         // that the instrument manager can recognize, but there doesn't seem
         // to be any way to derive that from the redcap data dictionary csv?
+
+        // Standard LORIS metadata fields that the instrument builder adds
+        // and LINST class automatically adds to instruments.
+        fwrite($fp, "date{@}Date_taken{@}Date of Administration{@}{@}\n");
+        fwrite($fp, "static{@}Candidate_Age{@}Candidate Age (Years)\n");
+        fwrite($fp, "static{@}Window_Difference{@}Window Difference (+/- Days)\n");
+        fwrite($fp, "select{@}Examiner{@}Examiner{@}NULL=>''\n");
         foreach ($instrument as $field) {
             fwrite($fp, "$field\n");
         }
