@@ -489,7 +489,7 @@ class NDB_BVL_Feedback
         if (!empty($this->_feedbackObjectInfo['SessionID'])) {
             $query            .= " AND ft.SessionID = :SID";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
-            $timepoint         = Timepoint::singleton(
+            $timepoint         = TimePoint::singleton(
                 new SessionID($qparams['SID'])
             );
             $hasReadPermission = (
@@ -580,7 +580,7 @@ class NDB_BVL_Feedback
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
             $query            .= " AND ft.SessionID = :SID AND ft.CommentID is null";
             $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
-            $timepoint         = Timepoint::singleton(
+            $timepoint         = TimePoint::singleton(
                 new SessionID($qparams['SID'])
             );
             $hasReadPermission = (
