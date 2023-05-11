@@ -15,7 +15,7 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors,handleSubmit} = this.props;
+    const {test, options, setTest, add, errors, handleSubmit} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -152,6 +152,7 @@ BatteryManagerForm.propTypes = {
   options: PropTypes.object.isRequired,
   add: PropTypes.bool,
   errors: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default BatteryManagerForm;
