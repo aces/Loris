@@ -320,7 +320,7 @@ const lorisModules = {
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
   statistics: ['WidgetIndex'],
-  instruments: ['CandidateInstrumentList'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
 };
