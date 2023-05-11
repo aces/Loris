@@ -79,10 +79,9 @@ Hovering channel names while in 'isolate' mode will make that signal the only vi
 ### Electrode Map 
 The current implementation of the Electrode Map supports 2 display modes: 2D and 3D.
 
-| 2D View | 3D View |
-|:-------------------------:|:-------------------------:|
-|<img width="300" src="https://images.loris.ca/eeg-browser/electrodes-2d-hover.png"/><br/> The 2D view is a stereographic projection of the electrodes position. Electrodes are indexed and their name is 
-displayed on mouse hover.  | <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-3d.png" /><br/> The 3D view displays the exact position of the electrodes on the brain. |
+|                                                                                                              2D View                                                                                                               | 3D View |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------:|
+| <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-2d-hover.png"/><br/> The 2D view is a stereographic projection of the electrodes position. Electrodes are indexed and their name is displayed on mouse hover. | <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-3d.png" /><br/> The 3D view displays the exact position of the electrodes on the brain. |
 
 
 ### Future developements to come

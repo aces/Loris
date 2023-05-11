@@ -20,7 +20,6 @@
     * Check that if a session does not have annotation files, the `Annotations` download button is not clickable
     * Check that if the session has annotation files, the `Annotations` download button is clickable and downloads the proper files
 12. Test Breadcrumb link back to Electrophysiology Browser. [Automated Testing]
-13. Test that if changes have been made to the session's annotations, the downloaded annotation files are correctly updated to match [Manual Testing]
 
 ### C. Visualization  
 
@@ -29,10 +28,16 @@ and make sure the `Signal Viewer panel` displays correctly on the screen. (Docum
 14. Delete `modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js` and set `useEEGBrowserVisualizationComponents` to false to simulate an environment for which the extra installation steps 
 have not been run yet. 
 Make sure `make dev` runs without failing, and that except the Signal Viewer panel, all the other components in the page display well. 
-15. Temporarily desactivate an entry in `physiological_parameter_file` 
+15. Temporarily deactivate an entry in `physiological_parameter_file` 
 for a ParameterTypeID IN (SELECT ParameterTypeID from parameter_type WHERE Name = 'electrophysiology_chunked_dataset_path')
 and a chosen PhysiologicalFileID to simulate an environment for which the visualization components are not loaded.
 Load the corresponding session page and make sure that except the `Signal Viewer panel`, the rest of the page displays well, either with or without the extra installation steps.
+16. Test all the buttons on the interface to ensure they perform the action that the  [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#Signal Viewer) states it will perform.
+17. Hover over a signal to ensure it responds to being hovered. It should change to a color and its value should be displayed below the signal plot.
+18. Ensure that 'Stacked View' and 'Isolate Mode' behave as stateed in the [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md).
+19. Ensure that the electrodes on the 'Electrode Map' 2D view are visible and their index can be hovered to reveal their channel name.
+20. Ensure that the electrodes on the 'Electrode Map' 3D view are visible and the mesh can be manipulated/rotated with the mouse. 
+
 
 _For extra credit: Verify LORIS Menu permissions_ 
 User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ if and only if user has either permission:
