@@ -5,7 +5,6 @@ import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
 import Markdown from 'jsx/Markdown';
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -572,7 +571,6 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
   userHasPermission: PropTypes.bool,
 };
 

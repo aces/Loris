@@ -80,7 +80,7 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = ic.issueID)
             JOIN users uReporter
               ON (i.reporter = uReporter.UserID)
-            JOIN users uAssignee
+            LEFT JOIN users uAssignee
               ON (i.assignee = uAssignee.UserID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
