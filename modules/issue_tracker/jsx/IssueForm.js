@@ -4,6 +4,7 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
+import Markdown from 'jsx/Markdown';
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';

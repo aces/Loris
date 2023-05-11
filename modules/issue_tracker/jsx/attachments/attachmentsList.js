@@ -154,7 +154,7 @@ class AttachmentsList extends Component {
   /**
    * Sets event target src to null
    *
-   * @param {Object} event
+   * @param {object} event
    */
   displayNone(event) {
     event.target.src = null;

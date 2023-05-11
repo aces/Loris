@@ -1,9 +1,10 @@
 import * as R from 'ramda';
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, MutableRefObject} from 'react';
 import {scaleLinear} from 'd3-scale';
 import {withParentSize} from '@visx/responsive';
 
 type CProps = {
+  ref: MutableRefObject<any>,
   parentWidth?: number,
   parentHeight?: number,
   mouseDown?: (_: any) => void,
@@ -11,11 +12,13 @@ type CProps = {
   mouseUp?: (_: any) => void,
   mouseLeave?: (_: any) => void,
   children: any,
+  showOverflow: boolean,
 };
 
 /**
  *
  * @param root0
+ * @param root0.ref
  * @param root0.parentWidth
  * @param root0.parentHeight
  * @param root0.mouseDown
@@ -23,8 +26,10 @@ type CProps = {
  * @param root0.mouseUp
  * @param root0.mouseLeave
  * @param root0.children
+ * @param root0.showOverflow
  */
 const ResponsiveViewer : FunctionComponent<CProps> = ({
+  ref,
   parentWidth,
   parentHeight,
   mouseDown,
@@ -32,6 +37,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
   mouseUp,
   mouseLeave,
   children,
+  showOverflow
 }) => {
   /**
    *
@@ -89,7 +95,7 @@ const ResponsiveViewer : FunctionComponent<CProps> = ({
         parentWidth,
         parentHeight,
       ].join(' ')}
-      style={{overflow: 'hidden'}}
+      style={{overflowY: showOverflow ? 'visible' : 'hidden'}}
       width={parentWidth}
       height={parentHeight}
       onMouseDown={R.compose(

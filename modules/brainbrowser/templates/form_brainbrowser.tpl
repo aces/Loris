@@ -180,7 +180,7 @@
 </div>
 
 <script>
-  var brainBrowserPage = RBrainBrowser();
-  const root = ReactDOM.createRoot(document.getElementById('brainbrowserPage'));
-  root.render(brainBrowserPage);
+  ReactDOM.createRoot(
+    document.getElementById('brainbrowserPage')
+  ).render(RBrainBrowser());
 </script>

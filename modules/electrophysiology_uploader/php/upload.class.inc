@@ -105,6 +105,7 @@ class Upload extends \NDB_Page
         );
     }
 
+
     /**
      * Processes the values & saves to database and return a json response.
      *
@@ -136,37 +137,64 @@ class Upload extends \NDB_Page
             );
         }
 
-        $sessionID = $db->pselectOne(
+        $candStatus = $db->pselectOne(
             "
-            SELECT s.ID
-            FROM session s
-                LEFT JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE s.Visit_label = :visit
-                AND s.CandID = :candID
-                AND c.PSCID = :pscid
-                ",
+            SELECT Active
+            FROM candidate
+            WHERE CandID = :candID
+            AND PSCID = :pscid
+            ",
             [
-                'visit'  => $visitLabel,
                 'candID' => $candID,
                 'pscid'  => $pscid
             ]
         );
 
-        if (is_null($sessionID)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit for candidate does not exist'
+        if (is_null($candStatus)) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                'Candidate with matching CandID/PSCID pair does not exist'
             );
         }
 
-        $config   = \NDB_Config::singleton();
-        $filename = urldecode($uploadedFile->getClientFilename());
+        if ($candStatus !== 'Y') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Candidate associated with CandID {$candID} is inactive."
+            );
+        }
 
+        $session = $db->pselectRow(
+            "
+            SELECT ID, Active
+            FROM session
+            WHERE Visit_label = :visit
+            AND CandID = :candID
+            ",
+            [
+                'visit'  => $visitLabel,
+                'candID' => $candID
+            ]
+        );
+
+        if (is_null($session)) {
+            return new \LORIS\Http\Response\JSON\NotFound(
+                "Visit {$visitLabel} for candidate {$candID} does not exist"
+            );
+        }
+
+        if ($session['Active'] !== 'Y') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Visit {$visitLabel} for CandID {$candID} is inactive."
+            );
+        }
+
+        $filename = urldecode($uploadedFile->getClientFilename());
         if ($filename !== "{$pscid}_{$candID}_{$visitLabel}_bids.tar.gz") {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Filename does not match expected name, please verify.'
             );
         }
 
+        $config    = \NDB_Config::singleton();
         $targetdir = new \SplFileInfo($config->getSetting('EEGUploadIncomingPath'));
         try {
             $uploader = (new \LORIS\FilesUploadHandler($targetdir));
@@ -180,6 +208,7 @@ class Upload extends \NDB_Page
         // If found, add a timestamp suffix to avoid collision
         // with any other existing upload attempt
         // and move the renamed file in _EEGUploadIncomingPath_/archives/
+        $filename   = urldecode($uploadedFile->getClientFilename());
         $targetPath = $targetdir->getPathname() . '/' . $filename;
         if (file_exists($targetPath)) {
             $archiveFilename = str_replace(
@@ -214,7 +243,7 @@ class Upload extends \NDB_Page
             'UploadedBy'     => $user->getUsername(),
             'UploadDate'     => date('Y-m-d H:i:s'),
             'UploadLocation' => "$filename",
-            'SessionID'      => $sessionID,
+            'SessionID'      => $session['ID'],
         ];
 
         $db->insert('electrophysiology_uploader', $saveValues);
@@ -228,7 +257,7 @@ class Upload extends \NDB_Page
               WHERE p.code='monitor_eeg_uploads'",
             []
         );
-        $timepoint = \TimePoint::singleton(new \SessionID($sessionID));
+        $timepoint = \TimePoint::singleton(new \SessionID($session['ID']));
         $msg_data  = [
             'Site'           => $timepoint->getPSC(),
             'PSCID'          => $pscid,

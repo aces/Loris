@@ -386,8 +386,9 @@ CandidateListIndex.propTypes = {
 
 window.addEventListener('load', () => {
   const args = QueryString.get();
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <CandidateListIndex
       dataURL={`${loris.BaseURL}/candidate_list/?format=json`}
       hasPermission={loris.userHasPermission}

@@ -1,13 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
-import {toggleEpoch, updateActiveEpoch} from '../store/logic/filterEpochs';
+import {
+  getEpochsInRange,
+  toggleEpoch,
+  updateActiveEpoch,
+} from '../store/logic/filterEpochs';
 import {Epoch as EpochType, RightPanel} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
 import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
 import {RootState} from '../store';
+import {setFilteredEpochs} from '../store/state/dataset';
 
 type CProps = {
   timeSelection?: [number, number],
@@ -19,7 +24,9 @@ type CProps = {
   setRightPanel: (_: RightPanel) => void,
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
+  setFilteredEpochs: (_: number[]) => void,
   interval: [number, number],
+  viewerHeight: number,
 };
 
 /**
@@ -33,7 +40,9 @@ type CProps = {
  * @param root0.setRightPanel
  * @param root0.toggleEpoch
  * @param root0.updateActiveEpoch
+ * @param root0.setFilteredEpochs
  * @param root0.interval
+ * @param root0.viewerHeight
  */
 const EventManager = ({
   epochs,
@@ -44,45 +53,53 @@ const EventManager = ({
   setRightPanel,
   toggleEpoch,
   updateActiveEpoch,
+  setFilteredEpochs,
   interval,
+  viewerHeight,
 }: CProps) => {
   const [epochType, setEpochType] = useState((rightPanel
     && rightPanel !== 'annotationForm'
     && rightPanel === 'eventList') ?
     'Event' : 'Annotation');
-  const [allEpochsVisible, setAllEpochsVisibility] = useState(false);
-  const [visibleComments, setVisibleComments] = useState([]);
-  const [allCommentsVisible, setAllCommentsVisible] = useState(false);
 
-  useEffect(() => {
-    // Reset: turn all epochs on / off regardless of independent toggle state
-    const epochsInRange = [...Array(epochs.length).keys()].filter((index) =>
-      epochs[index].onset + epochs[index].duration > interval[0]
-      && epochs[index].onset < interval[1]
-      && epochs[index].type === epochType
-    );
+  const [activeEpochs, setActiveEpochs] = useState([]);
+  const [epochsInRange, setEpochsInRange] = useState(
+    getEpochsInRange(epochs, interval, epochType)
+  );
+  const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
-      epochsInRange.map((index) => {
-        if ((!allEpochsVisible && filteredEpochs.includes(index))
-          || (allEpochsVisible && !filteredEpochs.includes(index))
-        ) {
-          toggleEpoch(index);
-        }
+      return epochsInRange.some((index) => {
+        return !filteredEpochs.includes(index);
       });
     }
-  }, [allEpochsVisible]);
+    return true;
+  });
+  const [visibleComments, setVisibleComments] = useState([]);
+  const [allCommentsVisible, setAllCommentsVisible] = useState(false);
+  const totalEpochs = epochs.filter(
+    (epoch) => epoch.type === epochType
+  ).length;
+
+  // Update window visibility state
+  useEffect(() => {
+    setEpochsInRange(getEpochsInRange(epochs, interval, epochType));
+    if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
+      setAllEpochsVisibility(!epochsInRange.some((index) => {
+        return !filteredEpochs.includes(index);
+      })); // If one or more event isn't visible, set to be able to reveal all
+    } else {
+      setAllEpochsVisibility(false);
+    }
+  }, [filteredEpochs, interval]);
 
   useEffect(() => {
     // Toggle comment section if in range and has a comment / tag
     if (!allCommentsVisible) {
       setVisibleComments([]);
     } else {
-      const commentIndexes = [...Array(epochs.length).keys()].filter((index) =>
-        epochs[index].onset + epochs[index].duration > interval[0]
-        && epochs[index].onset < interval[1]
-        && epochs[index].type === epochType
-        && (epochs[index].hed || epochs[index].comment)
-      ).map((index) => index);
+
+      const commentIndexes = getEpochsInRange(epochs, interval, epochType, true)
+        .map((index) => index);
       setVisibleComments([...commentIndexes]);
     }
   }, [allCommentsVisible]);
@@ -93,6 +110,25 @@ const EventManager = ({
       && rightPanel === 'eventList') ?
       'Event' : 'Annotation');
   }, [rightPanel]);
+
+  /**
+   *
+   * @param visible
+   */
+  const setEpochsInViewVisibility = (visible) => {
+    if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
+      epochsInRange.map((index) => {
+        if ((visible && !filteredEpochs.includes(index))
+          || (!visible && filteredEpochs.includes(index))) {
+          toggleEpoch(index);
+        }
+      });
+    }
+  };
+
+  const visibleEpochsInRange = epochsInRange.filter(
+    (epochIndex) => filteredEpochs.includes(epochIndex)
+  );
 
   return (
     <div className="panel panel-primary event-list">
@@ -105,9 +141,12 @@ const EventManager = ({
         }}
       >
         <p style={{margin: '0px'}}>
-          <strong>{`${epochType}s`}</strong>
+          <strong>
+            {`${epochType}s&nbsp;
+            (${visibleEpochsInRange.length}/${epochsInRange.length})`}
+          </strong>
           <span style={{fontSize: '0.75em'}}>
-            <br />in timeline view
+            <br />in timeline view [Total: {totalEpochs}]
           </span>
         </p>
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -117,7 +156,8 @@ const EventManager = ({
               + (allEpochsVisible ? 'open' : 'close')
             }
             style={{padding: '0.5em'}}
-            onClick={() => setAllEpochsVisibility(!allEpochsVisible)}
+            onClick={() => setEpochsInViewVisibility(!allEpochsVisible)}
+
           ></i>
           <i
             className={'glyphicon glyphicon-tags'}
@@ -140,16 +180,26 @@ const EventManager = ({
         <div
           className="list-group"
           style={{
-            maxHeight: '540px',
+            maxHeight: `${viewerHeight + 75}px`,
             overflowY: 'scroll',
             marginBottom: 0,
           }}
         >
-          {[...Array(epochs.length).keys()].filter((index) =>
-            epochs[index].onset + epochs[index].duration > interval[0]
-            && epochs[index].onset < interval[1]
-            && epochs[index].type === epochType
-          ).map((index) => {
+          {epochsInRange.length >= MAX_RENDERED_EPOCHS &&
+            <div
+              style={{
+                padding: '5px',
+                background: 'rgba(238, 238, 238, 0.8)',
+                textAlign: 'center',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
+              }}
+            >
+              Too many events to display for the timeline range.
+            </div>
+          }
+          {epochsInRange.map((index) => {
             const epoch = epochs[index];
             const visible = filteredEpochs.includes(index);
 
@@ -217,8 +267,6 @@ const EventManager = ({
                     className={(visible ? '' : 'active ')
                       + 'btn btn-xs btn-primary'}
                     onClick={() => toggleEpoch(index)}
-                    onMouseEnter={() => updateActiveEpoch(index)}
-                    onMouseLeave={() => updateActiveEpoch(null)}
                   >
                     <i className={
                       'glyphicon glyphicon-eye-'
@@ -267,6 +315,7 @@ export default connect(
     filteredEpochs: state.dataset.filteredEpochs,
     rightPanel: state.rightPanel,
     interval: state.bounds.interval,
+    viewerHeight: state.bounds.viewerHeight,
   }),
   (dispatch: (_: any) => void) => ({
     setCurrentAnnotation: R.compose(
@@ -288,6 +337,10 @@ export default connect(
     updateActiveEpoch: R.compose(
       dispatch,
       updateActiveEpoch
+    ),
+    setFilteredEpochs: R.compose(
+      dispatch,
+      setFilteredEpochs
     ),
   })
 )(EventManager);
