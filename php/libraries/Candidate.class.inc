@@ -280,12 +280,23 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 DOB_NOT_SPECIFIED
             );
         }
-        $dob = DateTime::createFromFormat('!Y-m-d', $dateOfBirth);
+
+        // Get expected format from config
+        $dobFormat = $config->getSetting('dobFormat');
+        $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
+        $dob       = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+
         if ($dob === false) {
             throw new InvalidArgumentException(
                 "Date of Birth is invalid (expected format: YYYY-MM-DD)",
                 DOB_INVALID
             );
+        }
+
+        // Add day as first of the month if Y-m dob format
+        // This allows insert into sql candidate table
+        if ($dobFormat === '!Y-m') {
+            $dateOfBirth .= '-15';
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
