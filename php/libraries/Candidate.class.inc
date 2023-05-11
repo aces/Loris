@@ -296,7 +296,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         // Add day as first of the month if Y-m dob format
         // This allows insert into sql candidate table
         if ($dobFormat === '!Y-m') {
-            $dateOfBirth .= '-01';
+            $dateOfBirth .= '-15';
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
