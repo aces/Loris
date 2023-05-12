@@ -394,7 +394,7 @@ class BatteryManagerIndex extends Component {
             options={options}
             add={add}
             errors={errors}
-           handleSubmit={handleSubmit}
+            handleSubmit={handleSubmit}
           />
         </Modal>
       </div>
