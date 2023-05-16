@@ -210,14 +210,14 @@ function optionsToLINST(string $dictionary) : string
     $linstChoices = [];
     foreach ($choices as $choice) {
         $matches = [];
-        if (preg_match("/^(\s)*(\d+)(\s)*,(.*)$/", $choice, $matches) !== 1) {
+            if (preg_match("/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/", $choice, $matches) !== 1) {
             throw new \DomainException("Could not parse radio option: '$choice'");
 
         }
         // $backend        = $matches[2] . '_'
         //        . preg_replace("/\s+/", "_", trim($matches[4]));
         $backend = $matches[2];
-        $linstFormat    = "'$backend'=>'" . trim(strtolower($matches[4])) . '\'';
+        $linstFormat    = "'$backend'=>'" . trim($matches[4]) . '\'';
         $linstChoices[] = $linstFormat;
 
     }
