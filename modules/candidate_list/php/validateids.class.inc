@@ -97,19 +97,17 @@ class ValidateIDs extends \NDB_Page
                 ->withStatus(200)
                 ->withHeader("Content-Type", "text/plain")
                 ->withBody(new \LORIS\Http\StringStream($exists));
-
         } catch (LorisException $e)
         {
             return (new \LORIS\Http\Response())
             ->withStatus(200)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(new \LORIS\Http\StringStream('0'));
-        } finally {
+                ->withHeader("Content-Type", "text/plain")
+                ->withBody(new \LORIS\Http\StringStream('0'));
+                } finally {
             return (new \LORIS\Http\Response())
             ->withStatus(200)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(new \LORIS\Http\StringStream('0'));
-        }
-        
+                ->withHeader("Content-Type", "text/plain")
+                ->withBody(new \LORIS\Http\StringStream('0'));
+                } 
     }
 }
