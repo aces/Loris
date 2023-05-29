@@ -93,13 +93,13 @@ class ValidateIDs extends \NDB_Page
                 new CandID($gets['CandID']),
                 $gets['PSCID']
             ) ? "1" : "0";
-        } catch (\Exception $e) { 
+        } catch (\Exception $e) {
             $exists = "0";
         }
 
         return (new \LORIS\Http\Response())
-        ->withStatus(200)
-        ->withHeader("Content-Type", "text/plain")
-        ->withBody(new \LORIS\Http\StringStream($exists));
+            ->withStatus(200)
+            ->withHeader("Content-Type", "text/plain")
+            ->withBody(new \LORIS\Http\StringStream($exists));
     }
 }
