@@ -45,6 +45,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     protected $GroupElements = [];
 
     /**
+     * Do not require rules by default.
+     */
+    private $skipRules = false;
+
+    /**
      * Sets up the variables required for a LINST instrument to load
      *
      * @param string|null $commentID The CommentID being loaded
@@ -480,7 +485,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             $this->formType = 'XIN';
 
-            $this->form->addFormRule([&$this, 'XINValidate']);
+            if (!$this->skipRules) {
+                $this->form->addFormRule([&$this, 'XINValidate']);
+            }
             $fp = fopen($filename, "r");
 
             // Add elements is only true if we're parsing the current page,
@@ -925,6 +932,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 break;
             case 'postmortem':
                 $this->postMortem = trim($pieces[1]) === 'true';
+                break;
+            case 'norules':
+                $this->skipRules = trim($pieces[1]) === 'true';
                 break;
             default:
                 break;
