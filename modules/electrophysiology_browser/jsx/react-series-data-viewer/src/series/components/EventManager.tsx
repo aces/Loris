@@ -142,8 +142,7 @@ const EventManager = ({
       >
         <p style={{margin: '0px'}}>
           <strong>
-            {`${epochType}s&nbsp;
-            (${visibleEpochsInRange.length}/${epochsInRange.length})`}
+            {`${epochType}s (${visibleEpochsInRange.length}/${epochsInRange.length})`}
           </strong>
           <span style={{fontSize: '0.75em'}}>
             <br />in timeline view [Total: {totalEpochs}]
