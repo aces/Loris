@@ -114,7 +114,7 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
                 GROUP BY PatientName, TimeRun, Project, Cohort, MincFile,
                   Scan_type, SeriesUID, Site, hash, Resolved, TarchiveID,
-                  CandID, PSCID
+                  CandID, PSCID, PhaseEncodingDirection, EchoTime, EchoNumber
               UNION
                   SELECT PatientName,
                          TimeRun,
