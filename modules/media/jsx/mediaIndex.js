@@ -183,7 +183,6 @@ class MediaIndex extends Component {
     * queried columns in _setupVariables() in media.class.inc
     */
     const options = this.state.fieldOptions;
-    console.log(options);
     let fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
