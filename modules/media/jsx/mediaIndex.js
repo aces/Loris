@@ -103,7 +103,7 @@ class MediaIndex extends Component {
   formatColumn(column, cell, row) {
     cell = this.mapColumn(column, cell);
     // Set class to 'bg-danger' if file is hidden.
-    const style = (row['File Visibility'] === '1') ? 'bg-danger' : '';
+    const style = (row['File Visibility'] === 'hidden') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
     case 'File Name':
@@ -183,6 +183,7 @@ class MediaIndex extends Component {
     * queried columns in _setupVariables() in media.class.inc
     */
     const options = this.state.fieldOptions;
+    console.log(options);
     let fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
