@@ -104,7 +104,9 @@ class Timepoint_List extends \NDB_Menu
             $listOfTimePoints = array_filter(
                 $listOfTimePoints,
                 function ($timePoint) use ($user) {
-                    return $timePoint->isAccessibleBy($user);
+                    return
+                    $timePoint->isAccessibleBy($user)
+                    && $user->hasProject($timePoint->getProjectID());
                 }
             );
         }
