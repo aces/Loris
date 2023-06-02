@@ -67,8 +67,8 @@ class BatteryManagerForm extends Component {
           name="ageMinDays"
           label="Minimum age (days)"
           onUserInput={setTest}
-          min="0"
-          max="99999"
+          min={0}
+          max={99999}
           required={true}
           value={test.ageMinDays}
           errorMessage={errors.ageMinDays}
@@ -78,8 +78,8 @@ class BatteryManagerForm extends Component {
           name="ageMaxDays"
           label="Maximum age (days)"
           onUserInput={setTest}
-          min="0"
-          max="99999"
+          min={0}
+          max={99999}
           required={true}
           value={test.ageMaxDays}
           errorMessage={errors.ageMaxDays}
@@ -134,8 +134,8 @@ class BatteryManagerForm extends Component {
           label="Instrument Order"
           onUserInput={setTest}
           required={false}
-          min="0"
-          max="127" // max value allowed by default column type of instr_order
+          min={0}
+          max={127} // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
         />
          <ButtonElement
