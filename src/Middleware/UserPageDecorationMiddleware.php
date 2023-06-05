@@ -219,7 +219,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         $tpl_data['userPerms'] = $realPerms;
 
-        //Display the footer links, as specified in the config file
+        // Do not show menu item if module not active
+        $tpl_data['my_preferences'] = $loris->hasModule("my_preferences");
+
+        // Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 
         $tpl_data['links'] = array();

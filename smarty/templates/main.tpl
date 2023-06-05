@@ -155,11 +155,13 @@
                                     {$user.Real_name|escape} <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
                                             My Preferences
                                         </a>
                                     </li>
+                                    {/if}
                                     <li>
                                         <a href="{$baseurl}/?logout=true">
                                             Log Out
