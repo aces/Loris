@@ -46,7 +46,7 @@ class Upload extends \NDB_Page
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGet($request);
+            return $this->_handleGET($request);
         case 'POST':
             return $this->_handlePOST($request);
         default:
@@ -63,7 +63,7 @@ class Upload extends \NDB_Page
      *
      * @return ResponseInterface
      */
-    private function _handleGet(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
         $qParams = $request->getQueryParams();
         if (!isset($qParams['upload_id'])) {
@@ -244,6 +244,7 @@ class Upload extends \NDB_Page
             'UploadDate'     => date('Y-m-d H:i:s'),
             'UploadLocation' => "$filename",
             'SessionID'      => $session['ID'],
+            'Checksum'       => $values['checksum'] ?? null,
         ];
 
         $db->insert('electrophysiology_uploader', $saveValues);
