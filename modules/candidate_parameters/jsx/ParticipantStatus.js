@@ -147,7 +147,7 @@ class ParticipantStatus extends Component {
             suboptionsRequired = true;
         }
 
-        let commentsRequired  = false;
+        let commentsRequired = false;
         let statusOpts = this.state.Data.statusOptions;
         if (
           statusOpts &&
