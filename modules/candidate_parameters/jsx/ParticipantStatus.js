@@ -148,8 +148,8 @@ class ParticipantStatus extends Component {
         }
 
         let commentsRequired  = false;
-	      let statusOpts = this.state.Data.statusOptions;
-	      if (
+        let statusOpts = this.state.Data.statusOptions;
+        if (
           statusOpts &&
           statusOpts[participantStatus] !== 'Active' &&
           statusOpts[participantStatus] !== 'Complete'
