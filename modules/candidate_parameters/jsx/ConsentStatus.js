@@ -18,10 +18,6 @@ class ConsentStatus extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            consentOptions: {
-                yes: 'Yes',
-                no: 'No',
-            },
             Data: [],
             formData: {},
             error: false,
@@ -60,6 +56,7 @@ class ConsentStatus extends Component {
                 let consents = data.consents;
                 for (let cStatus in consents) {
                     if (consents.hasOwnProperty(cStatus)) {
+                        let cOptions = cStatus + '_options';
                         let cDate = cStatus + '_date';
                         let cDate2 = cStatus + '_date2';
                         let cWithdrawal = cStatus + '_withdrawal';
@@ -69,6 +66,18 @@ class ConsentStatus extends Component {
                         formData[cDate2] = data.consentDates[cStatus];
                         formData[cWithdrawal] = data.withdrawals[cStatus];
                         formData[cWithdrawal2] = data.withdrawals[cStatus];
+                        if (data.consentStatuses[cStatus] === 'yes' || data.consentStatuses[cStatus] === 'no') {
+                            formData[cOptions] = {
+                                yes: 'Yes',
+                                no: 'No',
+                            };
+                        } else {
+                            formData[cOptions] = {
+                                yes: 'Yes',
+                                no: 'No',
+                                not_applicable: 'Not applicable',
+                            };
+                        }
                     }
                 }
                 this.setState({
