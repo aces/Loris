@@ -201,7 +201,7 @@ class CandidateListIndex extends Component {
         show: false,
         filter: {
           name: 'visitLabel',
-          type: 'select',
+          type: 'multiselect',
           options: options.visitlabel,
         },
       },
@@ -210,7 +210,7 @@ class CandidateListIndex extends Component {
         show: true,
         filter: {
           name: 'site',
-          type: 'select',
+          type: 'multiselect',
           options: options.site,
         },
       },
@@ -219,7 +219,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'cohort',
-          type: 'select',
+          type: 'multiselect',
           options: options.cohort,
         },
       },
