@@ -66,7 +66,7 @@ class ConsentStatus extends Component {
                         formData[cDate2] = data.consentDates[cStatus];
                         formData[cWithdrawal] = data.withdrawals[cStatus];
                         formData[cWithdrawal2] = data.withdrawals[cStatus];
-                        if (data.consentStatuses[cStatus] === 'yes' || 
+                        if (data.consentStatuses[cStatus] === 'yes' ||
                             data.consentStatuses[cStatus] === 'no'
                         ) {
                             formData[cOptions] = {
