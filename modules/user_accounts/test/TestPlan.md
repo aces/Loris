@@ -33,7 +33,7 @@ When creating or editing a user: (subtest: edit_user)
 11. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
     Save. Check that an email is sent to the user with the new password. 
     Check that after logging in, the user is immediately asked to update his/her password.
-12. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
+12. Check that if creating a new user and selecting "Send email to user" an email is sent to him/her (requires email server). Also check that when a new
     user is logging in for the first time he/she is asked to change his/her password.
     1. Check that when creating a new user, leading and trailing spaces in the username are stripped.
     2. Check that you can create a new user with name 00 (double zero).
