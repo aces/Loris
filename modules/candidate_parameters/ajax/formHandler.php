@@ -502,7 +502,7 @@ function editConsentStatusFields(\Database $db)
             break;
         case 'not_applicable':
             // If status is N/A, date is not required.
-            if (empty($date) && empty($withdrawal) 
+            if (empty($date) && empty($withdrawal)
                 && ($oldStatus !== 'yes' || $oldStatus !== 'no')
             ) {
                 $validated = true;
