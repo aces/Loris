@@ -143,7 +143,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                 $this->tpl_data['access']['validity'] = $this->_displayValidity();
             }
 
-            if ($config->getSetting('InstrumentResetting')
+            if ($config->settingEnabled('InstrumentResetting')
                 && $this->getDataEntryStatus() != 'Complete'
             ) {
                 $user = User::singleton();
