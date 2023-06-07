@@ -906,7 +906,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('data_entry');
+        return $user->hasPermission('issue_tracker_reporter')
+            || $user->hasPermission('issue_tracker_developer');
     }
 
     /**
