@@ -1,3 +1,5 @@
+import {createRoot} from 'react-dom/client';
+
 import {useState} from 'react';
 
 import Welcome from './welcome';
@@ -201,9 +203,9 @@ function DataQueryApp(props) {
 }
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <DataQueryApp queryAdmin={loris.userHasPermission('dataquery_admin')}/>,
-    document.getElementById('lorisworkspace')
   );
 });
 

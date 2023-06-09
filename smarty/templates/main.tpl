@@ -27,6 +27,7 @@
             {$study_title}
         </title>
         <script type="text/javascript">
+          let breadcrumbsRoot;
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];

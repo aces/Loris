@@ -1,4 +1,6 @@
-import {useEffect} from 'react';
+import {createRoot} from 'react-dom/client';
+
+import {useState, useEffect} from 'react';
 
 /**
  * Update the DQT breadcrumbs based on the active tab
@@ -50,13 +52,14 @@ function useBreadcrumbs(activeTab, setActiveTab) {
             });
         }
 
-        ReactDOM.render(
-            <Breadcrumbs
-                breadcrumbs={breadcrumbs}
-                baseURL={loris.BaseURL}
-            />,
-            document.getElementById('breadcrumbs')
-      );
+        if (breadcrumbsRoot) {
+            breadcrumbsRoot.render(
+                <Breadcrumbs
+                    breadcrumbs={breadcrumbs}
+                    baseURL={loris.BaseURL}
+                />,
+            );
+        }
     }, [activeTab]);
 }
 
