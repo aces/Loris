@@ -258,7 +258,7 @@ function QueryList(props) {
     const nameModal = nameModalID == null ? '' :
         <NameQueryModal
             onSubmit={(name) => setQueryName(name)}
-            closeModal={() => setNameModalID(null)}
+            closeModal={() => { console.log('cancellling'); setNameModalID(null);}}
             defaultName={defaultModalQueryName}
             QueryID={nameModalID}
         />;

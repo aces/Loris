@@ -198,14 +198,19 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
         callback.displayName = 'Raw session data';
         return callback;
     case 'inline':
-        callback = (label, cell, row, cellPos, fieldNo) => {
+        callback = (label, cell, row, headers, fieldNo) => {
             // if candidate -- return directly
             // if session -- get visits from query def, put in <divs>
             const fieldobj = fields[fieldNo];
             const fielddict = getDictionary(fieldobj, dict);
             if (fielddict.scope == 'candidate'
                     && fielddict.cardinality != 'many') {
-                return <td>{cell}</td>;
+                if (cell === '') {
+                    return <td><i>(No data)</i></td>;
+                }
+
+                const json = JSON.parse(cell);
+                return <td>{json}</td>;
             }
             let value;
             let val;
