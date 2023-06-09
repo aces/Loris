@@ -118,6 +118,9 @@ function DefineFields(props) {
           const category = props.fulldictionary[field.module][field.category];
           const dict = category[field.field];
 
+          if (dict.scope == 'candidate') {
+              return;
+          }
           const newvisits = dict.visits.filter((visit) => {
               return props.defaultVisits.includes(visit);
           }).map((vl) => {
