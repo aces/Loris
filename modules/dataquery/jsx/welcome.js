@@ -799,7 +799,7 @@ function ShareIcon(props) {
             title={props.title}
             onClick={props.onClick}>
         <i style={props.isShared ? {color: 'blue'} : {}}
-            className="fas fa-share-alt fa-stack-1x" />
+            className="fas fa-globe fa-stack-1x" />
     </span>;
 }
 
