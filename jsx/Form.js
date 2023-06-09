@@ -517,7 +517,7 @@ class SelectElement extends Component {
     if (this.props.multiple && numOfOptions > 1) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
-        if (props.value === options[i].value) {
+        if (this.props.value === options[i].value) {
           value.push(options[i].value);
         }
       }
