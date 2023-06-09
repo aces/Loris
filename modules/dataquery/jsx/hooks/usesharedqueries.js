@@ -12,7 +12,7 @@ import {QueryGroup} from '../querydef';
  */
 function useStarredQueries(onCompleteCallback) {
     const [starQueryID, setStarQueryID] = useState(null);
-    const [starAction, setStarAction] = useState('star');
+    const [starAction, setStarAction] = useState('true');
     useEffect(() => {
         if (starQueryID == null) {
             return;
@@ -170,11 +170,13 @@ function useSharedQueries() {
         reloadQueries,
         {
             star: (queryID) => {
-                    setStarAction('star');
+                    setShareQueryID(null);
+                    setStarAction('true');
                     setStarQueryID(queryID);
             },
             unstar: (queryID) => {
-                    setStarAction('unstar');
+                    setShareQueryID(null);
+                    setStarAction('false');
                     setStarQueryID(queryID);
             },
 
