@@ -139,11 +139,17 @@ function calcPayload(fields, filters) {
     let payload = {
         type: 'candidates',
         fields: fields.map((val) => {
-            return {
+            console.log('payload ', val);
+            const payload = {
                 module: val.module,
                 category: val.category,
                 field: val.field,
             };
+            console.log('payload visits', val.visits);
+            if (val.visits) {
+                payload.visits = val.visits.map( (visitOption) => visitOption.value);
+            }
+            return payload;
         },
         ),
     };
@@ -284,32 +290,54 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
         callback.displayName = 'Inline session data';
         return callback;
     case 'longitudinal':
-        callback = (label, cell, row, cellPos, fieldNo) => {
+        callback = (label, cell, row, headers, fieldNo) => {
+            // We added num fields * num visits headers, but
+            // resultData only has numFields rows. For each row
+            // we add multiple table cells for the number of visits
+            // for that fieldNo. ie. we treat cellPos as fieldNo.
+            // This means we need to bail once we've passed the
+            // number of fields we have in resultData.
+            if (fieldNo >= fields.length) {
+                return null;
+            }
+
             // if candidate -- return directly
             // if session -- get visits from query def, put in <divs>
             const fieldobj = fields[fieldNo];
             const fielddict = getDictionary(fieldobj, dict);
-            if (fielddict.scope == 'candidate'
-                    && fielddict.cardinality != 'many') {
+            switch(fielddict.scope) {
+            case 'candidate':
+                if (fielddict.cardinality == 'many') {
+                    return <td>FIXME: Candidate cardinality many not implemented.</td>;
+                }
                 return <td>{cell}</td>;
-            }
-            let val;
-            if (fielddict.scope == 'session') {
+            case 'session':
                 let displayedVisits;
-                if (fields[fieldNo] && fields[fieldNo].visits) {
-                    displayedVisits = fields[fieldNo].visits.map((obj) => {
+                if (fieldobj.visits) {
+                    displayedVisits = fieldobj.visits.map((obj) => {
                         return obj.value;
                     });
                 } else {
                     // All visits
                     displayedVisits = fielddict.visits;
                 }
-                val = displayedVisits.map((visit) => {
-                    return <><td>1</td><td>2</td></>;
+                console.log(fieldobj);
+                const values = displayedVisits.map((visit) => {
+                    const data = JSON.parse(cell);
+                    console.log('cand data', data);
+                    for (const session in data) {
+                        if (data[session].VisitLabel == visit) {
+                            return <td key={visit}>{data[session].value}</td>;
+
+                        }
+                    }
+                    return <td key={visit}><i>(No data)</i></td>;
                 });
-                return val;
-            } else {
-                return <td>{cell}</td>;
+                console.log('values', values);
+                return <>{values}</>;
+            default:
+                throw new Error('Invalid field scope');
+
             }
         };
         callback.displayName = 'Longitudinal data';
@@ -385,8 +413,9 @@ function organizeHeaders(fields, org, fulldict) {
             if (dict.scope == 'candidate') {
                 headers.push(field.field);
             } else {
-                headers.push(field.field + 'v1');
-                headers.push(field.field + 'v1');
+                for (const visit of field.visits) {
+                    headers.push(field.field + ': ' + visit.label);
+                }
             }
         }
         // Split session level selections into multiple headers
