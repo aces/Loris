@@ -281,7 +281,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 );
             } else {
                 // Check valid format
-                $edcDate       = DateTime::createFromFormat($dobFormat, $edc);
+                $edcDate = DateTime::createFromFormat($dobFormat, $edc);
                 if ($edcDate === false) {
                     throw new InvalidArgumentException(
                         "EDC is invalid (expected format: YYYY-MM-DD)",
@@ -308,7 +308,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $dateOfBirth = null;
             }
         } else {
-            $dob       = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+            $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
             if ($dob === false) {
                 throw new InvalidArgumentException(
                     "Date of Birth is invalid (expected format: YYYY-MM-DD)",
