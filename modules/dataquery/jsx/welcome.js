@@ -289,7 +289,7 @@ function QueryList(props) {
     }
     if (onlyShared === true) {
         displayedQueries = displayedQueries.filter(
-            (val) => val.Shared
+            (val) => val.Public
         );
     }
     if (onlyNamed === true) {
@@ -570,9 +570,9 @@ function SingleQueryDisplay(props) {
             </span>;
     }
 
-    if (query.Shared) {
+    if (query.Public) {
         sharedIcon = <ShareIcon
-            isShared={query.Shared}
+            isShared={query.Public}
             title='Unshare'
             onClick={
                 () =>
@@ -581,8 +581,8 @@ function SingleQueryDisplay(props) {
         />;
     } else {
         sharedIcon = <ShareIcon
-            isShared={query.Shared}
-            title='Shshare'
+            isShared={query.Public}
+            title='Share'
             onClick={
                 () =>
                     props.shareQuery(query.QueryID)

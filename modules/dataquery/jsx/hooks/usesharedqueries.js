@@ -44,7 +44,7 @@ function useStarredQueries(onCompleteCallback) {
  */
 function useShareQueries(onCompleteCallback) {
     const [shareQueryID, setShareQueryID] = useState(null);
-    const [shareAction, setShareAction] = useState('share');
+    const [shareAction, setShareAction] = useState('true');
     useEffect(() => {
         if (shareQueryID == null) {
             return;
@@ -179,11 +179,13 @@ function useSharedQueries() {
             },
 
             share: (queryID) => {
-                    setShareAction('share');
+                    setShareQueryID(null);
+                    setShareAction('true');
                     setShareQueryID(queryID);
             },
             unshare: (queryID) => {
-                setShareAction('unshare');
+                setShareQueryID(null);
+                setShareAction('false');
                 setShareQueryID(queryID);
             },
         },
