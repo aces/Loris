@@ -31,7 +31,7 @@ class Visit
      *
      * @param \Timepoint $timepoint The timepoint to represent
      */
-    public function __construct(\Timepoint $timepoint)
+    public function __construct(\Timepoint $timepoint, private string $apiversion = 'v0.0.3')
     {
         $this->_timepoint = $timepoint;
     }
@@ -43,11 +43,12 @@ class Visit
      */
     public function toArray(): array
     {
+        $cohortKey = $this->apiversion == 'v0.0.4-dev' ? 'Cohort' : 'Battery';
         $meta = [
             'CandID'  => $this->_timepoint->getCandID(),
             'Visit'   => $this->_timepoint->getVisitLabel(),
             'Site'    => $this->_timepoint->getPSC(),
-            'Battery' => $this->_timepoint->getData('CohortTitle'),
+            $cohortKey => $this->_timepoint->getData('CohortTitle'),
             'Project' => $this->_timepoint->getProject(),
         ];
 

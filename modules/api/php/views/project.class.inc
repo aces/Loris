@@ -36,7 +36,7 @@ class Project
      *
      * @param \Project $project The project to format
      */
-    public function __construct(\Project $project)
+    public function __construct(\Project $project, private string $apiversion = '')
     {
         $this->_project = $project;
     }
@@ -51,12 +51,18 @@ class Project
     {
         $meta = ['Project' => $this->_project->getName()];
 
-        return [
+        $obj = [
             'Meta'        => $meta,
             'Candidates'  => $this->_project->getCandidateIds(),
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
         ];
+        if ($this->apiversion == 'v0.0.4-dev') {
+            $obj['Cohorts'] = array_map(function($cohort) {
+                return $cohort['title'];
+            }, $this->_project->getCohorts());
+        }
+        return $obj;
     }
 
     /**

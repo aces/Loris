@@ -180,7 +180,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         }
 
         return new \LORIS\Http\Response\JsonResponse(
-            (new \LORIS\api\Views\Visit($this->_visit))
+            (new \LORIS\api\Views\Visit($this->_visit, 'v0.0.4-dev'))
                 ->toArray()
         );
     }
