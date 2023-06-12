@@ -208,7 +208,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             'CandID',
             'Visit',
             'Site',
-            'Battery',
+            'Cohort',
             'Project',
         ];
 
@@ -278,7 +278,7 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         }
 
         $cohortid = array_search(
-            $visitinfo['Battery'],
+            $visitinfo['Cohort'],
             \Utility::getCohortList()
         );
 
