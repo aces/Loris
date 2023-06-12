@@ -82,7 +82,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-        $pathparts = $request->getAttribute('pathparts');
+        $pathparts  = $request->getAttribute('pathparts');
+
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
@@ -134,6 +135,8 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
+     * @param string $version The version of the API the GET is for.
+     *
      * @return ResponseInterface
      */
     private function _handleGET($version): ResponseInterface
@@ -159,6 +162,7 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET($request)->getBody()));
+        $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
+        return md5(json_encode($this->_handleGET($apiversion)->getBody()));
     }
 }

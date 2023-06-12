@@ -34,7 +34,8 @@ class Project
     /**
      * Constructor
      *
-     * @param \Project $project The project to format
+     * @param \Project $project    The project to format
+     * @param string   $apiversion The version of the API being accessed
      */
     public function __construct(\Project $project, private string $apiversion = '')
     {
@@ -58,9 +59,12 @@ class Project
             'Visits'      => $this->_getVisits(),
         ];
         if ($this->apiversion == 'v0.0.4-dev') {
-            $obj['Cohorts'] = array_map(function($cohort) {
-                return $cohort['title'];
-            }, $this->_project->getCohorts());
+            $obj['Cohorts'] = array_map(
+                function ($cohort) {
+                    return $cohort['title'];
+                },
+                $this->_project->getCohorts()
+            );
         }
         return $obj;
     }
