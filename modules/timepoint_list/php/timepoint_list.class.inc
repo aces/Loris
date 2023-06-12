@@ -105,8 +105,7 @@ class Timepoint_List extends \NDB_Menu
                 $listOfTimePoints,
                 function ($timePoint) use ($user) {
                     return
-                    $timePoint->isAccessibleBy($user)
-                    && $user->hasProject($timePoint->getProjectID());
+                    $timePoint->isAccessibleBy($user);
                 }
             );
         }
