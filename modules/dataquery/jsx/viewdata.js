@@ -95,7 +95,7 @@ function ViewData(props) {
                 )
             }
             RowNumLabel='Row Number'
-            Data={organizeData(resultData, visitOrganization)}
+            Data={organizeData(resultData, visitOrganization, props.fields, props.fulldictionary)}
             getFormattedCell={
                  organizedFormatter(
                     resultData,
@@ -109,7 +109,10 @@ function ViewData(props) {
     return <div>
         <h2>Display visits as:</h2>
          <ul>
-            <li>Cross-sectional (not implemented, rows)</li>
+            <li onClick={
+                () => setVisitOrganization('crosssection')
+            }
+            >Rows (Cross-sectional)</li>
             <li onClick={
                 () => setVisitOrganization('longitudinal')
             }
@@ -139,13 +142,13 @@ function calcPayload(fields, filters) {
     let payload = {
         type: 'candidates',
         fields: fields.map((val) => {
-            console.log('payload ', val);
+            //console.log('payload ', val);
             const payload = {
                 module: val.module,
                 category: val.category,
                 field: val.field,
             };
-            console.log('payload visits', val.visits);
+            // console.log('payload visits', val.visits);
             if (val.visits) {
                 payload.visits = val.visits.map( (visitOption) => visitOption.value);
             }
@@ -168,7 +171,7 @@ function calcPayload(fields, filters) {
  *                                     option selected
  * @return {array}
  */
-function organizeData(resultData, visitOrganization) {
+function organizeData(resultData, visitOrganization, fields) {
     switch (visitOrganization) {
     case 'raw':
         return resultData;
@@ -179,6 +182,63 @@ function organizeData(resultData, visitOrganization) {
     case 'longitudinal':
         // the formatter splits into multiple cells
         return resultData;
+    case 'crosssection':
+        const mappedData = [];
+        for(let candidaterow of resultData) {
+            // Collect list of visits for this candidate
+            console.log('row', candidaterow);
+            const candidatevisits = {};
+            for (let i in candidaterow) {
+                console.log(fields[i]);
+                if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                    if (candidaterow[i] === null || candidaterow[i] == '') {
+                        continue;
+                    }
+                    console.log(candidaterow[i]);
+                    const cellobj = JSON.parse(candidaterow[i]);
+                    console.log('cell', cellobj);
+                    for (let session in cellobj) {
+                        candidatevisits[cellobj[session].VisitLabel] = true;
+                    }
+                }
+            }
+
+            // Push one row per visit onto mappedData
+            console.log(candidatevisits);
+            for (const visit in candidatevisits) {
+                let dataRow =[];
+                dataRow.push(visit);
+                for (let i in candidaterow) {
+                    if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                    if (candidaterow[i] === null || candidaterow[i] == '') {
+                        dataRow.push(null);
+                        continue;
+                    }
+                        const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
+                            return sessionval.VisitLabel == visit;
+                        });
+                        switch (values.length) {
+                        case 0:
+                            dataRow.push(null);
+                            break;
+                        case 1:
+                            dataRow.push(values[0].value);
+                            break;
+                        default:
+                            throw new Error('Too many visit values');
+                        }
+                    } else {
+                        dataRow.push(candidaterow[i]);
+                    }
+                }
+                
+                mappedData.push(dataRow);
+            }
+            // mappedData.push(row);
+        }
+        // console.log(visitFields);
+
+        return mappedData;
     default: throw new Error('Unhandled visit organization');
     }
 }
@@ -323,6 +383,9 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                 }
                 console.log(fieldobj);
                 const values = displayedVisits.map((visit) => {
+                    if (!cell) {
+                        return <td key={visit}><i>(No data)</i></td>;
+                    }
                     const data = JSON.parse(cell);
                     console.log('cand data', data);
                     for (const session in data) {
@@ -341,6 +404,15 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
             }
         };
         callback.displayName = 'Longitudinal data';
+        return callback;
+    case 'crosssection':
+        callback = (label, cell, row) => {
+            if (cell === null) {
+                return <td><i>No data for visit</i></td>;
+            }
+            return <td>{cell}</td>;
+        };
+        callback.displayName = 'Cross-sectional data';
         return callback;
     }
 }
@@ -404,8 +476,6 @@ function organizeHeaders(fields, org, fulldict) {
         return fields.map((val) => {
             return val.field;
         });
-        // Organize with flexbox within the cell by the
-        // formatter
     case 'longitudinal':
         let headers = [];
         for (const field of fields) {
@@ -420,6 +490,12 @@ function organizeHeaders(fields, org, fulldict) {
         }
         // Split session level selections into multiple headers
         return headers;
+    case 'crosssection':
+        return ['Visit Label', 
+            ...fields.map((val) => {
+                return val.field;
+            })
+        ];
     default: throw new Error('Unhandled visit organization');
     }
 }
