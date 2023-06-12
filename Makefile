@@ -64,3 +64,5 @@ login:
 mri_violations:
 	target=mri_violations npm run compile
 
+dashboard:
+	target=dashboard npm run compile

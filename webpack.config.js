@@ -322,6 +322,7 @@ const lorisModules = {
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
