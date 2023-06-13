@@ -87,10 +87,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        $bodystr = $response->getBody()->getContents();
+        print "body: $bodystr";
         $InstrumentsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
+            (string) utf8_encode($bodystr),
             true
         );
         $this->assertNotEmpty($InstrumentsArray['Data']);

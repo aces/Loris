@@ -24,6 +24,8 @@ class LorisApiSitesTest_v0_0_3 extends LorisApiAuthenticatedTest_v0_0_3
      */
     public function testGetSites(): void
     {
+        print "test get sites v0.0.3 (should fail)";
+
         $response = $this->client->request(
             'GET',
             "sites",
