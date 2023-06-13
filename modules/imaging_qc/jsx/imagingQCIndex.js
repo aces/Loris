@@ -217,7 +217,10 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          <h3>The MRI parameter form instrument must be installed in order to use this module.</h3>
+          <h3>
+            The MRI parameter form instrument must be installed
+            in order to use this module.
+          </h3>
         </div>
       );
     }
