@@ -99,7 +99,6 @@ class Timepoint_List extends \NDB_Menu
             },
             $listOfSessionIDs,
         );
-
         
         $listOfTimePoints = array_filter(
             $listOfTimePoints,
