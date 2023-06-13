@@ -93,7 +93,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ),
             true
         );
-
+        $this->assertNotEmpty($InstrumentsArray['Data']);
     }
 
     /**
