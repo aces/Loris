@@ -101,7 +101,7 @@ class NewProfileIndex extends React.Component {
     };
 
     if (this.state.configData['edc'] === 'true') {
-      candidateObject.Candidate.EDC = formData.edc;
+      candidateObject.Candidate.EDC = formData.edcDate;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
