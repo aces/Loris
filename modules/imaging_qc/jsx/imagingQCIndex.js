@@ -96,7 +96,7 @@ class ImagingQCIndex extends Component {
     if (!this.state.isLoadedImg) {
       return <Loader/>;
     }
-    console.log(this.state)
+
     if (Object.keys(this.state.ImgData).length > 0) {
       const ImgOptions = this.state.ImgData.fieldOptions;
 
