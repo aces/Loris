@@ -32,11 +32,7 @@ class LorisApiSitesTest_v0_0_3 extends LorisApiAuthenticatedTest_v0_0_3
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET sites"
-            );
-        }
+
         $this->assertEquals(200, $response->getStatusCode());
 
         $data = json_decode(
