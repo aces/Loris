@@ -664,17 +664,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $visitLabelArray = [];
 
         $candID = $this->getCandID();
-        $user = \User::singleton($_SESSION['State']->getUsername());
 
         // make a local reference to the Database object
         //
         $db = $factory->database();
 
-        $query  = "SELECT ID, Visit_label, ProjectID FROM session
+        $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
         $result = $db->pselect($query, ['Candidate' => $candID]);
-
-        
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
