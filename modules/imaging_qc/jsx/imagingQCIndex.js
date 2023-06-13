@@ -96,6 +96,7 @@ class ImagingQCIndex extends Component {
     if (!this.state.isLoadedImg) {
       return <Loader/>;
     }
+    console.log(this.state)
     if (Object.keys(this.state.ImgData).length > 0) {
       const ImgOptions = this.state.ImgData.fieldOptions;
 
@@ -217,7 +218,7 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          <h3>An error occurred while loading the page.</h3>
+          <h3>The MRI parameter form instrument must be installed in order to use this module.</h3>
         </div>
       );
     }
