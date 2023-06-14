@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
+require_once __DIR__ . "/LorisApiAuthenticated_v0_0_3_Test.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
@@ -16,7 +16,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiRecordingsTest_v0_0_3 extends LorisApiAuthenticatedTest_v0_0_3
+class LorisApiRecordings_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
 {
     protected $frecordTest         = "sub-OTT174_ses-V1_task-faceO_eeg.edf";
     protected $candidTest          = "300174";
