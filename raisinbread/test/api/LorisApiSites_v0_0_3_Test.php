@@ -24,8 +24,6 @@ class LorisApiSites_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
      */
     public function testGetSites(): void
     {
-        print "test get sites v0.0.3 (should fail)";
-
         $response = $this->client->request(
             'GET',
             "sites",
@@ -35,45 +33,7 @@ class LorisApiSites_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             ]
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $data = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-        
-        $sites = $data['Sites'] ?? null;
-
-        $this->assertEquals(
-            'array',
-            gettype($sites),
-            json_encode($data)
-        );
-
-        $this->assertCount(
-            4,
-            $sites,
-            json_encode($data)
-        );
-
-        foreach ($sites as $site) {
-            $this->assertEquals(
-                'string',
-                gettype($site['Name']),
-                json_encode($data)
-            );
-            $this->assertEquals(
-                'string',
-                gettype($site['Alias']),
-                json_encode($data)
-            );
-            $this->assertEquals(
-                'string',
-                gettype($site['MRI alias']),
-                json_encode($data)
-            );
-        }
+        // endpoint was added in v0.0.4
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }
