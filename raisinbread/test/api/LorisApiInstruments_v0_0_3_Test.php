@@ -119,9 +119,9 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        // Verify the 204 endpoint has no body
+        $body = $response->getBody()->getContent();
+        $this->assertEmpty($body);
     }
 
     /**
@@ -146,9 +146,9 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        // Verify the 204 endpoint has no body
+        $body = $response->getBody()->getContents();
+        $this->assertEmpty($body);
 
     }
 
