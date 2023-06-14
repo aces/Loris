@@ -23,7 +23,7 @@ use \LORIS\Data\Models\ImageDTO;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Images_0_0_4_Dev
+class Images_0_0_4
 {
     private $_timepoint;
     private $_images;

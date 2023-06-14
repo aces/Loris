@@ -22,7 +22,7 @@ namespace LORIS\api\Views\Visit;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Instrument_0_0_4_Dev
+class Instrument_0_0_4
 {
     private $_timepoint;
     private $_instrument;
