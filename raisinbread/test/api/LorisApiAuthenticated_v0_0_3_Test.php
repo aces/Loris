@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticatedTest_v0_0_3 extends LorisIntegrationTest
+class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
 {
 
     protected $client;
