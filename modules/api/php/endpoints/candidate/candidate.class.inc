@@ -64,7 +64,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'v0.0.3',
-            'v0.0.4-dev',
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 
@@ -115,8 +116,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $version     = $request->getAttribute("LORIS-API-Version");
         $subendpoint = __NAMESPACE__ . '\\' . 'Visit\Visit';
 
-        if ($version == 'v0.0.4-dev') {
-            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4_Dev';
+        if ($version == 'v0.0.4') {
+            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4';
         }
 
         $handler = new $subendpoint(
