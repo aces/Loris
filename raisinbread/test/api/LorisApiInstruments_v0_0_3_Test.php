@@ -120,7 +120,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         );
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the 204 endpoint has no body
-        $body = $response->getBody()->getContent();
+        $body = $response->getBody()->getContents();
         $this->assertEmpty($body);
     }
 
