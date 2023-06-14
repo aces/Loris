@@ -106,7 +106,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json = [
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -133,7 +133,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json = [
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -356,7 +356,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -389,7 +389,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
