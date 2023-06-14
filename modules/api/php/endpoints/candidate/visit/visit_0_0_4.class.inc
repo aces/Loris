@@ -93,8 +93,8 @@ class Visit_0_0_4 extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.4'
-            'v0.0.5-dev'
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 

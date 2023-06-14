@@ -127,7 +127,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
             }
 
-            // Try to look up by PSCID 
+            // Try to look up by PSCID
             $loris  = $request->getAttribute('loris');
             $db     = $loris->getDatabaseConnection();
             $pscids = $db->pselect(
