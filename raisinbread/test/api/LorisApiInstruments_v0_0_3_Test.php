@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
+require_once __DIR__ . "/LorisApiAuthenticated_v0_0_3_Test.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
@@ -16,7 +16,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
+class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
 {
     protected $instrumentTest = "testtest";
     protected $candidTest     = "900000";
@@ -87,14 +87,14 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
-        $bodystr = $response->getBody()->getContents();
-        print "body: $bodystr";
         $InstrumentsArray = json_decode(
-            (string) utf8_encode($bodystr),
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
             true
         );
-        $this->markTestIncomplete("Test body not validated");
-        // $this->assertNotEmpty($InstrumentsArray['Data']);
+        $this->markTestIncomplete('Instrument body not validated');
+        // $this->assertNotEmpty($InstrumentsArray[$this->instrumentTest]);
     }
 
     /**
@@ -106,7 +106,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPatchCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json = [
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -119,9 +119,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
+        // Verify the 204 endpoint has no body
         $body = $response->getBody()->getContents();
-        //print "body: $body";
         $this->assertEmpty($body);
     }
 
@@ -134,7 +133,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     public function testPutCandidatesCandidVisitInstrumentsInstrument(): void
     {
         $json = [
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -147,9 +146,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             ]
         );
         $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        // Verify the 204 endpoint has no body
+        $body = $response->getBody()->getContents();
+        $this->assertEmpty($body);
 
     }
 
@@ -357,7 +356,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];
@@ -390,7 +389,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'DDE'        => true,
                 'Instrument' => $this->instrumentTest
             ],
-            'Data' => [
+            $this->instrumentTest => [
                 'UserID' => "2"
             ]
         ];

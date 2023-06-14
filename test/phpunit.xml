@@ -2,6 +2,7 @@
 <phpunit
         bootstrap="bootstrap.php"
         verbose="true"
+        testdox="true"
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
@@ -30,7 +31,7 @@
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
-	    <directory>../modules/electrophysiology_browser/test/</directory>
+            <directory>../modules/electrophysiology_browser/test/</directory>
             <directory>../modules/electrophysiology_uploader/test/</directory>	    
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
