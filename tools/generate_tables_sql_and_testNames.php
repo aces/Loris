@@ -99,7 +99,8 @@ foreach ($instruments as $instrument) {
     $fp = fopen($filename, "w");
     fwrite($fp, $output);
     $sql = "REPLACE INTO test_names (Test_name, Full_name, Sub_group) "
-         . "VALUES ('$tablename', '$title', 1);";
+         . "SELECT '$tablename', '$title', ID "
+         . "FROM test_subgroups WHERE Subgroup_name='Instruments';\n";
 
     fwrite($fp, $sql);
     foreach ($pages as $pageNo => $page) {
