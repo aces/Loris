@@ -159,10 +159,9 @@ class LorisApiDicoms_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             'Tarname',
             $dicomArray['DicomTars']['0']
         );
-        $this->assertArrayHasKey(
-            'Patientname',
-            $dicomArray['DicomTars']['0']
-        );
+
+        // was added in v0.0.4
+        $this->assertFalse(isset($dicomArray['DicomTars']['0']['Patientname']));
 
         $this->assertArrayHasKey(
             'SeriesInfo',
