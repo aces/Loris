@@ -119,7 +119,8 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
-        $body = $response->getBody();
+        $body = $response->getBody()->getContents();
+        print "body: $body";
         $this->assertNotEmpty($body);
     }
 
