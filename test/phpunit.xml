@@ -2,6 +2,7 @@
 <phpunit
         bootstrap="bootstrap.php"
         verbose="true"
+        testdox="true"
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
