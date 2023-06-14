@@ -79,12 +79,9 @@ class LorisApiDicoms_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             ),
             'string'
         );
-        $this->assertSame(
-            gettype(
-                $dicomArray['DicomTars']['0']['Patientname']
-            ),
-            'string'
-        );
+        // Was added in v0.0.4
+        $this->assertFalse(isset($dicomArray['DicomTars']['0']['Patientname']));
+
         $this->assertSame(
             gettype(
                 $dicomArray['DicomTars']['0']['SeriesInfo']['0']
