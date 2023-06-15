@@ -289,7 +289,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     );
                 }
 
-                // Add day as first of the month if Y-m dob format
+                // Add day as mid of the month if Y-m dob format
                 // This allows insert into sql candidate table
                 if ($dobFormat === '!Y-m') {
                     $edc .= '-15';
@@ -316,7 +316,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 );
             }
 
-            // Add day as first of the month if Y-m dob format
+            // Add day as mid of the month if Y-m dob format
             // This allows insert into sql candidate table
             if ($dobFormat === '!Y-m') {
                 $dateOfBirth .= '-15';
