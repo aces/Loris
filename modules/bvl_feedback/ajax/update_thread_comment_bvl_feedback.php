@@ -22,8 +22,8 @@ if (isset($_POST['entryID']) && isset($_POST['newComment'])) {
     $db->update(
         'feedback_bvl_entry',
         [
-            'Comment' => $_POST['newComment'],
-            'TestDate' => $_POST['date']
+            'Comment'   => $_POST['newComment'],
+            'TestDate'  => $_POST['date']
         ],
         ['ID' => $_POST['entryID']]
     );

@@ -19,7 +19,7 @@ require "bvl_panel_ajax.php";
 $db =& Database::singleton();
 
 // DELETE the thread entries
-$db->delete('feedback_bvl_entry', array("ID" => $_POST['entryID']));
+$db->delete('feedback_bvl_entry', ["ID" => $_POST['entryID']]);
 
 print json_encode('success');
 

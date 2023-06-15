@@ -23,7 +23,7 @@ if (isset($_GET['feedbackID']) && !Empty($_GET['feedbackID'])) {
     // add username to threadentries
     foreach ($threadEntries as $key => $value) {
         $threadEntries[$key]['current_user'] = $username;
-        $threadEntries[$key]['editComment'] = false;
+        $threadEntries[$key]['editComment']  = false;
     }
     print json_encode($threadEntries);
 }
