@@ -16,7 +16,7 @@ ini_set('default_charset', 'utf-8');
 
 require "bvl_panel_ajax.php";
 
-$db =& Database::singleton();
+$db =& NDB_Factory::singleton()->database();
 
 // DELETE the thread entries
 $db->delete('feedback_bvl_entry', ["ID" => $_POST['entryID']]);

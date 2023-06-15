@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 require "bvl_panel_ajax.php";
 
 if (isset($_POST['entryID']) && isset($_POST['newComment'])) {
-    $db =& Database::singleton();
+    $db =& NDB_Factory::singleton()->database();
 
     $db->update(
         'feedback_bvl_entry',
