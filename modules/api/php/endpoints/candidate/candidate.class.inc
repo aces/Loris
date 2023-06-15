@@ -115,14 +115,13 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $version = $request->getAttribute("LORIS-API-Version");
         switch ($version) {
-        case '0.0.3':
+        case 'v0.0.3':
             $subendpoint = __NAMESPACE__ . '\\' . 'Visit\Visit';
             break;
         default:
             $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4';
             break;
         }
-
         $handler = new $subendpoint(
             $this->_candidate,
             $visit
