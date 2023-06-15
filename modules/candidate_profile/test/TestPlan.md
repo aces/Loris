@@ -50,7 +50,7 @@ that widget (ie. the media module for CandID 587630 (DCC090) or CandID 300001 (M
 4. Ensure that, when the module which added the extra `CandidateInfo` terms
    is disabled, the terms from that module no longer show up in the
    `Candidate Info` card.
-5. Ensure that you cannot see visits from projects that you are not affiliated with. This behaviour is still expected when you have permission `access_all_profiles`.
+5. Ensure that you can always only see visits from projects that you are affiliated with.
 
 All other widgets are part of other modules, and should be tested as
 part of that module's testing.
