@@ -42,7 +42,8 @@ class Candidate_Parameters extends \NDB_Form
     {
         $candidate =& \Candidate::singleton(new CandID($this->identifier));
 
-        // User must have one of the candidate_parameter permissions AND have the candidate's site.
+        // User must have one of the candidate_parameter permissions
+        AND have the candidate's site.
         return ($user->hasAnyPermission(
             [
                 'candidate_parameter_view',
