@@ -52,6 +52,9 @@ check: checkstatic unittests
 testdata:
 	php tools/raisinbread_refresh.php
 
+data_release:
+	target=data_release npm run compile
+
 instrument_manager:
 	target=instrument_manager npm run compile
 
@@ -61,3 +64,5 @@ login:
 mri_violations:
 	target=mri_violations npm run compile
 
+dashboard:
+	target=dashboard npm run compile

@@ -86,7 +86,10 @@ class DirectDataEntryMainPage
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
             $config,
-            []
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
         );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts

@@ -142,7 +142,7 @@ body {
 }
 
 .overlay-viewer-display {
-    float: right;
+    text-align: right;
 }
 
 .volume-viewer-display {

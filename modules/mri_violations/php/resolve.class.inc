@@ -107,26 +107,10 @@ class Resolve extends \NDB_Page
             if (!empty($ID_mri_protocol_violated_scans)) {
                 $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                 $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
+                $DB->insert('violations_resolved', $newlyResolved);
             }
 
-            // Table 2: mri_violations_log
-            $ID_mri_violations_log = $DB->pselectOne(
-                "SELECT LogID
-                FROM mri_violations_log
-                WHERE (:hash = md5(concat_WS(
-                                ':',MincFile,PatientName,SeriesUID,TimeRun,
-                                PhaseEncodingDirection,EchoTime,EchoNumber)
-                               )
-                )",
-                ['hash' => $hash]
-            );
-
-            if (!empty($ID_mri_violations_log)) {
-                $newlyResolved['TypeTable'] = 'mri_violations_log';
-                $newlyResolved['ExtID']     = $ID_mri_violations_log;
-            }
-
-            // Table 3: MRICandidateErrors
+            // Table 2: MRICandidateErrors
             $ID_MRICandidateErrors = $DB->pselectOne(
                 "SELECT ID
                 FROM MRICandidateErrors
@@ -141,8 +125,27 @@ class Resolve extends \NDB_Page
             if (!empty($ID_MRICandidateErrors)) {
                 $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                 $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
+                $DB->insert('violations_resolved', $newlyResolved);
             }
-            $DB->insert('violations_resolved', $newlyResolved);
+
+            // Table 3: mri_violations_log
+            $mri_violations_log_ID_list = $DB->pselect(
+                "SELECT LogID
+                FROM mri_violations_log
+                WHERE (:hash = md5(concat_WS(
+                                ':',MincFile,PatientName,SeriesUID,TimeRun,
+                                PhaseEncodingDirection,EchoTime,EchoNumber)
+                               )
+                )",
+                ['hash' => $hash]
+            );
+            error_log(print_r($mri_violations_log_ID_list, true));
+
+            foreach ($mri_violations_log_ID_list as $entry) {
+                $newlyResolved['TypeTable'] = 'mri_violations_log';
+                $newlyResolved['ExtID']     = $entry['LogID'];
+                $DB->insert('violations_resolved', $newlyResolved);
+            }
 
             // Created
             $response = $response->withStatus(201);

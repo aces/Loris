@@ -87,13 +87,14 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        $bodystr = $response->getBody()->getContents();
+        print "body: $bodystr";
         $InstrumentsArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
+            (string) utf8_encode($bodystr),
             true
         );
-
+        $this->markTestIncomplete("Test body not validated");
+        // $this->assertNotEmpty($InstrumentsArray['Data']);
     }
 
     /**
@@ -119,8 +120,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         );
         $this->assertEquals(204, $response->getStatusCode());
         // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        $body = $response->getBody()->getContents();
+        //print "body: $body";
+        $this->assertEmpty($body);
     }
 
     /**

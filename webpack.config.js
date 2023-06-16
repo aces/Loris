@@ -25,7 +25,6 @@ const optimization = {
 
 const resolve = {
   alias: {
-    util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
@@ -320,9 +319,10 @@ const lorisModules = {
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
   statistics: ['WidgetIndex'],
-  instruments: ['CandidateInstrumentList'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;

@@ -60,7 +60,7 @@ foreach ($_POST as $key => $value) {
                 }
             }
             // Update the config setting to the new value.
-            $DB->update(
+            $DB->unsafeUpdate(
                 'Config',
                 ['Value' => $value],
                 ['ID' => $key]
@@ -108,7 +108,7 @@ foreach ($_POST as $key => $value) {
                 }
             }
             // Add the new setting
-            $DB->insert(
+            $DB->unsafeInsert(
                 'Config',
                 [
                     'ConfigID' => $ConfigSettingsID, // FK to ConfigSettings.
