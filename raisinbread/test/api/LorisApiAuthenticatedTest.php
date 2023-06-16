@@ -36,6 +36,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      */
     public function setUp(): void
     {
+        $this->skipSelenium = true;
         parent::setUp();
 
         $this->_version = 'v0.0.4-dev';

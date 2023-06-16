@@ -15,6 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Simon Pelletier <simon.pelletier@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiProjectsTest extends LorisApiAuthenticatedTest
 {
@@ -742,14 +743,15 @@ class LorisApiProjectsTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
+        $body = $response->getBody()->getContents();
+
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
-        $body = $response->getBody();
         $this->assertNotEmpty($body);
 
         $projectsRecordingsArray = json_decode(
             (string) utf8_encode(
-                strstr($response->getBody()->getContents(),"{")
+                strstr($body,"{")
             ),
             true
         );
