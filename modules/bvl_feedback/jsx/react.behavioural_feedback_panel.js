@@ -175,7 +175,7 @@ FeedbackPanelContent.propTypes = {
   candID: PropTypes.string,
   commentID: PropTypes.string,
   sessionID: PropTypes.string,
-  commentToggled: PropTypes.func,
+  commentToggled: PropTypes.bool,
 };
 
 
@@ -238,11 +238,11 @@ class FeedbackPanelRow extends Component {
   /**
    * Toggle entries
    *
-   * @param {boolean} newComment
+   * @param {boolean} result
    */
-  toggleEntries(newComment) {
+  toggleEntries(result) {
     let toggle = false;
-    if (newComment) {
+    if (result) {
       toggle = true;
     } else {
       toggle = !this.state.threadEntriesToggled;
@@ -283,42 +283,40 @@ class FeedbackPanelRow extends Component {
   }
 
   updateThreadEntry(entryID, newComment, date) {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/update_thread_comment_bvl_feedback.php',
-      dataType: 'json',
-      data: {
-        entryID: entryID,
-        newComment: newComment,
-        date: date,
-      },
-      success: function(response) {
-        this.loadServerState();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('entryID', entryID);
+    formData.append('newComment', newComment);
+    formData.append('date', date);
+    fetch(
+      loris.BaseURL +
+      '/bvl_feedback/ajax/update_thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then(() => {
+      this.loadServerState();
+    }).catch((error) => {
+      console.error(error);
     });
-  };
+  }
 
   deleteThreadEntry(entryID) {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/delete_thread_comment_bvl_feedback.php',
-      dataType: 'json',
-      data: {
-        entryID: entryID,
-      },
-      success: function(response) {
-        this.loadServerState();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('entryID', entryID);
+    fetch(
+      loris.BaseURL +
+      '/bvl_feedback/ajax/delete_thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then(() => {
+      this.loadServerState();
+    }).catch((error) => {
+      console.log(error);
     });
-  };
+  }
 
   /**
    * Renders the React component.
@@ -347,11 +345,10 @@ class FeedbackPanelRow extends Component {
             }
           });
           this.setState({threadEntriesLoaded: tempThreadEntriesLoaded});
-          this.props.commentToggled = false;
-        }; 
+        };
         return (
-          <>
-            <tr key={key} className='thread_entry'>
+          <React.Fragment key={key}>
+            <tr className='thread_entry'>
               <td colSpan='70%'>
                 <span id='comment_author'>
                   {entry.Date} {entry.UserID}:{' '}
@@ -377,14 +374,14 @@ class FeedbackPanelRow extends Component {
             </tr>
             {entry.editComment ?
               <CommentEntryForm
-              entryID={entry.EntryID}
-              onCommentSend={this.updateThreadEntry}
-              toggleThisThread={toggleEditComment}
-              value={entry.Comment}
-              date={entry.Date}
+                entryID={entry.EntryID}
+                onCommentSend={this.updateThreadEntry}
+                toggleThisThread={toggleEditComment}
+                value={entry.Comment}
+                date={entry.Date}
               />
             : null}
-          </>
+          </React.Fragment>
         );
       });
     }
@@ -425,7 +422,7 @@ class FeedbackPanelRow extends Component {
             {commentButton}
           </td>
         </tr>
- 
+
         {threadEntries}
         {this.props.commentToggled ?
           (<CommentEntryForm
@@ -452,9 +449,8 @@ FeedbackPanelRow.propTypes = {
   onClickClose: PropTypes.func,
   commentToggle: PropTypes.func,
   user: PropTypes.string,
-  commentToggled: PropTypes.func,
+  commentToggled: PropTypes.bool,
 };
-
 
 /**
  * Comment entry form component
@@ -486,7 +482,11 @@ class CommentEntryForm extends Component {
     if (this.state.entryID < 0) {
       this.props.onCommentSend(this.state.value);
     } else {
-      this.props.onCommentSend(this.state.entryID, this.state.value, this.state.date);
+      this.props.onCommentSend(
+        this.state.entryID,
+        this.state.value,
+        this.state.date
+      );
     }
     this.setState({
       value: '',
@@ -513,7 +513,11 @@ class CommentEntryForm extends Component {
     return (
       <tr>
         <td colSpan='100%'>
-          {this.state.entryID < 0 ? <span> Add a comment: </span> : <span> Update comment: </span>}
+          {
+            this.state.entryID < 0 ?
+            <span> Add a comment: </span> :
+            <span> Update comment: </span>
+          }
           <div className='input-group' style={{width: '100%'}}>
             <textarea
               className='form-control'
@@ -539,10 +543,11 @@ class CommentEntryForm extends Component {
 CommentEntryForm.propTypes = {
   onCommentSend: PropTypes.func,
   toggleThisThread: PropTypes.func,
-  entryID: PropTypes.int,
   updateThreadEntry: PropTypes.func,
+  value: PropTypes.string,
+  entryID: PropTypes.int,
+  date: PropTypes.string,
 };
-
 
 /**
  * Accordion panel component
@@ -774,7 +779,7 @@ class NewThreadPanel extends Component {
             onClick={this.createNewThread}
             className='btn btn-default pull-right btn-sm'
           >
-            Save data
+            Create thread
           </button>
         </div>
       </div>
@@ -861,7 +866,7 @@ class FeedbackSummaryPanel extends Component {
         <table
           className='table table-hover table-bordered dynamictable'>
           <thead>
-            <tr className='info'>
+            <tr className='info' key='info'>
               <th>QC Class</th>
               <th>Instrument</th>
               <th>Visit</th>
