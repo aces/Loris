@@ -62,7 +62,7 @@ class Sites extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.4-dev',
+            'v0.0.4',
         ];
     }
 
