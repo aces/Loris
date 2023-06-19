@@ -74,7 +74,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             "v0.0.3",
-            "v0.0.4-dev",
+            "v0.0.4",
         ];
     }
 
@@ -122,7 +122,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $candID = new CandID($pathparts[1]);
         } catch (\DomainException $e) {
             $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-            if ($apiversion != "v0.0.4-dev") {
+            if ($apiversion != "v0.0.4") {
                 return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
             }
 
