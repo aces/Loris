@@ -392,7 +392,8 @@ class Imaging_QC extends \NDB_Menu_Filter
 
     /**
      * This method overrides the NBD_Page handle function.
-     * It checks if the MRI Parameter Form table exists before calling the parent handle function.
+     * It checks if the MRI Parameter Form table exists
+     * before calling the parent handle function.
      *
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
@@ -400,13 +401,13 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $db     = $this->loris->getDatabaseConnection();
+        $db = $this->loris->getDatabaseConnection();
         if ($db->tableExists('mri_parameter_form')) {
             return parent::handle($request);
         } else {
             return (new \LORIS\Http\Response())
-            ->withBody(new \LORIS\Http\StringStream("MRI Parameter Form table does not exist"))
-            ->withStatus(500);
+                ->withBody(new \LORIS\Http\StringStream("MRI Parameter Form table does not exist"))
+                ->withStatus(500);
         }
     }
 }
