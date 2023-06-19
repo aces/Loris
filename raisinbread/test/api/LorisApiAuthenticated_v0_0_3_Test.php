@@ -79,7 +79,16 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisApiAuthenticatedTest
 
 
     }
-
+    /**
+     * Used to test login
+     *
+     * @return void
+     */
+    function testLoginSuccess()
+    {
+        $this->assertArrayHasKey('Authorization', $this->headers);
+        $this->assertArrayHasKey('Accept', $this->headers);
+    }
     /**
      * Used to log in with GuzzleHttp\Client
      *
