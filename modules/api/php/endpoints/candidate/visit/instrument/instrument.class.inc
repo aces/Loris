@@ -77,7 +77,8 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'v0.0.3',
-            'v0.0.4-dev',
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 
@@ -150,7 +151,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ))->toArray();
             break;
         default:
-            $body = (new \LORIS\api\Views\Visit\Instrument_0_0_4_Dev(
+            $body = (new \LORIS\api\Views\Visit\Instrument_0_0_4(
                 $this->_visit,
                 $this->_instrument
             ))->toArray();

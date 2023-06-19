@@ -27,7 +27,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculator
+class Visit_0_0_4 extends Endpoint implements \LORIS\Middleware\ETagCalculator
 {
 
     /**
@@ -93,7 +93,8 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.4-dev'
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 

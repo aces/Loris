@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticatedTest extends LorisIntegrationTest
+class LorisApiAuthenticated_v0_0_4_Test extends LorisIntegrationTest
 {
 
     protected $client;
@@ -38,7 +38,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     {
         parent::setUp();
 
-        $this->_version = 'v0.0.5-dev';
+        $this->_version = 'v0.0.4';
 
         // store the original JWT key for restoring it later
         $jwtConfig = $this->DB->pselect(

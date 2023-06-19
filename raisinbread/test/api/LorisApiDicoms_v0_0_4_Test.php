@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
+require_once __DIR__ . "/LorisApiAuthenticated_v0_0_4_Test.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
@@ -15,7 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiDicomsTest extends LorisApiAuthenticatedTest
+class LorisApiDicoms_v0_0_4_Test extends LorisApiAuthenticated_v0_0_4_Test
 {
     protected $candidTest    = "400162";
     protected $visitTest     = "V6";

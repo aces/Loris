@@ -1,4 +1,4 @@
-# LORIS API - v0.0.3
+# LORIS API - v0.0.4
 ## 1.0 Overview
 
 This document specifies the Loris REST API.
@@ -8,7 +8,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.3 and it
+document. This document specifies $APIVERSION v0.0.4 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -357,6 +357,12 @@ If a GET request for a candidate is issued such as
 GET /candidates/$CandID
 ```
 
+or
+
+```
+GET /candidates/$PSCID
+```
+
 A JSON object representing that candidate will be returned.
 
 The JSON object is of the form:
@@ -375,8 +381,16 @@ PUT / PATCH are not supported for candidates in this version of the
 API.
 
 It will return a 200 OK on success, a 404 if the candidate does not exist, and
-a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
-true of all of the API hierarchy under /candidates/$CandID.
+a 400 Bad Request if the CandID or PSCID is invalid or there are multiple
+entries in the database with the same PSCID. The same is
+true of all of the API hierarchy under /candidates/$CandID (which
+may all use PSCID in place of CandID, as long as there is a single
+unique PSCID with that identifier in the database.)
+
+Note that it's theoretically possible that a study may have a PSCID that
+is the same value as a different CandID (ie. PSCID=123456 for one candidate, but
+CandID=123456 for a different candidate.) The caller should verify the candidate
+object in the Meta key to ensure the correct candidate was retrieved.
 
 ### 3.2 Getting Candidate visit data
 
@@ -419,7 +433,24 @@ The JSON object is of the form:
 A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
-PATCH is not supported for Visit Labels.
+A PATCH request of the form:
+```js
+{
+    "CandID"  : 317604,
+    "Visit"   : 'Visit 01',
+    "Site"    : 'DCC',
+    "Battery" : 'Stale',
+    "Project" : 'Pumpernickel',
+    "Stages" : {
+        "Visit" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "In Progress"
+        }
+    }
+}
+```
+will update the Visit stage date and status and start the next stage if the Visit stage
+is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
@@ -473,7 +504,7 @@ The format returned by a GET request is a JSON document of the form:
         "Candidate" : $CandID,
         "DDE" : boolean
     },
-    "$InstrumentName" : {
+    "Data" : {
         "FieldName1" : "Value1",
         "FieldName2" : "Value2",
         ...
@@ -553,6 +584,7 @@ the form:
         "OutputType" : "native",
         "Filename" : "abc.mnc",
         "AcquisitionType" : "t1w/t2w/etc",
+        "IsPhantom" : "true|false",
     }, /* More files */]
 }
 ```
@@ -810,6 +842,7 @@ object of the form:
     [
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+            "Patientname" : "DCM123_123456_V1",
             "SeriesInfo" :
                 [{
                     "SeriesDescription" : "MPRAGE_ipat2",
@@ -834,6 +867,7 @@ object of the form:
         },
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+            "Patientname" : "DCM456_654321_V1",
             "SeriesInfo" :
                 [{
                 "SeriesDescription" : "MPRAGE_ipat2",
@@ -1102,3 +1136,33 @@ Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
+
+
+## 7.0 Sites API
+
+The Sites API list available sites for the requesting user.
+
+```
+GET /sites
+```
+
+Will return a list of sites in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
+
+```js
+{
+  "Sites" : [
+    {
+      "Name": "string",
+      "Alias": "string",
+      "MRI alias": "string"
+    },
+    ...
+  ]
+}
+```
+
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
+
+* Note that only the `Name` property is unique across all sites.
+

@@ -8,9 +8,9 @@ info:
   license:
     name: 'GNU Public License, Version 3'
     url: 'https://opensource.org/licenses/GPL-3.0'
-  version: 0.0.3
+  version: 0.0.4
 servers:
-  - url: /api/v0.0.3
+  - url: /api/v0.0.4
 security:
   - ApiKeyAuth: []
 paths:
@@ -30,6 +30,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
+  /sites:
+    get:
+      tags:
+        - Sites
+      summary: List all sites available to the requesting user
+      responses:
+        '200':
+          description: A list of all sites for the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sites'
   /projects:
     get:
       tags:
@@ -179,7 +191,7 @@ paths:
             type: string
       responses:
         '200':
-          description: An object containing the list of visits for a project
+          description: An object containing the list of instrument summary descriptors
           content:
             application/json:
               schema:
@@ -200,7 +212,7 @@ paths:
             type: string
       responses:
         '200':
-          description: An object containing the list of recordings for a project
+          description: An object containing the list of instrument summary descriptors
           content:
             application/json:
               schema:
@@ -212,7 +224,7 @@ paths:
       summary: List all candidates in this LORIS instance
       responses:
         '200':
-          description: An object containing the list of candidates
+          description: An object containing the list of instrument summary descriptors
           content:
             application/json:
               schema:
@@ -233,15 +245,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Candidate'
-  '/candidates/{candid}':
+  '/candidates/{id}':
     get:
       tags:
         - Candidates
-      summary: Get a JSON object representing that candidate
+      summary: Get a JSON object representing that candidate. Note that the caller should validate the correct candidate was returned if the PSCID format is configured such that it's possible for a CandID to be the same as a PSCID of a different candidate.
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either a PSCID or CandID
           required: true
           style: simple
           explode: false
@@ -254,15 +266,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_2'
-  '/candidates/{candid}/{visit}':
+  '/candidates/{id}/{visit}':
     get:
       tags:
         - Visit
       summary: Get a visit descriptor for that candidate
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either a PSCID or CandID
           required: true
           style: simple
           explode: false
@@ -288,9 +300,9 @@ paths:
         - Visit
       summary: Add a timepoint to that candidate
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -334,15 +346,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_409'
-  '/candidates/{candid}/{visit}/instruments':
+    patch:
+      tags:
+        - Visit
+      summary: Updates a timepoint. Providing a "Visit" stage with "In Progress" as status will attemp to start the visit (start next stage).
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either PSCID or CandID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: visit
+          in: path
+          description: The visit label
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitPatchFields'
+      responses:
+        '204':
+          description: The visit stage was updated successfully
+  '/candidates/{id}/{visit}/instruments':
     get:
       tags:
         - Instruments
       summary: List all instruments of that timepoint
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either a PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -363,15 +404,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_4'
-  '/candidates/{candid}/{visit}/instruments/{instrument}':
+  '/candidates/{id}/{visit}/instruments/{instrument}':
     get:
       tags:
         - Instruments
       summary: Get an instrument data values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either a PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -405,9 +446,9 @@ paths:
         - Instruments
       summary: Set an instrument data values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either a PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -442,9 +483,9 @@ paths:
         - Instruments
       summary: Update some data values of an instrument
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -474,15 +515,15 @@ paths:
       responses:
         '204':
           description: This instrument data values have been saved
-  '/candidates/{candid}/{visit}/instruments/{instrument}/flags':
+  '/candidates/{id}/{visit}/instruments/{instrument}/flags':
     get:
       tags:
         - Instruments
       summary: Get an instrument flags values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -516,9 +557,9 @@ paths:
         - Instruments
       summary: Set an instrument flags values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -557,9 +598,9 @@ paths:
         - Instruments
       summary: Update some flags values of an instrument
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -593,15 +634,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/candidates/{candid}/{visit}/instruments/{instrument}/dde':
+  '/candidates/{id}/{visit}/instruments/{instrument}/dde':
     get:
       tags:
         - Instruments
       summary: Get an instrument data values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -635,9 +676,9 @@ paths:
         - Instruments
       summary: Set an instrument data values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -672,9 +713,9 @@ paths:
         - Instruments
       summary: Update some data values of an instrument
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -704,15 +745,15 @@ paths:
       responses:
         '204':
           description: This instrument data values have been saved
-  '/candidates/{candid}/{visit}/instruments/{instrument}/dde/flags':
+  '/candidates/{id}/{visit}/instruments/{instrument}/dde/flags':
     get:
       tags:
         - Instruments
       summary: Get an instrument flags values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID
           required: true
           style: simple
           explode: false
@@ -746,9 +787,9 @@ paths:
         - Instruments
       summary: Set an instrument flags values
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -787,9 +828,9 @@ paths:
         - Instruments
       summary: Update some flags values of an instrument
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -823,15 +864,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  '/candidates/{candid}/{visit}/images':
+  '/candidates/{id}/{visit}/images':
     get:
       tags:
         - Images
       summary: List all images of a timepoint
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -852,15 +893,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Images'
-  '/candidates/{candid}/{visit}/images/{filename}':
+  '/candidates/{id}/{visit}/images/{filename}':
     get:
       tags:
         - Images
       summary: Get an images of a timepoint
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -890,15 +931,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/images/{filename}/qc':
+  '/candidates/{id}/{visit}/images/{filename}/qc':
     get:
       tags:
         - Images
       summary: Get the qc values of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -932,9 +973,9 @@ paths:
         - Images
       summary: Set the qc values of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -964,15 +1005,15 @@ paths:
       responses:
         '204':
           description: Qc value updated
-  '/candidates/{candid}/{visit}/images/{filename}/format/brainbrowser':
+  '/candidates/{id}/{visit}/images/{filename}/format/brainbrowser':
     get:
       tags:
         - Images
       summary: Get the brainbrowser format of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1001,15 +1042,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FormatBrainbrowser'
-  '/candidates/{candid}/{visit}/images/{filename}/format/raw':
+  '/candidates/{id}/{visit}/images/{filename}/format/raw':
     get:
       tags:
         - Images
       summary: Get the raw format of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1039,15 +1080,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/images/{filename}/format/thumbnail':
+  '/candidates/{id}/{visit}/images/{filename}/format/thumbnail':
     get:
       tags:
         - Images
       summary: Get the thumbnail format of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID
           required: true
           style: simple
           explode: false
@@ -1077,15 +1118,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/images/{filename}/headers':
+  '/candidates/{id}/{visit}/images/{filename}/headers':
     get:
       tags:
         - Images
       summary: Get the summary headers of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1114,15 +1155,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageSummaryHeaders'
-  '/candidates/{candid}/{visit}/images/{filename}/headers/full':
+  '/candidates/{id}/{visit}/images/{filename}/headers/full':
     get:
       tags:
         - Images
       summary: Get all headers of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1151,15 +1192,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageHeaders'
-  '/candidates/{candid}/{visit}/images/{filename}/headers/{headername}':
+  '/candidates/{id}/{visit}/images/{filename}/headers/{headername}':
     get:
       tags:
         - Images
       summary: Get a specific header of an image
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1196,15 +1237,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_5'
-  '/candidates/{candid}/{visit}/qc/imaging':
+  '/candidates/{id}/{visit}/qc/imaging':
     get:
       tags:
         - Visit
       summary: Get the imaging qc values of a visit
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1229,9 +1270,9 @@ paths:
       tags:
         - Visit
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: The candidate identifier
+          description: The candidate identifier. Either PSCID or CandID.
           required: true
           style: simple
           explode: false
@@ -1253,15 +1294,15 @@ paths:
       responses:
         '204':
           description: Qc value updated
-  '/candidates/{candid}/{visit}/dicoms':
+  '/candidates/{id}/{visit}/dicoms':
     get:
       tags:
         - Dicoms
       summary: List all dicoms for that timepoint
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: ID of the candidate. Either PSCID or CandID
           required: true
           style: simple
           explode: false
@@ -1283,15 +1324,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dicoms'
 
-  '/candidates/{candid}/{visit}/dicoms/{tarname}':
+  '/candidates/{id}/{visit}/dicoms/{tarname}':
     get:
       tags:
         - Dicoms
       summary: Get the dicom file
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           style: simple
           explode: false
@@ -1322,15 +1363,15 @@ paths:
                 type: string
                 format: binary
 
-  '/candidates/{candid}/{visit}/recordings':
-    get:
+  '/candidates/{id}/{visit}/recordings':
+    get:  
       tags:
         - Electrophysiology
       summary: Get the recording files for that visit
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           style: simple
           explode: false
@@ -1351,15 +1392,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recordings'
-  '/candidates/{candid}/{visit}/recordings/{filename}':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}':
+    get:  
       tags:
         - Electrophysiology
       summary: Get a recording file
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1383,15 +1424,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/recordings/{filename}/metadata':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/metadata':
+    get:  
       tags:
         - Electrophysiology
       summary: Get a recording file metadata
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1414,15 +1455,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecordingMetadata'
-  '/candidates/{candid}/{visit}/recordings/{filename}/metadata/{headername}':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/metadata/{headername}':
+    get:  
       tags:
         - Electrophysiology
-      summary: Get a specific metadata from a recording file
+      summary: Get a specific metadata from a recording file 
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1451,15 +1492,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecordingMetadataSpecific'
-  '/candidates/{candid}/{visit}/recordings/{filename}/channels':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/channels':
+    get:  
       tags:
         - Electrophysiology
       summary: Get a recording file channels
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1482,15 +1523,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecordingChannels'
-  '/candidates/{candid}/{visit}/recordings/{filename}/electrodes':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/electrodes':
+    get:  
       tags:
         - Electrophysiology
       summary: Get a recording file electrodes
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1513,15 +1554,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecordingElectrodes'
-  '/candidates/{candid}/{visit}/recordings/{filename}/events':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/events':
+    get:  
       tags:
         - Electrophysiology
       summary: Get a recording file events
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1544,15 +1585,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecordingEvents'
-  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/archive':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/archive':
+    get:  
       tags:
         - Electrophysiology
-      summary: Get a recording archive with all associated files
+      summary: Get a recording archive with all associated files 
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1576,15 +1617,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/channels':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/channels':
+    get:  
       tags:
         - Electrophysiology
-      summary: Get a recording channels in BIDS format
+      summary: Get a recording channels in BIDS format 
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1608,15 +1649,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/electrodes':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/electrodes':
+    get:  
       tags:
         - Electrophysiology
-      summary: Get a recording electrodes in BIDS format
+      summary: Get a recording electrodes in BIDS format 
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1640,15 +1681,15 @@ paths:
               schema:
                 type: string
                 format: binary
-  '/candidates/{candid}/{visit}/recordings/{filename}/bidsfiles/events':
-    get:
+  '/candidates/{id}/{visit}/recordings/{filename}/bidsfiles/events':
+    get:  
       tags:
         - Electrophysiology
-      summary: Get a recording events in BIDS format
+      summary: Get a recording events in BIDS format 
       parameters:
-        - name: candid
+        - name: id
           in: path
-          description: ID of the candidate
+          description: Either PSCID or CandID of the candidate
           required: true
           schema:
             type: string
@@ -1674,6 +1715,22 @@ paths:
                 format: binary
 components:
   schemas:
+    Sites:
+      type: object
+      properties:
+        Sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    Site:
+      type: object
+      properties:
+        Name:
+          type: string
+        Alias:
+          type: string
+        MRI alias:
+          type: string
     Project:
       type: object
       properties:
@@ -1918,7 +1975,7 @@ components:
       properties:
         Meta:
           $ref: '#/components/schemas/InstrumentMeta'
-        $InstrumentShortName:
+        Data:
           type: object
           additionalProperties:
             type: string
@@ -2173,7 +2230,7 @@ components:
           $ref: '#/components/schemas/inline_response_200_5_Meta'
         Value:
           type: string
-
+ 
     Project_Meta:
       type: object
       properties:
@@ -2394,7 +2451,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingElectrode'
-
+            
     RecordingElectrode:
       type: object
       properties:
@@ -2414,7 +2471,7 @@ components:
           type: string
         ElectrodeFilePath:
           type: string
-
+          
     RecordingEvents:
       type: object
       properties:
@@ -2424,7 +2481,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecordingTaskEvent'
-
+            
     RecordingTaskEvent:
       type: object
       properties:
@@ -2444,17 +2501,16 @@ components:
           type: string
         EventFilePath:
           type: string
-
-  responses:
-    InternalServerError:
-      description: 500 Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    VisitPatchFields:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/VisitMetaFields'
+        - type: object
+          properties:
+            Stages:
+              $ref: '#/components/schemas/InstrumentVisit'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       name: Authorization
       in: header
-

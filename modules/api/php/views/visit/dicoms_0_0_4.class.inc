@@ -24,7 +24,7 @@ use \LORIS\Data\Models\DicomSeriesDTO;
  * @link     https://www.github.com/aces/Loris/
  */
 
-class Dicoms_0_0_4_Dev
+class Dicoms_0_0_4
 {
     private $_timepoint;
     private $_dicoms;

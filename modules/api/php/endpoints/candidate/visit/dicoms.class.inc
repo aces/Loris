@@ -70,7 +70,8 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'v0.0.3',
-            'v0.0.4-dev',
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 
@@ -142,7 +143,7 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ))->toArray();
             break;
         default:
-            $view = (new \LORIS\api\Views\Visit\Dicoms_0_0_4_Dev(
+            $view = (new \LORIS\api\Views\Visit\Dicoms_0_0_4(
                 $this->_visit,
                 ...$dicomtars
             ))->toArray();

@@ -70,7 +70,8 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'v0.0.3',
-            'v0.0.4-dev',
+            'v0.0.4',
+            'v0.0.5-dev',
         ];
     }
 
@@ -142,7 +143,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ))->toArray();
             break;
         default:
-            $view = (new \LORIS\api\Views\Visit\Images_0_0_4_Dev(
+            $view = (new \LORIS\api\Views\Visit\Images_0_0_4(
                 $this->_visit,
                 ...$images
             ))->toArray();
