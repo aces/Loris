@@ -406,8 +406,9 @@ class Imaging_QC extends \NDB_Menu_Filter
             return parent::handle($request);
         } else {
             return (new \LORIS\Http\Response())
-                ->withBody(new
-                    \LORIS\Http\StringStream("MRI Parameter Form table does not exist"))
+                ->withBody(
+                    new \LORIS\Http\StringStream("MRI Parameter Form table does not exist")
+                )
                 ->withStatus(500);
         }
     }
