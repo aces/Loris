@@ -3,6 +3,7 @@
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use GuzzleHttp\Client;
+require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
