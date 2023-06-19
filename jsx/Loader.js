@@ -6,6 +6,9 @@
  *
  */
 import PropTypes from 'prop-types';
+// ########### CBIGR START ###########
+import LoadingBar from 'jsx/LoadingBar';
+// ###########  CBIGR END  ###########
 
 /**
  * Loader is a React component which shows a spinner wheel while
@@ -16,12 +19,25 @@ import PropTypes from 'prop-types';
  * @return {DOMObject} - Loader React component
  */
 function Loader(props) {
-    return (
+  // ########### CBIGR START ###########
+  const loaderStyle = {
+    width: parseInt(props.size),
+    height: parseInt(props.size),
+    borderWidth: parseInt(props.size)/15,
+  };
+  const progressBar = props.progress && (
+    <LoadingBar progress={props.progress}/>
+  );
+  return (
+    <div>
       <div
         className='loader'
-        style={{width: parseInt(props.size), height: parseInt(props.size)}}
+        style={loaderStyle}
       />
-    );
+      {progressBar}
+    </div>
+  );
+  // ###########  CBIGR END  ###########
 }
 
 Loader.propTypes = {size: PropTypes.string};

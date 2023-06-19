@@ -10,8 +10,9 @@ CheckboxElement, ButtonElement, LorisElement
  * @version 1.0.0
  *
  */
-
-import React, {Component} from 'react';
+// ########### CBIGR START ###########
+import React, {useState, Component} from 'react';
+// ###########  CBIGR END  ###########
 import PropTypes from 'prop-types';
 
 /**
@@ -280,8 +281,8 @@ class SearchableDropdown extends Component {
    */
   handleChange(e) {
     let value = this.getKeyFromValue(e.target.value);
-    // if not in strict mode and key value is undefined (i.e., not in options prop)
-    // set value equal to e.target.value
+    // if not in strict mode and key value is undefined (i.e., not in
+    // options prop) set value equal to e.target.value
     if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
@@ -318,6 +319,10 @@ class SearchableDropdown extends Component {
     // clear currentInput
     if (prevProps.value && !this.props.value) {
       this.setState({currentInput: ''});
+      // ########### CBIGR START ###########
+    } else if (this.props.value !== prevProps.value && this.props.value) {
+      this.setState({currentInput: this.props.options[this.props.value]});
+      // ###########  CBIGR END  ###########
     }
   }
 
@@ -437,12 +442,13 @@ SearchableDropdown.propTypes = {
   onUserInput: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 SearchableDropdown.defaultProps = {
   name: '',
   options: {},
   strictSearch: true,
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   disabled: false,
@@ -454,6 +460,7 @@ SearchableDropdown.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Select Component
@@ -549,12 +556,14 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError
-       || (this.props.required && this.props.value === '')
-    ) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = elementClass + ' has-error';
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
     }
+    // ###########  CBIGR END  ###########
 
     let newOptions = {};
     let optionList = [];
@@ -597,7 +606,8 @@ class SelectElement extends Component {
       </option>);
     }
 
-    // Default to empty string for regular select and to empty array for 'multiple' select
+    // Default to empty string for regular select and to empty array for
+    // 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
     // Label prop needs to be provided to render label
@@ -662,11 +672,12 @@ SelectElement.propTypes = {
   placeholder: PropTypes.string,
 };
 
+// ########### CBIGR START ###########
 SelectElement.defaultProps = {
   name: '',
   options: {},
   disabledOptions: {},
-  value: undefined,
+  value: null,
   id: null,
   multiple: false,
   disabled: false,
@@ -675,13 +686,14 @@ SelectElement.defaultProps = {
   emptyOption: true,
   autoSelect: true,
   hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
   noMargins: false,
   placeholder: '',
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Tags Component
@@ -961,12 +973,13 @@ TagsElement.propTypes = {
   onUserRemove: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 TagsElement.defaultProps = {
   name: '',
   options: {},
   items: [],
   label: '',
-  value: undefined,
+  value: null,
   id: null,
   class: '',
   required: false,
@@ -989,6 +1002,7 @@ TagsElement.defaultProps = {
     console.warn('onUserRemove() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Textarea Component
@@ -1022,19 +1036,36 @@ class TextareaElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    // ########### CBIGR START ###########
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
+    // ###########  CBIGR END  ###########
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    return (
-      <div className="row form-group">
+    // ########### CBIGR START ###########
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
+    if (this.props.label && this.props.label != '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <textarea
             cols={this.props.cols}
             rows={this.props.rows}
@@ -1050,6 +1081,7 @@ class TextareaElement extends Component {
         </div>
       </div>
     );
+    // ###########  CBIGR END  ###########
   }
 }
 
@@ -1065,10 +1097,11 @@ TextareaElement.propTypes = {
   onUserInput: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 TextareaElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
@@ -1078,6 +1111,7 @@ TextareaElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Textbox Component
@@ -1126,7 +1160,9 @@ class TextboxElement extends Component {
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = 'row form-group';
+    // ########### CBIGR START ###########
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
+    // ###########  CBIGR END  ###########
 
     // Add required asterix
     if (required) {
@@ -1134,18 +1170,23 @@ class TextboxElement extends Component {
     }
 
     // Add error message
-    if (this.props.errorMessage) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
     }
-
+    // ###########  CBIGR END  ###########
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
     let label = null;
-    let inputClass = this.props.class;
+    // ########### CBIGR START ###########
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
+    // ###########  CBIGR END  ###########
     if (this.props.label || this.props.label == '') {
       label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
@@ -1195,9 +1236,10 @@ TextboxElement.propTypes = {
   onUserBlur: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 TextboxElement.defaultProps = {
   name: '',
-  value: '',
+  value: null,
   id: null,
   class: 'col-sm-12',
   placeholder: '',
@@ -1211,6 +1253,7 @@ TextboxElement.defaultProps = {
   onUserBlur: function() {
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * EmailElement Component
@@ -1271,7 +1314,6 @@ class EmailElement extends Component {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
-
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
@@ -1517,6 +1559,9 @@ class DateElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    // ########### CBIGR START ###########
+    this.handleButton = this.handleButton.bind(this);
+    // ###########  CBIGR END  ###########
   }
 
   /**
@@ -1555,6 +1600,23 @@ class DateElement extends Component {
     }
   }
 
+  // ########### CBIGR START ###########
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleButton(e) {
+    let date = new Date();
+    let dateString = new Date(
+      date.getTime() - (date.getTimezoneOffset() * 60000)
+    )
+      .toISOString()
+      .split('T')[0];
+    this.props.onUserInput(this.props.name, dateString);
+  }
+  // ###########  CBIGR END  ###########
+
   /**
    * Handle change
    *
@@ -1579,7 +1641,9 @@ class DateElement extends Component {
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    // ########### CBIGR START ###########
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
+    // ###########  CBIGR END  ###########
 
     // Add required asterix
     if (required) {
@@ -1587,12 +1651,14 @@ class DateElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError
-       || (this.props.required && this.props.value === '')
-    ) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = elementClass + ' has-error';
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
     }
+    // ###########  CBIGR END  ###########
 
     // Check if props minYear and maxYear are valid values if supplied
     let minYear = this.props.minYear;
@@ -1623,29 +1689,57 @@ class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    return (
-      <div className={elementClass}>
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+    // ########### CBIGR START ###########
+    const todayButton = this.props.today && (
+      <Button
+        label='Today'
+        type="button"
+        onClick={this.handleButton}
+      />
+    );
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
+    if (this.props.label && this.props.label != '') {
+      label = (
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
-          <input
-            type={inputType}
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            min={minFullDate}
-            max={maxFullDate}
-            onChange={this.handleChange}
-            value={this.props.value || ''}
-            required={required}
-            disabled={disabled}
-          />
-          {errorMessage}
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
+          <InlineField weights={[1, 0]}>
+            <>
+              <input
+                type={inputType}
+                className="form-control"
+                name={this.props.name}
+                id={this.props.id}
+                min={minFullDate}
+                max={maxFullDate}
+                onChange={this.handleChange}
+                value={this.props.value || ''}
+                required={required}
+                disabled={disabled}
+              />
+              {errorMessage}
+            </>
+            {todayButton}
+          </InlineField>
         </div>
       </div>
     );
+    // ###########  CBIGR END  ###########
   }
 }
 
@@ -1665,17 +1759,20 @@ DateElement.propTypes = {
 };
 
 DateElement.defaultProps = {
+  // ########### CBIGR START ###########
   name: '',
   label: '',
-  value: undefined,
+  value: null,
   id: null,
-  maxYear: '9999',
-  minYear: '1000',
+  maxYear: '9999-12-31',
+  minYear: '1000-01-01',
+  today: true,
+  // ###########  CBIGR END  ###########
   dateFormat: 'YMd',
   disabled: false,
   required: false,
   hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1694,6 +1791,9 @@ class TimeElement extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    // ########### CBIGR START ###########
+    this.handleButton = this.handleButton.bind(this);
+    // ###########  CBIGR END  ###########
   }
 
   /**
@@ -1705,6 +1805,21 @@ class TimeElement extends Component {
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
+  // ########### CBIGR START ###########
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleButton(e) {
+    let date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const timeString = ('0'+hours).slice(-2)+':'+('0'+minutes).slice(-2);
+    this.props.onUserInput(this.props.name, timeString);
+  }
+  // ###########  CBIGR END  ###########
+
   /**
    * Renders the React component.
    *
@@ -1714,35 +1829,74 @@ class TimeElement extends Component {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let requiredHTML = null;
+    // ########### CBIGR START ###########
+    let errorMessage = null;
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
+    // ###########  CBIGR END  ###########
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+    // Add error message
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
+    }
+    // ###########  CBIGR END  ###########
+
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
+    if (this.props.label && this.props.label != '') {
+      label = (
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
-          <input
-            type="time"
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            onChange={this.handleChange}
-            value={this.props.value || ''}
-            required={required}
-            disabled={disabled}
-            pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
-            title={'Input must be in one of the following formats: '
-                  + 'HH:MM or HH:MM:SS'}
-          />
+      );
+      inputClass = 'col-sm-9';
+    }
+    // ###########  CBIGR END  ###########
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
+          <InlineField weights={[1, 0]}>
+            <>
+              <input
+              type="time"
+              className="form-control"
+              name={this.props.name}
+              id={this.props.id}
+              onChange={this.handleChange}
+              value={this.props.value || ''}
+              required={required}
+              disabled={disabled}
+              pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])?"
+              title="Input must be in one of the following formats: HH:MM or
+              HH:MM:SS"
+              />
+              {errorMessage}
+            </>
+            <Button
+            label="Now"
+            type="button"
+            onClick={this.handleButton}
+            />
+          </InlineField>
         </div>
       </div>
     );
+  // ###########  CBIGR END  ###########
   }
 }
 
@@ -1756,17 +1910,19 @@ TimeElement.propTypes = {
   onUserInput: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 TimeElement.defaultProps = {
   name: '',
   label: '',
-  value: '',
-  id: '',
+  value: null,
+  id: null,
   disabled: false,
   required: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Numeric Component
@@ -1803,18 +1959,36 @@ class NumericElement extends Component {
     let elementClass = 'row form-group';
 
     // Add error message
-    if (this.props.errorMessage) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
     }
+    // ###########  CBIGR END  ###########
 
-    return (
-      <div className={elementClass}>
+    // ########### CBIGR START ###########
+    // Label prop needs to be provided to render label
+    // (including empty label i.e. <SelectElement label='' />)
+    // and retain formatting. If label prop is not provided at all, the input
+    // element will take up the whole row.
+    let label = null;
+    let inputClass = this.props.noMargins ? '' : 'col-sm-12';
+    if (this.props.label && this.props.label != '') {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+      inputClass = 'col-sm-9';
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={inputClass}>
           <input
             type="number"
             className="form-control"
@@ -1833,6 +2007,7 @@ class NumericElement extends Component {
     );
   }
 }
+// ###########  CBIGR END  ###########
 
 NumericElement.propTypes = {
   name: PropTypes.string.isRequired,
@@ -1846,12 +2021,13 @@ NumericElement.propTypes = {
   onUserInput: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 NumericElement.defaultProps = {
   name: '',
   min: null,
   max: null,
-  label: '',
-  value: '',
+  label: null,
+  value: null,
   id: null,
   required: false,
   disabled: false,
@@ -1859,6 +2035,7 @@ NumericElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * File Component
@@ -1932,10 +2109,14 @@ class FileElement extends Component {
     };
 
     // Add error message
-    if (this.props.hasError) {
-      errorMessage = this.props.errorMessage;
-      elementClass = 'row form-group has-error';
+    // ########### CBIGR START ###########
+    if (this.props.errorMessage || (required && this.props.value === '')) {
+      errorMessage = (
+        <span>{this.props.errorMessage || 'The field is required!'}</span>
+      );
+      elementClass += ' has-error';
     }
+    // ###########  CBIGR END  ###########
 
     // Need to manually reset file value, because HTML API
     // does not allow setting value to anything than empty string.
@@ -2012,19 +2193,21 @@ FileElement.propTypes = {
   onUserInput: PropTypes.func,
 };
 
+// ########### CBIGR START ###########
 FileElement.defaultProps = {
   name: '',
   label: 'File to Upload',
-  value: '',
+  value: null,
   id: null,
   disabled: false,
   required: false,
   hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: null,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
 };
+// ###########  CBIGR END  ###########
 
 /**
  * Static element component.
@@ -2308,6 +2491,7 @@ class ButtonElement extends Component {
     this.props.onUserInput(e);
   }
 
+  // ########### CBIGR START ###########
   /**
    * Renders the React component.
    *
@@ -2317,22 +2501,39 @@ class ButtonElement extends Component {
     return (
       <div className="row form-group">
         <div className={this.props.columnSize}>
-          <button
+          <Button
             id={this.props.id}
             name={this.props.name}
+            label={this.props.label}
             type={this.props.type}
             className={this.props.buttonClass}
             style={this.props.style}
             onClick={this.handleClick}
             disabled={this.props.disabled}
-          >
-            {this.props.label}
-          </button>
+          />
         </div>
       </div>
     );
   }
 }
+
+/**
+ * Button
+ *
+ * @param {object} props - properties passed to button
+ * @return {JSX} - React markup for the component
+ */
+function Button(props) {
+  return (
+    <button
+      className={'btn btn-primary'}
+      {...props}
+    >
+      {props.label}
+    </button>
+  );
+}
+// ###########  CBIGR END  ###########
 
 ButtonElement.propTypes = {
   id: PropTypes.string,
@@ -2784,6 +2985,154 @@ SliderElement.defaultProps = {
   },
 };
 
+// ########### CBIGR START ###########
+/**
+ * Form Header
+ *
+ * @return {JSX}
+ */
+function FormHeader({level = 4, header = ''}) {
+  const Tag = 'h' + level;
+  return (
+    <>
+      <Tag>{header}</Tag>
+      <HorizontalRule/>
+    </>
+  );
+}
+
+/**
+ * Horizontal Rule
+ *
+ * @return {JSX}
+ */
+function HorizontalRule() {
+  const lineStyle = {
+    borderTop: '1.5px solid #DDDDDD',
+    paddingTop: 15,
+    marginTop: 0,
+  };
+  return <div style={lineStyle}/>;
+}
+
+/**
+ * Input List
+ *
+ * @return {JSX}
+ */
+function InputList({
+                     name,
+                     label,
+                     items,
+                     setItems,
+                     errorMessage,
+                     options,
+                   }) {
+  const [item, setItem] = useState('');
+
+  const removeItem = (index) => setItems(items.filter((item, i) => index != i));
+  const addItem = () => {
+    const match = Object.keys(options)
+      .find((key) => options[key][name] == item);
+    // if entry is in list of options and does not already exist in the list.
+    if (match && !items.includes(match)) {
+      setItems([...items, match]);
+      setItem('');
+    }
+  };
+
+  const listStyle = {
+    border: '1px solid #DDD',
+    borderRadius: '10px',
+    minHeight: '85px',
+    padding: '5px',
+    marginBottom: '15px',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const listItemStyle = {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  };
+
+  const itemsDisplay = items.map((item, i) => {
+    const style = {
+      color: '#DDDDDD',
+      marginLeft: 10,
+      cursor: 'pointer',
+    };
+    return (
+      <div key={i} style={listItemStyle}>
+        <div>{options[item][name]}</div>
+        <div
+          className='glyphicon glyphicon-remove'
+          onClick={() => removeItem(i)}
+          style={style}
+        />
+      </div>
+    );
+  });
+
+  const error = errorMessage instanceof Array ?
+    errorMessage.join(' ') : errorMessage;
+  return (
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' Input'}/>
+        <InlineField weights={[1, 0]}>
+          <TextboxElement
+            name={name}
+            onUserInput={(name, value) => setItem(value)}
+            value={item}
+            errorMessage={error}
+          />
+          <Button
+            label='Add'
+            onClick={addItem}
+          />
+        </InlineField>
+      </div>
+      <div style={{flex: '0.47'}}>
+        <FormHeader header={label + ' List'}/>
+        <div style={listStyle}>
+          {itemsDisplay}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Inline Field
+ *
+ * @return {JSX}
+ */
+function InlineField({children, label = '', weights = []}) {
+  const fields = React.Children.map(children, (child, i) => {
+    return (
+      <div style={{flex: weights[i] || 0}}>
+        {child}
+      </div>
+    );
+  });
+
+  const inlineStyle = {
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'spaceBetween',
+  };
+  return (
+    <div style={inlineStyle}>
+      {fields}
+    </div>
+  );
+}
+// ###########  CBIGR END  ###########
+
 window.FormElement = FormElement;
 window.FieldsetElement = FieldsetElement;
 window.SelectElement = SelectElement;
@@ -2806,6 +3155,12 @@ window.RadioElement = RadioElement;
 window.ButtonElement = ButtonElement;
 window.CTA = CTA;
 window.LorisElement = LorisElement;
+// ########### CBIGR START ###########
+window.Button = Button;
+window.FormHeader = FormHeader;
+window.HorizontalRule = HorizontalRule;
+window.InputList = InputList;
+// ###########  CBIGR END  ###########
 
 export default {
   FormElement,

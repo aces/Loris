@@ -5,11 +5,14 @@
  * @version 1.1.0
  *
  */
-import React, {Component} from 'react';
+// ########### CBIGR START ###########
+import React, {useState} from 'react';
+// ###########  CBIGR END  ###########
 import PropTypes from 'prop-types';
 
 import Modal from 'Modal';
 
+// ########### CBIGR START ###########
 /**
  * Triggerable Modal Component.
  * React wrapper for a Triggerable Modal Window.
@@ -28,50 +31,33 @@ import Modal from 'Modal';
  * - Use the 'throwWarning' prop to throw a warning upon closure of the Modal Window.
  * =================================================
  *
+ * @param {object} props - React Component properties
+ * @return {JSX} - React markup for the component
  */
-class TriggerableModal extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor() {
-    super();
-    this.state = {open: false};
-    this.close = this.close.bind(this);
-  }
+function TriggerableModal(props) {
+  const [open, setOpen] = useState(false);
+  const {label, onClose, onUserInput, TriggerTag = CTA} = props;
 
-  /**
-   * Close the modal
-   * and trigger onClose
-   */
-  close() {
-    this.setState({open: false});
-    if (this.props.onClose instanceof Function) this.props.onClose();
-  }
+  const close = () => {
+    setOpen(false);
+    if (onClose instanceof Function) onClose();
+  };
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
-  render() {
-    const {label, onUserInput} = this.props;
+  const trigger = (
+    <TriggerTag label={label} onUserInput={() => {
+      if (onUserInput instanceof Function) onUserInput();
+      setOpen(true);
+    }}/>
+  );
 
-    const trigger = (
-      <CTA label={label} onUserInput={() => {
-        if (onUserInput instanceof Function) onUserInput();
-        this.setState({open: true});
-      }}/>
-    );
-
-    return (
-      <div>
-        {trigger}
-        <Modal {...this.props} show={this.state.open} onClose={this.close}/>
-      </div>
-    );
-  }
+  return (
+    <>
+      {trigger}
+      <Modal {...props} show={open} onClose={close}/>
+    </>
+  );
 }
+// ###########  CBIGR END  ###########
 
 TriggerableModal.propTypes = {
   label: PropTypes.string.isRequired,

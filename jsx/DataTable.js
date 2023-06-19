@@ -36,6 +36,9 @@ class DataTable extends Component {
     this.sortRows = this.sortRows.bind(this);
     this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
     this.renderActions = this.renderActions.bind(this);
+    // ########### CBIGR START ###########
+    this.renderForms = this.renderForms.bind(this);
+    // ###########  CBIGR END  ###########
   }
 
   /**
@@ -409,6 +412,21 @@ class DataTable extends Component {
     }
   }
 
+  // ########### CBIGR START ###########
+  /**
+   * Renders Forms
+   *
+   * @return {JSX}
+   */
+  renderForms() {
+    if (this.props.forms) {
+      return this.props.forms.map((form, key) => {
+        return <div key={key}>{form}</div>;
+      });
+    }
+  }
+  // ###########  CBIGR END  ###########
+
   /**
    * Renders the React component.
    *
@@ -419,12 +437,14 @@ class DataTable extends Component {
       (this.props.data === null || this.props.data.length === 0)
       && !this.props.nullTableShow
     ) {
+      // ########### CBIGR START ###########
       return (
         <div>
           <div className="row">
             <div className="col-xs-12">
               <div className="pull-right" style={{marginRight: '10px'}}>
                 {this.renderActions()}
+                {this.renderForms()}
               </div>
             </div>
           </div>
@@ -434,6 +454,7 @@ class DataTable extends Component {
         </div>
       );
     }
+    // ###########  CBIGR END  ###########
     let rowsPerPage = this.state.page.rows;
     let headers = this.props.hide.defaultColumn === true ? [] : [
       <th key='th_col_0' onClick={() => {
@@ -543,6 +564,7 @@ class DataTable extends Component {
 
     const loading = this.props.loading ? 'Loading...' : '';
 
+    // ########### CBIGR START ###########
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
@@ -571,6 +593,7 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
+              {this.renderForms()}
               <button
                 className="btn btn-primary"
                 onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
@@ -588,6 +611,7 @@ class DataTable extends Component {
         </div>
       </div>
     );
+    // ###########  CBIGR END  ###########
 
     let footer = this.props.hide.downloadCSV === true ? '' : (
       <div>

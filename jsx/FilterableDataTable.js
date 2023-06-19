@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+// ########### CBIGR START ###########
+import LoadingBar from 'jsx/LoadingBar';
+// ###########  CBIGR END  ###########
 
 /**
  * FilterableDataTable component.
@@ -149,12 +152,17 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const dataTable = (
+    // ########### CBIGR START ###########
+    const progress = this.props.progress;
+    const dataTable = !isNaN(progress) && progress < 100 ? (
+      <LoadingBar progress={progress}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
         filters={filters}
         actions={this.props.actions}
+        forms={this.props.forms}
         loading={this.props.loading}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
@@ -162,6 +170,7 @@ class FilterableDataTable extends Component {
         nullTableShow={this.props.nullTableShow}
       />
     );
+    // ###########  CBIGR END  ###########
 
     return (
       <Panel title={this.props.title}>
