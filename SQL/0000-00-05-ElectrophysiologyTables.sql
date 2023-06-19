@@ -487,7 +487,7 @@ CREATE TABLE `electrophysiology_uploader` (
     `UploadedBy` varchar(255) NOT NULL,
     `UploadDate` DateTime NOT NULL,
     `UploadLocation` varchar(255) NOT NULL,
-    `Status` enum('Not Started', 'Extracted', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
+    `Status` enum('Not Started', 'Extracted', 'Failed Extraction', 'In Progress', 'Complete', 'Failed', 'Archived') DEFAULT 'Not Started',
     `SessionID` int(10) unsigned,
     `Checksum` varchar(40) DEFAULT NULL,
     `MetaData` TEXT DEFAULT NULL,
