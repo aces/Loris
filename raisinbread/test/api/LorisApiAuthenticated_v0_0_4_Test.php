@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
+require_once __DIR__ .
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+use GuzzleHttp\Client;
 
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
@@ -16,13 +18,24 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiAuthenticated_v0_0_4_Test extends LorisApiAuthenticatedTest
+class LorisApiAuthenticated_v0_0_4_Test extends LorisIntegrationTest
 {
-    protected $candidTest = '300001';
+
+    protected $client;
+    protected $version;
+    protected $headers;
+    protected $base_uri;
+    protected $originalJwtKey;
+    protected $configIdJwt;
+ 
+    /**
+     * Overrides LorisIntegrationTest::setUp() to store the current JWT key
+     * and replaces it for an acceptable one.
+     *
+     * @return void
+     */
     public function setUp(): void
     {
-        parent::tearDown();
-
         parent::setUp();
 
         $this->_version = 'v0.0.4';
@@ -148,304 +161,53 @@ class LorisApiAuthenticated_v0_0_4_Test extends LorisApiAuthenticatedTest
         );
 
     }
+
     /**
-     * Tests the HTTP GET request for the endpoint /candidates
+     * Used to log in with GuzzleHttp\Client
+     *
+     * @param string $username The username to log in as
+     * @param string $password The (plain text) password to login as.
      *
      * @return void
      */
-    public function testGetCandidates(): void
+    public function apiLogin($username, $password)
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates",
+        $this->base_uri = "$this->url/api/$this->_version/";
+        $this->client   = new Client(['base_uri' => $this->base_uri]);
+        $response       = $this->client->request(
+            'POST',
+            "login",
             [
-                'headers' => $this->headers
+                'json' => ['username' => $username,
+                    'password' => $password
+                ]
             ]
         );
         $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
+        $token = json_decode(
+            $response->getBody()->getContents()
+        )->token ?? null;
 
-        $candidatesArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(
-            gettype($candidatesArray),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['Project']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['PSCID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['Site']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['EDC']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['DoB']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesArray['Candidates']['0']['Sex']),
-            'string'
-        );
-
-        $this->assertArrayHasKey('Candidates', $candidatesArray);
-        $this->assertArrayHasKey('0', $candidatesArray['Candidates']);
-        $this->assertArrayHasKey(
-            'CandID',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Project',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Site',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'EDC',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'DoB',
-            $candidatesArray['Candidates']['0']
-        );
-        $this->assertArrayHasKey(
-            'Sex',
-            $candidatesArray['Candidates']['0']
-        );
+        if ($token === null) {
+            throw new \LorisException("Login failed");
+        }
+        $headers       = [
+            'Authorization' => "Bearer $token",
+            'Accept'        => 'application/json'
+        ];
+        $this->headers = $headers;
     }
-
     /**
-     * Tests the HTTP GET request for the endpoint /candidates/{candid}
+     * Used to test login
      *
      * @return void
      */
-    public function testGetCandidatesCandid(): void
+    function testLoginSuccess()
     {
-        $response = $this->client->request(
-            'GET',
-            "candidates/$this->candidTest",
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-
-        $candidatesCandidArray = json_decode(
-            (string) utf8_encode(
-                $response->getBody()->getContents()
-            ),
-            true
-        );
-
-        $this->assertSame(
-            gettype($candidatesCandidArray),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['CandID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['Project']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['PSCID']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['Site']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['EDC']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['DoB']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Meta']['Sex']),
-            'string'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Visits']),
-            'array'
-        );
-        $this->assertSame(
-            gettype($candidatesCandidArray['Visits']['0']),
-            'string'
-        );
-
-        $this->assertArrayHasKey(
-            'Meta',
-            $candidatesCandidArray
-        );
-        $this->assertArrayHasKey(
-            'Visits',
-            $candidatesCandidArray
-        );
-        $this->assertArrayHasKey(
-            '0',
-            $candidatesCandidArray['Visits']
-        );
-
+        $this->assertArrayHasKey('Authorization', $this->headers);
+        $this->assertArrayHasKey('Accept', $this->headers);
     }
 
-    /**
-     * Tests the HTTP POST request for the endpoint /candidates/{candid}
-     *
-     * @return void
-     */
-    public function testPostCandidatesCandid(): void
-    {
-        // First, create a valid new candidate
-        $json_new     = [
-            'Candidate' =>
-                [
-                    'Project' => "Rye",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
-                ]
-        ];
-        $response_new = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers' => $this->headers,
-                'json'    => $json_new
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(201, $response_new->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_new->getBody();
-        $this->assertNotEmpty($body);
-
-        // Erase sites that were setup in LorisApiAuthenticatedTest
-        // setup for data access in other tests.
-        $this->DB->run(
-            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
-        );
-
-        // Second, try to create a valid new candidate in a site that the
-        // user is not affiliated with. The test user is only afficilated to
-        // Data Coordinating Center
-        $json_new     = [
-            'Candidate' =>
-                [
-                    'Project' => "Rye",
-                    'Site'    => "Montreal",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
-                ]
-        ];
-        $response_new = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-                'json'        => $json_new
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(403, $response_new->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_new->getBody();
-        $this->assertNotEmpty($body);
-
-        $json_new     = [
-            'Candidate' =>
-                [
-                    'Project' => "",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
-                ]
-        ];
-        $response_new = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-                'json'        => $json_new
-            ]
-        );
-        // Verify the status code
-        $this->assertEquals(400, $response_new->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_new->getBody();
-        $this->assertNotEmpty($body);
-
-        // Finally, try to create a new candidate with an invalid input
-        $json_invalid = [
-            'Candidate' =>
-                [
-                    'Site' => "Data Coordinating Center",
-                    'EDC'  => "2020-01-03",
-                    'DoB'  => "2020-01-03",
-                    'Sex'  => "Male"
-                ]
-        ];
-
-        $response_invalid = $this->client->request(
-            'POST',
-            "candidates",
-            [
-                'headers'     => $this->headers,
-                'http_errors' => false,
-                'json'        => $json_invalid
-            ],
-        );
-        // Verify the status code
-        $this->assertEquals(400, $response_invalid->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response_invalid->getBody();
-        $this->assertNotEmpty($body);
-    }
     /**
      * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *
@@ -499,4 +261,6 @@ class LorisApiAuthenticated_v0_0_4_Test extends LorisApiAuthenticatedTest
         $this->DB->update('Config', $set, $where);
         parent::tearDown();
     }
+
 }
+
