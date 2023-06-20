@@ -51,7 +51,6 @@ class Instrument
     {
         $instrumentname = $this->_instrument->testName;
         $instrumentdata = $this->_instrument->getInstanceData();
-        $commentid      = $this->_instrument->getCommentID() ?? '';
 
         $isDDE = strpos($this->_instrument->getCommentID(), 'DDE_') === 0;
 
