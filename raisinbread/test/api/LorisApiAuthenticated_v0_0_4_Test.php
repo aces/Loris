@@ -21,6 +21,8 @@ class LorisApiAuthenticated_v0_0_4_Test extends LorisApiAuthenticatedTest
     protected $candidTest = '300001';
     public function setUp(): void
     {
+        parent::tearDown();
+
         parent::setUp();
 
         $this->_version = 'v0.0.4';
