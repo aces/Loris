@@ -16,7 +16,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LorisApiCandidates_v0_0_4_Test extends LorisApiAuthenticatedTest
+class LorisApiAuthenticated_v0_0_4_Test extends LorisApiAuthenticatedTest
 {
     protected $candidTest = '300001';
 
