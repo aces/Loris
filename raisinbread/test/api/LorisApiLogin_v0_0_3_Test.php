@@ -29,3 +29,4 @@ class LorisApiLogin_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $this->assertArrayHasKey('Accept', $this->headers);
     }
 }
+
