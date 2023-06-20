@@ -4,7 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -1379,10 +1379,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dictionary = $this->getDataDictionary();
 
         foreach ($dictionary as $item) {
-            // The Field name to compare to in the data dictionary is
-            // prefixed with the testname
-            $dictionaryFieldName = $this->testName."_".$field;
-            if ($dictionaryFieldName === $item->getName()) {
+            if ($field === $item->fieldname) {
                 return $allValues[$field];
             }
         }
@@ -2086,6 +2083,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $diff;
     }
 
+
+    /**
+     * Get the default instance data which consists of all field names
+     * in the dictionary and a null value.
+     *
+     * @return array
+     */
+    protected function defaultInstanceData()
+    {
+        $val        = [];
+        $dictionary = $this->getDataDictionary();
+
+        foreach ($dictionary as $item) {
+            $val[$item->fieldname] = null;
+        }
+        return $val;
+    }
+
     /**
      * Gets the data from an instrument out of the database and returns it
      * as an array.
@@ -2106,7 +2121,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $this->getCommentID()]
             );
 
-            $this->instanceData = json_decode($jsondata ?? '', true) ?? [];
+            $this->instanceData = json_decode(
+                $jsondata ?? '',
+                true
+            ) ?? $this->defaultInstanceData();
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
@@ -2118,7 +2136,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // NDB_BVL_Instrument->getCommentID()
             unset($defaults['CommentID']);
 
-            $this->instanceData = $defaults ?? [];
+            $this->instanceData = $defaults ?? $this->defaultInstanceData();
         }
         return $this->instanceData;
     }
@@ -2202,7 +2220,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst->instanceData = json_decode(
                         $row['Data'],
                         true,
-                    ) ?? [];
+                    ) ?? $this->defaultInstanceData();
 
                     return $newinst;
                 },

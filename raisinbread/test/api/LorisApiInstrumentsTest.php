@@ -89,13 +89,35 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         $this->assertNotEmpty($body);
 
         $bodystr = $response->getBody()->getContents();
-        print "body: $bodystr";
+        $this->assertNotEmpty($bodystr);
         $InstrumentsArray = json_decode(
             (string) utf8_encode($bodystr),
             true
         );
-        $this->markTestIncomplete("Test body not validated");
-        // $this->assertNotEmpty($InstrumentsArray['Data']);
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+
+        $this->assertSame($InstrumentsArray['Meta']['DDE'], false);
+        $this->assertSame($InstrumentsArray['Meta']['Candidate'], $this->candidTest);
+        $this->assertSame($InstrumentsArray['Meta']['Visit'], $this->visitTest);
+        $this->assertSame($InstrumentsArray['Meta']['Instrument'], $this->instrumentTest);
+
+        $this->assertArrayHasKey('Data', $InstrumentsArray);
+        $this->assertNotEmpty($InstrumentsArray['Data']);
     }
 
     /**
