@@ -8,83 +8,6 @@ env:
   EEG_VIS_ENABLED: 'true'
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    strategy:
-        fail-fast: false
-        matrix:
-            testsuite: ['integration']
-            php: ['8.1','8.2']
-            ci_node_index: [0,1,2,3]
-
-            include:
-            # add a variable but do not display it in the job's name
-            - ci_node_total: 4
-
-            - testsuite: 'static'
-              php: '8.1'
-            - testsuite: 'static'
-              php: '8.2'
-            - testsuite: 'unit'
-              php: '8.1'
-            - testsuite: 'unit'
-              php: '8.2'
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: zip, php-ast
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate
-
-    - name: Cache Composer packages
-      id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-    - name: Composer cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-        restore-keys: ${{ runner.os }}-composer-
-
-    - name: Change PHP Version in Dockerfile
-      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
-
-    - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
-      run: |
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
-        cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
-        protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
-
-    - name: Install composer dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
-
-    - name: Build LORIS
-      run: make dev
-
-    - name: Run Test Suite
-      run: |
-          # set sandbox to 1 before running the tests
-          # since some tests only run in sandbox environments
-          sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
-          npm run tests:${{ matrix.testsuite }}
-      env:
-          # Specifies how many jobs you would like to run in parallel,
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          # Use the index from matrix as an environment variable
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
   api:
     runs-on: ubuntu-latest
     env:
@@ -192,3 +115,80 @@ jobs:
       if: always()
       run: cat error_log
 
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+            testsuite: ['integration']
+            php: ['8.1','8.2']
+            ci_node_index: [0,1,2,3]
+
+            include:
+            # add a variable but do not display it in the job's name
+            - ci_node_total: 4
+
+            - testsuite: 'static'
+              php: '8.1'
+            - testsuite: 'static'
+              php: '8.2'
+            - testsuite: 'unit'
+              php: '8.1'
+            - testsuite: 'unit'
+              php: '8.2'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: zip, php-ast
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Cache Composer packages
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Composer cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Change PHP Version in Dockerfile
+      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
+
+    - name: Install package dependencies
+      # We only need to install protobuf-compiler
+      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
+      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
+      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
+      run: |
+        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
+                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+        cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+        protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
+    - name: Install composer dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Build LORIS
+      run: make dev
+
+    - name: Run Test Suite
+      run: |
+          # set sandbox to 1 before running the tests
+          # since some tests only run in sandbox environments
+          sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
+          npm run tests:${{ matrix.testsuite }}
+      env:
+          # Specifies how many jobs you would like to run in parallel,
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          # Use the index from matrix as an environment variable
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
