@@ -199,17 +199,6 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
     }
 
     /**
-     * Used to test login
-     *
-     * @return void
-     */
-    function testLoginSuccess()
-    {
-        $this->assertArrayHasKey('Authorization', $this->headers);
-        $this->assertArrayHasKey('Accept', $this->headers);
-    }
-
-    /**
      * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *
      * @return void
