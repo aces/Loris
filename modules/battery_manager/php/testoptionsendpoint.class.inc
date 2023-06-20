@@ -68,7 +68,7 @@ class TestOptionsEndpoint extends \NDB_Page
             ),
             'stages'      => $this->_getStageList(),
             'subprojects' => \Utility::getSubprojectList(null),
-            'visits'      => $visitController->getAllVisits(),
+            'visits'      => $visitController->getVisitlabels(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),
             'active'      => $this->_getYesNoList(),
