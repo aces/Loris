@@ -118,10 +118,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         case 'v0.0.3':
             $subendpoint = __NAMESPACE__ . '\\' . 'Visit\Visit';
             break;
-        case 'v0.0.4':
-            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4';
         default:
-            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_5_dev';
+            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4';
             break;
         }
         $handler = new $subendpoint(
