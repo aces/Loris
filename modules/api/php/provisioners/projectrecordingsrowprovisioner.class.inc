@@ -36,11 +36,11 @@ class ProjectRecordingsRowProvisioner extends DBRowProvisioner
      */
     function __construct(\Project $project, \DateTime $since)
     {
-        // NOTE: we use string concatenation instead of a bind parameter for 
+        // NOTE: we use string concatenation instead of a bind parameter for
         // the $since parameter. PDOStatement->bindValues converts the parameter to
         // a string. Timestamp > '0' is either a warning or exception depending
         // on SQL configuration, (Timestamp > 0 is correct). The string concatenation
-        // ensures that it remains an int. 
+        // ensures that it remains an int.
         parent::__construct(
             '
              SELECT

@@ -147,7 +147,6 @@ abstract class LorisIntegrationTest extends TestCase
                 $desired_capabilities
             );
 
-
             $this->login("UnitTester", $this->validPassword);
         }
 
