@@ -278,7 +278,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             );
 
             if ($existing > 0) {
-                throw new \InvalidArgumentException(
+                throw new \ConflictException(
                     "PSCID must be unique",
                     PSCID_NOT_UNIQUE
                 );
