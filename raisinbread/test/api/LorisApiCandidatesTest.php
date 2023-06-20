@@ -15,6 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Simon Pelletier <simon.pelletier@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
 {
