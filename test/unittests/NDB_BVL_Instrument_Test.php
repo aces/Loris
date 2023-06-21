@@ -1141,7 +1141,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'ID'                          => '1000',
                 'SessionID'                   => '123',
                 'Test_name'                   => 'Test_name1',
-                'CommentID'                   => 'commentID1',
                 'Data_entry'                  => '',
                 'Required_elements_completed' => 'N',
                 'Administration'              => '',
