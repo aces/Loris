@@ -2106,12 +2106,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $this->getCommentID()]
             );
 
-            $this->instanceData = json_decode($jsondata, true) ?? [];
+            $this->instanceData = json_decode($jsondata ?? '', true) ?? [];
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
                 ['CID' => $this->getCommentID()]
             );
+            // This is only included because it's the primary key. JSON
+            // data does not include it. Unset so that the two types are
+            // consistent. Places that need the commentID should be using
+            // NDB_BVL_Instrument->getCommentID()
+            unset($defaults['CommentID']);
 
             $this->instanceData = $defaults ?? [];
         }
