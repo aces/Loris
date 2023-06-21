@@ -45,7 +45,12 @@ jobs:
 
     - name: Source default schema and Raisinbread
       run: |
-        find SQL -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-00-schema.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-01-Modules.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-02-Permission.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-04-Help.sql
+        mysql ${{ env.DB_DATABASE}} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
         find raisinbread/instruments/instrument_sql -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
         find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
 
