@@ -1,21 +1,74 @@
 name: LORIS Test Suite
-
 on:
   - push
   - pull_request
-
 env:
-  EEG_VIS_ENABLED: 'true'
+  EEG_VIS_ENABLED: "true"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{github.repository}}
 
 jobs:
+  raisinbreaddb:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    outputs:
+      raisinbreadhash: ${{ steps.rbhash.outputs.rbhash}}
+      raisinbreadimage: ${{ steps.rblower.outputs.lowercase}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Calculate Raisinbread DB Hash
+        id: rbhash
+        run: >
+          hash=`sha256sum SQL/0000-00-0* raisinbread/RB_files/*.sql
+          raisinbread/instruments/instrument_sql/*.sql | sha256sum | cut -c1-64`
+
+          echo "rbhash=$hash" >> $GITHUB_OUTPUT
+
+      - name: Lower case image name
+        id: rblower
+        run: |
+          name=`tr [:upper:] [:lower:] <<< ${{env.REGISTRY }}/${{env.IMAGE_NAME}}:raisinbreaddb-${{ steps.rbhash.outputs.rbhash }}`
+          echo "lowercase=$name" >> $GITHUB_OUTPUT
+
+      - name: Check if image already exists
+        id: imagecheck
+        run: |
+          if [ "$(docker pull ${{steps.rblower.outputs.lowercase}})" ]; then
+              echo "alreadybuilt=1" >> $GITHUB_OUTPUT
+          else 
+              echo "alreadybuilt=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log in to the Container registry
+        if: ${{ steps.imagecheck.outputs.alreadybuilt == false}}
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker image
+        if: ${{ steps.imagecheck.outputs.alreadybuilt == false}}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{steps.rblower.outputs.lowercase}}
+          file: Dockerfile.test.raisinbread.db
+      - name: Push Docker Image
+        if: ${{ steps.imagecheck.outputs.alreadybuilt == false}}
+        run: docker push ${{steps.rblower.outputs.lowercase}}
   api:
     runs-on: ubuntu-latest
+    needs: raisinbreaddb
     env:
       DB_DATABASE: LorisTest
       DB_USER: SQLTestUser
       DB_PASSWORD: TestPassword
       LORIS_DB_CONFIG: project/config.xml
       DOCKER_WEB_SERVER: http://localhost:8000/
+      RBHASH: ${{needs.raisinbreaddb.outputs.raisinbreadhash}}
+      RBIMAGE: ${{needs.raisinbreaddb.outputs.raisinbreadimage}}
     strategy:
         fail-fast: false
         matrix:
@@ -24,12 +77,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up MySQL
+    - name: Start Raisinbread database
+      run: docker run -d -p :3306:3306 ${{env.RBIMAGE}}
+
+    - name: Create SQL User
       run: |
-        sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
-        mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
-        mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
+        sleep 3
+        mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot --port=3306 --host=localhost --protocol=TCP
+        mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot --port=3306 --host=localhost --protocol=TCP
+
 
     - name: Setup project/ directory
       run: |
@@ -40,25 +96,13 @@ jobs:
         sed -i 's/<sandbox>1<\/sandbox>/<sandbox>0<\/sandbox>/g' project/config.xml
         sed -i 's/<adminUser>SQLTestUser<\/adminUser>/<adminUser>root<\/adminUser>/g' project/config.xml
         sed -i 's/<adminPassword>TestPassword<\/adminPassword>/<adminPassword>root<\/adminPassword>/g' project/config.xml
-        sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
+        sed -i 's/<host>db<\/host>/<host>127.0.0.1<\/host>/g' project/config.xml
         cat project/config.xml
 
-    - name: Source default schema and Raisinbread
-      run: |
-        find SQL -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-        find raisinbread/instruments/instrument_sql -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-        find raisinbread/RB_files/ -name *.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-
-    - name: Source instrument schemas
-      run: |
-        find raisinbread/instruments/instrument_sql -name 0000-*.sql -exec sh -c "echo Sourcing {}; mysql ${{ env.DB_DATABASE}} -uroot -proot < {}" \;
-        echo Sourcing test/test_instrument/testtest.sql
-        mysql ${{ env.DB_DATABASE}} -uroot -proot < test/test_instrument/testtest.sql
- 
     - name: Set LORIS base path
       run: |
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\)
-        echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\) | mysql ${{env.DB_DATABASE}} -uroot -proot
+        echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\) | mysql ${{env.DB_DATABASE}} -uroot -proot --port=3306 --host=localhost --protocol=TCP
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
