@@ -33,7 +33,6 @@ class VisitTest extends TestCase
     protected $factory;
     protected $DB;
     protected $config;
-
     protected $visitController;
     protected $listOfVisit;
     protected $listOfVisitProject;

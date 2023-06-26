@@ -39,7 +39,10 @@ class Visit extends \NDB_Form
         return $user->hasPermission('config');
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/visits_SQL_too_sequel_sequel
     /**
      * Loads the project page.
      *
@@ -49,7 +52,11 @@ class Visit extends \NDB_Form
     {
         $projectList        = \Utility::getProjectList();
         $subprojectList     = \Utility::getSubprojectList();
+<<<<<<< HEAD
         $projectSubprojects = \Utility::getProjectSubprojectAssociations();
+=======
+        $projectSubprojects = \Utility::getProjectCohortAssociations();
+>>>>>>> origin/visits_SQL_too_sequel_sequel
         $visitController    = new \LORIS\VisitController(
             \NDB_Factory::singleton()->database()
         );
