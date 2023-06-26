@@ -13,6 +13,8 @@
 
 namespace LORIS;
 
+use \LORIS\VisitData;
+
 /**
  * Base class that contains method to access the visit of projects
  *
@@ -22,7 +24,7 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class VisitController
+class VisitController extends \LORIS\Data\ProvisionerInstance
 {
     /**
      * The database connection to use
@@ -45,6 +47,264 @@ class VisitController
     }
 
     /**
+     * Function defining the base query for visits to avoid duplication
+     *
+     * @return string
+     */
+    protected function getBaseQuery() : string
+    {
+        return "SELECT
+                    VisitID,
+                    VisitName,
+                    VisitLabel,
+                    WindowMinDays,
+                    WindowMaxDays,
+                    OptimumMinDays,
+                    OptimumMaxDays,
+                    WindowMidpointDays
+                FROM visit v
+                    JOIN Visit_Windows vw ON (v.VisitName=vw.Visit_label) ";
+    }
+
+    /**
+     * This returns a single Visit object for the given
+     * visit name (formerly known as visit_label), and will only ever instantiate
+     * one object in the event that it's called multiple times.
+     *
+     * @param string $visitName The name of the visit
+     *
+     * @note This should be used by the NDB_Factory and not be called
+     * directly
+     *
+     * @return VisitData the Visit object
+     */
+    public function getVisitByName($visitName) : VisitData
+    {
+        $query     = $this->getBaseQuery() . " WHERE v.VisitName = :vname";
+        $visitData = $this->database->pSelectRow(
+            $query,
+            ['vname' => $visitName]
+        );
+
+        if (empty($visitData)) {
+            throw new \NotFound("No visit named $visitName found.");
+        }
+
+        $visit = new VisitData();
+        $visit->setID(intval($visitData["VisitID"]));
+        $visit->name           = $visitData["VisitName"];
+        $visit->label          = $visitData["VisitLabel"];
+        $visit->windowMinDays  = intval($visitData["WindowMinDays"]);
+        $visit->windowMaxDays  = intval($visitData["WindowMaxDays"]);
+        $visit->optimumMinDays = intval($visitData["OptimumMinDays"]);
+        $visit->optimumMaxDays = intval($visitData["OptimumMaxDays"]);
+        $visit->windowMidpointDays = intval($visitData["WindowMidpointDays"]);
+
+        $visit = $this->withNestedEntities($visit);
+
+        return $visit;
+    }
+
+    /**
+     * Get a visit object from the ID by mapping the ID to a name and using the
+     * singleton function
+     *
+     * @param int $visitID The ID of the visit requested
+     *
+     * @return VisitData
+     */
+    public function getVisitByID(int $visitID) : VisitData
+    {
+        $visitName = $this->database->pSelectOne(
+            "SELECT
+              VisitName
+            FROM
+              visit
+            WHERE VisitID = :vid
+            ",
+            ['vid' => $visitID]
+        );
+
+        if (empty($visitName)) {
+            throw new \NotFound("No visit with ID: $visitID");
+        }
+
+        return $this->getVisitByName($visitName);
+    }
+
+    /**
+     * Loads project associations into the VisitData object passed in as a parameter
+     *
+     * @param VisitData $visit VisitData object without projects
+     *
+     * @return VisitData
+     */
+    protected function withProjects(VisitData $visit) : VisitData
+    {
+        $query = 'SELECT DISTINCT p.Name
+                FROM visit_project_cohort_rel vpcr
+                    JOIN project_cohort_rel pcr USING(ProjectCohortRelID)
+                    JOIN Project p USING(ProjectID)
+                WHERE VisitID=:vid;';
+
+        $data = $this->db->pselectCol(
+            $query,
+            ["vid"=>$visit->id],
+        );
+
+        $projects = [];
+        foreach ($data as $projectName) {
+            $projects[] = \Project::singleton($projectName);
+        }
+
+        $visit->setProjects($projects);
+
+        return $visit;
+    }
+
+    /**
+     * Loads cohort associations into the VisitData object passed in as a parameter
+     *
+     * @param VisitData $visit VisitData object without cohorts
+     *
+     * @return VisitData
+     */
+    protected function withCohorts(VisitData $visit) : VisitData
+    {
+        $query = 'SELECT DISTINCT c.title
+                FROM visit_project_cohort_rel vpcr
+                    JOIN project_cohort_rel pcr USING(ProjectCohortRelID)
+                    JOIN cohort c USING(CohortID)
+                WHERE VisitID=:vid;';
+
+        $data = $this->db->pselectCol(
+            $query,
+            ["vid"=>$visit->id],
+        );
+
+        $cohorts     = [];
+        $cController = new \CohortController($this->database);
+        foreach ($data as $cohortTitle) {
+            $cohorts[] = $cController->getCohortByTitle($cohortTitle);
+        }
+
+        $visit->setCohorts($cohorts);
+
+        return $visit;
+    }
+
+    /**
+     * Loads all nested entities by calling independent functions for each entity.
+     *
+     * @param VisitData $visit VisitData object with no nested entities loaded
+     *
+     * @return VisitData
+     */
+    protected function withNestedEntities(VisitData $visit) : VisitData
+    {
+        $visit = $this->withProjects($visit);
+        $visit = $this->withCohorts($visit);
+
+        return $visit;
+    }
+
+    /**
+     * Create a new visit and insert it into the database.
+     *
+     * @param VisitData $visit A visit object without the ID
+     *
+     * @return VisitData The created Visit with it's new ID
+     */
+    public function createVisit(VisitData $visit) : VisitData
+    {
+        if (!empty($visit->id)) {
+            throw new \LorisException(
+                "An ID can not be supplied when creating a new visit, the ID
+                will be generated by the database."
+            );
+        }
+        if ($this->visitNameExists($visit->name)) {
+            throw new \LorisException(
+                "A visit with the same name ".$visit->name." already exists"
+            );
+        }
+
+        // Update visit table
+        $this->database->insert(
+            'visit',
+            [
+                'VisitName'  => $visit->name(),
+                'VisitLabel' => $visit->label(),
+            ]
+        );
+
+        // Update Visit_Windows table
+        $this->database->insert(
+            'Visit_Windows',
+            [
+                'Visit_label'        => $visit->name,
+                'WindowMinDays'      => $visit->windowMinDays,
+                'WindowMaxDays'      => $visit->windowMaxDays,
+                'OptimumMinDays'     => $visit->optimumMinDays,
+                'OptimumMaxDays'     => $visit->optimumMaxDays,
+                'WindowMidpointDays' => $visit->windowMidpointDays,
+            ]
+        );
+
+        return $this->getVisitByName($visit->name);
+    }
+
+    /**
+     * Update an existing visit in the database.
+     *
+     * @param VisitData $visit The visit object to update
+     *
+     * @return VisitData The updated Visit
+     */
+    public function updateVisit(VisitData $visit) : VisitData
+    {
+        // Name and ID are immutable, verify they match the database values
+        $visitDBID = $this->database->pselectOne(
+            "SELECT VisitID FROM visit WHERE visitName=:vname",
+            ['vname' => $visit->name]
+        );
+        if (!$this->visitNameExists()) {
+            throw new \LorisException(
+                "The queried visit ".$visit->name." does not exist in the database."
+            );
+        }
+        if ($visit->id !== $visitDBID) {
+            throw new \LorisException(
+                "The supplied visit name and ID do not match database records."
+            );
+        }
+
+        // Update visit table
+        $this->database->update(
+            'visit',
+            [
+                'VisitLabel' => $visit->label,
+            ],
+            ['VisitName'  => $visit->name]
+        );
+
+        // Update Visit_Windows table
+        $this->database->update(
+            'Visit_Windows',
+            [
+                'WindowMinDays'      => $visit->windowMinDays,
+                'WindowMaxDays'      => $visit->windowMaxDays,
+                'OptimumMinDays'     => $visit->optimumMinDays,
+                'OptimumMaxDays'     => $visit->optimumMaxDays,
+                'WindowMidpointDays' => $visit->windowMidpointDays,
+            ],
+            ['Visit_label'        => $visit->name]
+        );
+
+        return $this->getVisitByName($visit->name);
+    }
+
+    /**
      * Retruns a list of configured Visits
      *
      * @return array The list of visits
@@ -52,84 +312,68 @@ class VisitController
     public function getAllVisits(): array
     {
         return array_map(
-            function ($row) {
-                return new \LORIS\Visit(
-                    $row['name'],
-                    $row['ID']
-                );
+            function ($visitData) {
+                $visit = new VisitData();
+                $visit->setID(intval($visitData["VisitID"]));
+                $visit->name           = $visitData["VisitName"];
+                $visit->label          = $visitData["VisitLabel"];
+                $visit->windowMinDays  = intval($visitData["WindowMinDays"]);
+                $visit->windowMaxDays  = intval($visitData["WindowMaxDays"]);
+                $visit->optimumMinDays = intval($visitData["OptimumMinDays"]);
+                $visit->optimumMaxDays = intval($visitData["OptimumMaxDays"]);
+                $visit->windowMidpointDays = intval($visitData["WindowMidpointDays"]);
+
+                $visit = $this->withNestedEntities($visit);
+
+                return $visit;
             },
             $this->database->pselect(
-                'SELECT
-                 v.VisitID as "ID", v.VisitName as "name"
-                FROM
-                 visit v
-ORDER BY ID
-                ',
+                $this->getBaseQuery(). " ORDER BY VisitName",
                 []
             )
         );
     }
 
     /**
-     * Retruns a VisitID by name
+     * Check if a visit name is already in use in the DB
      *
-     * @param string $visit the name of the visit
+     * @param string $visitName Name of the visit
      *
-     * @return array the ID of the visit
+     * @return bool
      */
-    public function getVisitsByName(string $visit): array
+    public function visitNameExists(string $visitName) : bool
     {
-        return array_map(
-            function ($row) {
-                return new \LORIS\Visit(
-                    $row['name'],
-                    $row['ID']
-                );
-            },
-            $this->database->pselect(
-                'SELECT
-                 v.VisitID as "ID", v.VisitName as "name"
-                FROM
-                 visit v
-                WHERE
-                 v.VisitName = :name
-                ORDER BY ID
-                ',
-                ['name' => $visit]
-            )
-        );
-    }
-
-    /**
-     * Instanciate a visit object using the visit label value
-     *
-     * @param string $visitLabel Label for which the Visit object s requested
-     *
-     * @return Visit Visit associated with the supplied label
-     *
-     * @throws \NotFound
-     */
-    public function getVisitFromVisitLabel(string $visitLabel) : \LORIS\Visit
-    {
-        $visitData = $this->database->pselectRow(
-            'SELECT
-                 v.VisitID, v.VisitName
-                FROM
-                 visit v
-                WHERE
-                 v.VisitLabel = :vl',
-            ['vl' => $visitLabel]
+        $visit = $this->database->pselectOne(
+            "SELECT VisitID FROM visit WHERE VisitName=:vname",
+            ["vname"=>$visitName]
         );
 
-        if (empty($visitData)) {
-            throw new \NotFound(
-                "No visits found in the database with label: $visitLabel"
-            );
+        if (empty($visit)) {
+            return false;
         }
-
-        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+        return true;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // IGNORE THINGS BELOW THIS LINE
     /**
      * Returns a list of configured Visits and their association with projects
      * and cohorts
@@ -141,15 +385,30 @@ ORDER BY ID
         return array_map(
             function ($row) {
                 return [
-                    new \LORIS\Visit($row['name'], $row['ID']),
+                    new VisitData(
+                        intval($row['VisitID']),
+                        $row['VisitName'],
+                        $row['VisitLabel'],
+                        intval($row['WindowMinDays']),
+                        intval($row['WindowMaxDays']),
+                        intval($row['OptimumMinDays']),
+                        intval($row['OptimumMaxDays']),
+                        intval($row['WindowMidpointDays']),
+                    ),
                     $row['project'],    // will be modified to object when
                     $row['cohort'], // available
                 ];
             },
             $this->database->pselect(
                 'SELECT
-                  v.VisitID as "ID",
-                  v.VisitName as "name",
+                  VisitID,
+                  VisitName,
+                  VisitLabel,
+                  WindowMinDays,
+                  WindowMaxDays,
+                  OptimumMinDays,
+                  OptimumMaxDays,
+                  WindowMidpointDays,
                   psr.ProjectID as "project",
                   psr.CohortID as "cohort"
                  FROM
@@ -167,4 +426,42 @@ ORDER BY ID
         );
     }
 
+    /**
+     * Add an association between the supplied visit and ProjectCohortID
+     * to the visit_project_cohort_rel table of the database
+     *
+     * @param VisitData $visit Visit object to add association to
+     * @param int       $PSRID ProjectCohortRelID to be added
+     *
+     * @return void
+     */
+    public function addProjectCohort(VisitData $visit, int $PSRID)
+    {
+        $this->database->insert(
+            "visit_project_cohort_rel",
+            ["ProjectCohortRelID"=>$PSRID, "VisitID"=>$visit->getID()]
+        );
+    }
+
+    /**
+     * Remove an association between the supplied visit and ProjectCohortID
+     * to the visit_project_cohort_rel table of the database
+     *
+     * @param VisitData $visit Visit object to add association to
+     * @param int       $PSRID ProjectCohortRelID to be added
+     *
+     * @return void
+     */
+    public function removeProjectCohort(VisitData $visit, int $PSRID)
+    {
+        $this->database->delete(
+            "visit_project_cohort_rel",
+            ["ProjectCohortRelID"=>$PSRID, "VisitID"=>$visit->getID()]
+        );
+    }
+
+    protected function getAllInstances(): \Traversable
+    {
+        return new \ArrayIterator($this->getAllVisits());
+    }
 }

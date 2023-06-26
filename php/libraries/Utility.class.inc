@@ -305,6 +305,27 @@ class Utility
     }
 
     /**
+     * Get associations between projects and subprojects
+     * directly from the database project_cohort_rel table
+     *
+     * @return array
+     */
+    static function getProjectAssociations() : array
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $result = $DB->pselectColWithIndexKey(
+            "SELECT ProjectCohortRelID, ProjectID, CohortID
+            FROM project_cohort_rel",
+            [],
+            "ProjectCohortID"
+        );
+
+        return $result;
+    }
+
+    /**
      * Returns a list of study Cohorts associated with a project
      *
      * @param ?ProjectID $projectID The project for which you would like
@@ -716,7 +737,6 @@ class Utility
         }
         return $sourcefields;
     }
-
 
     /**
      * Returns a list of study Visit Labels that are being used by this study.
