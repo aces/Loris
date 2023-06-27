@@ -62,6 +62,7 @@ class InstrumentManagerIndex extends Component {
 
   /**
    * Create permission button
+   *
    * @param {string} label - Button text
    * @param {object} row - row content indexed by column
    * @return {*} an html button
@@ -77,7 +78,7 @@ class InstrumentManagerIndex extends Component {
     };
     return <button
       className='btn btn-primary'
-      style={{marginTop: '5px',}}
+      style={{marginTop: '5px'}}
       onClick={() => clickHandler(row)}
     >
       {label}
@@ -112,7 +113,7 @@ class InstrumentManagerIndex extends Component {
               }
             </div>
           </td>
-        )
+        );
       }
       return (
         <td>
