@@ -224,12 +224,12 @@ class DocUploadForm extends Component {
           } else {
             resp.json().then((data) => {
               console.error(resp);
-	           if (resp.status == 413) {
-                    swal.fire('Could not upload files, file too large', data.error, 'error');
-		   }
-                   if (resp.status == 403) {
-                    swal.fire('Could not upload files, permission denied ', data.error, 'error');
-                   }		    
+              if (resp.status == 413) {
+                swal.fire('File too large', data.error, 'error');
+              }
+              if (resp.status == 403) {
+                swal.fire('Permission denied', data.error, 'error');
+	      }		    
             }).catch((error) => {
               console.error(error);
               swal.fire(
