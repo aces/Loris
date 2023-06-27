@@ -54,20 +54,29 @@ class VisitController
         return array_map(
             function ($row) {
                 return new \LORIS\Visit(
-                    $row['name'],
-                    $row['ID']
+                    $row['VisitName'],
+                    $row['VisitLabel']
                 );
             },
             $this->database->pselect(
-                'SELECT
-                 v.VisitID as "ID", v.VisitName as "name"
-                FROM
-                 visit v
-ORDER BY ID
-                ',
+                'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
                 []
             )
         );
+    }
+
+    /**
+     * Get an associative array of the type
+     *
+     * @return array
+     */
+    public function getVisitlabels(): array
+    {
+        $visitLabels = [];
+        foreach ($this->getAllVisits() as $visitObj) {
+            $visitLabels[$visitObj->getName()] = $visitObj->getLabel();
+        }
+        return $visitLabels;
     }
 
     /**
