@@ -61,6 +61,30 @@ class InstrumentManagerIndex extends Component {
   }
 
   /**
+   * Create permission button
+   * @param {string} label - Button text
+   * @param {object} row - row content indexed by column
+   * @return {*} an html button
+   */
+  createButton(label, row) {
+    const clickHandler = (row) => {
+      this.setState({
+        'modifyPermissions': {
+          'instrument': row.Instrument,
+          'permissions': row['Permission Required'],
+        },
+      });
+    };
+    return <button
+      className='btn btn-primary'
+      style={{marginTop: '5px',}}
+      onClick={() => clickHandler(row)}
+    >
+      {label}
+    </button>;
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -69,39 +93,45 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column == 'Permission Required') {
-        const clickHandler = (row) => {
-            return () => {
-                this.setState({
-                    'modifyPermissions': {
-                        'instrument': row.Instrument,
-                        'permissions': row['Permission Required'],
-                    },
-                });
-            };
-        };
-        if (cell == null) {
-            if (this.props.hasPermission('instrument_manager_write')) {
-                return (<td>No Permissions enforced.
-                          <ButtonElement
-                            label='Add Permissions'
-                            onUserInput={clickHandler(row)}
-                        />
-                   </td>);
-            } else {
-                return <td>No Permissions enforced.</td>;
+    if (column === 'Permission Required') {
+      if (cell == null) {
+        return (
+          <td>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              No Permissions enforced.
+              {
+                this.props.hasPermission('instrument_manager_write') && (
+                  this.createButton('Add Permissions', row)
+                )
+              }
+            </div>
+          </td>
+        )
+      }
+      return (
+        <td>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {cell.join(',')}
+            {
+              this.props.hasPermission('instrument_manager_write') && (
+                this.createButton('Modify Permissions', row)
+              )
             }
-        }
-        if (this.props.hasPermission('instrument_manager_write')) {
-          return (<td>{cell.join(',')}
-                        <ButtonElement
-                            label='Modify Permissions'
-                            onUserInput={clickHandler(row)}
-                        />
-               </td>);
-        } else {
-          return <td>{cell.join(',')}</td>;
-        }
+          </div>
+        </td>
+      );
     }
     return (
       <td>{cell}</td>
