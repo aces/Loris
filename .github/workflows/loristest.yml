@@ -4,12 +4,97 @@ on:
   - push
   - pull_request
 
-env:
-  EEG_VIS_ENABLED: 'true'
 
 jobs:
+  buildjs:
+    env:
+      EEG_VIS_ENABLED: 'true'
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v2
+
+      - name: Install EEG package dependencies
+      # We only need to install protobuf-compiler
+      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
+      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
+      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
+        run: |
+          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
+             libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
+          cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
+          protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
+
+      - name: Install npm modules
+        run: npm ci
+
+      - name: Compile LORIS javascript
+        run: npm run compile
+
+      - name: Create LORIS JS tarball
+        run: tar cfvz lorisjs.tar.gz htdocs/js/components/ modules/*/js/*
+
+      - name: Create node_modules tarball
+        run: tar cfvz node_modules.tar.gz node_modules
+
+      - uses: actions/upload-artifact@v3
+        name: Upload node_modules artifact
+        with:
+          name: node_modules
+          path: node_modules.tar.gz
+
+      - uses: actions/upload-artifact@v3
+        name: Upload lorisjs.tar.gz artifact
+        with:
+          name: lorisjs
+          path: lorisjs.tar.gz
+
+  buildphp:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2']
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: zip, php-ast
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Composer cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Create vendor tarball
+        run: tar cfvz vendor-php${{matrix.php}}.tar.gz vendor
+
+      - uses: actions/upload-artifact@v3
+        name: Upload vendor-php${{matrix.php}}.tar.gz artifact
+        with:
+          name: vendor-php${{matrix.php}}
+          path: vendor-php${{matrix.php}}.tar.gz
+
   api:
     runs-on: ubuntu-latest
+    needs:
+      - buildjs
+      - buildphp 
+
     env:
       DB_DATABASE: LorisTest
       DB_USER: SQLTestUser
@@ -17,19 +102,43 @@ jobs:
       LORIS_DB_CONFIG: project/config.xml
       DOCKER_WEB_SERVER: http://localhost:8000/
     strategy:
-        fail-fast: false
-        matrix:
-            php: ['8.1','8.2']
-            apiversion: ['v0.0.3', 'v0.0.4-dev']
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2']
+        apiversion: ['v0.0.3', 'v0.0.4-dev']
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
-        mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
-        mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
+    - uses: actions/download-artifact@v3
+      name: Download node_modules artifact
+      with:
+        name: node_modules
+        path: .
+
+    - uses: actions/download-artifact@v3
+      name: Download compiled LORIS javascript artifact
+      with:
+        name: lorisjs
+        path: .
+
+    - uses: actions/download-artifact@v3
+      name: Download PHP dependencies artifact
+      with:
+        name: vendor-php${{matrix.php}}
+        path: .
+
+
+    - name: Extract node_modules
+      run: tar xfvz node_modules.tar.gz
+
+    - name: Extract compiled JS
+      run: tar xfvz lorisjs.tar.gz
+
+    - name: Extract composer vendor directory
+      run: tar xfvz vendor-php${{matrix.php}}.tar.gz
+
+    - name: Generate VERSION file
+      run: make VERSION
 
     - name: Setup project/ directory
       run: |
@@ -42,6 +151,13 @@ jobs:
         sed -i 's/<adminPassword>TestPassword<\/adminPassword>/<adminPassword>root<\/adminPassword>/g' project/config.xml
         sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
         cat project/config.xml
+
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+        mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
+        mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
 
     - name: Source default schema and Raisinbread
       run: |
@@ -70,38 +186,6 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         extensions: zip, php-ast
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate
-
-    - name: Cache Composer packages
-      id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-    - name: Composer cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-        restore-keys: ${{ runner.os }}-composer-
-
-    - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
-      run: |
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-6 libmagickwand-6.q16-6 \
-                            libprotobuf-dev libprotobuf23 libprotoc23 protobuf-compiler
-        cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
-        protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
-
-    - name: Install composer dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
-
-    - name: Build LORIS
-      run: make dev
 
     - name: Start PHP Web Server
       run: php -S localhost:8000 -t htdocs/ htdocs/router.php 2>error_log &
