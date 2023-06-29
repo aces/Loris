@@ -78,7 +78,7 @@ class InstrumentManagerIndex extends Component {
               'permissions': row['Permission Required'],
             },
           });
-        }
+        };
       };
       return (
         <td>
