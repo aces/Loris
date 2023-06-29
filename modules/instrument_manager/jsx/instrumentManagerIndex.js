@@ -71,12 +71,14 @@ class InstrumentManagerIndex extends Component {
   formatColumn(column, cell, row) {
     if (column === 'Permission Required') {
       const clickHandler = (row) => {
-        this.setState({
-          'modifyPermissions': {
-            'instrument': row.Instrument,
-            'permissions': row['Permission Required'],
-          },
-        });
+        return () => {
+          this.setState({
+            'modifyPermissions': {
+              'instrument': row.Instrument,
+              'permissions': row['Permission Required'],
+            },
+          });
+        }
       };
       return (
         <td>
@@ -97,7 +99,7 @@ class InstrumentManagerIndex extends Component {
                 <button
                   className='btn btn-primary'
                   style={{marginTop: '5px'}}
-                  onClick={() => clickHandler(row)}
+                  onClick={clickHandler(row)}
                 >
                   {cell == null ? 'Add Permissions' : 'Modify Permissions'}
                 </button>
