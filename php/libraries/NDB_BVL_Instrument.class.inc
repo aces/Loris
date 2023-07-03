@@ -1409,6 +1409,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $allValues[$fieldName];
     }
 
+    private ?SessionID $sessionID;
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
@@ -1416,22 +1417,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getSessionID(): ?SessionID
     {
-
-        $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $result = \NDB_Factory::singleton()->database()->pselectOne(
-            $query,
-            [
-                'CID' => $this->getCommentID(),
-            ]
-        );
-
-        if (empty($result)) {
-            return null;
+        if (empty($this->sessionID)) {
+            $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+            $result = \NDB_Factory::singleton()->database()->pselectOne(
+                $query,
+                [
+                    'CID' => $this->getCommentID(),
+                ]
+            );
+            if (empty($result)) {
+                return null;
+            }
+            $this->sessionID = new SessionID($result);
         }
-
-        return (new SessionID($result));
+        return $this->sessionID;
     }
 
+    private ?string $visitLabel = null;
     /**
      * Gets the VisitLabel for the timepoint for this instrument.
      *
@@ -1439,7 +1441,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getVisitLabel(): string
     {
-        return \TimePoint::singleton($this->getSessionID())->getVisitLabel();
+        if ($this->visitLabel === null) {
+            $this->visitLabel = \TimePoint::singleton($this->getSessionID())->getVisitLabel();
+        }
+        return $this->visitLabel;
     }
 
     /**
@@ -2208,7 +2213,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
-                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
+                "SELECT SessionID, CommentID, session.Visit_Label as VisitLabel, Data FROM flag JOIN session ON (session.ID=flag.SessionID) WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2217,8 +2222,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
+                    $newinst->visitLabel   = $row['VisitLabel'];
+                    $newinst->sessionID = new SessionID($row['SessionID']);
                     $newinst->instanceData = json_decode(
-                        $row['Data'],
+                        $row['Data'] ?? '{}',
                         true,
                     ) ?? $this->defaultInstanceData();
 
@@ -2228,7 +2235,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $defaults = $db->pselect(
-                "SELECT * FROM $this->table WHERE CommentID IN ("
+                "SELECT flag.CommentID as CommentID, session.Visit_Label as VisitLabel, session.ID as SessionID, t.* FROM $this->table t JOIN flag ON (t.CommentID=flag.CommentID) JOIN session ON (flag.SessionID=session.ID) WHERE t.CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2237,6 +2244,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
+                    $newinst->visitLabel   = $row['VisitLabel'];
+                    $newinst->sessionID = new SessionID($row['SessionID']);
+                    unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
                     $newinst->instanceData = $row;
 
                     return $newinst;
