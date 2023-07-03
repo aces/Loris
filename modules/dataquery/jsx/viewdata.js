@@ -5,6 +5,31 @@ import fetchDataStream from 'jslib/fetchDataStream';
 
 import StaticDataTable from 'jsx/StaticDataTable';
 
+function ProgressBar({type, value, max}) {
+    switch(type) {
+    case 'loading':
+        if (value == 0) {
+            return <h2>Query not yet run</h2>;
+        }
+        return ;(<div>
+                <label for="loadingprogress">Loading data:</label>
+                <progress id="loadingprogress"
+                    value={value} max={max}>
+                    {value} candidates
+                </progress>
+        </div>)
+    case 'headers':
+        return (<div>
+                <label for="loadingprogress">Organizing headers:</label>
+                <progress id="loadingprogress"
+                    value={value} max={max}>
+                    {value} candidates
+                </progress>
+        </div>)
+    }
+    return <h2>Invalid progress type: {type}</h2>;
+}
+
 /**
  * The View Data tab
  *
@@ -14,6 +39,7 @@ import StaticDataTable from 'jsx/StaticDataTable';
  */
 function ViewData(props) {
     const [resultData, setResultData] = useState([]);
+    const [expectedResults, setExpectedResults] = useState(0);
     const [loading, setLoading] = useState(null);
     const [visitOrganization, setVisitOrganization] = useState('raw');
     useEffect(() => {
@@ -39,6 +65,17 @@ function ViewData(props) {
         ).then(
             (data) => {
                 let resultbuffer = [];
+                fetch(
+                        loris.BaseURL + '/dataquery/queries/'
+                            + data.QueryID + '/count',
+                        {
+                            method: 'GET',
+                            credentials: 'same-origin',
+                        }
+                ).then((resp) => resp.json()
+                ).then( (json) => {
+                    setExpectedResults(json.count);
+                });
                 const response = fetchDataStream(
                     loris.BaseURL +
                         '/dataquery/queries/' +
@@ -47,7 +84,7 @@ function ViewData(props) {
                         resultbuffer.push(row);
                     },
                     () => {
-                        if (resultbuffer.length % 1000 == 0) {
+                        if (resultbuffer.length % 10 == 0) {
                             setResultData([...resultbuffer]);
                         }
                     },
@@ -82,9 +119,7 @@ function ViewData(props) {
         );
     }, [props.fields, props.filters]);
     const queryTable = loading ? (
-        <div>
-            <h2>Query not yet run</h2>
-        </div>
+        <ProgressBar type='loading' value={resultData.length} max={expectedResults} />
         ) : (
         <StaticDataTable
             Headers={
@@ -107,25 +142,22 @@ function ViewData(props) {
             />
         );
     return <div>
-        <h2>Display visits as:</h2>
-         <ul>
-            <li onClick={
-                () => setVisitOrganization('crosssection')
-            }
-            >Rows (Cross-sectional)</li>
-            <li onClick={
-                () => setVisitOrganization('longitudinal')
-            }
-            >Columns (Longitudinal)</li>
-            <li onClick={
-                () => setVisitOrganization('inline')
-            }>Inline values (no download)</li>
-            <li onClick={
-                () => setVisitOrganization('raw')
-            }>Raw JSON</li>
-         </ul>
-
-          {queryTable}
+        <SelectElement
+            name='visitorganization'
+            options={{
+                'crosssection' : 'Rows (Cross-sectional)',
+                'longitudinal' : 'Columns (Longitudinal)',
+                'inline'       : 'Inline values (no download)',
+                'raw'          : 'Raw JSON (debugging only)'
+            }}
+            label='Display visits as'
+            value={visitOrganization}
+            multiple={false}
+            emptyOption={false}
+            onUserInput={ (name, value) => setVisitOrganization(value) }
+            sortByValue={false}
+          />
+         {queryTable}
     </div>;
 }
 
