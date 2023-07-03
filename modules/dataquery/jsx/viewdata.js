@@ -11,40 +11,41 @@ function ProgressBar({type, value, max}) {
         if (value == 0) {
             return <h2>Query not yet run</h2>;
         }
-        return ;(<div>
-                <label for="loadingprogress">Loading data:</label>
+        return (<div>
+                <label htmlFor="loadingprogress">Loading data:</label>
                 <progress id="loadingprogress"
                     value={value} max={max}>
-                    {value} candidates
+                    {value} of {max} candidates
                 </progress>
-        </div>)
+        </div>);
     case 'headers':
         return (<div>
-                <label for="loadingprogress">Organizing headers:</label>
+                <label htmlFor="loadingprogress">Organizing headers:</label>
                 <progress id="loadingprogress"
                     value={value} max={max}>
-                    {value} candidates
+                    {value} of {max} columns
                 </progress>
-        </div>)
+        </div>);
+    case 'dataorganization':
+        return (<div>
+                <label htmlFor="loadingprogress">Organizing data:</label>
+                <progress id="loadingprogress"
+                    value={value} max={max}>
+                    {value} of {max} columns
+                </progress>
+        </div>);
     }
     return <h2>Invalid progress type: {type}</h2>;
 }
 
-/**
- * The View Data tab
- *
- * @param {object} props - React props
- *
- * @return {ReactDOM}
- */
-function ViewData(props) {
-    const [resultData, setResultData] = useState([]);
+function useRunQuery(fields, filters, onRun) {
     const [expectedResults, setExpectedResults] = useState(0);
+    const [resultData, setResultData] = useState([]);
     const [loading, setLoading] = useState(null);
-    const [visitOrganization, setVisitOrganization] = useState('raw');
+
     useEffect(() => {
         setLoading(true);
-        const payload = calcPayload(props.fields, props.filters);
+        const payload = calcPayload(fields, filters);
         if (payload == {}) {
             return;
         }
@@ -94,7 +95,7 @@ function ViewData(props) {
                     },
                     'post',
                 );
-                props.onRun(); // forces query list to be reloaded
+                onRun(); // forces query list to be reloaded
 
                 if (!response.ok) {
                     response.then(
@@ -117,30 +118,100 @@ function ViewData(props) {
                 });
             }
         );
-    }, [props.fields, props.filters]);
-    const queryTable = loading ? (
-        <ProgressBar type='loading' value={resultData.length} max={expectedResults} />
-        ) : (
-        <StaticDataTable
-            Headers={
-                organizeHeaders(
-                    props.fields,
-                    visitOrganization,
-                    props.fulldictionary,
-                )
-            }
-            RowNumLabel='Row Number'
-            Data={organizeData(resultData, visitOrganization, props.fields, props.fulldictionary)}
-            getFormattedCell={
-                 organizedFormatter(
-                    resultData,
-                    visitOrganization,
-                    props.fields,
-                    props.fulldictionary,
-                )
-            }
-            />
-        );
+    }, [fields, filters]);
+    return {
+        loading: loading,
+        data: resultData,
+        totalcount: expectedResults,
+    }
+}
+
+function useDataOrganization(queryData, visitOrganization, fields, fulldictionary) {
+    const [tableData, setTableData] = useState([]);
+    const [orgStatus, setOrgStatus] = useState(null);
+    const [progress, setProgress] = useState(0);
+    const [headers, setHeaders] = useState([]);
+    useEffect( () => {
+        console.log('Starting headers effect');
+        if (queryData.loading == true) {
+            console.log('Aborting, not finished loading');
+            return;
+        }
+        setOrgStatus('headers');
+        organizeHeaders(fields,
+          visitOrganization,
+          fulldictionary,
+          (i) => { console.log(i); setProgress(i)},
+        ).then( (headers) => {
+            setHeaders(headers);
+            setOrgStatus('data');
+
+            organizeData(
+                queryData.data,
+                visitOrganization,
+                fields,
+                (i) => {console.log(i); setProgress(i)},
+            ).then ( (data) => {
+                setTableData(data)
+                console.log('organizing. Done');
+                setOrgStatus('done');
+                });
+            });
+    }, [visitOrganization, queryData.loading, queryData.data]);
+    return {
+       'headers': headers,
+       'data': tableData,
+
+       'status': orgStatus,
+       'progress': progress,
+    };
+}
+
+/**
+ * The View Data tab
+ *
+ * @param {object} props - React props
+ *
+ * @return {ReactDOM}
+ */
+function ViewData(props) {
+    const [visitOrganization, setVisitOrganization] = useState('raw');
+    const queryData = useRunQuery(props.fields, props.filters, props.onRun);
+    const organizedData = useDataOrganization(queryData, visitOrganization, props.fields, props.fulldictionary);
+
+    let queryTable;
+    if (queryData.loading) {
+        queryTable = <ProgressBar type='loading' value={queryData.data.length} max={queryData.totalcount} />;
+    } else {
+        switch (organizedData['status']) {
+        case null: 
+            return queryTable = <h2>Query not yet run</h2>;
+        case 'headers':
+            queryTable = <ProgressBar type='headers' value={organizedData.progress} max={props.fields.length} />;
+            break;
+        case 'data':
+            queryTable = <ProgressBar type='dataorganization' value={organizedData.progress} max={queryData.length} />;
+            break;
+        case 'done':
+            queryTable = <StaticDataTable
+                Headers={organizedData.headers}
+                RowNumLabel='Row Number'
+                Data={organizedData.data}
+                getFormattedCell={
+                     organizedFormatter(
+                        queryData.data,
+                        visitOrganization,
+                        props.fields,
+                        props.fulldictionary,
+                    )
+                }
+                />;
+            break;
+        default:
+            throw new Error('Unhandled organization status');
+        }
+    }
+
     return <div>
         <SelectElement
             name='visitorganization'
@@ -203,67 +274,133 @@ function calcPayload(fields, filters) {
  *                                     option selected
  * @return {array}
  */
-function organizeData(resultData, visitOrganization, fields) {
+function organizeData(resultData, visitOrganization, fields, onProgress) {
     switch (visitOrganization) {
     case 'raw':
-        return resultData;
+        return Promise.resolve(resultData);
     case 'inline':
         // Organize with flexbox within the cell by the
         // formatter
-        return resultData;
+        return Promise.resolve(resultData);
     case 'longitudinal':
         // the formatter splits into multiple cells
-        return resultData;
+        return Promise.resolve(resultData);
     case 'crosssection':
-        const mappedData = [];
-        for(let candidaterow of resultData) {
-            // Collect list of visits for this candidate
-            const candidatevisits = {};
-            for (let i in candidaterow) {
-                if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
-                    if (candidaterow[i] === null || candidaterow[i] == '') {
-                        continue;
+        return new Promise((resolve) => {
+            const mappedData = [];
+            let rowNum = 0;
+            let promises = [];
+            for(let candidaterow of resultData) {
+                promises.push(new Promise( (resolve) => {
+                    // Collect list of visits for this candidate
+                    const candidatevisits = {};
+                    for (let i in candidaterow) {
+                        if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                            if (candidaterow[i] === null || candidaterow[i] == '') {
+                                continue;
+                            }
+                            const cellobj = JSON.parse(candidaterow[i]);
+                            for (let session in cellobj) {
+                                candidatevisits[cellobj[session].VisitLabel] = true;
+                            }
+                        }
                     }
-                    const cellobj = JSON.parse(candidaterow[i]);
-                    for (let session in cellobj) {
-                        candidatevisits[cellobj[session].VisitLabel] = true;
-                    }
-                }
-            }
 
-            // Push one row per visit onto mappedData
-            for (const visit in candidatevisits) {
-                let dataRow =[];
-                dataRow.push(visit);
-                for (let i in candidaterow) {
-                    if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
-                    if (candidaterow[i] === null || candidaterow[i] == '') {
-                        dataRow.push(null);
-                        continue;
-                    }
+                const dataRows = [];
+                for (const visit in candidatevisits) {
+                    let dataRow =[];
+                    dataRow.push(visit);
+                    for (let i in candidaterow) {
+                      if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                        if (candidaterow[i] === null || candidaterow[i] == '') {
+                          dataRow.push(null);
+                          continue;
+                        }
                         const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
-                            return sessionval.VisitLabel == visit;
+                          return sessionval.VisitLabel == visit;
                         });
                         switch (values.length) {
                         case 0:
-                            dataRow.push(null);
-                            break;
+                          dataRow.push(null);
+                          break;
                         case 1:
-                            dataRow.push(values[0].value);
-                            break;
+                          dataRow.push(values[0].value);
+                          break;
                         default:
-                            throw new Error('Too many visit values');
+                          throw new Error('Too many visit values');
                         }
-                    } else {
+                      } else {
                         dataRow.push(candidaterow[i]);
+                      }
+                    }
+                    dataRows.push(dataRow);
+                }
+                    onProgress(rowNum++);
+                    resolve(dataRows);
+                }));
+            }
+            Promise.all(promises).then((values) => {
+                for(let row of values) {
+                    mappedData.push(...row);
+                }
+                resolve(mappedData);
+            });
+        });
+
+            /*
+              let dataRow =[];
+              dataRow.push(visit);
+              for (let i in candidaterow) {
+                if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                  if (candidaterow[i] === null || candidaterow[i] == '') {
+                    dataRow.push(null);
+                    continue;
+                  }
+                  const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
+                    return sessionval.VisitLabel == visit;
+                  });
+                  switch (values.length) {
+                  case 0:
+                    dataRow.push(null);
+                    break;
+                  case 1:
+                    dataRow.push(values[0].value);
+                    break;
+                  default:
+                    throw new Error('Too many visit values');
+                  }
+                } else {
+                  dataRow.push(candidaterow[i]);
+                }
+              }
+            });
+            for(let candidaterow of resultData) {
+                // Collect list of visits for this candidate
+                rowNum++;
+                const candidatevisits = {};
+                for (let i in candidaterow) {
+                    if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                        if (candidaterow[i] === null || candidaterow[i] == '') {
+                            continue;
+                        }
+                        const cellobj = JSON.parse(candidaterow[i]);
+                        for (let session in cellobj) {
+                            candidatevisits[cellobj[session].VisitLabel] = true;
+                        }
                     }
                 }
-                
-                mappedData.push(dataRow);
-            }
-        }
 
-        return mappedData;
+                // Push one row per visit onto mappedData
+                for (const visit in candidatevisits) {
+                    mapCandidate(i, candidaterow).then( (dataRow) => {
+                            mappedData.push(dataRow);
+                    });
+                }
+                onProgress(rowNum);
+            }
+            resolve(mappedData)
+    });
+    */
     default: throw new Error('Unhandled visit organization');
     }
 }
@@ -488,19 +625,23 @@ function valuesList(values) {
  *
  * @return {array}
  */
-function organizeHeaders(fields, org, fulldict) {
+function organizeHeaders(fields, org, fulldict, onProgress) {
     switch (org) {
     case 'raw':
-        return fields.map((val) => {
+        return Promise.resolve(fields.map((val, i) => {
+            onProgress(i);
             return val.field;
-        });
+        }));
     case 'inline':
-        return fields.map((val) => {
+        return Promise.resolve(fields.map((val, i) => {
+            onProgress(i);
             return val.field;
-        });
+        }));
     case 'longitudinal':
         let headers = [];
+        let i = 0;
         for (const field of fields) {
+            i++;
             const dict = getDictionary(field, fulldict);
             if (dict.scope == 'candidate') {
                 headers.push(field.field);
@@ -509,15 +650,19 @@ function organizeHeaders(fields, org, fulldict) {
                     headers.push(field.field + ': ' + visit.label);
                 }
             }
+            onProgress(i);
         }
         // Split session level selections into multiple headers
-        return headers;
+        return Promise.resolve(headers);
     case 'crosssection':
-        return ['Visit Label', 
-            ...fields.map((val) => {
-                return val.field;
-            })
-        ];
+        return new Promise( (resolve) => {
+            resolve(['Visit Label',
+                    ...fields.map((val, i) => {
+                        onProgress(i);
+                        return val.field;
+                    })
+            ]);
+        });
     default: throw new Error('Unhandled visit organization');
     }
 }

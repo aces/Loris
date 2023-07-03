@@ -146,7 +146,7 @@ function useSharedQueries() {
                             allQueries);
                         return;
                     }
-                    console.log('Got', queryRun.QueryID);
+                    // console.log('Got', queryRun.QueryID);
                     convertedrecent.push({
                         Runtime: queryRun.RunTime,
                         ...queryObj,
