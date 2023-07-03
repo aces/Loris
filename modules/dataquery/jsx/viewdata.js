@@ -186,17 +186,13 @@ function organizeData(resultData, visitOrganization, fields) {
         const mappedData = [];
         for(let candidaterow of resultData) {
             // Collect list of visits for this candidate
-            console.log('row', candidaterow);
             const candidatevisits = {};
             for (let i in candidaterow) {
-                console.log(fields[i]);
                 if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
                     if (candidaterow[i] === null || candidaterow[i] == '') {
                         continue;
                     }
-                    console.log(candidaterow[i]);
                     const cellobj = JSON.parse(candidaterow[i]);
-                    console.log('cell', cellobj);
                     for (let session in cellobj) {
                         candidatevisits[cellobj[session].VisitLabel] = true;
                     }
@@ -204,7 +200,6 @@ function organizeData(resultData, visitOrganization, fields) {
             }
 
             // Push one row per visit onto mappedData
-            console.log(candidatevisits);
             for (const visit in candidatevisits) {
                 let dataRow =[];
                 dataRow.push(visit);
@@ -234,9 +229,7 @@ function organizeData(resultData, visitOrganization, fields) {
                 
                 mappedData.push(dataRow);
             }
-            // mappedData.push(row);
         }
-        // console.log(visitFields);
 
         return mappedData;
     default: throw new Error('Unhandled visit organization');
@@ -381,13 +374,11 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                     // All visits
                     displayedVisits = fielddict.visits;
                 }
-                console.log(fieldobj);
                 const values = displayedVisits.map((visit) => {
                     if (!cell) {
                         return <td key={visit}><i>(No data)</i></td>;
                     }
                     const data = JSON.parse(cell);
-                    console.log('cand data', data);
                     for (const session in data) {
                         if (data[session].VisitLabel == visit) {
                             return <td key={visit}>{data[session].value}</td>;
@@ -396,7 +387,6 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                     }
                     return <td key={visit}><i>(No data)</i></td>;
                 });
-                console.log('values', values);
                 return <>{values}</>;
             default:
                 throw new Error('Invalid field scope');
