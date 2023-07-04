@@ -150,6 +150,11 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $candidate = \NDB_Factory::singleton()->candidate($candID);
 
+        if (!$candidate->isAccessibleBy($user)) {
+            // Return not found instead of forbidden to hide this candid existance.
+            return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
+        }
+
         $endpoint = new Candidate\Candidate($candidate);
 
         $pathparts = array_slice($pathparts, 2);
