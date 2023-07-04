@@ -11,9 +11,12 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace Loris\Tests;
+use \LORIS\Data\Scope;
+use \LORIS\Data\Cardinality;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../modules/instruments/php/dictionaryitem.class.inc';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
@@ -118,14 +121,14 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $this->quickForm = new \LorisForm();
 
-        $dictionaryItem = $this->getMockBuilder(
-            \LORIS\Data\Dictionary\DictionaryItem::class
-        )
-            ->disableOriginalConstructor()
-            ->getMock();
-        $dictionaryItem->method('getName')
-            ->willReturn('Test_Date_taken');
-        '@phan-var \LORIS\Data\Dictionary\DictionaryItem $dictionaryItem';
+        $dictionaryItem = new \LORIS\instruments\DictionaryItem(
+            'Test_Date_taken',
+            'Date of Administration',
+            new Scope(Scope::SESSION),
+            new \LORIS\Data\Types\DateType(),
+            new Cardinality(Cardinality::SINGLE),
+            'Date_taken',
+        );
 
         $instrument = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()

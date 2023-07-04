@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
 
@@ -500,6 +500,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 $scope,
                                 new \LORIS\Data\Types\DateType(),
                                 new Cardinality(Cardinality::SINGLE),
+                                'Date_taken',
                             ),
                         ]
                     );
@@ -514,6 +515,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
+                                        'Candidate_Age',
                                     ),
                                 ]
                             );
@@ -527,6 +529,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
+                                        'Candidate_Age',
                                     ),
                                 ]
                             );
@@ -540,6 +543,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $scope,
                                     new \LORIS\Data\Types\Duration(),
                                     new Cardinality(Cardinality::SINGLE),
+                                    'Window_Difference',
                                 ),
                             ]
                         );
@@ -556,6 +560,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 // array if CommentID is not set.
                                 new StringType(255),
                                 new Cardinality(Cardinality::SINGLE),
+                                'Examiner',
                             ),
                         ]
                     );
@@ -616,6 +621,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         new StringType(255),
                         new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
                     );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
@@ -641,6 +647,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         new StringType(),
                         new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
                     );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
@@ -669,6 +676,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $scope,
                             new DateType(),
                             new Cardinality(Cardinality::SINGLE),
+                            $pieces[1],
                         );
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
@@ -741,6 +749,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $scope,
                             new IntegerType(),
                             new Cardinality(Cardinality::SINGLE),
+                            $pieces[1],
                         );
                     }
                     if ($firstFieldOfPage) {
@@ -844,6 +853,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $scope,
                         $t,
                         $cardinality,
+                        $pieces[1],
                     );
                     $this->dictionary[] = $it;
                     $this->LinstQuestions[$pieces[1]] = ['type' => 'select'];
@@ -881,7 +891,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $pieces[2],
                             $scope,
                             new StringType(255),
-                            new Cardinality(Cardinality::SINGLE)
+                            new Cardinality(Cardinality::SINGLE),
+                            $pieces[1],
                         );
                     }
                     break;

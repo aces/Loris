@@ -3,6 +3,7 @@ namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../modules/instruments/php/dictionaryitem.class.inc';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';

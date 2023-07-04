@@ -87,15 +87,44 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
+        $bodystr = $response->getBody()->getContents();
+        $this->assertNotEmpty($bodystr);
 
         $InstrumentsArray = json_decode(
             (string) utf8_encode(
-                $response->getBody()->getContents()
+                $bodystr,
             ),
             true
         );
-        $this->markTestIncomplete('Instrument body not validated');
-        // $this->assertNotEmpty($InstrumentsArray[$this->instrumentTest]);
+
+        $InstrumentsArray = json_decode(
+            (string) utf8_encode($bodystr),
+            true
+        );
+        $this->assertArrayHasKey(
+            'Candidate',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Visit',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'Instrument',
+            $InstrumentsArray['Meta']
+        );
+        $this->assertArrayHasKey(
+            'DDE',
+            $InstrumentsArray['Meta']
+        );
+
+        $this->assertSame($InstrumentsArray['Meta']['DDE'], false);
+        $this->assertSame($InstrumentsArray['Meta']['Candidate'], $this->candidTest);
+        $this->assertSame($InstrumentsArray['Meta']['Visit'], $this->visitTest);
+        $this->assertSame($InstrumentsArray['Meta']['Instrument'], $this->instrumentTest);
+
+        $this->assertArrayHasKey($this->instrumentTest, $InstrumentsArray);
+        $this->assertNotEmpty($InstrumentsArray[$this->instrumentTest]);
     }
 
     /**
