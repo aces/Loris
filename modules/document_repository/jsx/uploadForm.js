@@ -222,22 +222,12 @@ class DocUploadForm extends Component {
               );
             });
           } else {
-            resp.json().then((data) => {
-              console.error(resp);
               if (resp.status == 413) {
                 swal.fire('File too large', data.error, 'error');
               }
               if (resp.status == 403) {
                 swal.fire('Permission denied', data.error, 'error');
 	      }		    
-            }).catch((error) => {
-              console.error(error);
-              swal.fire(
-                'Error reading error response',
-                'Please report the issue or contact your administrator',
-                'error'
-              );
-            });
           }
         }).catch((error) => {
           console.error(error);

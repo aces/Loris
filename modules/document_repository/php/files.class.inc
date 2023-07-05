@@ -307,10 +307,9 @@ class Files extends \NDB_Page
         $name     = $user->getUsername();
 
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                self::FORBIDDEN
-            );
-        }
+	    header("HTTP/1.1 403 Forbidden");
+            exit;
+	}
 
         // Do some validation and fail early on bad inputs.
         $body = $request->getParsedBody();
@@ -327,10 +326,9 @@ class Files extends \NDB_Page
 
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
 
-        if (is_null($uploadedFiles)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'No files uploaded'
-            );
+	if (is_null($uploadedFiles)) {
+	    header("HTTP/1.1 413 Too_large");
+            exit;		
         }
 
         $uploadedFiles = is_array($uploadedFiles)
