@@ -1,4 +1,4 @@
-.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata
+.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev
 
 all: VERSION
 	composer install --no-dev
@@ -12,8 +12,12 @@ VERSION: .
 phpdev:
 	composer install
 
-dev: VERSION phpdev
+dev: phpdev jsdev fastdev 
+
+jsdev:
 	npm ci
+
+fastdev: VERSION
 	npm run compile
 
 jslatest: clean
