@@ -223,10 +223,10 @@ class DocUploadForm extends Component {
             });
           } else {
               if (resp.status == 413) {
-                swal.fire('File too large', data.error, 'error');
+                swal.fire('File too large', 'Could not upload file', 'error');
               }
               if (resp.status == 403) {
-                swal.fire('Permission denied', data.error, 'error');
+                swal.fire('Permission denied', 'Could not upload file', 'error');
 	      }		    
           }
         }).catch((error) => {
