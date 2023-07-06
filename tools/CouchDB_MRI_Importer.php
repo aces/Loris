@@ -438,7 +438,7 @@ class CouchDBMRIImporter
                 $row['PSCID'],
                 $row['Visit_label'],
             ];
-            $docid      = 'MRI_Files:' . join($identifier, '_');
+            $docid      = 'MRI_Files:' . implode('_',$identifier);
             unset($doc['PSCID']);
             unset($doc['Visit_label']);
             unset($doc['SessionID']);
