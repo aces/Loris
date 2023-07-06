@@ -411,7 +411,7 @@ class Imaging_QC extends \NDB_Menu_Filter
                         "MRI Parameter Form table does not exist"
                     )
                 )
-                ->withStatus(500);
+                ->withStatus(400);
         }
     }
 }
