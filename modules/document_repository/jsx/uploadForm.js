@@ -226,8 +226,11 @@ class DocUploadForm extends Component {
                 swal.fire('File too large', 'Could not upload file', 'error');
               }
               if (resp.status == 403) {
-                swal.fire('Permission denied', 'Could not upload file', 'error');
-	      }		    
+                swal.fire('Permission denied',
+                    'Could not upload file',
+                    'error'
+                );
+	            }
           }
         }).catch((error) => {
           console.error(error);
