@@ -230,7 +230,7 @@ class DocUploadForm extends Component {
                     'Could not upload file',
                     'error'
                 );
-	            }
+              }
           }
         }).catch((error) => {
           console.error(error);
