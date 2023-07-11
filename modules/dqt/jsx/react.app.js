@@ -972,7 +972,6 @@ class DataQueryApp extends Component {
     let Identifiers = [];
     let RowHeaders = [];
     let fileData = [];
-    let href;
 
     if (displayID === 0) {
       // Displaying the data in the cross-sectional way
@@ -990,26 +989,30 @@ class DataQueryApp extends Component {
             let fieldSplit = fields[i].split(',');
             currow[i] = '.';
             let sd = sessiondata[session];
-            if (sd[fieldSplit[0]]
-              && sd[fieldSplit[0]].data[fieldSplit[1]]
-              && downloadableFields[fields[i]]) {
-              // If the current field has data and is downloadable, create a download link
-              href = loris.BaseURL
-                + '/mri/jiv/get_file.php?file='
-                + sd[fieldSplit[0]].data[fieldSplit[1]];
-              currow[i] = (
-                <a href={href}>
-                  {sd[fieldSplit[0]].data[fieldSplit[1]]}
-                </a>
-              );
-              fileData.push('file/'
-                + sd[fieldSplit[0]]._id
-                + '/'
-                + encodeURIComponent(sd[fieldSplit[0]].data[fieldSplit[1]])
-              );
-            } else if (sd[fieldSplit[0]]) {
-              // else if field is not null add data and string
-              currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+
+            if (sd[fieldSplit[0]]) {
+              let celldata = sd[fieldSplit[0]].data[fieldSplit[1]];
+              if (downloadableFields[fields[i]]) {
+                // Convert to array to loop on the data
+                if (!Array.isArray(celldata)) {
+                  celldata = [celldata];
+                }
+                // If the current field has data and is downloadable, create a download link
+                // and push file to the data array
+                currow[i] = celldata
+                  .filter((line) => line)
+                  .map((line) => {
+                    fileData.push('file/'
+                      + sd[fieldSplit[0]]._id
+                      + '/'
+                      + encodeURIComponent(line)
+                    );
+                    return loris.BaseURL + '/mri/jiv/get_file.php?file=' + line;
+                  });
+              } else {
+                // else if field is not null add data and string
+                currow[i] = celldata;
+              }
             }
           }
           rowdata.push(currow);
@@ -1084,30 +1087,37 @@ class DataQueryApp extends Component {
                   RowHeaders[colHeader].lastIndexOf(' ') + 1
                 ).split(',');
                 if (temp) {
-                  if (temp.data[RowHeaders[colHeader].split(',')[1]]
-                    && downloadableFields[fieldSplit[0]
-                    + ',' + fieldSplit[1]]) {
-                    // Add a downloadable link if the field is set and downloadable
-                    href = loris.BaseURL
-                      + '/mri/jiv/get_file.php?file='
-                      + temp.data[RowHeaders[colHeader].split(',')[1]];
-                    fileData.push('file/'
-                      + temp._id
-                      + '/'
-                      + encodeURIComponent(temp.data[fieldSplit[1]])
-                    );
-                    temp = (
-                      <a href={href}>
-                        {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                      </a>
-                    );
+                  let celldata = temp.data[fieldSplit[1]];
+                  if (celldata && downloadableFields[
+                    fieldSplit[0] + ',' + fieldSplit[1]
+                  ]) {
+                    // Convert to array to loop on the data
+                    if (!Array.isArray(celldata)) {
+                      celldata = [celldata];
+                    }
+
+                    // If the current field has data and is downloadable, create a download link
+                    // and push file to the data array
+                    currow[i] = celldata
+                      .filter((line) => line)
+                      .map((line) => {
+                        fileData.push(
+                          'file/' +
+                          temp._id + '/' +
+                          encodeURIComponent(line)
+                        );
+                        return (
+                          loris.BaseURL +
+                          '/mri/jiv/get_file.php?file=' +
+                          line
+                        );
+                      });
                   } else {
-                    temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                    currow.push(celldata);
                   }
                 } else {
-                  temp = '.';
+                  currow.push('.');
                 }
-                currow.push(temp);
               }
             }
           }

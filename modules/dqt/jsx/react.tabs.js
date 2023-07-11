@@ -258,6 +258,33 @@ class ViewDataTabPane extends Component {
   }
 
   /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} _ - column name
+   * @param {string} cell - cell content
+   * @return {*} a formatted table cell for a given column
+   */
+  formatColumn(_, cell) {
+    if (Array.isArray(cell)) {
+      return (
+        <td>
+          {cell.map((line) => {
+            if (typeof line === 'string' && line.startsWith('http')) {
+              line = (
+                <a target='_blank' href={line}>
+                  {line.split(/[\\/]/).pop()}
+                </a>
+              );
+            }
+            return (<p>{line}</p>);
+          })}
+        </td>
+      );
+    }
+    return (<td>{cell}</td>);
+  }
+
+  /**
    * Run query clicked
    */
   runQuery() {
@@ -588,6 +615,7 @@ class ViewDataTabPane extends Component {
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
+        getFormattedCell={this.formatColumn}
         RowNameMap={this.props.RowInfo}
         DisableFilter={true}
       />
