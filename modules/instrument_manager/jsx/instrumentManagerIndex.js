@@ -69,39 +69,45 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column == 'Permission Required') {
-        const clickHandler = (row) => {
-            return () => {
-                this.setState({
-                    'modifyPermissions': {
-                        'instrument': row.Instrument,
-                        'permissions': row['Permission Required'],
-                    },
-                });
-            };
+    if (column === 'Permission Required') {
+      const clickHandler = (row) => {
+        return () => {
+          this.setState({
+            'modifyPermissions': {
+              'instrument': row.Instrument,
+              'permissions': row['Permission Required'],
+            },
+          });
         };
-        if (cell == null) {
-            if (this.props.hasPermission('instrument_manager_write')) {
-                return (<td>No Permissions enforced.
-                          <ButtonElement
-                            label='Add Permissions'
-                            onUserInput={clickHandler(row)}
-                        />
-                   </td>);
-            } else {
-                return <td>No Permissions enforced.</td>;
+      };
+      return (
+        <td>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {
+              cell == null
+                ? 'No Permissions enforced.'
+                : cell.join(',')
             }
-        }
-        if (this.props.hasPermission('instrument_manager_write')) {
-          return (<td>{cell.join(',')}
-                        <ButtonElement
-                            label='Modify Permissions'
-                            onUserInput={clickHandler(row)}
-                        />
-               </td>);
-        } else {
-          return <td>{cell.join(',')}</td>;
-        }
+            {
+              this.props.hasPermission('instrument_manager_write') && (
+                <button
+                  className='btn btn-primary'
+                  style={{marginTop: '5px'}}
+                  onClick={clickHandler(row)}
+                >
+                  {cell == null ? 'Add Permissions' : 'Modify Permissions'}
+                </button>
+              )
+            }
+          </div>
+        </td>
+      );
     }
     return (
       <td>{cell}</td>
