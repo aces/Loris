@@ -226,7 +226,10 @@ class Upload extends \NDB_Page
             rename($targetPath, $archivePath);
             $db->update(
                 'electrophysiology_uploader',
-                ['UploadLocation' => "archives/$archiveFilename"],
+                [
+                    'UploadLocation' => "archives/$archiveFilename",
+                    'Status'         => 'Archived',
+                ],
                 ['UploadLocation' => $filename]
             );
         }
