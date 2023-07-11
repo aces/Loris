@@ -335,7 +335,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             // specific changes
             if ($comment['fieldChanged'] === 'module') {
                 $mid = $comment['newValue'];
-                $comment['newValue'] = $modules[$mid]->getLongName();
+                if (array_key_exists($mid, $modules)) {
+                    $comment['newValue'] = $modules[$mid]->getLongName();
+                } else {
+                    $comment['newValue'] = "Linked module(s) do not exist";
+                }
             } else if ($comment['fieldChanged'] === 'centerID') {
                 $comment['newValue']     = $this->getSiteName(
                     intval($comment['newValue'])
