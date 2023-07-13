@@ -39,17 +39,18 @@ const LineMemo = R.memoizeWith(
         .range([-0.5, 0.5]),
     ];
 
-    const points = [
-      ... previousPoint === null
-        ? []
-        : [
-          vec2.fromValues(
-            scales[0](
-              interval[0] - (1 / values.length) * (interval[1] - interval[0])
-            ),
-            -(scales[1](previousPoint) - DCOffset)
-          )
-      ],
+    const points = previousPoint === null
+      ? []
+      : [
+        vec2.fromValues(
+          scales[0](
+            interval[0] - (1 / values.length) * (interval[1] - interval[0])
+          ),
+          -(scales[1](previousPoint) - DCOffset)
+        )
+    ];
+
+    points.push(
       ...values.map((value, i) =>
         vec2.fromValues(
           scales[0](
@@ -58,7 +59,7 @@ const LineMemo = R.memoizeWith(
           -(scales[1](value) - DCOffset)
         )
       )
-    ];
+    );
 
     return (
       <LinePath
