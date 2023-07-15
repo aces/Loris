@@ -4,7 +4,7 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-
+import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -107,7 +107,7 @@ class IssueForm extends Component {
     let lastUpdatedByValue;
     let dateCreated;
     let submitButtonValue;
-    let commentLabel;
+    let commentLabel = 'Description';
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
@@ -123,7 +123,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = 'No-one!';
       dateCreated = 'Sometime Soon!';
       submitButtonValue = 'Submit Issue';
-      commentLabel = 'Description';
       attachmentFileElement = (
         <FileElement
           name='file'
@@ -139,7 +138,6 @@ class IssueForm extends Component {
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
       submitButtonValue = 'Update Issue';
-      commentLabel = 'New Comment';
       attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
@@ -204,7 +202,7 @@ class IssueForm extends Component {
       description = (
         <StaticElement
           name='description'
-          label='Description'
+          label='Current description'
           ref='description'
           text={descr}
         />
@@ -237,7 +235,6 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             required={true}
           />
-          {description}
           <SelectElement
             name='assignee'
             label='Assignee'
@@ -330,6 +327,7 @@ class IssueForm extends Component {
             multiple={true}
             value={this.state.formData.othersWatching}
           />
+          {description}
           <TextareaElement
             name='comment'
             label={commentLabel}
