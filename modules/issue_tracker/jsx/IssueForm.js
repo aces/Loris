@@ -4,7 +4,6 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -197,16 +196,6 @@ class IssueForm extends Component {
           </div>
         </div>
       );
-
-      const descr = <Markdown content={this.state.issueData.desc} />;
-      description = (
-        <StaticElement
-          name='description'
-          label='Current description'
-          ref='description'
-          text={descr}
-        />
-      );
     }
 
     return (
@@ -327,7 +316,6 @@ class IssueForm extends Component {
             multiple={true}
             value={this.state.formData.othersWatching}
           />
-          {description}
           <TextareaElement
             name='comment'
             label={commentLabel}

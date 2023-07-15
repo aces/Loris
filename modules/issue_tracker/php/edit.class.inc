@@ -215,8 +215,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $issueData['desc'] = html_entity_decode($comment);
             }
         }
-        $issueData['comment'] = null;
-
+        $issueData['comment'] = $issueData['desc'];
         $isOwnIssue = $issueData['reporter'] == $user->getUsername();
 
         $result = [
