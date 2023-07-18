@@ -124,7 +124,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
         return new \LORIS\Http\Response\JsonResponse(
             $response
                 ? ['success' => 'upload succeeded']
-                : ['error' => 'upload failed']
+                : ['error' => $attachment->errorMessage]
         );
     }
 

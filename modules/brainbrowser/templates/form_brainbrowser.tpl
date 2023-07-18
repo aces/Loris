@@ -3,9 +3,8 @@
   Not currently used
 -->
 <script id="overlay-ui-template" type="x-volume-ui-template">
-<div class="row">
-  <div class="overlay-viewer-display" id="panel-size"></div>
-  <div class="form-group col-sm-3 col-xs-12">
+<div class="brainbrowser-template clearfix">
+  <div class="control-panel">
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="filename"></div>
@@ -53,6 +52,7 @@
       </div>
     </div>
   </div>
+  <div class="overlay-viewer-display" id="panel-size"></div>
 </div>
 </script>
 
@@ -68,7 +68,7 @@
         <div class="filename clickable" id="filename-{{VOLID}}">
           Loading filename....
         </div>
-        <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
+        <span class="glyphicon glyphicon-chevron-down clickable"></span>
       </div>
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls">
@@ -180,7 +180,7 @@
 </div>
 
 <script>
-  var brainBrowserPage = RBrainBrowser();
-  const root = ReactDOM.createRoot(document.getElementById('brainbrowserPage'));
-  root.render(brainBrowserPage);
+  ReactDOM.createRoot(
+    document.getElementById('brainbrowserPage')
+  ).render(RBrainBrowser());
 </script>

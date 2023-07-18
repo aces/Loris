@@ -103,7 +103,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
                 "form > div > div:nth-child(1) > h3"
             )
         )->getText();
-        $this->assertStringContainsString("Upload a file", $text);
+        $this->assertStringContainsString("Upload files", $text);
 
     }
     /**

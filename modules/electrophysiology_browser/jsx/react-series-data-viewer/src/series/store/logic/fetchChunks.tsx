@@ -114,23 +114,30 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
         channels.map((channel) => {
           return (
             channel &&
-            channel.traces.map((_, j) => {
-              const ncs = shapes.map((shape) => shape[shape.length - 2]);
+            channel.traces.map((_, traceIndex) => {
+              const shapeChunks =
+                shapes.map((shape) => shape[shape.length - 2]);
 
-              const citvs = ncs
-                .map((nc, downsampling) => {
-                  const timeLength = Math.abs(
+              const chunkIntervals = shapeChunks
+                .map((numChunks, downsampling) => {
+                  const recordingDuration = Math.abs(
                     timeInterval[1] - timeInterval[0]
                   );
                   const i0 =
-                    (nc * Math.ceil(bounds.interval[0] - bounds.domain[0])) /
-                    timeLength;
+                    (numChunks *
+                      Math.floor(bounds.interval[0] - bounds.domain[0])
+                    ) / recordingDuration;
                   const i1 =
-                    (nc * Math.ceil(bounds.interval[1] - bounds.domain[0])) /
-                    timeLength;
+                    (numChunks *
+                      Math.ceil(bounds.interval[1] - bounds.domain[0])
+                    ) / recordingDuration;
                   return {
-                    interval: [Math.floor(i0), Math.min(Math.ceil(i1), nc)],
-                    numChunks: nc,
+                    interval:
+                      [
+                        Math.floor(i0),
+                        Math.min(Math.ceil(i1), numChunks),
+                      ],
+                    numChunks: numChunks,
                     downsampling,
                   };
                 })
@@ -140,39 +147,44 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                 )
                 .reverse();
 
-              const max = R.reduce(
+              const finestChunks = R.reduce(
                 R.maxBy(({interval}) => interval[1] - interval[0]),
                 {interval: [0, 0]},
-                citvs
+                chunkIntervals
               );
 
-              const chunkPromises = R.range(...max.interval).map(
+              const chunkPromises = R.range(...finestChunks.interval).flatMap(
                 (chunkIndex) => {
-                  const numChunks = max.numChunks;
-                  return fetchChunkAt(
-                    chunksURL,
-                    max.downsampling,
-                    channel.index,
-                    j,
-                    chunkIndex
-                  ).then((chunk) => ({
-                    interval: [
-                      timeInterval[0] +
-                        (chunkIndex / numChunks) *
-                          (timeInterval[1] - timeInterval[0]),
-                      timeInterval[0] +
-                        ((chunkIndex + 1) / numChunks) *
-                          (timeInterval[1] - timeInterval[0]),
-                    ],
-                    ...chunk,
-                  }));
+                  const numChunks = finestChunks.numChunks;
+                  const chunkInterval = [
+                    timeInterval[0] +
+                    (chunkIndex / numChunks) *
+                    (timeInterval[1] - timeInterval[0]),
+                    timeInterval[0] +
+                    ((chunkIndex + 1) / numChunks) *
+                    (timeInterval[1] - timeInterval[0]),
+                  ];
+                  if (chunkInterval[0] <= bounds.interval[1]) {
+                    return fetchChunkAt(
+                      chunksURL,
+                      finestChunks.downsampling,
+                      channel.index,
+                      traceIndex,
+                      chunkIndex
+                    ).then((chunk) => ({
+                      interval: chunkInterval,
+                      ...chunk,
+                    }));
+                  } else {
+                    return [];
+                  }
                 }
               );
 
               return from(
                 Promise.all(chunkPromises).then((chunks) => ({
                   channelIndex: channel.index,
-                  traceIndex: j,
+                  traceIndex: traceIndex,
                   chunks,
                 }))
               );

@@ -118,8 +118,8 @@ class Media extends \DataFrameworkMenu
         $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = [
-                0 => 'Visible only',
-                1 => 'Hidden only',
+                'visible' => 'Visible only',
+                'hidden'  => 'Hidden only',
             ];
         }
 

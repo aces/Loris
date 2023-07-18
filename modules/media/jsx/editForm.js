@@ -183,7 +183,10 @@ class MediaEditForm extends Component {
             ref='hideFile'
             value={this.state.formData.hideFile}
           />
-          <ButtonElement label='Update File'/>
+          <ButtonElement
+            label='Update File'
+            onUserInput = {() => {}}
+          />
         </FormElement>
       </div>
     );

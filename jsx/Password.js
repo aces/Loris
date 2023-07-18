@@ -94,9 +94,6 @@ Password.defaultProps = {
   placeholder: '',
 };
 
-let RPassword = React.createFactory(Password);
-
 window.Password = Password;
-window.RPassword = RPassword;
 
 export default Password;

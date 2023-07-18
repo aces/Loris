@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   );
 
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(viewProject);
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(viewProject);
 });

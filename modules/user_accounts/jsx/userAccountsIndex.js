@@ -210,8 +210,9 @@ UserAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <UserAccountsIndex
       dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
       hasPermission={loris.userHasPermission}

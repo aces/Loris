@@ -312,11 +312,10 @@ window.addEventListener('load', () => {
   const getParam = (name, deflt) => {
     return params.has(name) ? params.get(name) : deflt;
   };
-  const root = createRoot(
-    document.getElementsByClassName('main-content')[0]
-  );
 
-  root.render(
+  createRoot(
+    document.getElementsByClassName('main-content')[0]
+  ).render(
     <Login
       defaultmode={getParam('page', null)}
       defaultRequestFirstName={getParam('firstname', '')}

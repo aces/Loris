@@ -30,8 +30,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (31,35,'/data/demo/bin/m
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (32,36,'/data/incoming/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (33,37,'/PATH/TO/Genomic-Data/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (34,38,'/data/uploads/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (35,40,'main.css');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (36,41,'25');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (37,44,'localhost');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (39,48,'This database provides an on-line mechanism to store both imaging and behavioural data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (40,51,'[a-zA-Z]{3}[0-9]{4}_[0-9]{6}_[vV][0-9]+');
@@ -111,5 +109,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (123,127,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (124,128,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
+
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

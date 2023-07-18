@@ -143,8 +143,7 @@ class Permissions extends \NDB_Page
             );
         } elseif (empty($releaseid) && !empty($version)) {
             // If there is no release id but there is a version, give
-            // access to every file with that version AND every file
-            // where there is no version.
+            // access to every file with that version.
             if ($version == 'Unversioned') {
                 $IDs = $DB->pselectCol(
                     "SELECT id FROM data_release WHERE
@@ -154,7 +153,7 @@ class Permissions extends \NDB_Page
             } else {
                 $IDs = $DB->pselectCol(
                     "SELECT id FROM data_release WHERE
-                        version IS NULL OR version=:drv",
+                        version=:drv",
                     ['drv' => $posted['data_release_version']],
                 );
             }

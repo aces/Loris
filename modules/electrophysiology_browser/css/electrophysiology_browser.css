@@ -42,6 +42,10 @@ svg {
   user-select: none;
 }
 
+svg:not(:root) {
+  overflow: clip;
+}
+
 .list-group-item {
   position: relative;
   display: flex;
@@ -97,6 +101,26 @@ svg {
   border: 1px solid #333;
 }
 
+.input-interval-bound {
+  width: 60px;
+  height: 22px;
+  font-size: 10px;
+  float: left;
+  text-align: center;
+}
+
+.btn-zoom {
+  margin: 0 auto 3px auto;
+  width: 50px;
+  text-align: center;
+}
+
+.col-xs-title {
+  color: #064785;
+  font-weight: bold;
+  text-align: center;
+}
+
 #electrode-montage .list-group {
   border: 1px solid #ddd;
 }
@@ -133,6 +157,14 @@ svg {
 
 #eegSessionView .panel-heading {
   height: auto !important;
+}
+
+#eegSessionView .panel-heading > div > i {
+  cursor: pointer;
+}
+
+#eegSessionView .panel-heading > div > i:hover {
+  scale: 1.05;
 }
 
 #eegSidebar {
@@ -187,7 +219,7 @@ svg {
 /* Large Devices, Wide Screens */
 @media only screen and (min-width : 1200px) {
   .pull-right-lg {
-    float: right;
+    text-align: right;
   }
 
   .pagination-nav {

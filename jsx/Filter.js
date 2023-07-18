@@ -74,6 +74,7 @@ function Filter(props) {
             element = (
               <SelectElement
                 options={filter.options}
+                sortByValue={filter.sortByValue}
                 multiple={true}
                 emptyOption={false}
               />

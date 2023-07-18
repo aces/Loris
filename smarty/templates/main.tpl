@@ -30,9 +30,10 @@
           document.addEventListener('DOMContentLoaded', () => {
             {if $breadcrumbs|default != "" && empty($error_message)}
               const breadcrumbs = [{$breadcrumbs}];
-              const breadcrumbsRoot = ReactDOM.createRoot(document.getElementById("breadcrumbs"));
-              breadcrumbsRoot.render(
-                RBreadcrumbs({
+              ReactDOM.createRoot(
+                document.getElementById("breadcrumbs")
+              ).render(
+                React.createElement(Breadcrumbs, {
                   breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
                 })
@@ -44,9 +45,10 @@
             {if !$breadcrumbs|strstr:'"Edit Help Content"'}
               const helpContainers = document.getElementsByClassName('help-container');
               for (let i = 0; i < helpContainers.length; i++) {
-                const helpRoot = ReactDOM.createRoot(helpContainers.item(i));
-                helpRoot.render(
-                  RHelp({
+                ReactDOM.createRoot(
+                  helpContainers.item(i)
+                ).render(
+                  React.createElement(RHelp, {
                     testname: loris.TestName,
                     subtest: loris.Subtest,
                     baseURL: loris.BaseURL,
@@ -153,11 +155,13 @@
                                     {$user.Real_name|escape} <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
                                             My Preferences
                                         </a>
                                     </li>
+                                    {/if}
                                     <li>
                                         <a href="{$baseurl}/?logout=true">
                                             Log Out
