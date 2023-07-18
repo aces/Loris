@@ -6,7 +6,7 @@
  * the NDB_BVL_Instrument::_saveValues() function to safely make changes to ages.
  *
  * Usage
- *  - php fix_candidate_age.php;
+ *  - php fix_candidate_age.php check;
  *  - php fix_candidate_age.php confirm;
  *
  * PHP Version 7
@@ -35,9 +35,9 @@ if ($argv[1] == 'confirm') {
     $confirm = true;
 }
 
-$incorrectAges  = [];
-$nullAges       = [];
-$verifiedTables = [];
+$incorrectAges       = [];
+$nullAges            = [];
+$verifiedInstruments = [];
 
 foreach ($instruments as $testName=>$instrument) {
 
@@ -45,66 +45,59 @@ foreach ($instruments as $testName=>$instrument) {
     //Check what database table is associated with this instrument
     echo "Instrument: $testName ($fullName)\n";
 
-    $table = $instrument->table;
-
-    if (in_array($table, $verifiedTables, true)) {
-        echo "\tTable $table has already been verified. skipping.\n";
+    if (in_array($testName, $verifiedInstruments, true)) {
+        echo "\tInstrument $testName has already been verified. skipping.\n";
         continue;
     } else {
         //Add table name to repertoire to make sure it is not checked again
         //in case 2+ instruments use the same table
-        $verifiedTables[] = $table;
+        $verifiedInstruments[] = $testName;
     }
 
-    if (!$DB->tableExists($table)) {
-        echo "\tTable $table for instrument $testName does not exist in the ".
-            "Database\n";
-        continue;
-    } else if (strpos('_proband', $testName) !== false) {
+    if (strpos('_proband', $testName) !== false) {
         echo "\t$testName is a Proband instrument and should be handled ".
             "separately.\n";
         continue;
     }
 
+    $form = array_keys($instrument->form->form);
     // Skip if Date taken does not exist
-    if (!$DB->columnExists($table, 'Date_taken')) {
+    if (!in_array('Date_taken', $form)) {
         echo "\t"
         . "$testName does not use a `Date_taken` field and should be ".
             "handled separately."
         . "\n";
         continue;
     }
-    // Skip if Date taken does not exist
-    if (!$DB->columnExists($table, 'Candidate_Age')) {
+    // Skip if Candidate Age does not exist
+    if (!in_array('Candidate_Age', $form)) {
         echo "\t"
         . "$testName does not use a `Candidate_Age` field "
         . "and should be handled separately.\n";
         continue;
     }
 
-    //Get instrument SQL table
-    $DBInstTable = $DB->pselect(
-        "SELECT i.CommentID, Date_taken, Candidate_Age
-         FROM $table i
-            LEFT JOIN flag f ON (i.commentID=f.CommentID)
-            LEFT JOIN session s ON (f.SessionID=s.ID)
-            LEFT JOIN candidate c ON (s.CandID=c.CandID)
-         WHERE c.Active='Y' AND s.Active='Y'",
+    //Get CommentID list
+    $CommentIDs = $DB->pselectCol(
+        "SELECT f.CommentID FROM flag f
+            JOIN session s ON s.ID=f.SessionID
+            JOIN candidate c ON c.CandID=s.CandID
+        WHERE c.Active='Y' AND s.Active='Y'",
         []
     );
 
-    foreach ($DBInstTable as $k => $row) {
+    foreach ($CommentIDs as $commentID) {
         // Get Instrument Instance with commentID
         try {
             $instrument = NDB_BVL_Instrument::factory(
                 $lorisInstance,
                 $testName,
-                $row['CommentID'],
+                $commentID,
                 '',
                 false
             );
         } catch (Exception $e) {
-            echo "\t$testName instrument row with CommentID: ".$row['CommentID'].
+            echo "\t$testName instrument row with CommentID: ".$commentID.
                 " was ignored for one of the following reasons:\n".
                 "  - The candidate is inactive.\n".
                 "  - The session is inactive.\n\n";
@@ -114,21 +107,21 @@ foreach ($instruments as $testName=>$instrument) {
         if (!$instrument) {
             // instrument does not exist
             echo "\t"
-            . "$testName for CommentID:$row[CommentID] could not be instantiated."
+            . "$testName for CommentID:$commentID could not be instantiated."
             . "\n";
             continue;
         }
 
-        $dateTaken = $row['Date_taken'];
-        $commentID = $row['CommentID'];
+        $data      = $instrument->getInstanceData();
+        $dateTaken = $data['Date_taken'] ?? null;
 
         // Flag for problem with date
         $trouble =false;
-        if (!empty($row['Date_taken'])) {
+        if (!empty($dateTaken)) {
             // Check if age is null OR if wrong age
-            if (empty($row['Candidate_Age'])) {
+            if (empty($data['Candidate_Age'])) {
                 // Null age
-                $nullAges[$testName][$commentID] = $row['CommentID'];
+                $nullAges[$testName][$commentID] = $commentID;
                 $trouble =true;
             } else {
                 // get Age from instrument class
@@ -137,10 +130,9 @@ foreach ($instruments as $testName=>$instrument) {
                     $calculatedAge
                 );
                 //Compare age to value saved in the instrument table
-                $DBAge = $instrument->getFieldValue('Candidate_Age');
+                $DBAge = $data['Candidate_Age'];
 
                 if ($calculatedAgeMonths != $DBAge) {
-                    //$incorrectAges[] = $row;
                     $incorrectAges[$testName][$commentID] = [
                         'cal' => $calculatedAgeMonths,
                         'db'  => $DBAge,

@@ -178,8 +178,9 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = isset($headers['Authorization'])
-                         ? $headers['Authorization']
+        $headers    = array_change_key_case($headers, CASE_LOWER);
+        $authHeader = isset($headers['authorization'])
+                         ? $headers['authorization']
                          : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);

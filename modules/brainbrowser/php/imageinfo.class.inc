@@ -88,17 +88,16 @@ class ImageInfo extends \NDB_Page
     private function _parseFileIDs(string $files_str) : array
     {
         if (strlen($files_str) >= 1 && $files_str[0] == '[') {
-            // An array was passed. Get rid of the brackets and then split on ,
+            // An array was passed. Get rid of the brackets
             $files_str = substr($files_str, 1, strlen($files_str)-2);
-            if ($files_str == "") {
-                return [];
-            }
-            $files = explode(',', $files_str);
-        } else if ($files_str === "") {
-            return [];
-        } else {
-            $files = explode(',', $files_str);
         }
+
+        if ($files_str === "") {
+            return [];
+        }
+
+        // Split on ',' if case an array was passed.
+        $files = explode(',', $files_str);
 
         $parsedIDs = [];
         foreach ($files as $file) {

@@ -4,7 +4,6 @@ This module displays scans that have been flagged for significant variance from 
 
 You can click the link in the *Image File* column to view the scan in BrainBrowser. 
 
-If you click on the link for any scan of problem type "Could not identify scan type" or "Protocol violation" the module will
-display a popup with the details of any problems for that SeriesUID.
+Clicking "Could not identify scan type" or "Protocol violation" links in the *Type of Problem* column will display a popup with the details of any problems for that SeriesUID.
 
 Selecting an option in the *Select Resolution* column drop down will set the *Resolution Status* for the violation.

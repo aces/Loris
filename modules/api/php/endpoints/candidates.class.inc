@@ -245,8 +245,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $pscid,
                 $project->getId()
             );
-        } catch (\LorisException | \InvalidArgumentException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
+        } catch (\ConflictException $e) {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                $e->getMessage()
+            );
+        } catch (\Exception | \LorisException | \InvalidArgumentException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
         }
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);

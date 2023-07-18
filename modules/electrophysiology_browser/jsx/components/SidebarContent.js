@@ -11,7 +11,6 @@ const styles = {
     background: '#E4EBF2',
     border: '1px solid #C3D5DB',
     fontWeight: 200,
-    fontFamily: 'Helvetica, Arial, sans-serif',
   },
   sidebarLink: {
     color: '#064785',

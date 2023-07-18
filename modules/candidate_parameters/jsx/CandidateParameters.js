@@ -131,8 +131,9 @@ CandidateParameters.propTypes = {
 const args = QueryString.get(document.currentScript.src);
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-candidate-parameters">
       <CandidateParameters
         Module="candidate_parameters"

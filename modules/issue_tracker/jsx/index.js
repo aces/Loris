@@ -7,8 +7,9 @@ import React from 'react';
  */
 window.addEventListener('load', () => {
   const id = location.href.split('/issue/')[1];
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <IssueForm
       Module='issue_tracker'
       DataURL={loris.BaseURL

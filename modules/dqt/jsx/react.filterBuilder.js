@@ -120,12 +120,16 @@ class FilterRule extends Component {
     let rule = this.props.rule;
     if (event.target.value) {
       rule.instrument = event.target.value;
-      $.get(loris.BaseURL
-        + '/dqt/ajax/datadictionary.php',
-        {category: rule.instrument}, (data) => {
+      fetch(
+        loris.BaseURL + '/dqt/ajax/datadictionary.php?category='
+            + rule.instrument,
+        {credentials: 'same-origin'},
+      )
+      .then( (resp) => resp.json())
+      .then( (data) => {
         rule.fields = data;
         this.props.updateRule(this.props.index, rule);
-      }, 'json');
+      });
     }
   }
 
@@ -223,15 +227,16 @@ class FilterRule extends Component {
         this.props.updateSessions(this.props.index, rule);
       };
       let ajaxRetrieve = (script) => {
-        $.get(loris.BaseURL + '/dqt/ajax/' + script,
-          {
-            category: rule.instrument,
-            field: rule.field,
-            value: this.state.value,
-          },
-          responseHandler,
-          'json',
-        );
+          fetch(loris.BaseURL + '/dqt/ajax/' + script
+            + '?category=' + rule.instrument
+            + '&field=' + rule.field
+            + '&value=' + this.state.value,
+            {credentials: 'same-origin'},
+          )
+          .then( (resp) => resp.json())
+          .then( (data) => {
+                  responseHandler(data);
+          });
       };
       switch (rule.operator) {
         case 'equal':
