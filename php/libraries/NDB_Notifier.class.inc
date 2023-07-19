@@ -61,6 +61,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
         array $extra_tpl_data=[],
         ?string $custom_message=null
     ): void {
+        $projectID = $extra_tpl_data['project'] ?? null;
+        unset($extra_tpl_data['project']);
         $this->tpl_data = $this->tpl_data + $extra_tpl_data;
 
         if (!empty($custom_message)) {
@@ -70,7 +72,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
 
         // Basic email handler
         if (!empty($this->notified['email_text'])) {
-            $this->_sendEmails();
+            $this->_sendEmails($projectID);
         }
 
     }
@@ -79,10 +81,11 @@ class NDB_Notifier extends NDB_Notifier_Abstract
      * Send emails to concerned users.
      *
      * @return void
+     * @param ?string projectID
      *
      * TODO add validation for email sent/failed
      */
-    private function _sendEmails(): void
+    private function _sendEmails(?string $projectID=null): void
     {
         foreach ($this->notified['email_text'] as $name=>$uid) {
             $notifierID  = $this->notifier->getId();
@@ -90,6 +93,15 @@ class NDB_Notifier extends NDB_Notifier_Abstract
             $this->tpl_data['notified_user'] = $name;
             $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
             $recipientEmail = $this->getEmail((int)$uid);
+
+            $recipientUserID = \Database::singleton()->pselectOne(
+                "SELECT UserID FROM users WHERE ID=:uid",
+                ['uid' =>$uid]
+            );
+            $recipientUser = \User::factory($recipientUserID);
+            if ($projectID && !$recipientUser->hasProject((int)$projectID)) {
+                return;
+            }
 
             if ($notifierID === $uid) {
                 // TODO send confirmation email instead
