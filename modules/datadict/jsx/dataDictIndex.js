@@ -31,7 +31,7 @@ class DataDictIndex extends Component {
       error: false,
       isLoaded: false,
       isLoading: false,
-      fieldOptions: {'sourceFrom': {}},
+      fieldOptions: {'sourceFrom': {}, 'subprojects': {}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -199,6 +199,15 @@ class DataDictIndex extends Component {
                 },
             },
         },
+        {
+          label: 'Subprojects',
+          show: false,
+          filter: {
+              name: 'Subprojects',
+              type: 'multiselect',
+              options: options.subprojects,
+          },
+      },
     ];
     return (
         <FilterableDataTable

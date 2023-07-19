@@ -52,7 +52,7 @@ class Datadict extends \DataFrameworkMenu
 
     /**
      * Returns a list of instruments to use as the "Source From"
-     * filter options
+     * filter options and a list of the subprojects for the current user
      *
      * @return array Dynamic field options
      */
@@ -97,8 +97,17 @@ class Datadict extends \DataFrameworkMenu
             }
             $dictInstruments[$key] = $otherNames . $name;
         }
+        // get subprojects
+        $user        = \NDB_Factory::singleton()->user();
+        $projects    = $user->getProjectIDs();
+        $subprojects = [];
+        foreach ($projects AS $projectID) {
+            $subprojects = $subprojects + \Utility::getSubprojectList($projectID);
+        }
+
         return [
-            'sourceFrom' => $dictInstruments,
+            'sourceFrom'  => $dictInstruments,
+            'subprojects' => $subprojects,
         ];
     }
 
