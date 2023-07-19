@@ -102,7 +102,7 @@ class Datadict extends \DataFrameworkMenu
         $projects = $user->getProjectIDs();
         $cohorts  = [];
         foreach ($projects AS $projectID) {
-            $cohorts = $cohorts + \Utility::getSubprojectList($projectID);
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
         }
 
         return [
