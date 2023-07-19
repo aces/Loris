@@ -55,6 +55,23 @@ class IssueForm extends Component {
   }
 
   /**
+   * Restores special characters in the text string
+   * @param {string} text
+   * @return {string}
+   */
+  htmlSpecialCharsDecode(text) {
+    if (text != null) {
+      return text
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+    } else {
+      return text;
+    }
+  }
+
+  /**
    * Open 'Attachment Upload' Modal
    *
    * @param {object} e - Event object
@@ -234,7 +251,7 @@ class IssueForm extends Component {
             name='title'
             label='Title'
             onUserInput={this.setFormData}
-            value={this.state.formData.title}
+            value={this.htmlSpecialCharsDecode(this.state.formData.title)}
             disabled={!hasEditPermission}
             required={true}
           />

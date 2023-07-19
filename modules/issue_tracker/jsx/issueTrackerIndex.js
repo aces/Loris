@@ -51,6 +51,23 @@ class IssueTrackerIndex extends Component {
   }
 
   /**
+   *  Restores special characters in the text string
+   * @param {string} text
+   * @return {string}
+   */
+  htmlSpecialCharsDecode(text) {
+    if (text != null) {
+      return text
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+    } else {
+      return text;
+    }
+  }
+
+  /**
    * Modify behaviour of specified column cells in the Data Table component
    *
    * @param {string} column - column name
@@ -68,7 +85,7 @@ class IssueTrackerIndex extends Component {
         <a
           href={loris.BaseURL+'/issue_tracker/issue/'+row['Issue ID']}
         >
-          {row.Title}
+          {this.htmlSpecialCharsDecode(row.Title)}
         </a>
       );
       result = <td>{link}</td>;
