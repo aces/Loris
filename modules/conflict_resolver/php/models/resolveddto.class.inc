@@ -43,6 +43,7 @@ class ResolvedDTO implements DataInstance, SiteHaver
     protected $visitlabel;
     protected $instrument;
     protected $question;
+    protected $description;
     protected $value1;
     protected $value2;
     protected $correctanswer;
