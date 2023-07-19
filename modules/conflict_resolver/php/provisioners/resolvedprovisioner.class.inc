@@ -39,6 +39,7 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               session.Visit_label as visitlabel,
               Project.Name as project,
               conflicts_resolved.FieldName as question,
+              parameter_type.Description as description,
               conflicts_resolved.OldValue1 as value1,
               conflicts_resolved.OldValue2 as value2,
               CASE
@@ -55,6 +56,9 @@ class ResolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               Project.ProjectID as projectid
              FROM
               conflicts_resolved
+             LEFT JOIN parameter_type
+                ON (parameter_type.SourceField = conflicts_resolved.FieldName
+                AND parameter_type.SourceFrom = conflicts_resolved.TableName)
              LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
              LEFT JOIN session ON (flag.SessionID=session.ID)
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)

@@ -141,6 +141,10 @@ class UnresolvedFilterableDataTable extends Component {
         name: 'Question',
         type: 'text',
       }},
+      {label: 'Description', show: true, filter: {
+        name: 'Description',
+        type: 'text',
+      }},
       {label: 'Value 1', show: false},
       {label: 'Value 2', show: false},
       {label: 'Correct Answer', show: true},

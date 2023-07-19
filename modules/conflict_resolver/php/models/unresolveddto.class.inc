@@ -62,6 +62,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
             'Visit Label' => $this->visitlabel,
             'Instrument'  => $this->instrument,
             'Question'    => $this->question,
+            'Description' => $this->description,
             'Value 1'     => $this->value1,
             'Value 2'     => $this->value2,
         ];

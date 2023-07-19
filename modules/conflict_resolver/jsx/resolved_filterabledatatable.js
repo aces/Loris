@@ -129,6 +129,10 @@ class ResolvedFilterableDataTable extends Component {
         name: 'Question',
         type: 'text',
       }},
+      {label: 'Description', show: true, filter: {
+        name: 'Description',
+        type: 'text',
+      }},
       {label: 'Value 1', show: true, filter: {
         name: 'Value1',
         type: 'text',
