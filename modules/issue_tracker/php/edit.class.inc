@@ -66,7 +66,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $inactive_users = [];
         if ($user->hasPermission('access_all_profiles')) {
             $assignee_expanded = $db->pselect(
-                "SELECT Real_name, UserID FROM users",
+                "SELECT Real_name, UserID FROM users WHERE Active='Y'",
                 []
             );
 
@@ -84,7 +84,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $assignee_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 AND Active='Y'",
                 [
                     'CenterID' => $CenterID,
                     'DCC'      => $DCCID,
@@ -113,7 +114,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
-            "SELECT Real_name, UserID FROM users",
+            "SELECT Real_name, UserID FROM users WHERE Active='Y'",
             []
         );
         foreach ($potential_watchers_expanded as $w_row) {

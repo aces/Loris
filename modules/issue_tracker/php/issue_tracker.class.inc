@@ -115,7 +115,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         //reporters
         $reporters         = [];
         $reporter_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
@@ -129,7 +129,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         //assignees
         $assignees         = [];
         $assignee_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
