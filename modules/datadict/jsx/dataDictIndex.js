@@ -31,7 +31,7 @@ class DataDictIndex extends Component {
       error: false,
       isLoaded: false,
       isLoading: false,
-      fieldOptions: {'sourceFrom': {}, 'subprojects': {}},
+      fieldOptions: {'sourceFrom': {}, 'cohorts': {}},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -200,12 +200,12 @@ class DataDictIndex extends Component {
             },
         },
         {
-          label: 'Subprojects',
+          label: 'Cohorts',
           show: false,
           filter: {
-              name: 'Subprojects',
+              name: 'Cohorts',
               type: 'multiselect',
-              options: options.subprojects,
+              options: options.cohorts,
           },
       },
     ];
