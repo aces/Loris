@@ -5,10 +5,10 @@
  * To run this script you need to supply two arguments; the timespan and the amount of time.
  * These arguments are used to determine the start date of the digest query.
  *
- *      php Media_Upload_Email_Digest.php [-days|-months|-years] [number] [-email (optional)]
+ *      php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]
  *
  */
-require_once __DIR__ . "/../../tools/generic_includes.php";
+require_once 'generic_includes.php';
 
 if (!isset($argv[1]) || $argv[1] != '-years' && $argv[1] != '-months' && $argv[1] != '-days' ) {
     print "First argument must specify timespan either -years, -months, or -days\n";
@@ -58,7 +58,6 @@ foreach($allUploadedFiles as $entry) {
     array_push($filesByProject[$entry['ProjectID']], $entry);
 }
 
-
 if ($send_emails) {
     // Get the userIDs and emails of users who have notifications enabled for media uploads
     $users_query = "
@@ -101,9 +100,9 @@ if ($send_emails) {
 
         // Get the names of the projects as a string
         $userProjectAliases = preg_replace('/,([^,]*)$/', ' and$1', implode(', ', $userProjects));
-
         // send email to user
         if (!empty($userFiles)) {
+            $factory   = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             Email::send(
                 $email,

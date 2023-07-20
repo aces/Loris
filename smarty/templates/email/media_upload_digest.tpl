@@ -1,4 +1,4 @@
-Subject: [CCNA Study] Media Email Digest for Project(s) {$project} since {$startDate}
+Subject: [LORIS] Media Email Digest for Project(s) {$project} since {$startDate}
 
 <html>
 <body bgcolor="#FFFFFF">

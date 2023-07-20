@@ -26,9 +26,3 @@ INSERT INTO notification_modules_perm_rel (notification_module_id, perm_id) VALU
     (SELECT id from notification_modules where description = 'Media: Email Digest of Recently Uploaded Files'),
     (SELECT permID FROM permissions WHERE code='media_upload_digest')
 );
-
-INSERT INTO notification_modules_services_rel (module_id, service_id) 
-	VALUES (
-		(SELECT id FROM notification_modules WHERE module_name='media' AND operation_type='upload'),
-		(SELECT id FROM notification_services WHERE service='email_text')
-	);

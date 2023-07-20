@@ -94,12 +94,14 @@ class NDB_Notifier extends NDB_Notifier_Abstract
             $this->tpl_data['notifier_user'] = "$notifierID <$senderEmail>";
             $recipientEmail = $this->getEmail((int)$uid);
 
-            $recipientUserID = \Database::singleton()->pselectOne(
+            $factory = NDB_Factory::singleton();
+            $db = $factory->database();
+            $recipientUserID = $db->pselectOne(
                 "SELECT UserID FROM users WHERE ID=:uid",
                 ['uid' =>$uid]
             );
             $recipientUser = \User::factory($recipientUserID);
-            if ($projectID && !$recipientUser->hasProject((int)$projectID)) {
+            if ($projectID && !$recipientUser->hasProject(new \ProjectID($projectID))) {
                 return;
             }
 
