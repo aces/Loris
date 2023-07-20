@@ -1,14 +1,19 @@
 <?php
 /**
- * This script is used to send out an email digest of recent file uploads related to Media.
- * To run this script you need to supply two arguments; the timespan and the amount of time.
- * These arguments are used to determine the start date of the digest query.
+ * This script is used to send out an email digest of
+ * recent file uploads related to Media.
+ * To run this script you need to supply two arguments;
+ * the timespan and the amount of time.
+ * These arguments are used to determine the start
+ * date of the digest query.
  *
- *   Run php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]
+ *   Run php media_upload_digest.php [-days|-months|-years] [#] [-email (opt)]
  */
 require_once 'generic_includes.php';
 
-if (!isset($argv[1]) || $argv[1] != '-years' && $argv[1] != '-months' && $argv[1] != '-days' ) {
+if (!isset($argv[1]) ||
+    $argv[1] != '-years' && $argv[1] != '-months' && $argv[1] != '-days'
+) {
     print "First argument must specify timespan either -years, -months, or -days\n";
     exit;
 }
@@ -56,7 +61,8 @@ foreach ($allUploadedFiles as $entry) {
 }
 
 if ($send_emails) {
-    // Get the userIDs and emails of users who have notifications enabled for media uploads
+    // Get the userIDs and emails of users who
+    // have notifications enabled for media uploads
     $users_query = "
         SELECT DISTINCT u.email, u.ID
         FROM users u
@@ -80,7 +86,9 @@ if ($send_emails) {
             JOIN Project p ON p.ProjectID = upr.ProjectID
             WHERE upr.UserID = $userID
         ";
-        $userProjects      = $DB->pselectColWithIndexKey($userProjectsQuery, [], 'ProjectID');
+        $userProjects      = $DB->pselectColWithIndexKey(
+            $userProjectsQuery, [], 'ProjectID'
+        );
 
         // get all files for the user's projects
         $userFiles = [];
@@ -99,7 +107,10 @@ if ($send_emails) {
         );
 
         // Get the names of the projects as a string
-        $userProjectAliases = preg_replace('/,([^,]*)$/', ' and$1', implode(', ', $userProjects));
+        $userProjectAliases = preg_replace(
+            '/,([^,]*)$/', ' and$1',
+            implode(', ', $userProjects)
+        );
         // send email to user
         if (!empty($userFiles)) {
             $factory = \NDB_Factory::singleton();
@@ -120,9 +131,15 @@ if ($send_emails) {
                 '',
                 'text/html'
             );
-            print_r("\nEmail notification sent to user $email for project(s) $userProjectAliases \n");
+            print_r(
+                "\nEmail notification sent to user
+                $email for project(s) $userProjectAliases \n"
+            );
         } else {
-            print_r("\nNo new files have been uploaded for project(s) $userProjectAliases since: $startDate.\nUser $email will not be notified.\n");
+            print_r(
+                "\nNo new files have been uploaded for project(s)$userProjectAliases
+                since: $startDate.\nUser $email will not be notified.\n"
+            );
         }
     }
 }
