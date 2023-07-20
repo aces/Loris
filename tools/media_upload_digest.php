@@ -11,8 +11,8 @@
  */
 require_once 'generic_includes.php';
 
-if (!isset($argv[1]) ||
-    $argv[1] != '-years' && $argv[1] != '-months' && $argv[1] != '-days'
+if (!isset($argv[1])
+    || $argv[1] != '-years' && $argv[1] != '-months' && $argv[1] != '-days'
 ) {
     print "First argument must specify timespan either -years, -months, or -days\n";
     exit;
@@ -87,7 +87,9 @@ if ($send_emails) {
             WHERE upr.UserID = $userID
         ";
         $userProjects      = $DB->pselectColWithIndexKey(
-            $userProjectsQuery, [], 'ProjectID'
+            $userProjectsQuery,
+            [],
+            'ProjectID'
         );
 
         // get all files for the user's projects
@@ -108,7 +110,8 @@ if ($send_emails) {
 
         // Get the names of the projects as a string
         $userProjectAliases = preg_replace(
-            '/,([^,]*)$/', ' and$1',
+            '/,([^,]*)$/',
+            ' and$1',
             implode(', ', $userProjects)
         );
         // send email to user

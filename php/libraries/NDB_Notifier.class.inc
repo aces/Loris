@@ -102,8 +102,8 @@ class NDB_Notifier extends NDB_Notifier_Abstract
                 ['uid' =>$uid]
             );
             $recipientUser   = \User::factory($recipientUserID);
-            if ($projectID &&
-                !$recipientUser->hasProject(new \ProjectID($projectID))
+            if ($projectID
+                && !$recipientUser->hasProject(new \ProjectID($projectID))
             ) {
                 return;
             }
