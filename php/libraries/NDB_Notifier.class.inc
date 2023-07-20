@@ -80,8 +80,9 @@ class NDB_Notifier extends NDB_Notifier_Abstract
     /**
      * Send emails to concerned users.
      *
+     * @param ?string $projectID project ID
+     *
      * @return void
-     * @param ?string projectID
      *
      * TODO add validation for email sent/failed
      */
@@ -95,12 +96,12 @@ class NDB_Notifier extends NDB_Notifier_Abstract
             $recipientEmail = $this->getEmail((int)$uid);
 
             $factory = NDB_Factory::singleton();
-            $db = $factory->database();
+            $db      = $factory->database();
             $recipientUserID = $db->pselectOne(
                 "SELECT UserID FROM users WHERE ID=:uid",
                 ['uid' =>$uid]
             );
-            $recipientUser = \User::factory($recipientUserID);
+            $recipientUser   = \User::factory($recipientUserID);
             if ($projectID && !$recipientUser->hasProject(new \ProjectID($projectID))) {
                 return;
             }
