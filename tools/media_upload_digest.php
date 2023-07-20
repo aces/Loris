@@ -1,12 +1,10 @@
 <?php
 /**
- *
  * This script is used to send out an email digest of recent file uploads related to Media.
  * To run this script you need to supply two arguments; the timespan and the amount of time.
  * These arguments are used to determine the start date of the digest query.
  *
- *      php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]
- *
+ *   Run php media_upload_digest.php [-days|-months|-years] [number] [-email (optional)]
  */
 require_once 'generic_includes.php';
 
@@ -25,8 +23,7 @@ if ($argv[1] === '-years') {
 if (!isset($argv[2]) || !is_numeric($argv[2])) {
     print "Second argument must specify a number\n";
     exit;
-}
-else {
+} else {
     $num = $argv[2];
 }
 
@@ -51,7 +48,7 @@ $allUploadedFiles = $DB->pselect(
 
 //separate into an array with key as projectID and value as array of files
 $filesByProject = [];
-foreach($allUploadedFiles as $entry) {
+foreach ($allUploadedFiles as $entry) {
     if (!array_key_exists($entry['ProjectID'], $filesByProject)) {
         $filesByProject[$entry['ProjectID']] = [];
     }
@@ -73,46 +70,49 @@ if ($send_emails) {
             AND ns.service = 'email_text'
         )
     ";
-    $users = $DB->pselectColWithIndexKey($users_query,[], 'ID');
+    $users       = $DB->pselectColWithIndexKey($users_query, [], 'ID');
 
     // Loop through each user and get the projects they are associated with
-    foreach($users AS $userID => $email)  {
+    foreach ($users AS $userID => $email) {
         $userProjectsQuery = "
             SELECT DISTINCT upr.ProjectID, p.Alias
             FROM user_project_rel upr
             JOIN Project p ON p.ProjectID = upr.ProjectID
             WHERE upr.UserID = $userID
         ";
-        $userProjects = $DB->pselectColWithIndexKey($userProjectsQuery, [], 'ProjectID');
-        
+        $userProjects      = $DB->pselectColWithIndexKey($userProjectsQuery, [], 'ProjectID');
+
         // get all files for the user's projects
         $userFiles = [];
-        foreach($userProjects as $projectID => $projectAlias) {
+        foreach ($userProjects as $projectID => $projectAlias) {
             if (array_key_exists($projectID, $filesByProject)) {
                 $userFiles = array_merge($userFiles, $filesByProject[$projectID]);
             }
         }
 
         // sort files by last modified date
-        usort($userFiles, function($a, $b) {
-            return $a['last_modified'] <=> $b['last_modified'];
-        });
+        usort(
+            $userFiles,
+            function ($a, $b) {
+                return $a['last_modified'] <=> $b['last_modified'];
+            }
+        );
 
         // Get the names of the projects as a string
         $userProjectAliases = preg_replace('/,([^,]*)$/', ' and$1', implode(', ', $userProjects));
         // send email to user
         if (!empty($userFiles)) {
-            $factory   = \NDB_Factory::singleton();
+            $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             Email::send(
                 $email,
                 'media_upload_digest.tpl',
                 [
-                    'entries' => $userFiles,
+                    'entries'   => $userFiles,
                     'startDate' => $startDate,
-                    'project' => $userProjectAliases,
-                    'count' => count($userFiles),
-                    'url' => $baseURL
+                    'project'   => $userProjectAliases,
+                    'count'     => count($userFiles),
+                    'url'       => $baseURL
                 ],
                 '',
                 '',
