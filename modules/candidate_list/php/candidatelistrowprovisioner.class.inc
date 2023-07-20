@@ -54,6 +54,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
                 DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+                DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
