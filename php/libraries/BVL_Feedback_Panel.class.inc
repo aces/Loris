@@ -101,8 +101,13 @@ class BVL_Feedback_Panel
         $summary = $this->feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
-        // Get test name from lorispath
-        $test_name = preg_split("#/#", $_REQUEST['lorispath'])[1] ?? '';
+        $test_name = '';
+        if (array_key_exists('test_name', $_REQUEST)) {
+            $test_name = $_REQUEST['test_name'];
+        } else if (array_key_exists('lorispath', $_REQUEST)) {
+            $test_name = preg_split("#/#", $_REQUEST['lorispath'])[1] ?? '';
+        }
+
         // Get field names
         $field_names = Utility::getSourcefields($test_name);
         $fields      = [];
