@@ -26,7 +26,7 @@ class IssueForm extends Component {
     super(props);
 
     this.state = {
-      Data: [],
+      Data: {},
       formData: {},
       submissionResult: null,
       errorMessage: null,
@@ -325,7 +325,7 @@ class IssueForm extends Component {
           <SelectElement
             name='othersWatching'
             label='Add others to watching?'
-            emptyOption={true}
+            emptyOption={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
