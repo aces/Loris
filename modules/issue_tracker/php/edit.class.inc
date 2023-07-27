@@ -210,7 +210,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
             $issueData['othersWatching'] = $this->getWatching($issueID);
-            $issueData['assignee'] = $db->pselectOne(
+            $issueData['assignee']       = $db->pselectOne(
                 "SELECT assignee FROM issues WHERE issueID=:issueID",
                 ['issueID' => $issueID]
             );
@@ -385,7 +385,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         $db = $this->loris->getDatabaseConnection();
 
         $watching = $db->pselect(
-            "SELECT userID from issues_watching WHERE issueID=:issueID AND userID NOT IN (SELECT assignee FROM issues WHERE issueID=:issueID AND assignee IS NOT NULL)",
+            "SELECT userID from issues_watching
+            WHERE issueID=:issueID
+            AND userID NOT IN
+            (SELECT assignee FROM issues WHERE issueID=:issueID AND assignee IS NOT NULL)",
             ['issueID' => $issueID]
         );
 
@@ -555,19 +558,34 @@ class Edit extends \NDB_Page implements ETagCalculator
                     ) {
                         continue;
                     }
-                    $this->emailUser($issueID, '', $usersWatching, $user, 'false', $values);
+                    $this->emailUser(
+                        $issueID,
+                        '',
+                        $usersWatching,
+                        $user,
+                        'false',
+                        $values
+                    );
                 }
             }
         }
 
         // Add editor to the watching table unless they don't want to be added.
-        if (isset($values['watching']) && $values['watching'] == 'Yes' && $issueValues['assignee'] !== $user->getUsername()) {
+        if (
+            isset($values['watching'])
+            && $values['watching'] == 'Yes'
+            && $issueValues['assignee'] !== $user->getUsername()
+        ) {
             $nowWatching = [
                 'userID'  => $user->getUsername(),
                 'issueID' => $issueID,
             ];
             $db->replace('issues_watching', $nowWatching);
-        } else if (isset($values['watching']) && $values['watching'] == 'No' && $issueValues['assignee'] !== $user->getUsername()) {
+        } else if (
+            isset($values['watching'])
+            && $values['watching'] == 'No'
+            && $issueValues['assignee'] !== $user->getUsername()
+        ) {
             $db->delete(
                 'issues_watching',
                 [
@@ -578,17 +596,37 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Adding new assignee to watching
-        if (isset($issueValues['assignee']) && $issueValues['assignee'] !== $assignee) {
+        if (
+            isset($issueValues['assignee'])
+            && $issueValues['assignee'] !== $assignee
+        ) {
             $nowWatching = [
                 'userID'  => $issueValues['assignee'],
                 'issueID' => $issueID
             ];
             $db->replace('issues_watching', $nowWatching);
             // sending email
-            $this->emailUser($issueID, $issueValues['assignee'], $usersWatching, $user, 'false', $values);
-        } else if (isset($issueValues['assignee']) && $issueValues['assignee'] === $assignee) {
+            $this->emailUser(
+                $issueID,
+                $issueValues['assignee'],
+                $usersWatching,
+                $user,
+                'false',
+                $values
+            );
+        } else if (
+            isset($issueValues['assignee'])
+            && $issueValues['assignee'] === $assignee
+        ) {
             // sending email
-            $this->emailUser($issueID, $issueValues['assignee'], $usersWatching, $user, 'true', $values);
+            $this->emailUser(
+                $issueID,
+                $issueValues['assignee'],
+                $usersWatching,
+                $user,
+                'true',
+                $values
+            );
         } else {
             $this->emailUser($issueID, '', $usersWatching, $user, 'false', $values);
         }
@@ -604,6 +642,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      * @param string $changed_assignee changed assignee
      * @param string $changed_watcher  changed watcher
      * @param \User  $user             the user requesting the change
+     * @param string $new_assignee_tag boolean of whether it is a new assignee
+     * @param array  $values           the values the user entered in the form
      *
      * @return void
      */
@@ -625,8 +665,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         $msg_data['issueID'] = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
         $msg_data['title']       = $title;
-        $msg_data['comment'] = $values['comment'];
-        
+        $msg_data['comment']     = $values['comment'];
+
         error_log($_POST['comment']);
 
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
@@ -664,10 +704,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'currentUser' => $user->getUserName(),
                 ]
             );
-            
+
             if (isset($issueChangeEmailsAssignee[0])) {
                 $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
-    
+
                 \Email::send(
                     $issueChangeEmailsAssignee[0]['Email'],
                     'issue_assigned_modified.tpl',
@@ -901,7 +941,8 @@ class Edit extends \NDB_Page implements ETagCalculator
     {
         $db = $this->loris->getDatabaseConnection();
         $originalAssignee = $db->pselectOne(
-            'SELECT assignee FROM issues where issueID = :issueID', ['issueID' => $issueID]
+            'SELECT assignee FROM issues where issueID = :issueID',
+            ['issueID' => $issueID]
         );
         foreach ($values as $key => $value) {
             // centerID is allowed to be NULL
