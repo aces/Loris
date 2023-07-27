@@ -388,7 +388,9 @@ class Edit extends \NDB_Page implements ETagCalculator
             "SELECT userID from issues_watching
             WHERE issueID=:issueID
             AND userID NOT IN
-            (SELECT assignee FROM issues WHERE issueID=:issueID AND assignee IS NOT NULL)",
+            (SELECT assignee FROM issues
+            WHERE issueID=:issueID
+            AND assignee IS NOT NULL)",
             ['issueID' => $issueID]
         );
 
@@ -571,21 +573,17 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Add editor to the watching table unless they don't want to be added.
-        if (
-            isset($values['watching'])
+        if (isset($values['watching'])
             && $values['watching'] == 'Yes'
-            && $issueValues['assignee'] !== $user->getUsername()
-        ) {
+            && $issueValues['assignee'] !== $user->getUsername()) {
             $nowWatching = [
                 'userID'  => $user->getUsername(),
                 'issueID' => $issueID,
             ];
             $db->replace('issues_watching', $nowWatching);
-        } else if (
-            isset($values['watching'])
+        } else if (isset($values['watching'])
             && $values['watching'] == 'No'
-            && $issueValues['assignee'] !== $user->getUsername()
-        ) {
+            && $issueValues['assignee'] !== $user->getUsername()) {
             $db->delete(
                 'issues_watching',
                 [
@@ -596,10 +594,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Adding new assignee to watching
-        if (
-            isset($issueValues['assignee'])
-            && $issueValues['assignee'] !== $assignee
-        ) {
+        if (isset($issueValues['assignee'])
+            && $issueValues['assignee'] !== $assignee) {
             $nowWatching = [
                 'userID'  => $issueValues['assignee'],
                 'issueID' => $issueID
@@ -614,10 +610,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'false',
                 $values
             );
-        } else if (
-            isset($issueValues['assignee'])
-            && $issueValues['assignee'] === $assignee
-        ) {
+        } else if (isset($issueValues['assignee'])
+            && $issueValues['assignee'] === $assignee) {
             // sending email
             $this->emailUser(
                 $issueID,
