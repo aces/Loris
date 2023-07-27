@@ -900,6 +900,9 @@ class Edit extends \NDB_Page implements ETagCalculator
     function updateHistory(array $values, int $issueID, \User $user)
     {
         $db = $this->loris->getDatabaseConnection();
+        $originalAssignee = $db->pselectOne(
+            'SELECT assignee FROM issues where issueID = :issueID', ['issueID' => $issueID]
+        );
         foreach ($values as $key => $value) {
             // centerID is allowed to be NULL
             if (!empty($value) || $key === 'centerID') {
@@ -909,6 +912,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'issueID'      => $issueID,
                     'addedBy'      => $user->getUsername(),
                 ];
+                if ($key === 'assignee' && $originalAssignee === $value) {
+                    error_log('assignee did not change');
+                    continue;
+                }
                 $db->insert('issues_history', $changedValues);
             }
         }
