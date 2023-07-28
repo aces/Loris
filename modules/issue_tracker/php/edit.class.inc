@@ -575,7 +575,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Add editor to the watching table unless they don't want to be added.
         if (isset($values['watching'])
             && $values['watching'] == 'Yes'
-            && $issueValues['assignee'] !== $user->getUsername()) {
+            && $issueValues['assignee'] !== $user->getUsername()
+        ) {
             $nowWatching = [
                 'userID'  => $user->getUsername(),
                 'issueID' => $issueID,
@@ -583,7 +584,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->replace('issues_watching', $nowWatching);
         } else if (isset($values['watching'])
             && $values['watching'] == 'No'
-            && $issueValues['assignee'] !== $user->getUsername()) {
+            && $issueValues['assignee'] !== $user->getUsername()
+        ) {
             $db->delete(
                 'issues_watching',
                 [
@@ -595,7 +597,8 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Adding new assignee to watching
         if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] !== $assignee) {
+            && $issueValues['assignee'] !== $assignee
+        ) {
             $nowWatching = [
                 'userID'  => $issueValues['assignee'],
                 'issueID' => $issueID
@@ -611,7 +614,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $values
             );
         } else if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] === $assignee) {
+            && $issueValues['assignee'] === $assignee
+        ) {
             // sending email
             $this->emailUser(
                 $issueID,
