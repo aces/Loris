@@ -575,7 +575,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         // Add editor to the watching table unless they don't want to be added.
         if (isset($values['watching'])
             && $values['watching'] == 'Yes'
-            && $issueValues['assignee'] !== $user->getUsername()
+            && (!isset($issueValues['assignee'])
+            || $issueValues['assignee'] !== $user->getUsername())
         ) {
             $nowWatching = [
                 'userID'  => $user->getUsername(),
@@ -584,7 +585,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->replace('issues_watching', $nowWatching);
         } else if (isset($values['watching'])
             && $values['watching'] == 'No'
-            && $issueValues['assignee'] !== $user->getUsername()
+            && (!isset($issueValues['assignee'])
+            || $issueValues['assignee'] !== $user->getUsername())
         ) {
             $db->delete(
                 'issues_watching',
@@ -608,7 +610,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $this->emailUser(
                 $issueID,
                 $issueValues['assignee'],
-                $usersWatching,
+                isset($usersWatching) ? $usersWatching : '',
                 $user,
                 'false',
                 $values
@@ -620,13 +622,20 @@ class Edit extends \NDB_Page implements ETagCalculator
             $this->emailUser(
                 $issueID,
                 $issueValues['assignee'],
-                $usersWatching,
+                isset($usersWatching) ? $usersWatching : '',
                 $user,
                 'true',
                 $values
             );
         } else {
-            $this->emailUser($issueID, '', $usersWatching, $user, 'false', $values);
+            $this->emailUser(
+                $issueID,
+                '',
+                isset($usersWatching) ? $usersWatching : '',
+                $user,
+                'false',
+                $values
+            );
         }
         return new \LORIS\Http\Response\JsonResponse(
             ['issueID' => $issueID]
