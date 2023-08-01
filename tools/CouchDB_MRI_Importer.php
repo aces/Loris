@@ -250,7 +250,7 @@ class CouchDBMRIImporter
             'acquisition_date'
         );
         $header['FileInsertDate_'.$type]      = date(
-            'Y-m-d',
+            'Y-m-d', 
             $FileObj->getParameter('InsertTime')
         );
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
