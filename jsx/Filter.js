@@ -40,7 +40,8 @@ function Filter(props) {
     const exactMatch = (!(type === 'text' || type === 'date'));
 
     if (value === null || value === '' ||
-      (value.constructor === Array && value.length === 0)) {
+      (value.constructor === Array && value.length === 0) ||
+      (type === 'checkbox' && value === false)) {
       props.removeFilter(name);
     } else {
       props.addFilter(name, value, exactMatch);
