@@ -621,6 +621,15 @@ class LorisForm
             }
         }
 
+        // check if a 'value' attribute is set for this element
+        if (isset($this->form[$name]['value'])) {
+            return $this->_getFilteredValue(
+                $name,
+                $this->form[$name]['value']
+            );
+        }
+
+        // search default values
         if (isset($this->defaultValues[$name])) {
             return $this->_getFilteredValue(
                 $name,
