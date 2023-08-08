@@ -31,8 +31,7 @@ function NameQueryModal(props) {
     return <Modal title="Name Query"
        show={true}
        throwWarning={true}
-       onClose={() => {}}
-       onCancel={props.closeModal}
+       onClose={props.closeModal}
        onSubmit={submitPromise}>
             <form style={{width: '100%', padding: '1em'}}>
                 <FieldsetElement

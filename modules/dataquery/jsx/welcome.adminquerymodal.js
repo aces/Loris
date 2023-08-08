@@ -44,8 +44,7 @@ function AdminQueryModal(props) {
     return <Modal title="Pin Top Query"
        show={true}
        throwWarning={true}
-       onClose={() => {}}
-       onCancel={props.closeModal}
+       onClose={props.closeModal}
        onSubmit={submitPromise}>
             <form style={{width: '100%', padding: '1em'}}>
                 <FieldsetElement
