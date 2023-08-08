@@ -54,14 +54,14 @@ final class Cardinality implements \JsonSerializable
     public function __construct(int $card)
     {
         switch ($card) {
-        case self::UNIQUE: // fallthrough
-        case self::SINGLE: // fallthrough
-        case self::OPTIONAL: // fallthrough
-        case self::MANY: // fallthrough
-            $this->cardinality = $card;
-            break;
-        default:
-            throw new \DomainException("Invalid cardinality");
+            case self::UNIQUE: // fallthrough
+            case self::SINGLE: // fallthrough
+            case self::OPTIONAL: // fallthrough
+            case self::MANY: // fallthrough
+                $this->cardinality = $card;
+                break;
+            default:
+                throw new \DomainException("Invalid cardinality");
         }
     }
 
@@ -74,16 +74,16 @@ final class Cardinality implements \JsonSerializable
     public function __toString() : string
     {
         switch ($this->cardinality) {
-        case self::UNIQUE: // fallthrough
-            return "unique";
-        case self::SINGLE: // fallthrough
-            return "single";
-        case self::OPTIONAL: // fallthrough
-            return "optional";
-        case self::MANY: // fallthrough
-            return "many";
-        default:
-            return "invalid cardinality";
+            case self::UNIQUE: // fallthrough
+                return "unique";
+            case self::SINGLE: // fallthrough
+                return "single";
+            case self::OPTIONAL: // fallthrough
+                return "optional";
+            case self::MANY: // fallthrough
+                return "many";
+            default:
+                return "invalid cardinality";
         }
     }
 

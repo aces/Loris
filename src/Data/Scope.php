@@ -31,12 +31,12 @@ final class Scope implements \JsonSerializable
     public function __construct(int $scope)
     {
         switch ($scope) {
-        case self::CANDIDATE: // fallthrough
-        case self::SESSION:
-            $this->scope = $scope;
-            break;
-        default:
-            throw new \DomainException("Invalid scope");
+            case self::CANDIDATE: // fallthrough
+            case self::SESSION:
+                $this->scope = $scope;
+                break;
+            default:
+                throw new \DomainException("Invalid scope");
         }
     }
 
@@ -49,14 +49,14 @@ final class Scope implements \JsonSerializable
     public function __toString() : string
     {
         switch ($this->scope) {
-        case self::CANDIDATE:
-            return "candidate";
-        case self::SESSION:
-            return "session";
-        default:
-            // This shouldn't happen since the constructor threw an
-            // exception for an invalid value.
-            return "invalid scope";
+            case self::CANDIDATE:
+                return "candidate";
+            case self::SESSION:
+                return "session";
+            default:
+                // This shouldn't happen since the constructor threw an
+                // exception for an invalid value.
+                return "invalid scope";
         }
     }
 
