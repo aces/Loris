@@ -5,7 +5,28 @@
 
 ____________________________________________________________________________________________________________________
 # 25.0
+2021-03-01-publication-add-columns.sql
+2021-09-13_fix_project_primary_key.sql
+2021-12-01-make_subproject_titles_unique.sql
+2022-03-03-AddHEDTags.sql
+2022-11-22-eeg-additional-events-table.sql
+2022-11-24-electrode-coord-system.sql
+2022-12-01-subprojects_no_more.sql
+2022-12-05-AddVizConfig.sql
+2022-12-20-instrumentpermissions.sql
+2022-12-20-project-name-not-null.sql
+2023-01-19_add_index_on_violations_resolved.sql
+2023-01-31-add-date-stage-change.sql
+2023-02-17-imaging-new-config.sql
+2023-02-24-electrophysiology_uploader.sql
+2023-02-28_create_max_days_inactive_config_for_users.sql
+2023-04-24_add_phase_enc_dir_and_echo_number_to_MRICandidateErrors.sql
+
+## 25.0 - cleanup
+2021-11-17-noextlibs.sql
+2022-12-15-Drop_Flag_status.sql
 2023-02-21-unusedconfigs.sql
+2023-07-10-remove_quality_control_from_projects.sql
 ____________________________________________________________________________________________________________________
 # 24.0
 2019-07-01_fix_project_in_session.sql
