@@ -258,7 +258,7 @@ function QueryList(props) {
     const nameModal = nameModalID == null ? '' :
         <NameQueryModal
             onSubmit={(name) => setQueryName(name)}
-            closeModal={() => { console.log('cancellling'); setNameModalID(null);}}
+            closeModal={() => { setNameModalID(null)} }
             defaultName={defaultModalQueryName}
             QueryID={nameModalID}
         />;
@@ -591,10 +591,20 @@ function SingleQueryDisplay(props) {
     }
 
     const loadQuery = () => {
+        const newfields = query.fields.map( (field) => {
+            if (field.visits) {
+                const f = {...field};
+                f.visits = field.visits.map( (visit) => {
+                    return { label: visit, value: visit };
+                });
+                return f;
+            }
+            return field;
+        });
         props.loadQuery(
-                query.fields,
+                newfields,
                 query.criteria,
-                );
+        );
         swal.fire({
             type: 'success',
             title: 'Query Loaded',
@@ -739,7 +749,6 @@ function QueryRunList(props) {
     // runs and queries, so we need to flatten all the information into a single
     // object that it thinks is a query and not a query run.
     const queries = props.queryruns.map((val) => {
-        console.log(val);
         let flattened = {...val.Query};
         flattened.RunTime = val.Runtime;
         flattened.QueryID = val.QueryID;

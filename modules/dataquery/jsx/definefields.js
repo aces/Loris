@@ -178,18 +178,24 @@ function DefineFields(props) {
   const addAll = () => {
       const toAdd = displayed.map((item, i) => {
           const dict = props.displayedFields[item];
-          const visits = dict.visits.filter((visit) => {
-              return props.defaultVisits.includes(visit);
-          }).map((vl) => {
-                  return {value: vl, label: vl};
-          });
-          return {
+          const retObj = {
               module: props.module,
               category: props.category,
               field: item,
               dictionary: dict,
-              visits: visits,
-          };
+          }
+          // Only include defined visits which intersect
+          // with the default ones, convert to the react-select
+          // format used internally.
+          if (dict.visits) {
+              retObj['visits'] = dict.visits.filter((visit) => {
+                  return props.defaultVisits.includes(visit);
+              }).map(
+                (vl) => {
+                  return {value: vl, label: vl};
+              });
+          }
+          return retObj;
       });
       props.onAddAll(toAdd);
   };
