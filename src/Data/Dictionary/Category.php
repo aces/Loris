@@ -17,8 +17,8 @@ class Category
     /**
      * Construct a dictionary Category
      *
-     * @param string $name             The machine name of the category
-     * @param string $desc             The human readable description of
+     * @param string            $name  The machine name of the category
+     * @param string            $desc  The human readable description of
      *                                 the category
      * @param ?DictionaryItem[] $items An optional iterable of items which
      *                                 the category contains.
