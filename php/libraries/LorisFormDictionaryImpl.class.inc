@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-use \LORIS\instruments\DictionaryItem;
+use \LORIS\Data\Dictionary\DictionaryItem;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
@@ -30,12 +30,6 @@ trait LorisFormDictionaryImpl
      * to avoid PhanUndeclaredProperty errors.
      */
     public $testName;
-
-    /**
-     * Variable from NDB_Page. Must be included in trait
-     * to avoid PhanUndeclaredProperty errors.
-     */
-    protected \LORIS\LorisInstance $loris;
 
     /**
      * Recursively extract non-group elements from $elements, and
