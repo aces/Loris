@@ -58,7 +58,11 @@ class Project
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
         ];
-        if ($this->apiversion == 'v0.0.4-dev') {
+        switch ($this->apiversion) {
+        case 'v0.0.3':
+            return $obj;
+        default:
+            // >= v0.0.4
             $obj['Cohorts'] = array_map(
                 function ($cohort) {
                     return $cohort['title'];
