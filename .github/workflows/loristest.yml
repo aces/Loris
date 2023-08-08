@@ -24,6 +24,11 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: zip, php-ast
 
+    - name: Setup Node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+
     - name: Validate composer.json and composer.lock
       run: composer validate
 
