@@ -81,13 +81,12 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-        $pathparts  = $request->getAttribute('pathparts');
+        $pathparts = $request->getAttribute('pathparts');
 
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
             case 'GET':
-                return $this->_handleGET($apiversion);
+                return $this->_handleGET($request);
 
             case 'OPTIONS':
                 return (new \LORIS\Http\Response())
@@ -135,15 +134,16 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * Generates a JSON representation of this project following the API
      * specification.
      *
-     * @param string $version The version of the API the GET is for.
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface
      */
-    private function _handleGET($version): ResponseInterface
+    private function _handleGET(ServerRequestInterface $request): ResponseInterface
     {
         if (isset($this->_cache)) {
             return $this->_cache;
         }
+        $version = $request->getAttribute("LORIS-API-Version") ?? "unknown";
 
         $array = (new \LORIS\api\Views\Project($this->_project, $version))
             ->toArray();
@@ -162,7 +162,6 @@ class Project extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        $apiversion = $request->getAttribute("LORIS-API-Version") ?? "unknown";
-        return md5(json_encode($this->_handleGET($apiversion)->getBody()));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }
