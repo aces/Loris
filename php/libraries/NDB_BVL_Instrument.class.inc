@@ -1442,7 +1442,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getVisitLabel(): string
     {
         if ($this->visitLabel === null) {
-            $this->visitLabel = \TimePoint::singleton($this->getSessionID())->getVisitLabel();
+            $this->visitLabel = \TimePoint::singleton(
+                $this->getSessionID()
+            )->getVisitLabel();
         }
         return $this->visitLabel;
     }
@@ -2213,7 +2215,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
-                "SELECT SessionID, CommentID, session.Visit_Label as VisitLabel, Data FROM flag JOIN session ON (session.ID=flag.SessionID) WHERE CommentID IN ("
+                "SELECT SessionID,
+                        CommentID,
+                        session.Visit_Label as VisitLabel,
+                        Data
+                    FROM flag
+                        JOIN session ON (session.ID=flag.SessionID)
+                    WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2223,7 +2231,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
                     $newinst->commentID    = $row['CommentID'];
                     $newinst->visitLabel   = $row['VisitLabel'];
-                    $newinst->sessionID = new SessionID($row['SessionID']);
+                    $newinst->sessionID    = new SessionID($row['SessionID']);
                     $newinst->instanceData = json_decode(
                         $row['Data'] ?? '{}',
                         true,
@@ -2235,7 +2243,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $defaults = $db->pselect(
-                "SELECT flag.CommentID as CommentID, session.Visit_Label as VisitLabel, session.ID as SessionID, t.* FROM $this->table t JOIN flag ON (t.CommentID=flag.CommentID) JOIN session ON (flag.SessionID=session.ID) WHERE t.CommentID IN ("
+                "SELECT flag.CommentID as CommentID,
+                        session.Visit_Label as VisitLabel,
+                        session.ID as SessionID, t.*
+                 FROM $this->table t
+                    JOIN flag ON (t.CommentID=flag.CommentID)
+                    JOIN session ON (flag.SessionID=session.ID)
+                 WHERE t.CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2243,10 +2257,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 function ($row) {
                     $newinst = clone $this;
 
-                    $newinst->commentID    = $row['CommentID'];
-                    $newinst->visitLabel   = $row['VisitLabel'];
-                    $newinst->sessionID = new SessionID($row['SessionID']);
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID($row['SessionID']);
                     unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
+
                     $newinst->instanceData = $row;
 
                     return $newinst;
