@@ -226,7 +226,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      *     if no bytes are available.
      * @throws \RuntimeException if an error occurs.
      */
-    public function read(int $length) : string
+    public function read(int $length) : ?string
     {
         $val = fread($this->stream, $length);
         if ($val === false) {
@@ -257,7 +257,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * The keys returned are identical to the keys returned from PHP's
      * stream_get_meta_data() function.
      *
-     * @param string $key Specific metadata to retrieve.
+     * @param string|null $key Specific metadata to retrieve.
      *
      * @see http://php.net/manual/en/function.stream-get-meta-data.php
      *
