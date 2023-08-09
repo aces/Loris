@@ -222,11 +222,11 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      *     them. Fewer than $length bytes may be returned if underlying stream
      *     call returns fewer bytes.
      *
-     * @return string Returns the data read from the stream, or an empty string
+     * @return string|null Returns the data read from the stream, or an empty string
      *     if no bytes are available.
      * @throws \RuntimeException if an error occurs.
      */
-    public function read($length)
+    public function read(int $length) : string
     {
         $val = fread($this->stream, $length);
         if ($val === false) {
