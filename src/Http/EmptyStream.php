@@ -112,7 +112,7 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @return int 0
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek(int $offset, int $whence = SEEK_SET) : int
     {
         return 0;
     }
@@ -144,7 +144,7 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @return int The number of bytes written (always 0)
      */
-    public function write($string) : int
+    public function write(string $string) : int
     {
         return 0;
     }
@@ -166,7 +166,7 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @return string ""
      */
-    public function read($length)
+    public function read(int $length) : string
     {
         return "";
     }
@@ -188,7 +188,7 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @return null
      */
-    public function getMetadata($key = null)
+    public function getMetadata(?string $key = null)
     {
         return null;
     }

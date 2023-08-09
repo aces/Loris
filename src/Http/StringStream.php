@@ -150,7 +150,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * @return void
      * @throws \RuntimeException on failure.
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek(int $offset, int $whence = SEEK_SET)
     {
         $off = fseek($this->stream, $offset, $whence);
         if ($off === -1) {
@@ -194,7 +194,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * @return int Returns the number of bytes written to the stream.
      * @throws \RuntimeException on failure.
      */
-    public function write($string)
+    public function write(string $string) : int
     {
         $n = fwrite($this->stream, $string);
         if ($n === false) {
@@ -265,7 +265,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
      */
-    public function getMetadata($key = null)
+    public function getMetadata(?string $key = null)
     {
         $metadata = stream_get_meta_data($this->stream);
         if ($key === null) {
