@@ -1032,7 +1032,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 "InstrumentFormatVersion" => "v0.0.1a-dev",
                 "ShortName"               => "",
                 "LongName"                => "",
-                "IncludeMetaDataFields"   => "false",
+                "IncludeMetaDataFields"   => "true",
             ],
             'Elements' => [],
         ];
