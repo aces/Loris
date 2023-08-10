@@ -60,72 +60,39 @@ foreach ($allUploadedFiles as $entry) {
     array_push($filesByProject[$entry['ProjectID']], $entry);
 }
 
+// Get the userIDs and emails of users who
+// have notifications enabled for media uploads
+$users_query = "
+    SELECT DISTINCT u.email, u.ID
+    FROM users u
+    WHERE u.ID IN (
+    SELECT unr.user_id
+    FROM notification_modules nm
+    JOIN users_notifications_rel unr ON unr.module_id = nm.id
+    JOIN notification_services ns ON ns.id = unr.service_id
+    WHERE nm.module_name = 'media'
+        AND nm.operation_type = 'digest'
+        AND ns.service = 'email_text'
+    )
+";
+$users       = $DB->pselectColWithIndexKey($users_query, [], 'ID');
+
 if ($send_emails) {
-    // Get the userIDs and emails of users who
-    // have notifications enabled for media uploads
-    $users_query = "
-        SELECT DISTINCT u.email, u.ID
-        FROM users u
-        WHERE u.ID IN (
-        SELECT unr.user_id
-        FROM notification_modules nm
-        JOIN users_notifications_rel unr ON unr.module_id = nm.id
-        JOIN notification_services ns ON ns.id = unr.service_id
-        WHERE nm.module_name = 'media'
-            AND nm.operation_type = 'digest'
-            AND ns.service = 'email_text'
-        )
-    ";
-    $users       = $DB->pselectColWithIndexKey($users_query, [], 'ID');
-
-    // Loop through each user and get the projects they are associated with
     foreach ($users AS $userID => $email) {
-        $userProjectsQuery = "
-            SELECT DISTINCT upr.ProjectID, p.Alias
-            FROM user_project_rel upr
-            JOIN Project p ON p.ProjectID = upr.ProjectID
-            WHERE upr.UserID = $userID
-        ";
-        $userProjects      = $DB->pselectColWithIndexKey(
-            $userProjectsQuery,
-            [],
-            'ProjectID'
-        );
+        $userInfo = getUserInfo($userID, $filesByProject, $DB, true);
 
-        // get all files for the user's projects
-        $userFiles = [];
-        foreach ($userProjects as $projectID => $projectAlias) {
-            if (array_key_exists($projectID, $filesByProject)) {
-                $userFiles = array_merge($userFiles, $filesByProject[$projectID]);
-            }
-        }
-
-        // sort files by last modified date
-        usort(
-            $userFiles,
-            function ($a, $b) {
-                return $a['last_modified'] <=> $b['last_modified'];
-            }
-        );
-
-        // Get the names of the projects as a string
-        $userProjectAliases = preg_replace(
-            '/,([^,]*)$/',
-            ' and$1',
-            implode(', ', $userProjects)
-        );
         // send email to user
-        if (!empty($userFiles)) {
+        if (!empty($userInfo['userFiles'])) {
             $factory = \NDB_Factory::singleton();
             $baseURL = $factory->settings()->getBaseURL();
             Email::send(
                 $email,
                 'media_upload_digest.tpl',
                 [
-                    'entries'   => $userFiles,
+                    'entries'   => $userInfo['userFiles'],
                     'startDate' => $startDate,
-                    'project'   => $userProjectAliases,
-                    'count'     => count($userFiles),
+                    'project'   => $userInfo['userProjectAliases'],
+                    'count'     => count($userInfo['userFiles']),
                     'url'       => $baseURL
                 ],
                 '',
@@ -145,4 +112,74 @@ if ($send_emails) {
             );
         }
     }
+} else {
+    print_r(
+        "\n Emails have not been sent.
+        If you would like to send notifications to the following users,
+        re-run the script with \"-email.\"\n"
+    );
+    foreach ($users AS $userID => $email) {
+        $userInfo           = getUserInfo($userID, $filesByProject, $DB, false);
+        $userProjectAliases = $userInfo['userProjectAliases'];
+        print_r(
+            "\nUser $email will be notified for project(s)
+            $userProjectAliases \n"
+        );
+    }
+}
+/**
+ * Returns an array containing the user's files,
+ * and the names of the projects the user is involved with.
+ * If $getFiles is false, the user's files will not be returned.
+ *
+ * @param string $userID         the user's id
+ * @param array  $filesByProject files as an array of each project
+ * @param object $DB             database object
+ * @param bool   $getFiles       a flag to sort out the user's files.
+ *
+ * @return array
+ **/
+function getUserInfo($userID, $filesByProject, $DB, $getFiles)
+{
+    $userProjectsQuery = "
+        SELECT DISTINCT upr.ProjectID, p.Alias
+        FROM user_project_rel upr
+        JOIN Project p ON p.ProjectID = upr.ProjectID
+        WHERE upr.UserID = $userID
+    ";
+    $userProjects      = $DB->pselectColWithIndexKey(
+        $userProjectsQuery,
+        [],
+        'ProjectID'
+    );
+
+    $userFiles = [];
+    if ($getFiles) {
+        // get all files for the user's projects
+        foreach ($userProjects as $projectID => $projectAlias) {
+            if (array_key_exists($projectID, $filesByProject)) {
+                $userFiles = array_merge($userFiles, $filesByProject[$projectID]);
+            }
+        }
+
+        // sort files by last modified date
+        usort(
+            $userFiles,
+            function ($a, $b) {
+                return $a['last_modified'] <=> $b['last_modified'];
+            }
+        );
+    }
+
+    // Get the names of the projects as a string
+    $userProjectAliases = preg_replace(
+        '/,([^,]*)$/',
+        ' and$1',
+        implode(', ', $userProjects)
+    );
+
+    return [
+        'userFiles'          => $userFiles,
+        'userProjectAliases' => $userProjectAliases
+    ];
 }
