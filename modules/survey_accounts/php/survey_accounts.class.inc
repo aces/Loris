@@ -74,14 +74,22 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
+        $statusOptions = [
+            'Created'     => 'Created',
+            'Sent'        => 'Sent',
+            'In Progress' => 'In Progress',
+            'Complete'    => 'Complete',
+        ];
+
         $instruments
             = \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList(
                 $this->loris
             );
 
         return [
-            'visits'      => \Utility::getVisitList(),
-            'instruments' => $instruments,
+            'visits'        => \Utility::getVisitList(),
+            'instruments'   => $instruments,
+            'statusOptions' => $statusOptions,
         ];
     }
 
