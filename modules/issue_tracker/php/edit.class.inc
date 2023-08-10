@@ -192,7 +192,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $isWatching            = $db->pselectOne(
+            $isWatching = $db->pselectOne(
                 "SELECT userID, issueID FROM issues_watching
                 WHERE issueID=:issueID AND userID=:userID",
                 [
@@ -201,23 +201,23 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ]
             );
 
-            // Add current assignee in assignees dropdown even if not active 
+            // Add current assignee in assignees dropdown even if not active
             if (!isset($assignees[$issueData['assignee']])) {
                 $assignees[$issueData['assignee']] = $db->pselectOne(
                     "SELECT Real_name FROM users
-                    WHERE UserID=:userID", 
+                    WHERE UserID=:userID",
                     [
-                        'userID'  => $issueData['assignee']
+                        'userID' => $issueData['assignee']
                     ]
                 );
             }
-            
+
             $othersWatching = $this->getWatching($issueID);
             // add current watchers to others watching, even if not active
             $otherWatchers = array_merge($otherWatchers, $othersWatching);
             unset($otherWatchers[$user->getUserName()]);
 
-            $issueData['watching'] = $isWatching === null ? 'No' : 'Yes';
+            $issueData['watching']       = $isWatching === null ? 'No' : 'Yes';
             $issueData['commentHistory'] = $this->getComments($issueID);
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
@@ -360,7 +360,7 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int $issueID the relevant issue
      *
-     * @return array [Real_name => userID] of 
+     * @return array [Real_name => userID] of
      *               those who are watching
      */
     function getWatching(int $issueID): array
@@ -847,8 +847,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      * Puts updated fields into the issues_comments table.
      *
      * @param ?string $comment new issue comment
-     * @param int    $issueID the issue ID
-     * @param \User  $user    the user
+     * @param int     $issueID the issue ID
+     * @param \User   $user    the user
      *
      * @return void
      */

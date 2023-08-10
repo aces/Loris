@@ -159,7 +159,7 @@ class Issue extends \NDB_Form
         // the ajax/EditIssue.php hack.
         return parent::handle($request);
     }
-    
+
     /**
      * Generate a breadcrumb trail for this page.
      *
