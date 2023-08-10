@@ -2205,6 +2205,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $prepBindings[]      = ":cid$i";
             $prepValues["cid$i"] = $commentID;
         }
+        if ($i === 0) {
+            return [];
+        }
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
