@@ -65,15 +65,6 @@ foreach ($allUploadedFiles as $entry) {
 $users_query = "
     SELECT DISTINCT u.email, u.ID
     FROM users u
-    WHERE u.ID IN (
-    SELECT unr.user_id
-    FROM notification_modules nm
-    JOIN users_notifications_rel unr ON unr.module_id = nm.id
-    JOIN notification_services ns ON ns.id = unr.service_id
-    WHERE nm.module_name = 'media'
-        AND nm.operation_type = 'digest'
-        AND ns.service = 'email_text'
-    )
 ";
 $users       = $DB->pselectColWithIndexKey($users_query, [], 'ID');
 
@@ -114,16 +105,14 @@ if ($send_emails) {
     }
 } else {
     print_r(
-        "\n Emails have not been sent.
-        If you would like to send notifications to the following users,
-        re-run the script with \"-email.\"\n"
+        "\nEmails have not been sent. If you would like to send notifications to" .
+        " the following users, re-run the script with \"-email.\"\n"
     );
     foreach ($users AS $userID => $email) {
         $userInfo           = getUserInfo($userID, $filesByProject, $DB, false);
         $userProjectAliases = $userInfo['userProjectAliases'];
         print_r(
-            "\nUser $email will be notified for project(s)
-            $userProjectAliases \n"
+            "\nUser $email will be notified for project(s): $userProjectAliases \n"
         );
     }
 }
