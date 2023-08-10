@@ -674,8 +674,6 @@ class Edit extends \NDB_Page implements ETagCalculator
         $msg_data['title']       = $title;
         $msg_data['comment']     = $values['comment'];
 
-        error_log($_POST['comment']);
-
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
             $issueChangeEmailsAssignee = $db->pselect(
                 "SELECT
@@ -961,7 +959,6 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'addedBy'      => $user->getUsername(),
                 ];
                 if ($key === 'assignee' && $originalAssignee === $value) {
-                    error_log('assignee did not change');
                     continue;
                 }
                 $db->insert('issues_history', $changedValues);
