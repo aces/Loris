@@ -71,6 +71,7 @@ $users       = $DB->pselectColWithIndexKey($users_query, [], 'ID');
 if ($send_emails) {
     foreach ($users AS $userID => $email) {
         $userInfo = getUserInfo($userID, $filesByProject, $DB, true);
+        $userProjectAliases = $userInfo['userProjectAliases'];
 
         // send email to user
         if (!empty($userInfo['userFiles'])) {
@@ -82,7 +83,7 @@ if ($send_emails) {
                 [
                     'entries'   => $userInfo['userFiles'],
                     'startDate' => $startDate,
-                    'project'   => $userInfo['userProjectAliases'],
+                    'project'   => $userProjectAliases,
                     'count'     => count($userInfo['userFiles']),
                     'url'       => $baseURL
                 ],
@@ -98,8 +99,8 @@ if ($send_emails) {
             );
         } else {
             print_r(
-                "\nNo new files have been uploaded for project(s)$userProjectAliases
-                since: $startDate.\nUser $email will not be notified.\n"
+                "\nNo new files have been uploaded for project(s) $userProjectAliases" .
+                " since: $startDate.\nUser $email will not be notified.\n"
             );
         }
     }
