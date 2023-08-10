@@ -779,7 +779,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _saveValues(array $values): void
     {
-        if (strrpos($this->testName, "_proband") === false) {
+        // Surveys do not ask for the metadata informatio nand thus date_taken is
+        // always null so there is no use in going into the savecandidateage function
+        if (strrpos($this->testName, "_proband") === false
+            && $this->DataEntryType === 'normal'
+        ) {
             $this->_saveCandidateAge($values);
         }
 
