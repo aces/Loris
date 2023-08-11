@@ -4,7 +4,6 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -200,16 +199,6 @@ class IssueForm extends Component {
           </div>
         </div>
       );
-
-      const descr = <Markdown content={this.state.issueData.desc} />;
-      description = (
-        <StaticElement
-          name='description'
-          label='Description'
-          ref='description'
-          text={descr}
-        />
-      );
     }
 
     return (
@@ -238,7 +227,14 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             required={true}
           />
-          {description}
+          <TextareaElement
+            name='description'
+            label='Description'
+            onUserInput={this.setFormData}
+            value={this.state.formData.description}
+            disabled={!hasEditPermission}
+            required={false}
+          />
           <SelectElement
             name='assignee'
             label='Assignee'

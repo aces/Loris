@@ -209,15 +209,14 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData['commentHistory'] = $this->getComments($issueID);
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
+            $issueData['description'] = $this->getDescription($issueID);
             $issueData['othersWatching'] = $this->getWatching($issueID);
 
             // We need to unescape the string here:
             // React is escaping the string in the template
             // This fixes an issue with multiple escaping (#6643)
-            $issueData['desc'] = '';
             if (count($desc) > 0) {
                 $comment           = $desc[0]['issueComment'];
-                $issueData['desc'] = html_entity_decode($comment);
             }
         }
         $issueData['comment'] = null;
@@ -296,6 +295,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priority'      => 'normal',
             'issueID'       => 0, // TODO: this is dumb
             'title'         => null,
+            'description'   => null,
             'lastUpdate'    => null,
             'PSCID'         => null,
             'assignee'      => null,
@@ -393,6 +393,29 @@ class Edit extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Gets the description of the issue
+     *
+     * @param int $issueID the relevant issue
+     *
+     * @return string
+     */
+    function getDescription(int $issueID): string
+    {
+        $db = $this->loris->getDatabaseConnection();
+
+        $desc = $db->pselect(
+            "SELECT description from issues WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+
+        $description = "";
+        foreach ($desc as $d) {
+            $description = $d['description'];
+        }
+        return $description;
+    }
+
+    /**
      * Returns the site name in the database corresponding to the centerID
      *
      * @param int $centerID - must match one from the psc table or 0
@@ -434,6 +457,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'priority',
             'centerID',
             'title',
+            'description',
             'category',
             'module',
         ];
