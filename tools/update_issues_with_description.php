@@ -20,9 +20,9 @@ require_once __DIR__ . "/generic_includes.php";
 
 $tablename = "issues";
 $filename  = __DIR__ . "/../project/tables_sql/".$tablename.".sql";
-$output = "ALTER TABLE $tablename ADD description longtext DEFAULT NULL;\n";
-$output .= "SET FOREIGN_KEY_CHECKS=0;\n";
-$output .= "UPDATE $tablename
+$output    = "ALTER TABLE $tablename ADD description longtext DEFAULT NULL;\n";
+$output   .= "SET FOREIGN_KEY_CHECKS=0;\n";
+$output   .= "UPDATE $tablename
     SET description = (
         SELECT issueComment
         FROM issues_comments ic
@@ -34,8 +34,8 @@ $output .= "UPDATE $tablename
         SELECT issueID
         FROM issues_comments
     );\n";
-$output .= "ALTER TABLE issues_history MODIFY fieldChanged enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';\n";
-$dirname = dirname($filename);
+$output   .= "ALTER TABLE issues_history MODIFY fieldChanged enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';\n";
+$dirname   = dirname($filename);
 if (!is_dir($dirname)) {
     mkdir($dirname, 0755, true);
 }
@@ -58,12 +58,12 @@ echo "\n $tablename table updation complete\n";
 function runPatch(string $file): void
 {
     global $mysqlCommand;
-    $config   = \NDB_Factory::singleton()->config();
-    $dbInfo   = $config->getSettingFromXML('database');
-    $dbname   = $dbInfo['database'];
-    $host     = $dbInfo['host'];
-    $username = $dbInfo['adminUser'];
-    $password = $dbInfo['adminPassword'];
+    $config       = \NDB_Factory::singleton()->config();
+    $dbInfo       = $config->getSettingFromXML('database');
+    $dbname       = $dbInfo['database'];
+    $host         = $dbInfo['host'];
+    $username     = $dbInfo['adminUser'];
+    $password     = $dbInfo['adminPassword'];
     $mysqlCommand = sprintf(
         "mysql -A %s -u %s -h %s -p%s",
         escapeshellarg($dbname),
