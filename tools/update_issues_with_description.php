@@ -34,7 +34,10 @@ $output   .= "UPDATE $tablename
         SELECT issueID
         FROM issues_comments
     );\n";
-$output   .= "ALTER TABLE issues_history MODIFY fieldChanged enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';\n";
+$output   .= "ALTER TABLE issues_history MODIFY fieldChanged
+enum('assignee','status','comment','sessionID','centerID','title','category',
+'module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT
+'comment';\n";
 $dirname   = dirname($filename);
 if (!is_dir($dirname)) {
     mkdir($dirname, 0755, true);
