@@ -185,13 +185,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID, $user);
 
-            $desc = $db->pselect(
-                "SELECT issueComment
-                FROM issues_comments WHERE issueID=:i
-                ORDER BY dateAdded LIMIT 1",
-                ['i' => $issueID]
-            );
-
             $provisioner = (new AttachmentProvisioner($issueID));
             $attachments = (new \LORIS\Data\Table())
                 ->withDataFrom($provisioner)
