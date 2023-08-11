@@ -215,9 +215,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             // We need to unescape the string here:
             // React is escaping the string in the template
             // This fixes an issue with multiple escaping (#6643)
-            if (count($desc) > 0) {
-                $comment = $desc[0]['issueComment'];
-            }
         }
         $issueData['comment'] = null;
 
