@@ -147,6 +147,12 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'json'    => $json_data,
             ]
         );
+        $instrArray = json_decode(
+            (string) utf8_encode(
+                $response->getBody()->getContents()
+            ),
+            true
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals($instrArray['Instruments'], ['bmi', 'testtest']);
     }
