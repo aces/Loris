@@ -136,14 +136,14 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'CandID' => $this->candidTest,
                 'Visit' => $this->visitTest,
             ],
-            "Instruments" => [ 'testtest' ];
+            "Instruments" => [ 'testtest' ],
         ];
         $response = $this->client->request(
             'POST',
             "candidates/$this->candidTest/$this->visitTest/instruments",
             [
                 'http_errors' => false,
-                'headers'     => $this->headers
+                'headers'     => $this->headers,
                 'json'    => $json_data,
             ]
         );
