@@ -80,7 +80,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "SELECT ID FROM session WHERE Visit_label=:VL AND CandID=:Candidate",
             [
                 'VL' => $this->visitTest,
-                'CandID' => $this->candidTest
+                'Candidate' => $this->candidTest
             ]
         );
         $this->DB->delete("flag", ['SessionID' => $SessionID]);
