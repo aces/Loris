@@ -172,19 +172,28 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return $this->_cache;
     }
 
+    /**
+     * Handle an incoming post request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
     private function _handlePOST(ServerRequestInterface $request): ResponseInterface
     {
-        $version     = $request->getAttribute("LORIS-API-Version");
-        $user = $request->getAttribute("user");
-        $loris     = $request->getAttribute("loris");
+        $version = $request->getAttribute("LORIS-API-Version");
+        $user    = $request->getAttribute("user");
+        $loris   = $request->getAttribute("loris");
+
         if ($version == 'v0.0.3') {
-            return new \LORIS\Http\Response\NotFound();
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
+
         $requestdata = json_decode($request->getBody()->__toString(), true);
         if (empty($requestdata)) {
-            return new \LORIS\Http\Response\BadRequest();
+            return new \LORIS\Http\Response\JSON\BadRequest();
         }
-        foreach($requestdata['Instruments'] as $instrument) {
+        foreach ($requestdata['Instruments'] as $instrument) {
             try {
                 $instrument = \NDB_BVL_Instrument::factory(
                     $loris,
@@ -196,21 +205,19 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 if (!$instrument->_hasAccess($user)) {
                     return new \LORIS\Http\Response\JSON\Forbidden();
                 }
-            } catch(\Exception $e) {
-                return new \LORIS\Http\Response\InternalServerError();
+            } catch (\Exception $e) {
+                return new \LORIS\Http\Response\JSON\InternalServerError();
             }
         }
         $battery = new \NDB_BVL_Battery();
         $battery->selectBattery($this->_visit->getSessionID());
         $existingBattery = $battery->getBattery();
-        foreach($requestdata['Instruments'] as $instrument) {
+        foreach ($requestdata['Instruments'] as $instrument) {
             if (in_array($instrument, $existingBattery)) {
                 continue;
             }
             $battery->addInstrument($loris, $instrument);
         }
-
-
 
         $view = (new \LORIS\api\Views\Visit\Instruments(
             $this->_visit
