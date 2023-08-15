@@ -98,7 +98,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             "candidates/$this->candidTest/$this->visitTest/instruments",
             [
                 'http_errors' => false,
-                'headers'     => $this->headers
+                'headers'     => $this->headers,
                 'json'    => $json_data,
             ]
         );
