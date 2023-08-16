@@ -32,8 +32,6 @@ interface QueryEngine
      *
      * If visitlist is provided, session scoped variables will match
      * if the criteria is met for at least one of those visit labels.
-     *
-     * @return CandID[]
      */
     public function getCandidateMatches(
         QueryTerm $criteria,
