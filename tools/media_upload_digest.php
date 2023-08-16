@@ -40,15 +40,17 @@ if (isset($argv[3]) && $argv[3] === '-email') {
 $startDate = date('Y-m-d H:i:s', strtotime("-$num $timespan"));
 
 // Selects file information for files uploaded since the startDate
-$allUploadedFiles = $DB->pselect(
+$preparedStatement = $DB->prepare(
     "SELECT PSCID, file_name, last_modified, uploaded_by, s.ProjectID, p.Alias
     FROM media m 
     JOIN session s ON (m.session_id=s.ID)
     JOIN candidate c ON (s.CandID=c.CandID)
     JOIN Project p ON (s.ProjectID=p.ProjectID)
     WHERE hide_file <> 1 
-    AND last_modified > '$startDate'",
-    []
+    AND last_modified > ':startDate'"
+);
+$allUploadedFiles = $preparedStatement->execute(
+    ['startDate' => $startDate],
 );
 
 //separate into an array with key as projectID and value as array of files
@@ -142,15 +144,12 @@ if ($send_emails) {
  **/
 function getUserInfo($userID, $filesByProject, $DB, $getFiles)
 {
-    $userProjectsQuery = "
-        SELECT DISTINCT upr.ProjectID, p.Alias
+    $userProjects      = $DB->pselectColWithIndexKey(
+        "SELECT DISTINCT upr.ProjectID, p.Alias
         FROM user_project_rel upr
         JOIN Project p ON p.ProjectID = upr.ProjectID
-        WHERE upr.UserID = $userID
-    ";
-    $userProjects      = $DB->pselectColWithIndexKey(
-        $userProjectsQuery,
-        [],
+        WHERE upr.UserID = :userID",
+        ['userID' => $userID],
         'ProjectID'
     );
 
