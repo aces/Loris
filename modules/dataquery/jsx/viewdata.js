@@ -585,7 +585,7 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
  * @return {object}
  */
 function getDictionary(fieldobj, dict) {
-    if (!dict
+    if (!dict || !fieldobj 
         || !dict[fieldobj.module]
         || !dict[fieldobj.module][fieldobj.category]
         || !dict[fieldobj.module][fieldobj.category][fieldobj.field]
