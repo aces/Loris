@@ -50,6 +50,7 @@ class Queries extends \NDB_Page
                     [
                         'queries' => iterator_to_array(
                             $this->getUserAccessibleQueries($user),
+                            false, // do not preserve keys, stay an array
                         ),
                     ]
                 );

@@ -102,20 +102,27 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // Check accessibility for fields
-        $fields = $this->getFields();
-        foreach ($fields as $field) {
-            if ($field->isAccessibleBy($user) === false) {
-                return false;
-            }
-        }
-
-        // Check accessibility for dictionary items in the criteria
-        $critfields = $this->_getAllCriteriaDictionaries($criteria);
-        foreach ($critfields as $field) {
-            if ($field->isAccessibleBy($user) === false) {
-                return false;
+        try {
+            $fields = $this->getFields();
+            foreach ($fields as $field) {
+                if ($field->isAccessibleBy($user) === false) {
+                    return false;
+                }
             }
 
+            // Check accessibility for dictionary items in the criteria
+            $critfields = $this->_getAllCriteriaDictionaries($criteria);
+            foreach ($critfields as $field) {
+                if ($field->isAccessibleBy($user) === false) {
+                    return false;
+                }
+
+            }
+        } catch (\OutOfBoundsException $e) {
+            // The query references a field that no longer exists.
+            // The module can not provide the data, so the query is
+            // not accessible by anyone.
+            return false;
         }
         return true;
     }
@@ -175,7 +182,10 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 $cname = $item['category'];
                 $fname = $item['fieldname'];
                 $this->_populateModuleDictCache($mname);
-                assert(isset($this->moduleDictCache[$mname][$cname][$fname]));
+                if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+                    // This query references a field that no longer exist.
+                    throw new \OutOfBoundsException();
+                }
                 $usedDicts[] = $this->moduleDictCache[$mname][$cname][$fname];
             }
         }
@@ -373,7 +383,10 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $fname = $field['field'];
 
             $this->_populateModuleDictCache($mname);
-
+            if (!isset($this->moduleDictCache[$mname][$cname][$fname])) {
+                // This query references a field that no longer exist.
+                throw new \OutOfBoundsException();
+            }
             assert(isset($this->moduleDictCache[$mname][$cname][$fname]));
             $fields[] = $this->moduleDictCache[$mname][$cname][$fname];
         }
