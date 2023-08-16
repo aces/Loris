@@ -5,6 +5,19 @@ import fetchDataStream from 'jslib/fetchDataStream';
 
 import StaticDataTable from 'jsx/StaticDataTable';
 
+function TableCell({data}) {
+    try {
+        const parsed = JSON.parse(data);
+        if (typeof parsed === 'object') {
+            // Can't include objects as react children, if we got here
+            // there's probably a bug.
+            return <td>{data}</td>;
+        }
+        return <td>{parsed}</td>;
+    } catch (e) {
+        return <td>{data}</td>;
+    }
+}
 function ProgressBar({type, value, max}) {
     switch(type) {
     case 'loading':
@@ -149,6 +162,7 @@ function useDataOrganization(queryData, visitOrganization, fields, fulldictionar
             organizeData(
                 queryData.data,
                 visitOrganization,
+                fulldictionary,
                 fields,
                 (i) => {console.log(i); setProgress(i)},
             ).then ( (data) => {
@@ -274,7 +288,7 @@ function calcPayload(fields, filters) {
  *                                     option selected
  * @return {array}
  */
-function organizeData(resultData, visitOrganization, fields, onProgress) {
+function organizeData(resultData, visitOrganization, fulldict, fields, onProgress) {
     switch (visitOrganization) {
     case 'raw':
         return Promise.resolve(resultData);
@@ -287,7 +301,6 @@ function organizeData(resultData, visitOrganization, fields, onProgress) {
         return Promise.resolve(resultData);
     case 'crosssection':
         return new Promise((resolve) => {
-            const mappedData = [];
             let rowNum = 0;
             let promises = [];
             for(let candidaterow of resultData) {
@@ -295,7 +308,8 @@ function organizeData(resultData, visitOrganization, fields, onProgress) {
                     // Collect list of visits for this candidate
                     const candidatevisits = {};
                     for (let i in candidaterow) {
-                        if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
+                        const dictionary = getDictionary(fields[i], fulldict);
+                        if (dictionary && dictionary.scope == 'session') {
                             if (candidaterow[i] === null || candidaterow[i] == '') {
                                 continue;
                             }
@@ -306,101 +320,48 @@ function organizeData(resultData, visitOrganization, fields, onProgress) {
                         }
                     }
 
-                const dataRows = [];
-                for (const visit in candidatevisits) {
-                    let dataRow =[];
-                    dataRow.push(visit);
-                    for (let i in candidaterow) {
-                      if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
-                        if (candidaterow[i] === null || candidaterow[i] == '') {
-                          dataRow.push(null);
-                          continue;
+                    const dataRows = [];
+                    for (const visit in candidatevisits) {
+                        let dataRow =[];
+                        dataRow.push(visit);
+                        for (let i in candidaterow) {
+                          const dictionary = getDictionary(fields[i], fulldict);
+                          if (dictionary && dictionary.scope == 'session') {
+                            if (candidaterow[i] === null || candidaterow[i] == '') {
+                              dataRow.push(null);
+                              continue;
+                            }
+                            const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
+                              return sessionval.VisitLabel == visit;
+                            });
+                            switch (values.length) {
+                            case 0:
+                              dataRow.push(null);
+                              break;
+                            case 1:
+                              dataRow.push(values[0].value);
+                              break;
+                            default:
+                              throw new Error('Too many visit values');
+                            }
+                          } else {
+                            dataRow.push(candidaterow[i]);
+                          }
                         }
-                        const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
-                          return sessionval.VisitLabel == visit;
-                        });
-                        switch (values.length) {
-                        case 0:
-                          dataRow.push(null);
-                          break;
-                        case 1:
-                          dataRow.push(values[0].value);
-                          break;
-                        default:
-                          throw new Error('Too many visit values');
-                        }
-                      } else {
-                        dataRow.push(candidaterow[i]);
-                      }
+                        dataRows.push(dataRow);
                     }
-                    dataRows.push(dataRow);
-                }
                     onProgress(rowNum++);
                     resolve(dataRows);
                 }));
             }
             Promise.all(promises).then((values) => {
-                for(let row of values) {
-                    mappedData.push(...row);
-                }
-                resolve(mappedData);
+              const mappedData = [];
+              for(let row of values) {
+                mappedData.push(...row);
+              }
+              resolve(mappedData);
             });
         });
-
-            /*
-              let dataRow =[];
-              dataRow.push(visit);
-              for (let i in candidaterow) {
-                if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
-                  if (candidaterow[i] === null || candidaterow[i] == '') {
-                    dataRow.push(null);
-                    continue;
-                  }
-                  const values = Object.values(JSON.parse(candidaterow[i])).filter( (sessionval) => {
-                    return sessionval.VisitLabel == visit;
-                  });
-                  switch (values.length) {
-                  case 0:
-                    dataRow.push(null);
-                    break;
-                  case 1:
-                    dataRow.push(values[0].value);
-                    break;
-                  default:
-                    throw new Error('Too many visit values');
-                  }
-                } else {
-                  dataRow.push(candidaterow[i]);
-                }
-              }
-            });
-            for(let candidaterow of resultData) {
-                // Collect list of visits for this candidate
-                rowNum++;
-                const candidatevisits = {};
-                for (let i in candidaterow) {
-                    if (fields[i].dictionary && fields[i].dictionary.scope == 'session') {
-                        if (candidaterow[i] === null || candidaterow[i] == '') {
-                            continue;
-                        }
-                        const cellobj = JSON.parse(candidaterow[i]);
-                        for (let session in cellobj) {
-                            candidatevisits[cellobj[session].VisitLabel] = true;
-                        }
-                    }
-                }
-
-                // Push one row per visit onto mappedData
-                for (const visit in candidatevisits) {
-                    mapCandidate(i, candidaterow).then( (dataRow) => {
-                            mappedData.push(dataRow);
-                    });
-                }
-                onProgress(rowNum);
-            }
-            resolve(mappedData)
-    });
-    */
     default: throw new Error('Unhandled visit organization');
     }
 }
@@ -437,8 +398,7 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                     return <td><i>(No data)</i></td>;
                 }
 
-                const json = JSON.parse(cell);
-                return <td>{json}</td>;
+                return <TableCell data={cell} />;
             }
             let value;
             let val;
@@ -457,15 +417,19 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                         if (cell === '') {
                             return <i>(No data)</i>;
                         }
-                        const json = JSON.parse(cell);
-                        for (const sessionid in json) {
-                            if (json[sessionid].VisitLabel == visit) {
-                                if (fielddict.cardinality === 'many') {
-                                    return valuesList(json[sessionid].values);
-                                } else {
-                                    return json[sessionid].value;
+                        try {
+                            const json = JSON.parse(cell);
+                            for (const sessionid in json) {
+                                if (json[sessionid].VisitLabel == visit) {
+                                    if (fielddict.cardinality === 'many') {
+                                        return valuesList(json[sessionid].values);
+                                    } else {
+                                        return json[sessionid].value;
+                                    }
                                 }
                             }
+                        } catch(e) {
+                            return <i>(Internal error)</i>;
                         }
                         return <i>(No data)</i>;
                     };
@@ -507,7 +471,7 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
             } >
                     {val}
             </div>);
-            return <td>{value}</td>;
+            return <TableCell data={value} />;
         };
         callback.displayName = 'Inline session data';
         return callback;
@@ -532,7 +496,7 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                 if (fielddict.cardinality == 'many') {
                     return <td>FIXME: Candidate cardinality many not implemented.</td>;
                 }
-                return <td>{cell}</td>;
+                return <TableCell data={cell} />;
             case 'session':
                 let displayedVisits;
                 if (fieldobj.visits) {
@@ -547,14 +511,17 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
                     if (!cell) {
                         return <td key={visit}><i>(No data)</i></td>;
                     }
-                    const data = JSON.parse(cell);
-                    for (const session in data) {
-                        if (data[session].VisitLabel == visit) {
-                            return <td key={visit}>{data[session].value}</td>;
-
+                    try {
+                        const data = JSON.parse(cell);
+                        for (const session in data) {
+                          if (data[session].VisitLabel == visit) {
+                            return <TableCell key={visit} data={data[session].value} />;
+                          }
                         }
+                        return <td key={visit}><i>(No data)</i></td>;
+                    } catch(e) {
+                        return <td key={visit}><i>(Internal error)</i></td>;
                     }
-                    return <td key={visit}><i>(No data)</i></td>;
                 });
                 return <>{values}</>;
             default:
@@ -569,7 +536,7 @@ function organizedFormatter(resultData, visitOrganization, fields, dict) {
             if (cell === null) {
                 return <td><i>No data for visit</i></td>;
             }
-            return <td>{cell}</td>;
+            return <TableCell data={cell} />;
         };
         callback.displayName = 'Cross-sectional data';
         return callback;
