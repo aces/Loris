@@ -314,7 +314,7 @@ class FeedbackPanelRow extends Component {
     ).then(() => {
       this.loadServerState();
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
