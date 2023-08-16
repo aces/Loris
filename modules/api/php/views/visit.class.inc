@@ -29,10 +29,13 @@ class Visit
     /**
      * Constructor which sets the instance variables based on the provided timepoint
      *
-     * @param \Timepoint $timepoint The timepoint to represent
+     * @param \Timepoint $timepoint  The timepoint to represent
+     * @param string     $apiversion The version of the API being used
      */
-    public function __construct(\Timepoint $timepoint)
-    {
+    public function __construct(
+        \Timepoint $timepoint,
+        private string $apiversion = 'v0.0.3'
+    ) {
         $this->_timepoint = $timepoint;
     }
 
@@ -43,12 +46,13 @@ class Visit
      */
     public function toArray(): array
     {
-        $meta = [
-            'CandID'  => $this->_timepoint->getCandID(),
-            'Visit'   => $this->_timepoint->getVisitLabel(),
-            'Site'    => $this->_timepoint->getPSC(),
-            'Battery' => $this->_timepoint->getData('CohortTitle'),
-            'Project' => $this->_timepoint->getProject(),
+        $cohortKey = $this->apiversion == 'v0.0.4-dev' ? 'Cohort' : 'Battery';
+        $meta      = [
+            'CandID'   => $this->_timepoint->getCandID(),
+            'Visit'    => $this->_timepoint->getVisitLabel(),
+            'Site'     => $this->_timepoint->getPSC(),
+            $cohortKey => $this->_timepoint->getData('CohortTitle'),
+            'Project'  => $this->_timepoint->getProject(),
         ];
 
         $stages = [];
