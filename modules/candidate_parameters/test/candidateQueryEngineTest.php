@@ -105,9 +105,8 @@ class CandidateQueryEngineTest extends TestCase
 
         $lorisinstance = new \LORIS\LorisInstance($this->DB, $this->config, []);
 
-        $this->engine = \Module::factory(
-            $lorisinstance,
-            'candidate_parameters',
+        $this->engine = $lorisinstance->getModule(
+            'candidate_parameters'
         )->getQueryEngine();
     }
 
