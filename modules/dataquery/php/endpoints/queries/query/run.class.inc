@@ -3,7 +3,6 @@ namespace LORIS\dataquery\endpoints\queries\query;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/{queryID}/run
@@ -87,7 +86,7 @@ class Run extends \LORIS\Http\Endpoint
     public function countResults(\User $user) : ResponseInterface
     {
         try {
-            $query = new Query($this->loris, $this->queryID);
+            $query = new \LORIS\dataquery\Query($this->loris, $this->queryID);
 
             $candidates = $query->matchCandidates($user);
             return new \LORIS\Http\Response\JSON\OK(

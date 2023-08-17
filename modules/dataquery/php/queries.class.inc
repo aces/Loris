@@ -3,7 +3,6 @@ namespace LORIS\dataquery;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/* endpoint of
@@ -37,7 +36,6 @@ class Queries extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $user   = $request->getAttribute('user');
         $url    = $request->getURI()->getPath();
         $pieces = [];
         if (preg_match(

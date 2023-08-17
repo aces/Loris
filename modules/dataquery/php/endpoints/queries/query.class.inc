@@ -3,7 +3,6 @@ namespace LORIS\dataquery\endpoints\queries;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/{queryid} endpoint of

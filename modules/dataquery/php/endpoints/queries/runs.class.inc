@@ -4,7 +4,6 @@ namespace LORIS\dataquery\endpoints\queries;
 use \LORIS\dataquery\provisioners\RecentQueries;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
  * Handles requests to queries under the /queries/* endpoint of
