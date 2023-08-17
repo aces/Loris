@@ -39,4 +39,14 @@ class Module extends \Module
     {
         return "Data Query Tool (Alpha)";
     }
+
+    /**
+     * This module has an specification
+     *
+     * @return bool
+     */
+    public function hasAPISpecification() : bool
+    {
+        return true;
+    }
 }
