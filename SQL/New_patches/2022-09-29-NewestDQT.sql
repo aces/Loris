@@ -6,9 +6,7 @@ DROP TABLE IF EXISTS dataquery_queries;
 
 CREATE TABLE dataquery_queries (
     QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
-    -- Owner int(10) unsigned,
     Query JSON NOT NULL,
-    -- Public enum('yes', 'no'),
     PRIMARY KEY (QueryID)
     -- FOREIGN KEY (Owner) REFERENCES users(ID)
 );
@@ -27,7 +25,6 @@ CREATE TABLE dataquery_run_queries (
     QueryID int(10) unsigned,
     UserID int(10) unsigned,
     RunTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- Add status? Complete/incomplete/etc?
     PRIMARY KEY (RunID),
     FOREIGN KEY (QueryID) REFERENCES dataquery_queries(QueryID),
     FOREIGN KEY (UserID) REFERENCES users(ID)
