@@ -6,16 +6,27 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
- * Handles requests to queries under the /queries/* endpoint of
- * the dataquery module.
+ * Handles requests to queries under the /queries/{queryID}/run
+ * endpoint of the dataquery module.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Run extends \LORIS\Http\Endpoint
 {
-    public function __construct(protected \LORIS\LorisInstance $loris, public readonly int $queryID) {
+    /**
+     * {@constructor}
+     *
+     * @param protected \LORIS\LorisInstance $loris   The LorisInstance object
+     * @param public readonly int            $queryID The query we are getting
+     *                                                a count for.
+     */
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        public readonly int $queryID
+    ) {
         parent::__construct($loris);
     }
+
     /**
      * {@inheritDoc}
      *
@@ -69,8 +80,7 @@ class Run extends \LORIS\Http\Endpoint
      * Return a count of the number of matches for the query with ID $queryID
      * if it is run by $user
      *
-     * @param \User $user    The user whose number of matches should be checked
-     * @param int   $queryID The ID of the query to count the matches for
+     * @param \User $user The user whose number of matches should be checked
      *
      * @return ResponseInterface
      */

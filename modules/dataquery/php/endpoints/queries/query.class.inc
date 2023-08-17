@@ -6,14 +6,24 @@ use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Data\Filters\AccessibleResourceFilter;
 
 /**
- * Handles requests to queries under the /queries/* endpoint of
+ * Handles requests to queries under the /queries/{queryid} endpoint of
  * the dataquery module.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Query extends \LORIS\Http\Endpoint
 {
-    public function __construct(protected \LORIS\LorisInstance $loris, public readonly int $queryID) {
+    /**
+     * {@constructor}
+     *
+     * @param protected \LORIS\LorisInstance $loris   The LorisInstance object
+     * @param public readonly int            $queryID The query we are getting
+     *                                                a count for.
+     */
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        public readonly int $queryID
+    ) {
         parent::__construct($loris);
     }
 
@@ -27,7 +37,7 @@ class Query extends \LORIS\Http\Endpoint
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $queryID = $this->queryID;
-        $user = $request->getAttribute('user');
+        $user    = $request->getAttribute('user');
         try {
             $query = new \LORIS\dataquery\Query($this->loris, $queryID);
         } catch (\NotFound $e) {

@@ -17,7 +17,7 @@ class Queries extends \NDB_Page
 
     /**
      * Access permissions checked by Module class. Return true
-     * if we got to this point. 
+     * if we got to this point.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -46,7 +46,8 @@ class Queries extends \NDB_Page
             $pieces
         ) === 1
         ) {
-            return (new \LORIS\dataquery\endpoints\Queries($this->loris))->handle($request);
+            return (new \LORIS\dataquery\endpoints\Queries($this->loris))
+                ->handle($request);
         }
         if (preg_match(
             "/queries\/runs$/",
@@ -54,7 +55,8 @@ class Queries extends \NDB_Page
             $pieces
         ) === 1
         ) {
-            return (new \LORIS\dataquery\endpoints\queries\Runs($this->loris))->handle($request);
+            return (new \LORIS\dataquery\endpoints\queries\Runs($this->loris))
+                ->handle($request);
         }
         if (preg_match(
             "/queries\/([0-9]+)$/",
@@ -63,7 +65,11 @@ class Queries extends \NDB_Page
         ) === 1
         ) {
             $queryID = intval($pieces[1]);
-            return (new \LORIS\dataquery\endpoints\queries\Query($this->loris, $queryID))->handle($request);
+            return (new \LORIS\dataquery\endpoints\queries\Query(
+                $this->loris,
+                $queryID
+            )
+            )->handle($request);
         }
         if (preg_match(
             "/queries\/([0-9]+)\/run$/",
@@ -72,7 +78,10 @@ class Queries extends \NDB_Page
         ) === 1
         ) {
             $queryID = intval($pieces[1]);
-            return (new \LORIS\dataquery\endpoints\queries\query\Run($this->loris, $queryID))->handle($request);
+            return (new \LORIS\dataquery\endpoints\queries\query\Run(
+                $this->loris,
+                $queryID
+            ))->handle($request);
         }
         if (preg_match(
             "/queries\/([0-9]+)\/count$/",
@@ -81,7 +90,10 @@ class Queries extends \NDB_Page
         ) === 1
         ) {
             $queryID = intval($pieces[1]);
-            return (new \LORIS\dataquery\endpoints\queries\query\Count($this->loris, $queryID))->handle($request);
+            return (new \LORIS\dataquery\endpoints\queries\query\Count(
+                $this->loris,
+                $queryID
+            ))->handle($request);
         }
         return new \LORIS\Http\Response\JSON\NotFound();
     }
