@@ -49,7 +49,7 @@ $preparedStatement = $DB->prepare(
     WHERE hide_file <> 1 
     AND last_modified > ':startDate'"
 );
-$allUploadedFiles = $preparedStatement->execute(
+$allUploadedFiles  = $preparedStatement->execute(
     ['startDate' => $startDate],
 );
 
@@ -144,7 +144,7 @@ if ($send_emails) {
  **/
 function getUserInfo($userID, $filesByProject, $DB, $getFiles)
 {
-    $userProjects      = $DB->pselectColWithIndexKey(
+    $userProjects = $DB->pselectColWithIndexKey(
         "SELECT DISTINCT upr.ProjectID, p.Alias
         FROM user_project_rel upr
         JOIN Project p ON p.ProjectID = upr.ProjectID
