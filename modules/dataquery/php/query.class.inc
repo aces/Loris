@@ -47,27 +47,93 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         protected \LORIS\LorisInstance $loris,
         public readonly int $queryID,
         ?array $query=null,
-        protected readonly ?string $name=null,
+        protected ?string $name=null,
         protected ?string $adminname=null,
         protected ?array $sharedBy=null,
         protected ?bool $starred=null,
     ) {
         if ($query !== null) {
             $this->data = $query;
-        } else {
+        } else if ($queryID > 0) {
             $DB = $loris->getDatabaseConnection();
 
             $data = $DB->pselectOne(
-                "
-                    SELECT dq.Query
+                "SELECT dq.Query
                     FROM dataquery_queries dq
                     WHERE QueryID=:qid",
                 ['qid' => $queryID]
             );
+
             if ($data === null) {
                 throw new \NotFound("Query $queryID not found");
             }
             $this->data = json_decode($data, true);
+        }
+    }
+
+    /**
+     * Load metadata that was not loaded by the constructor.
+     *
+     * @param \User $user The user loading the query;
+     *
+     * @return void
+     */
+    public function loadQueryMetadata(\User $user)
+    {
+        $DB = $this->loris->getDatabaseConnection();
+        if ($this->name === null) {
+            $dbname = $DB->pselectOne(
+                "SELECT Name FROM dataquery_query_names
+                    WHERE UserID=:UID AND QueryID=:QID",
+                [
+                    'UID' => $user->getId(),
+                    'QID' => $this->queryID,
+                ]
+            );
+            if (!empty($dbname)) {
+                $this->name = $dbname;
+            } else {
+                $this->name = '';
+            }
+        }
+        if ($this->adminname === null) {
+            $dbname = $DB->pselectOne(
+                "SELECT Name FROM dataquery_study_queries_rel
+                    WHERE QueryID=:QID AND PinType='topquery'",
+                [
+                    'QID' => $this->queryID,
+                ]
+            );
+            if (!empty($dbname)) {
+                $this->adminname = $dbname;
+            } else {
+                $this->adminname = '';
+            }
+        }
+        if ($this->sharedBy === null) {
+            $sharers        = $DB->pselectCol(
+                "SELECT u.UserID
+                    FROM dataquery_shared_queries_rel dshq
+                        JOIN users u ON (u.ID=dshq.SharedBy)
+                    WHERE dshq.SharedBy != :UID AND dshq.QueryID=:QID",
+                [
+                    'UID' => $user->getId(),
+                    'QID' => $this->queryID,
+                ]
+            );
+            $this->sharedBy = $sharers;
+        }
+        if ($this->starred === null) {
+            $starred       = $DB->pselect(
+                "SELECT StarredBy
+                    FROM dataquery_starred_queries_rel 
+                    WHERE StarredBy = :UID AND QueryID=:QID",
+                [
+                    'UID' => $user->getId(),
+                    'QID' => $this->queryID,
+                ]
+            );
+            $this->starred = !empty($starred);
         }
     }
 
@@ -756,7 +822,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             $result['Pinned'] = false;
         }
 
-        if ($this->sharedBy !== null) {
+        if ($this->sharedBy !== null && $this->sharedBy !== []) {
             $result['SharedBy'] = $this->sharedBy;
             $result['Public']   = true;
         } else {

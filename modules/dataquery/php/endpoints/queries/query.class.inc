@@ -47,7 +47,8 @@ class Query extends \LORIS\Http\Endpoint
         }
         switch ($request->getMethod()) {
         case 'GET':
-            return new \LORIS\Http\Response\JSON\OK($query->toArray());
+            $query->loadQueryMetadata($user);
+            return new \LORIS\Http\Response\JSON\OK($query->jsonSerialize());
         case 'PATCH':
             $params = $request->getQueryParams();
             // Can only do 1 action at a time.

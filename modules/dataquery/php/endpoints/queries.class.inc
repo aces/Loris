@@ -77,6 +77,7 @@ class Queries extends \LORIS\Http\Endpoint
      * Returns true if the query is valid, false otherwise.
      *
      * @param array $json The parsed JSON of the query
+     * @param \User $user The user trying to create the query
      *
      * @return bool
      */
@@ -98,7 +99,6 @@ class Queries extends \LORIS\Http\Endpoint
             loris: $this->loris,
             queryID: -1,
             query: $json,
-
         );
         return $theQuery->isAccessibleBy($user);
     }
