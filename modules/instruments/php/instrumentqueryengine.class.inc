@@ -13,6 +13,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
     protected $loris;
 
     /**
+     * Cache of an instrument's visits for getVisitList
+     */
+    private $visitcache = [];
+
+
+    /**
      * Constructor
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance
@@ -232,8 +238,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         }
     }
 
-    private $_visitcache = [];
-
     /**
      * Get list of visits that an instrument is valid at
      *
@@ -280,15 +284,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      * @param iterable $candidates Candidates whose data we want
      * @param ?array   $visitlist  List of visits that we want data for
      *
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @return iterable<string, \LORIS\Data\DataInstance>
-=======
-     * @return \LORIS\Data\DataInstance[]
->>>>>>> 537f7915c (phan)
-=======
-     * @return iterable<string, \LORIS\Data\DataInstance>
->>>>>>> 2254ce6ad (Make QueryEngines getCandidateData be CandID => DataInstance instead of DataInstance[])
      */
     public function getCandidateData(
         array $items,
@@ -329,16 +325,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             );"
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
-<<<<<<< HEAD
-<<<<<<< HEAD
         /* see https://github.com/phan/phan/issues/4746
          * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
-=======
->>>>>>> 537f7915c (phan)
-=======
-        /* see https://github.com/phan/phan/issues/4746
-         * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
->>>>>>> 01e8a7a1d (Suppress error caused by phan bug)
             . join('),(', iterator_to_array($candidates))
             . ')';
 
@@ -421,9 +409,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     // index if applicable.
                     $data = $instrData->current();
                     foreach ($data as $key => $val) {
-                        foreach ($val as $sessionID => $sessionVal) {
-                            $candidateData[$key][$sessionID] = $sessionVal;
-                        }
+                        $candidateData[$key][] = $val;
                     }
                     // $candidateData = array_merge($candidateData, $data);
                     $instrData->next();
@@ -465,12 +451,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     if (!isset($candData[$dict->getName()])) {
                         $candData[$dict->getName()] = [];
                     }
-                    $sid = $loadedInstrument->getSessionID()->__toString();
-                    $candData[$dict->getName()][$sid] = [
-                        'VisitLabel' => $loadedInstrument->getVisitLabel(),
-                        'SessionID' => $sid,
-                        'value' => $loadedInstrument->getDictionaryValue($dict)
-                    ];
+                    $candData[$dict->getName()][]
+                        = $loadedInstrument->getDictionaryValue($dict);
                 }
             }
             yield "$iCandID" => $candData;
