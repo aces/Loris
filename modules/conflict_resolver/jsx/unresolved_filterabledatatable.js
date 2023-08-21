@@ -17,9 +17,11 @@ class UnresolvedFilterableDataTable extends Component {
 
     this.state = {
       data: {},
+      fieldsMeta: {},
       isLoaded: false,
     };
 
+    this.fetchFieldsMeta = this.fetchFieldsMeta.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
@@ -28,7 +30,8 @@ class UnresolvedFilterableDataTable extends Component {
    * Fetches data upon component mount.
    */
   componentDidMount() {
-    this.fetchData()
+    this.fetchFieldsMeta()
+      .then(() => this.fetchData())
       .then(() => this.setState({isLoaded: true}));
   }
 
@@ -59,6 +62,26 @@ class UnresolvedFilterableDataTable extends Component {
       <td>{cell}</td>
     );
   }
+
+  /**
+  * Retrieve all the field metadata
+  *
+  * @return {object}
+  */
+  fetchFieldsMeta() {
+    const url = loris.BaseURL.concat('/dictionary/module/instruments');
+    return fetch(url, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((json) => {
+        if (json.error) {
+          throw new Error(json.error);
+        }
+        this.setState({fieldsMeta: json});
+      })
+      .catch((error) => {
+        this.setState({error});
+      });
+  }
   /**
    * Retrieve data from the provided URL and save it in state
    *
@@ -74,7 +97,15 @@ class UnresolvedFilterableDataTable extends Component {
         }
         const data = {
           fieldOptions: json.fieldOptions,
-          data: json.data.map((e) => Object.values(e)),
+          data: json.data.map((e) => {
+            var fieldInfo = this.state.fieldsMeta[e['Instrument']][
+              e['Instrument']
+              + "_"
+              + e['Question']
+            ];
+            e['Description'] = fieldInfo ? fieldInfo['description'] : "";
+            return Object.values(e)
+          }),
         };
         this.setState({data});
       })

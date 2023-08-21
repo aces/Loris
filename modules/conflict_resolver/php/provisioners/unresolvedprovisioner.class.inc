@@ -39,17 +39,13 @@ class UnresolvedProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
               session.Visit_label as visitlabel,
               Project.Name as project,
               conflicts_unresolved.FieldName as question,
-              parameter_type.Description as description,
               conflicts_unresolved.Value1 as value1,
               conflicts_unresolved.Value2 as value2,
               psc.name as site,
               session.CenterID as centerid,
               Project.ProjectID as projectid
              FROM
-              conflicts_unresolved 
-             LEFT JOIN parameter_type
-                ON (parameter_type.SourceField = conflicts_unresolved.FieldName
-                AND parameter_type.SourceFrom = conflicts_unresolved.TableName)
+              conflicts_unresolved
              LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
              LEFT JOIN session ON (flag.SessionID=session.ID)
              LEFT JOIN candidate ON (candidate.CandID=session.CandID)
