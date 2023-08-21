@@ -1,28 +1,59 @@
-// import {Component} from 'react';
-// import PropTypes from 'prop-types';
-// import {StepperPanel} from './components/stepper';
-import {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Select from 'react-select';
 import FilterableSelectGroup from './components/filterableselectgroup';
 import getDictionaryDescription from './getdictionarydescription';
+import {CheckboxElement} from 'jsx/Form';
+import {FullDictionary, FieldDictionary, DictionaryCategory} from './types';
+import {CategoriesAPIReturn} from './hooks/usedatadictionary';
+import {APIQueryField, VisitOption} from './types';
 
 
 /**
-* Displays a single field to be selected for querying
+ * Displays a single field to be selected for querying
  *
  * @param {object} props - react props
- *
- * @return {ReactDOM}
+ * @param {APIQueryField?} props.selected - the selected field
+ * @param {boolean} props.scrollTo - If true, scroll to this element on load.
+ * @param {function} props.resetScrollTo - reset the scrollTo effect
+ * @param {FieldDictionary} props.value - The dictionary for this field
+ * @param {string} props.module - the module containing this field
+ * @param {string} props.category - The category of this field
+ * @param {string} props.item - The field name
+ * @param {function} props.onFieldToggle - callback when the item is clicked
+ * @param {function} props.onChangeVisitList - callback when the selected visits are changed for this item.
+ * @param {string[]} props.defaultVisits - The default visits when the field is added
+ * @returns {React.ReactElement} - A single field
  */
-function QueryField(props) {
+function QueryField(props: {
+    selected: APIQueryField|undefined,
+    scrollTo: boolean,
+    resetScrollTo: () => void,
+    value: FieldDictionary,
+    module:string
+    category:string
+    item: string,
+    onFieldToggle: (
+        module: string,
+        category: string,
+        field: string,
+        visits: string[]
+    ) => void,
+    onChangeVisitList: (
+        module: string,
+        category: string,
+        field: string,
+        visits: string[]
+    ) => void,
+    defaultVisits: string[],
+}) {
   const item=props.item;
   const className = props.selected ?
     'list-group-item active' :
     'list-group-item';
   const value=props.value;
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-      if (props.scrollTo == true) {
+      if (props.scrollTo == true && scrollRef.current !== null) {
           scrollRef.current.scrollIntoView({
               behavior: 'smooth',
           });
@@ -31,41 +62,61 @@ function QueryField(props) {
   }, [props.scrollTo]);
 
   let visits;
-  let selectedVisits;
+  let selectedVisits: string[];
 
   if (value.scope === 'session') {
-    const selected = (newvisits) => {
+    /**
+     * Callback for React Select to handle selected option
+     * change
+     *
+     * @param {VisitOption[]} newvisits - The newly selected visits
+     * @returns {void}
+     */
+    const selected = (newvisits: readonly VisitOption[]) => {
         props.onChangeVisitList(
          props.module,
          props.category,
          item,
-         value,
-         newvisits,
+         newvisits.map( (visit: VisitOption) => visit.value),
         );
     };
 
-    const selectOptions = value.visits.map((vl) => {
-        return {value: vl, label: vl};
-    });
+    const selectOptions: string[] = value.visits || [];
 
-    if (props.selected && props.selected.visits) {
+    if (props.selected && (typeof props.selected.visits !== 'undefined')) {
         selectedVisits = props.selected.visits;
     } else {
-        selectedVisits = selectOptions.filter((opt) => {
-            return props.defaultVisits.includes(opt.value);
+        selectedVisits = selectOptions.filter((visit: string) => {
+            return props.defaultVisits.includes(visit);
         });
     }
 
     if (props.selected) {
         visits = <div onClick={(e) => e.stopPropagation()}>
             <h4>Visits</h4>
-            <Select options={selectOptions}
+            <Select options={selectOptions.map((visit: string): VisitOption => {
+                        return {value: visit, label: visit};
+                    })
+                }
                 isMulti
                 onChange={selected}
                 placeholder='Select Visits'
-                value={selectedVisits}
+                value={selectedVisits.map( (visit: string): VisitOption => {
+                        return {value: visit, label: visit};
+                    })
+                }
                 menuPortalTarget={document.body}
-                styles={{menuPortal: (base) => ({...base, zIndex: 9999})}}
+                styles={
+                    {menuPortal:
+                        /**
+                         * Adds appropriate zIndex to the react select's base CSS
+                         *
+                         * @param {object} base - The current CSS
+                         * @returns {object} New CSS with z-index added
+                         */
+                        (base) => ({...base, zIndex: 9999}),
+                    }
+                }
                 closeMenuOnSelect={false}
             />
         </div>;
@@ -77,15 +128,14 @@ function QueryField(props) {
     <div className={className}
        ref={scrollRef}
        style={{
-       cursor: 'pointer',
-       display: 'flex',
-       justifyContent: 'space-between',
+           cursor: 'pointer',
+           display: 'flex',
+           justifyContent: 'space-between',
        }}
        onClick={() => props.onFieldToggle(
          props.module,
          props.category,
          item,
-         value,
          selectedVisits,
        )}>
          <dl>
@@ -95,17 +145,62 @@ function QueryField(props) {
          {visits}
     </div>);
 }
+
 /**
  * Render the define fields tab
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {APIQueryField[]} props.selected - The currently selected fields
+ * @param {function} props.setSelected - Function to set the currently selected fields
+ * @param {function} props.onCategoryChange - Callback when the selected category changes
+ * @param {function} props.onFieldToggle - Callback when an item is clicked in the field list
+ * @param {function} props.onChangeVisitList - Callback when the visits are changed for a field
+ * @param {function} props.onChangeDefaultVisits - Callback when the default visits are changed
+ * @param {function} props.onAddAll - Callback when the "Add All" button is clicked
+ * @param {function} props.onRemoveAll - Callback when the "Remove All" button is clicked
+ * @param {function} props.onClearAll - Callback when the "Clear All" button is clicked
+ * @param {string} props.module - The module of the currently selected category
+ * @param {string} props.category - The currently selected category
+ * @param {FullDictionary} props.fulldictionary - The dictionary of all elements
+ * @param {function} props.removeField - callback to remove a single field
+ * @param {string[]} props.defaultVisits - The default visits
+ * @param {DictionaryCategory} props.displayedFields - The category currently selected to display
+ * @param {CategoriesAPIReturn} props.allCategories - all categories that exist
+ * @param {string[]} props.allVisits - All (non-phantom) visits for this LORIS instance
+ * @returns {React.ReactElement} - The Define Fields page
  */
-function DefineFields(props) {
+function DefineFields(props: {
+    selected: APIQueryField[],
+    onCategoryChange: (module: string, category: string) => void,
+    setSelected: (newselected: APIQueryField[]) => void,
+    fulldictionary: FullDictionary,
+    displayedFields: DictionaryCategory,
+    removeField: (module: string, item: string, field: string) => void,
+    onClearAll: () => void,
+    defaultVisits: string[],
+    allCategories: CategoriesAPIReturn,
+    allVisits: string[],
+    onChangeDefaultVisits: (newvisits: readonly VisitOption[]) => void,
+    module: string,
+    category: string,
+    onRemoveAll: (removeelements: APIQueryField[]) => void,
+    onAddAll: (elements: APIQueryField[]) => void,
+    onChangeVisitList: (
+        module: string,
+        category: string,
+        field: string,
+        visits: string[]
+    ) => void,
+    onFieldToggle: (
+        module: string,
+        category: string,
+        field: string,
+        visits: string[]
+    ) => void,
+}) {
   const [activeFilter, setActiveFilter] = useState('');
-  const [syncVisits, setSyncVisits] = useState(false);
-  const [zoomTo, setZoomTo] = useState(null);
+  const [syncVisits, setSyncVisits] = useState<boolean>(false);
+  const [zoomTo, setZoomTo] = useState<string|null>(null);
   useEffect(() => {
       if (!syncVisits) {
           return;
@@ -113,7 +208,7 @@ function DefineFields(props) {
       // FIXME: Go through each selected field, get the dictionary,
       // and take the intersection with default visits
       let modifiedvisits = false;
-      props.selected.forEach( (field) => {
+      props.selected.forEach( (field: APIQueryField) => {
           // Valid visits according to the dictionary
           const category = props.fulldictionary[field.module][field.category];
           const dict = category[field.field];
@@ -121,19 +216,21 @@ function DefineFields(props) {
           if (dict.scope == 'candidate') {
               return;
           }
-          const newvisits = dict.visits.filter((visit) => {
-              return props.defaultVisits.includes(visit);
-          }).map((vl) => {
-                  return {value: vl, label: vl};
-          });
-          field.visits = newvisits;
-          modifiedvisits = true;
+          if (typeof dict.visits !== 'undefined') {
+              const newvisits = dict.visits.filter((visit) => {
+                  return props.defaultVisits.includes(visit);
+              });
+              field.visits = newvisits;
+              modifiedvisits = true;
+          }
       });
       if (modifiedvisits) {
           props.setSelected([...props.selected]);
       }
   }, [syncVisits, props.defaultVisits]);
-  const displayed = Object.keys(props.displayedFields || {}).filter((value) => {
+  const displayed: string[] = Object.keys(
+    props.displayedFields || {}
+      ).filter((value) => {
       if (activeFilter === '') {
           // No filter set
           return true;
@@ -147,8 +244,15 @@ function DefineFields(props) {
         || desc.toLowerCase().includes(lowerFilter));
   });
 
-  const fields = displayed.map((item, i) => {
-      const equalField = (element) => {
+  const fields = displayed.map((item: string) => {
+      /**
+       * Return true if this element equals
+       * the selected.
+       *
+       * @param {APIQueryField} element - The element
+       * @returns {boolean} - true if equal
+       */
+      const equalField = (element: APIQueryField) => {
           return (element.module == props.module
               && element.category === props.category
               && element.field == item);
@@ -165,42 +269,52 @@ function DefineFields(props) {
                 category={props.category}
                 onFieldToggle={props.onFieldToggle}
                 onChangeVisitList={props.onChangeVisitList}
-                selectedVisits={props.selectedVisits}
                 defaultVisits={props.defaultVisits}
             />;
   });
 
-
-  const setFilter = (e) => {
-      setActiveFilter(e.target.value);
+  /**
+   * Set the filter that is being applied to displayed fields
+   *
+   * @param {React.ChangeEventHandler<HTMLInputElement>} e - The mouse event
+   */
+  const setFilter = (e: React.FormEvent<HTMLInputElement>) => {
+      const target = e.target as HTMLInputElement;
+      setActiveFilter(target.value);
   };
 
+  /**
+   * Add all items from the selected category to selected fields
+   *
+   * @returns {void}
+   */
   const addAll = () => {
-      const toAdd = displayed.map((item, i) => {
+      const toAdd = displayed.map((item) => {
           const dict = props.displayedFields[item];
-          const retObj = {
+          const retObj: APIQueryField = {
               module: props.module,
               category: props.category,
               field: item,
-              dictionary: dict,
-          }
+          };
           // Only include defined visits which intersect
           // with the default ones, convert to the react-select
           // format used internally.
           if (dict.visits) {
               retObj['visits'] = dict.visits.filter((visit) => {
                   return props.defaultVisits.includes(visit);
-              }).map(
-                (vl) => {
-                  return {value: vl, label: vl};
               });
           }
           return retObj;
       });
       props.onAddAll(toAdd);
   };
+  /**
+   * Removes all items from the currently selected category
+   *
+   * @returns {void}
+   */
   const removeAll = () => {
-      const toRemove = displayed.map((item, i) => {
+      const toRemove = displayed.map((item) => {
           const dict = props.displayedFields[item];
           return {
               module: props.module,
@@ -212,7 +326,7 @@ function DefineFields(props) {
       props.onRemoveAll(toRemove);
   };
 
-  let fieldList = null;
+  let fieldList: React.ReactElement|null = null;
   if (props.category) {
       // Put into a short variable name for line length
       const mCategories = props.allCategories.categories[props.module];
@@ -232,7 +346,17 @@ function DefineFields(props) {
                     onChange={props.onChangeDefaultVisits}
                     placeholder='Select Visits'
                     menuPortalTarget={document.body}
-                    styles={{menuPortal: (base) => ({...base, zIndex: 9999})}}
+                    styles={
+                        {menuPortal:
+                            /**
+                             * Adds appropriate zIndex to the react select's base CSS
+                             *
+                             * @param {object} base - The current CSS
+                             * @returns {object} New CSS with z-index added
+                             */
+                            (base) => ({...base, zIndex: 9999}),
+                        }
+                    }
                     value={selectedVisits}
                     closeMenuOnSelect={false}
                 />
@@ -240,7 +364,9 @@ function DefineFields(props) {
                 <CheckboxElement label='Sync with selected fields'
                     name="syncVisits"
                     value={syncVisits}
-                    onUserInput={(name, value) => setSyncVisits(value)} />
+                    onUserInput={
+                        (name: string, value: boolean) => setSyncVisits(value)
+                    } />
                 </div>
             </div>;
       }
@@ -324,9 +450,10 @@ function DefineFields(props) {
                 removeField={props.removeField}
                 fulldictionary={props.fulldictionary}
                 setSelected={props.setSelected}
-                snapToView={(module, category, item) => {
-                    setZoomTo(item);
-                    props.onCategoryChange(module, category);
+                snapToView={
+                    (module: string, category: string, item: string) => {
+                        setZoomTo(item);
+                        props.onCategoryChange(module, category);
                 }}
             />
         </div>
@@ -339,23 +466,45 @@ function DefineFields(props) {
  * Render the selected fields
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {FullDictionary} props.fulldictionary - The fully loaded data dictionary for known modules
+ * @param {function} props.snapToView - Function which will snap the item to the viewport, changing pages if necessary
+ * @param {function} props.removeField - Remove a field from selected fields
+ * @param {APIQueryField[]} props.selected - The currently selected fields
+ * @param {function} props.setSelected - Function to set the currently selected fields
+ * @returns {React.ReactElement} - The selected field list
  */
-function SelectedFieldList(props) {
-  const [removingIdx, setRemovingIdx] = useState(null);
+function SelectedFieldList(props: {
+    fulldictionary: FullDictionary,
+    snapToView: (module: string, item: string, field: string) => void,
+    removeField: (module: string, item: string, field: string) => void,
+    selected: APIQueryField[],
+    setSelected: (newselected: APIQueryField[]) => void,
+}) {
+  const [removingIdx, setRemovingIdx] = useState<number|null>(null);
 
-  const [draggingIdx, setDraggingIdx] = useState(null);
-  const [droppingIdx, setDroppingIdx] = useState(null);
+  const [draggingIdx, setDraggingIdx] = useState<number|null>(null);
+  const [droppingIdx, setDroppingIdx] = useState<number|null>(null);
 
-  const moveSelected = (src, dst) => {
-      let newSelected = props.selected;
+  /**
+   * Move the currently selected item from draggingIdx to
+   * droppingIdx.
+   *
+   * @returns {void}
+   */
+  const moveSelected = () => {
+      if (draggingIdx=== null || droppingIdx === null) {
+          return;
+      }
+      const newSelected: APIQueryField[] = props.selected;
 
-      const removed = newSelected.splice(draggingIdx, 1)[0];
-      const newIdx = (droppingIdx <= draggingIdx)
+      const removed: APIQueryField = newSelected.splice(draggingIdx, 1)[0];
+      const newIdx: number|null = (droppingIdx||0 <= draggingIdx||0)
           ? droppingIdx
           : (droppingIdx - 1);
 
+      if (newIdx == null) {
+          return;
+      }
       newSelected.splice(
               newIdx,
               0,
@@ -367,15 +516,21 @@ function SelectedFieldList(props) {
   };
 
   const fields = props.selected.map((item, i) => {
-      const removeField = (item) => {
+      /**
+       * Removes an item from the selected
+       *
+       * @param {APIQueryField} item - The field to remove
+       * @returns {void}
+       */
+      const removeField = (item: APIQueryField) => {
           props.removeField(item.module, item.category, item.field);
       };
-      let style = {display: 'flex',
-                flexWrap: 'nowrap',
+      const style: React.CSSProperties = {display: 'flex',
+                flexWrap: 'nowrap' as const,
                 cursor: 'grab',
                 justifyContent: 'space-between'};
       if (removingIdx === i) {
-          style.textDecoration = 'line-through';
+          style.textDecoration = 'line-through' as const;
       }
       if (droppingIdx === i) {
           style.borderTop = 'thin solid black';
@@ -391,16 +546,14 @@ function SelectedFieldList(props) {
               fontSize: '0.7em',
               marginLeft: 20,
           };
-          fieldvisits = <dd style={style}>{item.visits.map(
-            (obj) => obj.label)
-            .join(', ')}</dd>;
+          fieldvisits = <dd style={style}>{item.visits.join(', ')}</dd>;
       }
       return (<div key={i} style={style}
                 draggable="true"
                 onClick={() => {
                     props.snapToView(item.module, item.category, item.field);
                 }}
-                onDragStart={(e) => {
+                onDragStart={() => {
                     setDraggingIdx(i);
                 }}
 
@@ -409,7 +562,7 @@ function SelectedFieldList(props) {
                     setDroppingIdx(null);
                 }}
 
-                onDragEnter={(e) => {
+                onDragEnter={() => {
                     setDroppingIdx(i);
                 }}
 
@@ -417,7 +570,7 @@ function SelectedFieldList(props) {
                     e.stopPropagation();
                     e.preventDefault();
                 }}
-                onDrop={(e) => moveSelected(draggingIdx, droppingIdx)}
+                onDrop={() => moveSelected()}
                 >
         <div>
             <dt>{item.field}</dt>
@@ -441,19 +594,19 @@ function SelectedFieldList(props) {
   if (draggingIdx !== null) {
       // Add a sink after the last element, so that we can drop on
       // the end
-      let style = {height: 50};
+      const style: React.CSSProperties = {height: 50};
       const nItems = fields.length;
       if (droppingIdx === nItems) {
-          style.borderTop = 'thin solid black';
+          style.borderTop = 'thin solid black' as const;
       }
       fields.push(<div
         key={nItems} style={style}
-        onDragEnter={(e) => setDroppingIdx(nItems)}
+        onDragEnter={() => setDroppingIdx(nItems) }
         onDragOver ={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
         }}
-        onDrop={(e) => moveSelected(draggingIdx, droppingIdx)}>&nbsp;
+        onDrop={() => moveSelected()}>&nbsp;
         </div>);
   }
 

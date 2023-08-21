@@ -1,14 +1,16 @@
 import FieldDisplay from './fielddisplay';
+import {QueryTerm} from './querydef';
+import {Operators} from './types';
+import {FieldDictionary, FullDictionary} from './types';
 
 /**
  * Convert an operator serialization back to unicode for
  * display.
  *
  * @param {string} op - the backend operator
- *
- * @return {string}
+ * @returns {string} - The frontend value to display for op
  */
-function op2str(op) {
+function op2str(op: string): string {
     switch (op) {
     case 'lt': return '<';
     case 'lte': return '≤';
@@ -26,37 +28,50 @@ function op2str(op) {
     case 'notexists': return 'does not exist';
     case 'numberof': return 'number of';
     default: console.error('Unhandle operator');
+        return '';
     }
-};
+}
 
 /**
  * Get the dictionary for a given term
  *
- * @param {object} term - The term whose dictionary
+ * @param {QueryTerm} term - The term whose dictionary
                           should be extracted
- * @param {object} dict - all loaded dictionaries
- *
- * @return {object}
+ * @param {FullDictionary} dict - all loaded dictionaries
+ * @returns {FieldDictionary} - The dictionary for this term
  */
-function getDictionary(term, dict) {
-    if (!dict || !dict[term.module] || !dict[term.category]
+function getDictionary(
+    term: QueryTerm,
+    dict: FullDictionary
+): FieldDictionary|null {
+    if (!dict || !dict[term.module] || !dict[term.module][term.category]
         || !dict[term.module][term.category][term.fieldname]) {
-        return {};
+        return null;
     }
     return dict[term.module][term.category][term.fieldname];
 }
+
 /**
  * Renders a single term of a condition
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {QueryTerm} props.term - The term being rendered
+ * @param {FullDictionary} props.fulldictionary - The full dictionary
+ * @param {function} props.mapModuleName - backend => human friendly name mapper
+ * @param {function} props.mapCategoryName - backend => human friendly name mapper
+ * @returns {React.ReactElement} - The term to display
  */
-function CriteriaTerm(props) {
-    const containerStyle={
-        display: 'flex',
-        flexWrap: 'nowrap',
-        flexDirection: 'row',
+export function CriteriaTerm(props: {
+    term: QueryTerm,
+    fulldictionary: FullDictionary,
+    mapModuleName: (module: string) => string,
+    mapCategoryName: (module: string, category: string) => string,
+}) {
+    // console.log(props.fulldictionary);
+    const containerStyle: React.CSSProperties ={
+        display: 'flex' as const,
+        flexWrap: 'nowrap' as const,
+        flexDirection: 'row' as const,
         justifyContent: 'space-evenly',
         width: '100%',
         alignItems: 'center',
@@ -67,7 +82,7 @@ function CriteriaTerm(props) {
     };
     const opStyle = {
         width: '33%',
-        textAlign: 'center',
+        textAlign: 'center' as const,
     };
     const valueStyle = {
         width: '33%',
@@ -96,23 +111,29 @@ function CriteriaTerm(props) {
         </div>;
     }
 
-    let value = props.term.value;
-    if (props.term.op == 'in') {
+    let value;
+    if (props.term.op == Operators.IN) {
         const liststyle = {
             margin: 0,
             padding: 0,
-            listStylePosition: 'inside',
+            listStylePosition: 'inside' as const,
             listStyleType: 'disc',
         };
 
         value = <ul style={liststyle}>
-            {props.term.value.map((val, idx) => <li key={idx}>{val}</li>)}
+            {(props.term.value as string[]).map(
+                (val, idx) => <li key={idx}>{val}</li>
+            )}
         </ul>;
+    } else {
+        value = <span>{props.term.value}</span>;
     }
 
     let cardinalityWarning;
     const dict = getDictionary(props.term, props.fulldictionary);
-    if (dict.cardinality == 'many') {
+    if (!dict) {
+        // console.error('Could not get dictionary for ', props.term, ' in ', props.fulldictionary);
+    } else if (dict.cardinality == 'many') {
         cardinalityWarning = <i className="fas fa-exclamation-circle"
             style={{fontSize: '2em',
                 color: 'rgb(58, 61, 255)',
@@ -144,5 +165,3 @@ function CriteriaTerm(props) {
             </div>
         </div>);
 }
-
-export default CriteriaTerm;

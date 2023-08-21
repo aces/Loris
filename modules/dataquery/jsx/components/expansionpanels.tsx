@@ -1,7 +1,21 @@
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
 
-const Panel = (props) => {
+/**
+ * Component to render a single panel
+ *
+ * @param {object} props - The React Props
+ * @param {boolean} props.defaultOpen - Whether the default should default open
+ * @param {boolean} props.alwaysOpen - Whether the panel can not be collapsed
+ * @param {string} props.title - The panel title
+ * @param {React.ReactElement} props.content - The panel body
+ * @returns {React.ReactElement} - The rendered panel
+ */
+const Panel = (props: {
+    defaultOpen: boolean,
+    alwaysOpen: boolean,
+    title: string,
+    content: React.ReactElement,
+}) => {
   const [active, setActive] = useState(props.defaultOpen);
 
   const styles = {
@@ -13,14 +27,14 @@ const Panel = (props) => {
         color: '#246EB6',
         fontSize: '15px',
         cursor: props.alwaysOpen ? 'default' : 'pointer',
-        textAlign: 'center',
+        textAlign: 'center' as const,
         backgroundColor: '#fff',
         border: '1px solid #246EB6',
         transition: '0.4s',
       },
       active: {
         color: '#fff',
-        textAlign: 'left',
+        textAlign: 'left' as const,
         backgroundColor: '#246EB6',
       },
     },
@@ -39,23 +53,28 @@ const Panel = (props) => {
     },
   };
 
+  /**
+   * Handle clicking on the header
+   *
+   * @returns {void}
+   */
   const handleExpansionClick = () => {
     if (props.alwaysOpen) return;
     setActive((active) => !active);
   };
 
-  const styleAccordion = {
+  const styleAccordion: React.CSSProperties = {
     ...styles.accordion.default,
     ...(active ? styles.accordion.active : {}),
   };
 
-  const stylePanel = {
+  const stylePanel: React.CSSProperties = {
     ...styles.panel.default,
     ...(active ? styles.panel.active : {}),
   };
 
   return (
-    <>
+    <div>
       <button onClick={() => handleExpansionClick()}
               style={styleAccordion}>
         {props.title}
@@ -63,32 +82,41 @@ const Panel = (props) => {
       <div style={stylePanel}>
         {props.content}
       </div>
-    </>
+    </div>
   );
 };
 
-const ExpansionPanels = (props) => {
+/**
+ * Render a series of expansion panels
+ *
+ * @param {object} props - React props
+ * @param {boolean?} props.alwaysOpen - If true, panels can not be toggled
+ * @param {object} props.panels - Array of individual panels
+ * @returns {React.ReactElement} - The panels
+ */
+const ExpansionPanels = (props: {
+    alwaysOpen?: boolean,
+    panels: {
+        title: string,
+        content: React.ReactElement,
+        defaultOpen?: boolean,
+        alwaysOpen: boolean,
+    }[]
+}) => {
   return (
     <div className={'container-fluid'}
          style={{margin: '0 auto', maxWidth: '900px'}}>
       { props.panels.map((panel, index) => (
         <Panel
           key={index}
-          index={index}
           title={panel.title}
           content={panel.content}
           alwaysOpen={panel.alwaysOpen}
-          defaultOpen={panel.defaultOpen || props.alwaysOpen}
+          defaultOpen={panel.defaultOpen || props.alwaysOpen || true}
         />
       ))}
     </div>
   );
-};
-ExpansionPanels.defaultProps = {
-  alwaysOpen: false,
-};
-ExpansionPanels.propTypes = {
-  panels: PropTypes.array,
 };
 
 export default ExpansionPanels;

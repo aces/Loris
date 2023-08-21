@@ -1,20 +1,36 @@
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
+import {CheckboxElement, TextboxElement, FieldsetElement} from 'jsx/Form';
 
 /**
  * Render a modal window for naming a query
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {number} props.QueryID - The QueryID being modified
+ * @param {string} props.defaultName - The default name to show before edited by the user
+ * @param {function} props.closeModal - A callback to close the modal
+ * @param {function} props.onSubmit - A callback to call on submit
+ * @returns {React.ReactElement} - The modal
  */
-function AdminQueryModal(props) {
+function AdminQueryModal(props: {
+    QueryID: number,
+    defaultName: string,
+    closeModal: () => void,
+    onSubmit: (name: string, topQuery: boolean, dashboardQuery: boolean)
+        => void,
+}) {
     const [queryName, setQueryName] = useState(props.defaultName || '');
     const [topQuery, setTopQuery] = useState(true);
     const [dashboardQuery, setDashboardQuery] = useState(true);
+    /**
+     * Convert the onSubmit callback to a promise function of the format
+     * expected by jsx/Modal.
+     *
+     * @returns {Promise<any>} - The promise
+     */
     const submitPromise = () => {
-        let sbmt = new Promise((resolve, reject) => {
+        let sbmt: Promise<any> = new Promise((resolve, reject) => {
            if (queryName == '') {
                swal.fire({
                    type: 'error',
@@ -34,7 +50,7 @@ function AdminQueryModal(props) {
            resolve([queryName, topQuery, dashboardQuery]);
         });
         if (props.onSubmit) {
-            sbmt = sbmt.then((val) => {
+            sbmt = sbmt.then((val: [string, boolean, boolean]) => {
                 const [name, topq, dashq] = val;
                 props.onSubmit(name, topq, dashq);
             });
@@ -51,17 +67,24 @@ function AdminQueryModal(props) {
                     legend='Study Query'>
                     <TextboxElement name='queryname'
                         value={queryName}
-                        onUserInput={(name, value) => setQueryName(value)}
+                        onUserInput={
+                            (name: string, value: string) => setQueryName(value)
+                        }
                         />
                     <CheckboxElement name='topquery'
                         value={topQuery}
-                        onUserInput={(name, value) => setTopQuery(value)}
+                        onUserInput={
+                            (name: string, value: boolean) => setTopQuery(value)
+                        }
                         label='Pin Study Query'
                         />
                     <CheckboxElement name='dashboardquery'
                         value={dashboardQuery}
                         label='Pin Dashboard Summary'
-                        onUserInput={(name, value) => setDashboardQuery(value)}
+                        onUserInput={
+                           (name: string, value: boolean) =>
+                                setDashboardQuery(value)
+                       }
                         />
                 </FieldsetElement>
             </form>

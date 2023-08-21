@@ -1,15 +1,26 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
+import {APIQueryField} from './types';
+import {ButtonElement} from 'jsx/Form';
+import {QueryGroup} from './querydef';
 
 /**
  * Next steps options for query navigation
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {APIQueryField[]} props.fields - The fields selected
+ * @param {QueryGroup} props.filters - The filters selected
+ * @param {string} props.page - The current page name
+ * @param {function} props.changePage - A function to change the current page
+ * @returns {React.ReactElement} - The "Next Steps" menu
  */
-function NextSteps(props) {
+function NextSteps(props: {
+    fields: APIQueryField[]
+    filters: QueryGroup,
+    page: string,
+    changePage: (newpage: string) => void,
+}) {
     const [expanded, setExpanded] = useState(true);
-    const steps = [];
+    const steps: React.ReactElement[] = [];
 
 
     const canRun = (props.fields && props.fields.length > 0);
@@ -111,7 +122,7 @@ function NextSteps(props) {
         paddingLeft: '2em',
     } : {
         display: 'none',
-        visibility: 'hidden',
+        visibility: 'hidden' as const,
         padding: '0.5em',
         paddingLeft: '2em',
     };

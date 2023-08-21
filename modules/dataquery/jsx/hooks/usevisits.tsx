@@ -1,18 +1,24 @@
 import {useState, useEffect} from 'react';
+import {VisitOption} from '../types';
 
+type UseVisitsReturn = {
+    // All visits that exist on the server
+    all: string[],
+    // The subset of all that were selected by the user as defaults
+    default_: string[],
+    // Callback to set the defaults
+    modifyDefault: (values: readonly VisitOption[]) => void,
+};
 /**
  * React hook to load a list of valid visits from the server
  * and manage which should be selected by default
  *
- * @return {array|false}
+ * @returns {UseVisitsReturn} - list of default and all visits
  */
-function useVisits() {
-    const [allVisits, setAllVisits] = useState(false);
-    const [defaultVisits, setDefaultVisits] = useState(false);
+function useVisits(): UseVisitsReturn {
+    const [allVisits, setAllVisits] = useState<string[]>([]);
+    const [defaultVisits, setDefaultVisits] = useState<string[]>([]);
     useEffect(() => {
-        if (allVisits !== false) {
-            return;
-        }
           fetch('/dataquery/visitlist', {credentials: 'same-origin'})
           .then((resp) => {
                   if (!resp.ok) {
@@ -30,7 +36,13 @@ function useVisits() {
     return {
         all: allVisits,
         default_: defaultVisits,
-        modifyDefault: (values) => {
+        /**
+         * Modify the default visits to use
+         *
+         * @param {VisitOption[]} values - The selected options from ReactSelect
+         * @returns {void}
+         */
+        modifyDefault: (values: readonly VisitOption[]) => {
             setDefaultVisits(values.map((el) => el.value));
         },
     };

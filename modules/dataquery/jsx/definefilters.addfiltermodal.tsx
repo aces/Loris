@@ -3,29 +3,45 @@ import FilterableSelectGroup from './components/filterableselectgroup';
 import Modal from 'jsx/Modal';
 import Select from 'react-select';
 import swal from 'sweetalert2';
+import {
+    NumericElement,
+    DateElement,
+    TimeElement,
+    SelectElement,
+    TextboxElement,
+} from 'jsx/Form';
+import {QueryTerm, QueryGroup} from './querydef';
+import {
+    Operators,
+    FieldDictionary,
+    DictionaryCategory,
+    VisitOption,
+} from './types';
+import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 
 /**
  * Renders a selectable list of visits
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {string[]} props.selected - The currently selected visits
+ * @param {string[]} props.options - The valid options
+ * @param {function} props.onChange - callback when the value selected changes
+ * @returns {React.ReactElement} - The visit list dropdown
  */
-function VisitList(props) {
-    let selectedVisits;
-    const selectOptions = props.options.map(
+function VisitList(props: {
+    selected: string[],
+    options: string[],
+    onChange: (newvals: string[]) => void,
+}) {
+    const selectOptions: VisitOption[] = props.options.map(
         (vl) => {
             return {value: vl, label: vl};
         }
     );
 
-    if (props.selected && props.selected.visits) {
-        selectedVisits = selectOptions;
-    } else {
-        selectedVisits = selectOptions.filter((opt) => {
-            return props.selected.includes(opt.value);
-        });
-    }
+    const selectedVisits = selectOptions.filter((opt) => {
+        return props.selected.includes(opt.value);
+    });
 
     return <Select options={selectOptions}
         isMulti
@@ -37,7 +53,15 @@ function VisitList(props) {
         placeholder='Select Visits'
         value={selectedVisits}
         menuPortalTarget={document.body}
-        styles={{menuPortal: (base) => ({...base, zIndex: 9999})}}
+        styles={{menuPortal:
+            /**
+             * Required for rendering properly on top of window.
+             *
+             * @param {object} base - The base from React Select
+             * @returns {object} - The new CSS object
+             */
+            (base) => ({...base, zIndex: 9999})}
+        }
         closeMenuOnSelect={false}
     />;
 }
@@ -46,22 +70,41 @@ function VisitList(props) {
  * Render a modal window for adding a filter
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {QueryGroup} props.query - The current query
+ * @param {function} props.closeModal - Callback to close the modal
+ * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
+ * @param {CategoriesAPIReturn} props.categories - List of categories
+ * @param {function} props.onCategoryChange - Callback to change the current category
+ * @param {DictionaryCategory} props.displayedFields - The fields from the current category to display
+ * @param {string} props.module - The module of the currently selected category
+ * @param {string} props.category - The currently selected category
+ * @returns {React.ReactElement} - The modal window
  */
-function AddFilterModal(props) {
+function AddFilterModal(props: {
+    query: QueryGroup,
+    closeModal: () => void,
+    addQueryGroupItem: (group: QueryGroup, condition: QueryTerm) => void,
+    categories: CategoriesAPIReturn,
+
+    onCategoryChange: (module: string, category: string) => void,
+    displayedFields: DictionaryCategory,
+
+    module: string,
+    category: string,
+}) {
     let fieldSelect;
     let criteriaSelect;
     let visitSelect;
     let cardinalityWarning;
-    let [fieldDictionary, setFieldDictionary] = useState(false);
-    let [fieldname, setFieldname] = useState(false);
-    let [op, setOp] = useState(false);
-    let [value, setValue] = useState('');
-    let [selectedVisits, setSelectedVisits] = useState(false);
+    const [fieldDictionary, setFieldDictionary]
+        = useState<FieldDictionary|null>(null);
+    const [fieldname, setFieldname] = useState<string|null>(null);
+    const [op, setOp] = useState<Operators|null>(null);
+    const [value, setValue] = useState<string|string[]>('');
+    const [selectedVisits, setSelectedVisits] = useState<string[]|null>(null);
 
     if (props.displayedFields) {
-        let options = {'Fields': {}};
+        const options: { Fields: {[key: string]: string}} = {'Fields': {}};
         for (const [key, value] of Object.entries(props.displayedFields)) {
             options['Fields'][key] = value.description;
         }
@@ -70,7 +113,9 @@ function AddFilterModal(props) {
                     const dict = props.displayedFields[fieldname];
                     setFieldDictionary(dict);
                     setFieldname(fieldname);
-                    setSelectedVisits(dict.visits);
+                    if (dict.visits) {
+                        setSelectedVisits(dict.visits);
+                    }
                 }}
                 placeholder="Select a field" />;
     }
@@ -92,7 +137,7 @@ function AddFilterModal(props) {
                        emptyOption={true}
                        sortByValue={false}
                        value={op || ''}
-                       onUserInput={(name, value) => {
+                       onUserInput={(name: string, value: Operators) => {
                            setOp(value);
                        }}
                        options={getOperatorOptions(fieldDictionary)}
@@ -101,13 +146,12 @@ function AddFilterModal(props) {
                 <div style={{width: '80%'}}>{valueSelect}</div>
             </div>
         </div>;
-    }
 
-    if (fieldDictionary.scope == 'session') {
+    if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
         visitSelect = <div onClick={(e) => e.stopPropagation()}>
                 <h3>for at least one of the following visits</h3>
                 <VisitList options={fieldDictionary.visits}
-                   selected={selectedVisits}
+                   selected={selectedVisits || []}
                    onChange={setSelectedVisits}
                 />
         </div>;
@@ -133,7 +177,14 @@ function AddFilterModal(props) {
             one</i> of the data points.</div>
         </div>;
     }
+    }
 
+    /**
+     * Function that returns a promise on the modal's submission to check
+     * if the input is valid.
+     *
+     * @returns {Promise} - Promise that resolves if input is valid and rejects otherwise
+     */
     const submitPromise = () =>
         new Promise((resolve, reject) => {
             // Validate and reject if invalid
@@ -170,7 +221,7 @@ function AddFilterModal(props) {
                }
            }
 
-           if (fieldDictionary.scope == 'session') {
+           if (fieldDictionary && fieldDictionary.scope == 'session') {
                if (!selectedVisits || selectedVisits.length == 0) {
                    swal.fire({
                        type: 'error',
@@ -183,15 +234,15 @@ function AddFilterModal(props) {
            }
 
            // It's been validated, now save the data and resolve
-           let crit = {
-                   'Module': props.module,
-                   'Category': props.category,
-                   'Field': fieldname,
-                   'Op': op,
-                   'Value': value,
-           };
-           if (fieldDictionary.scope == 'session') {
-               crit.Visits = selectedVisits;
+           const crit: QueryTerm = new QueryTerm(
+                   props.module,
+                   props.category,
+                   fieldname,
+                   op,
+                   value,
+           );
+           if (fieldDictionary && fieldDictionary.scope == 'session') {
+               crit.visits = selectedVisits || [];
            }
 
            props.addQueryGroupItem(
@@ -200,8 +251,7 @@ function AddFilterModal(props) {
            );
 
            props.closeModal();
-
-           resolve();
+           resolve(null);
         }
     );
     return <Modal title="Add criteria"
@@ -233,11 +283,10 @@ function AddFilterModal(props) {
  * Get a list of possible query operators based on a field's dictionary
  *
  * @param {object} dict - the field dictionary
- *
- * @return {object}
+ * @returns {object} - list of options for this dictionary
  */
-function getOperatorOptions(dict) {
-    let options;
+function getOperatorOptions(dict: FieldDictionary) {
+    let options: {[operator: string]: string};
 
     if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
@@ -290,7 +339,7 @@ function getOperatorOptions(dict) {
         options['numberof'] = 'number of';
     }
     return options;
-};
+}
 
 
 /**
@@ -299,12 +348,15 @@ function getOperatorOptions(dict) {
  *
  * @param {object} fielddict - The field dictionary
  * @param {string} op - The operator selected
- * @param {string} value - The current value
+ * @param {string|string[]} value - The current value
  * @param {string} setValue - a callback when a new value is selected
- *
- * @return {ReactDOM}
+ * @returns {React.ReactElement} - the react element
  */
-function valueInput(fielddict, op, value, setValue) {
+function valueInput(fielddict: FieldDictionary,
+    op: Operators,
+    value: string|string[],
+    setValue: (val: string) => void
+) {
    switch (op) {
       case 'exists':
       case 'notexists':
@@ -314,7 +366,7 @@ function valueInput(fielddict, op, value, setValue) {
       case 'numberof':
           return <NumericElement
              value={value}
-             onUserInput={(name, value) => setValue(value)} />;
+             onUserInput={(name: string, value: string) => setValue(value)} />;
     }
 
    switch (fielddict.type) {
@@ -322,7 +374,7 @@ function valueInput(fielddict, op, value, setValue) {
           return <DateElement
              name="date"
              value={value}
-             onUserInput={(name, value) => setValue(value)} />;
+             onUserInput={(name: string, value: string) => setValue(value)} />;
        case 'time':
            // There's no time element type in LORIS, so use the HTML5
            // one with bootstrap styling that matches the rest of our
@@ -330,29 +382,34 @@ function valueInput(fielddict, op, value, setValue) {
            return <TimeElement
                     name="time"
                     value={value}
-                    onUserInput={(name, value) => setValue(value)}
+                    onUserInput={
+                        (name: string, value: string) => setValue(value)
+                    }
                 />;
        case 'URI':
             // Should this be input type="url"?
             return <TextboxElement
-               onUserInput={(name, value) => setValue(value)}
+               onUserInput={(name: string, value: string) => setValue(value)}
                value={value} />;
        case 'integer':
           return <NumericElement
              value={value}
-             onUserInput={(name, value) => setValue(value)} />;
+             onUserInput={(name: string, value: string) => setValue(value)} />;
        case 'boolean':
            return <SelectElement
                label=''
                name='value'
                options={{'true': 'true', 'false': 'false'}}
-               onUserInput={(name, value) => setValue(value)}
+               onUserInput={(name: string, value: string) => setValue(value)}
                value={value}
                sortByValue={false}
                />;
        case 'enumeration':
-           let opts = {};
-           for (let i = 0; i < fielddict.options.length; i++) {
+           const opts: {[key: string]: string} = {};
+           for (let i = 0;
+                fielddict.options && i < fielddict.options.length;
+                i++
+           ) {
                const opt = fielddict.options[i];
                opts[opt] = opt;
            }
@@ -361,15 +418,15 @@ function valueInput(fielddict, op, value, setValue) {
                multiple={op == 'in'}
                name='value'
                options={opts}
-               onUserInput={(name, value) => setValue(value)}
+               onUserInput={(name: string, value: string) => setValue(value)}
                value={value}
                sortByValue={false}
            />;
        default:
             return <TextboxElement
-               onUserInput={(name, value) => setValue(value)}
+               onUserInput={(name: string, value: string) => setValue(value)}
                value={value} />;
    }
-};
+}
 
 export default AddFilterModal;

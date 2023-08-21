@@ -1,21 +1,65 @@
 import {useState, useEffect} from 'react';
-import {QueryTerm} from './querydef';
+import {APIQueryField} from './types';
+import {QueryTerm, QueryGroup} from './querydef';
 import AddFilterModal from './definefilters.addfiltermodal';
 import ImportCSVModal from './definefilters.importcsvmodal';
 import QueryTree from './querytree';
-import CriteriaTerm from './criteriaterm';
+import {CriteriaTerm} from './criteriaterm';
 import InfoPanel from 'jsx/InfoPanel';
-
+import {ButtonElement} from 'jsx/Form';
+import {FullDictionary, DictionaryCategory} from './types';
+import {calcPayload} from './calcpayload';
+import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 
 /**
  * The define filters tab of the DQT
  *
  * @param {object} props - React props
- *
- * @return {ReactDOM}
+ * @param {APIQueryField[]} props.fields - The fields selected
+ * @param {QueryGroup} props.query - The criteria currently selected
+ * @param {function} props.setQuery - Sets the current criteria
+ * @param {CategoriesAPIReturn} props.categories - The list of categories displayed
+ * @param {DictionaryCategory} props.displayedFields - All fields from the currently selected category
+ * @param {string} props.module - The module of the currently selected module
+ * @param {string} props.category - The currently selected category
+ * @param {function} props.onCategoryChange - Callback to call when the category changes
+ * @param {FullDictionary} props.fulldictionary - The fully loaded dictionary
+ * @param {function} props.mapModuleName - Mapper from backend name to frontend name
+ * @param {function} props.mapCategoryName - Mapper from backend name to frontend name
+ * @param {function} props.getModuleFields - Function that will ensure a module's fields
+ *                                           are fully populated in fulldictionary
+ * @param {function} props.addQueryGroupItem - Function that will add a new term to the
+ *                                             existing QueryGroup
+ * @param {function} props.addNewQueryGroup - Function that will add a new QueryGroup subgroup
+ *                                           to the existing QueryGroup
+ * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
+ *                                                QueryGroup by index.
+ * @returns {React.ReactElement} - The Define Filters page
  */
-function DefineFilters(props) {
-    let displayquery = '';
+function DefineFilters(props: {
+    fields: APIQueryField[],
+    query: QueryGroup,
+    categories: CategoriesAPIReturn,
+    setQuery: (newcriteria: QueryGroup) => void,
+
+    module: string,
+    category: string,
+
+    displayedFields: DictionaryCategory, // fields from currently selected category
+    onCategoryChange: (module: string, category: string) => void,
+    fulldictionary: FullDictionary,
+    mapModuleName: (module: string) => string,
+    mapCategoryName: (module: string, category: string) => string,
+    getModuleFields: (module: string) => void,
+
+    addQueryGroupItem: (
+        querygroup: QueryGroup,
+        condition: QueryTerm
+    ) => QueryGroup,
+    addNewQueryGroup: (group: QueryGroup) => void,
+    removeQueryGroupItem: (group: QueryGroup, i: number) => QueryGroup,
+}) {
+    let displayquery: React.ReactElement|null = null;
     const [addModal, setAddModal] = useState(false);
     const [csvModal, setCSVModal] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
@@ -24,16 +68,13 @@ function DefineFilters(props) {
     // query group, in which case the callback changes it
     // to that group.
     const [modalQueryGroup, setModalGroup] = useState(props.query);
-    const [deleteItemIndex, setDeleteItemIndex] = useState(null);
+    const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
     const [queryMatches, setQueryMatches] = useState(null);
     useEffect(() => {
         setQueryMatches(null);
         const payload = calcPayload(props.fields, props.query);
-        if (payload == {}) {
-            return;
-        }
         fetch(
-           loris.BaseURL + '/dataquery/queries',
+           '/dataquery/queries',
            {
              method: 'POST',
              credentials: 'same-origin',
@@ -49,7 +90,7 @@ function DefineFilters(props) {
         ).then(
             (data) => {
                 fetch(
-                        loris.BaseURL + '/dataquery/queries/'
+                        '/dataquery/queries/'
                             + data.QueryID + '/count',
                         {
                             method: 'GET',
@@ -68,8 +109,8 @@ function DefineFilters(props) {
     }, [props.fields, props.query]);
 
     const bGroupStyle = {
-        display: 'flex',
-        flexWrap: 'wrap',
+        display: 'flex' as const,
+        flexWrap: 'wrap' as const,
         marginTop: 10,
     };
 
@@ -83,7 +124,7 @@ function DefineFilters(props) {
           <div style={bGroupStyle}>
              <ButtonElement
                 label={advancedLabel}
-                onUserInput={(e) => {
+                onUserInput={(e: React.MouseEvent) => {
                    e.preventDefault();
                    setShowAdvanced(!showAdvanced);
                 }}
@@ -105,9 +146,9 @@ function DefineFilters(props) {
                 <div style={bGroupStyle}>
                   <ButtonElement
                      label='Add nested "or" condition groups'
-                     onUserInput={(e) => {
+                     onUserInput={(e: React.MouseEvent) => {
                        e.preventDefault();
-                       props.query.condition = 'and';
+                       props.query.operator = 'and';
                        props.addNewQueryGroup(props.query);
                      }}
                    />
@@ -120,9 +161,9 @@ function DefineFilters(props) {
                  <div style={bGroupStyle}>
                    <ButtonElement
                      label='Add nested "and" condition groups'
-                     onUserInput={(e) => {
+                     onUserInput={(e: React.MouseEvent) => {
                        e.preventDefault();
-                       props.query.condition = 'or';
+                       props.query.operator = 'or';
                        props.addNewQueryGroup(props.query);
                      }}
                    />
@@ -152,7 +193,7 @@ function DefineFilters(props) {
                       <div style={bGroupStyle}>
                           <ButtonElement
                               label='Add Condition'
-                              onUserInput={(e) => {
+                              onUserInput={(e: React.MouseEvent) => {
                                   e.preventDefault();
                                   setAddModal(true);
                               }}
@@ -161,14 +202,13 @@ function DefineFilters(props) {
                       <div style={bGroupStyle}>
                           <ButtonElement
                               label='Import from CSV'
-                              onUserInput={(e) => {
+                              onUserInput={(e: React.MouseEvent) => {
                                   e.preventDefault();
                                   // Need to be sure that we've loaded
                                   // candidate_parameters so it's in
                                   // fulldictionary
                                   props.getModuleFields(
                                     'candidate_parameters',
-                                    'identifiers'
                                   );
                                   setCSVModal(true);
                               }}
@@ -196,7 +236,7 @@ function DefineFilters(props) {
                    </p>
                     <ButtonElement
                         label='New "and" subgroup'
-                        onUserInput={(e) => {
+                        onUserInput={(e: React.MouseEvent) => {
                             e.preventDefault();
                             props.query.operator = 'or';
                             props.addNewQueryGroup(props.query);
@@ -210,7 +250,7 @@ function DefineFilters(props) {
                    </p>
                     <ButtonElement
                         label='New "or" subgroup'
-                        onUserInput={(e) => {
+                        onUserInput={(e: React.MouseEvent) => {
                             e.preventDefault();
                             props.query.operator = 'and';
                             props.addNewQueryGroup(props.query);
@@ -255,14 +295,14 @@ function DefineFilters(props) {
                         <div style={bGroupStyle}>
                             <ButtonElement
                                 label='Add "and" condition'
-                                onUserInput={(e) => {
+                                onUserInput={(e: React.MouseEvent) => {
                                     e.preventDefault();
                                     props.query.operator = 'and';
                                     setAddModal(true);
                                 }} />
                             <ButtonElement
                                 label='Add "or" condition'
-                                onUserInput={(e) => {
+                                onUserInput={(e: React.MouseEvent) => {
                                     e.preventDefault();
                                     setAddModal(true);
                                     props.query.operator = 'or';
@@ -281,14 +321,14 @@ function DefineFilters(props) {
             <p>Currently querying for any candidates with:</p>
       <form>
         <fieldset>
-            <QueryTree items={props.query}
+            <QueryTree
+                items={props.query}
                 // Only highlight the active group if the modal is open
-                activeGroup={addModal ? modalQueryGroup : ''}
                 buttonGroupStyle={bGroupStyle}
                 removeQueryGroupItem={props.removeQueryGroupItem}
                 mapModuleName={mapModuleName}
                 mapCategoryName={mapCategoryName}
-                newItem={(group) => {
+                newItem={(group: QueryGroup) => {
                     setModalGroup(group);
                     setAddModal(true);
                 }}
@@ -349,33 +389,6 @@ function DefineFilters(props) {
           {displayquery}
       </div>
       );
-}
-
-/**
- * Calculates the payload to submit to the count endpoint
- * to run the query.
- *
- * @param {array} fields - the fields to query
- * @param {QueryGroup} filters - the root of the filters
- *
- * @return {object}
- */
-function calcPayload(fields, filters) {
-    let payload = {
-        type: 'candidates',
-        fields: fields.map((val) => {
-            return {
-                module: val.module,
-                category: val.category,
-                field: val.field,
-            };
-        },
-        ),
-    };
-    if (filters.group.length > 0) {
-        payload.criteria = filters;
-    }
-    return payload;
 }
 
 export default DefineFilters;

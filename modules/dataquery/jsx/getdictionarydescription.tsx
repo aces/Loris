@@ -1,14 +1,20 @@
+import {FullDictionary} from './types';
+
 /**
  * Get the dictionary for a given term
  *
  * @param {string} module - the module
  * @param {string} category - the category
- * @param {fieldname} fieldname - the field
- * @param {object} dict - all loaded dictionaries
- *
- * @return {object}
+ * @param {string} fieldname - the field
+ * @param {FullDictionary} dict - all loaded dictionaries
+ * @returns {string} - the description if available, otherwise the fieldname
  */
-function getDictionaryDescription(module, category, fieldname, dict) {
+function getDictionaryDescription(
+    module: string,
+    category: string,
+    fieldname: string,
+    dict: FullDictionary,
+): string {
     if (!dict
         || !dict[module]
         || !dict[module][category]

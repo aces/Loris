@@ -2,10 +2,16 @@
  * A single term in a query hierarchy.
  */
 export class QueryTerm {
+    module: string
+    category: string;
+    fieldname: string;
+    op: string;
+    visits: string[]|undefined;
+    value: string|string[];
+
     /**
      * Constructor
      *
-     * @param {object} fielddictionary - the dictionary object
      * @param {string} module - the module name
      * @param {string} category - the field name
      * @param {string} fieldname - the field name within the module
@@ -14,15 +20,13 @@ export class QueryTerm {
      * @param {array} visits - the visits for the criteria
      */
     constructor(
-        fielddictionary,
-        module,
-        category,
-        fieldname,
-        op,
-        value,
-        visits
+        module: string,
+        category: string,
+        fieldname: string,
+        op: string,
+        value: string|string[],
+        visits?: string[]
     ) {
-        this.dictionary = fielddictionary;
         this.module = module;
         this.category = category;
         this.fieldname = fieldname;
@@ -36,12 +40,15 @@ export class QueryTerm {
  * And AND/OR group of terms within a query
  */
 export class QueryGroup {
+    operator: 'and' | 'or';
+    group: (QueryTerm|QueryGroup)[]
+
     /**
      * Constructor
      *
      * @param {string} op -- 'and' or 'or' -- the operator used for this group
      */
-    constructor(op) {
+    constructor(op: 'and' | 'or') {
         this.operator = op;
         this.group = [];
     }
@@ -51,26 +58,17 @@ export class QueryGroup {
      *
      * @param {object} condition - the term's conditions
      */
-    addTerm(condition) {
-        this.group.push(new QueryTerm(
-            null,
-            condition.Module,
-            condition.Category,
-            condition.Field,
-            condition.Op,
-            condition.Value,
-            condition.Visits,
-        ));
+    addTerm(condition: QueryTerm) {
+        this.group.push(condition);
     }
 
     /**
      * Removes the term and index idx from this group
      *
-     * @param {int} idx - the index to remove
-     *
-     * @return {QueryGroup} - the new querygroup
+     * @param {number} idx - the index to remove
+     * @returns {QueryGroup} - the new querygroup
      */
-    removeTerm(idx) {
+    removeTerm(idx: number): QueryGroup {
         this.group = this.group.filter((el, fidx) => {
             return idx != fidx;
         });
@@ -79,8 +77,9 @@ export class QueryGroup {
 
     /**
      * Adds a new group of AND/OR clauses
-     * as a subgroup. */
-    addGroup() {
+     * as a subgroup.
+     */
+    addGroup(): void {
         // The default operation for a subgroup
         // is the opposite of this one, otherwise
         // there would be no reason for a new group

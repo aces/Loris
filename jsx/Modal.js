@@ -166,7 +166,6 @@ class Modal extends Component {
     );
   }
 }
-
 Modal.propTypes = {
   title: PropTypes.string,
   onSubmit: PropTypes.func,
@@ -176,6 +175,7 @@ Modal.propTypes = {
   children: PropTypes.node,
   width: PropTypes.string,
 };
+
 
 Modal.defaultProps = {
   throwWarning: false,
