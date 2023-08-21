@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS dataquery_run_results;
-DROP TABLE IF EXISTS dataquery_run_queries;
-DROP TABLE IF EXISTS dataquery_shared_queries_rel;
-DROP TABLE IF EXISTS dataquery_pinned_queries_rel;
-DROP TABLE IF EXISTS dataquery_queries;
-
 CREATE TABLE dataquery_queries (
     QueryID int(10) unsigned NOT NULL AUTO_INCREMENT,
     Query JSON NOT NULL,
@@ -68,3 +62,5 @@ CREATE TABLE dataquery_study_queries_rel (
     FOREIGN KEY (PinnedBy) REFERENCES users(ID),
     CONSTRAINT unique_pin UNIQUE (QueryID, PinType)
 );
+
+INSERT INTO modules (Name, Active) VALUES ('dataquery', 'Y');

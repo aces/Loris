@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS dataquery_run_results;
+DROP TABLE IF EXISTS dataquery_run_queries;
+DROP TABLE IF EXISTS dataquery_shared_queries_rel;
+DROP TABLE IF EXISTS dataquery_pinned_queries_rel;
+DROP TABLE IF EXISTS dataquery_queries;
+
 -- 0000-00-05-ElectrophysiologyTables.sql
 DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`;
 DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
