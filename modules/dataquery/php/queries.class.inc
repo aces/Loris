@@ -93,6 +93,14 @@ class Queries extends \NDB_Page
                 $queryID
             ))->handle($request);
         }
+        if (preg_match(
+                    "/queries\/([0-9]+)\/run\/([0-9]+)$/",
+                    $url,
+                    $pieces
+                    ) === 1
+           ) {
+            return new \LORIS\Http\Response\JSON\NotImplemented();
+        }
         return new \LORIS\Http\Response\JSON\NotFound();
     }
 }
