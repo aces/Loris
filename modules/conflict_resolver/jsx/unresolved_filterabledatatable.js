@@ -98,7 +98,7 @@ class UnresolvedFilterableDataTable extends Component {
         const data = {
           fieldOptions: json.fieldOptions,
           data: json.data.map((e) => {
-            var fieldInfo = this.state.fieldsMeta[e['Instrument']][
+            const fieldInfo = this.state.fieldsMeta[e['Instrument']][
               e['Instrument']
               + '_'
               + e['Question']
