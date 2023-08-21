@@ -50,10 +50,10 @@ class ResolvedFilterableDataTable extends Component {
   }
 
   /**
-  * Retrieve all the field metadata
-  *
-  * @return {object}
-  */
+   * Retrieve all the field metadata
+   *
+   * @return {object}
+   */
   fetchFieldsMeta() {
     const url = loris.BaseURL.concat('/dictionary/module/instruments');
     return fetch(url, {credentials: 'same-origin'})
@@ -86,13 +86,13 @@ class ResolvedFilterableDataTable extends Component {
         const data = {
           fieldOptions: json.fieldOptions,
           data: json.data.map((e) => {
-            var fieldInfo = this.state.fieldsMeta[e['Instrument']][
+            const fieldInfo = this.state.fieldsMeta[e['Instrument']][
               e['Instrument']
-              + "_"
+              + '_'
               + e['Question']
             ];
-            e['Description'] = fieldInfo ? fieldInfo['description'] : "";
-            return Object.values(e)
+            e['Description'] = fieldInfo ? fieldInfo['description'] : '';
+            return Object.values(e);
           }),
         };
         this.setState({data});
