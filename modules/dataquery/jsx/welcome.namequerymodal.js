@@ -1,12 +1,12 @@
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Render a modal window for naming a query
  *
  * @param {object} props - React props
- *
  * @return {ReactDOM}
  */
 function NameQueryModal(props) {
@@ -44,5 +44,11 @@ function NameQueryModal(props) {
             </form>
     </Modal>;
 }
+
+NameQueryModal.propTypes = {
+  defaultName: PropTypes.string,
+  onSubmit: PropTypes.func,
+  closeModal: PropTypes.func,
+};
 
 export default NameQueryModal;

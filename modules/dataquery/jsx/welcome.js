@@ -7,13 +7,12 @@ import {QueryGroup} from './querydef';
 import NameQueryModal from './welcome.namequerymodal';
 import AdminQueryModal from './welcome.adminquerymodal';
 import getDictionaryDescription from './getdictionarydescription';
-
+import PropTypes from 'prop-types';
 
 /**
  * Return the welcome tab for the DQT
  *
  * @param {object} props - React props
- *
  * @return {ReactDOM}
  */
 function Welcome(props) {
@@ -117,6 +116,16 @@ function Welcome(props) {
               </div>
           );
 }
+
+Welcome.propTypes = {
+    topQueries: PropTypes.array,
+    loadQuery: PropTypes.func,
+    getModuleFields: PropTypes.func,
+    mapModuleName: PropTypes.func,
+    mapCategoryName: PropTypes.func,
+    fulldictionary: PropTypes.object,
+};
+
 
 /**
  * Display a list of queries
