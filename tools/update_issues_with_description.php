@@ -51,8 +51,11 @@ foreach ($allIssueIDsWithComments as $issueID) {
             LIMIT 1",
             ['issue_id' => $issueID]
         );
-        $DB->update("issues", ["description" => $description[0]],
-            ["issueID" => $issueID]);
+        $DB->update(
+            "issues",
+            ["description" => $description[0]],
+            ["issueID" => $issueID]
+        );
     }
 }
 
