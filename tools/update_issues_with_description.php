@@ -37,7 +37,7 @@ $allIssueIDsWithComments = $DB->pselectCol(
     []
 );
 
-foreach($allIssueIDsWithComments as $issueID) {
+foreach ($allIssueIDsWithComments as $issueID) {
     $existingDescription = $DB->pselectOne(
         "SELECT `description` FROM issues WHERE issueID=:issue_id",
         ["issue_id" => $issueID]
@@ -51,7 +51,8 @@ foreach($allIssueIDsWithComments as $issueID) {
             LIMIT 1",
             ['issue_id' => $issueID]
         );
-        $DB->update("issues", ["description" => $description[0]], ["issueID" => $issueID]);
+        $DB->update("issues", ["description" => $description[0]],
+            ["issueID" => $issueID]);
     }
 }
 
