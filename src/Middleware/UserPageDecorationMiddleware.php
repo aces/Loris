@@ -227,6 +227,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
              'id'       => $user->getId(),
             ]
         );
+
         // Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 
