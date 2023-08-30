@@ -527,7 +527,8 @@ class StaticDataTable extends Component {
             this.props.Headers[j],
             data,
             this.props.Data[index[i].RowIdx],
-            this.props.Headers
+            this.props.Headers,
+            j
           );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
