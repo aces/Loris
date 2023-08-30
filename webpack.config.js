@@ -33,7 +33,6 @@ const resolve = {
     Filter: path.resolve(__dirname, './jsx/Filter'),
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
-    Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),

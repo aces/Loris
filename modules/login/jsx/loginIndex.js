@@ -7,6 +7,12 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import DOMPurify from 'dompurify';
+import {
+    FormElement,
+    TextboxElement,
+    PasswordElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Login form.
