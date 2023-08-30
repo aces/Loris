@@ -261,7 +261,8 @@ components:
           type: string
           description: A URL to access this query run
           example: "https://example.com/dataquery/queries/3/run/34"
-        QueryURI: string
+        QueryURI:
+          type: string
           description: A URL to access the query that was run
           example: "https://example.com/dataquery/queries/3"
         RunTime:
