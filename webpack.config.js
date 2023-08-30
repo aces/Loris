@@ -219,7 +219,6 @@ let config = [
       StaticDataTable: './jsx/StaticDataTable.js',
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
-      Form: './jsx/Form.js',
       CSSGrid: './jsx/CSSGrid.js',
       Help: './jsx/Help.js',
     },
