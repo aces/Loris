@@ -165,14 +165,14 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testCheckBoxElement()
     {
         $this->_landing();
-        $this->safeFindElement(
-            WebDriverBy::Name("testCheckbox")
-        )->click();
         $checkbox = $this->safeFindElement(
-            WebDriverBy::Name("fire_away")
+            WebDriverBy::Name("testCheckbox")
         );
         $checkbox->click();
         $this->assertTrue($checkbox->isSelected());
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
         $data =  $this->DB->pselectOne(
             'SELECT Data FROM flag where SessionID = 999999',
             []
