@@ -169,6 +169,9 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("testCheckbox")
         );
         $checkbox->click();
+        $checkbox = $this->safeFindElement(
+            WebDriverBy::Name("testCheckbox")
+        );
         $this->assertTrue($checkbox->isSelected());
         $this->safeFindElement(
             WebDriverBy::Name("fire_away")
