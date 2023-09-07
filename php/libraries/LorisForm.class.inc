@@ -622,7 +622,7 @@ class LorisForm
         }
 
         // check if a 'value' attribute is set for this element
-        if (!empty($this->form[$name]['value'])) {
+        if (isset($this->form[$name]['value']) && !empty($this->form[$name]['value'])) {
             return $this->_getFilteredValue(
                 $name,
                 $this->form[$name]['value']
