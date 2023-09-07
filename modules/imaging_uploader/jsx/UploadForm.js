@@ -67,9 +67,21 @@ class UploadForm extends Component {
         formData.candID = ids[1];
         formData.pSCID = ids[0];
         // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
+        // join the remaining elements of patientName and pattern match
+        // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        suffix = ids.join('_');
+        visitLabels = form.visitLabel.options.keys;
+        bestMatch = '';
+        visitLabels.map((visitLabel) => {
+          if (suffix.match(visitLabel) !== null) {
+            // consider the first match only
+            if (suffix.match(visitLabel)[0].length > bestMatch.length) {
+              bestMatch = suffix.match(visitLabel)[0];
+            }
+          }
+        });
+        formData.visitLabel = bestMatch;
       }
     }
 
