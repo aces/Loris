@@ -66,7 +66,7 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores, filename can have suffix appended to patientName
+        // visitLabel can contain underscores, filename can have suffix appended to PSCID_CandID_VisitLabel
         // join the remaining elements of patientName and pattern match
         // against each visit label. Use as visitLabel the best (longest) match
         ids.splice(0, 2);
