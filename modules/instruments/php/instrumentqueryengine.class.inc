@@ -408,10 +408,15 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     // Go through each field and put the data in the right
                     // index if applicable.
                     $data = $instrData->current();
-                    foreach ($data as $key => $val) {
-                        $candidateData[$key][] = $val;
+                    error_log(print_r($data, true));
+                    foreach ($data as $fieldkey=> $sessionobjs) {
+                        foreach ($sessionobjs as $sessionID => $val) {
+                            assert(!isset($candidateData[$fieldkey][$sessionID]));
+                            $candidateData[$fieldkey][$sessionID] = $val;
+                        }
+                        // $candidateData[$key] = ($candidateData[$key] ?? []) + $val);
                     }
-                    // $candidateData = array_merge($candidateData, $data);
+                    // $candidateData[] = array_merge($candidateData, $data);
                     $instrData->next();
                     $instCandidate = $instrData->key();
                 }
@@ -451,8 +456,12 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     if (!isset($candData[$dict->getName()])) {
                         $candData[$dict->getName()] = [];
                     }
-                    $candData[$dict->getName()][]
-                        = $loadedInstrument->getDictionaryValue($dict);
+                    $sid = $loadedInstrument->getSessionID();
+                    $candData[$dict->getName()][$sid->__toString()] = [
+                        'VisitLabel' => $loadedInstrument->getVisitLabel(),
+                        'SessionID' => $sid->__toString(),
+                        'value' => $loadedInstrument->getDictionaryValue($dict),
+                    ];
                 }
             }
             yield "$iCandID" => $candData;
