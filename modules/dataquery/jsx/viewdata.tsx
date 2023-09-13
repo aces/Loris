@@ -9,6 +9,7 @@ import {APIQueryField, APIQueryObject} from './types';
 import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
 import {calcPayload} from './calcpayload';
+import getDictionaryDescription from './getdictionarydescription';
 
 type TableRow = (string|null)[];
 
@@ -203,6 +204,7 @@ type DataOrganizationType = {
  *
  * @param {RunQueryType} queryData - The data returned by the API
  * @param {string} visitOrganization - The type of data organization selected by the user
+ * @param {string} headerDisplay - The display to use for the headers
  * @param {APIQueryField[]} fields - The fields that need to be organized
  * @param {FullDictionary} fulldictionary - The full dictionary of all selected modules
  * @returns {object} - the headers and data re-organised according to the user's selection
@@ -210,6 +212,7 @@ type DataOrganizationType = {
 function useDataOrganization(
     queryData: RunQueryType,
     visitOrganization: VisitOrgType,
+    headerDisplay: HeaderDisplayType,
     fields: APIQueryField[],
     fulldictionary: FullDictionary
 ) : DataOrganizationType {
@@ -227,6 +230,7 @@ function useDataOrganization(
         setOrgStatus('headers');
         organizeHeaders(fields,
           visitOrganization,
+          headerDisplay,
           fulldictionary,
           (i) => setProgress(i),
         ).then( (headers: string[]) => {
@@ -245,7 +249,7 @@ function useDataOrganization(
                 setOrgStatus('done');
                 });
             });
-    }, [visitOrganization, queryData.loading, queryData.data]);
+    }, [visitOrganization, headerDisplay, queryData.loading, queryData.data]);
     return {
        'headers': headers,
        'data': tableData,
@@ -273,10 +277,13 @@ function ViewData(props: {
 }) {
     const [visitOrganization, setVisitOrganization]
         = useState<VisitOrgType>('raw');
+    const [headerDisplay, setHeaderDisplay]
+        = useState<HeaderDisplayType>('fieldnamedesc');
     const queryData = useRunQuery(props.fields, props.filters, props.onRun);
     const organizedData = useDataOrganization(
         queryData,
         visitOrganization,
+        headerDisplay,
         props.fields,
         props.fulldictionary
     );
@@ -324,6 +331,23 @@ function ViewData(props: {
     }
 
     return <div>
+        <SelectElement
+            name='headerdisplay'
+            options={{
+                'fieldname': 'Field Name',
+                'fielddesc': 'Field Description',
+                'fieldnamedesc': 'Field Name: Field Description',
+            }}
+            label='Header Display Format'
+            value={headerDisplay}
+            multiple={false}
+            emptyOption={false}
+            onUserInput={
+                (name: string, value: HeaderDisplayType) =>
+                    setHeaderDisplay(value)
+            }
+            sortByValue={false}
+          />
         <SelectElement
             name='visitorganization'
             options={{
@@ -762,12 +786,14 @@ function valuesList(values: KeyedValue[]) {
 }
 
 type VisitOrgType = 'raw' | 'inline' | 'longitudinal' | 'crosssection';
+type HeaderDisplayType = 'fieldname' | 'fielddesc' | 'fieldnamedesc';
 /**
  * Generate the appropriate table headers based on the visit
  * organization
  *
  * @param {array} fields - the selected fields
  * @param {string} org - the visit organization
+ * @param {string} display - the header display format
  * @param {object} fulldict - the data dictionary
  * @param {function} onProgress - Callback to indicate progress in processing
  * @returns {array} - A promise which resolves to the array of headers to display
@@ -776,18 +802,45 @@ type VisitOrgType = 'raw' | 'inline' | 'longitudinal' | 'crosssection';
 function organizeHeaders(
     fields: APIQueryField[],
     org: VisitOrgType,
+    display: HeaderDisplayType,
     fulldict: FullDictionary,
     onProgress: (i: number) => void): Promise<string[]> {
+    /**
+     * Format a header according to the selected display type
+     *
+     * @param {APIQueryField} header - The header to format
+     * @returns {string} - The string to display to the user
+     */
+    const formatHeader = (header: APIQueryField): string => {
+        switch (display) {
+            case 'fieldname': return header.field;
+            case 'fielddesc': return getDictionaryDescription(
+                header.module,
+                header.category,
+                header.field,
+                fulldict
+            );
+           case 'fieldnamedesc': return header.field +
+                ': ' + getDictionaryDescription(
+                    header.module,
+                    header.category,
+                    header.field,
+                    fulldict
+            );
+           default:
+                throw new Error('Unhandled field display type');
+        }
+    };
     switch (org) {
     case 'raw':
         return Promise.resolve(fields.map((val, i) => {
             onProgress(i);
-            return val.field;
+            return formatHeader(val);
         }));
     case 'inline':
         return Promise.resolve(fields.map((val, i) => {
             onProgress(i);
-            return val.field;
+            return formatHeader(val);
         }));
     case 'longitudinal':
         const headers: string[] = [];
@@ -799,11 +852,11 @@ function organizeHeaders(
             if (dict === null) {
                 headers.push('Internal Error');
             } else if (dict.scope == 'candidate') {
-                headers.push(field.field);
+                headers.push(formatHeader(field));
             } else {
                 if (typeof field.visits !== 'undefined') {
                     for (const visit of field.visits) {
-                        headers.push(field.field + ': ' + visit);
+                        headers.push(formatHeader(field) + ': ' + visit);
                     }
                 }
             }
@@ -816,7 +869,7 @@ function organizeHeaders(
             resolve(['Visit Label',
                     ...fields.map((val, i) => {
                         onProgress(i);
-                        return val.field;
+                        return formatHeader(val);
                     }),
             ]);
         });
