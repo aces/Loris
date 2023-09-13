@@ -132,7 +132,6 @@ function useSharedQueries(username: string): SharedQueriesType {
           const allQueries: FlattenedQueryMap = {};
           if (result.queries) {
               result.queries.forEach( (query: APIQuery) => {
-                  // console.log('Query', query);
                   const flattened: FlattenedQuery = query2flattened(query);
                   allQueries[query.QueryID] = flattened;
 
@@ -168,7 +167,6 @@ function useSharedQueries(username: string): SharedQueriesType {
           setTopQueries(convertedtop);
           return allQueries;
     }).then((allQueries) => {
-        // console.log(allQueries);
         fetch('/dataquery/queries/runs', {credentials: 'same-origin'})
         .then((resp) => {
           if (!resp.ok) {
@@ -189,13 +187,11 @@ function useSharedQueries(username: string): SharedQueriesType {
                             allQueries);
                         return;
                     }
-                    // console.log('Got', queryRun.QueryID);
                     convertedrecent.push({
                         RunTime: queryRun.RunTime,
                         ...queryObj,
                     });
                 });
-                // console.log(convertedrecent);
                 setRecentQueries(convertedrecent);
             }
         });
@@ -342,10 +338,10 @@ function useLoadQueryFromURL(
                   }
                   return resp.json();
           }).then((result) => {
-              if (result.criteria) {
-                  result.criteria = unserializeSavedQuery(result.criteria);
+              if (result.Query.criteria) {
+                  result.Query.criteria = unserializeSavedQuery(result.Query.criteria);
               }
-              loadQuery(result.fields, result.criteria);
+              loadQuery(result.Query.fields, result.Query.criteria);
               swal.fire({
                 type: 'success',
                 text: 'Loaded query',
