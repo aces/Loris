@@ -408,7 +408,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     // Go through each field and put the data in the right
                     // index if applicable.
                     $data = $instrData->current();
-                    error_log(print_r($data, true));
                     foreach ($data as $fieldkey=> $sessionobjs) {
                         foreach ($sessionobjs as $sessionID => $val) {
                             assert(!isset($candidateData[$fieldkey][$sessionID]));

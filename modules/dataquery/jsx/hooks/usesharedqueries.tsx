@@ -339,7 +339,9 @@ function useLoadQueryFromURL(
                   return resp.json();
           }).then((result) => {
               if (result.Query.criteria) {
-                  result.Query.criteria = unserializeSavedQuery(result.Query.criteria);
+                  result.Query.criteria = unserializeSavedQuery(
+                    result.Query.criteria
+                  );
               }
               loadQuery(result.Query.fields, result.Query.criteria);
               swal.fire({
