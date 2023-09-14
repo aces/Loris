@@ -409,6 +409,7 @@ function organizeData(
             for (const candidaterow of resultData) {
                 promises.push(new Promise<TableRow[]>((resolve) => {
                     // Collect list of visits for this candidate
+                    setTimeout( () => {
                     const candidatevisits: {[visit: string]: boolean} = {};
                     for (const i in candidaterow) {
                         if (!candidaterow.hasOwnProperty(i)) {
@@ -475,6 +476,7 @@ function organizeData(
                     }
                     onProgress(rowNum++);
                     resolve(dataRows);
+                    });
                 }));
             }
 
@@ -866,12 +868,14 @@ function organizeHeaders(
         return Promise.resolve(headers);
     case 'crosssection':
         return new Promise( (resolve) => {
-            resolve(['Visit Label',
-                    ...fields.map((val, i) => {
-                        onProgress(i);
-                        return formatHeader(val);
-                    }),
-            ]);
+            setTimeout( () => {
+                resolve(['Visit Label',
+                        ...fields.map((val, i) => {
+                            onProgress(i);
+                            return formatHeader(val);
+                        }),
+                ]);
+            });
         });
     default: throw new Error('Unhandled visit organization');
     }
