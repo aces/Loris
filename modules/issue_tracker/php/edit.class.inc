@@ -637,13 +637,31 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (isset($changed_assignee) && $new_assignee_tag == 'false') {
             $issueChangeEmailsAssignee = $db->pselect(
                 "SELECT
-                            u.Email AS Email,
-                            u.First_name AS firstname
-                        FROM
-                            users u
-                        WHERE
-                            u.UserID = :assignee
-                            AND u.UserID != :currentUser",
+                    u.Email AS Email,
+                    u.First_name AS firstname
+                FROM
+                    users u
+                WHERE
+                    u.UserID = :assignee
+                    AND u.UserID != :currentUser",
+                [
+                    'assignee'    => $changed_assignee,
+                    'currentUser' => $user->getUserName(),
+                ]
+            );
+            if (isset($issueChangeEmailsAssignee[0])) {
+                $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
+                \Email::send(
+                    $issueChangeEmailsAssignee[0]['Email'],
+                    'issue_assigned.tpl',
+                    $msg_data
+                );
+            }
+        } else if (isset($changed_assignee) && $new_assignee_tag === 'true') {
+            $issueChangeEmailsAssignee = $db->pselect(
+                "SELECT u.Email as Email, u.First_name as firstname " .
+                "FROM users u WHERE u.UserID=:assignee
+                AND u.UserID<>:currentUser",
                 [
                     'assignee'    => $changed_assignee,
                     'currentUser' => $user->getUserName(),
@@ -655,29 +673,10 @@ class Edit extends \NDB_Page implements ETagCalculator
 
                 \Email::send(
                     $issueChangeEmailsAssignee[0]['Email'],
-                    'issue_assigned.tpl',
+                    'issue_assigned_modified.tpl',
                     $msg_data
                 );
-            } else if (isset($changed_assignee) && $new_assignee_tag === 'true') {
-                $issueChangeEmailsAssignee = $db->pselect(
-                    "SELECT u.Email as Email, u.First_name as firstname " .
-                    "FROM users u WHERE u.UserID=:assignee
-                    AND u.UserID<>:currentUser",
-                    [
-                        'assignee'    => $changed_assignee,
-                        'currentUser' => $user->getUserName(),
-                    ]
-                );
-    
-                if (isset($issueChangeEmailsAssignee[0])) {
-                    $msg_data['firstname'] = $issueChangeEmailsAssignee[0]['firstname'];
-    
-                    \Email::send(
-                        $issueChangeEmailsAssignee[0]['Email'],
-                        'issue_assigned_modified.tpl',
-                        $msg_data
-                    );
-                }
+            }
         }
 
         $issue_change_emails = $db->pselect(
