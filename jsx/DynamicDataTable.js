@@ -161,6 +161,8 @@ DynamicDataTable.defaultProps = {
   DataURL: '',
 };
 
+let DynamicDataTable = React.createFactory(DynamicDataTable);
+
 window.DynamicDataTable = DynamicDataTable;
 
 export default DynamicDataTable;
