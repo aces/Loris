@@ -492,7 +492,16 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Get changed values to save in history
-        $historyValues = $this->getChangedValues($issueValues, $issueID, $user);
+        $issueValuesWithWatching = $issueValues;
+        if (isset($values['othersWatching'])) {
+            $usersWatching = $values['othersWatching'];
+            $issueValuesWithWatching['watching'] = $usersWatching;
+        }
+        $historyValues = $this->getChangedValues(
+            $issueValuesWithWatching,
+            $issueID,
+            $user
+        );
 
         if (!empty($issueID)) {
             $db->update('issues', $issueValues, ['issueID' => $issueID]);

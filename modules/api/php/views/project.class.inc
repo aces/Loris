@@ -34,9 +34,10 @@ class Project
     /**
      * Constructor
      *
-     * @param \Project $project The project to format
+     * @param \Project $project    The project to format
+     * @param string   $apiversion The version of the API being accessed
      */
-    public function __construct(\Project $project)
+    public function __construct(\Project $project, private string $apiversion = '')
     {
         $this->_project = $project;
     }
@@ -51,12 +52,25 @@ class Project
     {
         $meta = ['Project' => $this->_project->getName()];
 
-        return [
+        $obj = [
             'Meta'        => $meta,
             'Candidates'  => $this->_project->getCandidateIds(),
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
         ];
+        switch ($this->apiversion) {
+        case 'v0.0.3':
+            return $obj;
+        default:
+            // >= v0.0.4
+            $obj['Cohorts'] = array_map(
+                function ($cohort) {
+                    return $cohort['title'];
+                },
+                $this->_project->getCohorts()
+            );
+        }
+        return $obj;
     }
 
     /**

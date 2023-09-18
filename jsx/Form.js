@@ -509,18 +509,20 @@ class SelectElement extends Component {
    * @param {object} e - Event
    */
   handleChange(e) {
-    let value = e.target.value;
+    let value = null;
     let options = e.target.options;
     const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple && numOfOptions > 1) {
+    if (this.props.multiple) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
         }
       }
+    } else {
+      value = e.target.value;
     }
 
     this.props.onUserInput(this.props.name, value);
