@@ -1,5 +1,4 @@
 Subject: Issue Assigned - # {$issueID}
-
 {$firstname},
 
 The issue "{$title}" that is assigned to you has been modified.

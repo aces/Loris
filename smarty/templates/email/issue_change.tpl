@@ -1,5 +1,4 @@
 Subject: Change to Issue # - {$issueID}
-
 {$firstname},
 
 {$currentUser} has updated an issue "{$title}" you are watching.

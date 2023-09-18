@@ -689,11 +689,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                     WHERE
                         w.issueID = :issueID
                         AND u.UserID = :watcher
+                        AND u.UserID != :assignee
                         AND u.UserID != :currentUser",
             [
                 'issueID'     => $issueID,
                 'watcher'     => $changed_watcher,
                 'currentUser' => $user->getUserName(),
+                'assignee'    => $changed_assignee,
             ]
         );
 
