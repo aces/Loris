@@ -545,9 +545,9 @@ class Edit extends \NDB_Page implements ETagCalculator
             ];
             $db->replace('issues_watching', $nowWatching);
         } else if (isset($values['watching'])
-        && $values['watching'] == 'No'
-        && (!isset($issueValues['assignee'])
-        || $issueValues['assignee'] !== $user->getUsername())
+            && $values['watching'] == 'No'
+            && (!isset($issueValues['assignee'])
+            || $issueValues['assignee'] !== $user->getUsername())
         ) {
             $db->delete(
                 'issues_watching',
