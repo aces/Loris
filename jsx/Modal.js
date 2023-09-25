@@ -62,7 +62,7 @@ class Modal extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {show, children, onSubmit, title} = this.props;
+    const {show, children, onSubmit, title, width} = this.props;
 
     const headerStyle = {
       display: 'flex',
@@ -109,7 +109,7 @@ class Modal extends Component {
       margin: 'auto',
       padding: 0,
       border: '1px solid #888',
-      width: '700px',
+      width: width || '700px',
       boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
       transition: 'top 0.4s, opacity 0.4s',
     };
@@ -175,6 +175,8 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
   throwWarning: PropTypes.bool,
+  children: PropTypes.node,
+  width: PropTypes.string,
 };
 
 Modal.defaultProps = {
