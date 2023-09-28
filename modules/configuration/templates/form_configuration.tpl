@@ -49,11 +49,11 @@
 {/function}
 
 {function name=createTextArea}
-    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v}</textarea>
+    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v|escape:html}</textarea>
 {/function}
 
 {function name=createText}
-     <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
+     <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
 {function name=createLogDropdown}
