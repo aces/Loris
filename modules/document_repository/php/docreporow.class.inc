@@ -40,14 +40,14 @@ class DocRepoRow implements
     /**
      * Create a new HelpRow
      *
-     * @param array        $row  The row
-     * @param \CenterID[]  $cids The CenterIDs
-     *                           returns
+     * @param array       $row  The row
+     * @param \CenterID[] $cids The CenterIDs
+     *                          returns
      */
     public function __construct(array $row, \CenterID $cid)
     {
-        $this->DBRow     = $row;
-        $this->CenterID  = $cid;
+        $this->DBRow    = $row;
+        $this->CenterID = $cid;
     }
     /**
      * Returns the CenterID for this row
@@ -57,7 +57,7 @@ class DocRepoRow implements
     public function getCenterID(): \CenterID
     {
         return $this->CenterID;
-    }    
+    }
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *

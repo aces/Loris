@@ -159,9 +159,9 @@ class Document_Repository extends \DataFrameworkMenu
             [
                 'Data'          => $arr,
                 'fieldOptions'  => $this->getFieldOptions(),
-	        'maxUploadSize' => \Utility::getMaxUploadSize(),
-	    ]
-        );	    
+                'maxUploadSize' => \Utility::getMaxUploadSize(),
+            ]
+        );
     }
     /**
      * {@inheritDoc}
@@ -180,7 +180,7 @@ class Document_Repository extends \DataFrameworkMenu
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
         return new DocRepoProvisioner();
-    } 
+    }
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -189,7 +189,7 @@ class Document_Repository extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-	            return ['access_all_profiles'];
+                return ['access_all_profiles'];
 
     }
 
