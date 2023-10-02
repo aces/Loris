@@ -42,7 +42,6 @@ class DocRepoRow implements
      *
      * @param array     $row The row
      * @param \CenterID $cid The CenterID
-     *
      */
     public function __construct(array $row, \CenterID $cid)
     {
