@@ -36,12 +36,12 @@ class DocRepoRow implements
 {
     protected $DBRow;
 
-    private array $_centerIDs;
+    private \CenterID $CenterID;
     /**
      * Create a new HelpRow
      *
      * @param array       $row  The row
-     * @param \CenterID[] $cids The CenterIDs
+     * @param \CenterID $cid The CenterID
      *                          returns
      */
     public function __construct(array $row, \CenterID $cid)
