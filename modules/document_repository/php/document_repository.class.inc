@@ -22,7 +22,7 @@ namespace LORIS\document_repository;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class Document_Repository extends \NDB_Menu_Filter_Form
+class Document_Repository extends \DataFrameworkMenu
 {
     private const PERMISSIONS = [
         'document_repository_view',
@@ -48,9 +48,8 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      *
      * @return void
      */
-    function setup()
+    protected function getFieldOptions() : array
     {
-        parent::setup();
         $user  = \User::singleton();
         $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
@@ -100,13 +99,12 @@ class Document_Repository extends \NDB_Menu_Filter_Form
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-        $this->fieldOptions = [
+        return [
             'fileCategories' => $categoriesList,
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
         ];
-        return;
     }
     /**
      * Handler of parsing category
@@ -140,55 +138,61 @@ class Document_Repository extends \NDB_Menu_Filter_Form
              "id"   => $id,
          ];
     }
-
-    /**
-     * Build a list of media to display in Data Table
-     *
-     * @return void
-     * @throws \DatabaseException
-     */
-    function _setupVariables()
-    {
-        $user = \User::singleton();
-        // the base query
-        $query  = " FROM document_repository v";
-        $query .= " WHERE COALESCE(v.hide_video, false)=false";
-        // set the class variables
-        $this->columns =[
-            'v.File_name',
-            'v.version',
-            'v.File_type',
-            'v.Instrument',
-            'v.uploaded_by',
-            '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
-            'v.comments',
-            'v.Date_uploaded',
-            'v.record_id as Edit',
-            'v.record_id as Delete_File',
-            'v.File_category as category',
-            'v.Data_dir',
-        ];
-        $this->query   = $query;
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND v.For_site IN (" . $site_arr . ")";
-        }
-        $this->group_by = '';
-        $this->order_by = 'v.File_name';
-    }
-
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
      * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON(): string
+    public function toJSON(): string
     {
-        $result = $this->toArray();
-        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
-        return json_encode($result);
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisionerWithFilters());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
+        );
+
+        return json_encode(
+            [
+                'Data'          => $arr,
+                'fieldOptions'  => $this->getFieldOptions(),
+	        'maxUploadSize' => \Utility::getMaxUploadSize(),
+	    ]
+        );	    
     }
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return false;
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * @return \Loris\Data\Provisioner
+     */
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
+    {
+        return new DocRepoProvisioner();
+    } 
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+	            return ['access_all_profiles'];
+
+    }
+
 
     /**
      * Include additional CSS files:
