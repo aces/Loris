@@ -189,7 +189,8 @@ class Document_Repository extends \DataFrameworkMenu
      */
     public function allSitePermissionNames() : ?array
     {
-                return null;
+	            return ['access_all_profiles'];
+
     }
 
 

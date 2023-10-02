@@ -32,7 +32,7 @@ namespace LORIS\document_repository;
  */
 class DocRepoRow implements
     \LORIS\Data\DataInstance,
-    \LORIS\StudyEntities\MultiSiteHaver
+    \LORIS\StudyEntities\SiteHaver
 {
     protected $DBRow;
 
@@ -42,23 +42,22 @@ class DocRepoRow implements
      *
      * @param array        $row  The row
      * @param \CenterID[]  $cids The CenterIDs
-     * @param \ProjectID[] $pids The ProjectIDs
      *                           returns
      */
-    public function __construct(array $row,array $cids, array $pids)
+    public function __construct(array $row, \CenterID $cid)
     {
-        $this->_centerIDs = $cids;
-        $this->DBRow      = $row;
+        $this->DBRow     = $row;
+        $this->CenterID  = $cid;
     }
     /**
-     * Returns the CenterIDs for this row.
+     * Returns the CenterID for this row
      *
-     * @return \CenterID[] The CenterIDs
+     * @return \CenterID
      */
-    public function getCenterIDs() : array
+    public function getCenterID(): \CenterID
     {
-        return $this->_centerIDs;
-    }
+        return $this->CenterID;
+    }    
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *

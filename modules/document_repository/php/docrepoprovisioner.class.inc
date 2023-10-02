@@ -50,7 +50,8 @@ SELECT
     v.record_id as Edit,
     v.record_id as Delete_File,
     v.File_category as category,
-    v.Data_dir
+    v.Data_dir,
+    v.For_site
 FROM
     document_repository v
 WHERE
@@ -72,19 +73,9 @@ ORDER BY
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cids = [];
-        $pids = [];
-        if (isset($row['centerIds'])) {
-            $cids = array_map(
-                function (string $cid) : \CenterID {
-                    return new \CenterID($cid);
-                },
-                explode(',', $row['centerIds'])
-            );
-        }
+        $cid = new \CenterID($row['For_site']);
 
-        $row['centerIds'] = $cids;
-        return new DocRepoRow($row, $cids, $pids);
+        return new DocRepoRow($row, $cid);
     }
 
 }
