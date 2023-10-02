@@ -40,9 +40,9 @@ class DocRepoRow implements
     /**
      * Create a new HelpRow
      *
-     * @param array       $row  The row
+     * @param array     $row The row
      * @param \CenterID $cid The CenterID
-     *                          returns
+     *                       returns
      */
     public function __construct(array $row, \CenterID $cid)
     {
