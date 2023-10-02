@@ -44,9 +44,9 @@ class Document_Repository extends \DataFrameworkMenu
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
     /**
-     * Function _setupVariables
+     * Function getFieldOptions
      *
-     * @return void
+     * @return array
      */
     protected function getFieldOptions() : array
     {
