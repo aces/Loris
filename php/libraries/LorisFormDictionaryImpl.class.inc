@@ -131,6 +131,7 @@ trait LorisFormDictionaryImpl
                 $t = new \LORIS\Data\Types\StringType(255);
                 break;
             case 'header':
+            case 'hidden':
                 continue 2;
             default:
                 throw new \LorisException(
