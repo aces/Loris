@@ -107,7 +107,7 @@
         {elseif $node['DataType'] eq 'date_format'}
             {call createDateFormat k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$id v=$id d=$node['Disabled']}
+            {call createEmail k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
             {call createTextArea k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}

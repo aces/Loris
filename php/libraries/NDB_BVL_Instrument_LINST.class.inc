@@ -743,15 +743,15 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 case 'numeric':
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
-                        $this->dictionary[] = new DictionaryItem(
-                            $this->testName."_".$pieces[1],
-                            $pieces[2],
-                            $scope,
-                            new IntegerType(),
-                            new Cardinality(Cardinality::SINGLE),
-                            $pieces[1],
-                        );
                     }
+                    $this->dictionary[] = new DictionaryItem(
+                        $this->testName."_".$pieces[1],
+                        $pieces[2],
+                        $scope,
+                        new IntegerType(),
+                        new Cardinality(Cardinality::SINGLE),
+                        $pieces[1],
+                    );
                     if ($firstFieldOfPage) {
                         $this->_requiredElements[] = $fieldname;
                         $firstFieldOfPage          = false;

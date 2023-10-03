@@ -154,6 +154,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound('Candidate not found');
         }
 
+        if (!$candidate->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
         $endpoint = new Candidate\Candidate($candidate);
 
         $pathparts = array_slice($pathparts, 2);

@@ -481,11 +481,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         $historyValues = $this->getChangedValues($issueValues, $issueID, $user);
 
         if (!empty($issueID)) {
-            $db->update('issues', $issueValues, ['issueID' => $issueID]);
+            $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
         } else {
             $issueValues['reporter']    = $user->getUsername();
             $issueValues['dateCreated'] = date('Y-m-d H:i:s');
-            $db->insert('issues', $issueValues);
+            $db->unsafeInsert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
 
@@ -873,7 +873,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'issueID'      => $issueID,
                     'addedBy'      => $user->getUsername(),
                 ];
-                $db->insert('issues_history', $changedValues);
+                $db->unsafeInsert('issues_history', $changedValues);
             }
         }
     }
@@ -896,7 +896,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'addedBy'      => $user->getUsername(),
                 'issueID'      => $issueID,
             ];
-            $db->insert('issues_comments', $commentValues);
+            $db->unsafeInsert('issues_comments', $commentValues);
         }
     }
 
