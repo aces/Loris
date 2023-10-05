@@ -41,7 +41,7 @@
         "alex": ">=11.0.0",
         "babel-loader": "^8.0.5",
         "c3": "^0.7.20",
-        "css-loader": "^3.4.2",
+        "css-loader": "^6.8.1",
         "d3": "^5.16.0",
         "eslint": "^7.17.0",
         "eslint-config-google": "0.9.1",
