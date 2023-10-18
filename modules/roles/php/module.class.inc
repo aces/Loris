@@ -1,0 +1,84 @@
+<?php
+/**
+ * This serves as a hint to LORIS that this module is a real module.
+ * It does nothing but implement the module class in the module's namespace.
+ *
+ * PHP Version 7
+ *
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Behavioural
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
+ */
+namespace LORIS\roles;
+
+/**
+ * Class module implements the basic LORIS module functionality
+ *
+ * @category Behavioural
+ * @package  Main
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+class Module extends \Module
+{
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+            $user->hasAnyPermission(
+                [
+                    'roles_view',
+                    'roles_edit',
+                    'roles_assign'
+                ]
+            );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
+        return "Admin";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "User Roles";
+    }
+
+    // /**
+    //  * The edit_role page overrides the default handler in order to delegate
+    //  * edit_role/$identifier to the edit_role page.
+    //  *
+    //  * @param ServerRequestInterface $request The incoming PSR7 request
+    //  *
+    //  * @return ResponseInterface The outgoing PSR15 response
+    //  */
+    // public function handle(ServerRequestInterface $request) : ResponseInterface
+    // {
+    //     if (strpos($request->getUri()->getPath(), "/edit_role/") === 0) {
+    //         $loris = $request->getAttribute("loris");
+    //         $page  = $this->loadPage($loris, "edit_role");
+    //         return $page->process($request, $page);
+    //     }
+    //     return parent::handle($request);
+    // }
+}
