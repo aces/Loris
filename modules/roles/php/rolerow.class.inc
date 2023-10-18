@@ -14,11 +14,11 @@ class RoleRow implements \LORIS\Data\DataInstance
      */
     protected $DBRow;
 
-     /**
-      * Create a new ModuleRow Instance.
-      *
-      * @param array $row  The ModuleRow Instance
-      */
+    /**
+     * Create a new ModuleRow Instance.
+     *
+     * @param array $row The ModuleRow Instance
+     */
     public function __construct(array $row)
     {
         $this->DBRow = $row;

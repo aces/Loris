@@ -23,7 +23,8 @@ List of tasks:
 
 
 Other tasks:
-- [ ] Widget
+- [ ] Widget?
+- [ ] Documentation
 - [ ] Raisinbread
 - [ ] Tests
 

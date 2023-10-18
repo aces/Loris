@@ -18,7 +18,8 @@ class RolesIndex extends Component {
     /**
      * {@inheritdoc}
      */
-    constructor() {
+    constructor()
+    {
         super();
 
         this.state = {
@@ -35,7 +36,8 @@ class RolesIndex extends Component {
     /**
      * {@inheritdoc}
      */
-    componentDidMount() {
+    componentDidMount()
+    {
         this.fetchData()
             .then(() => this.setState({isLoaded: true}));
     }
@@ -47,25 +49,29 @@ class RolesIndex extends Component {
      *
      * @return {object}
      */
-    fetchData() {
+    fetchData()
+    {
         return fetch(this.props.dataURL, {credentials: 'same-origin'})
             .then((resp) => resp.json())
             .then((data) => this.setState({data}))
-            .catch((error) => {
-                this.setState({error: true});
-                console.error(error);
-            });
+            .catch(
+                (error) => {
+                    this.setState({error: true});
+                    console.error(error);
+                }
+            );
     }
 
     /**
      * Modify behaviour of specified column cells in the Data Table component
      *
-     * @param {string} column - column name
-     * @param {string} cell - cell content
-     * @param {object} row - row content indexed by column
+     * @param  {string} column - column name
+     * @param  {string} cell - cell content
+     * @param  {object} row - row content indexed by column
      * @return {*} a formated table cell for a given column
      */
-    formatColumn(column, cell, row) {
+    formatColumn(column, cell, row)
+    {
         // let url;
         // let result = <td>{cell}</td>;
         // switch (column) {
@@ -122,7 +128,8 @@ class RolesIndex extends Component {
     /**
      * Changes url to be able to add or edit a Role.
      */
-    editRole() {
+    editRole()
+    {
         location.href='/roles/edit_role/';
     }
 
@@ -131,7 +138,8 @@ class RolesIndex extends Component {
      *
      * @return {object}
      */
-    render() {
+    render()
+    {
         // If error occurs, return a message.
         // XXX: Replace this with a UI component for 500 errors.
         if (this.state.error) {
@@ -155,7 +163,7 @@ class RolesIndex extends Component {
                     name: 'code',
                     type: 'text',
                 },
-            },
+        },
             {
                 label: 'Name',
                 show: true,
@@ -163,7 +171,7 @@ class RolesIndex extends Component {
                     name: 'name',
                     type: 'text',
                 },
-            },
+        },
             {
                 label: 'Description',
                 show: true,
@@ -171,7 +179,7 @@ class RolesIndex extends Component {
                     name: 'description',
                     type: 'text',
                 },
-            },
+        },
         ];
 
         // const actions = [
@@ -192,16 +200,18 @@ class RolesIndex extends Component {
 }
 
 RolesIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
-  hasPermission: PropTypes.func.isRequired,
+    dataURL: PropTypes.string.isRequired,
+    hasPermission: PropTypes.func.isRequired,
 };
 
-window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
-    <RolesIndex
-      dataURL={`${loris.BaseURL}/roles/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
-  );
-});
+window.addEventListener(
+    'load', () => {
+        const root = createRoot(document.getElementById('lorisworkspace'));
+    root.render(
+            <RolesIndex
+            dataURL={`${loris.BaseURL}/roles/?format=json`}
+            hasPermission={loris.userHasPermission}
+            />
+        );
+    }
+);
