@@ -12,6 +12,8 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
+use Aws\S3\S3Client;
+
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -95,7 +97,7 @@ function uploadFile()
 
     // Validate media path and destination folder
     $mediaPath = $config->getSetting('mediaPath');
-
+// todo check s3 permission
     if (!isset($mediaPath)) {
         showMediaError(
             "Media path not set in LORIS settings! "
@@ -185,7 +187,84 @@ function uploadFile()
         'language_id'   => $language,
     ];
 
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+    // upload to s3
+    $s3_upload_status=false;
+// Initialize the S3 client
+$s3client1 = new S3Client([
+    'version' => 'latest',
+    'region' => 'us-east-1',
+    'credentials' => [
+        'key' => 'AKIA5SZEQ473D4MXLZXC',
+        'secret' => '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',
+    ],
+]);    
+
+$s3client1->registerStreamWrapper();
+
+// The name of the S3 bucket where you want to upload the file
+$bucketName = 'wangshen-s3';
+
+if (isset($_FILES['file'])) {
+    $s3_file = $_FILES['file'];
+    $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
+    $s3_fileTmpName = $s3_file['tmp_name'];
+
+    // The key (filename) under which the file will be stored in the bucket
+    $objectKey = "media/".$s3_fileName; // You can specify the folder structure here
+
+    try {
+        // Upload the file to S3
+        $s3client1->putObject([
+            'Bucket' => $bucketName,
+            'Key' => $objectKey,
+            'SourceFile' => $s3_fileTmpName,
+	]);
+	    $query['data_dir']      = "s3://".$bucketName."/media/";
+            // Insert or override db record if file_name already exists
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
+            $uploadNotifier->notify(["file" => $s3_fileName]);
+            $qparam = ['ID' => $sessionID];
+            $result = $db->pselect(
+                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
+                            from session
+                        where ID=:ID',
+                $qparam
+	    )[0];
+	                $s3_upload_status=true;
+
+            echo json_encode(
+                [
+                    'full_name'      => $s3_fileName,
+                    'pscid'          => $pscid,
+                    'visit_label'    => $result['ProjectID'],
+                    'language'       => $language,
+                    'instrument'     => $instrument,
+                    'site'           => $result['CenterID'],
+                    'project'        => $result['ProjectID'],
+                    'uploaded_by'    => $userID,
+                    'date_taken'     => $dateTaken,
+                    'comments'       => $comments,
+                    'last_modified'  => date("Y-m-d H:i:s"),
+                    'file_type'      => $fileType,
+                    'CandID'         => $result['CandID'],
+		    'SessionID'      => $sessionID,
+                    'fileVisibility' => 0,
+                ]
+	    );
+	    return;
+           } catch (\Aws\S3\Exception\S3Exception $e) {
+         // The file doesn't exist or there was an error
+         error_log('File not found or an error occurred: ' . $e->getMessage());
+        }
+    } else {
+        echo showMediaError("Could not upload the file. Please try again!", 500);
+
+}
+
+
+
+// upload to local
+    if (!$s3_upload_status || move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
@@ -196,7 +275,7 @@ function uploadFile()
                             from session
                         where ID=:ID',
                 $qparam
-            )[0];
+	    )[0];
             echo json_encode(
                 [
                     'full_name'      => $fileName,

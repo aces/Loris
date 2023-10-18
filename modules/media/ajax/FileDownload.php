@@ -35,16 +35,55 @@ $downloadNotifier = new NDB_Notifier(
     ["file" => $file]
 );
 
-if (!file_exists($filePath)) {
-    error_log("ERROR: File $filePath does not exist");
-    header("HTTP/1.1 404 Not Found");
-    exit(5);
+$s3_download_status = false;
+// download from s3
+
+use Aws\S3\S3Client;
+
+$bucketName = 'wangshen-s3';
+
+// Initialize the S3 client
+$s3 = new S3Client([
+    'version' => 'latest',
+    'region' => 'us-east-1',
+    'credentials' => [
+        'key' => 'AKIA5SZEQ473D4MXLZXC',
+        'secret' => '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',
+    ],
+]);
+// Get the S3 object
+try {
+    $s3Object = $s3->getObject([
+        'Bucket' => $bucketName,
+        'Key' => "media/".$file,
+    ]);
+
+    // Set headers to indicate a file download
+    header('Content-Type: ' . $s3Object['ContentType']);
+    header('Content-Disposition: attachment; filename="' . $file . '"');
+
+    // Output the file content
+    echo $s3Object['Body'];
+    $s3_download_status = true;
+} catch (Exception $e) {
+    // Handle any errors that occurred during the download
+    error_log("Error: " . $e->getMessage());
 }
 
-// Output file in downloadable format
-header('Content-Description: File Transfer');
-header('Content-Type: application/force-download');
-header("Content-Transfer-Encoding: Binary");
-header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
-readfile($filePath);
+
+// download from local
+if (!$s3_download_status) {
+  if (!file_exists($filePath)) {
+      error_log("ERROR: File $filePath does not exist");
+      header("HTTP/1.1 404 Not Found");
+      exit(5);
+   }
+
+   // Output file in downloadable format
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/force-download');
+    header("Content-Transfer-Encoding: Binary");
+    header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
+    readfile($filePath);
+}
 $downloadNotifier->notify();
