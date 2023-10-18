@@ -112,6 +112,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             $inactive_users[$u_row['UserID']]
                 = $this->formatUserInformation($u_row['UserID']);
         }
+        if (empty($inactive_users)) {
+            // Force an empty array to be parsed
+            // as an JSON object
+            $inactive_users = new \stdClass;
+        }
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
@@ -271,9 +276,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData['reporter']      = $this->formatUserInformation(
                 $issueData['reporter']
             );
-            $issueData['assignee']      = $this->formatUserInformation(
-                $issueData['assignee']
-            );
+            $issueData['assignee']      = $issueData['assignee'] ?
+                $this->formatUserInformation(
+                    $issueData['assignee']
+                ) :
+                null;
             $issueData['lastUpdatedBy'] = $this->formatUserInformation(
                 $issueData['lastUpdatedBy']
             );
@@ -328,7 +335,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             // specific changes
             if ($comment['fieldChanged'] === 'module') {
                 $mid = $comment['newValue'];
-                $comment['newValue'] = $modules[$mid]->getLongName();
+                if (array_key_exists($mid, $modules)) {
+                    $comment['newValue'] = $modules[$mid]->getLongName();
+                } else {
+                    $comment['newValue'] = "Linked module(s) do not exist";
+                }
             } else if ($comment['fieldChanged'] === 'centerID') {
                 $comment['newValue']     = $this->getSiteName(
                     intval($comment['newValue'])
@@ -467,7 +478,16 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         // Get changed values to save in history
-        $historyValues = $this->getChangedValues($issueValues, $issueID, $user);
+        $issueValuesWithWatching = $issueValues;
+        if (isset($values['othersWatching'])) {
+            $usersWatching = $values['othersWatching'];
+            $issueValuesWithWatching['watching'] = $usersWatching;
+        }
+        $historyValues = $this->getChangedValues(
+            $issueValuesWithWatching,
+            $issueID,
+            $user
+        );
 
         if (!empty($issueID)) {
             $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -899,7 +919,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasPermission('data_entry');
+        return $user->hasPermission('issue_tracker_reporter')
+            || $user->hasPermission('issue_tracker_developer');
     }
 
     /**

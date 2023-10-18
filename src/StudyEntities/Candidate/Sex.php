@@ -29,9 +29,9 @@ class Sex implements \JsonSerializable
     public $value;
 
     private const VALID_VALUES = array(
-                                  'male',
-                                  'female',
-                                  'other',
+                                  'Male',
+                                  'Female',
+                                  'Other',
                                  );
 
     /**
@@ -61,7 +61,7 @@ class Sex implements \JsonSerializable
      */
     public static function validate(string $value): bool
     {
-        return in_array(strtolower($value), self::VALID_VALUES, true);
+        return in_array($value, self::VALID_VALUES, true);
     }
 
     /**

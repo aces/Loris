@@ -1,3 +1,5 @@
+import {MutableRefObject} from 'react';
+
 export type Chunk = {
   index: number,
   originalValues: number[],
@@ -54,4 +56,9 @@ export type Electrode = {
   name: string,
   channelIndex?: number,
   position: [number, number, number],
+};
+
+export type Cursor = {
+  cursorPosition: [number, number] | null,
+  viewerRef: MutableRefObject<any> | null,
 };

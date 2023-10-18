@@ -5,6 +5,7 @@
     - For a candidate of a different site than your user, ensure that either 
         - `access_all_profiles` permission is required 
         - or that the candidate's registration site is the same as the user's site
+    - Ensure that you can always only see visits from projects that you are affiliated with.
 2. **Action buttons** 
     - For a candidate of a different site than your user, attempt to access the timepoint list via the url. The page should load with a message of 'Permission Denied'.
     - For a candidate of the same site as your user, there should be up to 3 additional buttons:

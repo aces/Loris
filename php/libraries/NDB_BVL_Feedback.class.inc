@@ -475,25 +475,38 @@ class NDB_BVL_Feedback
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
         }
         $query .= " WHERE ft.Active ='Y'";
-        if (!$hasReadPermission===true) {
+
+        $query .= " AND Public = 'Y' AND Status <> 'closed'";
+        if (!empty($this->_feedbackObjectInfo['CandID'])) {
+            $query            .= " AND ft.CandID = :CaID";
+            $qparams['CaID']   = $this->_feedbackObjectInfo['CandID'];
+            $candidate         = Candidate::singleton(new CandID($qparams['CaID']));
+            $hasReadPermission = (
+                $hasReadPermission ||
+                $candidate->isAccessibleBy($user)
+            );
+        }
+        if (!empty($this->_feedbackObjectInfo['SessionID'])) {
+            $query            .= " AND ft.SessionID = :SID";
+            $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
+            $timepoint         = TimePoint::singleton(
+                new SessionID($qparams['SID'])
+            );
+            $hasReadPermission = (
+                $hasReadPermission ||
+                $timepoint->isAccessibleBy($user)
+            );
+        }
+        if (!empty($this->_feedbackObjectInfo['CommentID'])) {
+            $query           .= " AND ft.CommentID = :ComID";
+            $qparams['ComID'] = $this->_feedbackCandidateProfileInfo['CommentID'];
+        }
+
+        if (!$hasReadPermission) {
             $query            .= " AND FIND_IN_SET(s.CenterID, :CentID)";
             $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
-        $query .= " AND Public = 'Y' AND Status <> 'closed'";
-        if (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query          .= " AND ft.CandID = :CaID";
-            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
-        }
-
-        if (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query         .= " AND ft.SessionID = :SID";
-            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
-        }
-        if (!empty($this->_feedbackObjectInfo['CommentID'])) {
-            $query          .= " AND ft.SessionID = :CSID";
-            $qparams['CSID'] = $this->_feedbackCandidateProfileInfo['SessionID'];
-        }
         $query .= " GROUP BY ft.CandID, ft.Feedback_level, ft.SessionID";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
@@ -565,13 +578,25 @@ class NDB_BVL_Feedback
             $qparams['SID']   = $this->_feedbackCandidateProfileInfo['SessionID'];
             $qparams['ComID'] = $this->_feedbackObjectInfo['CommentID'];
         } elseif (!empty($this->_feedbackObjectInfo['SessionID'])) {
-            $query         .= " AND ft.SessionID = :SID AND ft.CommentID is null";
-            $qparams['SID'] = $this->_feedbackObjectInfo['SessionID'];
+            $query            .= " AND ft.SessionID = :SID AND ft.CommentID is null";
+            $qparams['SID']    = $this->_feedbackObjectInfo['SessionID'];
+            $timepoint         = TimePoint::singleton(
+                new SessionID($qparams['SID'])
+            );
+            $hasReadPermission = (
+                $hasReadPermission ||
+                $timepoint->isAccessibleBy($user)
+            );
         } elseif (!empty($this->_feedbackObjectInfo['CandID'])) {
-            $query          .= " AND ft.CandID = :CaID
+            $query            .= " AND ft.CandID = :CaID
                                  AND ft.SessionID IS NULL
                                  AND ft.CommentID IS NULL";
-            $qparams['CaID'] = $this->_feedbackObjectInfo['CandID'];
+            $qparams['CaID']   = $this->_feedbackObjectInfo['CandID'];
+            $candidate         = Candidate::singleton(new CandID($qparams['CaID']));
+            $hasReadPermission = (
+                $hasReadPermission ||
+                $candidate->isAccessibleBy($user)
+            );
         } else {
             throw new Exception(
                 "You need to pass at least one of the following to retrieve the"
@@ -581,7 +606,7 @@ class NDB_BVL_Feedback
 
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
-        if ($hasReadPermission===true) {
+        if ($hasReadPermission) {
             $query .= " AND (ft.Active='Y' OR
                 (ft.Active='N' AND ft.UserID=:Username)
             )";

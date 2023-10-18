@@ -62,7 +62,10 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                		m.file_type as fileType,
                		s.CandID as candidateId,
                		s.ID as sessionId,
-               		m.hide_file as hideFile,
+                    CASE
+                        WHEN m.hide_file = 0 THEN 'visible'
+                        WHEN m.hide_file = 1 THEN 'hidden'
+                    END AS hideFile,
                		m.id
              FROM media m
              INNER JOIN session s ON m.session_id = s.ID

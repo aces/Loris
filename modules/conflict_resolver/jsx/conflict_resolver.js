@@ -72,7 +72,8 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(<ConflictResolver />);
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(<ConflictResolver />);
 });
 

@@ -509,18 +509,20 @@ class SelectElement extends Component {
    * @param {object} e - Event
    */
   handleChange(e) {
-    let value = e.target.value;
+    let value = null;
     let options = e.target.options;
     const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple && numOfOptions > 1) {
+    if (this.props.multiple) {
       value = [];
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
         }
       }
+    } else {
+      value = e.target.value;
     }
 
     this.props.onUserInput(this.props.name, value);
@@ -1541,25 +1543,6 @@ class DateElement extends Component {
     if (this.props.maxYear === '' || this.props.maxYear === null) {
       maxYear = '9999';
     }
-    let monthInputs = $('input[type=month][name=' + this.props.name+']');
-    monthInputs.datepicker({
-      dateFormat: 'yy-mm',
-      changeMonth: true,
-      changeYear: true,
-      yearRange: minYear + ':' + maxYear,
-      constrainInput: true,
-      onChangeMonthYear: (y, m, d) => {
-        // Update date in the input field
-        $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
-      },
-      onSelect: (dateText, picker) => {
-        this.props.onUserInput(this.props.name, dateText);
-      },
-    });
-    monthInputs.attr('placeholder', 'yyyy-mm');
-    monthInputs.on('keydown paste', (e) => {
-      e.preventDefault();
-    });
   }
 
   /**
@@ -1669,8 +1652,8 @@ DateElement.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   id: PropTypes.string,
-  maxYear: PropTypes.string,
-  minYear: PropTypes.string,
+  maxYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  minYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   dateFormat: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -1995,7 +1978,7 @@ NumericElement.defaultProps = {
 
 /**
  * File Component
- * React wrapper for a simple or 'multiple' <select> element.
+ * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
 class FileElement extends Component {
   /**
@@ -2014,8 +1997,10 @@ class FileElement extends Component {
    */
   handleChange(e) {
     // Send current file to parent component
-    const file = e.target.files[0] ? e.target.files[0] : '';
-    this.props.onUserInput(this.props.name, file);
+    const files = e.target.files
+      ? (this.props.allowMultiple ? e.target.files : e.target.files[0])
+      : '';
+    this.props.onUserInput(this.props.name, files);
   }
 
   /**
@@ -2027,6 +2012,7 @@ class FileElement extends Component {
     const required = this.props.required ? 'required' : null;
 
     let fileName = undefined;
+
     if (this.props.value) {
       switch (typeof this.props.value) {
         case 'string':
@@ -2034,7 +2020,12 @@ class FileElement extends Component {
           break;
 
         case 'object':
-          fileName = this.props.value.name;
+          if (this.props.value instanceof FileList) {
+            const files = this.props.value;
+            fileName = Array.from(files).map((file) => file.name).join(', ');
+          } else {
+            fileName = this.props.value.name;
+          }
           break;
 
         default:
@@ -2106,6 +2097,7 @@ class FileElement extends Component {
     } else {
         classSz = 'col-sm-12';
     }
+
     return (
       <div className={elementClass}>
         {labelHTML}
@@ -2127,6 +2119,7 @@ class FileElement extends Component {
                   name={this.props.name}
                   onChange={this.handleChange}
                   required={required}
+                  multiple={this.props.allowMultiple}
                 />
               </div>
             </div>
@@ -2148,6 +2141,7 @@ FileElement.propTypes = {
   id: PropTypes.string,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
+  allowMultiple: PropTypes.bool,
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
@@ -2160,6 +2154,7 @@ FileElement.defaultProps = {
   id: null,
   disabled: false,
   required: false,
+  allowMultiple: false,
   hasError: false,
   errorMessage: 'The field is required!',
   onUserInput: function() {
@@ -2209,9 +2204,9 @@ class StaticElement extends Component {
       <div className="row form-group">
         {label}
         <div className={this.props.class}>
-          <p className={this.props.textClass}>
+          <div className={this.props.textClass}>
             {this.props.text}
-          </p>
+          </div>
         </div>
       </div>
     );
@@ -2468,7 +2463,7 @@ class ButtonElement extends Component {
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
-            {this.props.label}
+            {this.props.disabled ? 'Uploading...' : this.props.label}
           </button>
         </div>
       </div>

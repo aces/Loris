@@ -319,8 +319,9 @@ ExaminerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ExaminerIndex
       dataURL={`${loris.BaseURL}/examiner/?format=json`}
       submitURL={`${loris.BaseURL}/examiner/addExaminer`}

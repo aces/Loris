@@ -45,45 +45,7 @@ New annotations or edits to existing annotations made through the browser must a
 
 ## Installation requirements to use the visualization features
 
-The visualization components require Protocol Buffers v3.0.0 or higher (< v3.21 recommended, see [Troubleshooting section](#troubleshooting-error-when-trying-to-use-protobuf-v21-and-higher)).
+The visualization components require Protocol Buffers v3.0.0 or higher.
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
 
-In order to automatically generate the protoc compiled files, add the following block in `modules/electrophysiology_browser/jsx/react-series-data-viewer/package.json`:
-```
-"scripts": {
-  "postinstall": "protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/"
-}
-```
-and run `make dev` or `npm install && npm run compile` from the loris root directory.
-
-> Note: from 2022-05, [Protobuf numbering scheme changed](https://developers.google.com/protocol-buffers/docs/news/2022-05-06#versioning). For instance, version numbered `v21.x` means `v3.21.x`, depending on each maintained language. Once installed, check the version with `protoc --version`.
-
-### Troubleshooting: error when trying to use Protobuf v21 and higher
-
-As of June 2022, there are errors when trying to use Protobuf. In Loris, it translates by an error during `make` or `make install` saying:
-
-```bash
-...
-protoc-gen-js: program not found or is not executable
-Please specify a program using absolute path or make sure
-the program is available in your PATH system variable
---js_out: protoc-gen-js: Plugin failed with status code 1.
-...
-```
-
-The `protoc-gen-js` is lacking and needs to be generated from another project. To generate this executable, follow the following steps:
-
-1. Install [Bazel from repo or through Bazelisk](https://bazel.build/install/bazelisk).
-1. Clone and build the `protobuf-javascript` project locally with Bazel.
-
-```bash
-git clone https://github.com/protocolbuffers/protobuf-javascript
-cd protobuf-javascript/
-bazel build //generator:protoc-gen-js
-```
-
-Once build, the executable is located in `protobuf-javascript/bazel-bin/generator/protoc-gen-js`. To avoid calling `protoc-gen-js` everytime, copy it to a better place already referenced in `PATH`, such as `/usr/local/bin`.
-
-```bash
-cp protobuf-javascript/bazel-bin/generator/protoc-gen-js /usr/local/bin
-```
+To enable the visualization components, set the `useEEGBrowserVisualizationComponents` config (Configuration/GUI) to true and run `make dev` or `npm install && npm run compile` from the loris root directory.

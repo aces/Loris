@@ -4,7 +4,6 @@
     * _candidate_parameter_view_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
 	* _candidate_parameter_edit_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
 	* You need to belong to the same site as the candidate you are accessing, unless...
-	* If you have _access_all_profiles_ you should be able to access all candidate profiles (even without candidate_parameters permissions)
 2. Click on the *Return to Timepoint List* button and ensure it goes to the correct timepoint list page.
 3. Make sure all tabs render.
 4. Ensure you stay on the same tab when you refresh.

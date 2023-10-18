@@ -456,10 +456,9 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(
+  createRoot(
     document.getElementById('lorisworkspace')
-  );
-  root.render(
+  ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/`}

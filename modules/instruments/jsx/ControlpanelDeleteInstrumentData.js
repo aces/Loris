@@ -30,9 +30,25 @@ class ControlpanelDeleteInstrumentData extends Component {
             confirmButtonText: 'Yes, delete the data',
         }).then((result) => {
             if (result.value) {
-              this.refs.ClearInstrument.dispatchEvent(
-                new Event('submit')
-              );
+                const formData = new FormData();
+                formData.append('ClearInstrument', 1);
+                fetch(
+                    window.location.href,
+                    {
+                      method: 'POST',
+                      body: formData,
+                    }
+                ).then((response) => {
+                    if (!response.ok) {
+                      console.error(
+                        response.status + ': ' + response.statusText
+                      );
+                      return;
+                    }
+                    window.location.reload();
+                }).catch((error) => {
+                    console.error(error);
+                });
             }
         });
     }
@@ -43,19 +59,14 @@ class ControlpanelDeleteInstrumentData extends Component {
      * @return {JSX} - React markup for the component
      */
     render() {
-        return <form ref="ClearInstrument" method="post">
+        return (
             <input
                 className="button"
                 type="button"
                 value="Delete instrument data"
                 onClick={this.confirmDeletion}
             />
-            <input
-                type="hidden"
-                name="ClearInstrument"
-                value="1"
-            />
-        </form>;
+        );
     }
 }
 

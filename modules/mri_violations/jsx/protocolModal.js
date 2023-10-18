@@ -62,9 +62,7 @@ function ProtocolViolationModal(props) {
       title = 'Violations for ' + violation[4];
       violations.push(
         <div key={violation[4]}>
-          <dl style={{display: 'flex', width: '100%',
-                      justifyContent: 'space-around',
-          }}>
+          <dl className="violation-description-list">
             <div>
               <dt>CandID</dt>
               <dd>{violation[0]}</dd>

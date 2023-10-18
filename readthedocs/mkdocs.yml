@@ -45,14 +45,14 @@ nav:
         - Overview: 'docs/wiki/99_Developers/README.md'
         - 'Developers Guide': 'docs/wiki/99_Developers/Developers_Guide.md'
         - 'Coding Standards': 'docs/CodingStandards.md'
-        - 'SQL Modeling Standard': 'docs/SQLModelingStandard.md'
-        - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
         - 'LORIS Glossary': 'docs/wiki/99_Developers/LORIS_Glossary.md'
-        - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
-        - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
         - 'Creating a Module': 'docs/wiki/99_Developers/Creating_Module.md'
         - 'ReactJS Guidelines': 'docs/wiki/99_Developers/ReactJS_Guidelines.md'
+        - 'SQL Modeling Standard': 'docs/SQLModelingStandard.md'
+        - 'SQL Dictionary': 'docs/wiki/99_Developers/SQL_Dictionary.md'
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
+        - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
+        - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
         - 'NixOS': 'docs/wiki/99_Developers/Alternative_Install/Nix.md'
 
 use_directory_urls: False
@@ -65,5 +65,5 @@ theme:
 plugins:
     - search
     - root:
-        ignore_folders: ['node_modules', 'vendor', 'deprecated_wiki', '_DELETED', '_ARCHIVE']
+        ignore_folders: ['node_modules', 'vendor', 'deprecated_wiki']
         ignore_hidden: True

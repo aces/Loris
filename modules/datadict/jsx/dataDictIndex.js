@@ -218,8 +218,9 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DataDictIndex
       dataURL={`${loris.BaseURL}/datadict/?format=binary`}
       fieldsURL={`${loris.BaseURL}/datadict/fields`}
