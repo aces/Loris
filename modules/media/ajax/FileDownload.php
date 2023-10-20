@@ -1,4 +1,6 @@
 <?php
+ini_set('memory_limit', '5000M'); // Set the limit to 512 megabytes
+
 /**
  * Media downloader.
  *
@@ -35,24 +37,25 @@ $downloadNotifier = new NDB_Notifier(
     ["file" => $file]
 );
 
-$s3_download_status = false;
 // download from s3
 
 use Aws\S3\S3Client;
+$s3_download_status = false;
 
-$bucketName = 'wangshen-s3';
+$config      = \NDB_Config::singleton();
+$bucketName = $config->getSetting('AWS_S3_Default_Bucket');
 
 // Initialize the S3 client
+if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+try {
 $s3 = new S3Client([
     'version' => 'latest',
-    'region' => 'us-east-1',
+    'region' => $config->getSetting('AWS_S3_Region'),
     'credentials' => [
-        'key' => 'AKIA5SZEQ473D4MXLZXC',
-        'secret' => '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',
+    'key' => getenv('AWS_ACCESS_KEY_ID'),
+    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
     ],
-]);
-// Get the S3 object
-try {
+]);	
     $s3Object = $s3->getObject([
         'Bucket' => $bucketName,
         'Key' => "media/".$file,
@@ -69,7 +72,7 @@ try {
     // Handle any errors that occurred during the download
     error_log("Error: " . $e->getMessage());
 }
-
+}
 
 // download from local
 if (!$s3_download_status) {
