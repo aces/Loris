@@ -97,7 +97,6 @@ function uploadFile()
 
     // Validate media path and destination folder
     $mediaPath = $config->getSetting('mediaPath');
-// todo check s3 permission
     if (!isset($mediaPath)) {
         showMediaError(
             "Media path not set in LORIS settings! "
@@ -189,37 +188,32 @@ function uploadFile()
 
     // upload to s3
     $s3_upload_status=false;
+$config      = \NDB_Config::singleton();
+$bucketName = $config->getSetting('AWS_S3_Default_Bucket');
+
 // Initialize the S3 client
-$s3client1 = new S3Client([
+if (getenv('AWS_ACCESS_KEY_ID') !== false && isset($_FILES['file'])) {
+	try {
+$s3 = new S3Client([
     'version' => 'latest',
-    'region' => 'us-east-1',
+    'region' => $config->getSetting('AWS_S3_Region'),
     'credentials' => [
-        'key' => 'AKIA5SZEQ473D4MXLZXC',
-        'secret' => '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',
+    'key' => getenv('AWS_ACCESS_KEY_ID'),
+    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
     ],
-]);    
-
-$s3client1->registerStreamWrapper();
-
-// The name of the S3 bucket where you want to upload the file
-$bucketName = 'wangshen-s3';
-
-if (isset($_FILES['file'])) {
+]);
     $s3_file = $_FILES['file'];
     $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
     $s3_fileTmpName = $s3_file['tmp_name'];
-
     // The key (filename) under which the file will be stored in the bucket
-    $objectKey = "media/".$s3_fileName; // You can specify the folder structure here
-
-    try {
+    $objectKey = "media/".$s3_fileName;
         // Upload the file to S3
-        $s3client1->putObject([
+        $s3->putObject([
             'Bucket' => $bucketName,
             'Key' => $objectKey,
             'SourceFile' => $s3_fileTmpName,
-	]);
-	    $query['data_dir']      = "s3://".$bucketName."/media/";
+        ]);
+            $query['data_dir']      = "s3://".$bucketName."/media/";
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $s3_fileName]);
@@ -229,8 +223,8 @@ if (isset($_FILES['file'])) {
                             from session
                         where ID=:ID',
                 $qparam
-	    )[0];
-	                $s3_upload_status=true;
+            )[0];
+                        $s3_upload_status=true;
 
             echo json_encode(
                 [
@@ -247,27 +241,25 @@ if (isset($_FILES['file'])) {
                     'last_modified'  => date("Y-m-d H:i:s"),
                     'file_type'      => $fileType,
                     'CandID'         => $result['CandID'],
-		    'SessionID'      => $sessionID,
+                    'SessionID'      => $sessionID,
                     'fileVisibility' => 0,
                 ]
-	    );
-	    return;
+            );
+            return;
            } catch (\Aws\S3\Exception\S3Exception $e) {
          // The file doesn't exist or there was an error
          error_log('File not found or an error occurred: ' . $e->getMessage());
         }
-    } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
-
-}
+}  
 
 
 
 // upload to local
-    if (!$s3_upload_status || move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+
         try {
-            // Insert or override db record if file_name already exists
-            $db->unsafeInsertOnDuplicateUpdate('media', $query);
+		// Insert or override db record if file_name already exists
+		$db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
             $result = $db->pselect(
@@ -276,6 +268,7 @@ if (isset($_FILES['file'])) {
                         where ID=:ID',
                 $qparam
 	    )[0];
+
             echo json_encode(
                 [
                     'full_name'      => $fileName,
@@ -294,13 +287,15 @@ if (isset($_FILES['file'])) {
                     'SessionID'      => $sessionID,
                     'fileVisibility' => 0,
                 ]
-            );
-        } catch (DatabaseException $e) {
+	    );
+	    return;
+        } catch (Exception $e) {
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
-    } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
-    }
+} else {
+	            echo showMediaError("Could not upload the file. Please try again!", 500);
+
+        } 
 }
 
 /**
