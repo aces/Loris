@@ -111,6 +111,11 @@ class MediaIndex extends Component {
         const downloadURL = loris.BaseURL
                             + '/media/ajax/FileDownload.php?File='
                             + encodeURIComponent(row['File Name']);
+        if (row['data_dir'] && row['data_dir'].startsWith('s3://')) { 
+         cell = row['data_dir'] + cell;
+		console.log(row['data_dir']);
+		console.log(cell);
+        }
         result = (
           <td className={style}>
             <a href={downloadURL} target="_blank" download={row['File Name']}>
@@ -118,7 +123,7 @@ class MediaIndex extends Component {
             </a>
           </td>
         );
-      }
+      }	      
       break;
     case 'Visit Label':
       if (row['CandID'] !== null && row['SessionID']) {
@@ -237,6 +242,7 @@ class MediaIndex extends Component {
         options: options.hidden,
         hide: !this.props.hasPermission('superUser'),
       }},
+      {label: 'data_dir', show: false},
     ];
     if (this.props.hasPermission('media_write')) {
       fields.push({label: 'Edit Metadata', show: true});
