@@ -54,6 +54,8 @@ DROP TABLE IF EXISTS `issues_categories`;
 
 -- 0000-00-02-Permission.sql
 DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `permissions_permissions_types_rel`;
+DROP TABLE IF EXISTS `permissions_types`;
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
