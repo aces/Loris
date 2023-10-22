@@ -106,6 +106,44 @@ INSERT INTO `user_perm_rel` (userID, permID)
   WHERE u.userid = 'admin'
   ORDER BY p.permID;
 
+-- permission type (old 'action')
+CREATE TABLE `permissions_types` (
+  `PermissionTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Description` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`PermissionTypeID`),
+  UNIQUE KEY `Description` (`Description`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- add to permissions_types
+INSERT INTO `permissions_types` (`PermissionTypeID`, `Description`) 
+VALUES
+  (1,'View'),
+  (2,'Create'),
+  (3,'Update'),
+  (4,'Delete'),
+  (5,'Upload'),
+  (6,'Download'),
+  (7,'All');
+
+-- permissions_types/permissions relation.
+DROP TABLE IF EXISTS `permissions_permissions_types_rel`;
+CREATE TABLE `permissions_permissions_types_rel` (
+  `PermissionTypeID` int(10) unsigned NOT NULL default '0',
+  `permID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`PermissionTypeID`,`permID`),
+  KEY `FK_permissions_permissions_types_rel_2` (`permID`),
+  CONSTRAINT `FK_permissions_permissions_types_rel_2`
+  FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_permissions_permissions_types_rel_1`
+  FOREIGN KEY (`PermissionTypeID`)
+    REFERENCES `permissions_types` (`PermissionTypeID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
 -- other permissions
 INSERT INTO `permissions_permissions_types_rel` (permID, PermissionTypeID)
 VALUES 
