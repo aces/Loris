@@ -294,23 +294,27 @@ class UserPermissions
                 p.permID,
                 p.code,
                 p.description,
-                pc.Description as type,
-                p.action,
+                GROUP_CONCAT(pt.Description) as action,
                 p.moduleID
             FROM permissions p ";
 
         //If not superuser, get the permissions that the user has
         if (!$this->hasPermission('superuser')) {
             $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
-                LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID
-            WHERE up.userID = :UID and m.Active='Y'
-                ORDER BY p.categoryID, m.Name, p.description";
+                    LEFT JOIN modules m ON (p.moduleID=m.ID)
+                    LEFT JOIN permissions_permissions_types_rel pptr ON (pptr.permID = p.permID)
+                    LEFT JOIN permissions_types pt ON (pt.PermissionTypeID = pptr.PermissionTypeID)
+                WHERE up.userID = :UID and m.Active='Y'
+                GROUP BY p.permID, p.code, p.description, p.moduleID
+                ORDER BY m.Name, p.description";
             $results = $DB->pselect($query, ['UID' => $this->userID]);
         } else {
-            $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
-                ORDER BY p.categoryID, m.Name, p.description";
+            $query  .= "LEFT JOIN modules m ON (p.moduleID=m.ID)
+                LEFT JOIN permissions_permissions_types_rel pptr ON (pptr.permID = p.permID)
+                LEFT JOIN permissions_types pt ON (pt.PermissionTypeID = pptr.PermissionTypeID)
+                WHERE m.Active='Y'
+                GROUP BY p.permID, p.code, p.description, p.moduleID
+                ORDER BY m.Name, p.description";
             $results = $DB->pselect($query, []);
         }
         $modules = \Module::getActiveModulesIndexed($loris);

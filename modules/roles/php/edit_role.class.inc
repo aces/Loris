@@ -36,10 +36,7 @@ class Edit_Role extends \NDB_Form
     }
 
     /**
-     * Controls who's got access to this page, namely those who have the
-     * 'user_accounts' and who either have permission
-     * 'user_accounts_multisite' or whose site matches the site of the user they
-     * are trying to edit.
+     * Controls who's got access to this page.
      *
      * @param \User $editor The user who is accessing this page
      *
@@ -47,20 +44,8 @@ class Edit_Role extends \NDB_Form
      */
     function _hasAccess(\User $editor) : bool
     {
-        if ($editor->hasPermission('user_accounts_multisite')) {
-            return true;
-        }
-
-        if ($editor->hasPermission('user_accounts')) {
-            if ($this->isCreatingNewRole()) {
-                return true;
-            }
-            // Return true if the editor is allowed to edit the information
-            // of the user.
-            return \User::factory($this->identifier)->isAccessibleBy($editor);
-        }
-
-        return false;
+        return ($editor->hasPermission('role_edit')
+                || $editor->hasPermission('role_view'));
     }
 
     /**
@@ -72,36 +57,20 @@ class Edit_Role extends \NDB_Form
     {
         $defaults = [];
 
+        // if role already exists
         if (!$this->isCreatingNewRole()) {
-            $user = \User::factory($this->identifier);
-            // get the user defaults
-            $defaults = $user->getData();
-            // remove the password hash
-            unset($defaults['Password_hash']);
 
-            // get the user's permissions
-            $perms = $user->getPermissionIDs();
+            $db = \NDB_Factory::singleton()->database();
 
-            // set the user's permission defaults
-            foreach ($perms as $value) {
-                $defaults["permID[$value]"] = 'on';
-            }
+            // get the role and associated permissions
+            $role = new \Role($db);
+            $defaults = $role->getRoleFromCode($this->identifier);
 
             // An array of each field that requires front-end sanitization
             $fieldsThatAreStrings = [
-                'UserID',
-                'First_name',
-                'Last_name',
-                'Real_name',
-                'Email',
-                'Degree',
-                'Institution',
-                'Address',
-                'City',
-                'State',
-                'Zip_code',
-                'Country',
-                'Fax',
+                'RoleID',
+                'Name',
+                'Description',
             ];
             // Prevent Javascript injection on all fields
             foreach ($fieldsThatAreStrings as $fieldName) {
@@ -110,60 +79,8 @@ class Edit_Role extends \NDB_Form
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
                 }
             }
-
-            $defaults['examiner'] = $defaults['examiner'] ?? [];
-            foreach ($defaults['examiner'] as $cid=>$vals) {
-                //sets pending approval info
-                if ($cid=='pending') {
-                    $defaults['examiner_pending'] = $vals;
-                    continue;
-                }
-                //gets radiologist Y/N from any of the active sites
-                if ($vals[0]=='Y') {
-                    if ($vals[1]==='1') {
-                        $defaults['examiner_radiologist'] = 'Y';
-                    } else {
-                        $defaults['examiner_radiologist'] = 'N';
-                    }
-                }
-                if ($vals[0]=='Y') {
-                    $defaults['ex_'.$cid] ='on';
-                }
-            }
-
-            // Notification defaults
-            // "notif_".$module."_".$operation."_".$service
-            $user_id  = $user->getId() ?? -1;
-            $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-                $user_id
-            );
-            foreach ($curr_sub as $module=>$operations) {
-                foreach ($operations as $operation => $services) {
-                    unset($services['desc']);
-                    foreach ($services as $service => $subscribed) {
-                        $var_name = "notif_".$module."_".$operation."_".$service;
-
-                        if ($subscribed==='Y') {
-                            $defaults[$var_name] = 'on';
-                        }
-                    }
-                }
-            }
         }
         return $defaults;
-    }
-
-    /**
-     * Determines if the user is currently editing his/her own account.
-     *
-     * @return true if the user is editing his/her own account, false otherwise.
-     */
-    function _isEditingOwnAccount()
-    {
-        $factory = \NDB_Factory::singleton();
-        $editor  = $factory->user();
-        return !$this->isCreatingNewRole()
-            && ($editor->getUsername() == $this->identifier);
     }
 
     /**
@@ -184,8 +101,6 @@ class Edit_Role extends \NDB_Form
         $permissionsAdded   = [];
         $editor = $factory->user();
 
-        // build the "real name"
-        $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
         //create the user
         if (!is_null($this->identifier)) {
             $user = \User::factory($this->identifier);
@@ -630,7 +545,7 @@ class Edit_Role extends \NDB_Form
     }
 
     /**
-     * The edit_user page overrides the default handler in order to handle URLs for
+     * The edit_role page overrides the default handler in order to handle URLs for
      * both editing users, and creating them. It extracts the identifier if
      * appropriate and handles the redirection if needed.
      *
@@ -641,7 +556,7 @@ class Edit_Role extends \NDB_Form
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $matches = [];
-        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
+        preg_match('#.*/edit_role/(.*)#', $request->getUri()->getPath(), $matches);
         if (!empty($matches[1])) {
             $this->identifier = $matches[1];
         }
@@ -880,61 +795,6 @@ class Edit_Role extends \NDB_Form
             unset($groupB);
         }
 
-        // It doesn't make sense for a user to be editing their own
-        // approval status or active status. In fact this could result in a
-        // Darwinian self-lockout. Let us help those who cannot help themselves.
-        if (!$this->_isEditingOwnAccount()) {
-            $this->addSelect(
-                "Pending_approval",
-                "Pending approval",
-                [
-                    'Y' => 'Yes',
-                    'N' => 'No',
-                ]
-            );
-
-            $this->addSelect(
-                'Active',
-                'Active',
-                [
-                    'Y' => 'Yes',
-                    'N' => 'No'
-                ]
-            );
-
-            $dateOptions = [
-                'language'       => 'en',
-                'format'         => 'YMd',
-                'addEmptyOption' => 'true',
-            ];
-
-            $dateAttributes = ['class' => 'form-control input-sm input-date'];
-
-            $this->addBasicDate(
-                'active_from',
-                'Active from',
-                $dateOptions,
-                $dateAttributes
-            );
-
-            $this->addBasicDate(
-                'active_to',
-                'Active to',
-                $dateOptions,
-                $dateAttributes
-            );
-        }
-
-        // checking if the account can be rejected (no password hash
-        // pending approval)
-
-        // if new user
-        if ($this->isCreatingNewRole()) {
-            $this->tpl_data['can_reject'] = false;
-        } else {
-            $this->tpl_data['can_reject']
-                = self::canRejectAccount(\User::factory($this->identifier));
-        }
 
         $perms = $editor->getPermissionsVerbose($this->loris);
 
@@ -961,9 +821,7 @@ class Edit_Role extends \NDB_Form
             // checkboxes. Note that they will not be submitted when the form is
             // saved
             $attribs = ["class" => "perm_$lastRole"];
-            if ($this->_isEditingOwnAccount()) {
-                $attribs['disabled'] = true;
-            }
+
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 htmlspecialchars($row['label']) . "<br>",
@@ -995,7 +853,7 @@ class Edit_Role extends \NDB_Form
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
-        $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
+        $attribs = null;
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
@@ -1024,32 +882,17 @@ class Edit_Role extends \NDB_Form
         //------------------------------------------------------------
 
         // unique key and password rules
-        $this->form->addFormRule([&$this, '_validateEditUser']);
+        $this->form->addFormRule([&$this, '_validateEditRole']);
     }
 
     /**
-     * This ensures that users with account activity cannot be rejected
-     * if their approval status is, for some reason, set to pending.
-     *
-     * @param \User $user The User to verify
-     *
-     * @return boolean true if 'Pending_approval' is Yes and the user never
-     *                      ever logged in.
-     */
-    static function canRejectAccount(\User $user)
-    {
-        return $user->isPendingApproval()
-            && !$user->hasLoggedIn();
-    }
-
-    /**
-     * Validates the data entered in the edit user form.
+     * Validates the data entered in the edit role form.
      *
      * @param array $values what the user entered on the form.
      *
      * @return array $errors all the errors found.
      */
-    function _validateEditUser($values)
+    function _validateEditRole($values)
     {
         $factory = \NDB_Factory::singleton();
         $editor  = $factory->user();
@@ -1299,100 +1142,26 @@ class Edit_Role extends \NDB_Form
         return $errors;
     }
 
-    /**
-     * Validates that en email address entered for a given user
-     * (either new or existing) is valid and unique.
-     *
-     * @param \Database $DB    database object.
-     * @param string    $email user's email.
-     *
-     * @return ?string error message if email is invalid, null otherwise.
-     */
-    private function _getEmailError(\Database $DB, string $email): ?string
-    {
-        if (preg_match('/(<|>|"|&)/', $email)) {
-            // Although some of these characters are legal in emails, due to the
-            // current HTML escaping method, it is better to reject email
-            // addresses containing them
-            return 'Email address can not contain any the following '.
-                'characters: <, >, & and "';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // If email not syntactically valid
-            return "Invalid email address";
-        }
+    
 
-        // check email address' uniqueness
-        $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
-        $params = ['VEmail' => $email];
-        if (!is_null($this->identifier)) {
-            $query        .= " AND userID <> :UID";
-            $params['UID'] = $this->identifier;
-        }
-        $result = $DB->pselectOne($query, $params);
-
-        // Email already exists in database
-        if ($result > 0) {
-            return self::EMAIL_NOT_UNIQUE;
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the complete description for a permission.
-     *
-     * @param int $permID permission ID.
-     *
-     * @return ?string the description.
-     */
-    function getDescriptionUsingPermID($permID): ?string
-    {
-        $db_factory = \NDB_Factory::singleton();
-        $db         = $db_factory->database();
-
-        return $db->pselectOne(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            ['pID' => $permID]
-        );
-    }
-
-    /**
-     * Gathers JS dependencies and merges them with the parent
-     *
-     * @return array of javascript to be inserted
-     */
-    function getJSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . '/user_accounts/js/rejectUser.js',
-                $baseURL . '/js/passwordVisibility.js',
-                $baseURL . '/user_accounts/js/edit_user_helper.js',
-                $baseURL . '/js/invalid_form_scroll.js',
-            ]
-        );
-    }
-
-    /**
-     * Include additional CSS files:
-     *  1. configuration
-     *
-     * @return array of CSS to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/css/password.css",
-            ]
-        );
-    }
+    // /**
+    //  * Gathers JS dependencies and merges them with the parent
+    //  *
+    //  * @return array of javascript to be inserted
+    //  */
+    // function getJSDependencies()
+    // {
+    //     $factory = \NDB_Factory::singleton();
+    //     $baseURL = $factory->settings()->getBaseURL();
+    //     $deps    = parent::getJSDependencies();
+    //     return array_merge(
+    //         $deps,
+    //         [
+    //             $baseURL . '/user_accounts/js/rejectUser.js',
+    //             $baseURL . '/js/passwordVisibility.js',
+    //             $baseURL . '/user_accounts/js/edit_user_helper.js',
+    //             $baseURL . '/js/invalid_form_scroll.js',
+    //         ]
+    //     );
+    // }
 }

@@ -163,7 +163,7 @@ class RolesIndex extends Component {
                     name: 'code',
                     type: 'text',
                 },
-        },
+            },
             {
                 label: 'Name',
                 show: true,
@@ -171,7 +171,7 @@ class RolesIndex extends Component {
                     name: 'name',
                     type: 'text',
                 },
-        },
+            },
             {
                 label: 'Description',
                 show: true,
@@ -179,12 +179,12 @@ class RolesIndex extends Component {
                     name: 'description',
                     type: 'text',
                 },
-        },
+            },
         ];
 
-        // const actions = [
-        //     {label: 'Add Role', action: this.editRole},
-        // ];
+        const actions = [
+            {label: 'Add Role', action: this.editRole},
+        ];
 
         return (
             <FilterableDataTable
@@ -193,7 +193,7 @@ class RolesIndex extends Component {
                 data={this.state.data.Data}
                 fields={fields}
                 getFormattedCell={this.formatColumn}
-                // actions={actions}
+                actions={actions}
             />
         );
     }

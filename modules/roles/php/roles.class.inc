@@ -1,6 +1,6 @@
 <?php
 /**
- * Publications module class
+ * Role module class
  *
  * PHP version 8
  *

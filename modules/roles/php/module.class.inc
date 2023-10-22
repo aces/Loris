@@ -13,6 +13,8 @@
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 namespace LORIS\roles;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -64,21 +66,21 @@ class Module extends \Module
         return "User Roles";
     }
 
-    // /**
-    //  * The edit_role page overrides the default handler in order to delegate
-    //  * edit_role/$identifier to the edit_role page.
-    //  *
-    //  * @param ServerRequestInterface $request The incoming PSR7 request
-    //  *
-    //  * @return ResponseInterface The outgoing PSR15 response
-    //  */
-    // public function handle(ServerRequestInterface $request) : ResponseInterface
-    // {
-    //     if (strpos($request->getUri()->getPath(), "/edit_role/") === 0) {
-    //         $loris = $request->getAttribute("loris");
-    //         $page  = $this->loadPage($loris, "edit_role");
-    //         return $page->process($request, $page);
-    //     }
-    //     return parent::handle($request);
-    // }
+    /**
+     * The edit_role page overrides the default handler in order to delegate
+     * edit_role/$identifier to the edit_role page.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR15 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if (strpos($request->getUri()->getPath(), "/edit_role/") === 0) {
+            $loris = $request->getAttribute("loris");
+            $page  = $this->loadPage($loris, "edit_role");
+            return $page->process($request, $page);
+        }
+        return parent::handle($request);
+    }
 }
