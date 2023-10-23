@@ -46,31 +46,9 @@ $bucketName = $config->getSetting('AWS_S3_Default_Bucket');
 
 // Initialize the S3 client
 if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-try {
-$s3 = new S3Client([
-    'version' => 'latest',
-    'region' => $config->getSetting('AWS_S3_Region'),
-    'credentials' => [
-    'key' => getenv('AWS_ACCESS_KEY_ID'),
-    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
-    ],
-]);	
-    $s3Object = $s3->getObject([
-        'Bucket' => $bucketName,
-        'Key' => "media/".$file,
-    ]);
-
-    // Set headers to indicate a file download
-    header('Content-Type: ' . $s3Object['ContentType']);
-    header('Content-Disposition: attachment; filename="' . $file . '"');
-
-    // Output the file content
-    echo $s3Object['Body'];
-    $s3_download_status = true;
-} catch (Exception $e) {
-    // Handle any errors that occurred during the download
-    error_log("Error: " . $e->getMessage());
-}
+		// Initialize the S3 client using S3ClientSingleton
+       $s3ClientInstance = S3ClientSingleton::getInstance();
+       $s3_download_status = $s3ClientInstance->s3download($bucketName, "media", $file);	     	 
 }
 
 // download from local

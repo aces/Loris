@@ -30,10 +30,10 @@ class S3ClientSingleton
     private function __construct(
         $accessKey = null,
         $secretKey = null,
-        $region = null,
+        $region = null
     ) {
-        $config      = \NDB_Config::singleton();
-        $region = $config->getSetting('AWS_S3_Region');	
+        $config = \NDB_Config::singleton();
+        $region = $config->getSetting('AWS_S3_Region');
         $s3Config = [
             'version' => 'latest',
             'region' => $region ?? 'us-east-1',
@@ -43,13 +43,13 @@ class S3ClientSingleton
             ],
         ];
 
-	$this->s3Client = new S3Client($s3Config);
+        $this->s3Client = new S3Client($s3Config);
     }
 
     public static function getInstance(
         $accessKey = null,
         $secretKey = null,
-        $region = null,
+        $region = null
     ) {
         if (self::$instance === null) {
             self::$instance = new self($accessKey, $secretKey, $region);
@@ -61,6 +61,33 @@ class S3ClientSingleton
     public function getS3Client()
     {
         return $this->s3Client;
+    }
+
+    public function s3download($bucketName, $folderName, $fileName)
+    {
+        try {
+            // Use the provided bucketName and folderName to construct the S3 object key
+            $objectKey = $folderName . '/' . $fileName;
+
+            // Get the S3 object
+            $s3Object = $this->s3Client->getObject([
+                'Bucket' => $bucketName,
+                'Key' => $objectKey,
+            ]);
+
+            // Set headers to indicate a file download
+            header('Content-Type: ' . $s3Object['ContentType']);
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+
+            // Output the file content
+            echo $s3Object['Body'];
+
+            return true;
+        } catch (Exception $e) {
+            // Handle any errors that occurred during the download
+            error_log("Error: " . $e->getMessage());
+            return false;
+        }
     }
 }
 
