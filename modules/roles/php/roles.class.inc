@@ -23,8 +23,9 @@ namespace LORIS\roles;
  */
 class Roles extends \DataFrameworkMenu
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
+    // public $AjaxModule   = true;
+    // public $skipTemplate = true;
+
     /**
      * Returns true if user has access to this page.
      *
@@ -123,7 +124,6 @@ class Roles extends \DataFrameworkMenu
     //         }
     //     );
     //     $result['form'] = $this->form->form;
-
     //     return json_encode($result);
     // }
 }

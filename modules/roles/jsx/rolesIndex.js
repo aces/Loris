@@ -72,57 +72,15 @@ class RolesIndex extends Component {
      */
     formatColumn(column, cell, row)
     {
-        // let url;
-        // let result = <td>{cell}</td>;
-        // switch (column) {
-        //   case 'Name':
-        //     // If user has multiple sites, join array of sites into string
-        //     result = (
-        //       <td>{cell
-        //         .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-        //         .join(', ')}
-        //       </td>
-        //     );
-        //     if (cell.length === 0) {
-        //       result = (
-        //         <td>This user has no site affiliations</td>
-        //       );
-        //     }
-        //     break;
-        //   case 'Project':
-        //     // If user has multiple projects, join array of sites into string
-        //     result = (
-        //       <td>{cell.map(
-        //           (projectId) => this.state.data.fieldOptions.projects[projectId]
-        //         ).join(', ')}
-        //       </td>
-        //     );
-        //     if (cell.length === 0) {
-        //       result = (
-        //         <td>This user has no project affiliations</td>
-        //       );
-        //     }
-        //     break;
-        //   case 'Username':
-        //     url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
-        //     result = <td><a href ={url}>{cell}</a></td>;
-        //     break;
-        //   case 'Active':
-        //     if (row.Active === 'Y') {
-        //       result = <td>Yes</td>;
-        //     } else if (row.Active === 'N') {
-        //       result = <td>No</td>;
-        //     }
-        //     break;
-        //   case 'Pending Approval':
-        //     if (row['Pending Approval'] === 'Y') {
-        //       result = <td>Yes</td>;
-        //     } else if (row['Pending Approval'] === 'N') {
-        //       result = <td>No</td>;
-        //     }
-        //     break;
-        // }
-        return <td>{cell}</td>;
+        let url;
+        let result = <td>{cell}</td>;
+        switch (column) {
+            case 'Code':
+                url = loris.BaseURL + '/roles/edit_role/' + row.Code;
+                result = <td><a href ={url}>{cell}</a></td>;
+                break;
+        }
+        return result;
     }
 
     /**
