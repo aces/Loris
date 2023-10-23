@@ -89,5 +89,27 @@ class S3ClientSingleton
             return false;
         }
     }
+    public function s3uploadfile($bucketName, $folderName, $fileName)
+    {
+        try {
+            // Use the provided bucketName, folderName, and fileName to construct the S3 object key
+            $objectKey = $folderName . '/' . $fileName;
+
+            // Upload the file to the S3 bucket
+            $this->s3Client->putObject([
+                'Bucket' => $bucketName,
+                'Key' => $objectKey,
+            ]);
+
+            // Return true to indicate a successful upload
+            return true;
+        } catch (Exception $e) {
+            // Handle any errors that occurred during the upload
+            error_log("Error: " . $e->getMessage());
+
+            // Return false to indicate an unsuccessful upload
+            return false;
+        }
+    }
 }
 

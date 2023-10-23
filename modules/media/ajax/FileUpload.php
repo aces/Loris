@@ -186,34 +186,19 @@ function uploadFile()
         'last_modified' => date("Y-m-d H:i:s"),
         'language_id'   => $language,
     ];
-
-    // upload to s3
+    
+      // upload to aws s3
+    if (getenv('AWS_ACCESS_KEY_ID') !== false) {
     $s3_upload_status=false;
 $config      = \NDB_Config::singleton();
 $bucketName = $config->getSetting('AWS_S3_Default_Bucket');
-
-// Initialize the S3 client
-if (getenv('AWS_ACCESS_KEY_ID') !== false && isset($_FILES['file'])) {
-	try {
-$s3 = new S3Client([
-    'version' => 'latest',
-    'region' => $config->getSetting('AWS_S3_Region'),
-    'credentials' => [
-    'key' => getenv('AWS_ACCESS_KEY_ID'),
-    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
-    ],
-]);
     $s3_file = $_FILES['file'];
     $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
     $s3_fileTmpName = $s3_file['tmp_name'];
-    // The key (filename) under which the file will be stored in the bucket
-    $objectKey = "media/".$s3_fileName;
-        // Upload the file to S3
-        $s3->putObject([
-            'Bucket' => $bucketName,
-            'Key' => $objectKey,
-            'SourceFile' => $s3_fileTmpName,
-        ]);
+
+$s3ClientInstance = S3ClientSingleton::getInstance();
+$s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, "media", $s3_fileName);
+if ($s3_upload_status) {
             $query['data_dir']      = "s3://".$bucketName."/media/";
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
@@ -225,7 +210,6 @@ $s3 = new S3Client([
                         where ID=:ID',
                 $qparam
             )[0];
-                        $s3_upload_status=true;
 
             echo json_encode(
                 [
@@ -246,15 +230,9 @@ $s3 = new S3Client([
                     'fileVisibility' => 0,
                 ]
             );
-            return;
-           } catch (\Aws\S3\Exception\S3Exception $e) {
-         // The file doesn't exist or there was an error
-         error_log('File not found or an error occurred: ' . $e->getMessage());
-        }
-}  
-
-
-
+	    return;
+       }
+}
 // upload to local
 if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
 
@@ -294,7 +272,7 @@ if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $media
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
 } else {
-	            echo showMediaError("Could not upload the file. Please try again!", 500);
+	    echo showMediaError("Could not upload the file. Please try again!", 500);
 
         } 
 }
