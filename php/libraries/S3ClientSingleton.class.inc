@@ -115,7 +115,7 @@ public function checkS3FileExist($bucketName, $folderName, $fileName)
     {
         try {
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
-            $objectKey = $folderName . '/' . $fileName;
+            $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
             // Check if the file exists in the S3 bucket
             $result = $this->s3Client->doesObjectExist($bucketName, $objectKey);
