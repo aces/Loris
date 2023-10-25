@@ -1,8 +1,8 @@
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import { Tabs, TabPane } from 'Tabs';
+import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import TriggerableModal from 'TriggerableModal';
@@ -39,7 +39,7 @@ class MediaIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -50,14 +50,14 @@ class MediaIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({
         data: data.Data,
         fieldOptions: data.fieldOptions,
       }))
       .catch((error) => {
-        this.setState({ error: true });
+        this.setState({error: true});
         console.error(error);
       });
   }
@@ -106,56 +106,56 @@ class MediaIndex extends Component {
     const style = (row['File Visibility'] === 'hidden') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-      case 'File Name':
-        if (this.props.hasPermission('media_write')) {
-          const downloadURL = loris.BaseURL
-            + '/media/ajax/FileDownload.php?File='
-            + encodeURIComponent(row['File Name']);
-          result = (
-            <td className={style}>
-              <a href={downloadURL} target="_blank" download={row['File Name']}>
-                {cell}
-              </a>
-            </td>
-          );
-        }
-        break;
-      case 'Visit Label':
-        if (row['CandID'] !== null && row['SessionID']) {
-          const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-            row['CandID'] + '&sessionID=' + row['SessionID'];
-          result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
-        }
-        break;
-      case 'Site':
-        result = <td className={style}>{cell}</td>;
-        break;
-      case 'Project':
-        result = <td className={style}>
-          {this.state.fieldOptions.projects[cell]}
-        </td>;
-        break;
-      case 'Edit Metadata':
-        if (!this.props.hasPermission('media_write')) {
-          return;
-        }
-        const editButton = (
-          <TriggerableModal title="Edit Media File" label="Edit">
-            <MediaEditForm
-              DataURL={loris.BaseURL
-                + '/media/ajax/FileUpload.php'
-                + '?action=getData&idMediaFile='
-                + row['Edit Metadata']}
-              action={loris.BaseURL
-                + '/media/ajax/FileUpload.php?action=edit'}
-              /* this should be passed to onSubmit function
-                 upon refactoring editForm.js*/
-              fetchData={this.fetchData}
-            />
-          </TriggerableModal>
+    case 'File Name':
+      if (this.props.hasPermission('media_write')) {
+        const downloadURL = loris.BaseURL
+                            + '/media/ajax/FileDownload.php?File='
+                            + encodeURIComponent(row['File Name']);
+        result = (
+          <td className={style}>
+            <a href={downloadURL} target="_blank" download={row['File Name']}>
+              {cell}
+            </a>
+          </td>
         );
-        result = <td className={style}>{editButton}</td>;
-        break;
+      }
+      break;
+    case 'Visit Label':
+      if (row['CandID'] !== null && row['SessionID']) {
+        const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
+          row['CandID'] + '&sessionID=' + row['SessionID'];
+        result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
+      }
+      break;
+    case 'Site':
+      result = <td className={style}>{cell}</td>;
+      break;
+    case 'Project':
+      result = <td className={style}>
+        {this.state.fieldOptions.projects[cell]}
+      </td>;
+      break;
+    case 'Edit Metadata':
+      if (!this.props.hasPermission('media_write')) {
+          return;
+      }
+      const editButton = (
+            <TriggerableModal title="Edit Media File" label="Edit">
+              <MediaEditForm
+                DataURL={loris.BaseURL
+                        + '/media/ajax/FileUpload.php'
+                        + '?action=getData&idMediaFile='
+                        + row['Edit Metadata']}
+                action={loris.BaseURL
+                       + '/media/ajax/FileUpload.php?action=edit'}
+                /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/
+                fetchData={this.fetchData }
+                    />
+            </TriggerableModal>
+      );
+      result = <td className={style}>{editButton}</td>;
+      break;
     }
 
     return result;
@@ -175,104 +175,83 @@ class MediaIndex extends Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader />;
+      return <Loader/>;
     }
 
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in media.class.inc
-     */
+   /**
+    * XXX: Currently, the order of these fields MUST match the order of the
+    * queried columns in _setupVariables() in media.class.inc
+    */
     const options = this.state.fieldOptions;
     let fields = [
-      {
-        label: 'File Name', show: true, filter: {
-          name: 'fileName',
-          type: 'text',
-        }
-      },
-      {
-        label: 'PSCID', show: true, filter: {
-          name: 'pscid',
-          type: 'text',
-        }
-      },
-      {
-        label: 'Visit Label', show: true, filter: {
-          name: 'visitLabel',
-          type: 'select',
-          options: options.visits,
-        }
-      },
-      {
-        label: 'Language', show: true, filter: {
-          name: 'language',
-          type: 'select',
-          options: options.languages,
-        }
-      },
-      {
-        label: 'Instrument', show: true, filter: {
-          name: 'instrument',
-          type: 'select',
-          options: options.instruments,
-        }
-      },
-      {
-        label: 'Site', show: true, filter: {
-          name: 'site',
-          type: 'select',
-          options: options.sites,
-        }
-      },
-      {
-        label: 'Project', show: true, filter: {
-          name: 'project',
-          type: 'select',
-          options: options.projects,
-        }
-      },
-      {
-        label: 'Uploaded By', show: true, filter: {
-          name: 'uploadedBy',
-          type: 'text',
-        }
-      },
-      { label: 'Date Taken', show: true },
-      { label: 'Comments', show: true },
-      { label: 'Last Modified', show: true },
-      {
-        label: 'File Type', show: false, filter: {
-          name: 'fileType',
-          type: 'select',
-          options: options.fileTypes,
-        }
-      },
-      { label: 'CandID', show: false },
-      { label: 'SessionID', show: false },
-      {
-        label: 'File Visibility', show: false, filter: {
-          name: 'fileVisibility',
-          type: 'select',
-          options: options.hidden,
-          hide: !this.props.hasPermission('superUser'),
-        }
-      },
-      { label: 'data_dir', show: false },
+      {label: 'File Name', show: true, filter: {
+        name: 'fileName',
+        type: 'text',
+      }},
+      {label: 'PSCID', show: true, filter: {
+        name: 'pscid',
+        type: 'text',
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visits,
+      }},
+      {label: 'Language', show: true, filter: {
+        name: 'language',
+        type: 'select',
+        options: options.languages,
+      }},
+      {label: 'Instrument', show: true, filter: {
+        name: 'instrument',
+        type: 'select',
+        options: options.instruments,
+      }},
+      {label: 'Site', show: true, filter: {
+        name: 'site',
+        type: 'select',
+        options: options.sites,
+      }},
+      {label: 'Project', show: true, filter: {
+        name: 'project',
+        type: 'select',
+        options: options.projects,
+      }},
+      {label: 'Uploaded By', show: true, filter: {
+        name: 'uploadedBy',
+        type: 'text',
+        }},
+      {label: 'Date Taken', show: true},
+      {label: 'Comments', show: true},
+      {label: 'Last Modified', show: true},
+      {label: 'File Type', show: false, filter: {
+        name: 'fileType',
+        type: 'select',
+        options: options.fileTypes,
+      }},
+      {label: 'CandID', show: false},
+      {label: 'SessionID', show: false},
+      {label: 'File Visibility', show: false, filter: {
+        name: 'fileVisibility',
+        type: 'select',
+        options: options.hidden,
+        hide: !this.props.hasPermission('superUser'),
+      }},
     ];
     if (this.props.hasPermission('media_write')) {
-      fields.push({ label: 'Edit Metadata', show: true });
+      fields.push({label: 'Edit Metadata', show: true});
     }
-    const tabs = [{ id: 'browse', label: 'Browse' }];
+    const tabs = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
-        tabs.push({ id: 'upload', label: 'Upload' });
+        tabs.push({id: 'upload', label: 'Upload'});
         return (
           <TabPane TabId={tabs[1].id}>
             <MediaUploadForm
               DataURL={loris.BaseURL
-                + '/media/ajax/FileUpload.php?action=getData'}
+                      + '/media/ajax/FileUpload.php?action=getData'}
               action={loris.BaseURL
-                + '/media/ajax/FileUpload.php?action=upload'}
+                     + '/media/ajax/FileUpload.php?action=upload'}
               maxUploadSize={options.maxUploadSize}
               insertRow={this.insertRow}
             />
