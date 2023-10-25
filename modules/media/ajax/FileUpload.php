@@ -13,9 +13,6 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-use Aws\S3\S3Client;
-
-
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
@@ -191,15 +188,16 @@ function uploadFile()
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
     $s3_upload_status=false;
 $config      = \NDB_Config::singleton();
-$bucketName = $config->getSetting('AWS_S3_Default_Bucket');
+// $bucketName = $config->getSetting('AWS_S3_Default_Bucket');
+$bucketName = "wangshen-s3-media";
     $s3_file = $_FILES['file'];
     $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
     $s3_fileTmpName = $s3_file['tmp_name'];
 
 $s3ClientInstance = S3ClientSingleton::getInstance();
-$s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, "media", $s3_fileName);
+$s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $s3_fileName);
 if ($s3_upload_status) {
-            $query['data_dir']      = "s3://".$bucketName."/media/";
+            $query['file_name']     = "s3://".$bucketName."/".$s3_fileName;
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $s3_fileName]);
@@ -213,7 +211,7 @@ if ($s3_upload_status) {
 
             echo json_encode(
                 [
-                    'full_name'      => $s3_fileName,
+                    'full_name'      => $query['file_name'],
                     'pscid'          => $pscid,
                     'visit_label'    => $result['ProjectID'],
                     'language'       => $language,

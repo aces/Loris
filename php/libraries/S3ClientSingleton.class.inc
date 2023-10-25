@@ -67,7 +67,7 @@ class S3ClientSingleton
     {
         try {
             // Use the provided bucketName and folderName to construct the S3 object key
-            $objectKey = $folderName . '/' . $fileName;
+            $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
             // Get the S3 object
             $s3Object = $this->s3Client->getObject([
@@ -93,7 +93,7 @@ class S3ClientSingleton
     {
         try {
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
-            $objectKey = $folderName . '/' . $fileName;
+            $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
             // Upload the file to the S3 bucket
             $this->s3Client->putObject([
@@ -111,5 +111,23 @@ class S3ClientSingleton
             return false;
         }
     }
+public function checkS3FileExist($bucketName, $folderName, $fileName)
+    {
+        try {
+            // Use the provided bucketName, folderName, and fileName to construct the S3 object key
+            $objectKey = $folderName . '/' . $fileName;
+
+            // Check if the file exists in the S3 bucket
+            $result = $this->s3Client->doesObjectExist($bucketName, $objectKey);
+
+            return $result;
+        } catch (Exception $e) {
+            // Handle any errors that occurred during the check
+            error_log("Error: " . $e->getMessage());
+
+            // Return false to indicate an error or that the file doesn't exist
+            return false;
+        }
+    }    
 }
 
