@@ -188,8 +188,8 @@ function uploadFile()
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
     $s3_upload_status=false;
 $config      = \NDB_Config::singleton();
-// $bucketName = $config->getSetting('AWS_S3_Default_Bucket');
-$bucketName = "wangshen-s3-media";
+$bucketName = $config->getSetting('AWS_S3_Default_Bucket_Media');
+
     $s3_file = $_FILES['file'];
     $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
     $s3_fileTmpName = $s3_file['tmp_name'];
