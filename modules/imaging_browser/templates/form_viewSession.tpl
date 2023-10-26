@@ -18,9 +18,10 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-            ReactDOM.createRoot(
+            const root = ReactDOM.createRoot(
               document.getElementById("image-{$files[file].FileID}")
-            ).render(
+            );
+            root.render(
               RImagePanel({
                 'BaseURL' : "{$baseurl}",
 
@@ -34,7 +35,7 @@
                 "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
                 "Caveat" : "{$files[file].Caveat}",
-                "EditableCaveat": "{$files[file].EditableCaveat}",
+                "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
                 "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                 'HeaderInfo' : {
                   "SeriesUID" : "{$files[file].SeriesUID}",
