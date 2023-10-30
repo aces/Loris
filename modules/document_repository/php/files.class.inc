@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+ini_set('memory_limit', '512M');
 
 /**
  * Post method handles updating a file.
@@ -61,7 +63,14 @@ class Files extends \NDB_Page
         );
         switch ($request->getMethod()) {
         case "POST":
-            return $this->uploadDocFile($request);
+            // Check if AWS_ACCESS_KEY_ID is set
+            if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+                // Upload to AWS S3
+                return $this->uploadDocFileToS3($request);
+            } else {
+                // Upload locally
+                return $this->uploadDocFile($request);
+            }
         case "PUT":
             return $this->editDocFile($request);
         case "DELETE":
@@ -472,4 +481,69 @@ class Files extends \NDB_Page
         }
         return false;
     }
+    function uploadDocFileToS3($request): ResponseInterface
+    {
+        $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
+
+        $s3ClientInstance = \S3ClientSingleton::getInstance();
+        $responseMessages = [];
+        $errorCounter     = 0;
+        $addedFiles       = [];
+
+             error_log(print_r($uploadedFiles,true));
+            $config      = \NDB_Config::singleton();
+            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+
+        // handle files    
+            foreach ($uploadedFiles as $uploadedFile) {
+                // Get the filename, and adjust it if needed
+                $fileName = urldecode($uploadedFile->getClientFilename());
+                error_log("======");
+                 error_log($fileName);
+                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $fileName);
+
+                $addedFiles[]       = $filename;
+                $responseMessages[] = "$filename: Success";
+            }
+                            
+                if (count($addedFiles) > 0) {
+                    $uploadNotifier = new \NDB_Notifier(
+                        "document_repository",
+                        "upload"
+                    );
+                    $msg_data       = [
+                        'newDocument' => 'Document Repository',
+                        'documents'   => $addedFiles,
+                    ];
+                    $uploadNotifier->notify($msg_data);
+                }
+
+                $uploadResponse  = '<div class="upload-response">';
+                $uploadResponse .= join("<br/><br/>", $responseMessages);
+                $uploadResponse .= '</div>';
+
+                return (new \LORIS\Http\Response\JSON\OK(
+                    [
+                        'message'     => $uploadResponse,
+                        'error_count' => $errorCounter
+                    ]
+                ));
+    }
+    
 }
+
+
+/*
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES 
+(140,'AWS_S3_Default_Bucket_Media','Default bucket for LORIS to use for accessing media files in S3.',1,0,'text',121,'AWS S3 Default Bucket for Media',3);
+
+INSERT INTO `ConfigSettings` ( `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES ('AWS_S3_Default_Bucket_Document_Repository','Default bucket for LORIS to use for accessing Document_Repository files in S3.',1,0,'text',121,'AWS S3 Default Bucket for Media',3);
+
+
+INSERT INTO `ConfigSettings` ( `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES ('AWS_S3_Default_Bucket_Issue_Tracker','Default bucket for LORIS to use for accessing Issue Tracker files in S3.',1,0,'text',121,'AWS S3 Default Bucket for Issue Tracker',3);
+
+
+INSERT INTO `Config` (`ConfigID`, `Value`) VALUES (141,'');
+INSERT INTO `Config` (`ConfigID`, `Value`) VALUES (142,'');
+INSERT INTO `Config` (`ConfigID`, `Value`) VALUES (143,'');
+*/
