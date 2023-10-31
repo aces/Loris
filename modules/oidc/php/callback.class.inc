@@ -205,8 +205,6 @@ class Callback extends \NDB_Page
                     'grant_type'    => 'authorization_code',
                     'code'          => $code,
                     'redirect_uri'  => $clientsettings['redirect_uri'],
-                    'client_id'     => $clientsettings['client_id'],
-                    'client_secret' => $clientsettings['client_secret'],
                 ]
             ]
         );
