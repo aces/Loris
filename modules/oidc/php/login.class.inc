@@ -76,7 +76,7 @@ class Login extends \NDB_Page
                     . "?client_id=" . $providerconfig['ClientID']
                     . "&redirect_uri=" . $providerconfig['RedirectURI']
                     . "&response_type=code"
-                    . "&scope=openid%20profile%20email%20email_verified"
+                    . "&scope=openid%20profile%20email"
                     . "&state=" . $thestate
                     . "&nonce=" . $nonce
             );
