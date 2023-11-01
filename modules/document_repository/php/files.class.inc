@@ -190,7 +190,7 @@ class Files extends \NDB_Page
             "delete"
         );
         $baseURL  = $factory->settings()->getBaseURL();
-        $fileName = $DB->pselectOne(
+        $filename = $DB->pselectOne(
             "SELECT File_name FROM document_repository
              WHERE record_id =:identifier",
             [':identifier' => $rid]
@@ -207,6 +207,14 @@ class Files extends \NDB_Page
         ];
         $Notifier->notify($msg_data);
         $path = $path.$dataDir;
+
+
+        if (strpos($filename, "s3://") === 0) {
+            $s3ClientInstance = \S3ClientSingleton::getInstance();
+            $config      = \NDB_Config::singleton();
+            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
+            $s3ClientInstance->s3DeleteFile($bucketName, null, $filename);
+        }
 
         if (file_exists($path)) {
             unlink($path);
@@ -483,27 +491,88 @@ class Files extends \NDB_Page
     }
     function uploadDocFileToS3($request): ResponseInterface
     {
+        $instance = $request->getAttribute('loris');
+        $DB       = $instance->getDatabaseConnection();
+        $config   = $instance->getConfiguration();
+        $user     = $request->getAttribute('user');
+        $name     = $user->getUsername();        
+        
         $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
+        $body = $request->getParsedBody();
+
+        $category = $body['category']; // required
+        if (!\Utility::valueIsPositiveInteger($category)) {
+            // $category is a string representation of an ID, and so should be
+            // at least equal to zero.
+            return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
+        }
 
         $s3ClientInstance = \S3ClientSingleton::getInstance();
         $responseMessages = [];
         $errorCounter     = 0;
         $addedFiles       = [];
 
-             error_log(print_r($uploadedFiles,true));
             $config      = \NDB_Config::singleton();
             $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
 
         // handle files    
             foreach ($uploadedFiles as $uploadedFile) {
                 // Get the filename, and adjust it if needed
-                $fileName = urldecode($uploadedFile->getClientFilename());
-                error_log("======");
-                 error_log($fileName);
-                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $fileName);
+                $filename = urldecode($uploadedFile->getClientFilename());
+                
+                if ($this->existFilename($filename)) {
+                    // If a record of this a file with the same name already exists
+                    // in the database, don't proceed with upload.
+                    $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
+                    $errorCounter      += 1;
+                    continue;
+                }
 
+                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename);
+            if ($s3_upload_status) {
+                // Prepare fields for database entry once upload has completed.
+                $site = $body['forSite']       !== '' ? $body['forSite'] : null;
+                $site = $DB->pselectOne(
+                    "SELECT CenterID FROM psc WHERE Name=:name",
+                    ['name' => $site]
+                );
+
+                // Set empty values equal to NULL for insertion into the database.
+                $instrument = !empty($body['instrument']) ? $body['instrument'] : null;
+                $pscid      = !empty($body['pscid'])      ? $body['pscid']      : null;
+                $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
+                $comments   = !empty($body['comments'])   ? $body['comments']   : null;
+                $version    = !empty($body['version'])    ? $body['version']    : null;
+
+                $fileSize = $uploadedFile->getSize();
+                $fileType = pathinfo($filename, PATHINFO_EXTENSION);
+
+                // Insert record of this file into the `document_repository` table.
+                $DB->unsafeInsertOnDuplicateUpdate(
+                    'document_repository',
+                    [
+                        'File_category' => $category,
+                        'For_site'      => $site,
+                        'comments'      => $comments,
+                        'version'       => $version,
+                        'File_name'     => "s3://".$bucketName."/".$filename,
+                        'File_size'     => $fileSize,
+                        'Data_dir'      => "s3://".$bucketName."/".$filename,
+                        'uploaded_by'   => $name,
+                        'Instrument'    => $instrument,
+                        'PSCID'         => $pscid,
+                        'visitLabel'    => $visit,
+                        'File_type'     => $fileType,
+                    ]
+                );
+              
                 $addedFiles[]       = $filename;
                 $responseMessages[] = "$filename: Success";
+                } else {
+                        $responseMessages[] = "$filename: {$e->getMessage()}";
+                        $errorCounter      += 1;
+                        continue;
+                }
             }
                             
                 if (count($addedFiles) > 0) {
