@@ -74,7 +74,6 @@ class S3ClientSingleton
                 'Bucket' => $bucketName,
                 'Key' => $objectKey,
             ]);
-
             // Set headers to indicate a file download
             header('Content-Type: ' . $s3Object['ContentType']);
             header('Content-Disposition: attachment; filename="' . $fileName . '"');
@@ -89,7 +88,7 @@ class S3ClientSingleton
             return false;
         }
     }
-    public function s3uploadfile($bucketName, $folderName, $fileName)
+    public function s3uploadfile($bucketName, $folderName, $fileName, $localFilePath)
     {
         try {
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
@@ -99,6 +98,7 @@ class S3ClientSingleton
             $this->s3Client->putObject([
                 'Bucket' => $bucketName,
                 'Key' => $objectKey,
+                'SourceFile' => $localFilePath,
             ]);
 
             // Return true to indicate a successful upload
