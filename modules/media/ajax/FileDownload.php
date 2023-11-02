@@ -25,7 +25,7 @@ if (!$user->hasPermission('media_read')) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = html_entity_decode(basename($_GET['File']));
+$file     = html_entity_decode($_GET['File']);
 $config   =& NDB_Config::singleton();
 $downloadNotifier = new NDB_Notifier(
     "media",
@@ -34,10 +34,9 @@ $downloadNotifier = new NDB_Notifier(
 );
 // local file download first
 // if file name not start with S3 then down load from AWS s3
-
 if (substr($file, 0, 3) !== "s3:") {
-$path     = $config->getSetting('mediaPath');
-$filePath = $path . $file;
+    $path     = $config->getSetting('mediaPath');
+    $filePath = $path . $file;
 
     if (!file_exists($filePath)) {
         error_log("ERROR: File $filePath does not exist");
@@ -45,19 +44,19 @@ $filePath = $path . $file;
         exit(5);
     }
 
- // Output file in downloadable format
-  header('Content-Description: File Transfer');
-  header('Content-Type: application/force-download');
-  header("Content-Transfer-Encoding: Binary");
-  header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
-  readfile($filePath);
-} else { 
+    // Output file in downloadable format
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/force-download');
+    header("Content-Transfer-Encoding: Binary");
+    header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
+    readfile($filePath);
+} else {
     // download from AWS s3
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
         $s3part = explode("/", str_replace("s3://", "", $file));
         $s3ClientInstance = S3ClientSingleton::getInstance();
         // it will pass bucketname folder and filename to download
-        $s3ClientInstance->s3download($s3part[0],null,end($s3part));
-    } 
+        $s3ClientInstance->s3download($s3part[0], null, end($s3part));
+    }
 }
 $downloadNotifier->notify();

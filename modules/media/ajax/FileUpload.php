@@ -17,9 +17,9 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
         viewData();
-    } else if ($action == "upload") {
+    } elseif ($action == "upload") {
         uploadFile();
-    } else if ($action == "edit") {
+    } elseif ($action == "edit") {
         editFile();
     }
 }
@@ -67,7 +67,6 @@ function editFile()
     } catch (DatabaseException $e) {
         showMediaError("Could not update the file. Please try again!", 500);
     }
-
 }
 
 
@@ -184,19 +183,19 @@ function uploadFile()
         'language_id'   => $language,
     ];
     
-      // upload to aws s3
+    // upload to aws s3
     if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-    $s3_upload_status=false;
-$config      = \NDB_Config::singleton();
-$bucketName = $config->getSetting('AWS_S3_Default_Bucket_Media');
+        $s3_upload_status=false;
+        $config      = \NDB_Config::singleton();
+        $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Media');
 
-    $s3_file = $_FILES['file'];
-    $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
-    $s3_fileTmpName = $s3_file['tmp_name'];
+        $s3_file = $_FILES['file'];
+        $s3_fileName = urldecode(preg_replace('/\s/', '_', $s3_file["name"]));
+        $s3_fileTmpName = $s3_file['tmp_name'];
 
-$s3ClientInstance = S3ClientSingleton::getInstance();
-$s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $s3_fileName);
-if ($s3_upload_status) {
+        $s3ClientInstance = S3ClientSingleton::getInstance();
+        $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $s3_fileName, $s3_fileTmpName);
+        if ($s3_upload_status) {
             $query['file_name']     = "s3://".$bucketName."/".$s3_fileName;
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
@@ -228,15 +227,14 @@ if ($s3_upload_status) {
                     'fileVisibility' => 0,
                 ]
             );
-	    return;
-       }
-}
-// upload to local
-if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
-
+            return;
+        }
+    }
+    // upload to local
+    if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         try {
-		// Insert or override db record if file_name already exists
-		$db->unsafeInsertOnDuplicateUpdate('media', $query);
+            // Insert or override db record if file_name already exists
+            $db->unsafeInsertOnDuplicateUpdate('media', $query);
             $uploadNotifier->notify(["file" => $fileName]);
             $qparam = ['ID' => $sessionID];
             $result = $db->pselect(
@@ -244,7 +242,7 @@ if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $media
                             from session
                         where ID=:ID',
                 $qparam
-	    )[0];
+            )[0];
 
             echo json_encode(
                 [
@@ -264,15 +262,14 @@ if (!$s3_upload_status && move_uploaded_file($_FILES["file"]["tmp_name"], $media
                     'SessionID'      => $sessionID,
                     'fileVisibility' => 0,
                 ]
-	    );
-	    return;
+            );
+            return;
         } catch (Exception $e) {
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
-} else {
-	    echo showMediaError("Could not upload the file. Please try again!", 500);
-
-        } 
+    } else {
+        echo showMediaError("Could not upload the file. Please try again!", 500);
+    }
 }
 
 /**
@@ -298,7 +295,6 @@ function viewData()
  */
 function getUploadFields()
 {
-
     $db     = \NDB_Factory::singleton()->database();
     $user   = \User::singleton();
     $config = \NDB_Config::singleton();
