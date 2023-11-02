@@ -111,7 +111,7 @@ class S3ClientSingleton
             return false;
         }
     }
-public function checkS3FileExist($bucketName, $folderName, $fileName)
+    public function checkS3FileExist($bucketName, $folderName, $fileName)
     {
         try {
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
@@ -128,6 +128,28 @@ public function checkS3FileExist($bucketName, $folderName, $fileName)
             // Return false to indicate an error or that the file doesn't exist
             return false;
         }
-    }    
+    } 
+    public function s3DeleteFile($bucketName, $folderName, $fileName)
+    {
+        try {
+            // Use the provided bucketName, folderName, and fileName to construct the S3 object key
+            $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
+
+            // Delete the file from the S3 bucket
+            $this->s3Client->deleteObject([
+                'Bucket' => $bucketName,
+                'Key' => $objectKey,
+            ]);
+
+            // Return true to indicate a successful deletion
+            return true;
+        } catch (Exception $e) {
+            // Handle any errors that occurred during the deletion
+            error_log("Error: " . $e->getMessage());
+
+            // Return false to indicate an unsuccessful deletion
+            return false;
+        }
+    }       
 }
 
