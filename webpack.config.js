@@ -318,6 +318,7 @@ const lorisModules = {
   instruments: ['CandidateInstrumentList'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
+  roles: ['rolesIndex'],
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;

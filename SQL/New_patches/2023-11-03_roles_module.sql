@@ -18,3 +18,32 @@ DROP TABLE `permissions_category`;
 ALTER TABLE `permissions` DROP FOREIGN KEY `fk_permissions_1`;
 ALTER TABLE `permissions` DROP COLUMN categoryID;
 SET foreign_key_checks = 1;
+
+-- ------------------------------------
+-- ADD ROLES
+-- ------------------------------------
+
+-- add role table
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+  `RoleID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Code` varchar(255) NOT NULL DEFAULT '',
+  `Name` varchar(255) NOT NULL DEFAULT '',
+  `Description` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`RoleID`),
+  UNIQUE KEY `Code` (`Code`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+INSERT INTO `roles` VALUES
+  (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
+  (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
+
+-- add new permissions (related to roles module)
+INSERT INTO `permissions` (`code`, `description`, `moduleID`) 
+VALUES
+  ('roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles')),
+  ('roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles')),
+  ('roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'));
+
+-- module
+INSERT INTO modules (Name, Active) VALUES ('roles', 'Y');

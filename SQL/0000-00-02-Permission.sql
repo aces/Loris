@@ -111,13 +111,31 @@ INSERT INTO `permissions` VALUES
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View'),
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View'),
-    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit');
+    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit'),
+    (63,'roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
+    (65,'roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'Edit/Upload/Delete'),
+    (64,'roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
   FROM users u JOIN permissions p
   WHERE u.userid = 'admin'
   ORDER BY p.permID;
+
+-- add role table
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+  `RoleID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Code` varchar(255) NOT NULL DEFAULT '',
+  `Name` varchar(255) NOT NULL DEFAULT '',
+  `Description` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`RoleID`),
+  UNIQUE KEY `Code` (`Code`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+INSERT INTO `roles` VALUES
+  (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
+  (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
 
 -- permissions for each notification module
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
