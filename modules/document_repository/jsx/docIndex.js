@@ -1,4 +1,4 @@
-import {Tabs, TabPane} from 'Tabs';
+import { Tabs, TabPane } from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
 import ParentTree from './parentTree';
@@ -7,7 +7,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import NullFilterableDataTable from './NullFilterableDataTable';
 import swal from 'sweetalert2';
-import {createRoot} from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -46,7 +46,7 @@ class DocIndex extends React.Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({isLoaded: true}));
+      .then(() => this.setState({ isLoaded: true }));
   }
 
   /**
@@ -58,7 +58,7 @@ class DocIndex extends React.Component {
   handleGlobal(formElement, value) {
     const parentNode = this.state.parentNode;
     parentNode.shift(['0', 'Root']);
-    this.setState({parentNode});
+    this.setState({ parentNode });
     if (value == true) {
       this.getAllData();
     } else {
@@ -130,16 +130,16 @@ class DocIndex extends React.Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+    return fetch(this.props.dataURL, { credentials: 'same-origin' })
       .then((resp) => resp.json())
       .then((data) => {
-        this.setState({data: data, tableData: data.Data});
+        this.setState({ data: data, tableData: data.Data });
       }).then(() => {
         this.dataByNode(0);
       })
-      .then(() => this.setState({newCategory: false}))
+      .then(() => this.setState({ newCategory: false }))
       .catch((error) => {
-        this.setState({error: true});
+        this.setState({ error: true });
       });
   }
 
@@ -156,7 +156,7 @@ class DocIndex extends React.Component {
    * New category state
    */
   newCategoryState() {
-    this.setState({newCategory: true});
+    this.setState({ newCategory: true });
   }
 
   /**
@@ -171,24 +171,42 @@ class DocIndex extends React.Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'File Name':
+        console.log(row);
         let downloadURL = loris.BaseURL
-                          + '/document_repository/Files/'
-                          + encodeURIComponent(row['Uploaded By'])
-                          + '/'
-                          + encodeURIComponent(row['File Name']);
-        result = <td>
-          <a
-            href={downloadURL}
-            target="_blank"
-            download={row['File Name']}
-          >
-            {cell}
-          </a>
-        </td>;
+          + '/document_repository/Files/'
+          + encodeURIComponent(row['Uploaded By'])
+          + '/'
+          + encodeURIComponent(row['File Name']);
+        if (!row['Data dir'].startsWith('s3://')) {
+          result = <td>
+            <a
+              href={downloadURL}
+              target="_blank"
+              download={row['File Name']}
+            >
+              {cell}
+            </a>
+          </td>;
+        } else {
+          let s3url = loris.BaseURL
+            + '/document_repository/Files/'
+            + encodeURIComponent(row['Uploaded By'])
+            + '/?s3file='
+            + row['Data dir']
+          result = <td>
+            <a
+              href={s3url}
+              target="_blank"
+              download={row['Data dir']}
+            >
+              {row['Data dir']}
+            </a>
+          </td>;
+        }
         break;
       case 'Edit':
         let editURL = loris.BaseURL
-                      + '/document_repository/edit/' + row['Edit'];
+          + '/document_repository/edit/' + row['Edit'];
         result = <td><a href={editURL}>Edit</a></td>;
         break;
       case 'Delete File':
@@ -206,24 +224,24 @@ class DocIndex extends React.Component {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!',
-           }).then((result) => {
-           if (result.value) {
-            let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
+          }).then((result) => {
+            if (result.value) {
+              let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
               fetch(deleteurl, {
-              method: 'DELETE',
-              cache: 'no-cache',
-              credentials: 'same-origin',
+                method: 'DELETE',
+                cache: 'no-cache',
+                credentials: 'same-origin',
               }).then((resp) => resp.json())
-                .then(()=>{
+                .then(() => {
                   location.reload();
                   swal.fire('delete Successful!', '', 'success');
                 });
-           }
+            }
           });
         }
 
         result = <td>
-          <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+          <a style={{ cursor: 'pointer' }} onClick={click}>Delete</a>
         </td>;
         break;
     }
@@ -244,55 +262,66 @@ class DocIndex extends React.Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'File Name', show: true, filter: {
-        name: 'fileName',
-        type: 'text',
-      }},
-      {label: 'Version', show: true, filter: {
-        name: 'version',
-        type: 'text',
-      }},
-      {label: 'File Type', show: true, filter: {
-        name: 'fileTypes',
-        type: 'select',
-        options: options.fileTypes,
-      }},
-      {label: 'Instrument', show: false},
-      {label: 'Uploaded By', show: true, filter: {
-        name: 'uploadedBy',
-        type: 'text',
-        }},
-      {label: 'For Site', show: true, filter: {
-        name: 'site',
-        type: 'select',
-        options: options.sites,
-      }},
-      {label: 'Comments', show: true, filter: {
-        name: 'Comments',
-        type: 'text',
-      }},
-      {label: 'Date Uploaded', show: true},
+      {
+        label: 'File Name', show: true, filter: {
+          name: 'fileName',
+          type: 'text',
+        }
+      },
+      {
+        label: 'Version', show: true, filter: {
+          name: 'version',
+          type: 'text',
+        }
+      },
+      {
+        label: 'File Type', show: true, filter: {
+          name: 'fileTypes',
+          type: 'select',
+          options: options.fileTypes,
+        }
+      },
+      { label: 'Instrument', show: false },
+      {
+        label: 'Uploaded By', show: true, filter: {
+          name: 'uploadedBy',
+          type: 'text',
+        }
+      },
+      {
+        label: 'For Site', show: true, filter: {
+          name: 'site',
+          type: 'select',
+          options: options.sites,
+        }
+      },
+      {
+        label: 'Comments', show: true, filter: {
+          name: 'Comments',
+          type: 'text',
+        }
+      },
+      { label: 'Date Uploaded', show: true },
       {
         label: 'Edit',
         show: this.props.hasPermission('superUser')
-        || this.props.hasPermission('document_repository_edit'),
+          || this.props.hasPermission('document_repository_edit'),
       },
       {
         label: 'Delete File',
         show: this.props.hasPermission('superUser')
           || this.props.hasPermission('document_repository_delete'),
       },
-      {label: 'File Category', show: false},
-      {label: 'Category', show: false},
-      {label: 'Data Dir', show: false},
+      { label: 'Category', show: false },
+      { label: 'Data dir', show: false },
     ];
 
     let tabList = [
-      {id: 'browse', label: 'Browse'},
+      { id: 'browse', label: 'Browse' },
     ];
     let uploadDoc;
     let uploadCategory;
@@ -364,7 +393,34 @@ class DocIndex extends React.Component {
       Object.keys(this.state.tableData.length).length === 0
       && Object.keys(this.state.childrenNode).length === 0
     ) ? (
-      <NullFilterableDataTable>
+        <NullFilterableDataTable>
+          <div>
+            <CheckboxElement
+              name="globalSelection"
+              label="Filter globally"
+              id="globalSelection"
+              value={this.state.global}
+              offset=''
+              elementClass='checkbox-inline'
+              onUserInput={this.handleGlobal}
+            />
+            <FilterableDataTable
+              name="document"
+              data={this.state.tableData}
+              fields={fields}
+              getFormattedCell={this.formatColumn}
+              folder={
+                <ChildTree
+                  action={this.getContent}
+                  childrenNode={this.state.childrenNode}
+                />
+              }
+            >
+              {parentTree}
+            </FilterableDataTable>
+          </div>
+        </NullFilterableDataTable>
+      ) : (
         <div>
           <CheckboxElement
             name="globalSelection"
@@ -376,48 +432,21 @@ class DocIndex extends React.Component {
             onUserInput={this.handleGlobal}
           />
           <FilterableDataTable
-            name = "document"
+            name="document"
             data={this.state.tableData}
             fields={fields}
             getFormattedCell={this.formatColumn}
+            nullTableShow={true}
             folder={
               <ChildTree
                 action={this.getContent}
                 childrenNode={this.state.childrenNode}
-              />
-            }
+              />}
           >
-          {parentTree}
+            {parentTree}
           </FilterableDataTable>
         </div>
-      </NullFilterableDataTable>
-    ) : (
-      <div>
-        <CheckboxElement
-          name="globalSelection"
-          label="Filter globally"
-          id="globalSelection"
-          value={this.state.global}
-          offset=''
-          elementClass='checkbox-inline'
-          onUserInput={this.handleGlobal}
-        />
-        <FilterableDataTable
-          name = "document"
-          data={this.state.tableData}
-          fields={fields}
-          getFormattedCell={this.formatColumn}
-          nullTableShow={true}
-          folder={
-          <ChildTree
-            action={this.getContent}
-            childrenNode={this.state.childrenNode}
-          />}
-        >
-        {parentTree}
-        </FilterableDataTable>
-      </div>
-    );
+      );
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>

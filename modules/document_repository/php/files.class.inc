@@ -3,7 +3,8 @@
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-ini_set('memory_limit', '512M');
+use Aws\S3\S3Client;
+
 
 /**
  * Post method handles updating a file.
@@ -80,6 +81,9 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
+            if (isset($_GET['s3file'])) {
+              return $this->downloadS3File($request);
+        }    
             $route = explode('/', $request->getUri()->getPath());
             if ($route[2] == 'meta') {
                 $id = urldecode(basename($request->getUri()->getPath()));
@@ -91,7 +95,6 @@ class Files extends \NDB_Page
                         )
                     );
             }
-
             $filename = explode(
                 'Files',
                 urldecode($request->getUri()->getPath())
@@ -203,7 +206,7 @@ class Files extends \NDB_Page
         $DB->delete("document_repository", ["record_id" => $rid]);
         $msg_data = [
             'deleteDocument' => $baseURL. "/document_repository/",
-            'document'       => $fileName,
+            'document'       => $filename,
         ];
         $Notifier->notify($msg_data);
         $path = $path.$dataDir;
@@ -516,10 +519,11 @@ class Files extends \NDB_Page
             $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
 
         // handle files    
+            $i = 0;
             foreach ($uploadedFiles as $uploadedFile) {
                 // Get the filename, and adjust it if needed
                 $filename = urldecode($uploadedFile->getClientFilename());
-                
+       
                 if ($this->existFilename($filename)) {
                     // If a record of this a file with the same name already exists
                     // in the database, don't proceed with upload.
@@ -528,7 +532,8 @@ class Files extends \NDB_Page
                     continue;
                 }
 
-                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename);
+                 $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $filename,$_FILES['files']['tmp_name'][$i]);
+                 $i++;
             if ($s3_upload_status) {
                 // Prepare fields for database entry once upload has completed.
                 $site = $body['forSite']       !== '' ? $body['forSite'] : null;
@@ -555,7 +560,7 @@ class Files extends \NDB_Page
                         'For_site'      => $site,
                         'comments'      => $comments,
                         'version'       => $version,
-                        'File_name'     => "s3://".$bucketName."/".$filename,
+                        'File_name'     => $filename,
                         'File_size'     => $fileSize,
                         'Data_dir'      => "s3://".$bucketName."/".$filename,
                         'uploaded_by'   => $name,
@@ -598,7 +603,30 @@ class Files extends \NDB_Page
                     ]
                 ));
     }
-    
+
+        function downloadS3File(ServerRequestInterface $request): ResponseInterface {
+            $file = html_entity_decode($request->getQueryParams()['s3file']);
+            $s3part = explode("/", str_replace("s3://", "", $file));
+            try {
+                $s3ClientInstance = \S3ClientSingleton::getInstance();
+                $s3Object = $s3ClientInstance->getS3Client()->getObject([
+                    'Bucket' => $s3part[0],
+                    'Key'    => end($s3part)
+                ]);
+
+                $headers = [
+                    'Content-Type'        => $s3Object['ContentType'],
+                    'Content-Disposition' => 'attachment; filename="' . end($s3part) . '"',
+                    'Content-Length'      => $s3Object['ContentLength'],
+                ];
+
+                return new \GuzzleHttp\Psr7\Response(200, $headers, $s3Object['Body']);
+            } catch (\Exception $e) {
+                error_log('Error: ' . $e->getMessage());
+                return new \GuzzleHttp\Psr7\Response(404, [], 'File not found');
+            }
+        }
+
 }
 
 
