@@ -83,7 +83,6 @@ class S3ClientSingleton
 
             return true;
         } catch (Exception $e) {
-            // Handle any errors that occurred during the download
             error_log("Error: " . $e->getMessage());
             return false;
         }
@@ -94,20 +93,17 @@ class S3ClientSingleton
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
             $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
-            // Upload the file to the S3 bucket
             $this->s3Client->putObject([
                 'Bucket' => $bucketName,
                 'Key' => $objectKey,
                 'SourceFile' => $localFilePath,
             ]);
 
-            // Return true to indicate a successful upload
             return true;
         } catch (Exception $e) {
             // Handle any errors that occurred during the upload
             error_log("Error: " . $e->getMessage());
 
-            // Return false to indicate an unsuccessful upload
             return false;
         }
     }
@@ -117,15 +113,12 @@ class S3ClientSingleton
             // Use the provided bucketName, folderName, and fileName to construct the S3 object key
             $objectKey = ($folderName ? $folderName . '/' : '') . $fileName;
 
-            // Check if the file exists in the S3 bucket
             $result = $this->s3Client->doesObjectExist($bucketName, $objectKey);
 
             return $result;
         } catch (Exception $e) {
-            // Handle any errors that occurred during the check
             error_log("Error: " . $e->getMessage());
 
-            // Return false to indicate an error or that the file doesn't exist
             return false;
         }
     } 
@@ -141,13 +134,10 @@ class S3ClientSingleton
                 'Key' => $objectKey,
             ]);
 
-            // Return true to indicate a successful deletion
             return true;
         } catch (Exception $e) {
-            // Handle any errors that occurred during the deletion
             error_log("Error: " . $e->getMessage());
 
-            // Return false to indicate an unsuccessful deletion
             return false;
         }
     }       

@@ -3,7 +3,6 @@
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use Aws\S3\S3Client;
 
 
 /**
@@ -211,12 +210,14 @@ class Files extends \NDB_Page
         $Notifier->notify($msg_data);
         $path = $path.$dataDir;
 
-
-        if (strpos($filename, "s3://") === 0) {
+        if (strpos($dataDir, "s3://") === 0) {
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $config      = \NDB_Config::singleton();
             $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
-            $s3ClientInstance->s3DeleteFile($bucketName, null, $filename);
+            $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
+// todo return a warning message to sweet alert 
+
+
         }
 
         if (file_exists($path)) {
@@ -458,7 +459,7 @@ class Files extends \NDB_Page
                 'newDocument' => 'Document Repository',
                 'documents'   => $addedFiles,
             ];
-            $uploadNotifier->notify($msg_data);
+           $uploadNotifier->notify($msg_data);
         }
 
         $uploadResponse  = '<div class="upload-response">';
@@ -589,7 +590,7 @@ class Files extends \NDB_Page
                         'newDocument' => 'Document Repository',
                         'documents'   => $addedFiles,
                     ];
-                    $uploadNotifier->notify($msg_data);
+             //       $uploadNotifier->notify($msg_data);
                 }
 
                 $uploadResponse  = '<div class="upload-response">';
