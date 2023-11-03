@@ -38,12 +38,12 @@ INSERT INTO `roles` VALUES
   (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
   (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
 
+-- module
+INSERT INTO modules (Name, Active) VALUES ('roles', 'Y');
+
 -- add new permissions (related to roles module)
 INSERT INTO `permissions` (`code`, `description`, `moduleID`) 
 VALUES
   ('roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles')),
   ('roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles')),
   ('roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'));
-
--- module
-INSERT INTO modules (Name, Active) VALUES ('roles', 'Y');

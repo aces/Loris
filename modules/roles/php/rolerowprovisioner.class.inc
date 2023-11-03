@@ -21,7 +21,7 @@ class RoleRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             "SELECT r.Code as code,
                     r.Name as name,
                     r.Description as description
-            FROM role r
+            FROM roles r
             ORDER BY r.roleID",
             // "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
             //         GROUP_CONCAT(DISTINCT uprr.ProjectID) as projectIds,
