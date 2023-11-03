@@ -188,4 +188,37 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
                 || $user->hasPermission('role_edit')
                 || $user->hasPermission('role_assign');
     }
+
+    /**
+     * Useful during new Role creation or for code comparison.
+     * Generate the corresponding role code from a given role name.
+     *
+     * @param string $name a role name
+     *
+     * @return string a code version of the name
+     */
+    public static function generateCodeFromName(string $name)
+    {
+        $code = strtolower(trim($name));
+        $code = str_replace("  ", " ", $code);
+        $code = str_replace(" ", "_", $code);
+        return $code;
+    }
+
+    /**
+     * Checks if the string is a role within the database
+     *
+     * @param string $roleCode the role code to be checked
+     *
+     * @return boolean
+     */
+    public static function exists($roleCode)
+    {
+        $roleFound = \NDB_Factory::singleton()->database()->pselectOne(
+            "SELECT RoleID FROM roles WHERE Code = :rcode",
+            ['rcode' => $roleCode]
+        );
+        return !is_null($roleFound);
+    }
+
 }

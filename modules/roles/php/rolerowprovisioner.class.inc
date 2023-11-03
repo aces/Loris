@@ -23,18 +23,6 @@ class RoleRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     r.Description as description
             FROM roles r
             ORDER BY r.roleID",
-            // "SELECT GROUP_CONCAT(DISTINCT upsr.CenterID) as centerIds,
-            //         GROUP_CONCAT(DISTINCT uprr.ProjectID) as projectIds,
-            //         u.UserID as username,
-            //         u.Real_name as real_name,
-            //         u.Email as email,
-            //         u.Active as active,
-            //         u.Pending_approval as pending,
-            //         u.account_request_date as account_request_date
-            //  FROM roles r
-            //     LEFT JOIN role_perm_rel rpr ON (upsr.UserID=u.ID)
-            //     LEFT JOIN users u ON (r.RoleID = u.RoleID)
-            //  ORDER BY r.RoleID",
             []
         );
     }

@@ -92,14 +92,10 @@ class Edit_Role extends \NDB_Form
      */
     function _process($values)
     {
-
         // attribute the code as snakecase version of name
         // -> lowercase + underscores as separator
         if ($this->isCreatingNewRole()) {
-            $code = strtolower(trim($values['Name']));
-            $code = str_replace("  ", " ", $code);
-            $code = str_replace(" ", "_", $code);
-            $values['Code'] = $code;
+            $values['Code'] = \Role::generateCodeFromName($values['Name']);
         }
 
         // add other
@@ -252,23 +248,16 @@ class Edit_Role extends \NDB_Form
      */
     function _validateEditRole($values)
     {
-        $factory = \NDB_Factory::singleton();
-        $db      = $factory->database();
-        // $editor  = $factory->user();
-
         $errors = [];
 
         // ------------------------------------------
-        // validate Description
+        // validate
 
-        $nameAlreadyExists = !empty($db->pselect(
-            "SELECT Name FROM roles WHERE Name = :rname",
-            ['rname' => $values['Name']]
-        ));
-
-        if (!$this->isCreatingNewRole() && $nameAlreadyExists) {
-            $errors['Name'] = "A role named '" 
-                . $$values['Name'] . "' already exists.";
+        $newCode    = \Role::generateCodeFromName($values['Name']);
+        $roleExists = \Role::exists($newCode);
+        if ($this->isCreatingNewRole() && $roleExists) {
+            $errors['Name'] = "A role named '" . $values['Name']
+                . "' with code '" . $newCode . "' already exists.";
         }
 
         // errors
