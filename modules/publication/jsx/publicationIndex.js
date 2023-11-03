@@ -192,8 +192,9 @@ PublicationIndex.propTypes = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>

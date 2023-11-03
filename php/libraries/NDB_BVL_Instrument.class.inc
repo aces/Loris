@@ -4,6 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\instruments\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -1378,10 +1379,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dictionary = $this->getDataDictionary();
 
         foreach ($dictionary as $item) {
-            // The Field name to compare to in the data dictionary is
-            // prefixed with the testname
-            $dictionaryFieldName = $this->testName."_".$field;
-            if ($dictionaryFieldName === $item->getName()) {
+            if ($field === $item->fieldname) {
                 return $allValues[$field];
             }
         }
@@ -1390,6 +1388,26 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
+    /**
+     * Gets the value of a field $field for this instrument for a
+     * DictionaryItem that was retrieved from getDataDictionary.
+     *
+     * This differs from getFieldValue in that getFieldValue takes
+     * a string and validates that it is in the dictionary in O(n)
+     * time while getDictionaryValue assumes the DictionaryItem
+     * exists and returns the value in O(1) time.
+     *
+     * @param DictionaryItem $field The field to get from this instrument
+
+     * @return mixed
+     */
+    function getDictionaryValue(DictionaryItem $field)
+    {
+        $allValues = $this->getInstanceData();
+        $fieldName = substr($field->getName(), strlen($this->testName)+1);
+
+        return $allValues[$fieldName];
+    }
 
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
@@ -2065,6 +2083,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $diff;
     }
 
+
+    /**
+     * Get the default instance data which consists of all field names
+     * in the dictionary and a null value.
+     *
+     * @return array
+     */
+    protected function defaultInstanceData()
+    {
+        $val        = [];
+        $dictionary = $this->getDataDictionary();
+
+        foreach ($dictionary as $item) {
+            $val[$item->fieldname] = null;
+        }
+        return $val;
+    }
+
     /**
      * Gets the data from an instrument out of the database and returns it
      * as an array.
@@ -2085,14 +2121,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $this->getCommentID()]
             );
 
-            $this->instanceData = json_decode($jsondata, true) ?? [];
+            $this->instanceData = json_decode(
+                $jsondata ?? '',
+                true
+            ) ?? $this->defaultInstanceData();
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
                 ['CID' => $this->getCommentID()]
             );
+            // This is only included because it's the primary key. JSON
+            // data does not include it. Unset so that the two types are
+            // consistent. Places that need the commentID should be using
+            // NDB_BVL_Instrument->getCommentID()
+            unset($defaults['CommentID']);
 
-            $this->instanceData = $defaults ?? [];
+            $this->instanceData = $defaults ?? $this->defaultInstanceData();
         }
         return $this->instanceData;
     }
@@ -2161,6 +2205,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $prepBindings[]      = ":cid$i";
             $prepValues["cid$i"] = $commentID;
         }
+        if ($i === 0) {
+            return [];
+        }
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
@@ -2176,7 +2223,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst->instanceData = json_decode(
                         $row['Data'],
                         true,
-                    ) ?? [];
+                    ) ?? $this->defaultInstanceData();
 
                     return $newinst;
                 },

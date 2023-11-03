@@ -22,6 +22,18 @@ namespace LORIS\api_docs;
 class Module extends \Module
 {
     /**
+     * Determine whether the user has permission to view this page
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool whether the user has access
+     */
+    public function hasAccess(\User $user): bool
+    {
+        return parent::hasAccess($user) && $user->hasPermission('api_docs');
+    }
+
+    /**
      * Return the long name of this module. The long name is intended
      * to be the friendly, human-readable name and can not be automatically
      * derived. It may contain spaces, punctuation, or capitalization. The

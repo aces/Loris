@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Markdown from 'jsx/Markdown';
 
 /**
  * React component used to display a button and a collapsible list

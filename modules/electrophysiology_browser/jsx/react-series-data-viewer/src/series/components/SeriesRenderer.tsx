@@ -2,27 +2,34 @@ import React, {
   useCallback,
   useEffect,
   useState,
+  useRef,
   FunctionComponent,
+  MutableRefObject,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
+import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
-  MAX_CHANNELS,
+  DEFAULT_MAX_CHANNELS,
+  CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
+  DEFAULT_TIME_INTERVAL,
+  STATIC_SERIES_RANGE,
+  DEFAULT_VIEWER_HEIGHT,
+  MIN_EPOCH_WIDTH,
 } from '../../vector';
 import ResponsiveViewer from './ResponsiveViewer';
 import Axis from './Axis';
 import LineChunk from './LineChunk';
 import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
-import {setCursor} from '../store/state/cursor';
 import {setRightPanel} from '../store/state/rightPanel';
-import {setFilteredEpochs} from '../store/state/dataset';
+import {setFilteredEpochs, setDatasetMetadata} from '../store/state/dataset';
 import {setOffsetIndex} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
@@ -42,6 +49,7 @@ import {
 import {
   setViewerWidth,
   setViewerHeight,
+  setInterval,
 } from '../store/state/bounds';
 import {
   continueDragSelection,
@@ -57,11 +65,16 @@ import {
   AnnotationMetadata,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
+import {setCursorInteraction} from '../store/logic/cursorInteraction';
+import {setHoveredChannels} from '../store/state/cursor';
+import {getEpochsInRange} from '../store/logic/filterEpochs';
 
 type CProps = {
+  ref: MutableRefObject<any>,
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
+  domain: number,
   amplitudeScale: number,
   rightPanel: RightPanel,
   timeSelection?: [number, number],
@@ -82,13 +95,17 @@ type CProps = {
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
   setFilteredEpochs: (_: number[]) => void,
+  setDatasetMetadata: (_: { limit: number }) => void,
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
   limit: number,
+  setInterval: (_: [number, number]) => void,
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
   annotationMetadata: AnnotationMetadata,
+  hoveredChannels: number[],
+  setHoveredChannels: (_: number[]) => void,
 };
 
 /**
@@ -97,8 +114,9 @@ type CProps = {
  * @param root0.viewerHeight
  * @param root0.viewerWidth
  * @param root0.interval
+ * @param root0.setInterval
+ * @param root0.domain
  * @param root0.amplitudeScale
- * @param root0.cursor
  * @param root0.rightPanel
  * @param root0.timeSelection
  * @param root0.setCursor
@@ -117,6 +135,8 @@ type CProps = {
  * @param root0.setHighPassFilter
  * @param root0.setViewerWidth
  * @param root0.setViewerHeight
+ * @param root0.setFilteredEpochs
+ * @param root0.setDatasetMetadata
  * @param root0.dragStart
  * @param root0.dragContinue
  * @param root0.dragEnd
@@ -124,11 +144,15 @@ type CProps = {
  * @param root0.setCurrentAnnotation
  * @param root0.physioFileID
  * @param root0.annotationMetadata
+ * @param root0.hoveredChannels
+ * @param root0.setHoveredChannels
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
   viewerWidth,
   interval,
+  setInterval,
+  domain,
   amplitudeScale,
   rightPanel,
   timeSelection,
@@ -148,6 +172,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setHighPassFilter,
   setViewerWidth,
   setViewerHeight,
+  setFilteredEpochs,
+  setDatasetMetadata,
   dragStart,
   dragContinue,
   dragEnd,
@@ -155,8 +181,187 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
+  hoveredChannels,
+  setHoveredChannels,
 }) => {
-  if (channels.length === 0) return null;
+
+  const intervalChange = Math.pow(
+    10,
+    Math.max(
+      Math.floor(Math.log10(interval[1] - interval[0])) - 1,
+      -1
+    )
+  ); // Scale to interval size
+
+  /**
+   *
+   */
+  const zoomIn = () => {
+    const currentInterval = interval[1] - interval[0];
+    let zoomInterval = intervalChange;
+
+    if (currentInterval < 2 * intervalChange) {
+      zoomInterval = 0;
+    } else if (currentInterval === 2 * intervalChange) {
+      zoomInterval /= 2;
+    }
+
+    setInterval([interval[0] + zoomInterval, interval[1] - zoomInterval]);
+  };
+
+  /**
+   *
+   */
+  const zoomOut = () => {
+    setInterval([interval[0] - intervalChange, interval[1] + intervalChange]);
+  };
+
+  /**
+   *
+   */
+  const zoomReset = () => {
+    const defaultInterval = DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0];
+    const currentMidpoint = (interval[0] + interval[1]) / 2;
+    let lowerBound = currentMidpoint - defaultInterval / 2;
+    let upperBound = currentMidpoint + defaultInterval / 2;
+
+    if (lowerBound < domain[0]) {
+      const difference = domain[0] - lowerBound;
+      lowerBound = domain[0];
+      upperBound = upperBound + difference;
+    } else if (upperBound > domain[1]) {
+      const difference = upperBound - domain[1];
+      lowerBound = lowerBound - difference;
+      upperBound = domain[1];
+    }
+
+    setInterval([
+      Math.max(lowerBound, domain[0]),
+      Math.min(upperBound, domain[1]),
+    ]);
+  };
+
+  const selectionCanBeZoomedTo = timeSelection &&
+    Math.abs(timeSelection[1] - timeSelection[0]) >= 0.1;
+
+  /**
+   *
+   */
+  const zoomToSelection = () => {
+    if (selectionCanBeZoomedTo) {
+      setInterval([
+        Math.min(timeSelection[0], timeSelection[1]),
+        Math.max(timeSelection[0], timeSelection[1]),
+      ]);
+    }
+  };
+
+
+  const viewerRef = useRef(null);
+  const cursorRef = useRef(null);
+
+  // Memoized to singal which vars are to be read from
+  const memoizedCallback = useCallback(null, [
+    offsetIndex, interval, limit, timeSelection, amplitudeScale,
+  ]);
+
+  useEffect(() => { // Keypress handler
+    /**
+     *
+     * @param e
+     */
+    const keybindHandler = (e) => {
+      if (cursorRef.current) { // Cursor is on page / focus
+        if ([
+          'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+        ].indexOf(e.code) > -1) {
+          e.preventDefault(); // Make sure arrows don't scroll
+
+          const intervalSize = interval[1] - interval[0];
+          switch (e.code) {
+            case 'ArrowUp':
+              setOffsetIndex(offsetIndex - limit);
+              break;
+            case 'ArrowDown':
+              setOffsetIndex(offsetIndex + limit);
+              break;
+            case 'ArrowRight':
+              setInterval([
+                Math.min(
+                  Math.ceil(domain[1]) - intervalSize,
+                  interval[0] + intervalSize
+                ),
+                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize),
+              ]);
+              break;
+            case 'ArrowLeft':
+              setInterval([
+                Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
+                Math.max(
+                  Math.floor(domain[0]) + intervalSize,
+                  interval[1] - intervalSize
+                ),
+              ]);
+              break;
+            default:
+              console.log('Keyboard event handler error.');
+              break;
+          }
+        }
+
+        if (e.shiftKey) {
+          switch (e.code) {
+            case 'KeyV':
+              toggleCursor();
+              break;
+            case 'KeyB':
+              toggleStackedView();
+              break;
+            case 'KeyS':
+              if (stackedView) {
+                toggleSingleMode();
+              }
+              break;
+          }
+        }
+      }
+
+      // Generic keybinds that don't require focus
+      if (e.shiftKey) {
+        switch (e.code) {
+          case 'KeyC':
+            setRightPanel(null);
+            break;
+          case 'KeyA':
+            setRightPanel('annotationForm');
+            break;
+          case 'KeyZ':
+            zoomToSelection();
+            break;
+          case 'KeyX':
+            zoomReset();
+            break;
+          case 'Minus':
+            zoomOut();
+            break;
+          case 'Equal': // This key combination is '+'
+            zoomIn();
+            break;
+          case 'KeyN': // Lower amplitude scale
+            setAmplitudesScale(1.1);
+            break;
+          case 'KeyM': // Increase amplitude scale
+            setAmplitudesScale(0.9);
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', keybindHandler);
+    return function cleanUp() { // Prevent multiple listeners
+      window.removeEventListener('keydown', keybindHandler);
+    };
+  }, [memoizedCallback]);
 
   useEffect(() => {
     setViewerHeight(viewerHeight);
@@ -168,6 +373,64 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
   }, [viewerWidth]);
 
+  const prevHoveredChannels = useRef([]);
+  const defaultLineColor = '#999';
+
+  /**
+   *
+   * @param channelIndex
+   * @param colored
+   */
+  const setLineColor = (channelIndex: number, colored: boolean) => {
+    const classString = `.visx-linepath.channel-${channelIndex}`;
+    document.querySelectorAll(classString).forEach((line) => {
+      line.setAttribute(
+        'stroke',
+        colored || stackedView
+          ? colorOrder(channelIndex.toString()).toString()
+          : defaultLineColor
+      );
+
+      line.setAttribute(
+        'stroke-width',
+        colored && (!singleMode || cursorRef.current)
+          ? '2'
+          : '1'
+      );
+    });
+  };
+
+  useEffect(() => {
+    hoveredChannels.forEach((channelIndex) => {
+      if (prevHoveredChannels.current.includes(channelIndex)) {
+        return;
+      }
+      setLineColor(channelIndex, true);
+    });
+
+    prevHoveredChannels.current.forEach((prevChannelIndex) => {
+      if (!hoveredChannels.includes(prevChannelIndex)) {
+        setLineColor(prevChannelIndex, false);
+      }
+    });
+
+    prevHoveredChannels.current = hoveredChannels;
+  }, [hoveredChannels]);
+
+  const [
+    numDisplayedChannels,
+    setNumDisplayedChannels,
+  ] = useState<number>(DEFAULT_MAX_CHANNELS);
+  const [cursorEnabled, setCursorEnabled] = useState(false);
+  const toggleCursor = () => setCursorEnabled((value) => !value);
+  const [DCOffsetView, setDCOffsetView] = useState(true);
+  const toggleDCOffsetView = () => setDCOffsetView((value) => !value);
+  const [stackedView, setStackedView] = useState(false);
+  const toggleStackedView = () => setStackedView((value) => !value);
+  const [singleMode, setSingleMode] = useState(false);
+  const toggleSingleMode = () => setSingleMode((value) => !value);
+  const [showOverflow, setShowOverflow] = useState(false);
+  const toggleShowOverflow = () => setShowOverflow((value) => !value);
   const [highPass, setHighPass] = useState('none');
   const [lowPass, setLowPass] = useState('none');
   const [refNode, setRefNode] = useState<HTMLDivElement>(null);
@@ -208,6 +471,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   ];
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+  const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
   /**
    *
@@ -221,13 +485,19 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       <>
         <Group top={-viewerHeight/2} left={-viewerWidth/2}>
           <Axis
+            top={0.5}
             domain={interval}
             range={[0, viewerWidth]}
             orientation='bottom'
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
-          <Axis domain={interval} range={[0, viewerWidth]} orientation='top' />
+          <Axis
+            top={-0.5}
+            domain={interval}
+            range={[0, viewerWidth]}
+            orientation='top'
+          />
         </Group>
       </>
     );
@@ -237,11 +507,22 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    *
    */
   const EpochsLayer = () => {
+    const epochType = rightPanel === 'eventList'
+      ? 'Event'
+        : rightPanel === 'annotationList'
+          ? 'Annotation'
+          : null
+    ;
+    const visibleEpochs = getEpochsInRange(epochs, interval, epochType);
+    const minEpochWidth = (interval[1] - interval[0]) *
+      MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
+
     return (
       <Group>
-        {filteredEpochs.length < MAX_RENDERED_EPOCHS &&
-          filteredEpochs.map((index) => {
-            return (
+        {
+         visibleEpochs.length < MAX_RENDERED_EPOCHS &&
+          visibleEpochs.map((index) => {
+            return filteredEpochs.includes(index) && (
               <Epoch
                 {...epochs[index]}
                 parentHeight={viewerHeight}
@@ -251,7 +532,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 }
                 key={`${index}`}
                 scales={scales}
-                opacity={0.7}
+                opacity={0.8}
+                minWidth={minEpochWidth}
               />
             );
           })
@@ -271,7 +553,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            color={'#d8ffcc'}
+            color={'#97b68c'}
+            minWidth={minEpochWidth}
           />
         }
       </Group>
@@ -285,13 +568,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    * @param root0.viewerHeight
    */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
-    const axisHeight = viewerHeight / MAX_CHANNELS;
+    const axisHeight = viewerHeight / numDisplayedChannels;
     return (
       <Group top={-viewerHeight/2} left={-viewerWidth/2}>
         <line y1="0" y2={viewerHeight} stroke="black" />
         {filteredChannels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
-          if (!seriesRange) return null;
+          if (!seriesRange || !showAxisScaleLines) return null;
           return (
             <Axis
               key={`${channel.index}`}
@@ -318,6 +601,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       setViewerWidth(viewerWidth);
     }, [viewerWidth]);
 
+    const channelList: Channel[] = (
+      !cursorRef.current && stackedView &&
+      singleMode && hoveredChannels.length > 0
+    )
+      ? filteredChannels.filter(
+        (channel) => hoveredChannels.includes(channel.index)
+      )
+      : filteredChannels;
+
     return (
       <>
         <clipPath
@@ -326,13 +618,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         >
           <rect
             x={-viewerWidth / 2}
-            y={-viewerHeight / (2 * MAX_CHANNELS)}
+            y={-viewerHeight / (2 * numDisplayedChannels)}
             width={viewerWidth}
-            height={viewerHeight / MAX_CHANNELS}
+            height={viewerHeight / numDisplayedChannels}
           />
         </clipPath>
 
-        {filteredChannels.map((channel, i) => {
+        {channelList.map((channel, i) => {
           if (!channelMetadata[channel.index]) {
             return null;
           }
@@ -340,7 +632,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           vec2.add(
             subTopLeft,
             topLeft,
-            vec2.fromValues(0, (i * diagonal[1]) / MAX_CHANNELS)
+            vec2.fromValues(
+              0,
+              stackedView && !singleMode
+                ? (numDisplayedChannels - 2) *
+                  diagonal[1] / (2 * numDisplayedChannels)
+                : (i * diagonal[1]) / numDisplayedChannels
+            )
           );
 
           const subBottomRight = vec2.create();
@@ -349,7 +647,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             topLeft,
             vec2.fromValues(
               diagonal[0],
-              ((i + 1) * diagonal[1]) / MAX_CHANNELS
+              stackedView && !singleMode
+                ? (numDisplayedChannels + 2) *
+                  diagonal[1] / (2 * numDisplayedChannels)
+                : ((i + 1) * diagonal[1]) / numDisplayedChannels
             )
           );
 
@@ -359,35 +660,100 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           const axisEnd = vec2.create();
           vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
-          const seriesRange = channelMetadata[channel.index].seriesRange;
-          const scales: [
-            ScaleLinear<number, number, never>,
-            ScaleLinear<number, number, never>
-          ] = [
-            scaleLinear()
-              .domain(interval)
-              .range([subTopLeft[0], subBottomRight[0]]),
-            scaleLinear()
-              .domain(seriesRange)
-              .range([subTopLeft[1], subBottomRight[1]]),
-          ];
-
           return (
-            channel.traces.map((trace, j) => (
-              trace.chunks.map((chunk, k) => (
-                <LineChunk
-                  channelIndex={channel.index}
-                  traceIndex={j}
-                  chunkIndex={k}
-                  key={`${k}-${trace.chunks.length}`}
-                  chunk={chunk}
-                  seriesRange={seriesRange}
-                  amplitudeScale={amplitudeScale}
-                  scales={scales}
-                  physioFileID={physioFileID}
-                />
-              ))
-            ))
+            channel.traces.map((trace, j) => {
+              const numChunks = trace.chunks.filter(
+                (chunk) => chunk.values.length > 0
+              ).length;
+
+              const valuesInView = trace.chunks.map((chunk) => {
+                let includedIndices = [0, chunk.values.length];
+                if (chunk.interval[0] < interval[0]) {
+                  const startIndex = chunk.values.length *
+                    (interval[0] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [startIndex, includedIndices[1]];
+                }
+                if (chunk.interval[1] > interval[1]) {
+                  const endIndex = chunk.values.length *
+                    (interval[1] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [includedIndices[0], endIndex];
+                }
+                return chunk.values.slice(
+                  includedIndices[0], includedIndices[1]
+                );
+              }).flat();
+
+              if (valuesInView.length === 0) {
+                return;
+              }
+
+              const seriesRange: [number, number] = STATIC_SERIES_RANGE;
+
+              const scales: [
+                ScaleLinear<number, number, never>,
+                ScaleLinear<number, number, never>
+              ] = [
+                scaleLinear()
+                  .domain(interval)
+                  .range([subTopLeft[0], subBottomRight[0]]),
+                scaleLinear()
+                  .domain(seriesRange)
+                  .range(
+                    stackedView
+                      ? [
+                        -viewerHeight / (2 * numDisplayedChannels),
+                        viewerHeight / (2 * numDisplayedChannels),
+                      ]
+                      : [subTopLeft[1], subBottomRight[1]]
+                  ),
+              ];
+
+              const scaleByAmplitude = scaleLinear()
+                .domain(seriesRange.map((x) => x * amplitudeScale))
+                .range([-0.5, 0.5]);
+
+              /**
+               *
+               * @param values
+               */
+              const getScaledMean = (values) => {
+                let numValues = values.length;
+                return values.reduce((a, b) => {
+                    if (isNaN(b)) {
+                      numValues--;
+                      return a;
+                    }
+                  return a + scaleByAmplitude(b);
+                }, 0) / numValues;
+              };
+
+              const DCOffset = DCOffsetView
+                ? getScaledMean(valuesInView)
+                : 0;
+
+              return (
+                trace.chunks.map((chunk, k) => (
+                    <LineChunk
+                      channelIndex={channel.index}
+                      traceIndex={j}
+                      chunkIndex={k}
+                      key={`${k}-${trace.chunks.length}`}
+                      chunk={chunk}
+                      seriesRange={seriesRange}
+                      amplitudeScale={amplitudeScale}
+                      scales={scales}
+                      physioFileID={physioFileID}
+                      isHovered={hoveredChannels.includes(channel.index)}
+                      isStacked={stackedView}
+                      withDCOffset={DCOffset}
+                      numChannels={numDisplayedChannels}
+                      numChunks={numChunks}
+                    />
+                ))
+              );
+            })
           );
         })}
       </>
@@ -402,7 +768,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
-    const x = Math.min(1, Math.max(0, (v.pageX - bounds.left)/bounds.width));
+    const x = Math.min(
+      1,
+      Math.max(0, (v.pageX - bounds.left)/bounds.width)
+    );
     return (dragContinue)(x);
   };
 
@@ -418,17 +787,123 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (dragEnd)(x);
   };
 
+  /**
+   *
+   * @param e
+   */
+  const handleChannelChange = (e) => {
+    const numChannels = parseInt(e.target.value, 10);
+    setNumDisplayedChannels(numChannels); // This one is the frontend controller
+    setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
+    setOffsetIndex(offsetIndex); // Will include new channels on limit increase
+    setViewerHeight(
+      numChannels > 4
+        ? DEFAULT_VIEWER_HEIGHT
+        : DEFAULT_VIEWER_HEIGHT * 0.8
+    );
+  };
+
+  const updateCursorCallback = useCallback((cursor: [number, number]) => {
+    setCursor({
+      cursorPosition: [cursor[0], cursor[1]],
+      viewerRef: viewerRef,
+    });
+  }, []);
+
+  /**
+   *
+   * @param v
+   */
+  const updateTimeSelectionCallback = useCallback((v: Vector2) => {
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    R.compose(dragStart, R.nth(0))(v);
+  }, [bounds]);
+
+  /**
+   *
+   * @param channelIndex
+   */
+  const onChannelHover = (channelIndex : number) => {
+    setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
+  };
+
   return (
     <>
       {channels.length > 0 ? (
         <div className='row'>
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
+            <div
+              className='col-xs-1'
+              style={{
+                textAlign: 'center',
+                position: 'absolute',
+                marginTop: '20px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: rightPanel ? 'unset' : 'center',
+                }}
+              >
+                <h5 className='col-xs-title btn-zoom'>
+                  Zoom
+                </h5>
+                <div>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomReset}
+                    disabled={
+                      (interval[1] - interval[0]) ===
+                      (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
+                    }
+                    value='Reset'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomIn}
+                    disabled={(interval[1] - interval[0]) <= 0.1}
+                    value='+'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomOut}
+                    disabled={
+                      interval[0] === domain[0] &&
+                      interval[1] === domain[1]
+                    }
+                    value='-'
+                  />
+                  <br/>
+                  <input
+                    type='button'
+                    className='btn btn-primary btn-xs btn-zoom'
+                    onClick={zoomToSelection}
+                    disabled={!selectionCanBeZoomedTo}
+                    value='Region'
+                  />
+                </div>
+              </div>
+            </div>
             <IntervalSelect />
             <div className='row'>
-              <div className='col-xs-offset-1 col-xs-11'>
+              <div
+                className='col-xs-offset-1 col-xs-11'
+                style={{zIndex: '1'}}
+              >
                 <div
                   className='row'
-                  style={{paddingTop: '15px', paddingBottom: '10px'}}
+                  style={{
+                    paddingTop: '15px',
+                    paddingBottom: '20px',
+                  }}
                 >
                   <div
                     className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
@@ -440,7 +915,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     <div className='btn-group'>
                       <input
                         type='button'
-                        style={{width: '25px'}}
+                        style={{width: '20px'}}
                         className='btn btn-primary btn-xs'
                         onClick={() => setAmplitudesScale(1.1)}
                         value='-'
@@ -453,7 +928,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       />
                       <input
                         type='button'
-                        style={{width: '25px'}}
+                        style={{width: '20px'}}
                         className='btn btn-primary btn-xs'
                         onClick={() => setAmplitudesScale(0.9)}
                         value='+'
@@ -522,29 +997,53 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         )}
                       </ul>
                     </div>
+                      <input
+                        type='button'
+                        className='btn btn-primary btn-xs'
+                        style={{
+                          width: '100px',
+                          marginRight: '10px',
+                        }}
+                        onClick={toggleShowOverflow}
+                        value={`${showOverflow ? 'Hide' : 'Show'} Overflow`}
+                      />
                   </div>
 
                   <div
                     className={
-                      (rightPanel ? '' : 'pull-right-lg ')
+                      (rightPanel ? '' : 'pull-right-lg col-lg-5')
                       + 'pagination-nav'
                     }
                     style={{
                       padding: '5px 15px',
                     }}
                   >
-                    <small style={{marginRight: '10px'}}>
-                      Showing channels{' '}
+                    <small style={{marginRight: '3px',}}>
+                      Displaying:&nbsp;
+                      <select
+                        value={numDisplayedChannels}
+                        onChange={handleChannelChange}
+                      >
+                        {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
+                          return <option
+                            key={`${numChannels}`}
+                            value={numChannels}
+                          >
+                            {numChannels} channels
+                          </option>;
+                        })};
+                      </select>
+                      &nbsp;Showing:&nbsp;
                       <input
                         type='number'
-                        style={{width: '55px'}}
+                        style={{width: '45px'}}
                         value={offsetIndex}
                         onChange={(e) => {
                           const value = parseInt(e.target.value);
                           !isNaN(value) && setOffsetIndex(value);
                         }}
                       />
-                      {' '}
+                      &nbsp;
                       to {hardLimit} of {channelMetadata.length}
                     </small>
                     <div
@@ -588,16 +1087,30 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   flexDirection: 'column',
                   alignItems: 'center',
                   height: viewerHeight,
+                  paddingRight: '0px',
                 }}
-              >
-                {filteredChannels.map((channel) => (
+              >{/* Below slice changes labels to be subset of channel choice */}
+                {filteredChannels
+                  .slice(0, numDisplayedChannels)
+                  .map((channel) => (
                   <div
                     key={channel.index}
                     style={{
                       display: 'flex',
-                      height: 1 / MAX_CHANNELS * 100 + '%',
+                      height: 1 / numDisplayedChannels * 100 + '%',
                       alignItems: 'center',
+                      cursor: 'default',
+                      color: `${stackedView ||
+                        hoveredChannels.includes(channel.index)
+                        ? colorOrder(channel.index.toString())
+                        : '#333'}`,
+                      fontWeight: `${stackedView &&
+                        hoveredChannels.includes(channel.index)
+                        ? 'bold'
+                        : 'normal'}`,
                     }}
+                    onMouseEnter={() => onChannelHover(channel.index)}
+                    onMouseLeave={() => onChannelHover(-1)}
                   >
                     {channelMetadata[channel.index] &&
                     channelMetadata[channel.index].name}
@@ -606,22 +1119,28 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               </div>
               <div
                 className='col-xs-11'
+                style={{
+                  paddingLeft: '5px',
+                }}
                 onMouseLeave={() => setCursor(null)}
               >
                 <div style={{position: 'relative'}}>
+                  {showAxisScaleLines
+                    ? <div
+                      style={{
+                        fontSize: 10,
+                        left: '-25px',
+                        position: 'absolute',
+                      }}
+                    >
+                      ({SIGNAL_UNIT})
+                    </div>
+                    : null
+                  }
                   <div
                     style={{
                       fontSize: 10,
-                      left: '-25px',
-                      position: 'absolute',
-                    }}
-                  >
-                    ({SIGNAL_UNIT})
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      bottom: '-20px',
+                      bottom: '-35px',
                       right: 0,
                       position: 'absolute',
                     }}
@@ -629,18 +1148,21 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     Time (s)
                   </div>
                   <SeriesCursor
+                    cursorRef={cursorRef}
                     channels={channels}
                     interval={interval}
+                    enabled={cursorEnabled}
+                    hoveredChannels={hoveredChannels}
+                    channelMetadata={channelMetadata}
+                    showEvents={rightPanel === 'eventList'}
                   />
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
+                      ref={viewerRef}
                       // @ts-ignore
-                      mouseMove={useCallback(R.compose(setCursor, R.nth(0)), [])}
-                      mouseDown={useCallback((v: Vector2) => {
-                        document.addEventListener('mousemove', onMouseMove);
-                        document.addEventListener('mouseup', onMouseUp);
-                        R.compose(dragStart, R.nth(0))(v);
-                      }, [bounds])}
+                      mouseMove={updateCursorCallback}
+                      mouseDown={updateTimeSelectionCallback}
+                      showOverflow={showOverflow}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -667,8 +1189,49 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 marginBottom: '15px',
               }}
             >
+              <div
+                className='col-xs-1'
+                style={{
+                  textAlign: 'center',
+                  position: 'absolute',
+                  bottom: '0',
+                }}
+              >
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                  }}
+                  onClick={toggleDCOffsetView}
+                  value={`${DCOffsetView ? 'No' : 'DC'} Offset`}
+                />
+                <br/>
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                  }}
+                  onClick={toggleStackedView}
+                  value={stackedView ? 'Spread' : 'Stack'}
+                />
+                <br/>
+                <input
+                  type='button'
+                  className='btn btn-primary btn-xs'
+                  style={{
+                    width: '65px',
+                    marginTop: '3px',
+                    visibility: stackedView ? 'visible' : 'hidden',
+                  }}
+                  onClick={toggleSingleMode}
+                  value={`${singleMode ? 'Standard' : 'Isolate'}`}
+                />
+              </div>
               <div className='col-xs-offset-1 col-xs-11'>
-
                 {
                   [...Array(epochs.length).keys()].filter((i) =>
                     epochs[i].type === 'Event'
@@ -729,37 +1292,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }
                   </button>
                 }
-
-                <div
-                  className='pull-right col-xs-4'
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    paddingRight: 0,
-                  }}
-                >
-                  {[...Array(epochs.length).keys()].filter((i) =>
-                      epochs[i].onset + epochs[i].duration > interval[0]
-                      && epochs[i].onset < interval[1]
-                      && (
-                        (epochs[i].type === 'Event'
-                         && rightPanel === 'eventList')
-                        ||
-                        (epochs[i].type === 'Annotation'
-                         && rightPanel === 'annotationList')
-                      )
-                    ).length >= MAX_RENDERED_EPOCHS &&
-                    <div
-                      style={{
-                        padding: '5px',
-                        background: '#eee',
-                        alignSelf: 'flex-end',
-                      }}
-                    >
-                      Too many events to display for the timeline range.
-                    </div>
-                  }
-                </div>
               </div>
             </div>
           </div>
@@ -794,7 +1326,7 @@ SeriesRenderer.defaultProps = {
   hidden: [],
   channelMetadata: [],
   offsetIndex: 1,
-  limit: MAX_CHANNELS,
+  limit: DEFAULT_MAX_CHANNELS,
 };
 
 export default connect(
@@ -812,16 +1344,23 @@ export default connect(
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
+    limit: state.dataset.limit,
+    domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
+    hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
     setOffsetIndex: R.compose(
       dispatch,
       setOffsetIndex
     ),
+    setInterval: R.compose(
+      dispatch,
+      setInterval
+    ),
     setCursor: R.compose(
       dispatch,
-      setCursor
+      setCursorInteraction
     ),
     setRightPanel: R.compose(
       dispatch,
@@ -855,7 +1394,11 @@ export default connect(
       dispatch,
       setFilteredEpochs
     ),
-   setCurrentAnnotation: R.compose(
+    setDatasetMetadata: R.compose(
+      dispatch,
+      setDatasetMetadata
+    ),
+    setCurrentAnnotation: R.compose(
       dispatch,
       setCurrentAnnotation
     ),
@@ -870,6 +1413,10 @@ export default connect(
     dragEnd: R.compose(
       dispatch,
       endDragSelection
+    ),
+    setHoveredChannels: R.compose(
+      dispatch,
+      setHoveredChannels
     ),
   })
 )(SeriesRenderer);

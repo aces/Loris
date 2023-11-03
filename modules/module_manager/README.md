@@ -22,8 +22,8 @@ The module manager does not install new modules.
 
 ## Permissions
 
-The `module_manager_view` permission allows a user to
-view the list of modules, and the `module_manager_edit`
+The `module_manager_view` (Module Manager: View Installed Modules) permission allows a user to
+view the list of modules, and the `module_manager_edit` (Module Manager: Edit Installed Modules)
 allows the user to modify the state of installed modules.
 
 ## Configurations

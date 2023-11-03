@@ -436,8 +436,9 @@ DocIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-document">
       <DocIndex
         dataURL={`${loris.BaseURL}/document_repository/?format=json`}

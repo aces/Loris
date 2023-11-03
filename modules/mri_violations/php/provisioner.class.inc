@@ -55,7 +55,8 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        SeriesUID,
                        md5(
                          concat_WS(
-                           ':',minc_location,PatientName,SeriesUID,time_run
+                           ':',minc_location,PatientName,SeriesUID,time_run,
+                           PhaseEncodingDirection,TE_range,EchoNumber
                          )
                        ) AS hash,
                        mpvs.ID AS join_id,
@@ -87,9 +88,12 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        'Protocol Violation',
                        SeriesUID,
                        md5(
-                         concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                         concat_WS(
+                           ':', MincFile, PatientName, SeriesUID, TimeRun,
+                           PhaseEncodingDirection,EchoTime,EchoNumber
+                         )
                        ) AS hash,
-                       mrl.LogID AS join_id,
+                       MIN(mrl.LogID) AS join_id,
                        p.CenterID AS Site,
                        COALESCE(
                          violations_resolved.Resolved, 'unresolved'
@@ -108,6 +112,9 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                   mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
+                GROUP BY PatientName, TimeRun, Project, Cohort, MincFile,
+                  Scan_type, SeriesUID, Site, hash, Resolved, TarchiveID,
+                  CandID, PSCID, PhaseEncodingDirection, EchoTime, EchoNumber
               UNION
                   SELECT PatientName,
                          TimeRun,
@@ -118,7 +125,10 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                          Reason,
                          SeriesUID,
                          md5(
-                           concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                           concat_WS(
+                             ':', MincFile, PatientName, SeriesUID, TimeRun,
+                             PhaseEncodingDirection,EchoTime,EchoNumber
+                           )
                          ) AS hash,
                          MRICandidateErrors.ID AS join_id,
                          null,

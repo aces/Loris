@@ -52,7 +52,7 @@ class Instrument_0_0_4_Dev
         $instrumentname = $this->_instrument->testName;
         $instrumentdata = $this->_instrument->getInstanceData();
 
-        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
+        $isDDE = strpos($this->_instrument->getCommentID() ?? '', 'DDE_') === 0;
 
         $meta = [
             'Candidate'  => $this->_timepoint->getCandID(),

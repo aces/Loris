@@ -426,15 +426,19 @@ class FieldSelector extends Component {
     if (this.state.categoryFields[category]) {
     } else {
       // Retrieve the data dictionary
-      $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
-        {category: category}, (data) => {
+      fetch(loris.BaseURL
+        + '/AjaxHelper.php'
+        + '?Module=dqt'
+        + '&script=datadictionary.php'
+        + '&category=' + category)
+      .then((resp) => resp.json())
+      .then( (data) => {
           let cf = this.state.categoryFields;
           cf[category] = data;
           this.setState({
             categoryFields: cf,
           });
-        }, 'json');
+      });
     }
     this.setState({
       selectedCategory: category,

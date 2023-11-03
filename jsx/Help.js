@@ -1,5 +1,5 @@
 import Markdown from 'jsx/Markdown';
-import React, {useState, useEffect, createFactory} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -150,6 +150,6 @@ Help.propTypes = {
   baseURL: PropTypes.string.isRequired,
 };
 
-window.RHelp = createFactory(Help);
+window.RHelp = Help;
 
 export default Help;

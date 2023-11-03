@@ -18,6 +18,10 @@ class CouchDBDemographicsImporter
     // this is just in an instance variable to make
     // the code a little more readable.
     var $Dictionary = [
+        'Date_registered'  => [
+            'Description' => 'Date of Registration',
+            'Type'        => 'date'
+        ],
         'DoB'              => [
             'Description' => 'Date of Birth',
             'Type'        => 'date'
@@ -165,7 +169,8 @@ class CouchDBDemographicsImporter
     {
         $config = \NDB_Config::singleton();
 
-        $fieldsInQuery = "SELECT c.DoB,
+        $fieldsInQuery = "SELECT c.Date_registered,
+                                c.DoB,
                                 c.DoD,
                                 c.CandID,
                                 c.PSCID,

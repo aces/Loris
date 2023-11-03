@@ -410,7 +410,7 @@ The JSON object is of the form:
         "CandID" : CandID,
         "Visit"  : VisitLabel,
         "Site"   : SiteName,
-        "Battery": "NameOfCohort",
+        "Cohort": "NameOfCohort",
         "Project" : ProjectName
     },
     "Stages" : {

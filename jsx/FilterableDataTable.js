@@ -191,7 +191,7 @@ FilterableDataTable.propTypes = {
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,
-  getMappedCell: PropTypes.array,
+  getMappedCell: PropTypes.func,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
   children: PropTypes.node,

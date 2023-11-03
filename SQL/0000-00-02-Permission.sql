@@ -53,7 +53,7 @@ INSERT INTO `permissions` VALUES
     (1,'superuser','Superuser - supersedes all permissions',NULL,NULL),
     (2,'user_accounts','User Accounts - Own Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit'),
     (3,'user_accounts_multisite','User Accounts - All Sites',(SELECT ID FROM modules WHERE Name='user_accounts'),'View/Create/Edit'),
-    (4,'context_help','Help documentation',(SELECT ID FROM modules WHERE Name='help_editor'),'Edit'),
+    (4,'context_help','Help documentation',(SELECT ID FROM modules WHERE Name='help_editor'),'Edit','2'),
     (5,'bvl_feedback','Feedback Threads',(SELECT ID FROM modules WHERE Name='bvl_feedback'),'Create/Edit'),
     (6,'imaging_browser_qc','Status',(SELECT ID FROM modules WHERE Name='imaging_browser'),'Edit'),
     (7,'send_to_dcc','Send to DCC',(SELECT ID FROM modules WHERE Name='instrument_list'),NULL),
@@ -111,10 +111,11 @@ INSERT INTO `permissions` VALUES
     (59,'imaging_quality_control_view','Flagged Imaging Entries',(SELECT ID FROM modules WHERE Name='imaging_qc'),'View'),
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View'),
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View'),
-    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'), 'Create/Edit'),
-    (63,'roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
+    (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit'),
+    (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL),
+    (64,'roles_view','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View'),
     (65,'roles_edit','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'Edit/Upload/Delete'),
-    (64,'roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View');
+    (66,'roles_assign','Roles',(SELECT ID FROM modules WHERE Name='roles'), 'View');
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID

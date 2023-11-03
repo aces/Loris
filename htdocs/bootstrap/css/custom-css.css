@@ -912,3 +912,19 @@ legend {
     font-size: 14px;
     color: #064785;
 }
+
+@keyframes highlight {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: #FEF2CA;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlighted {
+    animation: highlight ease 3s;
+}

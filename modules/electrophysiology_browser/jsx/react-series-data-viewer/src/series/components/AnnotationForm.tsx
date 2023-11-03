@@ -29,6 +29,7 @@ type CProps = {
   toggleEpoch: (_: number) => void,
   updateActiveEpoch: (_: number) => void,
   interval: [number, number],
+  domain: [number, number],
 };
 
 /**
@@ -43,7 +44,12 @@ type CProps = {
  * @param root0.setCurrentAnnotation
  * @param root0.physioFileID
  * @param root0.annotationMetadata
+ * @param root0.toggleEpoch,
+ * @param root0.updateActiveEpoch,
  * @param root0.interval
+ * @param root0.domain
+ * @param root0.toggleEpoch
+ * @param root0.updateActiveEpoch
  */
 const AnnotationForm = ({
   timeSelection,
@@ -55,10 +61,18 @@ const AnnotationForm = ({
   setCurrentAnnotation,
   physioFileID,
   annotationMetadata,
+  toggleEpoch,
+  updateActiveEpoch,
   interval,
+  domain,
 }: CProps) => {
   const [startEvent = '', endEvent = ''] = timeSelection || [];
-  const [event, setEvent] = useState([startEvent, endEvent]);
+  const [event, setEvent] = useState<(number | string)[]>(
+    [
+      startEvent,
+      endEvent,
+    ]
+  );
   const [label, setLabel] = useState(
     currentAnnotation ?
     currentAnnotation.label :
@@ -97,13 +111,14 @@ const AnnotationForm = ({
    * @param val
    */
   const handleStartTimeChange = (id, val) => {
-    const value = parseInt(val);
+    const value = parseFloat(val);
     setEvent([value, event[1]]);
 
     if (validate([value, event[1]])) {
       let endTime = event[1];
+
       if (typeof endTime === 'string') {
-        endTime = parseInt(endTime);
+        endTime = parseFloat(endTime);
       }
       setTimeSelection(
         [
@@ -120,13 +135,14 @@ const AnnotationForm = ({
    * @param val
    */
   const handleEndTimeChange = (name, val) => {
-    const value = parseInt(val);
+    const value = parseFloat(val);
     setEvent([event[0], value]);
 
     if (validate([event[0], value])) {
       let startTime = event[0];
+
       if (typeof startTime === 'string') {
-        startTime = parseInt(startTime);
+        startTime = parseFloat(startTime);
       }
       setTimeSelection(
         [
@@ -203,10 +219,10 @@ const AnnotationForm = ({
     let startTime = event[0];
     let endTime = event[1];
     if (typeof startTime === 'string') {
-      startTime = parseInt(startTime);
+      startTime = parseFloat(startTime);
     }
     if (typeof endTime === 'string') {
-      endTime = parseInt(endTime);
+      endTime = parseFloat(endTime);
     }
     const duration = endTime - startTime;
 
@@ -399,20 +415,34 @@ const AnnotationForm = ({
           <NumericElement
             name="start-time"
             id="start-time"
-            min="0"
+            min={0}
+            max={Math.max(0, domain[1])}
             label="Start Time"
-            value={event[0]}
+            value={event
+              ? Math.min(
+                parseFloat(event[0] ? event[0].toString() : '0'),
+                parseFloat(event[1] ? event[1].toString() : '0')
+              ).toString()
+              : ''
+            }
             required={true}
             onUserInput={handleStartTimeChange}
           />
           <NumericElement
-              name="end-time"
-              id="end-time"
-              min="0"
-              label="End Time"
-              value={event[1]}
-              required={true}
-              onUserInput={handleEndTimeChange}
+            name="end-time"
+            id="end-time"
+            min={0}
+            max={Math.max(0, domain[1])}
+            label="End Time"
+            value={event
+              ? Math.max(
+                parseFloat(event[0] ? event[0].toString() : '0'),
+                parseFloat(event[1] ? event[1].toString() : '0')
+              ).toString()
+              : ''
+            }
+            required={true}
+            onUserInput={handleEndTimeChange}
           />
           <SelectElement
             name="label"
@@ -432,7 +462,7 @@ const AnnotationForm = ({
           />
           <button
             type="submit"
-            disabled={isSubmitted}
+            disabled={isSubmitted || !validate(event)}
             onClick={handleSubmit}
             className="btn btn-primary btn-xs"
           >
@@ -482,6 +512,7 @@ export default connect(
     filteredEpochs: state.dataset.filteredEpochs,
     currentAnnotation: state.currentAnnotation,
     interval: state.bounds.interval,
+    domain: state.bounds.domain,
   }),
   (dispatch: (any) => void) => ({
     setTimeSelection: R.compose(

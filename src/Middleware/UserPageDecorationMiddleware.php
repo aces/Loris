@@ -131,7 +131,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
-        $tpl_data['css'] = $this->BaseURL . '/main.css';
+        $tpl_data['css'] = 'main.css';
 
         $tpl_data['subtest'] = $request->getAttribute("pageclass")->page ?? null;
 
@@ -219,7 +219,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         $tpl_data['userPerms'] = $realPerms;
 
-        //Display the footer links, as specified in the config file
+        // Do not show menu item if module not active
+        $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
+        $tpl_data['userjson']       = json_encode(
+            [
+             'username' => $user->getUsername(),
+             'id'       => $user->getId(),
+            ]
+        );
+        // Display the footer links, as specified in the config file
         $links = $this->Config->getExternalLinks('FooterLink');
 
         $tpl_data['links'] = array();

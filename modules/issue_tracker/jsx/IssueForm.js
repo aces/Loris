@@ -4,7 +4,7 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-
+import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -153,6 +153,7 @@ class IssueForm extends Component {
                        baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
+                       whoami={this.state.issueData.whoami}
       />
     );
 
@@ -325,6 +326,7 @@ class IssueForm extends Component {
             name='othersWatching'
             label='Add others to watching?'
             emptyOption={true}
+            autoSelect={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
@@ -571,7 +573,6 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
   userHasPermission: PropTypes.bool,
 };
 

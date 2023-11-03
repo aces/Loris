@@ -25,7 +25,6 @@ const optimization = {
 
 const resolve = {
   alias: {
-    util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
@@ -258,7 +257,7 @@ const lorisModules = {
     'ConsentWidget',
   ],
   configuration: ['CohortRelations', 'configuration_helper'],
-  conflict_resolver: ['conflict_resolver'],
+  conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
@@ -292,6 +291,11 @@ const lorisModules = {
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
+  ],
   imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
@@ -315,9 +319,10 @@ const lorisModules = {
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
   statistics: ['WidgetIndex'],
-  instruments: ['CandidateInstrumentList'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
   roles: ['rolesIndex'],
 };
 for (const [key] of Object.entries(lorisModules)) {
@@ -334,7 +339,7 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
 
   for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
+    config.push(lorisModule(module, files));
   }
 }
 
