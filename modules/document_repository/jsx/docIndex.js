@@ -218,7 +218,7 @@ class DocIndex extends React.Component {
         function click() {
           swal.fire({
             title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
+            text: "You won't be able to revert this!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -231,14 +231,25 @@ class DocIndex extends React.Component {
                 method: 'DELETE',
                 cache: 'no-cache',
                 credentials: 'same-origin',
-              }).then((resp) => resp.json())
-                .then(() => {
-                  location.reload();
-                  swal.fire('delete Successful!', '', 'success');
+              })
+                .then((resp) => {
+                  if (resp.status === 403) {
+                    return resp.json().then((data) => {
+                      swal.fire('Access Denied', data.error, 'error').then(() => {
+                        location.reload();
+
+                      });
+                    });
+                  } else if (resp.status === 200) {
+                    // Deletion was successful
+                    location.reload();
+                    swal.fire('Delete Successful!', '', 'success');
+                  }
                 });
             }
           });
         }
+
 
         result = <td>
           <a style={{ cursor: 'pointer' }} onClick={click}>Delete</a>

@@ -75,10 +75,8 @@ class Files extends \NDB_Page
             return $this->editDocFile($request);
         case "DELETE":
             $id = basename($request->getUri()->getPath());
-            $this->deleteFile($id);
-            return (new \LORIS\Http\Response\JSON\OK(
-                ['message' => 'File deleted.']
-            ));
+            return $this->deleteFile($id);
+
         case "GET":
             if (isset($_GET['s3file'])) {
               return $this->downloadS3File($request);
@@ -172,9 +170,8 @@ class Files extends \NDB_Page
      *
      * @throws \DatabaseException
      *
-     * @return void
      */
-    function deleteFile($rid): void
+    function deleteFile($rid)
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
@@ -214,14 +211,24 @@ class Files extends \NDB_Page
             $s3ClientInstance = \S3ClientSingleton::getInstance();
             $config      = \NDB_Config::singleton();
             $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Document_Repository');
-            $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
-// todo return a warning message to sweet alert 
-
-
+            $delete_status = $s3ClientInstance->s3DeleteFile($bucketName, null, $dataDir);
+           if ($delete_status) {
+            return (new \LORIS\Http\Response\JSON\OK(
+                    ['message' => 'File deleted.']
+            ));
+           } else {
+                return (new \LORIS\Http\Response())
+                ->withStatus(403)
+                ->withHeader('Content-Type', 'text/json')
+                ->withBody(new \LORIS\Http\StringStream(json_encode(['error'=>"Access Denied by the AWS S3 Server. The record will be deleted"])));
+           }
         }
 
         if (file_exists($path)) {
             unlink($path);
+         return (new \LORIS\Http\Response\JSON\OK(
+                ['message' => 'File deleted.']
+            ));
         }
     }
     /**
@@ -590,7 +597,7 @@ class Files extends \NDB_Page
                         'newDocument' => 'Document Repository',
                         'documents'   => $addedFiles,
                     ];
-             //       $uploadNotifier->notify($msg_data);
+                    $uploadNotifier->notify($msg_data);
                 }
 
                 $uploadResponse  = '<div class="upload-response">';
