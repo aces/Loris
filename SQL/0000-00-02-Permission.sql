@@ -138,6 +138,31 @@ INSERT INTO `roles` VALUES
   (1,'blocked', 'Blocked', 'A blocked user has access to nothing.'),
   (2,'administrator', 'Administrator', 'An administrator has access to everything, no restrictions.');
 
+-- add role-permission rel table
+DROP TABLE IF EXISTS `role_permission_rel`;
+CREATE TABLE `role_permission_rel` (
+  `RoleID` int(10) unsigned NOT NULL default '0',
+  `permID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`RoleID`,`permID`),
+  CONSTRAINT `FK_role_permission_rel_2`
+  FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_role_permission_rel_1`
+  FOREIGN KEY (`RoleID`)
+    REFERENCES `roles` (`RoleID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+-- administrator role has all permissions.
+INSERT INTO `role_permission_rel`(`permID`,`RoleID`)
+  SELECT permID, (
+    SELECT RoleID FROM roles WHERE Code = 'administrator'
+  )
+  FROM permissions;
+
 -- permissions for each notification module
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 CREATE TABLE `notification_modules_perm_rel` (

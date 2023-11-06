@@ -27,11 +27,10 @@
             {$form.Code.html}
         </div>
         {if $form.errors.Code|default}
-            <div class="col-sm-offset-2">
-                <font class="form-error">{$form.errors.Code|default}</font>
-            </div>
-        {/if}
+        <div class="col-sm-offset-2">
+            <font class="form-error">{$form.errors.Code|default}</font>
         </div>
+        {/if}
     </div>
 
     {* Name *}
@@ -50,11 +49,10 @@
             {$form.Name.html}
         </div>
         {if $form.errors.Name|default}
-            <div class="col-sm-offset-2">
-                <font class="form-error">{$form.errors.Name|default}</font>
-            </div>
-        {/if}
+        <div class="col-sm-offset-2">
+            <font class="form-error">{$form.errors.Name|default}</font>
         </div>
+        {/if}
     </div>
 
     {* Description *}
@@ -73,10 +71,24 @@
             {$form.Description.html}
         </div>
         {if $form.errors.Description|default}
-            <div class="col-sm-offset-2">
-                <font class="form-error">{$form.errors.Description|default}</font>
-            </div>
+        <div class="col-sm-offset-2">
+            <font class="form-error">{$form.errors.Description|default}</font>
+        </div>
         {/if}
+    </div>
+
+    {* Permissions *}
+    <div class="row form-group form-inline">
+        <label class="col-sm-2 form-label">
+            {$form.PermID_Group.label}
+            {if $form.PermID_Group.required|default}
+                <span style="color: red">*</span>
+            {/if}
+        </label>
+        <div class="col-sm-10">
+            <div>
+                {$form.PermID_Group.html}
+            </div>
         </div>
     </div>
 

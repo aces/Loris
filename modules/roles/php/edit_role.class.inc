@@ -49,6 +49,18 @@ class Edit_Role extends \NDB_Form
     }
 
     /**
+     * Controls who's got access to this page.
+     *
+     * @param \User $editor The user who is accessing this page
+     *
+     * @return bool true if user has access, false otherwise.
+     */
+    private function _canEdit(\User $editor) : bool
+    {
+        return $editor->hasPermission('role_edit');
+    }
+
+    /**
      * Computes the initial values this page will be filled with.
      *
      * @return array the default values for the initial state of this page.
@@ -61,10 +73,18 @@ class Edit_Role extends \NDB_Form
         if (!$this->isCreatingNewRole()) {
 
             // get the role and associated permissions
-            $role = \Role::factory($this->identifier);
+            $role = new \Role;
+            $role = $role->select($this->identifier);
 
             // Role attributes
             $defaults = $role->asArray();
+
+            // get the user's permissions
+            $permissions = $role->getPermissions($this->loris);
+            // set the user's permission defaults
+            foreach ($permissions as $permID => $permCode) {
+                $defaults["permID[$permID]"] = 'on';
+            }
 
             // An array of each field that requires front-end sanitization
             $fieldsThatAreStrings = [
@@ -92,6 +112,10 @@ class Edit_Role extends \NDB_Form
      */
     function _process($values)
     {
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        $editor  = $factory->user();
+
         // attribute the code as snakecase version of name
         // -> lowercase + underscores as separator
         if ($this->isCreatingNewRole()) {
@@ -100,9 +124,19 @@ class Edit_Role extends \NDB_Form
 
         // add other
         $values['Name']        = trim($values['Name']);
-        $values['Description'] = trim($values['Description']);
+        $values['Description'] = trim($values['Description']);        
 
-        // -----------------------------------
+        // add permissions
+        $permIDs        = [];
+        $newPermissions = isset($values['permID'])
+            ? array_keys($values['permID']) : [];
+
+        // Only a superuser or a role editor can edit permissions.
+        if (!empty($newPermissions) && $editor->hasPermission('role_edit')) {
+            $permIDs = $newPermissions;
+        }
+        unset($values['permID']);
+        $values['Permissions'] = $permIDs;
 
         // make the set
         $set = [];
@@ -110,17 +144,19 @@ class Edit_Role extends \NDB_Form
             $set[$key] = $value;
         }
 
-        // update the user
+        // create or update the user
+        $role = new \Role;
         if ($this->isCreatingNewRole()) {
-            // insert a new role
+            // create a new role
             \Role::insert($set);
+            $role = $role->select($set['Code']);
 
         } else {
             // update the user
-            $role = \Role::factory($this->identifier);
+            $role = $role->select($this->identifier);
+            error_log(print_r($role, true));
             $role->update($set);
         }
-
 
         // // update send
         // $factory = \NDB_Factory::singleton();
@@ -128,7 +164,6 @@ class Edit_Role extends \NDB_Form
         // // send the user an email
         // if (!empty($send)) {
         //     $config = $factory->config();
-
         //     // send the user an email
         //     $msg_data          = [];
         //     $msg_data['study'] = $config->getSetting('title');
@@ -233,7 +268,36 @@ class Edit_Role extends \NDB_Form
                 'pattern'   => '^\s*\S.{0,119}\s*$',
                 'required'  => true,
             ]
+        );
+
+        // Role Permissions
+
+        $factory = \NDB_Factory::singleton();
+        $editor  = $factory->user();
+
+        $allPermissions = (new \Role)->getPermissions($this->loris, true);
+
+        $lastRole = '';
+        $group    = [];
+        foreach ($allPermissions as $row) {
+            // If the user is editing his/her own account, disable all permission
+            // checkboxes. Note that they will not be submitted when the form is
+            // saved
+            $attribs = ["class" => "perm_$lastRole"];
+            // if not superuser or has not role_edit
+            if (!$editor->hasPermission('roles_edit')) {
+                $attribs['disabled'] = true;
+            }
+            // new checkbox
+            $group[] = $this->createCheckbox(
+                'permID['.$row['permID'].']',
+                htmlspecialchars($row['label']) . "<br>",
+                $attribs
             );
+            unset($attribs);
+        }
+        $this->addGroup($group, 'PermID_Group', 'Permissions', '');
+        unset($group);
 
         // unique key and password rules
         $this->form->addFormRule([&$this, '_validateEditRole']);

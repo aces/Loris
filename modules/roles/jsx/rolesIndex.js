@@ -138,6 +138,10 @@ class RolesIndex extends Component {
                     type: 'text',
                 },
             },
+            {
+                label: 'Attached permissions',
+                show: true
+            },
         ];
 
         const actions = [

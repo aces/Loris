@@ -20,8 +20,12 @@ class RoleRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         parent::__construct(
             "SELECT r.Code as code,
                     r.Name as name,
-                    r.Description as description
+                    r.Description as description,
+                    COUNT(p.code) as permissionCount
             FROM roles r
+                LEFT JOIN role_permission_rel rp ON (rp.RoleID = r.RoleID)
+                LEFT JOIN permissions p ON (p.permID = rp.permID)
+            GROUP BY code, name, description
             ORDER BY r.roleID",
             []
         );
