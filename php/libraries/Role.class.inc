@@ -136,7 +136,26 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
      */
     public static function insert(array $set): void
     {
-        \NDB_Factory::singleton()->database()->insert('roles', $set);
+        $values = $set;
+
+        // permissions modified?
+        $permissions = [];
+        if (array_key_exists('Permissions', $values)) {
+            if (!empty($values['Permissions'])) {
+                $permissions = $values['Permissions'];
+            }
+            unset($values['Permissions']);
+        }
+
+        // insert
+        \NDB_Factory::singleton()->database()->insert('roles', $values);
+
+        // update permissions
+        if (!empty($permissions)) {
+            $role = (new Role)->select($values['Code']);
+            // add new permissions
+            $role->addPermissions($permissions);
+        }
     }
 
 
@@ -151,19 +170,17 @@ class Role implements \LORIS\StudyEntities\AccessibleResource
     public function update(array $set): void
     {
         $values = $set;
-        error_log("unset");
 
         // permissions modified?
         $permissions = [];
-        if (array_key_exists('Permissions', $values) && !empty($values['Permissions'])) {
-            $permissions = $values['Permissions'];
+        if (array_key_exists('Permissions', $values)) {
+            if (!empty($values['Permissions'])) {
+                $permissions = $values['Permissions'];
+            }
             unset($values['Permissions']);
-            error_log("unset");
         }
 
-        error_log(print_r($values, true));
-
-        // insert in role table
+        // update
         \NDB_Factory::singleton()->database()->update(
             'roles',
             $values,

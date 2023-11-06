@@ -154,37 +154,18 @@ class Edit_Role extends \NDB_Form
         } else {
             // update the user
             $role = $role->select($this->identifier);
-            error_log(print_r($role, true));
             $role->update($set);
         }
 
-        // // update send
-        // $factory = \NDB_Factory::singleton();
-        // $baseURL = $factory->settings()->getBaseURL();
-        // // send the user an email
-        // if (!empty($send)) {
-        //     $config = $factory->config();
-        //     // send the user an email
-        //     $msg_data          = [];
-        //     $msg_data['study'] = $config->getSetting('title');
-        //     $msg_data['url']   = $baseURL;
-        //     $msg_data['realname'] = $values['Real_name'];
-        //     $msg_data['username'] = $user->getUsername();
-        //     if (isset($values['Password_hash'])) {
-        //         $msg_data['password'] = $values['Password_hash'];
-        //     }
-        //     $template = (is_null($this->identifier))
-        //         ? 'new_user.tpl' : 'edit_user.tpl';
-        //     \Email::send($values['Email'], $template, $msg_data);
-        //     unset($msg_data);
-        // }
-        // $this->tpl_data['success'] = true;
-        // $username = $values['UserID'] ?? '';
-        // if ($this->isCreatingNewRole()) {
-        //     $this->redirect = $baseURL
-        //         . "/user_accounts/edit_user/"
-        //         . $username;
-        // }
+        // redirect after update/create
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $roleCode = $values['Code'] ?? '';
+        if ($this->isCreatingNewRole()) {
+            $this->redirect = $baseURL
+                . "/roles/edit_role/"
+                . $roleCode;
+        }
     }
 
     /**
