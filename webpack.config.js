@@ -151,7 +151,7 @@ function lorisModule(mname, entries) {
 
   for (let i = 0; i < entries.length; i++) {
     entObj[entries[i]] =
-      base + '/' + mname + '/jsx/' + entries[i] + '.js';
+      base + '/' + mname + '/jsx/' + entries[i];
   }
   return {
     entry: entObj,
