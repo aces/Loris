@@ -302,13 +302,6 @@ abstract class Module extends \LORIS\Router\PrefixRouter
             $this->logger->debug("Page $pagename not found");
             return $resp->withStatus(404);
         }
-        // FIXME: Hack required for breadcrumbs. This should be removed,
-        // but some tests depend on it.
-        if ($this->getName() === $pagename) {
-            $_REQUEST['test_name'] = $pagename;
-        } else {
-            $_REQUEST['subtest'] = $pagename;
-        }
 
         $page->loadResources($user, $request);
         if ($page->_hasAccess($user) !== true) {
