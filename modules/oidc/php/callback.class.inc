@@ -96,8 +96,7 @@ class Callback extends \NDB_Page
                 "Could not get token"
             );
         }
-
-        if ($userinfo->email_verified == true) {
+        if (isset($userinfo->email_verified) && $userinfo->email_verified == true) {
             $DB = $this->loris->getDatabaseConnection();
 
             $UserID = $DB->pselectOne(
@@ -233,16 +232,25 @@ class Callback extends \NDB_Page
         $idtoken   = $respjson['id_token'];
         $jwks      = $client->request('GET', $jwksendpoint, []);
         $jwks_json = json_decode($jwks->getBody(), true);
-        try {
-            $decoded = JWT::decode($idtoken, JWK::parseKeySet($jwks_json));
-            if ($decoded->nonce != $nonce) {
-                return null;
+        // JWK::parseKeySet requires a 'kid' parameter because it uses the
+        // kid (key id) internally as a key in an associative array. The
+        // parameter is not required by JWKS and some providers (ie. Globus)
+        // don't provide it, so instead we manually try each key until
+        // we find one that works.
+        foreach ($jwks_json['keys'] ?? [] as $key) {
+            try {
+                $decoded = JWT::decode($idtoken, JWK::parseKey($key));
+                if ($decoded->nonce != $nonce) {
+                    // it was decoded but the nonce doesn't match, error out.
+                    return null;
+                }
+                return $decoded;
+            } catch (\Exception $e) {
+                // it couldn't be decoded with this key, try the next.
             }
-            return $decoded;
-        } catch (\Exception $e) {
-            // ID token was invalid JWT.
-            return null;
         }
+        // No keys could decode the token.
+        return null;
     }
 
     /**
