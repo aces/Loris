@@ -7,7 +7,7 @@
  *  @see {@link https://github.com/aces/Loris"|Loris}
  */
 
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
@@ -24,6 +24,7 @@ class AttachmentsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dataLoaded: false,
       attachments: this.props.attachments,
       showModalAttachmentDelete: false,
       deleteItem: {
@@ -35,7 +36,7 @@ class AttachmentsList extends Component {
     this.deleteAttachment = this.deleteAttachment.bind(this);
     this.openModalAttachmentDelete = this.openModalAttachmentDelete.bind(this);
     this.closeModalAttachmentDelete = this.closeModalAttachmentDelete
-                                      .bind(this);
+      .bind(this);
     this.displayAttachmentOptions = this.displayAttachmentOptions.bind(this);
   }
 
@@ -53,8 +54,8 @@ class AttachmentsList extends Component {
         credentials: 'same-origin',
         method: 'DELETE',
       }).then((resp) => {
-      return resp.json();
-    })
+        return resp.json();
+      })
       .then((data) => {
         if (data.success) {
           window.location.href = this.props.baseURL
@@ -66,7 +67,7 @@ class AttachmentsList extends Component {
       }).catch((error) => {
         console.error(error);
       }
-    );
+      );
   }
 
   /**
@@ -109,16 +110,16 @@ class AttachmentsList extends Component {
             <div className='col-md-2'><b>Attachment options: </b></div>
             <div className='col-md-10'>
               <a onClick={this.openModalAttachmentDelete}
-                 href={'#'}
-                 value={deleteData}
+                href={'#'}
+                value={deleteData}
               >
                 Delete
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
               <a href={this.props.baseURL +
-              '/issue_tracker/Attachment' +
-              '?ID=' + item.ID
+                '/issue_tracker/Attachment' +
+                '?ID=' + item.ID
               }
-                 download={true}
+                download={true}
               >
                 Download
               </a>
@@ -133,15 +134,15 @@ class AttachmentsList extends Component {
           <div className='col-md-2'><b>Attachment options: </b></div>
           <div className='col-md-10'>
             <a href={this.props.baseURL +
-            '/issue_tracker/Attachment' +
-            '?ID=' + item.ID +
-            '&file_hash=' + item.file_hash +
-            '&issue=' + this.props.issue +
-            '&filename=' + item.file_name +
-            '&mime_type=' + item.mime_type
+              '/issue_tracker/Attachment' +
+              '?ID=' + item.ID +
+              '&file_hash=' + item.file_hash +
+              '&issue=' + this.props.issue +
+              '&filename=' + item.file_name +
+              '&mime_type=' + item.mime_type
             }
-               download={true}
-               // style={{cursor: 'pointer'}}
+              download={true}
+            // style={{cursor: 'pointer'}}
             >
               Download
             </a>
@@ -157,7 +158,7 @@ class AttachmentsList extends Component {
    * @param {object} event
    */
   displayNone(event) {
-    event.target.src = null;
+    event.target.style.display = 'none';
   }
 
   /**
@@ -208,7 +209,7 @@ class AttachmentsList extends Component {
         attachmentsRows.unshift(
           <Fragment key={key}>
             <div className='row'>
-              <hr/>
+              <hr />
               <div className='col-md-3'>
                 <div className='col-md-5'><b>Date of attachment: </b></div>
                 <div className='col-md-7'>{item.date_added}</div>
@@ -220,16 +221,17 @@ class AttachmentsList extends Component {
                   {regexImg.test(item.mime_type) ?
                     (<img
                       src={this.props.baseURL +
-                      '/issue_tracker/Attachment' +
-                      '?ID=' + item.ID +
-                      '&file_hash=' + item.file_hash +
-                      '&issue=' + this.props.issue +
-                      '&filename=' + item.file_name +
-                      '&mime_type=' + item.mime_type
+                        '/issue_tracker/Attachment' +
+                        '?ID=' + item.ID +
+                        '&file_hash=' + item.file_hash +
+                        '&issue=' + this.props.issue +
+                        '&filename=' + item.file_name +
+                        '&mime_type=' + item.mime_type
                       }
                       width='100%'
                       height='100%'
                       onError={this.displayNone}
+
                     >
                     </img>) :
                     null

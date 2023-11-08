@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ProgressBar from 'ProgressBar';
@@ -81,9 +81,10 @@ class IssueUploadAttachmentForm extends Component {
         method: 'POST',
         body: formObj,
       }).then((resp) => {
-      return resp.json();
-    })
+        return resp.json();
+      })
       .then((data) => {
+        console.log("aaaaa");
         // reset form data after successful file upload
         if (data.success) {
           this.setState({
@@ -103,16 +104,16 @@ class IssueUploadAttachmentForm extends Component {
           swal.fire('Permission denied', '', 'error');
         }
       }).catch((error) => {
-      console.error(error);
-      const msg = error.responseJSON ?
-        error.responseJSON.message
-        : 'Upload error!';
-      this.setState({
-        errorMessage: msg,
-        uploadProgress: -1,
+        console.error(error);
+        const msg = error.responseJSON ?
+          error.responseJSON.message
+          : 'Upload error!';
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1,
+        });
+        swal.fire(msg, '', 'error');
       });
-      swal.fire(msg, '', 'error');
-    });
   }
 
   /**
@@ -145,10 +146,10 @@ class IssueUploadAttachmentForm extends Component {
             />
             <div className='row'>
               <div className='col-sm-9 col-sm-offset-3'>
-                <ProgressBar value={this.state.uploadProgress}/>
+                <ProgressBar value={this.state.uploadProgress} />
               </div>
             </div>
-            <ButtonElement label='Submit Attachment'/>
+            <ButtonElement label='Submit Attachment' />
           </FormElement>
         </div>
       </div>
