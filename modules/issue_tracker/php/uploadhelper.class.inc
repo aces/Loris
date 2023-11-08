@@ -79,27 +79,27 @@ class UploadHelper
         $this->_bytes  = $files['file']->getSize();
         $this->_values = $values;
 
-        $this->_fileToUpload
-            = (object) [
-                'file'        => $files['file']->getClientFilename(),
-                'file_hash'   => $this->generateHash(
-                    $files['file']->getStream()->getMetadata('uri')
-                ),
-                'mime_type'   => $this->getFileMimeType(
-                    $files['file']->getClientFilename()
-                ),
-                'tmp_name'    => $files['file']->getStream()->getMetadata('uri'),
-                'size'        => $this->_bytes,
-                'inserted_by' => $this->_user->getUsername(),
-                'description' => $this->_values['fileDescription'] ?? '',
-            ];
+                $this->_fileToUpload
+                    = (object) [
+                        'file'        => $files['file']->getClientFilename(),
+                        'file_hash'   => $this->generateHash(
+                            $files['file']->getStream()->getMetadata('uri')
+                        ),
+                        'mime_type'   => $this->getFileMimeType(
+                            $files['file']->getClientFilename()
+                        ),
+                        'tmp_name'    => $files['file']->getStream()->getMetadata('uri'),
+                        'size'        => $this->_bytes,
+                        'inserted_by' => $this->_user->getUsername(),
+                        'description' => $this->_values['fileDescription'] ?? '',
+                    ];
 
-        if (!$this->setFullPath($this->_fileToUpload)) {
-            $this->errorMessage
-                = 'The server is not configured for attachments';
-            return false;
-        }
-
+                if (!$this->setFullPath($this->_fileToUpload)) {
+                    $this->errorMessage
+                        = 'The server is not configured for attachments';
+                    return false;
+                }
+        
         $DB = \NDB_Factory::singleton()->database();
         $DB->beginTransaction();
         $this->registerFile(
@@ -120,6 +120,10 @@ class UploadHelper
      */
     function setFullPath(Object &$fileToUpload) : bool
     {
+        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+            return true;
+        }
+
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
         $attachment_data_dir = trim(
@@ -129,6 +133,7 @@ class UploadHelper
             )
         );
 
+        
         if (is_writable($attachment_data_dir)) {
             $fileToUpload->full_path = $attachment_data_dir .
                                        '/attachments';
@@ -167,6 +172,16 @@ class UploadHelper
         try {
             $DB->insert('issues_attachments', $values);
             // Move file from tmp to issue_tracker attachment directory.
+            if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+            $s3_upload_status=false;
+            $config      = \NDB_Config::singleton();
+            $bucketName = $config->getSetting('AWS_S3_Default_Bucket_Issue_Tracker');                
+               $s3ClientInstance = \S3ClientSingleton::getInstance();
+               $s3_upload_status = $s3ClientInstance->s3uploadfile($bucketName, null, $fileToUpload->file, $tmpFilePath);
+               if ($s3_upload_status) {
+                   return;
+               }
+            }
             $path = $fileToUpload->full_path . '/' . $fileToUpload->file_hash;
             move_uploaded_file($tmpFilePath, $path);
         } catch (\DatabaseException $e) {

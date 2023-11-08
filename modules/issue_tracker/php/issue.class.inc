@@ -151,6 +151,7 @@ class Issue extends \NDB_Form
         if (empty($this->issueID) && $this->issueID != "new") {
             // Should probably be a bad request, but we don't have a 400.tpl
             // template.
+            error_log("-----");
             return new \Loris\Http\Error($request, 404, "Issue not found");
         }
         // FIXME: This should negotiate the content type it returns (JSON vs HTML)

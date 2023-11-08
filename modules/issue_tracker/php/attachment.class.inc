@@ -51,6 +51,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
+        error_log("oooooo");
         // Parse GET query params.
         $values = $request->getQueryParams();
         // DB Query begins.
@@ -71,6 +72,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                 ->withStatus(404)
                 ->withHeader('Content-Type', 'text/plain')
                 ->withBody(new \LORIS\Http\StringStream("Not found"));
+                exit;
 
         }
 
