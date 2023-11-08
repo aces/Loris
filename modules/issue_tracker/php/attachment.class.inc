@@ -67,6 +67,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                     WHERE
                         ID = :ID';
         $result  = $DB->pselectRow($query, ['ID' => $ID]);
+
         if ($result === null) {
             return (new \LORIS\Http\Response())
                 ->withStatus(404)
@@ -75,7 +76,32 @@ class Attachment extends \NDB_Page implements ETagCalculator
                 exit;
 
         }
+if (true) {
+       $objectKey = $result['file_name']; // Replace with the actual query parameter name
+        $s3Client = \S3ClientSingleton::getInstance()->getS3Client();
+    // Get the S3 object metadata
+    try {
+        $s3result = $s3Client->getObject([
+            'Bucket' => 'wangshen-s3-issue',
+            'Key'    => $objectKey,
+        ]);
+    } catch (Exception $e) {
+        return (new \LORIS\Http\Response())
+            ->withStatus(404)
+            ->withHeader('Content-Type', 'text/plain')
+            ->withBody(new \LORIS\Http\StringStream("Not found"));
+    }
+        error_log(print_r($s3result,true));
 
+               $headers = [
+                    'Content-Type'        => $s3result['ContentType'],
+                    'Content-Disposition' => 'attachment; filename="' . $objectKey . '"',
+                    'Content-Length'      => $s3result['ContentLength'],
+                ];
+
+                return new \GuzzleHttp\Psr7\Response(200, $headers, $s3result['Body']);
+
+} else {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
         $attachment_data_dir = rtrim(
@@ -101,6 +127,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
                 'attachment; filename=' . basename($name)
             )
             ->withBody(new \LORIS\Http\FileStream($fileToDownload));
+        }  
     }
 
     /**
