@@ -121,6 +121,17 @@ class DiagnosisEvolution extends Component {
                         onUserInput={this.confirmDelete}
                     />
                 ) : null;
+        const errorMessage = this.state.errorMessage[id] ?
+            this.state.errorMessage[id] :
+            {
+                Name: null,
+                ProjectID: null,
+                visitLabel: null,
+                instrumentName: null,
+                sourceField: null,
+                orderNumber: null,
+            };
+
         return (
             <TabPane TabId={`${dxEvolutionID}`} key={dxEvolutionID}>
                 <div className='row'>
