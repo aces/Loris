@@ -88,11 +88,11 @@ class Diagnosis extends \NDB_Page
      */
     function initializeSetup() : array
     {
-        $DB = \NDB_Factory::singleton()->database();
+        $DB = $this->loris->getDatabaseConnection();
 
         $projects    = \Utility::getProjectList();
         $visits      = \Utility::getVisitList();
-        $instruments = \Utility::getAllInstruments();
+        $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
 
         $parameterType = $DB->pselectCol(
             "SELECT DISTINCT SourceField FROM parameter_type
