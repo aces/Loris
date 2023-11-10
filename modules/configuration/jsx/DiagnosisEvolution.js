@@ -402,7 +402,7 @@ class DiagnosisEvolution extends Component {
           formData[tabID] = formDataNew;
         } else {
           formData.diagnosisTracks[tabID]
-            = this.state.data.diagnosisTracks[tabID];
+            = JSON.parse(JSON.stringify(this.state.data.diagnosisTracks[tabID]));
         }
         this.setState({formData});
     }
