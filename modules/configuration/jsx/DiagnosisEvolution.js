@@ -97,9 +97,24 @@ class DiagnosisEvolution extends Component {
             formData.diagnosisTracks[tabID] = tabData;
         }
 
-        this.setState({
-            formData: formData,
-        });
+        let errorMessage = {};
+        errorMessage[tabID] = this.state.errorMessage[tabID] ?
+            this.state.errorMessage[tabID] :
+            {
+                Name: null,
+                ProjectID: null,
+                visitLabel: null,
+                instrumentName: null,
+                sourceField: null,
+                orderNumber: null,
+            };
+        if (!!(errorMessage[tabID][formElement])
+          && (!!value || value !== '' || !!value.length)
+        ) {
+          errorMessage[tabID][formElement] = null;
+        }
+
+        this.setState({formData, errorMessage});
     }
 
     /**
@@ -317,9 +332,9 @@ class DiagnosisEvolution extends Component {
                 ' Entry must be included in provided list of options.';
             isValid = false;
         }
-        if (!formData.sourceField) {
+        if (!formData.sourceField || !formData.sourceField.length) {
             errorMessage[tabID]['sourceField'] = 'This field is required!' +
-                ' Please click "Add Field" before saving';
+                ' Please click "Add Field" before saving.';
             isValid = false;
         }
         if (!formData.orderNumber) {
@@ -404,7 +419,18 @@ class DiagnosisEvolution extends Component {
           formData.diagnosisTracks[tabID]
             = JSON.parse(JSON.stringify(this.state.data.diagnosisTracks[tabID]));
         }
-        this.setState({formData});
+
+        let errorMessage = {};
+        errorMessage[tabID] = {
+          Name: null,
+          ProjectID: null,
+          visitLabel: null,
+          instrumentName: null,
+          sourceField: null,
+          orderNumber: null,
+        };
+
+        this.setState({formData, errorMessage});
     }
 
     /**
@@ -488,7 +514,25 @@ class DiagnosisEvolution extends Component {
             formData.diagnosisTracks[tabID][formElement] = listItems;
             formData.diagnosisTracks[tabID][pendingValKey] = null;
         }
-        this.setState({formData: formData});
+
+        let errorMessage = {};
+        errorMessage[tabID] = this.state.errorMessage[tabID] ?
+            this.state.errorMessage[tabID] :
+            {
+                Name: null,
+                ProjectID: null,
+                visitLabel: null,
+                instrumentName: null,
+                sourceField: null,
+                orderNumber: null,
+            };
+        if (!!(errorMessage[tabID][formElement])
+          && (!!value || value !== '' || !!value.length)
+        ) {
+          errorMessage[tabID][formElement] = null;
+        }
+
+        this.setState({formData, errorMessage});
     }
 
     /**
