@@ -56,6 +56,7 @@ class DiagnosisEvolution extends Component {
 
     /**
      * Fetch data
+     *
      * @return {Promise<void>}
      */
     fetchData() {
@@ -76,6 +77,7 @@ class DiagnosisEvolution extends Component {
 
     /**
      * Set form data
+     *
      * @param {string} formElement
      * @param {*} value
      */
@@ -119,6 +121,7 @@ class DiagnosisEvolution extends Component {
 
     /**
      * renders the diagnosis trajectory form
+     *
      * @param {int} dxEvolutionID
      * @return {JSX} React markup for the component
      */
@@ -297,7 +300,6 @@ class DiagnosisEvolution extends Component {
      *
      * @param {object} formData - Form data
      * @param {string} tabID - Relevant tab
-     *
      * @return {bool}
      */
     validate(formData, tabID) {
@@ -417,7 +419,9 @@ class DiagnosisEvolution extends Component {
           formData[tabID] = formDataNew;
         } else {
           formData.diagnosisTracks[tabID]
-            = JSON.parse(JSON.stringify(this.state.data.diagnosisTracks[tabID]));
+            = JSON.parse(JSON.stringify(
+                this.state.data.diagnosisTracks[tabID]
+            ));
         }
 
         let errorMessage = {};
@@ -493,6 +497,7 @@ class DiagnosisEvolution extends Component {
 
     /**
      * Add source field
+     *
      * @param {*} formElement
      * @param {string} value
      * @param {*} pendingValKey
@@ -537,6 +542,7 @@ class DiagnosisEvolution extends Component {
 
     /**
      * Remove source field
+     *
      * @param {*} formElement
      * @param {string} value
      * @param {*} pendingValKey

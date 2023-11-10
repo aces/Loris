@@ -37,6 +37,7 @@ class DiagnosisEvolution extends Component {
 
   /**
    * Fetch data
+   *
    * @return {Promise<void>}
    */
   fetchData() {
@@ -91,6 +92,7 @@ class DiagnosisEvolution extends Component {
 
   /**
    * Render latest diagnosis element
+   *
    * @param {*} latestDiagnosis
    * @return {JSX} - React markup for the component
    */
