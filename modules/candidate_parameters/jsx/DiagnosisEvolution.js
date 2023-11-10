@@ -171,7 +171,8 @@ class DiagnosisEvolution extends Component {
         <h3>Latest Diagnosis</h3>
         <p>This diagnosis is <strong style={{color: 'red'}}>
           unconfirmed</strong>.
-          A confirmed diagnosis is one that belongs to an approved visit.
+          A confirmed diagnosis is one that belongs to a visit
+          that has been sent to DCC for approval.
         </p>
         {this.renderLatestDiagnosis(latestProjectDiagnosis)}
       </div>
@@ -182,7 +183,8 @@ class DiagnosisEvolution extends Component {
           <h3>Latest Confirmed Diagnosis</h3>
           <p>This diagnosis is <strong style={{color: 'green'}}>
             confirmed</strong>.
-            A confirmed diagnosis is one that belongs to an approved visit.
+            A confirmed diagnosis is one that belongs to a visit
+            that has been sent to DCC for approval.
           </p>
           {this.renderLatestDiagnosis(
             this.state.data.latestConfirmedProjectDiagnosis
