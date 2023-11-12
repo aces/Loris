@@ -75,7 +75,7 @@ function Modal({
   };
 
   const bodyStyle = {
-    padding: success ? 0 : '15px 90px',
+    padding: success ? 0 : '15px 15px',
     maxHeight: success ? 0 : '75vh',
     overflow: 'scroll',
     opacity: success ? 0 : 1,
