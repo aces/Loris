@@ -1,12 +1,13 @@
-import PropTypes from 'prop-types';
+import {ReactNode} from 'react';
 
 /**
  * Display a message in an information panel.
  *
  * @param {object} props - React props
- * @return {JSX}
+
+ * @returns {ReactNode} - the InfoPanel
  */
-function InfoPanel(props) {
+function InfoPanel(props: {children: ReactNode}): ReactNode {
     return (
         <div className="alert alert-info"
            style={{
@@ -30,8 +31,5 @@ function InfoPanel(props) {
          </div>
    );
 }
-InfoPanel.propTypes = {
-    children: PropTypes.node,
-};
 
 export default InfoPanel;
