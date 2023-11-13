@@ -10,6 +10,7 @@ import {ButtonElement} from 'jsx/Form';
 import {FullDictionary, DictionaryCategory} from './types';
 import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
+import React from 'react';
 
 /**
  * The define filters tab of the DQT
@@ -58,8 +59,8 @@ function DefineFilters(props: {
     ) => QueryGroup,
     addNewQueryGroup: (group: QueryGroup) => void,
     removeQueryGroupItem: (group: QueryGroup, i: number) => QueryGroup,
-}) {
-    let displayquery: React.ReactElement|null = null;
+}) : React.ReactElement {
+    let displayquery: React.ReactNode = null;
     const [addModal, setAddModal] = useState(false);
     const [csvModal, setCSVModal] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
