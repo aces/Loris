@@ -1,4 +1,5 @@
 import React from 'react';
+import {ReactNode} from 'react';
 
 type breadcrumb = {
     text: string
@@ -23,14 +24,14 @@ class Breadcrumbs {
     /**
      * Create a Breadcrumbs node
      *
-     * @param {breadcrubProps} props - React props
+     * @param {breadcrumbProps} props - React props
      */
     constructor(props: breadcrumbProps)
 
     /**
      * React Lifecycle Method
      *
-     * @param {ReactNode} - the breadcrumbs
+     * @return {ReactNode}
      */
     render(): ReactNode
 
