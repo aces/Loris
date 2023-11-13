@@ -72,8 +72,6 @@ let LorisHelper = function(user, configParams, userPerms, studyParams) {
     'use strict';
     return studyParams[param];
   };
-  
-  lorisObj.user = user;
 
   lorisObj.user = user;
 
