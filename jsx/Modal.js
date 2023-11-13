@@ -130,27 +130,9 @@ function Modal({
 
   const submitButton = () => {
     if (onSubmit && !(loading || success)) {
-      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      const submit = async () => {
-        try {
-          setLoading(true);
-          const data = await onSubmit();
-          setLoading(false);
-          setSuccess(true);
-          await wait(2000);
-          setSuccess(false);
-          onClose();
-          onSuccess(data);
-        } catch {
-          setLoading(false);
-        }
-      };
       return (
         <div style={submitStyle}>
-          <Button
-            label="Submit"
-            onClick={submit}
-          />
+          <ButtonElement/>
         </div>
       );
     }
@@ -179,6 +161,23 @@ function Modal({
     </div>
   );
 
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const submit = async (e) => {
+      console.log('form submit');
+      try {
+        setLoading(true);
+        const data = await onSubmit();
+        setLoading(false);
+        setSuccess(true);
+        await wait(2000);
+        setSuccess(false);
+        onClose();
+        onSuccess(data);
+      } catch {
+        setLoading(false);
+      }
+    };
+
   return (
     <div style={modalContainer} onClick={handleClose}>
       <div
@@ -191,7 +190,11 @@ function Modal({
             ×
           </span>
         </div>
-        <FormElement>
+        <FormElement
+          name="modalForm"
+          id="modalForm"
+          onSubmit={submit}
+        >
           <div style={bodyStyle}>
             {renderChildren()}
           </div>
