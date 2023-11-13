@@ -94,12 +94,6 @@ class UploadHelper
                 'description' => $this->_values['fileDescription'] ?? '',
             ];
 
-// handle upload to AWS S3 
-
-
-
-// handle upload to local
-
         if (!$this->setFullPath($this->_fileToUpload) && getenv('AWS_ACCESS_KEY_ID') === false) {
             $this->errorMessage
                 = 'The server is not configured for attachments or AWS_S3';
