@@ -167,8 +167,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             'v.record_id as Delete_File',
             'v.File_category as category',
             'v.Data_dir',
-        ];
-        
+        ];        
         $this->query   = $query;
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());

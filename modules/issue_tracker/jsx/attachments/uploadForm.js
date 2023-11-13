@@ -84,7 +84,6 @@ class IssueUploadAttachmentForm extends Component {
         return resp.json();
       })
       .then((data) => {
-        console.log("aaaaa");
         // reset form data after successful file upload
         if (data.success) {
           this.setState({

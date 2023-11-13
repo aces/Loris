@@ -231,7 +231,6 @@ class AttachmentsList extends Component {
                       width='100%'
                       height='100%'
                       onError={this.displayNone}
-
                     >
                     </img>) :
                     null
