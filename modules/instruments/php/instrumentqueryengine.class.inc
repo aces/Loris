@@ -413,7 +413,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                             assert(!isset($candidateData[$fieldkey][$sessionID]));
                             $candidateData[$fieldkey][$sessionID] = $val;
                         }
-                        // $candidateData[$key] = ($candidateData[$key] ?? []) + $val);
+                        // $candidateData[$key]=($candidateData[$key] ?? []) + $val);
                     }
                     // $candidateData[] = array_merge($candidateData, $data);
                     $instrData->next();
@@ -458,8 +458,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                     $sid = $loadedInstrument->getSessionID();
                     $candData[$dict->getName()][$sid->__toString()] = [
                         'VisitLabel' => $loadedInstrument->getVisitLabel(),
-                        'SessionID' => $sid->__toString(),
-                        'value' => $loadedInstrument->getDictionaryValue($dict),
+                        'SessionID'  => $sid->__toString(),
+                        'value'      => $loadedInstrument->getDictionaryValue($dict),
                     ];
                 }
             }

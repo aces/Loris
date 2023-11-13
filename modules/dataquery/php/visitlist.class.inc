@@ -3,66 +3,91 @@ namespace LORIS\dataquery;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
-class VisitList extends \NDB_Page {
+/**
+ * Handles the /dataquery/visitlist endpoint which gets
+ * a list of visits that are available for a specific
+ * dictionary item and returns it to the client
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class VisitList extends \NDB_Page
+{
     protected $itemmodule;
     protected $dictionaryitem;
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param ServerRequestInterface $request - The incoming request
+     *
+     * @return ResponseInterface
+     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($this->dictionaryitem === null) {
             return new \LORIS\Http\Response\JSON\OK(
-              [
-                'Visits' => array_values(\Utility::getVisitList()),
-              ],
+                [
+                    'Visits' => array_values(\Utility::getVisitList()),
+                ],
             );
         }
 
         if ($this->dictionaryitem->getScope()->__toString() !== 'session') {
             return new \LORIS\Http\Response\JSON\BadRequest(
-               'Visit list only applicable to session scoped variables'
+                'Visit list only applicable to session scoped variables'
             );
         }
 
         return new \LORIS\Http\Response\JSON\OK(
             [
-                'Visits' => $this->itemmodule->getQueryEngine()->getVisitList($this->itemcategory, $this->dictionaryitem),
+                'Visits' =>
+                    $this->itemmodule
+                        ->getQueryEngine()
+                        ->getVisitList($this->itemcategory, $this->dictionaryitem),
             ],
         );
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param \User                 $user    - The user loading the page
+     * @param ServerRequestInterace $request - The page to load resources for
+     *
+     * @return void
+     */
     public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void
-    {
+        \User $user,
+        ServerRequestInterface $request,
+    ) : void {
         $queryparams = $request->getQueryParams();
         if (!isset($queryparams['module']) || !isset($queryparams['item'])) {
             return;
         }
-        
-        $this->lorisinstance = $request->getAttribute("loris");
-        $modules = $this->lorisinstance->getActiveModules();
+
+        $modules     = $this->loris->getActiveModules();
         $usermodules = [];
-        $dict = [];
-        $categories = [];
+        $dict        = [];
+        $categories  = [];
 
         $this->categoryitems = [];
         foreach ($modules as $module) {
-            if($module->getName() !== $queryparams['module']) {
+            if ($module->getName() !== $queryparams['module']) {
                 continue;
             }
-            if(!$module->hasAccess($user)) {
+            if (!$module->hasAccess($user)) {
                 continue;
             }
 
             $this->itemmodule = $module;
-            $mdict = $module->getQueryEngine()->getDataDictionary();
+            $mdict            = $module->getQueryEngine()->getDataDictionary();
 
-            if(count($mdict) > 0) {
-                foreach($mdict as $cat) {
-                    foreach($cat->getItems() as $dictitem) {
-                        if($dictitem->getName() === $queryparams['item']) {
+            if (count($mdict) > 0) {
+                foreach ($mdict as $cat) {
+                    foreach ($cat->getItems() as $dictitem) {
+                        if ($dictitem->getName() === $queryparams['item']) {
                             $this->dictionaryitem = $dictitem;
-                            $this->itemcategory = $cat;
+                            $this->itemcategory   = $cat;
                         }
                     }
                 }

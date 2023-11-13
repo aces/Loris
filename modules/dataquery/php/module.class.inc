@@ -64,16 +64,16 @@ class Module extends \Module
     {
         switch ($type) {
         case 'dashboard':
-            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-            $DB = $this->loris->getDatabaseConnection();
+            $baseURL     = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $DB          = $this->loris->getDatabaseConnection();
             $provisioner = (
                 new Provisioners\StarredQueries($this->loris, $user)
             )->filter(
-                    new \LORIS\Data\Filters\AccessibleResourceFilter()
+                new \LORIS\Data\Filters\AccessibleResourceFilter()
             );
-            $results = $provisioner->execute($user);
+            $results     = $provisioner->execute($user);
             $starredqueries = [];
-            foreach($results as $query) {
+            foreach ($results as $query) {
                 $starredqueries[] = $query;
             }
             $widgets = [];
@@ -84,7 +84,7 @@ class Module extends \Module
                         $this->renderTemplate(
                             "starredwidget.tpl",
                             [
-                                'baseURL'       => $baseURL,
+                                'baseURL'        => $baseURL,
                                 'starredqueries' => $starredqueries,
                             ]
                         ),
@@ -97,14 +97,14 @@ class Module extends \Module
             $provisioner = (
                 new Provisioners\StudyQueries($this->loris, 'dashboard')
             )->filter(
-                    new \LORIS\Data\Filters\AccessibleResourceFilter()
+                new \LORIS\Data\Filters\AccessibleResourceFilter()
             );
-        
-            $results = $provisioner->execute($user);
+
+            $results      = $provisioner->execute($user);
             $studyqueries = [];
-            foreach($results as $query) {
+            foreach ($results as $query) {
                 $studyqueries[] = $query;
-                
+
             }
             if (count($studyqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
@@ -113,7 +113,7 @@ class Module extends \Module
                         $this->renderTemplate(
                             "studyquerieswidget.tpl",
                             [
-                                'baseURL'       => $baseURL,
+                                'baseURL' => $baseURL,
                                 'queries' => $studyqueries,
                             ]
                         ),
