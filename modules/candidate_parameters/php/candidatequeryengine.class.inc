@@ -225,7 +225,6 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 .' ON (c.RegistrationProjectID=rproj.ProjectID)'
             );
             return 'rproj.Name';
-        case 'Subproject':
         case 'Cohort':
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable(

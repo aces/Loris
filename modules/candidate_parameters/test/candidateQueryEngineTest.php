@@ -49,15 +49,15 @@ class CandidateQueryEngineTest extends TestCase
 
         $database = $this->config->getSetting('database');
 
-        $this->DB = \Database::singleton(
+        $this->DB = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1,
+            true,
         );
 
-        $this->DB = $this->factory->database();
+        $this->factory->setDatabase($this->DB);
 
         $this->DB->setFakeTableData(
             "candidate",
@@ -105,9 +105,8 @@ class CandidateQueryEngineTest extends TestCase
 
         $lorisinstance = new \LORIS\LorisInstance($this->DB, $this->config, []);
 
-        $this->engine = \Module::factory(
-            $lorisinstance,
-            'candidate_parameters',
+        $this->engine = $lorisinstance->getModule(
+            'candidate_parameters'
         )->getQueryEngine();
     }
 
