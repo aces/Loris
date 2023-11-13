@@ -38,7 +38,6 @@ class Dataquery extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return true;
         // check user permissions
         return $user->hasPermission('dataquery_view');
     }

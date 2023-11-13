@@ -64,14 +64,13 @@ class Module extends \Module
     {
         switch ($type) {
         case 'dashboard':
-            $baseURL     = \NDB_Factory::singleton()->settings()->getBaseURL();
-            $DB          = $this->loris->getDatabaseConnection();
-            $provisioner = (
+            $baseURL        = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $provisioner    = (
                 new Provisioners\StarredQueries($this->loris, $user)
             )->filter(
                 new \LORIS\Data\Filters\AccessibleResourceFilter()
             );
-            $results     = $provisioner->execute($user);
+            $results        = $provisioner->execute($user);
             $starredqueries = [];
             foreach ($results as $query) {
                 $starredqueries[] = $query;

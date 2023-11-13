@@ -13,6 +13,7 @@ use \Psr\Http\Message\ResponseInterface;
 class VisitList extends \NDB_Page
 {
     protected $itemmodule;
+    protected $itemcategory;
     protected $dictionaryitem;
 
     /**
@@ -51,8 +52,8 @@ class VisitList extends \NDB_Page
     /**
      * {@inheritDoc}
      *
-     * @param \User                 $user    - The user loading the page
-     * @param ServerRequestInterace $request - The page to load resources for
+     * @param \User                  $user    - The user loading the page
+     * @param ServerRequestInterface $request - The page to load resources for
      *
      * @return void
      */
@@ -65,12 +66,8 @@ class VisitList extends \NDB_Page
             return;
         }
 
-        $modules     = $this->loris->getActiveModules();
-        $usermodules = [];
-        $dict        = [];
-        $categories  = [];
+        $modules = $this->loris->getActiveModules();
 
-        $this->categoryitems = [];
         foreach ($modules as $module) {
             if ($module->getName() !== $queryparams['module']) {
                 continue;
