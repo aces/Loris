@@ -1791,7 +1791,9 @@ class CandidateQueryEngineTest extends TestCase
      */
     protected function assertMatchAll($result)
     {
-        $result = iterator_to_array($result);
+        if (!is_array($result)) {
+            $result = iterator_to_array($result);
+        }
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
