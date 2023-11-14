@@ -130,8 +130,14 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // can't set to closed if not developer.
-        if ($user->hasPermission('issue_tracker_developer')) {
+        // can't set to closed if have neither of the permission.
+        if ($user->hasAnyPermission(
+            [
+                'issue_tracker_developer',
+                'issue_tracker_reporter'
+            ]
+        )
+        ) {
             $statuses = [
                 'new'          => 'New',
                 'acknowledged' => 'Acknowledged',
@@ -234,8 +240,11 @@ class Edit extends \NDB_Page implements ETagCalculator
             'modules'           => $modules,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
-            'hasEditPermission' => $user->hasPermission(
-                'issue_tracker_developer'
+            'hasEditPermission' => $user->hasAnyPermission(
+                [
+                'issue_tracker_developer',
+                'issue_tracker_reporter'
+                ]
             ),
             'isOwnIssue'        => $isOwnIssue,
         ];
