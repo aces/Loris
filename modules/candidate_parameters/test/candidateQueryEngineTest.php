@@ -710,10 +710,8 @@ class CandidateQueryEngineTest extends TestCase
         );
         $this->assertMatchAll($result);
 
-        $result = iterator_to_array(
-            $this->engine->getCandidateMatches(
+        $result = $this->engine->getCandidateMatches(
                 new QueryTerm($candiddict, new NotEqual("TestProject"))
-            )
         );
         $this->assertTrue(is_array($result));
         assert(is_array($result)); // for phan to know the type
@@ -1761,6 +1759,9 @@ class CandidateQueryEngineTest extends TestCase
      */
     protected function assertMatchNone($result)
     {
+        if (!is_array($result)) {
+            $result = iterator_to_array($result);
+        }
         $result = iterator_to_array($result);
         $this->assertTrue(is_array($result));
         $this->assertEquals(0, count($result));
@@ -1776,7 +1777,9 @@ class CandidateQueryEngineTest extends TestCase
      */
     protected function assertMatchOne($result, $candid)
     {
-        $result = iterator_to_array($result);
+        if (!is_array($result)) {
+            $result = iterator_to_array($result);
+        }
         $this->assertTrue(is_array($result));
         $this->assertEquals(1, count($result));
         $this->assertEquals($result[0], new CandID($candid));
