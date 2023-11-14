@@ -86,6 +86,11 @@ export const fetchChunkAt = R.memoizeWith(
 );
 
 type State = {bounds: BoundsState, dataset: DatasetState, channels: Channel[]};
+type chunkIntervals = {
+  interval: [ number, number ],
+  numChunks: number,
+  downsampling:  number,
+};
 
 const UPDATE_DEBOUNCE_TIME = 100;
 
@@ -118,38 +123,41 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
               const shapeChunks =
                 shapes.map((shape) => shape[shape.length - 2]);
 
-              const chunkIntervals = shapeChunks
+              const chunkIntervals : chunkIntervals[] = shapeChunks
                 .map((numChunks, downsampling) => {
                   const recordingDuration = Math.abs(
                     timeInterval[1] - timeInterval[0]
                   );
+
                   const i0 =
                     (numChunks *
                       Math.floor(bounds.interval[0] - bounds.domain[0])
                     ) / recordingDuration;
+
                   const i1 =
                     (numChunks *
                       Math.ceil(bounds.interval[1] - bounds.domain[0])
                     ) / recordingDuration;
+
+                  const interval : [number, number] = [
+                    Math.floor(i0),
+                    Math.min(Math.ceil(i1), numChunks),
+                  ];
+
                   return {
-                    interval:
-                      [
-                        Math.floor(i0),
-                        Math.min(Math.ceil(i1), numChunks),
-                      ],
+                    interval: interval,
                     numChunks: numChunks,
                     downsampling,
                   };
                 })
-                .filter(
-                  ({interval}) =>
+                .filter(({interval}) =>
                     interval[1] - interval[0] < MAX_VIEWED_CHUNKS
                 )
                 .reverse();
 
-              const finestChunks = R.reduce(
+              const finestChunks : chunkIntervals = R.reduce(
                 R.maxBy(({interval}) => interval[1] - interval[0]),
-                {interval: [0, 0]},
+                chunkIntervals[0],
                 chunkIntervals
               );
 
