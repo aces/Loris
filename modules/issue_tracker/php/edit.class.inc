@@ -242,8 +242,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             'issueData'         => $issueData,
             'hasEditPermission' => $user->hasAnyPermission(
                 [
-                'issue_tracker_developer',
-                'issue_tracker_reporter'
+                    'issue_tracker_developer',
+                    'issue_tracker_reporter'
                 ]
             ),
             'isOwnIssue'        => $isOwnIssue,
