@@ -111,8 +111,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
-                    "Subproject",
-                    "The LORIS subproject used for battery selection",
+                    "Cohort",
+                    "The LORIS cohort used for battery selection",
                     $sesscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::SINGLE),
@@ -173,7 +173,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return [];
         }
 
-        // Session scoped variables: VisitLabel, project, site, subproject
+        // Session scoped variables: VisitLabel, project, site, cohort
         return array_keys(\Utility::getVisitList());
     }
 
@@ -225,15 +225,15 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 .' ON (c.RegistrationProjectID=rproj.ProjectID)'
             );
             return 'rproj.Name';
-        case 'Subproject':
+        case 'Cohort':
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addTable(
-                'LEFT JOIN subproject subproj'
-                .' ON (s.SubprojectID=subproj.SubProjectID)'
+                'LEFT JOIN cohort cohort'
+                .' ON (s.CohortID=cohort.CohortID)'
             );
             $this->addWhereClause("s.Active='Y'");
 
-            return 'subproj.title';
+            return 'cohort.title';
         case 'VisitLabel':
             $this->addTable('LEFT JOIN session s ON (s.CandID=c.CandID)');
             $this->addWhereClause("s.Active='Y'");
