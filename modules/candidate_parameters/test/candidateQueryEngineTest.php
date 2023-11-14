@@ -103,7 +103,14 @@ class CandidateQueryEngineTest extends TestCase
             ]
         );
 
-        $lorisinstance = new \LORIS\LorisInstance($this->DB, $this->config, []);
+        // Ensure tests are run using this module directory with no overrides.
+        // We are in test, so .. brings us to candidate_parameters and ../../ brings
+        // us to modules for the LorisInstance config.
+        $lorisinstance = new \LORIS\LorisInstance(
+            $this->DB,
+            $this->config,
+            [__DIR__ . "/../../"]
+        );
 
         $this->engine = $lorisinstance->getModule(
             'candidate_parameters'
@@ -1163,50 +1170,50 @@ class CandidateQueryEngineTest extends TestCase
     }
 
     /**
-     * Test that matching subproject fields matches the correct
+     * Test that matching cohort fields matches the correct
      * CandIDs.
      *
      * @return void
      */
-    function testSubprojectMatches()
+    function testCohortMatches()
     {
-        // 123456 and 123457 have 1 visit each, different subprojects
+        // 123456 and 123457 have 1 visit each, different cohorts
         $this->DB->setFakeTableData(
             "session",
             [
                 [
-                    'ID'           => 1,
-                    'CandID'       => "123456",
-                    'CenterID'     => '1',
-                    'ProjectID'    => '2',
-                    'SubprojectID' => '1',
-                    'Active'       => 'Y',
-                    'Visit_label'  => 'V1',
+                    'ID'          => 1,
+                    'CandID'      => "123456",
+                    'CenterID'    => '1',
+                    'ProjectID'   => '2',
+                    'CohortID'    => '1',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V1',
                 ],
                 [
-                    'ID'           => 2,
-                    'CandID'       => "123457",
-                    'CenterID'     => '2',
-                    'ProjectID'    => '2',
-                    'SubprojectID' => '2',
-                    'Active'       => 'Y',
-                    'Visit_label'  => 'V2',
+                    'ID'          => 2,
+                    'CandID'      => "123457",
+                    'CenterID'    => '2',
+                    'ProjectID'   => '2',
+                    'CohortID'    => '2',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V2',
                 ],
             ]
         );
 
         $this->DB->setFakeTableData(
-            "subproject",
+            "cohort",
             [
                 [
-                    'SubprojectID'      => 1,
-                    'title'             => 'Subproject1',
+                    'CohortID'          => 1,
+                    'title'             => 'Cohort1',
                     'useEDC'            => '0',
                     'Windowdifference'  => 'battery',
                     'RecruitmentTarget' => 3,
                 ],
                 [
-                    'SubprojectID'      => 2,
+                    'CohortID'          => 2,
                     'title'             => 'Battery 2',
                     'useEDC'            => '0',
                     'Windowdifference'  => 'battery',
@@ -1215,19 +1222,19 @@ class CandidateQueryEngineTest extends TestCase
             ]
         );
 
-        $candiddict = $this->_getDictItem("Subproject");
+        $candiddict = $this->_getDictItem("Cohort");
         $result     = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new Equal("Subproject1"))
+            new QueryTerm($candiddict, new Equal("Cohort1"))
         );
         $this->assertMatchOne($result, "123456");
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new NotEqual("Subproject1"))
+            new QueryTerm($candiddict, new NotEqual("Cohort1"))
         );
         $this->assertMatchOne($result, "123457");
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new In("Subproject1"))
+            new QueryTerm($candiddict, new In("Cohort1"))
         );
         $this->assertMatchOne($result, "123456");
 
@@ -1258,7 +1265,7 @@ class CandidateQueryEngineTest extends TestCase
 
         // <, <=, >, >= not valid because visit label is a string
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
-        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS subproject");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS cohort");
     }
 
     /**
@@ -1395,7 +1402,7 @@ class CandidateQueryEngineTest extends TestCase
                     $this->_getDictItem("EntityType"),
                     $this->_getDictItem("VisitLabel"),
                     $this->_getDictItem("Project"),
-                    $this->_getDictItem("Subproject"),
+                    $this->_getDictItem("Cohort"),
                     $this->_getDictItem("Site"),
                 ],
                 [new CandID("123456")],
@@ -1415,7 +1422,7 @@ class CandidateQueryEngineTest extends TestCase
                 'EntityType' => 'Human',
                 'VisitLabel' => [],
                 'Project'    => [],
-                'Subproject' => [],
+                'Cohort'     => [],
                 'Site'       => [],
             ]
             ]
@@ -1496,7 +1503,7 @@ class CandidateQueryEngineTest extends TestCase
                     $this->_getDictItem("ParticipantStatus"),
                     $this->_getDictItem("RegistrationProject"),
                     $this->_getDictItem("RegistrationSite"),
-                    $this->_getDictItem("Subproject"),
+                    $this->_getDictItem("Cohort"),
                 ],
                 [new CandID("123456")],
                 null
@@ -1510,11 +1517,11 @@ class CandidateQueryEngineTest extends TestCase
                 'ParticipantStatus'   => 'Active',
                 'RegistrationProject' => 'TestProject',
                 'RegistrationSite'    => 'TestSite',
-                // Project, Subproject, and Site are
+                // Project, Cohort, and Site are
                 // still empty because there are no
                 // sessions created
                 //'Project' => [],
-                'Subproject'          => [],
+                'Cohort'              => [],
                 //'Site' => [],
             ]
             ]
@@ -1523,47 +1530,47 @@ class CandidateQueryEngineTest extends TestCase
             "session",
             [
                 [
-                    'ID'           => 1,
-                    'CandID'       => "123456",
-                    'CenterID'     => '1',
-                    'ProjectID'    => '2',
-                    'SubprojectID' => '1',
-                    'Active'       => 'Y',
-                    'Visit_label'  => 'V1',
+                    'ID'          => 1,
+                    'CandID'      => "123456",
+                    'CenterID'    => '1',
+                    'ProjectID'   => '2',
+                    'CohortID'    => '1',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V1',
                 ],
                 [
-                    'ID'           => 2,
-                    'CandID'       => "123456",
-                    'CenterID'     => '2',
-                    'ProjectID'    => '2',
-                    'SubprojectID' => '1',
-                    'Active'       => 'Y',
-                    'Visit_label'  => 'V2',
+                    'ID'          => 2,
+                    'CandID'      => "123456",
+                    'CenterID'    => '2',
+                    'ProjectID'   => '2',
+                    'CohortID'    => '1',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V2',
                 ],
                 [
-                    'ID'           => 3,
-                    'CandID'       => "123457",
-                    'CenterID'     => '2',
-                    'ProjectID'    => '2',
-                    'SubprojectID' => '2',
-                    'Active'       => 'Y',
-                    'Visit_label'  => 'V1',
+                    'ID'          => 3,
+                    'CandID'      => "123457",
+                    'CenterID'    => '2',
+                    'ProjectID'   => '2',
+                    'CohortID'    => '2',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V1',
                 ],
             ]
         );
 
         $this->DB->setFakeTableData(
-            "subproject",
+            "cohort",
             [
                 [
-                    'SubprojectID'      => 1,
-                    'title'             => 'Subproject1',
+                    'CohortID'          => 1,
+                    'title'             => 'Cohort1',
                     'useEDC'            => '0',
                     'Windowdifference'  => 'battery',
                     'RecruitmentTarget' => 3,
                 ],
                 [
-                    'SubprojectID'      => 2,
+                    'CohortID'          => 2,
                     'title'             => 'Battery 2',
                     'useEDC'            => '0',
                     'Windowdifference'  => 'battery',
@@ -1578,7 +1585,7 @@ class CandidateQueryEngineTest extends TestCase
                     $this->_getDictItem("VisitLabel"),
                     $this->_getDictItem("Site"),
                     $this->_getDictItem("Project"),
-                    $this->_getDictItem("Subproject"),
+                    $this->_getDictItem("Cohort"),
 
                 ],
                 [new CandID("123456")],
@@ -1593,7 +1600,7 @@ class CandidateQueryEngineTest extends TestCase
                     'VisitLabel' => ['V1', 'V2'],
                     'Site'       => ['TestSite', 'Test Site 2'],
                     'Project'    => ['TestProject2'],
-                    'Subproject' => ['Subproject1'],
+                    'Cohort'     => ['Cohort1'],
                 ],
             ]
         );
@@ -1602,7 +1609,7 @@ class CandidateQueryEngineTest extends TestCase
             $this->engine->getCandidateData(
                 [
                     $this->_getDictItem("VisitLabel"),
-                    $this->_getDictItem("Subproject"),
+                    $this->_getDictItem("Cohort"),
                     $this->_getDictItem("Project"),
                     $this->_getDictItem("RegistrationSite"),
                 ],
@@ -1619,13 +1626,13 @@ class CandidateQueryEngineTest extends TestCase
             [
                 '123456' => [
                     'VisitLabel'       => ['V1', 'V2'],
-                    'Subproject'       => ['Subproject1'],
+                    'Cohort'           => ['Cohort1'],
                     'Project'          => ['TestProject2'],
                     'RegistrationSite' => 'TestSite',
                 ],
                 '123457' => [
                     'VisitLabel'       => ['V1'],
-                    'Subproject'       => ['Battery 2'],
+                    'Cohort'           => ['Battery 2'],
                     'Project'          => ['TestProject2'],
                     'RegistrationSite' => 'Test Site 2',
                 ]
@@ -1636,7 +1643,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS project");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS participant_status");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS participant_status_options");
-        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS subproject");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS cohort");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
     }
 
