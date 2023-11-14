@@ -693,7 +693,7 @@ class CandidateQueryEngineTest extends TestCase
         // general because of the other field tests, so we just make sure
         // that the project is set up and do basic tests
         $this->DB->setFakeTableData(
-            "project",
+            "Project",
             [
                 [
                     'ProjectID'         => 1,
@@ -757,7 +757,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchAll($result);
 
         // <=, <, >=, > are meaningless since it's a string
-        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS project");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS Project");
     }
 
     /**
@@ -1007,7 +1007,7 @@ class CandidateQueryEngineTest extends TestCase
         );
 
         $this->DB->setFakeTableData(
-            "project",
+            "Project",
             [
                 [
                     'ProjectID'         => 1,
@@ -1067,7 +1067,7 @@ class CandidateQueryEngineTest extends TestCase
 
         // <, <=, >, >= not valid because visit label is a string
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
-        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS project");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS Project");
     }
 
     /**
@@ -1480,7 +1480,7 @@ class CandidateQueryEngineTest extends TestCase
             ]
         );
         $this->DB->setFakeTableData(
-            "project",
+            "Project",
             [
                 [
                     'ProjectID'         => 1,
@@ -1640,7 +1640,7 @@ class CandidateQueryEngineTest extends TestCase
         );
 
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS psc");
-        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS project");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS Project");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS participant_status");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS participant_status_options");
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS cohort");
