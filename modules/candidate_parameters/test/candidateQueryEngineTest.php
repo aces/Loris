@@ -711,7 +711,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchAll($result);
 
         $result = $this->engine->getCandidateMatches(
-                new QueryTerm($candiddict, new NotEqual("TestProject"))
+            new QueryTerm($candiddict, new NotEqual("TestProject"))
         );
         $this->assertTrue(is_array($result));
         assert(is_array($result)); // for phan to know the type
