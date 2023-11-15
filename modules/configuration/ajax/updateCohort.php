@@ -97,7 +97,7 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
             200,
             ["ok" => "Cohort updated successfully,
 		    but the Recruitment Target of Cohort is greater than
-                     the associated Recruitment Target of Project!"
+                     the Recruitment Target of the associated Project!"
             ]
         );
     }
