@@ -1597,37 +1597,37 @@ class CandidateQueryEngineTest extends TestCase
                 '123456' => [
                     // VisitLabel the dictionary name
                     'VisitLabel' => [
-                        [
+                        1 => [
                             // The visit label key for session scoped variables
                             'VisitLabel' => 'V1',
                             'SessionID'  => 1,
                             'value'      => 'V1'
                         ],
-                        [
+                        2 => [
                             'VisitLabel' => 'V2',
                             'SessionID'  => 2,
                             'value'      => 'V2'
                         ],
                     ],
                     'Site'       => [
-                        [
+                        1 => [
                             'VisitLabel' => 'V1',
                             'SessionID'  => 1,
                             'value'      => 'TestSite'
                         ],
-                        [
+                        2 => [
                             'VisitLabel' => 'V2',
                             'SessionID'  => 2,
                             'value'      => 'Test Site 2'
                         ],
                     ],
                     'Project'    => [
-                        [
+                        1 => [
                             'VisitLabel' => 'V1',
                             'SessionID'  => 1,
                             'value'      => 'TestProject2'
                         ],
-                        [
+                        2 => [
                             'VisitLabel' => 'V2',
                             'SessionID'  => 2,
                             'value'      => 'TestProject2'
