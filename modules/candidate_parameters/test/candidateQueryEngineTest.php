@@ -1591,14 +1591,48 @@ class CandidateQueryEngineTest extends TestCase
             )
         );
         $this->assertEquals(count($results), 1);
-        var_dump($results);
         $this->assertEquals(
             $results,
             [
                 '123456' => [
-                    'VisitLabel' => ['V1', 'V2'],
-                    'Site'       => ['TestSite', 'Test Site 2'],
-                    'Project'    => ['TestProject2'],
+                    // VisitLabel the dictionary name
+                    'VisitLabel' => [
+                        [
+                            // The visit label key for session scoped variables
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'V1'
+                        ],
+                        [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'V2'
+                        ],
+                    ],
+                    'Site'       => [
+                        [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'TestSite'
+                        ],
+                        [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'Test Site 2'
+                        ],
+                    ],
+                    'Project'    => [
+                        [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'TestProject2'
+                        ],
+                        [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'TestProject2'
+                        ],
+                    ],
                     'Cohort'     => ['Cohort1'],
                 ],
             ]
