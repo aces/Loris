@@ -33,9 +33,9 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
 
 // check if the user's input is greater than the associated Project's recruitmentTarget
     $userCohortID = $_POST['cohortID'] ?? null;   // Get user input for CohortID
-    $userTitle = $_POST['title'] ?? null;  // Get user input for title
+    $userTitle    = $_POST['title'] ?? null;  // Get user input for title
     $userRecruitmentTarget = $_POST['RecruitmentTarget'] ?? null;
-    
+
     $result = $db->pselect(
         "
         SELECT p.recruitmentTarget
@@ -45,68 +45,68 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
         WHERE c.CohortID =:userCohortID or c.title =:userTitle
         ",
         [
-                "userCohortID" => $userCohortID,
-                'userTitle'     => $userTitle,
+            "userCohortID" => $userCohortID,
+            'userTitle'    => $userTitle,
         ]
     );
-if ($result !== null && !empty($result)) {    
-    foreach ($result as $row) {
-    $projectRecruitmentTarget = $row["recruitmentTarget"];
+    if ($result !== null && !empty($result)) {
+        foreach ($result as $row) {
+            $projectRecruitmentTarget = $row["recruitmentTarget"];
 
-    // Check if the user's input is greater than any associated Project's recruitmentTarget
-    if ($userRecruitmentTarget !== null && $userRecruitmentTarget > $projectRecruitmentTarget) {
-	printAndExit(
-        400,
-        ['error' => 'Recruitment Target is greater than the associated Project\'s recruitmentTarget']
-          );    
-	   break; // Stop checking further projects
+            // Check if the user's input is greater than any associated Project's recruitmentTarget
+            if ($userRecruitmentTarget !== null && $userRecruitmentTarget > $projectRecruitmentTarget) {
+                printAndExit(
+                    400,
+                    ['error' => 'Recruitment Target is greater than the associated Project\'s recruitmentTarget']
+                );
+                break; // Stop checking further projects
+            }
         }
-    }   
-}
+    }
 
-// Ends-check if the user's input is greater than the associated Project's recruitmentTarget
+    // Ends-check if the user's input is greater than the associated Project's recruitmentTarget
 
-if ($_POST['cohortID'] === 'new') {
-    if (!in_array($_POST['title'], $CohortList) && !empty($_POST['title'])) {
-        $db->insert(
+    if ($_POST['cohortID'] === 'new') {
+        if (!in_array($_POST['title'], $CohortList) && !empty($_POST['title'])) {
+            $db->insert(
+                "cohort",
+                [
+                    "title"             => $_POST['title'],
+                    "useEDC"            => $_POST['useEDC'],
+                    "WindowDifference"  => $_POST['WindowDifference'],
+                    "RecruitmentTarget" => $recTarget,
+                ]
+            );
+        } else {
+            printAndExit(409, ['error' => 'Conflict']);
+        }
+    } else {
+        $db->update(
             "cohort",
             [
                 "title"             => $_POST['title'],
                 "useEDC"            => $_POST['useEDC'],
                 "WindowDifference"  => $_POST['WindowDifference'],
                 "RecruitmentTarget" => $recTarget,
-            ]
+            ],
+            ["CohortID" => $_POST['cohortID']]
         );
-    } else {
-        printAndExit(409, ['error' => 'Conflict']);
     }
-} else {
-    $db->update(
-        "cohort",
-        [
-            "title"             => $_POST['title'],
-            "useEDC"            => $_POST['useEDC'],
-            "WindowDifference"  => $_POST['WindowDifference'],
-            "RecruitmentTarget" => $recTarget,
-        ],
-        ["CohortID" => $_POST['cohortID']]
-    );
-}
-// FIXME: This should probably be a 201 Created instead.
-printAndExit(200, ["ok" => "Cohort updated successfully"]);
+    // FIXME: This should probably be a 201 Created instead.
+    printAndExit(200, ["ok" => "Cohort updated successfully"]);
 
-/**
- * Prints a parameter converted to JSON-encoded string.
- *
- * @param int                  $code The HTTP Response Code.
- * @param array<string,string> $msg  A key-value pair representing the JSON to
- *                                   be returned from this file.
- *
- * @return void
- */
-function printAndExit(int $code, array $msg): void
-{
-    http_response_code($code);
-    print json_encode($msg);
-    exit;
-}
+    /**
+     * Prints a parameter converted to JSON-encoded string.
+     *
+     * @param int                  $code The HTTP Response Code.
+     * @param array<string,string> $msg  A key-value pair representing the JSON to
+     *                                   be returned from this file.
+     *
+     * @return void
+     */
+    function printAndExit(int $code, array $msg): void
+    {
+        http_response_code($code);
+        print json_encode($msg);
+        exit;
+    }
