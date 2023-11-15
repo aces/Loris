@@ -357,6 +357,7 @@ function valueInput(fielddict: FieldDictionary,
     value: string|string[],
     setValue: (val: string) => void
 ) {
+   const vs: string = value as string;
    switch (op) {
       case 'exists':
       case 'notexists':
@@ -365,7 +366,8 @@ function valueInput(fielddict: FieldDictionary,
           return <span/>;
       case 'numberof':
           return <NumericElement
-             value={value}
+             value={vs}
+             name='numberof'
              onUserInput={(name: string, value: string) => setValue(value)} />;
     }
 
@@ -373,7 +375,7 @@ function valueInput(fielddict: FieldDictionary,
        case 'date':
           return <DateElement
              name="date"
-             value={value}
+             value={vs}
              onUserInput={(name: string, value: string) => setValue(value)} />;
        case 'time':
            // There's no time element type in LORIS, so use the HTML5
@@ -381,7 +383,7 @@ function valueInput(fielddict: FieldDictionary,
            // elements
            return <TimeElement
                     name="time"
-                    value={value}
+                    value={vs}
                     onUserInput={
                         (name: string, value: string) => setValue(value)
                     }
@@ -390,10 +392,12 @@ function valueInput(fielddict: FieldDictionary,
             // Should this be input type="url"?
             return <TextboxElement
                onUserInput={(name: string, value: string) => setValue(value)}
-               value={value} />;
+               name='value'
+               value={vs} />;
        case 'integer':
           return <NumericElement
-             value={value}
+             value={vs}
+             name='value'
              onUserInput={(name: string, value: string) => setValue(value)} />;
        case 'boolean':
            return <SelectElement
@@ -401,7 +405,7 @@ function valueInput(fielddict: FieldDictionary,
                name='value'
                options={{'true': 'true', 'false': 'false'}}
                onUserInput={(name: string, value: string) => setValue(value)}
-               value={value}
+               value={vs}
                sortByValue={false}
                />;
        case 'enumeration':
@@ -424,8 +428,9 @@ function valueInput(fielddict: FieldDictionary,
            />;
        default:
             return <TextboxElement
-               onUserInput={(name: string, value: string) => setValue(value)}
-               value={value} />;
+                onUserInput={(name: string, value: string) => setValue(value)}
+                name='value'
+                value={vs} />;
    }
 }
 

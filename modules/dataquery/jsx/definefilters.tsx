@@ -269,7 +269,7 @@ function DefineFilters(props: {
                     <div style={{
                         display: 'flex', marginTop: 10,
                         textDecoration: deleteItemIndex == 0 ?
-                            'line-through' : '',
+                            'line-through' : undefined,
                     }}>
                         <CriteriaTerm
                             term={props.query.group[0]}
