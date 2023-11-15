@@ -1669,15 +1669,77 @@ class CandidateQueryEngineTest extends TestCase
             $results,
             [
                 '123456' => [
-                    'VisitLabel'       => ['V1', 'V2'],
-                    'Cohort'           => ['Cohort1'],
-                    'Project'          => ['TestProject2'],
-                    'RegistrationSite' => 'TestSite',
+                    'VisitLabel'       => [
+                        1 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'V1'
+                        ],
+                        2 => [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'V2'
+                        ],
+                    ],
+                    'Cohort'           => [
+                        1 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'Cohort1'
+                        ],
+                        2 => [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'Cohort1'
+                        ],
+                    ],
+                    'Project'          => [
+                        1 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'TestProject2'
+                        ],
+                        2 => [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'TestProject2'
+                        ],
+                    ],
+                    'RegistrationSite' => [
+                        1 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'TestSite'
+                        ],
+                        2 => [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'TestSite'
+                        ],
+                    ],
                 ],
                 '123457' => [
-                    'VisitLabel'       => ['V1'],
-                    'Cohort'           => ['Battery 2'],
-                    'Project'          => ['TestProject2'],
+                    'VisitLabel'       => [
+                        3 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 3,
+                            'value'      => 'V1'
+                        ],
+                    ],
+                    'Cohort'           => [
+                        3 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 3,
+                            'value'      => 'Battery 2'
+                        ],
+                    ],
+                    'Project'          => [
+                        3 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 3,
+                            'value'      => 'TestProject2'
+                        ],
+                    ],
                     'RegistrationSite' => 'Test Site 2',
                 ]
             ]
