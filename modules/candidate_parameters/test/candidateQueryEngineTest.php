@@ -1633,7 +1633,18 @@ class CandidateQueryEngineTest extends TestCase
                             'value'      => 'TestProject2'
                         ],
                     ],
-                    'Cohort'     => ['Cohort1'],
+                    'Cohort'     => [
+                        1 => [
+                            'VisitLabel' => 'V1',
+                            'SessionID'  => 1,
+                            'value'      => 'Cohort1'
+                        ],
+                        2 => [
+                            'VisitLabel' => 'V2',
+                            'SessionID'  => 2,
+                            'value'      => 'Cohort1'
+                        ],
+                    ],
                 ],
             ]
         );
