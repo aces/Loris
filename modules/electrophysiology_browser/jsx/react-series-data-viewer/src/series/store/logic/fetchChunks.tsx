@@ -89,7 +89,7 @@ type State = {bounds: BoundsState, dataset: DatasetState, channels: Channel[]};
 type chunkIntervals = {
   interval: [ number, number ],
   numChunks: number,
-  downsampling:  number,
+  downsampling: number,
 };
 
 const UPDATE_DEBOUNCE_TIME = 100;
