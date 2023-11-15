@@ -31,12 +31,12 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
     );
 }
 
-// check if the user's input is greater than the associated Project's recruitmentTarget
+// check if recruitmentTarget is greater than the associated Project's
 // recruitmentTarget warning
     $recruitmentTargetWarning = false;
-    $userCohortID = $_POST['cohortID'] ?? null;   // Get user input for CohortID
-    $userTitle    = $_POST['title'] ?? null;  // Get user input for title
-    $userRecruitmentTarget = $_POST['RecruitmentTarget'] ?? null;
+    $userCohortID    = $_POST['cohortID'] ?? null;
+    $userTitle       = $_POST['title'] ?? null;
+    $userRecruTarget = $_POST['RecruitmentTarget'] ?? null;
 
     $result = $db->pselect(
         "
@@ -53,17 +53,19 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
     );
     if ($result !== null && !empty($result)) {
         foreach ($result as $row) {
-            $projectRecruitmentTarget = $row["recruitmentTarget"];
+            $projectRecruTarget = $row["recruitmentTarget"];
 
-            // Check if the user's input is greater than any associated Project's recruitmentTarget
-            if ($userRecruitmentTarget !== null && $userRecruitmentTarget > $projectRecruitmentTarget) {
+            // Check if the input is greater than any Project's recruitmentTarget
+            if ($userRecruTarget !== null
+                && $userRecruTarget > $projectRecruTarget
+            ) {
                 $recruitmentTargetWarning = true;
                 break; // Stop checking further projects
             }
         }
     }
 
-    // Ends-check if the user's input is greater than the associated Project's recruitmentTarget
+    // Ends-check greater than the associated Project's recruitmentTarget
 
     if ($_POST['cohortID'] === 'new') {
         if (!in_array($_POST['title'], $CohortList) && !empty($_POST['title'])) {
