@@ -1247,7 +1247,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchAll($result);
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new StartsWith("Sub"))
+            new QueryTerm($candiddict, new StartsWith("Coh"))
         );
         $this->assertMatchOne($result, "123456");
 
