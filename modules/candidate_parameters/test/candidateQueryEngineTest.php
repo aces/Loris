@@ -1257,7 +1257,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchOne($result, "123456");
 
         $result = $this->engine->getCandidateMatches(
-            new QueryTerm($candiddict, new Substring("proj"))
+            new QueryTerm($candiddict, new Substring("hor"))
         );
         $this->assertMatchOne($result, "123456");
 
@@ -1591,6 +1591,7 @@ class CandidateQueryEngineTest extends TestCase
             )
         );
         $this->assertEquals(count($results), 1);
+        var_dump($results);
         $this->assertEquals(
             $results,
             [
