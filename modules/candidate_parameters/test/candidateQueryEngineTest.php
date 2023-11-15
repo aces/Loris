@@ -1762,7 +1762,6 @@ class CandidateQueryEngineTest extends TestCase
         if (!is_array($result)) {
             $result = iterator_to_array($result);
         }
-        $result = iterator_to_array($result);
         $this->assertTrue(is_array($result));
         $this->assertEquals(0, count($result));
     }
