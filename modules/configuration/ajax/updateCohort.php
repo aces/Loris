@@ -32,6 +32,8 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
 }
 
 // check if the user's input is greater than the associated Project's recruitmentTarget
+// recruitmentTarget warning
+    $recruitmentTargetWarning = false;
     $userCohortID = $_POST['cohortID'] ?? null;   // Get user input for CohortID
     $userTitle    = $_POST['title'] ?? null;  // Get user input for title
     $userRecruitmentTarget = $_POST['RecruitmentTarget'] ?? null;
@@ -55,10 +57,7 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
 
             // Check if the user's input is greater than any associated Project's recruitmentTarget
             if ($userRecruitmentTarget !== null && $userRecruitmentTarget > $projectRecruitmentTarget) {
-                printAndExit(
-                    400,
-                    ['error' => 'Recruitment Target is greater than the associated Project\'s recruitmentTarget']
-                );
+                $recruitmentTargetWarning = true;
                 break; // Stop checking further projects
             }
         }
@@ -93,6 +92,15 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
         );
     }
     // FIXME: This should probably be a 201 Created instead.
+    if ($recruitmentTargetWarning) {
+        printAndExit(
+            200,
+            ["ok" => "Cohort updated successfully,
+		    but the Recruitment Target of Cohort is greater than
+                     the associated Recruitment Target of Project!"
+            ]
+        );
+    }
     printAndExit(200, ["ok" => "Cohort updated successfully"]);
 
     /**
