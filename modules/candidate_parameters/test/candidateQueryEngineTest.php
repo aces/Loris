@@ -1705,18 +1705,7 @@ class CandidateQueryEngineTest extends TestCase
                             'value'      => 'TestProject2'
                         ],
                     ],
-                    'RegistrationSite' => [
-                        1 => [
-                            'VisitLabel' => 'V1',
-                            'SessionID'  => 1,
-                            'value'      => 'TestSite'
-                        ],
-                        2 => [
-                            'VisitLabel' => 'V2',
-                            'SessionID'  => 2,
-                            'value'      => 'TestSite'
-                        ],
-                    ],
+                    'RegistrationSite' => 'TestSite',
                 ],
                 '123457' => [
                     'VisitLabel'       => [
