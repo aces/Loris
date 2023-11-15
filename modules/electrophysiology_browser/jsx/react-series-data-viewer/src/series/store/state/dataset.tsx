@@ -90,7 +90,7 @@ export const datasetReducer = (
       return R.assoc('physioFileID', action.payload, state);
     }
     case SET_DATASET_METADATA: {
-      return R.merge(state, action.payload);
+      return R.mergeAll([state, action.payload]);
     }
     default: {
       return state;
