@@ -56,7 +56,7 @@ const optionsToLINST = (dictionary, callback) => {
     dictionary = dictionary.substring(2);
   }
 
-  const choices = dictionary.split(' | ');
+  const choices = dictionary.split('|');
   const linstChoices = choices.map((choice, index) => {
     const matches = choice.match(/^(\s)*(\d+)(\s)*,(.*)$/);
     if (matches === null) {
