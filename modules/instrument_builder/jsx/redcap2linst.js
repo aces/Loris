@@ -65,7 +65,8 @@ const optionsToLINST = (dictionary, callback) => {
       throw new Error('Could not parse radio option: \''
         + choice + '\'');
     }
-    const backend = matches[2] + '_' + (matches[4].trim()).replace(/\s+/g, '_');
+    // const backend = matches[2] + '_' + (matches[4].trim()).replace(/\s+/g, '_');
+    const backend = matches[2];
     const linstFormat = '\'' + backend.toLowerCase() + '\'=>\''
       + (matches[4]).trim() + '\'';
     return linstFormat;
