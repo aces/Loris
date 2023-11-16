@@ -97,8 +97,16 @@ export const downloadLinst = (inst, linst) => {
   title = title.replaceAll(/(\b\w)/g, replacer);
   // Add table and title tags
   linst.unshift(
-  'table{@}' + fileName + '\n',
-  'title{@}' + title + '\n'
+    'table{@}' + fileName + '\n',
+    'title{@}' + title + '\n'
+  );
+  // Standard LORIS metadata fields that the instrument builder adds
+  // and LINST class automatically adds to instruments.
+  linst.unshift(
+    'date{@}Date_taken{@}Date of Administration{@}{@}\n',
+    'static{@}Candidate_Age{@}Candidate Age (Years)\n',
+    'static{@}Window_Difference{@}Window Difference (+/- Days)\n',
+    'select{@}Examiner{@}Examiner{@}NULL=>\'\'\n'
   );
   const element = document.createElement('a');
   const blob = new Blob([linst.join('')], {type: 'text/plain;base64'});
