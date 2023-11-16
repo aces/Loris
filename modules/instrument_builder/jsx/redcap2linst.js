@@ -19,7 +19,7 @@ export const toLinst = (
       // same format in the dictionary.
       let selectoptions = optionsToLINST(redcapChoices, callback);
       if (selectoptions) {
-        selectoptions = "NULL=>''{-}" + $selectoptions;
+        selectoptions = 'NULL=>\'\'{-}' + selectoptions;
       }
       return 'select{@}' + redcapfieldname + '{@}' + label + '{@}'
           + selectoptions + '\n';
