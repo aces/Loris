@@ -37,8 +37,10 @@ export const toLinst = (
       // We create the DB field but don't do the score.
       return 'static{@}' + redcapfieldname + '{@}' + label + '\n';
   case 'sql':
-      // The "SQL" data type seems to just be for presentation? I hope?
-      return '';
+      // The "SQL" data type is used for a dynamic display of enum options. Since
+      // we don't have access to the redcap database that the sql is selecting from,
+      // we treat it the same way as a score/calc field so that data can be imported.
+      return 'static{@}' + redcapfieldname + '{@}' + label + '\n';
   case 'slider':
       return 'numeric{@}' + redcapfieldname + '{@}' + label + '{@}0{@}100'
           + '\n';
