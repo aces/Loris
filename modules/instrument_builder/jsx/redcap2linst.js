@@ -64,7 +64,7 @@ const optionsToLINST = (dictionary, callback) => {
 
   const choices = dictionary.split('|');
   const linstChoices = choices.map((choice, index) => {
-    const matches = choice.match(/^(\s)*(\d+)(\s)*,(.*)$/);
+    const matches = choice.match(/^(\s)*([a-z0-9]+)(\s)*,(.*)$/i);
     if (matches === null) {
       callback.error('syntaxError', 'Could not parse radio option: \''
         + choice + '\'');
