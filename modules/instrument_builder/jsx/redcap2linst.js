@@ -17,8 +17,12 @@ export const toLinst = (
   case 'dropdown':
       // Radio or dropdown maps to a select and the options are in the
       // same format in the dictionary.
+      let selectoptions = optionsToLINST(redcapChoices, callback);
+      if (selectoptions) {
+        selectoptions = "NULL=>''{-}" + $selectoptions;
+      }
       return 'select{@}' + redcapfieldname + '{@}' + label + '{@}'
-          + optionsToLINST(redcapChoices, callback) + '\n';
+          + selectoptions + '\n';
   case 'checkbox':
       // checkboxes are the same format as radios but allow multiple options,
       // so map to a selectmultiple instead of a select
