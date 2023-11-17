@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactElement, ReactNode} from 'react';
 
 /**
  * Display a message in an information panel.
@@ -7,7 +7,7 @@ import {ReactNode} from 'react';
 
  * @returns {ReactNode} - the InfoPanel
  */
-function InfoPanel(props: {children: ReactNode}): ReactNode {
+function InfoPanel(props: {children: ReactNode}): ReactElement {
     return (
         <div className="alert alert-info"
            style={{
