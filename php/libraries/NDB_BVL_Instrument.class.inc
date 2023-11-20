@@ -840,7 +840,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->instanceData = $newData;
     }
 
-
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
@@ -850,7 +849,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields(): void
     {
-        $config      = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
@@ -864,7 +865,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',

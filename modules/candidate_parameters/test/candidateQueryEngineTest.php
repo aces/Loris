@@ -754,6 +754,7 @@ class CandidateQueryEngineTest extends TestCase
         );
         $this->assertMatchAll($result);
 
+        // <=, <, >=, > are meaningless since it's a string
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS Project");
     }
 
