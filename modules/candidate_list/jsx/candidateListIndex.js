@@ -259,7 +259,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': 'DoB',
+        'label': 'Derived Age',
         'show': true,
         'filter': {
           name: 'DoB',
