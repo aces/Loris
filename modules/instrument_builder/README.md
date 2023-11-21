@@ -6,8 +6,10 @@ The instrument builder provides a graphical interface for users to
 design and build instruments to be installed on a LORIS instance.
 
 The interface also allows users to load and modify an existing
-.linst instrument. A REDCap data dictionary in .csv format can be
-converted to .linst and downloaded.
+.linst instrument.
+
+A REDCap data dictionary in .csv format can be converted to
+.linst and downloaded (on Firefox only).
 
 ## Intended Users
 

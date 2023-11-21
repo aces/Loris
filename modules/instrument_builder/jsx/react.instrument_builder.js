@@ -265,8 +265,16 @@ class LoadPane extends Component {
               onClick={this.loadFile}
             />
           </div>
+          <br/>
           <div>
             <h4>Convert REDCap CSV to LINST & Download</h4>
+            <div style={{width: 'max-content', marginLeft: '1em'}}>
+              <StaticElement
+                label='Disclaimer:'
+                text={'This feature works best on Mozilla Firebox browser.'}
+                class='form-control-static text-danger bg-danger col-sm-10'
+              />
+            </div>
             <input
               className='fileUpload'
               type='file'
