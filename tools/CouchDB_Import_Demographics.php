@@ -309,7 +309,6 @@ class CouchDBDemographicsImporter
                        ."AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
-        print_r($concatQuery);
         return $concatQuery;
     }
 
