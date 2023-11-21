@@ -41,7 +41,7 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
   select
  e.full_name as Examiner,
              u.Email,
- GROUP_CONCAT(DISTINCT psc.CenterID) as centerIds,
+ GROUP_CONCAT(DISTINCT epr.CenterID) as centerIds,
              e.examinerID as ID,
 
  e.radiologist as Radiologist,
@@ -56,6 +56,7 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                                 (c.examinerID=e.examinerID and c.pass = 'certified')
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
                             LEFT JOIN users u ON u.ID=e.userID
+                            WHERE epr.active='Y'
                             group by e.examinerID
 ",
             [],
