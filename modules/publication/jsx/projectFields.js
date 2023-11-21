@@ -1,6 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
+import {
+  StaticElement,
+  TagsElement,
+  FileElement,
+  ButtonElement,
+  TextareaElement,
+  TextboxElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Email element component
