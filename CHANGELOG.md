@@ -13,6 +13,9 @@ changes in the following format: PR #1234***
 #### Features
 - Add OpenID Connect authorization support to LORIS (PR #8255)
 
+#### Bug Fixes
+- bvl_feedback updates in real-time (PR #8966)
+
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
 #### Features
