@@ -74,6 +74,9 @@ mri_violations:
 issue_tracker:
 	target=issue_tracker npm run compile
 
+candidate_parameters:
+	target=candidate_parameters npm run compile
+
 dashboard:
 	target=dashboard npm run compile
 
