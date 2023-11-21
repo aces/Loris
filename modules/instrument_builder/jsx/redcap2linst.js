@@ -8,6 +8,48 @@ export const toLinst = (
   const label = redcaplabel.replaceAll('\n', '<br /><br />');
   switch (redcaptype) {
   case 'text':
+        /* switch ($redcapOptions) {
+            case '
+            date_dmy 31-12-2008
+            date_mdy 12-31-2008
+            date_ymd 2008-12-31
+            datetime_dmy 16-02-2011 17:45
+            datetime_mdy 02-16-2011 17:45
+            datetime_ymd 2011-02-16 17:45
+            datetime_seconds_dmy 16-02-2011 17:45:23
+            datetime_seconds_mdy 02-16-2011 17:45:23
+            datetime_seconds_ymd
+email john.doe@vanderbilt.edu
+integer 1, 4, -10 whole number with no decimal
+alpha_only name letters only, no numbers, spaces or special characters
+number 1.3, 22, -6.28, 3.14e-2 a general number or scientific notation (no spaces)
+number_1dp_comma_decimal number to 1 decimal place - comma as decimal
+number_1dp number to 1 decimal place
+number_2dp_comma_decimal number to 2 decimal place - comma as decimal
+number_2dp number to 2 decimal place
+number_3dp_comma_decimal number to 3 decimal place - comma as decimal
+number_3dp number to 3 decimal place
+number_4dp_comma_decimal number to 4 decimal place - comma as decimal
+number_4dp number to 4 decimal place
+number_comma_decimal number comma as decimal
+phone_australia
+phone 615-322-2222
+Area codes start with a number from 2-9, followed by 0-8 and
+then any third digit.
+The second group of three digits, known as the central office or
+schange code, starts with a number from 2-9, followed by any
+two digits.
+The final four digits, known as the station code, have no
+restrictions.
+postalcode_australia 2150 4-digit number
+postalcode_canada K1A 0B1 Format: A0A 0A0 where A is a letter and 0 is a digit
+ssn 123-12-1234 Format: xxx-xx-xxxx
+time 19:30 military time
+time_mm_ss 31:22 time in minutes and seconds
+vmrn 0123456789 10 digits
+Zipcode
+        }
+        */
       // text maps directly to LORIS
       return 'text{@}' + redcapfieldname + '{@}' + label + '\n';
   case 'descriptive':
