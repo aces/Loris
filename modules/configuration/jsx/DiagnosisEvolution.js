@@ -122,7 +122,7 @@ class DiagnosisEvolution extends Component {
     /**
      * renders the diagnosis trajectory form
      *
-     * @param {int} dxEvolutionID
+     * @param {number} dxEvolutionID
      * @return {JSX} React markup for the component
      */
     renderDiagnosisForm(dxEvolutionID) {
@@ -300,7 +300,7 @@ class DiagnosisEvolution extends Component {
      *
      * @param {object} formData - Form data
      * @param {string} tabID - Relevant tab
-     * @return {bool}
+     * @return {boolean}
      */
     validate(formData, tabID) {
         let isValid = true;
