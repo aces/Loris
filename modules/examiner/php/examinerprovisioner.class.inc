@@ -37,27 +37,23 @@ class ExaminerProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     function __construct()
     {
         parent::__construct(
-            "
-  select
- e.full_name as Examiner,
-             u.Email,
- GROUP_CONCAT(DISTINCT epr.CenterID) as centerIds,
-             e.examinerID as ID,
-
- e.radiologist as Radiologist,
- GROUP_CONCAT(DISTINCT tn.full_name SEPARATOR ', ') as
-                                Certification
-
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
-                                (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
-                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                            LEFT JOIN users u ON u.ID=e.userID
-                            WHERE epr.active='Y'
-                            group by e.examinerID
+            "SELECT 
+                e.full_name as Examiner,
+                u.Email,
+                GROUP_CONCAT(DISTINCT epr.CenterID) as centerIds,
+                e.examinerID as ID,
+                e.radiologist as Radiologist,
+                GROUP_CONCAT(DISTINCT tn.full_name SEPARATOR ', ') as
+                    Certification
+                FROM examiners e
+                    LEFT JOIN examiners_psc_rel epr ON
+                        (epr.examinerID=e.examinerID)
+                    LEFT JOIN certification c ON
+                        (c.examinerID=e.examinerID and c.pass = 'certified')
+                    LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                    LEFT JOIN users u ON u.ID=e.userID
+                WHERE epr.active='Y'
+                GROUP BY e.examinerID
 ",
             [],
         );
