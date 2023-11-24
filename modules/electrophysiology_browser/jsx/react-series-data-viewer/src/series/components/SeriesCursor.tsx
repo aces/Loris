@@ -220,7 +220,7 @@ const SeriesCursor = (
 };
 
 const createIndices = R.memoizeWith(
-  R.identity,
+  (s: string) => s,
   (array) => array.map((_, i) => i)
 );
 

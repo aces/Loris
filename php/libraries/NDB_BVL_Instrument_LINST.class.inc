@@ -64,59 +64,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
         $this->form = new \LorisForm();
     }
-    /**
-     * Adds metadata fields (such as Examiner and Date_taken) to the
-     * current form
-     *
-     * @return void
-     * @access private
-     */
-    function _addMetadataFields(): void
-    {
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $dateOptions = [
-            'language'         => 'en',
-            'format'           => 'YMd',
-            'minYear'          => $config->getSetting('startYear'),
-            'maxYear'          => $config->getSetting('endYear'),
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => null,
-        ];
-
-        $this->dateOptions = $dateOptions;
-
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
-
-        if (strrpos($this->testName ?? '', '_proband') === false) {
-            if (!$this->postMortem) {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age (Months)'
-                );
-            } else {
-                $this->addScoreColumn(
-                    'Candidate_Age',
-                    'Candidate Age at Death (Months)'
-                );
-            }
-            $this->addScoreColumn(
-                'Window_Difference',
-                'Window Difference (+/- Days)'
-            );
-        }
-        $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
-
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is required',
-            'required'
-        );
-
-        $this->addRule('Examiner', 'Examiner is required', 'required');
-    }
 
     /**
      * This runs the XIN rules on all the elements on the current page to ensure

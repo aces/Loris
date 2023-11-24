@@ -70,3 +70,7 @@ mri_violations:
 
 dashboard:
 	target=dashboard npm run compile
+
+publication:
+	target=publication npm run compile
+
