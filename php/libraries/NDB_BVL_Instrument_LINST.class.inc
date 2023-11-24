@@ -556,7 +556,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             'instrument_title',
                             $pieces[1]
                         );
-                        $this->_addMetadataFields();
+                        if ($this->DataEntryType!=="DirectEntry") {
+                            $this->_addMetadataFields();
+                        }
                     }
                     break;
                 case 'begingroup':
