@@ -309,6 +309,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
+        $user   = \User::singleton();
+        $access = $obj->_hasAccess($user);
+
+        $sessionID = $obj->getSessionID();
+        if ($sessionID !== null) {
+            $timepoint = \Timepoint::singleton($sessionID);
+        }
+
+        // check that user has access
+        if ($access == false || !$user->hasCenter($timepoint->getCenterID())) {
+            throw new Exception(
+                "You do not have access to this page.",
+                403
+            );
+        }
+
         return $obj;
     }
 
