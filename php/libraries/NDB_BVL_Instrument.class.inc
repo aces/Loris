@@ -309,6 +309,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
+        $user   = \User::singleton();
+        $access = $obj->_hasAccess($user);
+
+        $db = $loris->getDatabaseConnection();
+        $centerID = $db->pselectOne(
+            "SELECT session.CenterID FROM session, flag
+            WHERE session.ID=flag.SessionID AND flag.CommentID=:cmnt_id",
+            ['cmnt_id' => $commentID]
+        );
+        if (is_array($centerID)) {
+            $centerID = null;
+        }
+
+        // check that user has access
+        if ($access == false || !$user->hasCenter(new \CenterID($centerID))) {
+            throw new Exception(
+                "You do not have access to this page.",
+                403
+            );
+        }
+
         return $obj;
     }
 
