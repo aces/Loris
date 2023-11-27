@@ -185,11 +185,11 @@ class PublicaitonTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
 	)->getText();
-	echo $bodyText;
         foreach ($uis as $ui ) {
             $text = $this->safeFindElement(
                 WebDriverBy::cssSelector($ui['selector'])
-            )->getText();
+	    )->getText();
+	               $this->assertStringContainsString($ui['label'], $bodytext);
             $this->assertStringContainsString($ui['label'], $text);
         }
     }
