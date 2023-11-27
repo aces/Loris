@@ -28,11 +28,11 @@ require_once __DIR__ .
 
 class PublicaitonTest extends LorisIntegrationTest
 {
-    private $_loadingBrowseUI = [
+    private $_loadingBrowseUI  = [
         [
             "label"    => "Title",
             "selector" => "#publications_filter_form>div>div:nth-child(1)>div>label",
-	],
+        ],
     ];
     private $_loadingproposeUI = [
         [
@@ -40,13 +40,13 @@ class PublicaitonTest extends LorisIntegrationTest
             "selector" => "#propose>div>div>form>div>div:nth-child(1)>div>div>label",
         ],
     ];
-    private $_loadingViewUI = [
+    private $_loadingViewUI    = [
         [
             "label"    => "CandID",
-	    "selector" => 
-	    "#lorisworkspace>div>div>div>div>div>form>div>div:nth-child(2)>div>label",
+            "selector" =>
+        "#lorisworkspace>div>div>div>div>div>form>div>div:nth-child(2)>div>label",
         ],
-    ];    
+    ];
 
     /**
      * Insert testing data into the database
@@ -168,7 +168,7 @@ class PublicaitonTest extends LorisIntegrationTest
     function testLoadingUIS()
     {
         $this->_testPageUIs("/publication", $this->_loadingBrowseUI);
-	$this->_testPageUIs("/publication#propose", $this->_loadingproposeUI);
+        $this->_testPageUIs("/publication#propose", $this->_loadingproposeUI);
         $this->_testPageUIs("/publication/view_project?id=1", $this->_loadingViewUI);
 
     }
