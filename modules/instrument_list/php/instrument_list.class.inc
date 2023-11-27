@@ -84,7 +84,7 @@ class Instrument_List extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    function _hasAccess(\User $user): bool
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {
@@ -122,7 +122,7 @@ class Instrument_List extends \NDB_Menu_Filter
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ) : ResponseInterface {
+    ): ResponseInterface {
         if ($this->candidate === null || $this->timePoint === null) {
             // This shouldn't happen, the module level router verifies that
             // the candidate exists before getting here.
@@ -132,21 +132,21 @@ class Instrument_List extends \NDB_Menu_Filter
         // Check imaging_browser permission, used to control imaging_browser link
         // on the instrument_list main page
         $loris = $request->getAttribute("loris");
-        $perm  = false;
+        $perm = false;
         if (!is_null($loris) && $loris->hasModule('imaging_browser')) {
             $user = $request->getAttribute("user");
             if ($this->candidate->getData('Entity_type') == 'Scanner') {
                 $perm = $user->hasPermission('imaging_browser_phantom_allsites')
-                || $user->hasCenterPermission(
-                    'imaging_browser_phantom_ownsite',
-                    $this->timePoint->getCenterID()
-                );
+                    || $user->hasCenterPermission(
+                        'imaging_browser_phantom_ownsite',
+                        $this->timePoint->getCenterID()
+                    );
             } elseif ($this->candidate->getData('Entity_type') == 'Human') {
                 $perm = $user->hasPermission('imaging_browser_view_allsites')
-                || $user->hasCenterPermission(
-                    'imaging_browser_view_site',
-                    $this->timePoint->getCenterID()
-                );
+                    || $user->hasCenterPermission(
+                        'imaging_browser_view_site',
+                        $this->timePoint->getCenterID()
+                    );
             }
         }
         $this->tpl_data['imaging_browser_permission'] = $perm;
@@ -184,9 +184,9 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
-        $this->tpl_data['candID']    = $this->candidate->getCandID();
+        $this->tpl_data['candID'] = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
-        $this->tpl_data['stage']     = \Utility::getStageUsingCandID(
+        $this->tpl_data['stage'] = \Utility::getStageUsingCandID(
             new CandID(strval($this->tpl_data['candID']))
         );
 
@@ -197,7 +197,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
-            $user     =& \User::singleton();
+            $user =& \User::singleton();
             $username = $user->getUsername();
 
             $feedback_select_inactive = false;
@@ -205,7 +205,7 @@ class Instrument_List extends \NDB_Menu_Filter
                 $feedback_select_inactive = true;
             }
 
-            $x            = -1;
+            $x = -1;
             $prevSubgroup = null;
 
             $i = 0;
@@ -253,12 +253,12 @@ class Instrument_List extends \NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['ddeCommentID'] = $ins;
 
                 $ins = $ddeStatus->getDataEntryStatus();
-                $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] =  $ins;
+                $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] = $ins;
 
                 $ins = $instrument['isDirectEntry'];
                 $this->tpl_data[$Ins][$x][$i]['isDirectEntry'] = $ins;
 
-                $ins =  $instrument['instrument_order'];
+                $ins = $instrument['instrument_order'];
                 $this->tpl_data[$Ins][$x][$i]['instrumentOrder'] = $ins;
 
                 // create feedback object for the time point
@@ -276,8 +276,8 @@ class Instrument_List extends \NDB_Menu_Filter
                 $feedback_count = $feedback->getThreadCount();
 
                 $this->tpl_data[$Ins][$x][$i]['feedbackCount']
-                    =       (empty($feedback_count))
-                             ? $feedback_status : $feedback_count;
+                    = (empty($feedback_count))
+                    ? $feedback_status : $feedback_count;
 
                 if (!empty($feedback_status)) {
                     $this->tpl_data[$Ins][$x][$i]['feedbackStatus']
@@ -296,15 +296,15 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // convert DoB And EDC date to years and months
         $this->tpl_data['display'] = array_merge($this->candidate->getData(), $this->timePoint->getData());
-	    // DoB to Derived Age
-        $dob=$this->candidate->getData()['DoB'];
-        $dob_year  = abs((date('Y', strtotime($dob)) - date('Y')));
-        $dob_month = abs((date('m', strtotime($dob)) - date('m')));
+        // DoB to Derived Age
+        $dob = $this->candidate->getData()['DoB'];
+        $dob_year = abs((date('Y', strtotime($dob)) - date('Y')) ?? '');
+        $dob_month = abs((date('m', strtotime($dob)) - date('m')) ?? '');
         $dob_age = $dob_year . " y / " . $dob_month . " m";
         $this->tpl_data['dob_age'] = $dob_age;
         // EDC to EDC Age
-        $edc=$this->candidate->getData()['EDC'];
-        $edc_year  = abs((date('Y', strtotime($edc)) - date('Y')));
+        $edc = $this->candidate->getData()['EDC'];
+        $edc_year = abs((date('Y', strtotime($edc)) - date('Y')));
         $edc_month = abs((date('m', strtotime($edc)) - date('m')));
         $edc_age = $edc_year . " y / " . $edc_month . " m";
         $this->tpl_data['edc_age'] = $edc_age;
@@ -322,7 +322,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function getFeedbackPanel(CandID $candID, ?\SessionID $sessionID): string
     {
         $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
-        $html          =  $feedbackPanel->display();
+        $html = $feedbackPanel->display();
         return $html;
     }
 
@@ -336,7 +336,7 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
+        $deps = parent::getJSDependencies();
         return array_merge(
             $deps,
             [
@@ -352,9 +352,9 @@ class Instrument_List extends \NDB_Menu_Filter
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid     = $this->candidate->getCandID();
-        $pscid      = $this->candidate->getPSCID();
-        $sessionid  = $this->timePoint->getSessionID();
+        $candid = $this->candidate->getCandID();
+        $pscid = $this->candidate->getPSCID();
+        $sessionid = $this->timePoint->getSessionID();
         $visitlabel = $this->timePoint->getVisitLabel();
 
         return new \LORIS\BreadcrumbTrail(
@@ -383,9 +383,10 @@ class Instrument_List extends \NDB_Menu_Filter
      * @return void
      */
     public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void {
-        $gets      = $request->getQueryParams();
+        \User $user,
+        ServerRequestInterface $request
+    ): void {
+        $gets = $request->getQueryParams();
         $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
             $candidate = \Candidate::singleton(new CandID($attribute));
@@ -395,7 +396,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $attribute = $request->getAttribute("timePoint");
         if ($attribute === null) {
-            $timePoint       = \TimePoint::singleton(
+            $timePoint = \TimePoint::singleton(
                 new \SessionID($gets['sessionID'])
             );
             $this->timePoint = $timePoint;
