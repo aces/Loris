@@ -295,11 +295,13 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         // convert DoB And EDC date to years and months
-        $this->tpl_data['display'] = array_merge($this->candidate->getData(), $this->timePoint->getData());
+        $this->tpl_data['display'] = array_merge(
+            $this->candidate->getData(), $this->timePoint->getData()
+        );
         // DoB to Derived Age
-        $dob = $this->candidate->getData()['DoB'];
-        $dob_year = abs((date('Y', strtotime($dob)) - date('Y')) ?? '');
-        $dob_month = abs((date('m', strtotime($dob)) - date('m')) ?? '');
+        $dob = $this->candidate->getData();
+        $dob_year = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
+        $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
         $dob_age = $dob_year . " y / " . $dob_month . " m";
         $this->tpl_data['dob_age'] = $dob_age;
         // EDC to EDC Age
