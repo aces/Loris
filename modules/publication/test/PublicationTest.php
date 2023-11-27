@@ -28,6 +28,25 @@ require_once __DIR__ .
 
 class PublicaitonTest extends LorisIntegrationTest
 {
+    private $_loadingBrowseUI = [
+        [
+            "label"    => "Title",
+            "selector" => "#publications_filter_form>div>div:nth-child(1)>div>label",
+	],
+    ];
+    private $_loadingproposeUI = [
+        [
+            "label"    => "Title",
+            "selector" => "#propose>div>div>form>div>div:nth-child(1)>div>div>label",
+        ],
+    ];
+    private $_loadingViewUI = [
+        [
+            "label"    => "CandID",
+	    "selector" => 
+	    "#lorisworkspace>div>div>div>div>div>form>div>div:nth-child(2)>div>label",
+        ],
+    ];    
 
     /**
      * Insert testing data into the database
@@ -141,6 +160,35 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+    /**
+     * This function could test UI elements in each Tabs.
+     *
+     * @return void
+     */
+    function testLoadingUIS()
+    {
+        $this->_testPageUIs("/publication", $this->_loadingBrowseUI);
+	$this->_testPageUIs("/publication#propose", $this->_loadingproposeUI);
+        $this->_testPageUIs("/publication/view_project?id=1", $this->_loadingViewUI);
 
+    }
+    /**
+     * This function could test UI elements in each Tabs.
+     *
+     * @param string $url this is for the url which needs to be tested.
+     * @param array  $uis UI elements in each Tabs.
+     *
+     * @return void
+     */
+    function _testPageUIs($url,$uis)
+    {
+
+        foreach ($uis as $ui ) {
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($ui['selector'])
+            )->getText();
+            $this->assertStringContainsString($ui['label'], $text);
+        }
+    }
 }
 
