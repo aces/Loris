@@ -317,8 +317,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $user   = \User::singleton();
         $access = $obj->_hasAccess($user);
 
+        $sessionID = $obj->getSessionID();
+        if ($sessionID !== null) {
+            $timepoint = \Timepoint::singleton($sessionID);
+        }
+
         // check that user has access
-        if ($access == false) {
+        if ($access == false || !$user->hasCenter($timepoint->getCenterID())) {
             throw new Exception(
                 "You do not have access to this page.",
                 403
