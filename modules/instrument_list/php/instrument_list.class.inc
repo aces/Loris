@@ -299,7 +299,7 @@ class Instrument_List extends \NDB_Menu_Filter
             $this->candidate->getData(), $this->timePoint->getData()
         );
         // DoB to Derived Age
-        $dob = $this->candidate->getData();
+        $dob = $this->tpl_data['display'];
         $dob_year = abs((date('Y', strtotime($dob['DoB'])) - date('Y')));
         $dob_month = abs((date('m', strtotime($dob['DoB'])) - date('m')));
         $dob_age = $dob_year . " y / " . $dob_month . " m";
