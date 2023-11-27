@@ -182,14 +182,12 @@ class PublicaitonTest extends LorisIntegrationTest
      */
     function _testPageUIs($url,$uis)
     {
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-	)->getText();
+        $this->safeGet($this->url . $url);
+	    
         foreach ($uis as $ui ) {
-//            $text = $this->safeFindElement(
-//                WebDriverBy::cssSelector($ui['selector'])
-//	    )->getText();
-	               $this->assertStringContainsString("jflkdjslfjljfljkla", $bodytext);
+            $text = $this->safeFindElement(
+                WebDriverBy::cssSelector($ui['selector'])
+	    )->getText();
             $this->assertStringContainsString($ui['label'], $text);
         }
     }
