@@ -39,7 +39,7 @@ class Schema extends Endpoint
      */
     private function _hasAccess(\User $user)
     {
-        return true;
+        return $user->hasPermission('mindlogger_schema_create');
     }
 
     /**
@@ -65,26 +65,6 @@ class Schema extends Endpoint
 
 
     /**
-     * Get the user from the request and validate that they have
-     * access to this endpoint.
-     *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
-     * @return \User The user object
-     */
-    protected function getUserAndValidate(ServerRequestInterface $request): \User
-    {
-        $user = $request->getAttribute('user');
-//        Todo: Current realization is public
-//        if ($user instanceof \LORIS\AnonymousUser) {
-//            return new \LORIS\Http\Response\JSON\Unauthorized();
-//        }
-
-        return $user;
-    }
-
-
-    /**
      * Handles a request starts with /schema
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -93,7 +73,12 @@ class Schema extends Endpoint
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $user = $this->getUserAndValidate($request);
+        $user = $request->getAttribute('user');
+
+        if ($user instanceof \LORIS\AnonymousUser) {
+            return new \LORIS\Http\Response\JSON\Unauthorized();
+        }
+
         if (!$this->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }

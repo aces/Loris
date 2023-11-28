@@ -131,7 +131,8 @@ INSERT INTO `permissions` VALUES
     (60,'behavioural_quality_control_view','Flagged Behavioural Entries',(SELECT ID FROM modules WHERE Name='behavioural_qc'),'View','2'),
     (61,'api_docs','API documentation',(SELECT ID FROM modules WHERE Name='api_docs'),'View','2'),
     (62,'electrophysiology_browser_edit_annotations','Annotations',(SELECT ID FROM modules WHERE Name='electrophysiology_browser'),'Create/Edit','2'),
-    (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2');
+    (63,'monitor_eeg_uploads','Monitor EEG uploads',(SELECT ID FROM modules WHERE Name='electrophysiology_uploader'),NULL,'2'),
+    (64, 'mindlogger_schema_create', 'Mindlogger applet schemas and instruments thru API', (SELECT ID FROM modules WHERE Name='mindlogger'), 'Create', 2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID
