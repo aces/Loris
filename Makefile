@@ -68,5 +68,12 @@ login:
 mri_violations:
 	target=mri_violations npm run compile
 
+issue_tracker:
+	target=issue_tracker npm run compile
+
 dashboard:
 	target=dashboard npm run compile
+
+publication:
+	target=publication npm run compile
+
