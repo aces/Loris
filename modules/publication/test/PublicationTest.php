@@ -42,9 +42,9 @@ class PublicaitonTest extends LorisIntegrationTest
     ];
     private $_loadingViewUI    = [
         [
-            "label"    => "Title*",
+            "label"    => "Lead Investigator Email",
             "selector" =>
-        "#lorisworkspace>div>div>div>div>div>form>div>div:nth-child(2)>div>label",
+        "#lorisworkspace > div > div > div > div > div > form",
         ],
     ];
 
