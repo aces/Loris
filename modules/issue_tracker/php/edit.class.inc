@@ -66,7 +66,8 @@ class Edit extends \NDB_Page implements ETagCalculator
         $inactive_users = [];
         if ($user->hasPermission('access_all_profiles')) {
             $assignee_expanded = $db->pselect(
-                "SELECT Real_name, UserID FROM users",
+                "SELECT Real_name, UserID FROM users 
+                    WHERE Active='Y' AND Pending_approval='N'",
                 []
             );
 
@@ -84,7 +85,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $assignee_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 AND Active='Y' AND Pending_approval='N'",
                 [
                     'CenterID' => $CenterID,
                     'DCC'      => $DCCID,
@@ -113,7 +115,8 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $otherWatchers = [];
         $potential_watchers_expanded = $db->pselect(
-            "SELECT Real_name, UserID FROM users",
+            "SELECT Real_name, UserID FROM users 
+                WHERE Active='Y' AND Pending_approval='N'",
             []
         );
         foreach ($potential_watchers_expanded as $w_row) {
@@ -189,7 +192,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 ->withDataFrom($provisioner)
                 ->toArray($user);
 
-            $isWatching            = $db->pselectOne(
+            $isWatching = $db->pselectOne(
                 "SELECT userID, issueID FROM issues_watching
                 WHERE issueID=:issueID AND userID=:userID",
                 [
@@ -197,11 +200,28 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'userID'  => $user->getUsername(),
                 ]
             );
-            $issueData['watching'] = $isWatching === null ? 'No' : 'Yes';
+
+            // Add current assignee in assignees dropdown even if not active
+            if (!isset($assignees[$issueData['assignee']])) {
+                $assignees[$issueData['assignee']] = $db->pselectOne(
+                    "SELECT Real_name FROM users
+                    WHERE UserID=:userID",
+                    [
+                        'userID' => $issueData['assignee']
+                    ]
+                );
+            }
+
+            $othersWatching = $this->getWatching($issueID);
+            // add current watchers to others watching, even if not active
+            $otherWatchers = array_merge($otherWatchers, $othersWatching);
+            unset($otherWatchers[$user->getUserName()]);
+
+            $issueData['watching']       = $isWatching === null ? 'No' : 'Yes';
             $issueData['commentHistory'] = $this->getComments($issueID);
             $issueData['attachments']    = $attachments;
             $issueData['whoami']         = $user->getUsername();
-            $issueData['othersWatching'] = $this->getWatching($issueID);
+            $issueData['othersWatching'] = array_keys($othersWatching);
             $issueData['assignee']       = $db->pselectOne(
                 "SELECT assignee FROM issues WHERE issueID=:issueID",
                 ['issueID' => $issueID]
@@ -344,25 +364,28 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @param int $issueID the relevant issue
      *
-     * @return array those who are watching
+     * @return array [Real_name => userID] of
+     *               those who are watching
      */
     function getWatching(int $issueID): array
     {
         $db = $this->loris->getDatabaseConnection();
 
         $watching = $db->pselect(
-            "SELECT userID from issues_watching
-            WHERE issueID=:issueID
-            AND userID NOT IN
-            (SELECT assignee FROM issues
-            WHERE issueID=:issueID
-            AND assignee IS NOT NULL)",
+            "SELECT Real_name, UserID from users
+            WHERE UserID IN 
+              (SELECT userID from issues_watching
+              WHERE issueID=:issueID)
+            AND UserID NOT IN
+              (SELECT assignee FROM issues
+              WHERE issueID=:issueID
+              AND assignee IS NOT NULL)",
             ['issueID' => $issueID]
         );
 
         $whoIsWatching = [];
         foreach ($watching as $watcher) {
-            $whoIsWatching[] = $watcher['userID'];
+            $whoIsWatching[$watcher['UserID']] = $watcher['Real_name'];
         }
         return $whoIsWatching;
     }
@@ -910,13 +933,13 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Puts updated fields into the issues_comments table.
      *
-     * @param string $comment new issue comment
-     * @param int    $issueID the issue ID
-     * @param \User  $user    the user
+     * @param ?string $comment new issue comment
+     * @param int     $issueID the issue ID
+     * @param \User   $user    the user
      *
      * @return void
      */
-    function updateComments(string $comment, int $issueID, \User $user)
+    function updateComments(?string $comment, int $issueID, \User $user)
     {
         $db = $this->loris->getDatabaseConnection();
         if (isset($comment) && $comment != "null") {
