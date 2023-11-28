@@ -139,59 +139,59 @@
         <form method="post">
             <fieldset>
                 <legend>MySQL Connection Information</legend>
-            <div>
-                <div class="col-md-2">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     <label for="serverhost">Server Hostname:</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                     <input id="serverhost" value="{$dbhost}" type="text" name="dbhost" placeholder="ie. localhost">
                 </div>
             </div>
-            <div>
-                <div class="col-md-2">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     <label for="serveruser">Admin Username:</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                     <input id="serveruser" value="{$dbadminuser}" name="dbadminuser" type="text" placeholder="ie. root">
                 </div>
             </div>
-            <div>
-                <div class="col-md-2">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     <label for="serverpassword">Admin Password:</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                     <input id="serverpassword" value="{$dbadminpassword}" type="password" name="dbadminpassword" placeholder="ie. LORISISTHEBEST!!!1">
                 </div>
             </div>
-            <div>
-                <div class="col-md-2">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     <label for="dbname">Database name:</label>
                 </div>
-                <div class="col-md-10">
+                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                     <input id="dbname" value="{if $dbname}{$dbname}{else}LORIS{/if}" type="text" name="dbname">
                 </div>
             </div>
             </fieldset>
             <fieldset>
                 <legend>Options</legend>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <label for="use_existing_database">Use existing database:</label>
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <input type="checkbox" id="use_existing_database" name="use_existing_database" value="on" {($use_existing_database == 'on') ? 'checked' : ''}/>
                                     Check this if the database already exists but does not have Loris installed yet
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <label for="use_existing_tables">Use existing tables:</label>
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <input type="checkbox" id="use_existing_tables" name="use_existing_tables" value="on" {($use_existing_tables == 'on') ? 'checked' : ''}/>
                                     Check this if you already installed Loris at the specified database
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <label for="use_existing_configs">Use existing configs:</label>
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <input type="checkbox" id="use_existing_configs" name="use_existing_configs" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
                                     Check this if you don't want to update the configuration.
                                 <em>(You really should update the configuration if possible, though)</em>
@@ -199,7 +199,7 @@
             </fieldset>
             <input type="hidden" name="formname" value="validaterootaccount" />
 <hr/>
-            <div class="col-md-12">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <input class="btn btn-submit btn-default" type="submit" />
             </div>
         </form>
