@@ -42,6 +42,9 @@ interface QueryEngine
      * Retrieve the data for a given list of DictionaryItems from this
      * engine's data dictionary and a given list of CandIDs.
      *
+     * The returned value is a type where the key is the CandID (as
+     * a string) and the value is a DataInstance.
+     *
      * If visits is declared, only include data for those visits labels.
      *
      * @param DictionaryItem[] $items Data points to retrieve

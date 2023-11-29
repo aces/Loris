@@ -49,15 +49,15 @@ In the `Change Status` column of the Menu Table, you press the **Activate** or
 
 ### Add tab (activate)
 Under the `Add` tab, you can add an entry that already exists in the Test
-Battery but has been deactivated. A pop up will appear that will give you
+Battery but has been deactivated. A pop-up will appear that will give you
 the option to activate the existing entry.
 
 ### Edit window (activate/deactivate)
 Select an entry in the Menu table and click on `Edit`.
 In the `Edit` window, edit an entry and make sure the new entry has no duplicate in the Test Battery.
 This will add the new entry to the table and deactivate the original one.
-Alternatively, edit an entry so that it becomes the same as another deactivated entry in the Test Battery.
-A pop up will appear that will give you the option to activate the other entry and deactivate the original one.
+Alternatively, if you edit an entry so that it becomes the same as another deactivated entry in the Test Battery,
+a pop-up will appear that will give you the option to activate the other entry and deactivate the original one.
 
 ## Behaviour of Parameters
 
@@ -79,9 +79,9 @@ A pop up will appear that will give you the option to activate the other entry a
    the one of the timepoint, the instrument is administered at that CenterID.
 
 ### AgeMinDays/AgeMaxDays:
-   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set and they 
+   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set, and they
    are both set to `0`, the instrument gets administered at ALL ages;
-   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set and they 
+   - If the test battery entry has `AgeMinDays` and `AgeMaxDays` set, and they
    are set to any value other than `0`, the instrument gets administered IF AND
    ONLY IF the age of the candidate at the timepoint is between `AgeMinDays` 
    and `AgeMaxDays`;

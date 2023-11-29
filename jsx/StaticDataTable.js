@@ -1,5 +1,3 @@
-/* exported RStaticDataTable */
-
 /**
  * This file contains React component for Static Data Table
  *
@@ -67,9 +65,6 @@ class StaticDataTable extends Component {
         });
       } else {
         $('#dynamictable').DynamicTable();
-      }
-      if (this.state.Hide.defaultColumn) {
-        $('#dynamictable').find('tbody td:eq(0)').hide();
       }
     }
     if (!this.props.DisableFilter) {
@@ -532,7 +527,8 @@ class StaticDataTable extends Component {
             this.props.Headers[j],
             data,
             this.props.Data[index[i].RowIdx],
-            this.props.Headers
+            this.props.Headers,
+            j
           );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
@@ -687,9 +683,6 @@ StaticDataTable.defaultProps = {
   NoDynamicTable: false,
 };
 
-let RStaticDataTable = React.createFactory(StaticDataTable);
-
 window.StaticDataTable = StaticDataTable;
-window.RStaticDataTable = RStaticDataTable;
 
 export default StaticDataTable;

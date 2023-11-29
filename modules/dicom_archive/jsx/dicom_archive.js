@@ -189,8 +189,9 @@ DicomArchive.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DicomArchive dataURL={loris.BaseURL + '/dicom_archive/?format=json'}/>
   );
 });

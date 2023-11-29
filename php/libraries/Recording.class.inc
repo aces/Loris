@@ -85,14 +85,18 @@ class Recording
                      ) pc
                        ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_electrode
+                       SELECT pcser.PhysiologicalFileID, pe2.FilePath
+                       FROM physiological_electrode pe2
+                        INNER JOIN physiological_coord_system_electrode_rel pcser
+                        USING (PhysiologicalElectrodeID)
                        LIMIT 1
                      ) pe
                        ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
                      LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_task_event
+                       SELECT pte.PhysiologicalFileID, pef.FilePath
+                       FROM physiological_task_event pte
+                        INNER JOIN physiological_event_file pef
+                        USING (EventFileID)
                        LIMIT 1
                      ) pte
                        ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
@@ -340,9 +344,9 @@ class Recording
                          pe.Name                as electrodename,
                          pet.ElectrodeType      as electrodetype,
                          pem.ElectrodeMaterial  as electrodematerial,
-                         pe.X                   as x,
-                         pe.Y                   as y,
-                         pe.Z                   as z,
+                         po.X                   as x,
+                         po.Y                   as y,
+                         po.Z                   as z,
                          pe.Impedance           as Impedance,
                          pe.FilePath            as filepath
                        FROM
@@ -351,8 +355,12 @@ class Recording
                          USING (PhysiologicalElectrodeTypeID)
                        JOIN physiological_electrode_material pem
                          USING (PhysiologicalElectrodeMaterialID)
+                       JOIN point_3d po
+                         USING (Point3DID)
+                       JOIN physiological_coord_system_electrode_rel pcser
+                         USING (PhysiologicalElectrodeID)
                        WHERE
-                         pe.PhysiologicalFileID = :v_fileid
+                        pcser.PhysiologicalFileID = :v_fileid
                       ',
                 ['v_fileid' => $this->_fileid]
             );
@@ -385,9 +393,11 @@ class Recording
                          pte.EventType    as eventtype,
                          pte.TrialType    as trialtype,
                          pte.ResponseTime as responsetime,
-                         pte.FilePath     as filepath
+                         pef.FilePath     as filepath
                        FROM
-                         physiological_task_event pte 
+                         physiological_task_event pte
+                        JOIN physiological_event_file pef
+                         USING (EventFileID)
                        WHERE
                          pte.PhysiologicalFileID = :v_fileid
                       ',

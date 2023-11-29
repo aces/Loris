@@ -158,8 +158,7 @@ class CouchDBMRIImporter
                     . '    THEN ('
                     .        $this->_getQueryForSelectedFiles(
                         'COALESCE(fqs.QCStatus, "No QC on selected file")',
-                        $scantype,
-                        's.ID'
+                        $scantype
                     )
                     .     ') '
                     . '  WHEN 0 '

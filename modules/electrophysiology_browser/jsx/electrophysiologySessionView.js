@@ -539,9 +539,11 @@ window.onload = function() {
   rootDOM.appendChild(EEGSessionViewAppDOM);
 
   // Render the React Components.
-  const mainRoot = createRoot(document.getElementById('eegSessionView'));
-  mainRoot.render(eegSessionView);
+  createRoot(
+    document.getElementById('eegSessionView')
+  ).render(eegSessionView);
 
-  const sidebarRoot = createRoot(document.getElementById('eegSidebar'));
-  sidebarRoot.render(eegSidebar);
+  createRoot(
+    document.getElementById('eegSidebar')
+  ).render(eegSidebar);
 };

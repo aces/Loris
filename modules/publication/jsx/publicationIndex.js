@@ -4,6 +4,7 @@ import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Publication index component
@@ -192,8 +193,9 @@ PublicationIndex.propTypes = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>

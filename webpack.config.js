@@ -25,7 +25,6 @@ const optimization = {
 
 const resolve = {
   alias: {
-    util: path.resolve(__dirname, './htdocs/js/util'),
     jsx: path.resolve(__dirname, './jsx'),
     jslib: path.resolve(__dirname, './jslib'),
     Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
@@ -34,7 +33,6 @@ const resolve = {
     Filter: path.resolve(__dirname, './jsx/Filter'),
     FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
     FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
-    Form: path.resolve(__dirname, './jsx/Form'),
     Loader: path.resolve(__dirname, './jsx/Loader'),
     Modal: path.resolve(__dirname, './jsx/Modal'),
     MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
@@ -152,7 +150,7 @@ function lorisModule(mname, entries) {
 
   for (let i = 0; i < entries.length; i++) {
     entObj[entries[i]] =
-      base + '/' + mname + '/jsx/' + entries[i] + '.js';
+      base + '/' + mname + '/jsx/' + entries[i];
   }
   return {
     entry: entObj,
@@ -220,7 +218,6 @@ let config = [
       StaticDataTable: './jsx/StaticDataTable.js',
       MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
       Breadcrumbs: './jsx/Breadcrumbs.js',
-      Form: './jsx/Form.js',
       CSSGrid: './jsx/CSSGrid.js',
       Help: './jsx/Help.js',
     },
@@ -258,7 +255,7 @@ const lorisModules = {
     'ConsentWidget',
   ],
   configuration: ['CohortRelations', 'configuration_helper'],
-  conflict_resolver: ['conflict_resolver'],
+  conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
@@ -292,6 +289,11 @@ const lorisModules = {
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
   ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
+  ],
   imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
@@ -315,9 +317,10 @@ const lorisModules = {
   imaging_qc: ['imagingQCIndex'],
   server_processes_manager: ['server_processes_managerIndex'],
   statistics: ['WidgetIndex'],
-  instruments: ['CandidateInstrumentList'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
   api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
 };
 for (const [key] of Object.entries(lorisModules)) {
   const target = process.env.target;
@@ -333,7 +336,7 @@ if (fs.existsSync('./project/webpack-project.config.js')) {
   const projConfig = require('./project/webpack-project.config.js');
 
   for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
+    config.push(lorisModule(module, files));
   }
 }
 

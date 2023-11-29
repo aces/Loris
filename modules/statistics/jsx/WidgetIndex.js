@@ -66,10 +66,9 @@ WidgetIndex.propTypes = {
  * Render StatisticsIndex on page load.
  */
 window.addEventListener('load', () => {
-  const root = createRoot(
+  createRoot(
     document.getElementById('statistics_widgets')
-  );
-  root.render(
+  ).render(
     <WidgetIndex
       baseURL={`${loris.BaseURL}/statistics`}
     />

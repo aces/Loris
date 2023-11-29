@@ -99,15 +99,12 @@ class Timepoint_List extends \NDB_Menu
             },
             $listOfSessionIDs,
         );
-
-        if ($user->hasPermission('access_all_profiles') === false) {
-            $listOfTimePoints = array_filter(
-                $listOfTimePoints,
-                function ($timePoint) use ($user) {
-                    return $timePoint->isAccessibleBy($user);
-                }
-            );
-        }
+        $listOfTimePoints = array_filter(
+            $listOfTimePoints,
+            function ($timePoint) use ($user) {
+                return $timePoint->isAccessibleBy($user);
+            }
+        );
 
         /*
          * List of visits

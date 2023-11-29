@@ -2,6 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    StaticElement,
+    SelectElement,
+    TextboxElement,
+    EmailElement,
+    CheckboxElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Request account form.

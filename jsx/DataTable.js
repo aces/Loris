@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
+import {CTA} from 'jsx/Form';
 
 /**
  * Data Table component

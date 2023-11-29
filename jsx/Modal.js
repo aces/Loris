@@ -7,6 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Modal Component.

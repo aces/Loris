@@ -14,6 +14,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Xavier Lecours <xavier.lecours@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiSitesTest extends LorisApiAuthenticatedTest
 {
@@ -32,11 +33,7 @@ class LorisApiSitesTest extends LorisApiAuthenticatedTest
                 'headers'     => $this->headers
             ]
         );
-        if ($response->getStatusCode() === 404) {
-            $this->markTestSkipped(
-                "Endpoint not found: GET sites"
-            );
-        }
+
         $this->assertEquals(200, $response->getStatusCode());
 
         $data = json_decode(

@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   );
 
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(mediaEditForm);
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(mediaEditForm);
 });
