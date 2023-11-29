@@ -1,4 +1,16 @@
 <?php declare(strict_types=1);
+/**
+ * An API endpoint is an endpoint which abstracts away common element
+ * of different Mindlogger API endpoints.
+ *
+ * PHP Version 7
+ *
+ * @category Mindlogger
+ * @package  Mindlogger
+ * @author   Dzmitry Yahur <dyagur@scnsoft.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
 
 namespace LORIS\mindlogger;
 
@@ -7,6 +19,15 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Http\Endpoint as LORISEndpoint;
 
+/**
+ * An abstract class for common concerns of different API endpoints.
+ *
+ * @category Mindlogger
+ * @package  Mindlogger
+ * @author   Dzmitry Yahur <dyagur@scnsoft.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
 abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
 {
     /**
@@ -39,7 +60,7 @@ abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
     ): ResponseInterface
     {
         $versions = $this->supportedVersions() ?? [];
-        $version = $request->getAttribute("Mindlog-API-Version") ?? "unknown";
+        $version = $request->getAttribute("Mindlogger-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
             // If it's not supported by a version of the API, that means the
             // endpoint for that version should be not found

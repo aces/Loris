@@ -5,7 +5,7 @@
  *
  * PHP Version 8
  *
- * @category   API
+ * @category   Mindlogger
  * @package    Mindlogger
  * @author     Dzmitry Yahur <dyagur@scnsoft.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -21,7 +21,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * Class module implements the basic Mindlogger module functionality
  *
- * @category   API
+ * @category   Mindlogger
  * @package    Mindlogger
  * @author     Dzmitry Yahur <dyagur@scnsoft.com>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -29,6 +29,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
+    const VERSION_PATTERN = "/^\/?(v[0-9]+)\/(.*)/";
+
     /**
      * @return bool
      */
@@ -37,8 +39,11 @@ class Module extends \Module
         return true;
     }
 
-    const VERSION_PATTERN = "/^\/?(v[0-9]+)\/(.*)/";
 
+    /**
+     * @param string $url
+     * @return array
+     */
     protected function validateAndParseUrl(string $url): array
     {
         $url_pieces = [];
@@ -53,6 +58,10 @@ class Module extends \Module
     }
 
     /**
+     * The default handler for a module routes to a page of the first component of
+     * the URL's name, or the same name as the module if serving the root of the
+     * module.
+     *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
@@ -68,7 +77,7 @@ class Module extends \Module
 
         $newrequest = $request
             ->withURI($newurl)
-            ->withAttribute("Mindlog-API-Version", $version)
+            ->withAttribute("Mindlogger-API-Version", $version)
             ->withAttribute('pathparts', $pathparts);
 
         $handlername = $pathparts[0];
@@ -81,11 +90,12 @@ class Module extends \Module
                 return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-
         return $handler->process($newrequest, $handler);
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @return string
      */
     public function getLongName(): string

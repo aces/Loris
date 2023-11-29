@@ -4,7 +4,7 @@
  *
  * PHP Version 8
  *
- * @category API
+ * @category Mindlogger
  * @package  Mindlogger
  * @author   Dzmitry Yahur <dyagur@scnsoft.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -20,7 +20,7 @@ use \LORIS\mindlogger\Endpoint;
 /**
  * A class for handling the /schema endpoint.
  *
- * @category API
+ * @category Mindlogger
  * @package  Mindlogger
  * @author   Dzmitry Yahur <dyagur@scnsoft.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
