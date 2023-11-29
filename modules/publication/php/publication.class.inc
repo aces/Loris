@@ -301,7 +301,7 @@ class Publication extends \NDB_Menu_Filter_Form
         array_walk_recursive(
             $result,
             function (&$r) {
-                $r = htmlspecialchars_decode($r);
+                $r = htmlspecialchars_decode($r ?? '');
             }
         );
         $result['form'] = $this->form->form;
