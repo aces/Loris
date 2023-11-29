@@ -65,6 +65,9 @@ instrument_manager:
 login:
 	target=login npm run compile
 
+module_manager:
+	target=module_manager npm run compile
+
 mri_violations:
 	target=mri_violations npm run compile
 
