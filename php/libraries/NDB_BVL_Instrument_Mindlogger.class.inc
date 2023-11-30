@@ -53,8 +53,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     const ACTIVITY_ITEM_FLANKER = "flanker";
     const ACTIVITY_ITEM_STABILITY_TRACKER = "stabilityTracker";
     const ACTIVITY_ITEM_AB_TRAILS = "ABTrails";
-    const ACTIVITY_ITEM_AUDIO_PLAYER = "audioPlayer"; // Won't be used
-    const ACTIVITY_ITEM_MESSAGE = "message"; // Won't be used
+    const ACTIVITY_ITEM_AUDIO_PLAYER = "audioPlayer";
+    const ACTIVITY_ITEM_MESSAGE = "message";
 
     protected array $dictionary = [];
     protected Scope $scope;
@@ -235,6 +235,23 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
                 }
                 break;
             case self::ACTIVITY_ITEM_TIME_RANGE:
+                $this->dictionary[] = new DictionaryItem(
+                    $fieldName . "__start",
+                    $activityItem["question"],
+                    $this->scope,
+                    new TimeType(),
+                    new Cardinality(Cardinality::SINGLE),
+                    $activityItem["name"],
+                );
+                $this->dictionary[] = new DictionaryItem(
+                    $fieldName . "__end",
+                    $activityItem["question"],
+                    $this->scope,
+                    new TimeType(),
+                    new Cardinality(Cardinality::SINGLE),
+                    $activityItem["name"],
+                );
+                break;
             case self::ACTIVITY_ITEM_FLANKER:
             case self::ACTIVITY_ITEM_STABILITY_TRACKER:
             case self::ACTIVITY_ITEM_AB_TRAILS:
