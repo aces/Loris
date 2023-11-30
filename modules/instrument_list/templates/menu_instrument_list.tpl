@@ -4,13 +4,11 @@
   <thead>
   <tr class="info">
     <th>
-      DOB
+      Derived Age
     </th>
-    {if $display.EDC!=""}
-      <th>
-        EDC
-      </th>
-    {/if}
+    <th>
+        EDC Age
+    </th>
     <th>
       Biological Sex
     </th>
@@ -57,13 +55,11 @@
   <tbody>
   <tr>
     <td>
-      {$display.DoB}
+      {$dob_age}
     </td>
-    {if $display.EDC!=""}
-      <td>
-        {$display.EDC}
-      </td>
-    {/if}
+    <td>
+        {$edc_age}
+    </td>
     <td>
       {$display.Sex}
     </td>

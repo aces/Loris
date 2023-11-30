@@ -296,6 +296,24 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->tpl_data['display']
             = array_merge($this->candidate->getData(), $this->timePoint->getData());
+        // DoB to Derived Age
+        $dob       = $this->candidate->getData();
+        $dob_date  = $dob['DoB'];
+        $today     = date("Y-m-d");
+        $dob_arr   = explode('-', $dob_date);
+        $today_arr = explode('-', $today);
+        $dob_year  = abs($dob_arr[0] - $today_arr[0]);
+        $dob_month = abs($dob_arr[1] - $today_arr[1]);
+        $dob_age   = $dob_year . " y / " . $dob_month . " m";
+        $this->tpl_data['dob_age'] = $dob_age;
+        // EDC to EDC Age
+        $edc       = $this->candidate->getData();
+        $edc_date  = $edc['EDC'];
+        $edc_arr   = explode('-', $edc_date);
+        $edc_year  = abs($edc_arr[0] - $today_arr[0]);
+        $edc_month = abs($edc_arr[1] - $today_arr[1]);
+        $edc_age   = $edc_year . " y / " . $edc_month . " m";
+        $this->tpl_data['edc_age'] = $edc_age;
     }
 
     /**
