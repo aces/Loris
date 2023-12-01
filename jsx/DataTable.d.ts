@@ -24,8 +24,8 @@ type DataTableProps = {
     hide?: hideOptions
     fields: Field[]
     nullTableShow?: boolean
-    noDynamicTable: boolean
-    getMappedCell: (header: string, data: string|null) => string
+    noDynamicTable?: boolean
+    getMappedCell?: (header: string, data: string|null) => string
 }
 
 /**

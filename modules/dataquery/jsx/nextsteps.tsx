@@ -131,7 +131,10 @@ function NextSteps(props: {
         <div style={{
             position: 'fixed',
             bottom: 0,
-            right: 10,
+            right: 0,
+            borderWidth: 'thin',
+            borderStyle: 'solid',
+            borderColor: 'black',
             // Fix the height size so it doesn't move when
             // expanded or collapsed
             height: 120,
