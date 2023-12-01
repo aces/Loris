@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Candidate date of birth component
