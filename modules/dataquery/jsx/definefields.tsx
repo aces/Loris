@@ -205,8 +205,6 @@ function DefineFields(props: {
       if (!syncVisits) {
           return;
       }
-      // FIXME: Go through each selected field, get the dictionary,
-      // and take the intersection with default visits
       let modifiedvisits = false;
       props.selected.forEach( (field: APIQueryField) => {
           // Valid visits according to the dictionary

@@ -67,7 +67,6 @@ export function CriteriaTerm(props: {
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
 }) {
-    // console.log(props.fulldictionary);
     const containerStyle: React.CSSProperties ={
         display: 'flex' as const,
         flexWrap: 'nowrap' as const,
@@ -132,7 +131,8 @@ export function CriteriaTerm(props: {
     let cardinalityWarning;
     const dict = getDictionary(props.term, props.fulldictionary);
     if (!dict) {
-        // console.error('Could not get dictionary for ', props.term, ' in ', props.fulldictionary);
+        // This sometimes happens when first loading, before the dictionary
+        // is retrieved, so we do not print an error.
     } else if (dict.cardinality == 'many') {
         cardinalityWarning = <i className="fas fa-exclamation-circle"
             style={{fontSize: '2em',

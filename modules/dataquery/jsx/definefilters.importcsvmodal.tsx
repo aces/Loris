@@ -40,7 +40,6 @@ function ImportCSVModal(props: {
      * @param {any} value - the value from papaparse callback
      */
     const csvParsed = (value: Papa.ParseResult<any>) => {
-        // setCSVData(value.data);
         if (value.errors && value.errors.length > 0) {
             console.error(value.errors);
             swal.fire({

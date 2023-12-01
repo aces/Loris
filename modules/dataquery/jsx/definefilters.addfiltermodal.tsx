@@ -332,7 +332,7 @@ function getOperatorOptions(dict: FieldDictionary) {
     // things you can check.
     if (dict.cardinality == 'optional') {
         options['isnotnull'] = 'has data';
-        options['isnull'] = ' has no data';
+        options['isnull'] = 'has no data';
     } else if (dict.cardinality == 'many') {
         options['exists'] = 'exists';
         options['notexists'] = 'does not exist';

@@ -20,17 +20,13 @@ export function calcPayload(
     const payload: APIQueryObject = {
         type: 'candidates',
         fields: fields.map((val: APIQueryField) => {
-            // console.log('payload ', val);
             const fieldpayload: APIQueryField = {
                 module: val.module,
                 category: val.category,
                 field: val.field,
             };
-            // console.log('payload visits', val.visits);
             if (val.visits) {
                 fieldpayload.visits = val.visits;
-                // convert from React select to static string
-                // payload.visits = val.visits.map( (visitOption) => visitOption.value);
             }
             return fieldpayload;
         },
