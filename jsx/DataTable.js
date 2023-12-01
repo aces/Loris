@@ -497,12 +497,18 @@ class DataTable extends Component {
             this.props.fields
               .forEach((field, k) => row[field.label] = rowData[k]);
 
+            const headers = this.props.fields.map(
+                (val) => val.label
+            );
+
             // Get custom cell formatting if available
             if (this.props.getFormattedCell) {
                 cell = this.props.getFormattedCell(
                     this.props.fields[j].label,
                     celldata,
-                    row
+                    row,
+                    headers,
+                    j
                 );
             } else {
                 cell = <td>{celldata}</td>;

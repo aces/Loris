@@ -3,7 +3,7 @@ import {useState, useEffect, ReactNode} from 'react';
 
 import fetchDataStream from 'jslib/fetchDataStream';
 
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 import {SelectElement} from 'jsx/Form';
 import {APIQueryField, APIQueryObject} from './types';
 import {QueryGroup} from './querydef';
@@ -311,10 +311,14 @@ function ViewData(props: {
                 max={queryData.data.length} />;
             break;
         case 'done':
-            queryTable = <StaticDataTable
-                Headers={organizedData.headers}
-                RowNumLabel='Row Number'
-                Data={organizedData.data}
+            queryTable = <DataTable
+                rowNumLabel="Row Number"
+                fields={organizedData.headers.map(
+                  (val: string) => {
+                      return {show: true, label: val};
+                  })
+                }
+                data={organizedData.data}
                 getFormattedCell={
                      organizedFormatter(
                         queryData.data,
@@ -323,7 +327,7 @@ function ViewData(props: {
                         props.fulldictionary,
                     )
                 }
-                />;
+            />;
             break;
         default:
             throw new Error('Unhandled organization status');
@@ -513,7 +517,7 @@ function organizedFormatter(
     case 'raw':
         /**
          * Callback to return the raw JSON data as returned by the API, in
-         * table form for the StaticDataTable
+         * table form for the DataTable
          *
          * @param {string} label - The table header
          * @param {string} cell - The cell value
@@ -539,7 +543,7 @@ function organizedFormatter(
         callback = (
             label: string,
             cell: string,
-            row: string[],
+            row: TableRow,
             headers: string[],
             fieldNo: number
         ): ReactNode => {
@@ -662,7 +666,7 @@ function organizedFormatter(
         callback = (
             label: string,
             cell: string,
-            row: string[],
+            row: TableRow,
             headers: string[],
             fieldNo: number
         ): ReactNode => {
