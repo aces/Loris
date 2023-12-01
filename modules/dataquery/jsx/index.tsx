@@ -23,6 +23,7 @@ type ActiveCategoryType = {
     currentDictionary: DictionaryCategory,
     changeCategory: (module: string, category: string) => void,
 };
+
 /**
  * React hook to manage the selection of an active module and category
  *

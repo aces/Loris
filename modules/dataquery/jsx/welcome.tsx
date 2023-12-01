@@ -1088,9 +1088,16 @@ function IntroductionMessage(props: {
              for filtering. When you share a query, the name will be shared
              along with it.</p>
            {studyQueriesParagraph}
+           <div style={{
+               display: 'flex',
+               flexDirection: 'column',
+               alignItems: 'center',
+           }}>
            <ButtonElement
+                columnSize="col-sm-12"
                 onUserInput={props.onContinue}
                 label="Continue to Define Fields" />
+           </div>
         </div>
     );
 }
