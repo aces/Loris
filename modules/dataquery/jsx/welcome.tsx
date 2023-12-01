@@ -83,7 +83,7 @@ function Welcome(props: {
         });
     }
     panels.push({
-            title: 'Introduction',
+            title: 'Instructions',
             content: <IntroductionMessage
                         hasStudyQueries={props.topQueries.length > 0}
                         onContinue={props.onContinue}
