@@ -112,7 +112,7 @@ function DefineFilters(props: {
     const bGroupStyle = {
         display: 'flex' as const,
         flexWrap: 'wrap' as const,
-        marginTop: 10,
+        marginTop: '1ex',
     };
 
     const mapModuleName = props.mapModuleName;
@@ -125,6 +125,7 @@ function DefineFilters(props: {
           <div style={bGroupStyle}>
              <ButtonElement
                 label={advancedLabel}
+                columnSize="col-sm-12"
                 onUserInput={(e: React.MouseEvent) => {
                    e.preventDefault();
                    setShowAdvanced(!showAdvanced);
@@ -194,6 +195,7 @@ function DefineFilters(props: {
                       <div style={bGroupStyle}>
                           <ButtonElement
                               label='Add Condition'
+                              columnSize="col-sm-12"
                               onUserInput={(e: React.MouseEvent) => {
                                   e.preventDefault();
                                   setAddModal(true);
@@ -203,6 +205,7 @@ function DefineFilters(props: {
                       <div style={bGroupStyle}>
                           <ButtonElement
                               label='Import from CSV'
+                              columnSize="col-sm-12"
                               onUserInput={(e: React.MouseEvent) => {
                                   e.preventDefault();
                                   // Need to be sure that we've loaded
@@ -267,7 +270,7 @@ function DefineFilters(props: {
             <form>
               <fieldset>
                     <div style={{
-                        display: 'flex', marginTop: 10,
+                        display: 'flex', marginTop: '1ex',
                         textDecoration: deleteItemIndex == 0 ?
                             'line-through' : undefined,
                     }}>
@@ -296,6 +299,7 @@ function DefineFilters(props: {
                         <div style={bGroupStyle}>
                             <ButtonElement
                                 label='Add "and" condition'
+                                columnSize="col-sm-12"
                                 onUserInput={(e: React.MouseEvent) => {
                                     e.preventDefault();
                                     props.query.operator = 'and';
@@ -303,6 +307,7 @@ function DefineFilters(props: {
                                 }} />
                             <ButtonElement
                                 label='Add "or" condition'
+                                columnSize="col-sm-12"
                                 onUserInput={(e: React.MouseEvent) => {
                                     e.preventDefault();
                                     setAddModal(true);
