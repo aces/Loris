@@ -5,11 +5,11 @@
  *
  * PHP Version 8
  *
- * @category   Mindlogger
- * @package    Mindlogger
- * @author     Dzmitry Yahur <dyagur@scnsoft.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @category Mindlogger
+ * @package  Mindlogger
+ * @author   Dzmitry Yahur <dyagur@scnsoft.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 
 namespace LORIS\mindlogger;
@@ -21,11 +21,11 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * Class module implements the basic Mindlogger module functionality
  *
- * @category   Mindlogger
- * @package    Mindlogger
- * @author     Dzmitry Yahur <dyagur@scnsoft.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
+ * @category Mindlogger
+ * @package  Mindlogger
+ * @author   Dzmitry Yahur <dyagur@scnsoft.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
 class Module extends \Module
 {
@@ -41,7 +41,7 @@ class Module extends \Module
 
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return array
      */
     protected function validateAndParseUrl(string $url): array
@@ -83,11 +83,11 @@ class Module extends \Module
         $handlername = $pathparts[0];
 
         switch ($handlername) {
-            case 'schema':
-                $handler = new \LORIS\mindlogger\Endpoints\Schema($this->loris);
-                break;
-            default:
-                return new \LORIS\Http\Response\JSON\NotFound();
+        case 'schema':
+            $handler = new \LORIS\mindlogger\Endpoints\Schema($this->loris);
+            break;
+        default:
+            return new \LORIS\Http\Response\JSON\NotFound();
         }
 
         return $handler->process($newrequest, $handler);

@@ -49,7 +49,7 @@ abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
      * An API endpoint overrides the default Mindlog Endpoint to add checks for
      * supported version(s).
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
+     * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 request handler
      *
      * @return ResponseInterface
@@ -57,10 +57,9 @@ abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
     public function process(
         ServerRequestInterface  $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $versions = $this->supportedVersions() ?? [];
-        $version = $request->getAttribute("Mindlogger-API-Version") ?? "unknown";
+        $version  = $request->getAttribute("Mindlogger-API-Version") ?? "unknown";
         if (!in_array($version, $versions)) {
             // If it's not supported by a version of the API, that means the
             // endpoint for that version should be not found

@@ -34,37 +34,37 @@ use \LORIS\instruments\DictionaryItem;
  */
 class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
 {
-    const ACTIVITY_ITEM_TEXT = "text";
+    const ACTIVITY_ITEM_TEXT          = "text";
     const ACTIVITY_ITEM_SINGLE_SELECT = "singleSelect";
-    const ACTIVITY_ITEM_MULTI_SELECT = "multiSelect";
-    const ACTIVITY_ITEM_SLIDER = "slider";
+    const ACTIVITY_ITEM_MULTI_SELECT  = "multiSelect";
+    const ACTIVITY_ITEM_SLIDER        = "slider";
     const ACTIVITY_ITEM_NUMBER_SELECT = "numberSelect";
-    const ACTIVITY_ITEM_TIME_RANGE = "timeRange";
-    const ACTIVITY_ITEM_GEOLOCATION = "geolocation";
-    const ACTIVITY_ITEM_DRAWING = "drawing";
-    const ACTIVITY_ITEM_PHOTO = "photo";
-    const ACTIVITY_ITEM_VIDEO = "video";
-    const ACTIVITY_ITEM_DATE = "date";
-    const ACTIVITY_ITEM_SLIDER_ROWS = "sliderRows";
+    const ACTIVITY_ITEM_TIME_RANGE    = "timeRange";
+    const ACTIVITY_ITEM_GEOLOCATION   = "geolocation";
+    const ACTIVITY_ITEM_DRAWING       = "drawing";
+    const ACTIVITY_ITEM_PHOTO         = "photo";
+    const ACTIVITY_ITEM_VIDEO         = "video";
+    const ACTIVITY_ITEM_DATE          = "date";
+    const ACTIVITY_ITEM_SLIDER_ROWS   = "sliderRows";
     const ACTIVITY_ITEM_SINGLE_SELECT_ROWS = "singleSelectRows";
-    const ACTIVITY_ITEM_MULTI_SELECT_ROWS = "multiSelectRows";
-    const ACTIVITY_ITEM_AUDIO = "audio";
-    const ACTIVITY_ITEM_TIME = "time";
+    const ACTIVITY_ITEM_MULTI_SELECT_ROWS  = "multiSelectRows";
+    const ACTIVITY_ITEM_AUDIO   = "audio";
+    const ACTIVITY_ITEM_TIME    = "time";
     const ACTIVITY_ITEM_FLANKER = "flanker";
     const ACTIVITY_ITEM_STABILITY_TRACKER = "stabilityTracker";
-    const ACTIVITY_ITEM_AB_TRAILS = "ABTrails";
-    const ACTIVITY_ITEM_AUDIO_PLAYER = "audioPlayer";
-    const ACTIVITY_ITEM_MESSAGE = "message";
+    const ACTIVITY_ITEM_AB_TRAILS         = "ABTrails";
+    const ACTIVITY_ITEM_AUDIO_PLAYER      = "audioPlayer";
+    const ACTIVITY_ITEM_MESSAGE           = "message";
 
     protected array $dictionary = [];
     protected Scope $scope;
 
-    protected string $appletName = "Mindlogger Applet";
+    protected string $appletName  = "Mindlogger Applet";
     protected array $subTestsList = [];
 
     /**
      * @param string|null $commentID The CommentID being loaded
-     * @param string|null $page The page being loaded
+     * @param string|null $page      The page being loaded
      *
      * @return void
      */
@@ -82,8 +82,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     }
 
     /**
-     * @param string $appletID The applet ID to load
-     * @param bool $_ Will be ignored
+     * @param  string $appletID The applet ID to load
+     * @param  bool   $_        Will be ignored
      * @return void
      * @throws \LorisException
      */
@@ -91,8 +91,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
     {
         try {
             $this->scope = new Scope(Scope::SESSION);
-            $db = $this->loris->getDatabaseConnection();
-            $applet = $db->pselectRow("SELECT * FROM instrument_mindlogger_schema WHERE AppletID = ?", [$appletID]);
+            $db          = $this->loris->getDatabaseConnection();
+            $applet      = $db->pselectRow("SELECT * FROM instrument_mindlogger_schema WHERE AppletID = ?", [$appletID]);
 
             $schema = json_decode($applet["AppletSchema"], true);
 
@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
             foreach ($schema["activities"] as $activity) {
                 $actId = $activity["id"];
                 $this->subTestsList[] = [
-                    'Name' => $activity["name"],
+                    'Name'        => $activity["name"],
                     'Description' => $activity["description"],
                 ];
                 foreach ($activity["items"] as $actItem) {
@@ -114,8 +114,8 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
 
 
     /**
-     * @param string $activityUniqId
-     * @param array $activityItem
+     * @param  string $activityUniqId
+     * @param  array  $activityItem
      * @return void
      */
     protected function updateDictionary(string $activityUniqId, array $activityItem): void
@@ -123,140 +123,140 @@ class NDB_BVL_Instrument_Mindlogger extends \NDB_BVL_Instrument
         $fieldName = $activityUniqId . "__" . $activityItem["name"];
 
         switch ($activityItem["responseType"]) {
-            case self::ACTIVITY_ITEM_TEXT:
-            case self::ACTIVITY_ITEM_GEOLOCATION:
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
-                    $activityItem["question"],
-                    $this->scope,
-                    new StringType($activityItem["config"]["maxResponseLength"] ?? null),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                break;
-            case self::ACTIVITY_ITEM_SINGLE_SELECT:
-            case self::ACTIVITY_ITEM_MULTI_SELECT:
-                $cardType = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT
-                    ? Cardinality::SINGLE
-                    : Cardinality::MANY;
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
-                    $activityItem["question"],
-                    $this->scope,
-                    new Enumeration(
-                        ...\array_map(
+        case self::ACTIVITY_ITEM_TEXT:
+        case self::ACTIVITY_ITEM_GEOLOCATION:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new StringType($activityItem["config"]["maxResponseLength"] ?? null),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_SINGLE_SELECT:
+        case self::ACTIVITY_ITEM_MULTI_SELECT:
+            $cardType           = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT
+                ? Cardinality::SINGLE
+                : Cardinality::MANY;
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new Enumeration(
+                    ...\array_map(
                         function ($option) {
                             return (string)$option["value"];
                         },
                         $activityItem["responseValues"]["options"]
                     ),
+                ),
+                new Cardinality($cardType),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_NUMBER_SELECT:
+        case self::ACTIVITY_ITEM_SLIDER:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new IntegerType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_DATE:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new DateType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_TIME:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new TimeType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_DRAWING:
+        case self::ACTIVITY_ITEM_PHOTO:
+        case self::ACTIVITY_ITEM_VIDEO:
+        case self::ACTIVITY_ITEM_AUDIO:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName,
+                $activityItem["question"],
+                $this->scope,
+                new URI(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS:
+        case self::ACTIVITY_ITEM_MULTI_SELECT_ROWS:
+            $cardType = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS
+                ? Cardinality::SINGLE
+                : Cardinality::MANY;
+            foreach ($activityItem["responseValues"]["rows"] as $row) {
+                $this->dictionary[] = new DictionaryItem(
+                    $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
+                    $activityItem["question"],
+                    $this->scope,
+                    new Enumeration(
+                        ...\array_map(
+                            function ($option) {
+                                return (string)$option["id"];
+                            },
+                            $activityItem["responseValues"]["options"]
+                        ),
                     ),
                     new Cardinality($cardType),
                     $activityItem["name"],
                 );
-                break;
-            case self::ACTIVITY_ITEM_NUMBER_SELECT:
-            case self::ACTIVITY_ITEM_SLIDER:
+            }
+            break;
+        case self::ACTIVITY_ITEM_SLIDER_ROWS:
+            foreach ($activityItem["responseValues"]["rows"] as $row) {
                 $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
+                    $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
                     $activityItem["question"],
                     $this->scope,
                     new IntegerType(),
                     new Cardinality(Cardinality::SINGLE),
                     $activityItem["name"],
                 );
-                break;
-            case self::ACTIVITY_ITEM_DATE:
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
-                    $activityItem["question"],
-                    $this->scope,
-                    new DateType(),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                break;
-            case self::ACTIVITY_ITEM_TIME:
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
-                    $activityItem["question"],
-                    $this->scope,
-                    new TimeType(),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                break;
-            case self::ACTIVITY_ITEM_DRAWING:
-            case self::ACTIVITY_ITEM_PHOTO:
-            case self::ACTIVITY_ITEM_VIDEO:
-            case self::ACTIVITY_ITEM_AUDIO:
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName,
-                    $activityItem["question"],
-                    $this->scope,
-                    new URI(),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                break;
-            case self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS:
-            case self::ACTIVITY_ITEM_MULTI_SELECT_ROWS:
-                $cardType = $activityItem["responseType"] === self::ACTIVITY_ITEM_SINGLE_SELECT_ROWS
-                    ? Cardinality::SINGLE
-                    : Cardinality::MANY;
-                foreach ($activityItem["responseValues"]["rows"] as $row) {
-                    $this->dictionary[] = new DictionaryItem(
-                        $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
-                        $activityItem["question"],
-                        $this->scope,
-                        new Enumeration(
-                            ...\array_map(
-                            function ($option) {
-                                return (string)$option["id"];
-                            },
-                            $activityItem["responseValues"]["options"]
-                        ),
-                        ),
-                        new Cardinality($cardType),
-                        $activityItem["name"],
-                    );
-                }
-                break;
-            case self::ACTIVITY_ITEM_SLIDER_ROWS:
-                foreach ($activityItem["responseValues"]["rows"] as $row) {
-                    $this->dictionary[] = new DictionaryItem(
-                        $activityUniqId . "__" . $activityItem["name"] . "__" . $row["id"],
-                        $activityItem["question"],
-                        $this->scope,
-                        new IntegerType(),
-                        new Cardinality(Cardinality::SINGLE),
-                        $activityItem["name"],
-                    );
-                }
-                break;
-            case self::ACTIVITY_ITEM_TIME_RANGE:
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName . "__start",
-                    $activityItem["question"],
-                    $this->scope,
-                    new TimeType(),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                $this->dictionary[] = new DictionaryItem(
-                    $fieldName . "__end",
-                    $activityItem["question"],
-                    $this->scope,
-                    new TimeType(),
-                    new Cardinality(Cardinality::SINGLE),
-                    $activityItem["name"],
-                );
-                break;
-            case self::ACTIVITY_ITEM_FLANKER:
-            case self::ACTIVITY_ITEM_STABILITY_TRACKER:
-            case self::ACTIVITY_ITEM_AB_TRAILS:
-                //Todo: Will implemented in the future
-                break;
+            }
+            break;
+        case self::ACTIVITY_ITEM_TIME_RANGE:
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName . "__start",
+                $activityItem["question"],
+                $this->scope,
+                new TimeType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            $this->dictionary[] = new DictionaryItem(
+                $fieldName . "__end",
+                $activityItem["question"],
+                $this->scope,
+                new TimeType(),
+                new Cardinality(Cardinality::SINGLE),
+                $activityItem["name"],
+            );
+            break;
+        case self::ACTIVITY_ITEM_FLANKER:
+        case self::ACTIVITY_ITEM_STABILITY_TRACKER:
+        case self::ACTIVITY_ITEM_AB_TRAILS:
+            //Todo: Will implemented in the future
+            break;
         }
     }
 

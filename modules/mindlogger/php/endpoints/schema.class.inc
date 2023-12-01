@@ -84,17 +84,17 @@ class Schema extends Endpoint
         }
 
         switch ($request->getMethod()) {
-            case 'POST':
-                return $this->_handlePOST($request);
+        case 'POST':
+            return $this->_handlePOST($request);
 
-            case 'OPTIONS':
-                return (new \LORIS\Http\Response())
-                    ->withHeader('Allow', $this->allowedMethods());
+        case 'OPTIONS':
+            return (new \LORIS\Http\Response())
+                ->withHeader('Allow', $this->allowedMethods());
 
-            default:
-                return new \LORIS\Http\Response\JSON\MethodNotAllowed(
-                    $this->allowedMethods()
-                );
+        default:
+            return new \LORIS\Http\Response\JSON\MethodNotAllowed(
+                $this->allowedMethods()
+            );
         }
     }
 
@@ -108,9 +108,9 @@ class Schema extends Endpoint
     private function _handlePOST(ServerRequestInterface $request): ResponseInterface
     {
         $data = json_decode((string)$request->getBody(), true);
-        $db = \NDB_Factory::singleton()->database();
+        $db   = \NDB_Factory::singleton()->database();
 
-        $appletId = $data["id"];
+        $appletId     = $data["id"];
         $appletSchema = $data;
 
         if ($db->pselectOneInt("SELECT COUNT(*) FROM instrument_mindlogger_schema WHERE AppletID = ?", [$appletId])) {
@@ -119,10 +119,13 @@ class Schema extends Endpoint
 
         try {
             $db->beginTransaction();
-            $db->unsafeInsert("instrument_mindlogger_schema", [
-                "AppletID" => $appletId,
-                "AppletSchema" => json_encode($appletSchema),
-            ]);
+            $db->unsafeInsert(
+                "instrument_mindlogger_schema",
+                [
+                    "AppletID"     => $appletId,
+                    "AppletSchema" => json_encode($appletSchema),
+                ]
+            );
             $this->makeInstrument($appletId, $appletSchema["displayName"]);
             $db->commit();
 
@@ -146,14 +149,17 @@ class Schema extends Endpoint
      */
     protected function makeInstrument(string $testName, string $fullName): void
     {
-        $db = \NDB_Factory::singleton()->database();
+        $db         = \NDB_Factory::singleton()->database();
         $subgroupId = $db->pselectOneInt("SELECT ID FROM test_subgroups WHERE Subgroup_name = ?", [self::INSTRUMENT_SUBGROUP_NAME]);
 
-        $db->insert("test_names", [
-            "Test_name" => $testName,
-            "Full_name" => $fullName,
-            "Sub_group" => $subgroupId,
-            "IsDirectEntry" => 0,
-        ]);
+        $db->insert(
+            "test_names",
+            [
+                "Test_name"     => $testName,
+                "Full_name"     => $fullName,
+                "Sub_group"     => $subgroupId,
+                "IsDirectEntry" => 0,
+            ]
+        );
     }
 }
