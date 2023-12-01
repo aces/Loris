@@ -326,8 +326,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         );
         $insertstmt = "INSERT INTO querycandidates VALUES ("
         /* see https://github.com/phan/phan/issues/4746
-         * @phan-suppress-next-line PhanTypeMismatchArgumentInternal */
-            . join('),(', iterator_to_array($candidates))
+         * @phan-suppress-next-line PhanParamSpecial1 */
+            . join('),(', $candidates)
             . ')';
 
         $q = $DB->prepare($insertstmt);
