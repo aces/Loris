@@ -18,8 +18,8 @@ function ImportCSVModal(props: {
     closeModal: () => void,
 }) {
     const [csvFile, setCSVFile] = useState<string|null>(null);
-    const [csvHeader, setCSVHeader] = useState<boolean>(true);
-    const [csvType, setCSVType] = useState<string>('session');
+    const [csvHeader, setCSVHeader] = useState<boolean>(false);
+    const [csvType, setCSVType] = useState<string>('candidate');
     const [idType, setIdType] = useState<string>('PSCID');
     /**
      * Promise for handling modal closing. Always accepts.
@@ -87,7 +87,7 @@ function ImportCSVModal(props: {
                         'candidate_parameters',
                         'Identifiers',
                         idType,
-                        '=',
+                        'eq',
                         value.data[i][0],
                     ),
                 );
@@ -96,19 +96,20 @@ function ImportCSVModal(props: {
                         'candidate_parameters',
                         'Meta',
                         'VisitLabel',
-                        '=',
+                        'eq',
                         value.data[i][1],
                     ),
                 );
                 newQuery.group.push(sessionGroup);
             } else {
+                console.log("'" + value.data[i] + "'", value.data[i]);
                 newQuery.addTerm(
                     new QueryTerm(
                         'candidate_parameters',
                         'Identifiers',
                         idType,
-                        '=',
-                        value.data[i],
+                        'eq',
+                        value.data[i][0],
                     ),
                 );
             }
