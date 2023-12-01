@@ -67,6 +67,7 @@ function AdminQueryModal(props: {
                     legend='Study Query'>
                     <TextboxElement name='queryname'
                         value={queryName}
+                        placeholder="Query name"
                         onUserInput={
                             (name: string, value: string) => setQueryName(value)
                         }

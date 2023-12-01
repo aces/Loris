@@ -52,6 +52,7 @@ function NameQueryModal(props: {
                     legend='Query name'>
                     <TextboxElement name='queryname'
                         value={queryName}
+                        placeholder="Enter your query name"
                         onUserInput={
                             (name: string, value: string) => setQueryName(value)
                         }
