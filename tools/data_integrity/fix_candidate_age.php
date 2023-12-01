@@ -82,8 +82,9 @@ foreach ($instruments as $testName=>$instrument) {
         "SELECT f.CommentID FROM flag f
             JOIN session s ON s.ID=f.SessionID
             JOIN candidate c ON c.CandID=s.CandID
-        WHERE c.Active='Y' AND s.Active='Y'",
-        []
+        WHERE c.Active='Y' AND s.Active='Y'
+        AND f.Test_name=:tn",
+        ['tn' => $testName]
     );
 
     foreach ($CommentIDs as $commentID) {
