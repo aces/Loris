@@ -396,32 +396,44 @@ function valueInput(fielddict: FieldDictionary,
              name='value'
              onUserInput={(name: string, value: string) => setValue(value)} />;
        case 'boolean':
-           return <SelectElement
-               label=''
-               name='value'
-               options={{'true': 'true', 'false': 'false'}}
-               onUserInput={(name: string, value: string) => setValue(value)}
-               value={vs}
-               sortByValue={false}
-               />;
+          return <FilterableSelectGroup groups={
+                        {'Value': {
+                            'true': 'true',
+                            'false': ' false',
+                        },
+                    }}
+                    onChange={(_: string, value: string) => {
+                            setValue(value);
+                        }}
+                        placeholder="Select a value"
+                    />;
        case 'enumeration':
-           const opts: {[key: string]: string} = {};
-           for (let i = 0;
-                fielddict.options && i < fielddict.options.length;
-                i++
-           ) {
-               const opt = fielddict.options[i];
-               opts[opt] = opt;
-           }
+          const opts: {[key: string]: string} = {};
+          for (let i = 0;
+              fielddict.options && i < fielddict.options.length;
+              i++
+          ) {
+             const opt = fielddict.options[i];
+             opts[opt] = opt;
+          }
+          if (op == 'in') {
            return <SelectElement
                label=''
-               multiple={op == 'in'}
+               multiple={true}
                name='value'
                options={opts}
                onUserInput={(name: string, value: string) => setValue(value)}
                value={value}
                sortByValue={false}
            />;
+          }
+          return <FilterableSelectGroup
+                    groups={{'Value': opts}}
+                    onChange={(_: string, value: string) => {
+                            setValue(value);
+                        }}
+                        placeholder="Select a value"
+                    />;
        default:
             return <TextboxElement
                 onUserInput={(name: string, value: string) => setValue(value)}
