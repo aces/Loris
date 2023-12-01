@@ -130,17 +130,13 @@ function AddFilterModal(props: {
             <h3>Criteria</h3>
             <div style={{display: 'flex'}}>
                 <div style={{width: '20%'}}>
-                    <SelectElement
-                       name="operator"
-                       id="operator"
-                       label=''
-                       emptyOption={true}
-                       sortByValue={false}
-                       value={op || ''}
-                       onUserInput={(name: string, value: Operators) => {
-                           setOp(value);
-                       }}
-                       options={getOperatorOptions(fieldDictionary)}
+                    <FilterableSelectGroup groups={
+                        {'Operators': getOperatorOptions(fieldDictionary)}
+                    }
+                        onChange={(value: string, operator: string) => {
+                            setOp(operator as Operators);
+                        }}
+                        placeholder="Select an operator"
                     />
                 </div>
                 <div style={{width: '80%'}}>{valueSelect}</div>

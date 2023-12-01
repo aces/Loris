@@ -20,7 +20,7 @@ type PanelProps = {
  * The Modal class. See Modal.js
  */
 class Panel {
-    props: PanelProps 
+    props: PanelProps
     state: any
     context: object
     refs: {[key: string]: ReactInstance}
