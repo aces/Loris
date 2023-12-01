@@ -147,7 +147,7 @@ function DataQueryApp(props: {
                         loadQuery={loadQuery}
                         recentQueries={queries.recent}
                         sharedQueries={queries.shared}
-                        topQueries={queries.top_}
+                        topQueries={queries.top}
 
                         starQuery={queryActions.star}
                         unstarQuery={queryActions.unstar}

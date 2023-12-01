@@ -86,7 +86,7 @@ type SharedQueriesType = [
   {
         recent: FlattenedQuery[],
         shared: FlattenedQuery[],
-        top_: FlattenedQuery[],
+        top: FlattenedQuery[],
   },
   () => void,
   {
@@ -204,7 +204,7 @@ function useSharedQueries(username: string): SharedQueriesType {
         {
             recent: recentQueries,
             shared: sharedQueries,
-            top_: topQueries,
+            top: topQueries,
         },
         reloadQueries,
         {
