@@ -539,10 +539,17 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
         // feedback object
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
 
+        //get thread feedback type
+        $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
+        if (empty($threadFeedbackType)) {
+            //create thread feedback type "Other", if it does not exist
+            $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
+        }
+
         // add the new thread
         $success = $feedback->createThread(
             'profile',
-            '5',
+            $threadFeedbackType,
             "The date of $dateType has been changed to $newDate.",
             'N'
         );
@@ -601,10 +608,17 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
             $sID
         );
 
+        //get thread feedback type
+        $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
+        if (empty($threadFeedbackType)) {
+            //create thread feedback type "Other", if it does not exist
+            $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
+        }
+
         // add the new thread
         $success = $feedback->createThread(
             'visit',
-            '5',
+            $threadFeedbackType,
             "The date of $dateType has been changed to $newDate.",
             'N'
         );
@@ -677,13 +691,7 @@ function diagnose($sessionID, $dateType = null, $newDate = null)
     $cohortID = $timePoint->getCohortID();
 
     // define the date of birth to use (dob or edc)
-    if (($dateType=='dob' && $cohortID==1)
-        || ($dateType=='edc' && $cohortID==2)
-    ) {
-        $dateBirth = $newDate;
-    } else {
-        $dateBirth = $timePoint->getEffectiveDateOfBirth();
-    }
+    $dateBirth = $timePoint->getEffectiveDateOfBirth();
 
     // check if the timepoint is started before attempting to make changes to it
     if ($timePoint->getCurrentStage() == 'Not Started'
