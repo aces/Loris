@@ -74,10 +74,10 @@ function QueryField(props: {
      */
     const selected = (newvisits: readonly VisitOption[]) => {
         props.onChangeVisitList(
-         props.module,
-         props.category,
-         item,
-         newvisits.map( (visit: VisitOption) => visit.value),
+            props.module,
+            props.category,
+            item,
+            newvisits.map( (visit: VisitOption) => visit.value),
         );
     };
 
