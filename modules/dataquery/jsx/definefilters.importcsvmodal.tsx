@@ -102,7 +102,6 @@ function ImportCSVModal(props: {
                 );
                 newQuery.group.push(sessionGroup);
             } else {
-                console.log("'" + value.data[i] + "'", value.data[i]);
                 newQuery.addTerm(
                     new QueryTerm(
                         'candidate_parameters',
