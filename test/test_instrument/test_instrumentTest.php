@@ -27,7 +27,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
-                'CandID'                => '900000',
+                'CandID'                => '300001',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
                 'RegistrationProjectID' => 1,
@@ -41,7 +41,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandID'        => '300001',
                 'Visit_label'   => 'V1',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -77,8 +77,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", ['CandID' => '900000']);
-        $this->DB->delete("candidate", ['CandID' => '900000']);
+        $this->DB->delete("session", ['CandID' => '300001']);
+        $this->DB->delete("candidate", ['CandID' => '300001']);
         $this->DB->delete("flag", ['ID' => '999999']);
         $this->DB->delete("test_names", ['ID' => '999999']);
         parent::tearDown();
@@ -235,7 +235,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url .
             "/instruments/testtest/?commentID=11111111111111111"
-            . "&sessionID=999999&candID=900000"
+            . "&sessionID=999999&candID=300001"
         );
     }
 }
