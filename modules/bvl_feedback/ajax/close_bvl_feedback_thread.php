@@ -60,8 +60,7 @@ if ($closethreadcount === 0) {
     exit;
 }
 
-header("content-type:application/json");
-echo json_encode(['success' => true]);
+header("HTTP/1.1 204 No Content");
 exit;
 
 
