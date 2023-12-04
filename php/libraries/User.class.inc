@@ -122,12 +122,12 @@ class User extends UserPermissions implements
                     epr.pending_approval
                   FROM examiners e
                   JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.full_name=:fn
+                  WHERE e.userID=:uid
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             [
-                "fn" => $row['Real_name'],
+                "uid" => $row['ID'],
             ]
         );
 
