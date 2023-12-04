@@ -97,7 +97,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileInstrumentLink1()
     {
-        $this->safeGet($this->url . "/candidate_profile/900000/");
+        $this->safeGet($this->url . "/candidate_profile/300001/");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "#card2 > div:nth-child(1) >".
@@ -120,7 +120,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileInstrumentLink2()
     {
-        $this->safeGet($this->url . "/candidate_profile/900000/");
+        $this->safeGet($this->url . "/candidate_profile/300001/");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
                 "#card0 > div:nth-child(1) >".
