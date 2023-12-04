@@ -31,7 +31,7 @@ function AdminQueryModal(props: {
      */
     const submitPromise = () => {
         let sbmt: Promise<any> = new Promise((resolve, reject) => {
-           if (queryName == '') {
+           if (queryName.trim() == '') {
                swal.fire({
                    type: 'error',
                    text: 'Must provide a query name to pin query as.',
@@ -47,7 +47,7 @@ function AdminQueryModal(props: {
                reject();
                return;
            }
-           resolve([queryName, topQuery, dashboardQuery]);
+           resolve([queryName.trim(), topQuery, dashboardQuery]);
         });
         if (props.onSubmit) {
             sbmt = sbmt.then((val: [string, boolean, boolean]) => {
