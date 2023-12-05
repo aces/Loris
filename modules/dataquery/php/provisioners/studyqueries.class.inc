@@ -25,7 +25,7 @@ class StudyQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                 LEFT JOIN dataquery_study_queries_rel dsq ON
                     (dq.QueryID=dsq.QueryID)
             WHERE dsq.PinType=:pintype
-            GROUP BY QueryID
+            GROUP BY QueryID, Query, dsq.Name
             ORDER BY QueryID",
             ['pintype' => $pintype],
         );
