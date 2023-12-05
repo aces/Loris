@@ -517,7 +517,9 @@ class DataTable extends Component {
         const rowIndexDisplay = index[i].Content;
         rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              {this.props.hide.defaultColumn === true ? null : (
               <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+              )}
               {curRow}
             </tr>
         );
