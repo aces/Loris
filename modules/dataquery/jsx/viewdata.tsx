@@ -276,7 +276,7 @@ function ViewData(props: {
     fulldictionary: FullDictionary,
 }) {
     const [visitOrganization, setVisitOrganization]
-        = useState<VisitOrgType>('raw');
+        = useState<VisitOrgType>('inline');
     const [headerDisplay, setHeaderDisplay]
         = useState<HeaderDisplayType>('fieldnamedesc');
     const queryData = useRunQuery(props.fields, props.filters, props.onRun);
@@ -326,6 +326,13 @@ function ViewData(props: {
                         props.fields,
                         props.fulldictionary,
                     )
+                }
+                hide={
+                    {
+                        rowsPerPage: false,
+                        defaultColumn: false,
+                        downloadCSV: visitOrganization == 'inline',
+                    }
                 }
             />;
             break;
