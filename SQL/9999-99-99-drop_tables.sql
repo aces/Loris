@@ -7,10 +7,6 @@ DROP TABLE IF EXISTS dataquery_query_names;
 DROP TABLE IF EXISTS dataquery_queries;
 
 -- 0000-00-05-ElectrophysiologyTables.sql
-DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;
-DROP TABLE IF EXISTS `physiological_event_parameter`;
-DROP TABLE IF EXISTS `physiological_event_archive`;
-DROP TABLE IF EXISTS `physiological_event_file`;
 DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`;
 DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
 DROP TABLE IF EXISTS `point_3d`;
@@ -18,7 +14,6 @@ DROP TABLE IF EXISTS `physiological_coord_system`;
 DROP TABLE IF EXISTS `physiological_coord_system_unit`;
 DROP TABLE IF EXISTS `physiological_coord_system_name`;
 DROP TABLE IF EXISTS `physiological_coord_system_type`;
-DROP TABLE IF EXISTS `electrophysiology_uploader`;
 DROP TABLE IF EXISTS `physiological_annotation_rel`;
 DROP TABLE IF EXISTS `physiological_annotation_instance`;
 DROP TABLE IF EXISTS `physiological_annotation_parameter`;
@@ -58,7 +53,6 @@ DROP TABLE IF EXISTS `issues`;
 DROP TABLE IF EXISTS `issues_categories`;
 
 -- 0000-00-02-Permission.sql
-DROP TABLE IF EXISTS `testnames_permissions_rel`;
 DROP TABLE IF EXISTS `user_perm_rel`;
 DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 DROP TABLE IF EXISTS `permissions`;
@@ -191,6 +185,9 @@ DROP TABLE IF EXISTS `tarchive`;
 DROP TABLE IF EXISTS `hrrt_archive_files`;
 DROP TABLE IF EXISTS `hrrt_archive`;
 
+DROP TABLE IF EXISTS `appointment`;
+DROP TABLE IF EXISTS `appointment_type`;
+
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
@@ -213,6 +210,3 @@ DROP TABLE IF EXISTS `project_cohort_rel`;
 DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
-
-DROP TABLE IF EXISTS `appointment`;
-DROP TABLE IF EXISTS `appointment_type`;
