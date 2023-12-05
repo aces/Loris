@@ -50,3 +50,6 @@ UPDATE
   ) AS cs2
 SET cs1.Parent = cs2.ID
 WHERE cs1.Name = 'MINCToolsPath';
+
+-- Add default value to electrophysiology_uploader UploadDate
+ALTER TABLE `electrophysiology_uploader` MODIFY COLUMN `UploadDate` DateTime NOT NULL DEFAULT CURRENT_TIMESTAMP;
