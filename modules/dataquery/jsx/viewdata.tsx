@@ -330,7 +330,7 @@ function ViewData(props: {
                 hide={
                     {
                         rowsPerPage: false,
-                        defaultColumn: false,
+                        defaultColumn: true,
                         downloadCSV: visitOrganization == 'inline',
                     }
                 }
