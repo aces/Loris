@@ -588,7 +588,7 @@ class DataTable extends Component {
       </div>
     );
 
-    let footer = this.props.hide.downloadCSV === true ? '' : (
+    let footer = (
       <div>
         <div className="row">
           <div style={{
