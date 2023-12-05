@@ -15,6 +15,7 @@ changes in the following format: PR #1234***
 
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
+- bvl_feedback updates in real-time (PR #8966)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
