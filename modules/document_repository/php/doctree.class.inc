@@ -167,8 +167,8 @@ class DocTree extends \NDB_Page
 
         $subcategories    = $db->pselect(
             "SELECT id,category_name,comments 
-             FROM document_repository_categories WHERE parent_id=:pid",
-            array('pid' => $id)
+             FROM document_repository_categories WHERE parent_id=:id",
+            ['id' => $id]
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;

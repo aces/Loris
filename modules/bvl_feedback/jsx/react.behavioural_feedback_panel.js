@@ -3,8 +3,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import '../css/bvl_feedback_panel.css';
-
 /**
  * Slider panel component
  */
@@ -175,7 +173,7 @@ FeedbackPanelContent.propTypes = {
   candID: PropTypes.string,
   commentID: PropTypes.string,
   sessionID: PropTypes.string,
-  commentToggled: PropTypes.bool,
+  commentToggled: PropTypes.func,
 };
 
 
@@ -190,13 +188,12 @@ class FeedbackPanelRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      threadEntriesToggled: this.props.status === 'opened' ? true : false,
+      threadEntriesToggled: false,
       threadEntriesLoaded: [],
     };
     this.loadServerState = this.loadServerState.bind(this);
     this.toggleEntries = this.toggleEntries.bind(this);
     this.newThreadEntry = this.newThreadEntry.bind(this);
-    this.updateThreadEntry = this.updateThreadEntry.bind(this);
   }
 
   /**
@@ -238,11 +235,11 @@ class FeedbackPanelRow extends Component {
   /**
    * Toggle entries
    *
-   * @param {boolean} result
+   * @param {boolean} newComment
    */
-  toggleEntries(result) {
+  toggleEntries(newComment) {
     let toggle = false;
-    if (result) {
+    if (newComment) {
       toggle = true;
     } else {
       toggle = !this.state.threadEntriesToggled;
@@ -282,42 +279,6 @@ class FeedbackPanelRow extends Component {
     });
   }
 
-  updateThreadEntry(entryID, newComment, date) {
-    const formData = new FormData();
-    formData.append('entryID', entryID);
-    formData.append('newComment', newComment);
-    formData.append('date', date);
-    fetch(
-      loris.BaseURL +
-      '/bvl_feedback/ajax/update_thread_comment_bvl_feedback.php',
-      {
-        method: 'POST',
-        body: formData,
-      }
-    ).then(() => {
-      this.loadServerState();
-    }).catch((error) => {
-      console.error(error);
-    });
-  }
-
-  deleteThreadEntry(entryID) {
-    const formData = new FormData();
-    formData.append('entryID', entryID);
-    fetch(
-      loris.BaseURL +
-      '/bvl_feedback/ajax/delete_thread_comment_bvl_feedback.php',
-      {
-        method: 'POST',
-        body: formData,
-      }
-    ).then(() => {
-      this.loadServerState();
-    }).catch((error) => {
-      console.error(error);
-    });
-  }
-
   /**
    * Renders the React component.
    *
@@ -334,54 +295,14 @@ class FeedbackPanelRow extends Component {
 
     if (this.state.threadEntriesToggled) {
       arrow = 'glyphicon glyphicon-chevron-down glyphs';
-      threadEntries = this.state.threadEntriesLoaded.map((entry, key) => {
-        let toggleEditComment = () => {
-          let tempThreadEntriesLoaded = [...this.state.threadEntriesLoaded];
-          tempThreadEntriesLoaded.forEach((threadEntry, index) => {
-            if (index == key) {
-              threadEntry.editComment = !threadEntry.editComment;
-            } else {
-              threadEntry.editComment = false;
-            }
-          });
-          this.setState({threadEntriesLoaded: tempThreadEntriesLoaded});
-        };
+      threadEntries = this.state.threadEntriesLoaded.map(function(entry, key) {
         return (
-          <React.Fragment key={key}>
-            <tr className='thread_entry'>
-              <td colSpan='70%'>
-                <span id='comment_author'>
-                  {entry.Date} {entry.UserID}:{' '}
-                </span>
-                {entry.Comment}
-                <span>
-                  {entry.UserID === entry.current_user && <>
-                    {' '}<a
-                      onClick={() => {
-                        toggleEditComment();
-                      }}
-                    >
-                      <span className='glyphicon glyphicon-pencil' />
-                    </a>{' '}
-                    <a onClick={() => {
-                      this.deleteThreadEntry(entry.EntryID);
-                    }}>
-                      <span className='glyphicon glyphicon-trash' />
-                    </a>
-                  </>}
-                </span>
-              </td>
-            </tr>
-            {entry.editComment ?
-              <CommentEntryForm
-                entryID={entry.EntryID}
-                onCommentSend={this.updateThreadEntry}
-                toggleThisThread={toggleEditComment}
-                value={entry.Comment}
-                date={entry.Date}
-              />
-            : null}
-          </React.Fragment>
+          <tr key={key} className='thread_entry'>
+            <td colSpan='100%'>
+              {entry.UserID} on {entry.TestDate} commented:<br/>
+              {entry.Comment}
+            </td>
+          </tr>
         );
       });
     }
@@ -391,47 +312,44 @@ class FeedbackPanelRow extends Component {
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
-        <span
-        className='glyphicon glyphicon-comment'
-        onClick={this.props.commentToggle}
-      />
+        <span className='glyphicon glyphicon-pencil'
+              onClick={this.props.commentToggle}/>
       );
     }
 
     return (
       <tbody>
-        <tr>
-          {this.props.fieldname ?
-            <td>{this.props.fieldname}<br/>{this.props.type}</td> :
-            <td>{this.props.type}</td>}
-          <td>{this.props.author} on:<br/>{this.props.date}</td>
-          <td>
-            <div className='btn-group'>
-              <button name='thread_button' type='button' className={buttonClass}
-                data-toggle='dropdown' aria-haspopup='true'
-                aria-expanded='false'>
-                {buttonText}
-                <span className='caret'></span>
-              </button>
-              <ul className='dropdown-menu'>
-                {dropdown}
-              </ul>
-            </div>
-            <span className={arrow}
-              onClick={this.toggleEntries.bind(this, false)}></span>
-            {commentButton}
-          </td>
-        </tr>
-
-        {threadEntries}
-        {this.props.commentToggled ?
-          (<CommentEntryForm
-            user={this.props.user}
-            onCommentSend={this.newThreadEntry}
-            toggleThisThread={this.toggleEntries.bind(this, true)}
-          />) :
-          null
-        }
+      <tr>
+        {this.props.fieldname ?
+          <td>{this.props.fieldname}<br/>{this.props.type}</td> :
+          <td>{this.props.type}</td>}
+        <td>{this.props.author} on:<br/>{this.props.date}</td>
+        <td>
+          <div className='btn-group'>
+            <button name='thread_button' type='button' className={buttonClass}
+                    data-toggle='dropdown' aria-haspopup='true'
+                    aria-expanded='false'>
+              {buttonText}
+              <span className='caret'></span>
+            </button>
+            <ul className='dropdown-menu'>
+              {dropdown}
+            </ul>
+          </div>
+          <span className={arrow}
+                onClick={this.toggleEntries.bind(this, false)}></span>
+          {commentButton}
+        </td>
+      </tr>
+      {this.props.commentToggled ?
+        (<CommentEntryForm
+          user={this.props.user}
+          onCommentSend={this.newThreadEntry}
+          toggleThisThread={this.toggleEntries.bind(this, true)}
+        />) :
+        null
+      }
+      {threadEntries}
       </tbody>
     );
   }
@@ -449,8 +367,9 @@ FeedbackPanelRow.propTypes = {
   onClickClose: PropTypes.func,
   commentToggle: PropTypes.func,
   user: PropTypes.string,
-  commentToggled: PropTypes.bool,
+  commentToggled: PropTypes.func,
 };
+
 
 /**
  * Comment entry form component
@@ -463,31 +382,18 @@ class CommentEntryForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value ? props.value : '',
-      entryID: -1,
-      date: '',
+      value: '',
+      message: '',
     };
     this.sendComment = this.sendComment.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    if (props.entryID) {
-      this.state.entryID = props.entryID;
-      this.state.date = props.date;
-    }
   }
 
   /**
    * Send comment
    */
   sendComment() {
-    if (this.state.entryID < 0) {
-      this.props.onCommentSend(this.state.value);
-    } else {
-      this.props.onCommentSend(
-        this.state.entryID,
-        this.state.value,
-        this.state.date
-      );
-    }
+    this.props.onCommentSend(this.state.value);
     this.setState({
       value: '',
       message: 'Comment added!',
@@ -512,12 +418,7 @@ class CommentEntryForm extends Component {
   render() {
     return (
       <tr>
-        <td colSpan='100%'>
-          {
-            this.state.entryID < 0 ?
-            <span> Add a comment: </span> :
-            <span> Update comment: </span>
-          }
+        <td colSpan='100%'>Add a thread entry:
           <div className='input-group' style={{width: '100%'}}>
             <textarea
               className='form-control'
@@ -531,7 +432,7 @@ class CommentEntryForm extends Component {
               className='input-group-addon btn btn-primary'
               onClick={this.sendComment}
             >
-              Submit
+              Send
             </span>
           </div>
           {this.state.message}
@@ -543,11 +444,8 @@ class CommentEntryForm extends Component {
 CommentEntryForm.propTypes = {
   onCommentSend: PropTypes.func,
   toggleThisThread: PropTypes.func,
-  updateThreadEntry: PropTypes.func,
-  value: PropTypes.string,
-  entryID: PropTypes.int,
-  date: PropTypes.string,
 };
+
 
 /**
  * Accordion panel component
@@ -779,7 +677,7 @@ class NewThreadPanel extends Component {
             onClick={this.createNewThread}
             className='btn btn-default pull-right btn-sm'
           >
-            Create thread
+            Save data
           </button>
         </div>
       </div>
@@ -866,7 +764,7 @@ class FeedbackSummaryPanel extends Component {
         <table
           className='table table-hover table-bordered dynamictable'>
           <thead>
-            <tr className='info' key='info'>
+            <tr className='info'>
               <th>QC Class</th>
               <th>Instrument</th>
               <th>Visit</th>
@@ -1002,11 +900,9 @@ class FeedbackPanel extends Component {
         console.error(response.status + ': ' + response.statusText);
         return;
       }
-
-      response.json().then(() => {
-        this.setState({threads: threads});
-        this.loadSummaryServerData();
-      });
+      this.setState({threads: threads});
+      this.loadSummaryServerData();
+      this.loadThreadServerState();
     }).catch((error) => {
       console.error(error);
     });
@@ -1038,11 +934,9 @@ class FeedbackPanel extends Component {
         console.error(response.status + ': ' + response.statusText);
         return;
       }
-
-      response.json().then(() => {
-        this.setState({threads: threads});
-        this.loadSummaryServerData();
-      });
+      this.setState({threads: threads});
+      this.loadSummaryServerData();
+      this.loadThreadServerState();
     }).catch((error) => {
       console.error(error);
     });
