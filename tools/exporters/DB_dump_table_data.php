@@ -94,7 +94,6 @@ foreach ($tableNames as $tableName) {
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         escapeshellarg($databaseInfo['database']).' '.
-        '--column-statistics=0 '.
         '--complete-insert '.
         '--no-create-db '.
         '--no-create-info '.
