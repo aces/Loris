@@ -574,12 +574,14 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
-              <button
-                className="btn btn-primary"
-                onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-              >
+              {this.props.hide.downloadCSV === true ? '' : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                  >
                 Download Table as CSV
-              </button>
+              </button>)
+              }
               <PaginationLinks
                 Total={filteredCount}
                 onChangePage={this.changePage}
