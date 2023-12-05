@@ -100,9 +100,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_profile/300001/");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#card2 > div:nth-child(1) >".
-                "div:nth-child(1)>div:nth-child(1)>div:nth-child(1)>div:nth-".
-                "child(1)> div:nth-child(2) > h4:nth-child(1) > a:nth-child(1)"
+                "#card2 > div > div > div > div:nth-child(1) > div > div:nth-child(2) > h4 > a"
             )
         )->click();
         $bodyText
@@ -123,9 +121,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_profile/300001/");
         $this->safeFindElement(
             WebDriverBy::cssSelector(
-                "#card0 > div:nth-child(1) >".
-                "div:nth-child(1)>div:nth-child(1)>dl:nth-child(1)>div:nth-".
-                "child(9)>dd:nth-child(2) > div:nth-child(1) > a:nth-child(1)"
+                "#card2 > div > div > div > div:nth-child(2) > div > div:nth-child(2) > h4 > a"
             )
         )->click();
         $bodyText
