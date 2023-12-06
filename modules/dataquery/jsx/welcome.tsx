@@ -20,6 +20,7 @@ import {FlattenedField, FlattenedQuery, VisitOption} from './types';
  * @param {FlattenedQuery[]} props.topQueries - List of top queries to display pinned to the top of the tab
  * @param {FlattenedQuery[]} props.sharedQueries - List of queries shared with the current user
  * @param {function} props.onContinue - Callback when the "Continue" button is called in the welcome message
+ * @param {boolean} props.useAdminName - True if the display should display the admin name of the query
  * @param {boolean} props.queryAdmin - True if the current user can pin study queries
  * @param {function} props.reloadQueries - Reload the list of queries from the server
  * @param {function} props.loadQuery - Load a query to replace the active query
@@ -64,6 +65,8 @@ function Welcome(props: {
             content: (
                 <div>
                     <QueryList
+                        useAdminName={true}
+
                         queries={props.topQueries}
                         loadQuery={props.loadQuery}
                         defaultCollapsed={true}
@@ -126,6 +129,8 @@ function Welcome(props: {
               content: (
                 <div>
                   <QueryList
+                    useAdminName={false}
+
                     queries={props.sharedQueries}
                     loadQuery={props.loadQuery}
                     defaultCollapsed={true}
@@ -181,6 +186,7 @@ function QueryList(props: {
     queries: FlattenedQuery[],
     defaultCollapsed: boolean,
 
+    useAdminName: boolean,
     queryAdmin: boolean,
 
     starQuery?: (queryID: number) => void,
@@ -545,6 +551,7 @@ function QueryList(props: {
         <Pager>
             {displayedQueries.map((query, idx) => {
                 return <SingleQueryDisplay key={idx} query={query}
+                            useAdminName={props.useAdminName}
                             includeRuns={!noDuplicates}
                             showFullQueryDefault={fullQuery}
                             mapCategoryName={props.mapCategoryName}
@@ -688,6 +695,8 @@ function SingleQueryDisplay(props: {
     unshareQuery: (queryID: number) => void,
     starQuery: (queryID: number) => void,
     unstarQuery: (queryID: number) => void,
+
+    useAdminName: boolean,
 
     queryAdmin: boolean,
     unpinAdminQuery: (queryID: number) => void,
@@ -838,7 +847,8 @@ function SingleQueryDisplay(props: {
          msg = <div>{desc}
              &nbsp;{loadIcon}{pinIcon}
              </div>;
-     } else if (query.Name) {
+     } else if (query.Name || query.AdminName) {
+         const name = props.useAdminName ? query.AdminName : query.Name;
          const unpinIcon = props.queryAdmin
              ? <span title="Name query"
                  style={{cursor: 'pointer'}}
@@ -851,7 +861,7 @@ function SingleQueryDisplay(props: {
                <i className="fas fa-thumbtack fa-stack-1x"> </i>
            </span>
        : <div />;
-         msg = <div><b>{query.Name}</b>&nbsp;{loadIcon}{unpinIcon}</div>;
+         msg = <div><b>{name}</b>&nbsp;{loadIcon}{unpinIcon}</div>;
      } else {
          console.error('Invalid query. Neither shared nor recent', query);
      }
@@ -956,6 +966,8 @@ function QueryRunList(props:{
     const queries: FlattenedQuery[] = props.queryruns;
 
     return (<QueryList
+        useAdminName={false}
+
         queries={queries}
         loadQuery={props.loadQuery}
         defaultCollapsed={false}
