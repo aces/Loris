@@ -24,10 +24,10 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     v.MincFile,
                     v.Series_Description as Series_Description_Or_Scan_Type,
                     v.Problem,
+                    v.Resolved as Resolution_status,
                     v.SeriesUID,
                     v.hash,
                     v.join_id,
-                    v.Resolved,
                     v.TarchiveID,
                     v.CandID,
                     v.PSCID
@@ -55,12 +55,15 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        SeriesUID,
                        md5(
                          concat_WS(
-                           ':',minc_location,PatientName,SeriesUID,time_run
+                           ':',minc_location,PatientName,SeriesUID,time_run,
+                           PhaseEncodingDirection,TE_range,EchoNumber
                          )
                        ) AS hash,
                        mpvs.ID AS join_id,
                        p.CenterID AS Site,
-                       violations_resolved.Resolved AS Resolved,
+                       COALESCE(
+                         violations_resolved.Resolved, 'unresolved'
+                       ) AS Resolved,
                        mpvs.TarchiveID AS TarchiveID,
                        mpvs.CandID AS CandID,
                        c.PSCID AS PSCID
@@ -75,7 +78,6 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                   AND mpvs.CandID = s.CandID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
-                WHERE Resolved is NULL
               UNION
                 SELECT PatientName,
                        TimeRun,
@@ -86,11 +88,16 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                        'Protocol Violation',
                        SeriesUID,
                        md5(
-                         concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                         concat_WS(
+                           ':', MincFile, PatientName, SeriesUID, TimeRun,
+                           PhaseEncodingDirection,EchoTime,EchoNumber
+                         )
                        ) AS hash,
-                       mrl.LogID AS join_id,
+                       MIN(mrl.LogID) AS join_id,
                        p.CenterID AS Site,
-                       violations_resolved.Resolved AS Resolved,
+                       COALESCE(
+                         violations_resolved.Resolved, 'unresolved'
+                       ) AS Resolved,
                        mrl.TarchiveID AS TarchiveID,
                        mrl.CandID AS CandID,
                        c.PSCID AS PSCID
@@ -105,7 +112,9 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                   mrl.Visit_label = s.Visit_label AND mrl.CandID=s.CandID
                 )
                 LEFT JOIN psc p ON (p.CenterID = s.CenterID)
-                WHERE Resolved is NULL
+                GROUP BY PatientName, TimeRun, Project, Cohort, MincFile,
+                  Scan_type, SeriesUID, Site, hash, Resolved, TarchiveID,
+                  CandID, PSCID, PhaseEncodingDirection, EchoTime, EchoNumber
               UNION
                   SELECT PatientName,
                          TimeRun,
@@ -116,11 +125,16 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                          Reason,
                          SeriesUID,
                          md5(
-                           concat_WS(':', MincFile, PatientName, SeriesUID, TimeRun)
+                           concat_WS(
+                             ':', MincFile, PatientName, SeriesUID, TimeRun,
+                             PhaseEncodingDirection,EchoTime,EchoNumber
+                           )
                          ) AS hash,
                          MRICandidateErrors.ID AS join_id,
                          null,
-                         violations_resolved.Resolved AS Resolved,
+                         COALESCE(
+                            violations_resolved.Resolved, 'unresolved'
+                         ) AS Resolved,
                          MRICandidateErrors.TarchiveID AS TarchiveID,
                          NULL AS CandID,
                          NULL AS PSCID
@@ -129,7 +143,6 @@ class Provisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         violations_resolved.ExtID=MRICandidateErrors.ID
                     AND violations_resolved.TypeTable='MRICandidateErrors'
                   )
-                  WHERE Resolved is NULL
             ) AS v";
     }
 

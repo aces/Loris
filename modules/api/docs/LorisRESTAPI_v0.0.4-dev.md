@@ -295,7 +295,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "Site"    : Site,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Sex"     : "Male|Female"
+        "Sex"     : "Male|Female|Other"
 }
 ```
 
@@ -326,7 +326,7 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Sex"     : "Male|Female",
+        "Sex"     : "Male|Female|Other",
         "Site"    : SiteName,
     }
 }
@@ -342,7 +342,7 @@ A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
 a site other than the list of sitenames the user is affiliated with, and a 400 
 Bad Request if any data provided is invalid (PSCID format, date format, sex
-something other than Male|Female, invalid project name, invalid sitename, etc). 
+something other than Male|Female|Other, invalid project name, invalid sitename, etc). 
 A successful POST request will return a CandidateObject for the newly created 
 candidate.
 
@@ -410,7 +410,7 @@ The JSON object is of the form:
         "CandID" : CandID,
         "Visit"  : VisitLabel,
         "Site"   : SiteName,
-        "Battery": "NameOfCohort",
+        "Cohort": "NameOfCohort",
         "Project" : ProjectName
     },
     "Stages" : {
@@ -504,7 +504,7 @@ The format returned by a GET request is a JSON document of the form:
         "Candidate" : $CandID,
         "DDE" : boolean
     },
-    "$InstrumentName" : {
+    "Data" : {
         "FieldName1" : "Value1",
         "FieldName2" : "Value2",
         ...
@@ -1136,3 +1136,33 @@ Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
+
+
+## 7.0 Sites API
+
+The Sites API list available sites for the requesting user.
+
+```
+GET /sites
+```
+
+Will return a list of sites in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
+
+```js
+{
+  "Sites" : [
+    {
+      "Name": "string",
+      "Alias": "string",
+      "MRI alias": "string"
+    },
+    ...
+  ]
+}
+```
+
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
+
+* Note that only the `Name` property is unique across all sites.
+

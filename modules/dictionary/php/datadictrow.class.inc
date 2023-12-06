@@ -18,6 +18,7 @@ class DataDictRow implements \LORIS\Data\DataInstance,
     protected DictionaryItem $item;
     protected string $desc;
     protected string $status;
+    protected ?array $visits;
 
     /**
      * Construct a DataDictRow
@@ -28,19 +29,22 @@ class DataDictRow implements \LORIS\Data\DataInstance,
      * @param DictionaryItem $item       The DictionaryItem for this row
      * @param string         $desc       The (possibly overridden) description
      * @param string         $descstatus The status of the description override
+     * @param ?string[]      $visits     List of visits for the item.
      */
     public function __construct(
         \Module $itemmodule,
         Category $cat,
         DictionaryItem $item,
         string $desc,
-        string $descstatus
+        string $descstatus,
+        ?array $visits,
     ) {
         $this->itemmodule   = $itemmodule;
         $this->itemcategory = $cat;
         $this->item         = $item;
         $this->desc         = $desc;
         $this->status       = $descstatus;
+        $this->visits       = $visits;
     }
 
     /**
@@ -50,20 +54,25 @@ class DataDictRow implements \LORIS\Data\DataInstance,
      */
     public function jsonSerialize() : array
     {
-        $val = [
+        $scope = $this->getScope();
+        $val   = [
             'module'             => $this->itemmodule->getName(),
             'category'           => $this->itemcategory->getName(),
             'field'              => $this->getFieldName(),
             'description'        => $this->desc,
             'description_status' => $this->status,
-            'datascope'          => $this->getScope(),
+            'datascope'          => $scope,
             'type'               => $this->getDataType(),
             'cardinality'        => $this->getCardinality(),
+            'visits'             => $this->visits,
         ];
 
         $itype = $this->item->getDataType();
         if ($itype instanceof \LORIS\Data\Types\Enumeration) {
             $val['options'] = $itype->getOptions();
+        }
+        if ($scope->__toString() == "session") {
+            $val['visits'] = $this->visits;
         }
 
         return $val;
@@ -141,5 +150,16 @@ class DataDictRow implements \LORIS\Data\DataInstance,
     public function getCardinality() : \LORIS\Data\Cardinality
     {
         return $this->item->getCardinality();
+    }
+
+    /**
+     * Return a list of visits for this item if the item
+     * is session scoped.
+     *
+     * @return ?string[]
+     */
+    public function getVisits() : ?array
+    {
+        return $this->visits;
     }
 }

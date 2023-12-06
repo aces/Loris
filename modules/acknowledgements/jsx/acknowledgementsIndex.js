@@ -7,6 +7,13 @@ import Modal from 'Modal';
 import Panel from 'Panel';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {
+    SelectElement,
+    FormElement,
+    TextboxElement,
+    DateElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Acknowledgements Module page.
@@ -456,10 +463,9 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(
+  createRoot(
     document.getElementById('lorisworkspace')
-  );
-  root.render(
+  ).render(
     <AcknowledgementsIndex
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/`}

@@ -18,10 +18,9 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-            const root = ReactDOM.createRoot(
+            ReactDOM.createRoot(
               document.getElementById("image-{$files[file].FileID}")
-            );
-            root.render(
+            ).render(
               RImagePanel({
                 'BaseURL' : "{$baseurl}",
 
@@ -35,7 +34,7 @@
                 "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
                 "Caveat" : "{$files[file].Caveat}",
-                "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
+                "EditableCaveat": "{$files[file].EditableCaveat}",
                 "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                 'HeaderInfo' : {
                   "SeriesUID" : "{$files[file].SeriesUID}",
@@ -64,17 +63,17 @@
                   "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
                   "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
                 },
-
                 'Fullname' : "{$files[file].FullFilename}",
                 "XMLProtocol" : "{$files[file].XMLprotocol}",
                 "XMLReport" : "{$files[file].XMLreport}",
                 "NrrdFile" : "{$files[file].NrrdFile}",
+                "NiiFile" : "{$files[file].NiiFile}",
                 "BvalFile" : "{$files[file].BvalFile}",
                 "BvecFile" : "{$files[file].BvecFile}",
                 "JsonFile" : "{$files[file].JsonFile}",
                 "OtherTimepoints" : "{$files[file].OtherTimepoints}",
                 "SeriesUID": "{$files[file].SeriesUID}"
-              })
+              }),
             );
           </script>
        {/section}

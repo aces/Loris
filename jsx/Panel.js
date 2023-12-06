@@ -1,118 +1,145 @@
-/**
- * This file contains React component for Panel
- *
- * @author Alex I.
- * @version 1.0.0
- */
-
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Panel component
- * Wraps children in a collapsible bootstrap panel
+ * Panel - a collapsible panel component with optional multiple views.
+ *
+ * @author Alex I.
+ * @version 2.0.0
+ * @param {object} props
+ * @return {JSX.Element}
  */
-class Panel extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      collapsed: this.props.initCollapsed,
-    };
-
-    // Initialize panel class based on collapsed status
-    this.panelClass = (
-      this.props.initCollapsed ?
-        'panel-collapse collapse' :
-        'panel-collapse collapse in'
-    );
-
-    this.toggleCollapsed = this.toggleCollapsed.bind(this);
-  }
+const Panel = (props) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeView, setActiveView] = useState(0);
 
   /**
-   * Toggle whether this Panel is displayed as collapsed
+   * Similar to componentDidMount and componentDidUpdate.
    */
-  toggleCollapsed() {
-    if (this.props.collapsing) {
-      this.setState({collapsed: !this.state.collapsed});
+  useEffect(() => {
+    setCollapsed(props.initCollapsed);
+  }, []);
+
+  /**
+   * Toggle whether panel is displayed as collapsed
+   */
+  const toggleCollapsed = () => {
+    if (props.collapsing) {
+      setCollapsed(!collapsed);
     }
-  }
+  };
 
   /**
-   * Render the React component
+   * User clicked a view to display.
    *
-   * @return {object}
+   * @param {number} index
    */
-  render() {
-    // Change arrow direction based on collapse status
-    let glyphClass = (
-      this.state.collapsed ?
-        'glyphicon pull-right glyphicon-chevron-down' :
-        'glyphicon pull-right glyphicon-chevron-up'
-    );
+  const viewClicked = (index) => {
+    setActiveView(index);
+  };
 
-    const title = this.props.bold ? (
-      <h3 className={'panel-title'}>
-        {this.props.title}
-      </h3>
-    ) : this.props.title;
-
-    // Add panel header, if title is set
-    const panelHeading = this.props.title ? (
-      <div
-        className="panel-heading"
-        onClick={this.toggleCollapsed}
-        data-toggle={this.props.collapsing ? 'collapse' : null}
-        data-target={'#' + this.props.id}
-        data-parent={this.props.parentId ?
-          '#'+this.props.parentId :
-          false
-        }
-        style={{
-          cursor: this.props.collapsing ? 'pointer' : 'default',
-          height: '3em',
-          fontWeight: 'bold',
-        }}
-      >
-        {title}
-        {this.props.collapsing ? <span className={glyphClass}/> : ''}
+  // Panel Views (START)
+  let views = [];
+  let content = [];
+  let panelViews;
+  if (props.views) {
+    for (const [index, view] of props.views.entries()) {
+      views.push(
+        <li key={index}
+            onClick={() => viewClicked(index)}
+            className={index === activeView ? 'active' : null}>
+          <a data-target={`${index}_panel_content`}>
+            {view['title']}
+          </a>
+        </li>
+      );
+      content.push(
+        <div key={index}
+             id={`${index}_panel_content_${props.id}`}
+             className={index === activeView ?
+               `${index}_panel_content` : `${index}_panel_content hidden`}>
+          {view['content']}
+        </div>
+      );
+    }
+    panelViews = (
+      <div className='btn-group views'>
+        <button type='button'
+                className='btn btn-default btn-xs dropdown-toggle'
+                data-toggle='dropdown'>
+          Views<span className='caret'/>
+        </button>
+        <ul className='dropdown-menu pull-right'
+            role='menu'>
+          {views}
+        </ul>
       </div>
-    ) : '';
+    );
+  }
+  // Panel Views (END)
 
-    return (
-      <div className={'panel ' + this.props.class}
-           style={{height: this.props.panelSize}}
-      >
-        {panelHeading}
-        <div id={this.props.id}
-             className={this.panelClass}
-             role='tabpanel'
-             style={this.props.collapsing ? {} : {height: 'calc(100% - 3em)'}}
-        >
-          <div className="panel-body"
-               style={{...this.props.style, height: this.props.height}}>
-            {this.props.children}
-          </div>
+  // Add panel header, if title is set
+  const panelHeading = props.title || props.views ? (
+    <div className='panel-heading'
+         data-parent={props.parentId
+           ? `#${props.parentId}`
+           : null}>
+      <h3 className='panel-title'>
+        {props.views && props.views[activeView]['title']
+          ? props.views[activeView]['title']
+          : props.title}
+      </h3>
+      {panelViews}
+      {props.collapsing
+        ? <span className={collapsed ?
+          'glyphicon glyphicon-chevron-down' :
+          'glyphicon glyphicon-chevron-up'}
+                onClick={toggleCollapsed}
+                data-toggle='collapse'
+                data-target={`#${props.id}`}
+                style={{cursor: 'pointer'}}/>
+        : null}
+    </div>
+  ) : '';
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX.Element} - React markup for component.
+   */
+  return (
+    <div className={`panel ${props.class}`}
+         style={{height: props.panelSize}}>
+      {panelHeading}
+      <div id={props.id}
+           className={props.collapsed ?
+             'panel-collapse collapse' :
+             'panel-collapse collapse in'}
+           role='tabpanel'
+           style={{height: 'calc(100% - 3em)'}}>
+        <div className='panel-body'
+             style={{...props.style, height: props.height}}>
+          {content.length > 0 ? content : props.children}
         </div>
       </div>
-    );
-  }
-}
-
+    </div>
+  );
+};
 Panel.propTypes = {
   initCollapsed: PropTypes.bool,
+  collapsed: PropTypes.bool,
   parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
   title: PropTypes.string,
   class: PropTypes.string,
+  children: PropTypes.node,
+  views: PropTypes.array,
   collapsing: PropTypes.bool,
   bold: PropTypes.bool,
+  panelSize: PropTypes.string,
+  style: PropTypes.object,
+  children: PropTypes.node,
 };
 Panel.defaultProps = {
   initCollapsed: false,
@@ -121,8 +148,6 @@ Panel.defaultProps = {
   height: '100%',
   class: 'panel-primary',
   collapsing: true,
-  bold: false,
-  title: '',
 };
 
 export default Panel;

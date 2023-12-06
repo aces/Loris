@@ -2,6 +2,7 @@ import Modal from 'Modal';
 import StaticDataTable from 'StaticDataTable';
 
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
 
 /**
@@ -20,6 +21,9 @@ function ProtocolModal(props) {
         default: return null;
     }
 }
+ProtocolModal.propTypes = {
+    Type: PropTypes.string,
+};
 
 /**
  * Return a modal window to display a MRI violations protocol
@@ -58,9 +62,7 @@ function ProtocolViolationModal(props) {
       title = 'Violations for ' + violation[4];
       violations.push(
         <div key={violation[4]}>
-          <dl style={{display: 'flex', width: '100%',
-                      justifyContent: 'space-around',
-          }}>
+          <dl className="violation-description-list">
             <div>
               <dt>CandID</dt>
               <dd>{violation[0]}</dd>
@@ -200,7 +202,7 @@ function ProtocolViolationModal(props) {
               <td>{protocol['Center_name']}</td>
               <td>{protocol['ScannerID']}</td>
               <td>{protocol['Scan_type']}</td>
-              <td colspan="11">
+              <td colSpan="11">
                 Series Description Regex:
                   <span style={{fontWeight: 'bold'}}>
                     {protocol['series_description_regex']}
@@ -247,6 +249,11 @@ function ProtocolViolationModal(props) {
               {protocolgroups}
            </Modal>;
 }
+ProtocolViolationModal.propTypes = {
+    URL: PropTypes.string,
+    SeriesUID: PropTypes.string,
+    onClose: PropTypes.func,
+};
 
 /**
  * Return a modal window to display a MRI violations protocol
@@ -289,4 +296,9 @@ function ProtocolCheckViolationModal(props) {
                 Data={data} />
            </Modal>;
 }
+ProtocolCheckViolationModal.propTypes = {
+    URL: PropTypes.string,
+    SeriesUID: PropTypes.string,
+    onClose: PropTypes.func,
+};
 export default ProtocolModal;

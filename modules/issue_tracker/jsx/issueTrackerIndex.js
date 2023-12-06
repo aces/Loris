@@ -102,7 +102,7 @@ class IssueTrackerIndex extends Component {
         break;
       default:
         result = <td>None</td>;
-      };
+      }
       break;
     case 'Site':
       // if cell is an array containing all sites values
@@ -281,8 +281,9 @@ IssueTrackerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <IssueTrackerIndex
       dataURL={`${loris.BaseURL}/issue_tracker/?format=json`}
       hasPermission={loris.userHasPermission}

@@ -4,6 +4,9 @@
 # CLEAN-UP
 
 ____________________________________________________________________________________________________________________
+# 25.0
+2023-02-21-unusedconfigs.sql
+____________________________________________________________________________________________________________________
 # 24.0
 2019-07-01_fix_project_in_session.sql
 2019-09-18_DocRepoEdit.sql
@@ -31,7 +34,7 @@ ________________________________________________________________________________
 2021-06-17_mnc2bids_Config_Settings.sql
 2021-06-23_set_default_ScannerID_to_NULL.sql
 2021-06-25_add_alias_column_to_parameter_type_for_bids_parameter_names.sql
-2021-07-19-log_level.sql
+2019-06-01-log_level-2021-07-19.sql
 2021-07-28_add_EchoTime_field_to_violation_tables.sql
 2021-07-29-physiological_task_event_columns_types.sql
 2021-07-29_modify_center_name_in_mri_protocol.sql

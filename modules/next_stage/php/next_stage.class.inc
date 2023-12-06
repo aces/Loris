@@ -91,15 +91,6 @@ class Next_Stage extends \NDB_Form
             );
         }
 
-        // set scan done if applicable
-        if (isset($values['scan_done'])) {
-            $timePoint->setData(
-                [
-                    'Scan_done' => $values['scan_done'],
-                ]
-            );
-        }
-
         // create a new battery object && new battery
         $battery   = new \NDB_BVL_Battery;
         $candidate =& \Candidate::singleton($timePoint->getCandID());
@@ -162,20 +153,6 @@ class Next_Stage extends \NDB_Form
 
         $stage = $timePoint->getNextStage();
         $this->tpl_data['stage'] = $stage;
-
-        // add form elements
-        if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
-            $this->addSelect(
-                'scan_done',
-                'Scan Done',
-                [
-                    ''  => null,
-                    'Y' => 'Yes',
-                    'N' => 'No',
-                ]
-            );
-            $this->addRule('scan_done', 'Scan done is required', 'required');
-        }
 
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
@@ -253,11 +230,6 @@ class Next_Stage extends \NDB_Form
             // must be > DOB - ONLY WHEN starting Visit stage
             $date = $values['date1'] ?? '';
 
-            if (empty($values['scan_done'])
-                && $config->getSetting('useScanDone')!='false'
-            ) {
-                $errors['scan_done'] = 'Scan done is required';
-            }
             if ($config->getSetting('useScreening')=="true"
                 && $config->getSetting('screeningAfterVisit')!="true"
                 && strcmp($date, $timePoint->getData('Date_screening')) < 0

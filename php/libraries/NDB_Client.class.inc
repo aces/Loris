@@ -53,9 +53,6 @@ class NDB_Client
 
         $config = $factory->config($configFile);
 
-        // The factory uses the Settings object to call Database::singleton().
-        // This is required so that further calls to Database::singleton()
-        // will work.
         $DB = $factory->database();
 
         // Register S3 stream wrapper if configured
@@ -136,7 +133,10 @@ class NDB_Client
         );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
-        $sessionOptions['cookie_samesite'] = "Strict";
+
+        // Lax is required for third party login to maintain the State, otherwise
+        // it gets lost after the redirect.
+        $sessionOptions['cookie_samesite'] = "Lax";
 
         // API Detect
         if (strpos(

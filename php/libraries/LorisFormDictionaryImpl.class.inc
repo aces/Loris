@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
@@ -142,7 +142,8 @@ trait LorisFormDictionaryImpl
                 $label,
                 $scope,
                 $t,
-                $card
+                $card,
+                $element['name'],
             );
         }
         return $items;

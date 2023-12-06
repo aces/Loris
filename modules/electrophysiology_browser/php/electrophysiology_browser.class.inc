@@ -59,10 +59,10 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     }
 
     /**
-     * Set up the variables required by NDB_Menu_Filter class for
-     * constructing a query
+     * Get dynamic field options needed for React to render the
+     * page.
      *
-     * @return array list of sites
+     * @return array
      */
     function getFieldOptions(): array
     {

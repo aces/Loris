@@ -4,6 +4,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
 
 use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\instruments\DictionaryItem;
 
 /**
  * Base class for all LORIS behavioural instruments.
@@ -195,7 +196,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array containing all multiselect elements in an instrument.
      */
-    protected $selectMultipleElements;
+    protected $selectMultipleElements = [];
 
     /**
      * Factory generates a new instrument instance of type
@@ -329,48 +330,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        //get config
-        $config = \NDB_Config::singleton();
-        $instrumentPermissions = $config->getSetting("instrumentPermissions");
-        $instrumentPerms       = [];
+        $DB = $this->loris->getDatabaseConnection();
 
-        //check if instrumentPermissions are being used.
-        if (!is_array($instrumentPermissions)) {
-            //instrument permissions not used...
-            return true; //default
-        } else if (!array_key_exists(
-            'useInstrumentPermissions',
-            $instrumentPermissions
-        )
-        ) {
-            //instrument permissions not used...
-            return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
-            //instrument permissions not used...
-            return true; //default
-        } else { //check if user has instrument's permissions
-            //is the instrument listed at all in instrumentPermissions?
-            $instrumentListed = false;
-            foreach ($instrumentPermissions["instrument"] as $instrument) {
-                if ($instrument["Test_name"] == $this->testName) {
-                    $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
-                }
-            }
-
-            //no permissions defined
-            if (!$instrumentListed) {
-                return true;
-            }
-
-            //check if user possesses ANY of the required permissions
-            foreach ($instrumentPerms as $instrumentPerm) {
-                if ($user->hasPermission($instrumentPerm)) {
-                    return true;
-                }
-            }
-            return false;
+        $instrumentPermissions = $DB->pselectCol(
+            "SELECT code FROM testnames_permissions_rel rel
+                LEFT JOIN test_names ON (test_names.ID=rel.TestID)
+                LEFT JOIN permissions ON (permissions.permID=rel.PermID)
+              WHERE test_names.Test_name=:tn",
+            ['tn' => $this->testName]
+        );
+        if (empty($instrumentPermissions)) {
+            // no permissions configured for this instrument
+            return true;
         }
+        return $user->hasAnyPermission($instrumentPermissions);
     }
 
     /**
@@ -427,8 +400,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config = NDB_Config::singleton();
         $base   = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
-
+        $this->logger->debug("Running scoring script $scorer");
         if (file_exists($scorer)) {
+            if (is_executable($scorer) === false) {
+                $this->logger->critical(
+                    "Scoring script $scorer exists but is not executable"
+                );
+                throw new \ConfigurationException(
+                    "Scoring script not executable"
+                );
+            }
             $output = [];
             exec(
                 escapeshellarg($scorer) . " " . escapeshellarg(
@@ -438,8 +419,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "An error occurred while running the scoring
-                algorithm of instrument ".$this->testName.".";
+                $this->logger->warning(
+                    "An error occurred while running the scoring
+                    algorithm of instrument ".$this->testName."."
+                );
             }
         }
     }
@@ -857,7 +840,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->instanceData = $newData;
     }
 
-
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
@@ -867,7 +849,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields(): void
     {
-        $config      = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
@@ -881,7 +865,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
@@ -1396,10 +1380,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $dictionary = $this->getDataDictionary();
 
         foreach ($dictionary as $item) {
-            // The Field name to compare to in the data dictionary is
-            // prefixed with the testname
-            $dictionaryFieldName = $this->testName."_".$field;
-            if ($dictionaryFieldName === $item->getName()) {
+            if ($field === $item->fieldname) {
                 return $allValues[$field];
             }
         }
@@ -1408,7 +1389,28 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
     }
 
+    /**
+     * Gets the value of a field $field for this instrument for a
+     * DictionaryItem that was retrieved from getDataDictionary.
+     *
+     * This differs from getFieldValue in that getFieldValue takes
+     * a string and validates that it is in the dictionary in O(n)
+     * time while getDictionaryValue assumes the DictionaryItem
+     * exists and returns the value in O(1) time.
+     *
+     * @param DictionaryItem $field The field to get from this instrument
 
+     * @return mixed
+     */
+    function getDictionaryValue(DictionaryItem $field)
+    {
+        $allValues = $this->getInstanceData();
+        $fieldName = substr($field->getName(), strlen($this->testName)+1);
+
+        return $allValues[$fieldName];
+    }
+
+    private ?SessionID $sessionID;
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
@@ -1416,22 +1418,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getSessionID(): ?SessionID
     {
-
-        $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $result = \NDB_Factory::singleton()->database()->pselectOne(
-            $query,
-            [
-                'CID' => $this->getCommentID(),
-            ]
-        );
-
-        if (empty($result)) {
-            return null;
+        if (empty($this->sessionID)) {
+            $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+            $result = \NDB_Factory::singleton()->database()->pselectOne(
+                $query,
+                [
+                    'CID' => $this->getCommentID(),
+                ]
+            );
+            if (empty($result)) {
+                return null;
+            }
+            $this->sessionID = new SessionID($result);
         }
-
-        return (new SessionID($result));
+        return $this->sessionID;
     }
 
+    private ?string $visitLabel = null;
     /**
      * Gets the VisitLabel for the timepoint for this instrument.
      *
@@ -1439,7 +1442,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getVisitLabel(): string
     {
-        return \TimePoint::singleton($this->getSessionID())->getVisitLabel();
+        if ($this->visitLabel === null) {
+            $this->visitLabel = \TimePoint::singleton(
+                $this->getSessionID()
+            )->getVisitLabel();
+        }
+        return $this->visitLabel;
     }
 
     /**
@@ -2083,6 +2091,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $diff;
     }
 
+
+    /**
+     * Get the default instance data which consists of all field names
+     * in the dictionary and a null value.
+     *
+     * @return array
+     */
+    protected function defaultInstanceData()
+    {
+        $val        = [];
+        $dictionary = $this->getDataDictionary();
+
+        foreach ($dictionary as $item) {
+            $val[$item->fieldname] = null;
+        }
+        return $val;
+    }
+
     /**
      * Gets the data from an instrument out of the database and returns it
      * as an array.
@@ -2103,14 +2129,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $this->getCommentID()]
             );
 
-            $this->instanceData = json_decode($jsondata, true) ?? [];
+            $this->instanceData = json_decode(
+                $jsondata ?? '',
+                true
+            ) ?? $this->defaultInstanceData();
         } else {
             $defaults = $db->pselectRow(
                 "SELECT * FROM $this->table WHERE CommentID=:CID",
                 ['CID' => $this->getCommentID()]
             );
+            // This is only included because it's the primary key. JSON
+            // data does not include it. Unset so that the two types are
+            // consistent. Places that need the commentID should be using
+            // NDB_BVL_Instrument->getCommentID()
+            unset($defaults['CommentID']);
 
-            $this->instanceData = $defaults ?? [];
+            $this->instanceData = $defaults ?? $this->defaultInstanceData();
         }
         return $this->instanceData;
     }
@@ -2179,10 +2213,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $prepBindings[]      = ":cid$i";
             $prepValues["cid$i"] = $commentID;
         }
+        if ($i === 0) {
+            return [];
+        }
 
         if ($this->jsonData) {
             $jsondata = $db->pselect(
-                "SELECT CommentID, Data FROM flag WHERE CommentID IN ("
+                "SELECT SessionID,
+                        CommentID,
+                        session.Visit_Label as VisitLabel,
+                        Data
+                    FROM flag
+                        JOIN session ON (session.ID=flag.SessionID)
+                    WHERE CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2191,10 +2234,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     $newinst = clone $this;
 
                     $newinst->commentID    = $row['CommentID'];
+                    $newinst->visitLabel   = $row['VisitLabel'];
+                    $newinst->sessionID    = new SessionID($row['SessionID']);
                     $newinst->instanceData = json_decode(
-                        $row['Data'],
+                        $row['Data'] ?? '{}',
                         true,
-                    ) ?? [];
+                    ) ?? $this->defaultInstanceData();
 
                     return $newinst;
                 },
@@ -2202,7 +2247,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $defaults = $db->pselect(
-                "SELECT * FROM $this->table WHERE CommentID IN ("
+                "SELECT flag.CommentID as CommentID,
+                        session.Visit_Label as VisitLabel,
+                        session.ID as SessionID, t.*
+                 FROM $this->table t
+                    JOIN flag ON (t.CommentID=flag.CommentID)
+                    JOIN session ON (flag.SessionID=session.ID)
+                 WHERE t.CommentID IN ("
                 . join(',', $prepBindings) . ')',
                 $prepValues,
             );
@@ -2210,7 +2261,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 function ($row) {
                     $newinst = clone $this;
 
-                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID($row['SessionID']);
+                    unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
+
                     $newinst->instanceData = $row;
 
                     return $newinst;
@@ -3078,8 +3133,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         $instrumentNames = [];
-        foreach ($instrumentNamesList as $testName => $instrument) {
-            $fullName = $instrument->getFullName();
+        foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $directEntryInstruments, true)) {
                 $instrumentNames[$testName] = $fullName;
             }
@@ -3089,5 +3143,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
+    }
+
+    /**
+     * Gets the current instrument instance selectMultipleElements
+     *
+     * @return array the select multiple elements of this instrument.
+     * @access public
+     */
+    public function getSelectMultipleElements(): array
+    {
+        return $this->selectMultipleElements;
     }
 }

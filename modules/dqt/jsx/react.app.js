@@ -41,6 +41,7 @@ class DataQueryApp extends Component {
       queryIDs: {
         user: [],
         shared: [],
+        author: [],
       },
       savedQueries: {},
       queriesLoaded: false,
@@ -689,23 +690,23 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    for (let i = 0; i < fieldsList.length; i++) {
-      $.ajax({
-        url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
-        success: (data) => {
-          if (data[0] && data[0].value.IsFile) {
-            let key = data[0].key[0] + ',' + data[0].key[1];
+    $.ajax({
+      url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
+      success: (data) => {
+        for (let i = 0; i < fieldsList.length; i++) {
+          if (data[i] && data[i].value.IsFile) {
+            let key = data[i].key[0] + ',' + data[i].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
             this.setState({
               downloadableFields: downloadable,
             });
           }
-        },
-        data: {key: fieldsList[i]},
-        dataType: 'json',
-      });
-    }
+        }
+      },
+      data: {keys: JSON.stringify(fieldsList)},
+      dataType: 'json',
+    });
   }
 
   /**
@@ -971,7 +972,6 @@ class DataQueryApp extends Component {
     let Identifiers = [];
     let RowHeaders = [];
     let fileData = [];
-    let href;
 
     if (displayID === 0) {
       // Displaying the data in the cross-sectional way
@@ -989,26 +989,30 @@ class DataQueryApp extends Component {
             let fieldSplit = fields[i].split(',');
             currow[i] = '.';
             let sd = sessiondata[session];
-            if (sd[fieldSplit[0]]
-              && sd[fieldSplit[0]].data[fieldSplit[1]]
-              && downloadableFields[fields[i]]) {
-              // If the current field has data and is downloadable, create a download link
-              href = loris.BaseURL
-                + '/mri/jiv/get_file.php?file='
-                + sd[fieldSplit[0]].data[fieldSplit[1]];
-              currow[i] = (
-                <a href={href}>
-                  {sd[fieldSplit[0]].data[fieldSplit[1]]}
-                </a>
-              );
-              fileData.push('file/'
-                + sd[fieldSplit[0]]._id
-                + '/'
-                + encodeURIComponent(sd[fieldSplit[0]].data[fieldSplit[1]])
-              );
-            } else if (sd[fieldSplit[0]]) {
-              // else if field is not null add data and string
-              currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
+
+            if (sd[fieldSplit[0]]) {
+              let celldata = sd[fieldSplit[0]].data[fieldSplit[1]];
+              if (downloadableFields[fields[i]]) {
+                // Convert to array to loop on the data
+                if (!Array.isArray(celldata)) {
+                  celldata = [celldata];
+                }
+                // If the current field has data and is downloadable, create a download link
+                // and push file to the data array
+                currow[i] = celldata
+                  .filter((line) => line)
+                  .map((line) => {
+                    fileData.push('file/'
+                      + sd[fieldSplit[0]]._id
+                      + '/'
+                      + encodeURIComponent(line)
+                    );
+                    return loris.BaseURL + '/mri/jiv/get_file.php?file=' + line;
+                  });
+              } else {
+                // else if field is not null add data and string
+                currow[i] = celldata;
+              }
             }
           }
           rowdata.push(currow);
@@ -1083,30 +1087,37 @@ class DataQueryApp extends Component {
                   RowHeaders[colHeader].lastIndexOf(' ') + 1
                 ).split(',');
                 if (temp) {
-                  if (temp.data[RowHeaders[colHeader].split(',')[1]]
-                    && downloadableFields[fieldSplit[0]
-                    + ',' + fieldSplit[1]]) {
-                    // Add a downloadable link if the field is set and downloadable
-                    href = loris.BaseURL
-                      + '/mri/jiv/get_file.php?file='
-                      + temp.data[RowHeaders[colHeader].split(',')[1]];
-                    fileData.push('file/'
-                      + temp._id
-                      + '/'
-                      + encodeURIComponent(temp.data[fieldSplit[1]])
-                    );
-                    temp = (
-                      <a href={href}>
-                        {temp.data[RowHeaders[colHeader].split(',')[1]]}
-                      </a>
-                    );
+                  let celldata = temp.data[fieldSplit[1]];
+                  if (celldata && downloadableFields[
+                    fieldSplit[0] + ',' + fieldSplit[1]
+                  ]) {
+                    // Convert to array to loop on the data
+                    if (!Array.isArray(celldata)) {
+                      celldata = [celldata];
+                    }
+
+                    // If the current field has data and is downloadable, create a download link
+                    // and push file to the data array
+                    currow[i] = celldata
+                      .filter((line) => line)
+                      .map((line) => {
+                        fileData.push(
+                          'file/' +
+                          temp._id + '/' +
+                          encodeURIComponent(line)
+                        );
+                        return (
+                          loris.BaseURL +
+                          '/mri/jiv/get_file.php?file=' +
+                          line
+                        );
+                      });
                   } else {
-                    temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                    currow.push(celldata);
                   }
                 } else {
-                  temp = '.';
+                  currow.push('.');
                 }
-                currow.push(temp);
               }
             }
           }
@@ -1346,6 +1357,7 @@ class DataQueryApp extends Component {
                       <SavedQueriesList
                         userQueries={this.state.queryIDs.user}
                         globalQueries={this.state.queryIDs.shared}
+                        author={this.state.queryIDs.author}
                         queryDetails={this.state.savedQueries}
                         queriesLoaded={this.state.queriesLoaded}
                         onSelectQuery={this.loadSavedQuery}
@@ -1522,6 +1534,10 @@ DataQueryApp.propTypes = {
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
+  AllSessions: PropTypes.array,
+  Visits: PropTypes.array,
+  UpdatedTime: PropTypes.string,
+  categories: PropTypes.array,
 };
 DataQueryApp.defaultProps = {
   title: 'Fields',
@@ -1538,8 +1554,9 @@ DataQueryApp.defaultProps = {
  * Render DataQueryApp on page load.
  */
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DataQueryApp
       baseURL={loris.BaseURL}
     />

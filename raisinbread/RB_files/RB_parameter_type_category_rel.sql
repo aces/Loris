@@ -218,5 +218,11 @@ INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCate
 INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1148,5);
 INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1149,5);
 INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1150,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1163,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1164,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1165,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1166,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1167,5);
+INSERT INTO `parameter_type_category_rel` (`ParameterTypeID`, `ParameterTypeCategoryID`) VALUES (1168,5);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

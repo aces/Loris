@@ -81,7 +81,7 @@ class Error extends HtmlResponse
 
         $template_file = (string) $status . '.tpl';
 
-        $body = (new \Smarty_neurodb())
+        $body = (new \Smarty_NeuroDB())
             ->assign($tpl_data)
             ->fetch($template_file);
 

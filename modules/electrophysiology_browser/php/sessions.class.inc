@@ -229,7 +229,7 @@ class Sessions extends \NDB_Page
         $params['SID']  = $this->sessionID;
         $query          = 'SELECT
                          pf.PhysiologicalFileID
-                       FROM
+                         FROM
                          physiological_file pf ';
 
         if ($outputType != 'all_types') {
@@ -583,7 +583,6 @@ class Sessions extends \NDB_Page
         // Metadata
 
         $queries = [
-            'physiological_electrode'          => 'physiological_electrode_file',
             'physiological_channel'            => 'physiological_channel_file',
             'physiological_event_archive'      => 'physiological_event_files',
             'physiological_annotation_archive' => 'physiological_annotation_files',
@@ -599,16 +598,24 @@ class Sessions extends \NDB_Page
         ];
 
         foreach ($queries as $query_key => $query_value) {
-            $query_statement = "SELECT
-                            DISTINCT(FilePath)
-                            FROM
-                            $query_key
-                            WHERE
-                            PhysiologicalFileID=:PFID";
+            if ($query_key == 'physiological_electrode') {
+                // electrode filepath linked to coordinate system
+                $query_statement = "SELECT DISTINCT e.FilePath
+                    FROM physiological_coord_system_electrode_rel AS r,
+                        physiological_electrode AS e
+                    WHERE r.PhysiologicalElectrodeID = e.PhysiologicalElectrodeID
+                        AND r.PhysiologicalFileID=:PFID";
+            } else {
+                // others metadata
+                $query_statement = "SELECT DISTINCT FilePath
+                    FROM $query_key
+                    WHERE PhysiologicalFileID=:PFID";
+            }
             $query_statement = $db->pselectRow(
                 $query_statement,
                 ['PFID' => $physioFileID]
             );
+
             if ($query_statement) {
                 $downloadLinks[$query_value] = [
                     'file'  => $query_statement['FilePath'],
@@ -622,6 +629,28 @@ class Sessions extends \NDB_Page
             }
         }
 
+        // Electrodes
+        $file_name = 'physiological_electrode_file';
+        // TODO: If we plan to support multiple electrode spaces
+        // the LIMIT logic should be revisited
+        $query_statement = "SELECT DISTINCT(FilePath)
+                            FROM physiological_electrode
+                            JOIN physiological_coord_system_electrode_rel
+                                USING (PhysiologicalElectrodeID)
+                            WHERE PhysiologicalFileID=:PFID
+                            LIMIT 1";
+        $query_statement = $db->pselect(
+            $query_statement,
+            ['PFID' => $physioFileID]
+        );
+
+        $downloadLinks[$file_name] = [
+            'file'  => '',
+            'label' => $labels[$file_name],
+        ];
+        if (count($query_statement) > 0) {
+            $downloadLinks[$file_name]['file'] = $query_statement[0]['FilePath'];
+        }
         return $downloadLinks;
     }
 

@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    SelectElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Category Creation Form
@@ -194,6 +201,8 @@ class DocCategoryForm extends React.Component {
 DocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  refreshPage: PropTypes.func,
+  newCategoryState: PropTypes.func,
 };
 
 export default DocCategoryForm;

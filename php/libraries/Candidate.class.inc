@@ -18,6 +18,8 @@ define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
 define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
+define('EDC_INVALID', 8);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -255,6 +257,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -267,20 +270,58 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $PSCIDSettings = $config->getSetting('PSCID');
         $useEDC        = $config->getSetting('useEDC');
 
-        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
-            throw new \LorisException(
-                "EDC must be specified",
-                EDC_NOT_SPECIFIED
-            );
+        // Get expected format from config
+        $dobFormat = $config->getSetting('dobFormat');
+        $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
+
+        if (($useEDC === '1' || $useEDC === 'true')) {
+            if (empty($edc)) {
+                throw new \LorisException(
+                    "EDC must be specified",
+                    EDC_NOT_SPECIFIED
+                );
+            } else {
+                // Check valid format
+                $edcDate = DateTime::createFromFormat($dobFormat, $edc);
+                if ($edcDate === false) {
+                    throw new InvalidArgumentException(
+                        "EDC is invalid (expected format: YYYY-MM-DD)",
+                        EDC_INVALID
+                    );
+                }
+
+                // Add day as mid of the month if Y-m dob format
+                // This allows insert into sql candidate table
+                if ($dobFormat === '!Y-m') {
+                    $edc .= '-15';
+                }
+            }
         }
-        if ($dateOfBirth !== null
-            && (DateTime::createFromFormat('Y-m-d', $dateOfBirth) === false
-            || empty($dateOfBirth))
-        ) {
-            throw new InvalidArgumentException(
-                "Date of Birth must be specified",
-                DOB_NOT_SPECIFIED
-            );
+
+        if (empty($dateOfBirth)) {
+            // DoB not required if useEDC is on
+            if (!($useEDC === '1' || $useEDC === 'true')) {
+                throw new InvalidArgumentException(
+                    "Date of Birth must be specified",
+                    DOB_NOT_SPECIFIED
+                );
+            } else {
+                $dateOfBirth = null;
+            }
+        } else {
+            $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+            if ($dob === false) {
+                throw new InvalidArgumentException(
+                    "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                    DOB_INVALID
+                );
+            }
+
+            // Add day as mid of the month if Y-m dob format
+            // This allows insert into sql candidate table
+            if ($dobFormat === '!Y-m') {
+                $dateOfBirth .= '-15';
+            }
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -289,6 +330,25 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid uniqueness
+            $existing = $db->pselectOne(
+                'SELECT
+                  COUNT(*)
+                 FROM candidate
+                 WHERE PSCID = :v_pscid
+                 GROUP BY
+                   PSCID
+                ',
+                ['v_pscid' => $PSCID]
+            );
+
+            if ($existing > 0) {
+                throw new \ConflictException(
+                    "PSCID must be unique",
+                    PSCID_NOT_UNIQUE
                 );
             }
 

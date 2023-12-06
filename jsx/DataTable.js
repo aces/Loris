@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
+import {CTA} from 'jsx/Form';
 
 /**
  * Data Table component
@@ -516,7 +517,9 @@ class DataTable extends Component {
         const rowIndexDisplay = index[i].Content;
         rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              {this.props.hide.defaultColumn === true ? null : (
               <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+              )}
               {curRow}
             </tr>
         );
@@ -567,12 +570,14 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
-              <button
-                className="btn btn-primary"
-                onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-              >
+              {this.props.hide.downloadCSV === true ? '' : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                  >
                 Download Table as CSV
-              </button>
+              </button>)
+              }
               <PaginationLinks
                 Total={filteredCount}
                 onChangePage={this.changePage}
@@ -585,7 +590,7 @@ class DataTable extends Component {
       </div>
     );
 
-    let footer = this.props.hide.downloadCSV === true ? '' : (
+    let footer = (
       <div>
         <div className="row">
           <div style={{
@@ -651,6 +656,13 @@ DataTable.propTypes = {
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
   noDynamicTable: PropTypes.bool,
+  getMappedCell: PropTypes.func,
+  fields: PropTypes.array,
+  RowNameMap: PropTypes.array,
+  filters: PropTypes.object,
+  freezeColumn: PropTypes.string,
+  loading: PropTypes.element,
+  folder: PropTypes.element,
 };
 DataTable.defaultProps = {
   headers: [],

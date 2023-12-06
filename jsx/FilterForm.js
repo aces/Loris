@@ -7,6 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import {FormElement} from 'jsx/Form';
 
 /**
  * FilterForm component.
@@ -227,6 +228,8 @@ FilterForm.propTypes = {
   height: PropTypes.string,
   title: PropTypes.string,
   onUpdate: PropTypes.func,
+  children: PropTypes.node,
+  formElements: PropTypes.object,
 };
 
 export default FilterForm;

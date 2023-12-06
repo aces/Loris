@@ -167,6 +167,11 @@ class ImagingBrowserIndex extends Component {
         type: 'multiselect',
         options: options.pendingNew,
       }},
+      {label: 'Entity Type', show: false, filter: {
+       name: 'entityType',
+       type: 'multiselect',
+       option: options.entityType,
+      }},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types
@@ -194,8 +199,9 @@ ImagingBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingBrowserIndex
       dataURL={`${loris.BaseURL}/imaging_browser/?format=json`}
     />

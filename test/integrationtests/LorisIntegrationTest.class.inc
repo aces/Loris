@@ -45,6 +45,13 @@ abstract class LorisIntegrationTest extends TestCase
     protected $DB;
     protected $url;
     protected $factory;
+
+    /**
+     * Allows subclasses that don't depend on Selenium to skip the Selenium
+     * WebDriver creation and login. (ie. API tests that use curl instead
+     * of selenium.)
+     */
+    protected $skipSelenium = false;
     /**
      * A valid password to use for login tests.
      */
@@ -134,13 +141,14 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
+        if ($this->skipSelenium == false) {
+            $this->webDriver = RemoteWebDriver::create(
+                $selenium_url,
+                $desired_capabilities
+            );
 
-        $this->webDriver = RemoteWebDriver::create(
-            $selenium_url,
-            $desired_capabilities
-        );
-
-        $this->login("UnitTester", $this->validPassword);
+            $this->login("UnitTester", $this->validPassword);
+        }
 
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")

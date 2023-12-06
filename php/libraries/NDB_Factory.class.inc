@@ -173,9 +173,10 @@ class NDB_Factory
         putenv("LORIS_{$dbname}_PASSWORD=" . $settings->dbPassword());
         putenv("LORIS_{$dbname}_HOST=" . $settings->dbHost());
 
-        $db_ref = \Database::singleton(
+        $db_ref = new Database();
+        $db_ref->connect(
             $settings->dbName(),
-            true
+            true,
         );
 
         // Unset the variables now that they're no longer needed.

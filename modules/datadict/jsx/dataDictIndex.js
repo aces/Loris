@@ -213,12 +213,14 @@ class DataDictIndex extends Component {
 }
 
 DataDictIndex.propTypes = {
-    dataURL: PropTypes.string.isRequired,
+  dataURL: PropTypes.string.isRequired,
+  fieldsURL: PropTypes.string,
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DataDictIndex
       dataURL={`${loris.BaseURL}/datadict/?format=binary`}
       fieldsURL={`${loris.BaseURL}/datadict/fields`}

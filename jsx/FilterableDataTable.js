@@ -190,6 +190,11 @@ FilterableDataTable.propTypes = {
   actions: PropTypes.array,
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
+  loading: PropTypes.element,
+  getMappedCell: PropTypes.func,
+  folder: PropTypes.element,
+  nullTableShow: PropTypes.element,
+  children: PropTypes.node,
 };
 
 export default FilterableDataTable;

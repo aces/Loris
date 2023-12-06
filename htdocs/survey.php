@@ -86,7 +86,10 @@ class DirectDataEntryMainPage
         $this->loris     = new \LORIS\LorisInstance(
             $DB,
             $config,
-            []
+            [
+                __DIR__ . "/../project/modules",
+                __DIR__ . "/../modules/",
+            ]
         );
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
@@ -241,7 +244,7 @@ class DirectDataEntryMainPage
 
         $this->tpl_data['workspace'] = $e->getMessage();
         $this->tpl_data['complete']  = false;
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
 
@@ -377,7 +380,7 @@ class DirectDataEntryMainPage
             $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
         }
-        $smarty = new Smarty_neurodb;
+        $smarty = new Smarty_NeuroDB;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
     }

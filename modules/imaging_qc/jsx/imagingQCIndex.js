@@ -44,6 +44,7 @@ class ImagingQCIndex extends Component {
                        + row.DCCID;
           result = <td><a href={mpfURL}>{cell}</a></td>;
         }
+        break;
       case 'Scan Location':
         if (cell == 'In Imaging Browser') {
           let imgURL = loris.BaseURL
@@ -51,6 +52,7 @@ class ImagingQCIndex extends Component {
                        + row['Session ID'];
           result = <td><a href={imgURL}>{cell}</a></td>;
         }
+        break;
       case 'Tarchive':
         if (cell == 'In DICOM') {
           let tarchiveURL = loris.BaseURL +
@@ -228,8 +230,9 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}

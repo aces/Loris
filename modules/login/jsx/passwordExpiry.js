@@ -129,7 +129,7 @@ class PasswordExpired extends Component {
           name={'passwordExpiry'}
           action={''}
           id={'form'}
-          fileUpload={'false'}
+          fileUpload={false}
           onSubmit={this.handleSubmit}
         >
           <PasswordElement

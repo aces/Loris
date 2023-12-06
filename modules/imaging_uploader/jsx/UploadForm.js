@@ -1,6 +1,15 @@
 import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    SelectElement,
+    TextboxElement,
+    StaticElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
@@ -465,8 +474,12 @@ class UploadForm extends Component {
     );
   }
 }
-
-UploadForm.propTypes = {};
+UploadForm.propTypes = {
+  form: PropTypes.func,
+  mriList: PropTypes.array,
+  imagingUploaderAutoLaunch: PropTypes.string,
+  maxUploadSize: PropTypes.string,
+};
 UploadForm.defaultProps = {};
 
 export default UploadForm;

@@ -14,15 +14,28 @@
  */
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$user = \User::singleton();
-if (!$user->hasPermission('candidate_parameter_edit')) {
-    header("HTTP/1.1 403 Forbidden");
-    exit;
-}
-
 $tab = $_POST['tab'] ?? '';
 if ($tab === '') {
     header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
+$user = \User::singleton();
+if (($tab == 'candidateDOB')
+    && (!$user->hasPermission('candidate_dob_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab == 'candidateDOD')
+    && (!$user->hasPermission('candidate_dod_edit'))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+} elseif (($tab != 'candidateDOB')
+    && ($tab != 'candidateDOD')
+    && !$user->hasPermission('candidate_parameter_edit')
+) {
+    header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
@@ -52,7 +65,6 @@ case 'participantStatus':
 case 'consentStatus':
     editConsentStatusFields($db);
     break;
-
 
 case 'candidateDOB':
     editCandidateDOB($db);
@@ -450,6 +462,7 @@ function editConsentStatusFields(\Database $db)
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
         $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
+        $oldDate       = $candidateConsent[$consentID]['DateGiven'] ?? null;
         $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
         $validated     = false;
 
@@ -505,7 +518,14 @@ function editConsentStatusFields(\Database $db)
                 echo('A status is missing for at least one consent type.
                       Please select a valid status for all consent types.');
                 return;
+            } elseif (!empty($oldStatus)
+                || !empty($oldDate)
+                || !empty($oldWithdrawal)
+            ) {
+                // Only update empty fields if they were not already empty
+                $validated = true;
             }
+
             break;
         }
 

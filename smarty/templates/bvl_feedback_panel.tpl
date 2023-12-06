@@ -29,7 +29,8 @@
     selectOptions: select_option,
     feedbackTypes: feedback_types
   });
-  const root = ReactDOM.createRoot(document.getElementById("panel_content"));
-  root.render(bvl_panel);
+  ReactDOM.createRoot(
+    document.getElementById("panel_content")
+  ).render(bvl_panel);
 </script>
 

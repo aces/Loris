@@ -32,16 +32,16 @@ Prepared statements MUST be used for any database interactions that use user inp
 
 LORIS has many classes that use a Singleton design pattern. To facilitate with
 unit testing, it is best to use these singletons via the NDB_Factory class.
-For example, you should use the Database class like this:
+For example, you should use the Project class like this:
 
 ```php
-$database = \NDB_Factory::singleton()->database();
+$project = \NDB_Factory::singleton()->project("controlproject");
 ```
 
 instead of 
 
 ```php
-$database = \Database::singleton();
+$project = \Project::singleton("controlproject");
 ```
 
 # HTML

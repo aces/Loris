@@ -1,5 +1,13 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    FieldsetElement,
+    CheckboxElement,
+} from 'jsx/Form';
 
 /**
  * Filter component
@@ -40,7 +48,8 @@ function Filter(props) {
     const exactMatch = (!(type === 'text' || type === 'date'));
 
     if (value === null || value === '' ||
-      (value.constructor === Array && value.length === 0)) {
+      (value.constructor === Array && value.length === 0) ||
+      (type === 'checkbox' && value === false)) {
       props.removeFilter(name);
     } else {
       props.addFilter(name, value, exactMatch);
@@ -74,6 +83,7 @@ function Filter(props) {
             element = (
               <SelectElement
                 options={filter.options}
+                sortByValue={filter.sortByValue}
                 multiple={true}
                 emptyOption={false}
               />
@@ -133,7 +143,7 @@ function Filter(props) {
           </ul>
         </li>
       );
-    };
+    }
   };
 
   const filterActions = (
@@ -178,6 +188,11 @@ Filter.propTypes = {
   columns: PropTypes.number,
   title: PropTypes.string,
   fields: PropTypes.array.isRequired,
+  removeFilter: PropTypes.func,
+  addFilter: PropTypes.func,
+  filterPresets: PropTypes.array,
+  updateFilters: PropTypes.func,
+  clearFilters: PropTypes.func,
 };
 
 export default Filter;

@@ -119,9 +119,6 @@ class DataReleaseIndex extends Component {
           );
         }
         break;
-      case 'Version':
-        result = <td>{cell || 'Unversioned'}</td>;
-        break;
     }
     return result;
   }
@@ -273,8 +270,9 @@ DataReleaseIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <DataReleaseIndex
       dataURL={`${loris.BaseURL}/data_release/?format=json`}
       hasPermission={loris.userHasPermission}

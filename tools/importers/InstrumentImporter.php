@@ -7,6 +7,7 @@
  */
 class InstrumentImporter extends DataImporter
 {
+    protected \Database $DB;
 
     /**
      * This value should be updated if the CandID class in LORIS is updated.
@@ -27,11 +28,16 @@ class InstrumentImporter extends DataImporter
      *
      * @param SplFileInfo $mappingFile A path to the CSV mapping file.
      * @param SplFileInfo $dataFile    A path to the CSV data file.
+     * @param Database    $DB          LORIS Database connection
      *
      * @return void
      */
-    public function __construct(SplFileInfo $mappingFile, SplFileInfo $dataFile)
-    {
+    public function __construct(
+        SplFileInfo $mappingFile,
+        SplFileInfo $dataFile,
+        \Database $DB
+    ) {
+        $this->DB = $DB;
         // The name of the table must be the first value in the filename preceding
         // an underscore. e.g, "$instrumentName_dataExtract_output.csv".
         $this->table = substr(
@@ -41,7 +47,7 @@ class InstrumentImporter extends DataImporter
         );
 
         // Access list of existing CommentIDs
-        $this->existingCommentIDs = \Database::singleton()->pselectCol(
+        $this->existingCommentIDs = $DB->pselectCol(
             'SELECT CommentID from flag',
             []
         );
@@ -75,7 +81,7 @@ class InstrumentImporter extends DataImporter
             AND f.test_name = :table
             AND f.CommentID NOT LIKE "DDE%"';
 
-        $newCommentID = \Database::singleton()->pselectOne(
+        $newCommentID = $this->DB->pselectOne(
             $query,
             [
                 'newCandID'  => $newCandID,

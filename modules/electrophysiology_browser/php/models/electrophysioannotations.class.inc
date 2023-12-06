@@ -145,6 +145,8 @@ class ElectrophysioAnnotations
 
             //Insert new files and data into DB
             if (empty($annotationFIDs)) {
+                //Create new annotation files
+                $this->_createFiles();
 
                 //Get new annotation file ID
                 $annotation_tsv_ID = $db->pselectOne(
@@ -164,8 +166,6 @@ class ElectrophysioAnnotations
                 );
 
                 $metadata['AnnotationFileID'] = $annotation_json_ID;
-                $instance['AnnotationFileID'] = $annotation_tsv_ID;
-
                 $db->insert("physiological_annotation_parameter", $metadata);
 
                 //Get new metadata file ID
@@ -176,8 +176,8 @@ class ElectrophysioAnnotations
                     ['annotation_ID' => $annotation_json_ID]
                 );
 
+                $instance['AnnotationFileID']      = $annotation_tsv_ID;
                 $instance['AnnotationParameterID'] = $metadata_ID;
-
                 $db->insert("physiological_annotation_instance", $instance);
 
             } else {
@@ -584,8 +584,10 @@ class ElectrophysioAnnotations
                 WHERE PhysiologicalFileID=:PFID",
                 ['PFID' => $this->_physioFileID]
             );
-            $filepath = $dataDir.$filepath;
-
+            if (!$filepath) {
+                continue;
+            }
+            $filepath  = $dataDir.$filepath;
             $arch_file = new \PharData($filepath);
             foreach ($paths as $path) {
                 $arch_file->addFile($path, basename($path));

@@ -1,20 +1,6 @@
 #!/usr/bin/env php
 <?php
-/**
- * Imports demographics to CouchDB
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Loris
- * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 /**
  * Imports demographics to CouchDB
  *
@@ -26,13 +12,16 @@ require_once 'Database.class.inc';
  */
 class CouchDBDemographicsImporter
 {
-    var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+    var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
 
     // this is just in an instance variable to make
     // the code a little more readable.
     var $Dictionary = [
+        'Date_registered'  => [
+            'Description' => 'Date of Registration',
+            'Type'        => 'date'
+        ],
         'DoB'              => [
             'Description' => 'Date of Birth',
             'Type'        => 'date'
@@ -180,7 +169,8 @@ class CouchDBDemographicsImporter
     {
         $config = \NDB_Config::singleton();
 
-        $fieldsInQuery = "SELECT c.DoB,
+        $fieldsInQuery = "SELECT c.Date_registered,
+                                c.DoB,
                                 c.DoD,
                                 c.CandID,
                                 c.PSCID,

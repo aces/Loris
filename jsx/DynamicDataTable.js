@@ -151,15 +151,16 @@ class DynamicDataTable extends Component {
 DynamicDataTable.propTypes = {
   DataURL: PropTypes.string.isRequired,
   hiddenHeaders: PropTypes.array,
+  Filter: PropTypes.object,
+  getFormattedCell: PropTypes.func,
+  freezeColumn: PropTypes.string,
+  onSort: PropTypes.func,
 };
 
 DynamicDataTable.defaultProps = {
   DataURL: '',
 };
 
-let RDynamicDataTable = React.createFactory(DynamicDataTable);
-
 window.DynamicDataTable = DynamicDataTable;
-window.RDynamicDataTable = RDynamicDataTable;
 
 export default DynamicDataTable;

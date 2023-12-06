@@ -45,8 +45,7 @@ class CandidateTest extends TestCase
     private $_candidate;
 
     /**
-     * NDB_Factory used in tests for methods that use
-     * Database::singleton()
+     * NDB_Factory used in tests for methods that use the database
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  NDB_Factory
@@ -54,8 +53,7 @@ class CandidateTest extends TestCase
     private $_factoryForDB;
 
     /**
-     * NDB_Config used in tests for methods that use
-     * Database::singleton()
+     * NDB_Config used in tests.
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  \NDB_Config
@@ -63,8 +61,7 @@ class CandidateTest extends TestCase
     private $_config;
 
     /**
-     * Database used in tests for methods that use
-     * Database::singleton()
+     * Database used in tests
      *
      * @note This is setup and used in the _setUpMockDB() method
      * @var  \Database
@@ -1375,7 +1372,8 @@ class CandidateTest extends TestCase
 
     /**
      * Set up mock database and config information
-     * This is only necessary to test the functions that use Database::singleton()
+     * This is only necessary to test the functions that use
+     * the database.
      *
      * @return void
      */

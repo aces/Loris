@@ -12,10 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . 'generic_includes.php';
+require_once __DIR__ . '/generic_includes.php';
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
@@ -94,6 +94,7 @@ foreach ($ddeInstruments as $test) {
             print "Recreating conflicts for " . $instrument['Test_name'] .
                 ':'. $instrument['CommentID'] . "\n";
             $diff = ConflictDetector::detectConflictsForCommentIds(
+                $lorisInstance,
                 $instrument['Test_name'],
                 $instrument['CommentID'],
                 $instrument['DDECommentID']

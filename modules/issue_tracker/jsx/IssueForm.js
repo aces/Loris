@@ -4,9 +4,17 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-
+import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  SelectElement,
+  StaticElement,
+  FormElement,
+  TextboxElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Issue add/edit form
@@ -153,6 +161,7 @@ class IssueForm extends Component {
                        baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
+                       whoami={this.state.issueData.whoami}
       />
     );
 
@@ -200,12 +209,13 @@ class IssueForm extends Component {
         </div>
       );
 
+      const descr = <Markdown content={this.state.issueData.desc} />;
       description = (
         <StaticElement
           name='description'
           label='Description'
           ref='description'
-          text={this.state.issueData.desc}
+          text={descr}
         />
       );
     }
@@ -246,7 +256,7 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
-            required={true}
+            required={false}
           />
           <SelectElement
             name='centerID'
@@ -324,6 +334,7 @@ class IssueForm extends Component {
             name='othersWatching'
             label='Add others to watching?'
             emptyOption={true}
+            autoSelect={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
@@ -570,7 +581,7 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
+  userHasPermission: PropTypes.bool,
 };
 
 export default IssueForm;

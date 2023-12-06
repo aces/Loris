@@ -18,42 +18,31 @@ require_once __DIR__ . '/../generic_includes.php';
 echo "\n*** Set Data_entry_completion_satus in flag table ***
 
 ####################################################################################
-This script is to be run for one time use only to update and rename the 
-Data_entry_completion_status field. 
+This script is to be run for one time use only to update and rename the
+Data_entry_completion_status field.
 
-Without being run with 'confirm', the script only reports mismatching data. If run 
-with 'confirm', the new Required_elements_completed flag is updated by using the 
-_determineRequiredElementsCompletedFlag and _setRequiredElementsCompletedFlag 
-functions. A previous Data_entry_completion_status value that does not match the 
+Without being run with 'confirm', the script only reports mismatching data. If run
+with 'confirm', the new Required_elements_completed flag is updated by using the
+_determineRequiredElementsCompletedFlag and _setRequiredElementsCompletedFlag
+functions. A previous Data_entry_completion_status value that does not match the
 newly determined Required_elements_completed value will be overwritten.
 
-An array is printed at the end of the script that lists all the cases 
-where the new Required_elements_completed flag does not match the old 
+An array is printed at the end of the script that lists all the cases
+where the new Required_elements_completed flag does not match the old
 Data_entry_completion_status. If the Required_elements_completed flag is not updated
 through this script or through instrument saving, it's default is 'N'.
 
-After running this script with 'confirm', run 
+After running this script with 'confirm', run
 Remove_Data_entry_completion_status_instr_column.php to generate a DROP COLUMN patch
 to remove the old column from instrument tables.
 ####################################################################################
 
 \n";
-$DB = \Database::singleton();
-
-$loris = new \LORIS\LorisInstance(
-    \NDB_Factory::singleton()->database(),
-    \NDB_Factory::singleton()->config(),
-    [
-        "project/modules",
-        "modules",
-    ]
-);
-
 $confirm = isset($argv[1]) && strtolower($argv[1]) === 'confirm';
 
 // Get all data from flag to back-populate
 $flagData = $DB->pselectWithIndexKey(
-    "SELECT Data, CommentID, Test_name 
+    "SELECT Data, CommentID, Test_name
                 FROM flag",
     [],
     'CommentID'
@@ -65,7 +54,7 @@ foreach ($flagData as $cmid => $data) {
     // instantiate instrument
     try {
         $instrument = NDB_BVL_Instrument::factory(
-            $loris,
+            $lorisInstance,
             $data['Test_name'],
             $cmid,
             ''
@@ -81,7 +70,7 @@ foreach ($flagData as $cmid => $data) {
     // Get previously existing DECS either from instrument or flag data
     if (!$instrument->usesJSONData()) {
         $instrDECS = $DB->pselectOne(
-            "SELECT Data_entry_completion_status 
+            "SELECT Data_entry_completion_status
             FROM {$instrument->table} WHERE CommentID=:cmid",
             ["cmid" => $cmid]
         );
@@ -122,8 +111,8 @@ foreach ($flagData as $cmid => $data) {
     }
 }
 
-echo "\nThe following CommentIDs reflect cases where the existing 
-    Data entry completion status does not match the determined 
+echo "\nThe following CommentIDs reflect cases where the existing
+    Data entry completion status does not match the determined
     Required elements completed:\n";
 print_r($mismatched);
 

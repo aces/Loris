@@ -23,10 +23,10 @@ at the visit level.
 The Candidate Parameters module uses the following permissions. Either one
 is sufficient to access the module.
 
- - `candidate_parameter_view`
+ - `candidate_parameter_view` (Candidate Parameters: View Candidate Information)
     - This permission gives the user access to view the module and all of its tabs.
 
- - `candidate_parameter_edit`
+ - `candidate_parameter_edit` (Candidate Parameters: Edit Candidate Information)
     - This permission gives the user access to edit the module and all of its tabs.
 
 ## Configurations

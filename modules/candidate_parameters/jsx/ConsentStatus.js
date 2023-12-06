@@ -4,6 +4,14 @@ import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  HeaderElement,
+  SelectElement,
+  DateElement,
+} from 'jsx/Form';
 
 /**
  * Consent Status Component.
@@ -99,11 +107,21 @@ class ConsentStatus extends Component {
             if (this.state.Data.consents.hasOwnProperty(consent)) {
                 const oldConsent = this.state.Data.consentStatuses[consent];
                 const newConsent = this.state.formData[consent];
-                // Clear withdrawal date if consent status changes from no
-                // (or empty if uncleaned data) to yes
                 if (formElement === consent) {
+                    // Clear withdrawal date if consent status changes from no
+                    // (or empty if uncleaned data) to yes
                     if ((newConsent === 'yes' && oldConsent !== 'yes') ||
-                        (newConsent === 'no' && oldConsent === null)) {
+                        (newConsent === 'no' &&
+                            (oldConsent === null || oldConsent === '')
+                        )
+                    ) {
+                        formData[consent + '_withdrawal'] = '';
+                        formData[consent + '_withdrawal2'] = '';
+                    }
+                    // Clear date if response set back to null
+                    if (newConsent === '' && oldConsent !== null) {
+                        formData[consent + '_date'] = '';
+                        formData[consent + '_date2'] = '';
                         formData[consent + '_withdrawal'] = '';
                         formData[consent + '_withdrawal2'] = '';
                     }
@@ -309,18 +327,20 @@ class ConsentStatus extends Component {
         const newConsent = this.state.formData[consentName];
         const withdrawalDate = this.state.Data.withdrawals[consentName];
         // Define defaults
-        let emptyOption = true;
         let dateRequired = false;
+        let responseDateDisabled = true;
         let withdrawalRequired = false;
         // Let date of withdrawal field be disabled until it is needed
         let withdrawalDisabled = true;
 
         // If answer to consent is 'yes', require date of consent
         if (newConsent === 'yes') {
+            responseDateDisabled = false;
             dateRequired = true;
         }
         // If answer to consent is 'no', require date of consent
         if (newConsent === 'no') {
+            responseDateDisabled = false;
             dateRequired = true;
             // If answer was previously 'yes' and consent is now being withdrawn, enable and require withdrawal date
             // If consent was previously withdrawn and stays withdrawn, enable and require withdrawal date
@@ -330,10 +350,6 @@ class ConsentStatus extends Component {
                 withdrawalDisabled = false;
                 withdrawalRequired = true;
             }
-        }
-        // Disallow clearing a valid consent status by removing empty option
-        if (oldConsent === 'no' || oldConsent === 'yes') {
-            emptyOption = false;
         }
 
         // Set up elements
@@ -362,14 +378,13 @@ class ConsentStatus extends Component {
                     onUserInput={this.setFormData}
                     disabled={disabled}
                     required={false}
-                    emptyOption={emptyOption}
                 />
                 <DateElement
                     label={consentDateLabel}
                     name={consentDate}
                     value={this.state.formData[consentDate]}
                     onUserInput={this.setFormData}
-                    disabled={disabled}
+                    disabled={disabled || responseDateDisabled}
                     required={dateRequired}
                 />
                 <DateElement
@@ -377,7 +392,7 @@ class ConsentStatus extends Component {
                     name={consentDate2}
                     value={this.state.formData[consentDate2]}
                     onUserInput={this.setFormData}
-                    disabled={disabled}
+                    disabled={disabled || responseDateDisabled}
                     required={dateRequired}
                 />
                 <DateElement

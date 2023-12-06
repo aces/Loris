@@ -183,13 +183,16 @@ function getProjectData($db, $user, $id) : array
 
         $usersWithEditPerm = $userIDs;
 
-        $title           = htmlspecialchars_decode($result['Title']);
-        $description     = htmlspecialchars_decode($result['Description']);
-        $datePublication = htmlspecialchars_decode($result['datePublication']);
-        $journal         = htmlspecialchars_decode($result['journal']);
-        $link            = htmlspecialchars_decode($result['link']);
-        $publishingStatus = htmlspecialchars_decode($result['publishingStatus']);
-        $rejectedReason   = htmlspecialchars_decode($result['RejectedReason']);
+        $title           = htmlspecialchars_decode($result['Title'] ?? '');
+        $description     = htmlspecialchars_decode($result['Description'] ?? '');
+        $datePublication = htmlspecialchars_decode($result['datePublication'] ?? '');
+        $journal         = htmlspecialchars_decode($result['journal'] ?? '');
+        $link            = htmlspecialchars_decode($result['link'] ?? '');
+        $publishingStatus = htmlspecialchars_decode(
+            $result['publishingStatus']
+            ?? ''
+        );
+        $rejectedReason   = htmlspecialchars_decode($result['RejectedReason'] ?? '');
 
         $pubData = [
             'title'                 => $title,

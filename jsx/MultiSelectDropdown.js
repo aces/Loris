@@ -1,6 +1,7 @@
 /* exported SelectField, SearchField, SelectDropdown */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * MultiSelect Dropdown component
@@ -53,6 +54,12 @@ class SelectField extends Component {
     );
   }
 }
+SelectField.propTypes = {
+  toggleCheckbox: PropTypes.func,
+  label: PropTypes.string,
+  checked: PropTypes.bool,
+  multi: PropTypes.bool,
+};
 
 /**
  * Search Field React component
@@ -112,6 +119,10 @@ class SearchField extends Component {
     );
   }
 }
+SearchField.propTypes = {
+  updateFilter: PropTypes.func,
+  filter: PropTypes.string,
+};
 
 /**
  * Select Dropdown React component
@@ -333,6 +344,12 @@ class SelectDropdown extends Component {
     );
   }
 }
+SelectDropdown.propTypes = {
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  onFieldClick: PropTypes.func,
+  selectedCategory: PropTypes.string,
+};
 
 window.SelectField = SelectField;
 window.SearchField = SearchField;

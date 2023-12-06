@@ -117,6 +117,7 @@ class LorisInstance
         return false;
     }
 
+    private array $moduleInstances;
     /**
      * Get the \Module class for the module named $name,
      * if enabled on this LORIS instance or throw an exception
@@ -126,6 +127,9 @@ class LorisInstance
      */
     public function getModule(string $name) : \Module
     {
+        if (isset($this->moduleInstances[$name])) {
+            return $this->moduleInstances[$name];
+        }
         foreach ($this->modulesDirs as $modulesDir) {
             $mpath = "$modulesDir/$name";
 
@@ -135,6 +139,8 @@ class LorisInstance
                 include_once $moduleclasspath;
                 $className = "\LORIS\\$name\Module";
                 $cls       = new $className($this, $name, $mpath);
+                $this->moduleInstances[$name] = $cls;
+                $cls->registerAutoloader();
                 return $cls;
             }
         }

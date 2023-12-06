@@ -817,6 +817,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             && $this->getData($stage) == null
         ) {
             $setArray[$stage] = 'In Progress';
+            $setArray['Date_status_change'] = date('Y-m-d');
         }
 
         if ($setArray['Current_stage'] == 'Approval') {

@@ -2,6 +2,15 @@ import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import PropTypes from 'prop-types';
+import {
+    SelectElement,
+    DateElement,
+    TextboxElement,
+    FormElement,
+    ButtonElement,
+    FieldsetElement,
+} from 'jsx/Form';
 
 /**
  * New Profile Form
@@ -100,7 +109,7 @@ class NewProfileIndex extends React.Component {
     };
 
     if (this.state.configData['edc'] === 'true') {
-      candidateObject.Candidate.EDC = formData.edc;
+      candidateObject.Candidate.EDC = formData.edcDate;
     }
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
@@ -321,9 +330,15 @@ class NewProfileIndex extends React.Component {
     );
   }
 }
+NewProfileIndex.propTypes = {
+  dataURL: PropTypes.string,
+  submitURL: PropTypes.string,
+};
+
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
-  root.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <NewProfileIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
       submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}

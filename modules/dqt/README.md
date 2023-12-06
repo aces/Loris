@@ -52,7 +52,7 @@ curl -H 'Content-Type: application/json' -X POST http://$YOURCOUCHDBADMIN:$YOURC
 
 ```xml
 <CouchDB>
-    <database>dqg</database>
+    <dbName>dqg</dbName>
     <hostname>localhost</hostname>
     <port>5984</port>
     <admin>adminuser</admin>
