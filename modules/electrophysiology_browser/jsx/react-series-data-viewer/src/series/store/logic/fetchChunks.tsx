@@ -175,8 +175,10 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                 (chunkIndex) => {
                   const numChunks = finestChunks.numChunks;
 
-                  const filledChunks = (numChunks - 1) +
-                    (validSamples[finestChunks.downsampling] /  valuesPerChunk[finestChunks.downsampling]);
+                  const filledChunks = (numChunks - 1) + (
+                    validSamples[finestChunks.downsampling] /
+                    valuesPerChunk[finestChunks.downsampling]
+                  );
 
                   const chunkInterval = [
                     timeInterval[0] +
