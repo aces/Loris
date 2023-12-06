@@ -27,6 +27,26 @@ type KeyedValue = {
 }
 
 /**
+ * Convert a piece of data from JSON to the format to be displayed
+ * in the cell. Used for either CSV or frontend display.
+ *
+ * @param {string} data - the raw, unparsed string data.
+ * @returns {string} the non-JSON value
+ */
+function cellValue(data: string) {
+    try {
+        const parsed = JSON.parse(data);
+        if (typeof parsed === 'object') {
+            // Can't include objects as react children, if we got here
+            // there's probably a bug.
+            return data;
+        }
+        return parsed;
+    } catch (e) {
+        return data;
+    }
+}
+/**
  * Renders a single table cell value, converting from JSON string to
  * normal string if necessary.
  *
@@ -35,18 +55,7 @@ type KeyedValue = {
  * @returns {React.ReactElement} - the Table Cell
  */
 function TableCell(props: {data: string}) {
-    try {
-        const parsed = JSON.parse(props.data);
-        if (typeof parsed === 'object') {
-            // Can't include objects as react children, if we got here
-            // there's probably a bug.
-            return <td>{props.data}</td>;
-        }
-        return <td>{parsed}</td>;
-    } catch (e) {
-        // Was not valid JSON, so display it as a string
-        return <td>{props.data}</td>;
-    }
+    return <td>{cellValue(props.data)}</td>;
 }
 
 /**
@@ -293,30 +302,43 @@ function ViewData(props: {
                 max={queryData.data.length} />;
             break;
         case 'done':
-            queryTable = <DataTable
-                rowNumLabel="Row Number"
-                fields={organizedData.headers.map(
-                  (val: string) => {
-                      return {show: true, label: val};
-                  })
-                }
-                data={organizedData.data}
-                getFormattedCell={
-                     organizedFormatter(
-                        queryData.data,
-                        visitOrganization,
-                        props.fields,
-                        props.fulldictionary,
-                    )
-                }
-                hide={
-                    {
-                        rowsPerPage: false,
-                        defaultColumn: true,
-                        downloadCSV: visitOrganization == 'inline',
+            try {
+                queryTable = <DataTable
+                    rowNumLabel="Row Number"
+                    fields={organizedData.headers.map(
+                      (val: string) => {
+                          return {show: true, label: val};
+                      })
                     }
-                }
-            />;
+                    data={organizedData.data}
+                    getMappedCell={
+                        organizedMapper(
+                            visitOrganization,
+                            props.fields,
+                            props.fulldictionary,
+                        )
+                    }
+                    getFormattedCell={
+                         organizedFormatter(
+                            queryData.data,
+                            visitOrganization,
+                            props.fields,
+                            props.fulldictionary,
+                        )
+                    }
+                    hide={
+                        {
+                            rowsPerPage: false,
+                            defaultColumn: true,
+                            downloadCSV: visitOrganization == 'inline',
+                        }
+                    }
+                />;
+            } catch (e) {
+                // OrganizedMapper/Formatter can throw an error
+                // before the loading is complete
+                return <div>Loading..</div>;
+            }
             break;
         default:
             throw new Error('Unhandled organization status');
@@ -485,6 +507,135 @@ function organizeData(
     }
 }
 
+/**
+ * Return a cell formatter specific to the options chosen for a CSV
+ *
+ * @param {string} visitOrganization - The visit organization
+ *                                     option selected
+ * @param {array} fields - The fields selected
+ * @param {array} dict - The full dictionary
+ * @returns {function} - the appropriate column formatter for this data organization
+ */
+function organizedMapper(
+    visitOrganization: VisitOrgType,
+    fields: APIQueryField[],
+    dict: FullDictionary
+) {
+    switch (visitOrganization) {
+    case 'raw':
+        return (fieldlabel: string, value: string|null): string => {
+            if (value === null) {
+                return '';
+            }
+            return value;
+        };
+    case 'crosssection':
+        return (fieldlabel: string, value: string|null): string => {
+            if (value === null) {
+                return '';
+            }
+            return cellValue(value);
+        };
+    case 'longitudinal':
+        return (label: string,
+                value: string|null,
+                row: TableRow,
+                headers: string[],
+                fieldNo: number): (string|null)[]|string|null => {
+            if (value === null) {
+                return '';
+            }
+            const cells = expandLongitudinalCells(value, fieldNo, fields, dict);
+            if (cells === null) {
+                return null;
+            }
+            return cells.map( (val: string|null): string => {
+                if (val === null) {
+                    return '';
+                }
+                return cellValue(val);
+            });
+        };
+    default: return (): string => 'error';
+    }
+}
+
+/**
+ * Takes a longitudinal cell with n visits and convert it to
+ * n cells to be displayed in the longitudinal display, for either
+ * CSV or display.
+ *
+ * @param {string|null} value - The raw cell value
+ * @param {number} fieldNo - the raw index of the field
+ * @param {array} fields - The fields selected
+ * @param {array} dict - The full dictionary
+ * @returns {(string|null[])|null} - Expanded array of cells mapped
+ *     to display value. Null in an array of (string|null)[] implies
+ *     the cell has no data. null being returned directly implies that
+ *     there are no table cells to be added based on this data.
+ */
+function expandLongitudinalCells(
+    value: string|null,
+    fieldNo: number,
+    fields: APIQueryField[],
+    dict: FullDictionary
+): (string|null)[]|null {
+    // We added num fields * num visits headers, but
+    // resultData only has numFields rows. For each row
+    // we add multiple table cells for the number of visits
+    // for that fieldNo. ie. we treat cellPos as fieldNo.
+    // This means we need to bail once we've passed the
+    // number of fields we have in resultData.
+    if (fieldNo >= fields.length) {
+        return null;
+    }
+    // if candidate -- return directly
+    // if session -- get visits from query def, put in <divs>
+    const fieldobj = fields[fieldNo];
+    const fielddict = getDictionary(fieldobj, dict);
+    if (fielddict === null) {
+        return null;
+    }
+    switch (fielddict.scope) {
+    case 'candidate':
+        if (fielddict.cardinality == 'many') {
+            throw new Error('Candidate cardinality many not implemented');
+        }
+        return [value];
+    case 'session':
+        let displayedVisits: string[];
+        if (fieldobj.visits) {
+            displayedVisits = fieldobj.visits;
+        } else {
+            // All visits
+            if (fielddict.visits) {
+                displayedVisits = fielddict.visits;
+            } else {
+                displayedVisits = [];
+            }
+        }
+        if (!displayedVisits) {
+            displayedVisits = [];
+        }
+        const values = displayedVisits.map((visit) => {
+            if (!value) {
+                return null;
+            }
+            try {
+                const data = JSON.parse(value);
+                for (const session in data) {
+                    if (data[session].VisitLabel == visit) {
+                        return data[session].value;
+                    }
+                }
+                return null;
+            } catch (e) {
+                throw new Error('Internal error');
+            }
+        });
+        return values;
+    }
+}
 /**
  * Return a cell formatter specific to the options chosen
  *
@@ -656,69 +807,16 @@ function organizedFormatter(
             headers: string[],
             fieldNo: number
         ): ReactNode => {
-            // We added num fields * num visits headers, but
-            // resultData only has numFields rows. For each row
-            // we add multiple table cells for the number of visits
-            // for that fieldNo. ie. we treat cellPos as fieldNo.
-            // This means we need to bail once we've passed the
-            // number of fields we have in resultData.
-            if (fieldNo >= fields.length) {
+            const cells = expandLongitudinalCells(cell, fieldNo, fields, dict);
+            if (cells === null) {
                 return null;
             }
-
-            // if candidate -- return directly
-            // if session -- get visits from query def, put in <divs>
-            const fieldobj = fields[fieldNo];
-            const fielddict = getDictionary(fieldobj, dict);
-            if (fielddict === null) {
-                return null;
-            }
-            switch (fielddict.scope) {
-            case 'candidate':
-                if (fielddict.cardinality == 'many') {
-                    return (<td>
-                        FIXME: Candidate cardinality many not implemented.
-                        </td>);
+            return <>{cells.map((val: string|null) => {
+                if (val === null) {
+                    return <td><i>(No data)</i></td>;
                 }
-                return <TableCell data={cell} />;
-            case 'session':
-                let displayedVisits: string[];
-                if (fieldobj.visits) {
-                    displayedVisits = fieldobj.visits;
-                } else {
-                    // All visits
-                    if (fielddict.visits) {
-                        displayedVisits = fielddict.visits;
-                    } else {
-                        displayedVisits = [];
-                        }
-                }
-                if (!displayedVisits) {
-                    displayedVisits = [];
-                }
-                const values = displayedVisits.map((visit) => {
-                    if (!cell) {
-                        return <td key={visit}><i>(No data)</i></td>;
-                    }
-                    try {
-                        const data = JSON.parse(cell);
-                        for (const session in data) {
-                          if (data[session].VisitLabel == visit) {
-                            return <TableCell
-                                key={visit}
-                                data={data[session].value}
-                            />;
-                          }
-                        }
-                        return <td key={visit}><i>(No data)</i></td>;
-                    } catch (e) {
-                        return <td key={visit}><i>(Internal error)</i></td>;
-                    }
-                });
-                return <>{values}</>;
-            default:
-                throw new Error('Invalid field scope');
-            }
+                return <TableCell data={val} />;
+            })}</>;
         };
         return callback;
     case 'crosssection':

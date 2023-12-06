@@ -25,7 +25,12 @@ type DataTableProps = {
     fields: Field[]
     nullTableShow?: boolean
     noDynamicTable?: boolean
-    getMappedCell?: (header: string, data: string|null) => string
+    getMappedCell?: (
+        label: string,
+        data: string|null,
+        row: TableRow,
+        headers: string[],
+        fieldNo: number) => string|(string|null)[]|null
 }
 
 /**

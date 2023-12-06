@@ -114,13 +114,22 @@ class DataTable extends Component {
    *
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
+
   downloadCSV(filteredRowIndexes) {
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
       .map((row, i) => this.props.fields
-        .map((field, j) => this.props.getMappedCell(field.label, row[j]))
+        .flatMap((field, j) => this.props.getMappedCell(
+            field.label,
+            row[j],
+            row,
+            this.props.fields.map(
+                (val) => val.label,
+            ),
+            j
+        ))
       );
     }
 
