@@ -94,7 +94,6 @@ function useDataDictionary(): DataDictionaryReturnType {
                 });
             }
         );
-        // let newUsedModules = {...pendingModules};
         const newUsedModules = pendingModules;
         newUsedModules[module] = promise;
         setPendingModules(newUsedModules);

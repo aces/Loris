@@ -126,7 +126,6 @@ function useSharedQueries(username: string): SharedQueriesType {
           }
           return resp.json();
         }).then((result) => {
-          // let convertedrecent = [];
           const convertedshared: FlattenedQuery[] = [];
           const convertedtop: FlattenedQuery[] = [];
           const allQueries: FlattenedQueryMap = {};

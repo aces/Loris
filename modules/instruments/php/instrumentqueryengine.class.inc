@@ -413,9 +413,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                             assert(!isset($candidateData[$fieldkey][$sessionID]));
                             $candidateData[$fieldkey][$sessionID] = $val;
                         }
-                        // $candidateData[$key]=($candidateData[$key] ?? []) + $val);
                     }
-                    // $candidateData[] = array_merge($candidateData, $data);
                     $instrData->next();
                     $instCandidate = $instrData->key();
                 }

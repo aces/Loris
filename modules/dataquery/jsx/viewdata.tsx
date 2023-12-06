@@ -161,21 +161,6 @@ function useRunQuery(
                     'post',
                 );
                 onRun(); // forces query list to be reloaded
-
-                /*
-                if (!response.ok) {
-                    response.then(
-                        (resp: Response) => resp.json()
-                    ).then(
-                        (data: {error: string} ) => {
-                            swal.fire({
-                                type: 'error',
-                                text: data.error,
-                            });
-                        }
-                    ); // .catch( () => {});
-                }
-                */
             }
         ).catch(
             (msg) => {
@@ -222,9 +207,7 @@ function useDataOrganization(
     const [progress, setProgress] = useState<number>(0);
     const [headers, setHeaders] = useState<string[]>([]);
     useEffect( () => {
-        // console.log('Starting headers effect');
         if (queryData.loading == true) {
-            // console.log('Aborting, not finished loading');
             return;
         }
         setOrgStatus('headers');
@@ -245,7 +228,6 @@ function useDataOrganization(
                 (i) => setProgress(i),
             ).then((data: TableRow[]) => {
                 setTableData(data);
-                // console.log('organizing. Done');
                 setOrgStatus('done');
                 });
             });
@@ -533,7 +515,6 @@ function organizedFormatter(
         callback = (label: string, cell: string): ReactNode => {
             return <td>{cell}</td>;
         };
-        // callback.displayName = 'Raw session data';
         return callback;
     case 'inline':
         /**
@@ -622,7 +603,6 @@ function organizedFormatter(
                                         display: 'flex',
                                         flexDirection: 'row',
                                         justifyContent: 'start',
-                                        // flex: 1 expanded
                                         flexGrow: 1,
                                         flexShrink: 1,
                                         flexBasis: 0,
@@ -657,7 +637,6 @@ function organizedFormatter(
             </div>);
             return <td>{value}</td>;
         };
-        // callback.displayName = 'Inline session data';
         return callback;
     case 'longitudinal':
         /**
@@ -741,7 +720,6 @@ function organizedFormatter(
                 throw new Error('Invalid field scope');
             }
         };
-        // callback.displayName = 'Longitudinal data';
         return callback;
     case 'crosssection':
         /**
@@ -757,7 +735,6 @@ function organizedFormatter(
             }
             return <TableCell data={cell} />;
         };
-        // callback.displayName = 'Cross-sectional data';
         return callback;
     }
 }

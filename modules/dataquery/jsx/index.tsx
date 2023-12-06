@@ -37,7 +37,6 @@ function useActiveCategory(
     const [module, setModule] = useState<string>('');
     const [category, setCategory] = useState<string>('');
     const [moduleDict, setModuleDict] = useState<DictionaryCategory>({});
-    // const moduleDict = fulldictionary[module][category] || {};
     /**
      * Change the current category, retrieving the module dictionary from
      * the server if necessary.
@@ -238,7 +237,6 @@ function DataQueryApp(props: {
         <NextSteps page={activeTab} fields={selectedFields}
             filters={query}
             changePage={
-                // FIXME: Validate page is valid
                 (page) => setActiveTab(page)
         }/>
     </div>;
