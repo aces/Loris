@@ -100,7 +100,7 @@ class EEGLabSeriesProvider extends Component<CProps> {
             shapes,
             timeInterval,
             seriesRange,
-            validSamples
+            validSamples,
           } = json;
           this.store.dispatch(
             setDatasetMetadata({
