@@ -332,6 +332,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = $this->loris->getDatabaseConnection();
 
+        //check if user has site's permission 
+        $sessionID = $this->getSessionID();
+        if ($sessionID !== null) {
+            $timepoint = \Timepoint::singleton($sessionID);
+        }
+        if (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID())) {          
+            throw new Exception("You do not have access to this page.", 403);
+        }
+
         $instrumentPermissions = $DB->pselectCol(
             "SELECT code FROM testnames_permissions_rel rel
                 LEFT JOIN test_names ON (test_names.ID=rel.TestID)
