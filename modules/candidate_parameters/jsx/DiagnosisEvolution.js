@@ -65,7 +65,9 @@ class DiagnosisEvolution extends Component {
       let formattedDiagnosis = [];
       Object.entries(JSON.parse(record.Diagnosis)).map((entry, index) => {
         const [fieldName, dx] = entry;
-        formattedDiagnosis.push(<p key={index}>{fieldName}: <strong>{dx}</strong></p>);
+        formattedDiagnosis.push(
+          <p key={index}>{fieldName}: <strong>{dx}</strong></p>
+        );
       });
       let sourceFields = [];
       record.sourceField.split(',').map((field, index) => {
