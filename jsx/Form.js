@@ -233,7 +233,10 @@ export class FieldsetElement extends Component {
 FieldsetElement.propTypes = {
   columns: PropTypes.number,
   name: PropTypes.string,
-  legend: PropTypes.string,
+  legend: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]),
   children: PropTypes.node,
 };
 

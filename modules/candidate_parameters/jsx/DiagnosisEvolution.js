@@ -63,13 +63,13 @@ class DiagnosisEvolution extends Component {
     let formattedDxEvolution = [];
     dxEvolution.map((record) => {
       let formattedDiagnosis = [];
-      Object.entries(JSON.parse(record.Diagnosis)).map((entry) => {
+      Object.entries(JSON.parse(record.Diagnosis)).map((entry, index) => {
         const [fieldName, dx] = entry;
-        formattedDiagnosis.push(<p>{fieldName}: <strong>{dx}</strong></p>);
+        formattedDiagnosis.push(<p key={index}>{fieldName}: <strong>{dx}</strong></p>);
       });
       let sourceFields = [];
-      record.sourceField.split(',').map((field) => {
-        sourceFields.push(<p>{field}</p>);
+      record.sourceField.split(',').map((field, index) => {
+        sourceFields.push(<p key={index}>{field}</p>);
       });
       const confirmed = record.Confirmed === 'Y' ?
         <p style={{color: 'green', fontSize: '3rem', textAlign: 'center'}}>
