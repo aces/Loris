@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
 
-import {parse} from 'csv-parse/browser/esm';
+import Papa from 'papaparse';
 import {toLinst} from './redcap2linst.js';
 import {downloadLinst} from './redcap2linst.js';
 /* global Instrument */
@@ -39,7 +39,8 @@ class LoadPane extends Component {
     this.setAlert = this.setAlert.bind(this);
     this.resetAlert = this.resetAlert.bind(this);
     this.loadFile = this.loadFile.bind(this);
-    this.convertREDCap = this.convertREDCap.bind(this);
+    this.loadCSV = this.loadCSV.bind(this);
+    this.convertRedcap = this.convertRedcap.bind(this);
   }
 
   /**
@@ -114,67 +115,65 @@ class LoadPane extends Component {
   }
 
   /**
-   * Converts specified REDCap CSV file to LINST
-   * and downloads file
+   * Loads and parses specified REDCap CSV file
+   *
    */
-  convertREDCap() {
+  loadCSV() {
     this.setState({
       disabledREDCap: true,
     });
-    // Declare the success and error callbacks
-    let callback = {
-      success: this.props.loadCallback,
-      error: this.setAlert,
-    };
-    if (this.state.REDCapFile) {
-      const reader = new FileReader();
-      const redcap2linst = () => {
-        const instruments = {};
-        const records = [];
-        const parser = parse(reader.result, {
-          trim: true,
-        })
-          .on('readable', () => {
-            let record;
-            while ((record = parser.read()) !== null) {
-              records.push(record);
-            }
-          })
-          .on('end', () => {
-            // remove headers from records
-            records.shift();
-            records.map((row, index) => {
-              const inst = row[1];
-              if ((inst in instruments) === false) {
-                instruments[inst] = [];
-              }
-              const linstFormat = toLinst(
-                row[3],
-                row[0],
-                row[4],
-                row[5],
-                callback
-              );
-              if (linstFormat !== '') {
-                instruments[inst].push(linstFormat);
-              }
-            });
-            Object.keys(instruments).map((inst) => {
-              const linst = instruments[inst];
-              downloadLinst(inst, linst);
-            });
-            this.setAlert('downloaded');
-          })
-          .on('error', (err) => {
-            this.setAlert('syntaxError', err.message);
-          });
+    if (this.state.REDCapFile &&
+        this.state.REDCapFile.name.split('.')[1] === 'csv'
+    ) {
+      Papa.parse(this.state.REDCapFile, {
+        skipEmptyLines: true,
+        complete: this.convertRedcap,
+      });
+    } else {
+      this.setAlert('typeError');
+    }
+  }
+
+  /**
+   * Handles converting parsed REDCap CSV to LINST
+   *
+   */
+  convertRedcap(result) {
+    if (result.errors.length) {
+      // Set alert for first error only
+      this.setAlert('syntaxError', result.errors[0].message);
+    } else {
+      // Declare the success and error callbacks
+      let callback = {
+        success: this.props.loadCallback,
+        error: this.setAlert,
       };
-      if (this.state.REDCapFile.name.split('.')[1] === 'csv') {
-        reader.onload = redcap2linst;
-        reader.readAsText(this.state.REDCapFile);
-      } else {
-        this.setAlert('typeError');
-      }
+      const instruments = {};
+      const records = result.data;
+      // remove headers from records
+      records.shift();
+      // go through records
+      records.map((row, index) => {
+        const inst = row[1];
+        if ((inst in instruments) === false) {
+          instruments[inst] = [];
+        }
+        const linstFormat = toLinst(
+          row[3],
+          row[0],
+          row[4],
+          row[5],
+          callback
+        );
+        if (linstFormat !== '') {
+          instruments[inst].push(linstFormat);
+        }
+      });
+      Object.keys(instruments).map((inst) => {
+        const linst = instruments[inst];
+        downloadLinst(inst, linst);
+      });
+      this.setAlert('downloaded');
     }
   }
 
@@ -287,7 +286,7 @@ class LoadPane extends Component {
               type='button' id='loadCSV'
               value='Convert REDCap CSV'
               disabled={this.state.disabledREDCap}
-              onClick={this.convertREDCap}
+              onClick={this.loadCSV}
             />
           </div>
         </div>
