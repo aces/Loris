@@ -33,15 +33,9 @@ class Schedule_Module extends \DataFrameworkMenu
      */
     public function useSiteFilter(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Tells the base class that this page's provisioner can support
-     * the UserProjectMatch filter.
-     *
-     * @return bool false
-     */
     public function useProjectFilter() : bool
     {
         return false;

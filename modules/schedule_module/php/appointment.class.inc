@@ -36,14 +36,14 @@ class Appointment extends \NDB_Page
      *
      * @param array $data the request data
      *
-     * @return void
+     * @return bool
      */
     public function duplicateCheck(array $data)
     {
 
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $DB      = $this->loris->getDatabaseConnection();
         $duplicate_check = $DB->pselectRow(
             "
            SELECT 
@@ -63,25 +63,26 @@ class Appointment extends \NDB_Page
                 "startsAt"  => $startAt,
             ]
         );
-        if (!empty($duplicate_check)) {
-            http_response_code(400);
-            die(
-                json_encode(["error"=>"This appointment already exists."])
-            );
-        }
+	if (!empty($duplicate_check)) {
+           return true;
+	}
+	return false;
     }
     /**
      * Handles the appointment adding process
      *
      * @param array $data the request data
      *
-     * @return void
+     * @return bool
      */
-    public function addAppointment(array $data): void
+    public function addAppointment(array $data): bool
     {
-        $this->duplicateCheck($data);
+        if ($this->duplicateCheck($data))
+	{
+	   return false;
+	}
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
         // Insert appointment information
         $DB->insert(
@@ -92,6 +93,7 @@ class Appointment extends \NDB_Page
                 "StartsAt"          => $startAt,
             ]
         );
+        return true;
 
     }
     /**
@@ -99,13 +101,15 @@ class Appointment extends \NDB_Page
      *
      * @param array $data the request data
      *
-     * @return void
+     * @return bool
      */
-    public function editAppointment(array $data): void
+    public function editAppointment(array $data): bool
     {
-        $this->duplicateCheck($data);
+	    if ($this->duplicateCheck($data)){
+	    return false;
+	    }
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $DB      = $this->loris->getDatabaseConnection();
         $startAt = $data['AppointmentDate']." ".$data['AppointmentTime'].":00";
 
         $DB->update(
@@ -118,7 +122,7 @@ class Appointment extends \NDB_Page
                 "AppointmentId" => $data["AppointmentID"],
             ]
         );
-
+        return true;
     }
     /**
      * Handles the get all pscid, dccid relative data and session
@@ -133,7 +137,7 @@ class Appointment extends \NDB_Page
     public function getMetaForm(string $type,string $id): array
     {
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $DB      = $this->loris->getDatabaseConnection();
         // Check if candidate is valid
         // (CandID/DCCID and PSCID must belong to same candidate)
         if ($type == "DCCID" ) {
@@ -202,7 +206,7 @@ class Appointment extends \NDB_Page
     {
 
         $factory = \NDB_Factory::singleton();
-        $DB      = $factory->database();
+        $DB      = $this->loris->getDatabaseConnection();
         $DB->delete("appointment", ["AppointmentID" => $id]);
     }
     /**
@@ -220,12 +224,20 @@ class Appointment extends \NDB_Page
         switch ($request->getMethod()) {
         case "POST":
             $data = $request->getParsedBody();
-            if (isset($data["edit"]) && ($data["edit"] == "true") ) {
-                $this->editAppointment($data);
-            } else {
-                $this->addAppointment($data);
-            }
-            return new \LORIS\Http\Response\JSON\OK(['appointment added']);
+	    $editMode = isset($data["edit"]) && $data["edit"] === "true";
+
+           if ($editMode) {
+              $success = $this->editAppointment($data);
+              $response = $success
+            ? new \LORIS\Http\Response\JSON\OK(['appointment modified'])
+            : new \LORIS\Http\Response\JSON\BadRequest('Appointment modification failed');
+           } else {
+              $success = $this->addAppointment($data);
+              $response = $success
+            ? new \LORIS\Http\Response\JSON\OK(['appointment added'])
+            : new \LORIS\Http\Response\JSON\BadRequest('Appointment addition failed');
+           }
+            return $response;	  
         case "GET":
             // todo get session or pscid or dcciid
             $url  = $request->getUri()->getPath();
