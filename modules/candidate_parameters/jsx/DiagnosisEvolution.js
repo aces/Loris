@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import StaticDataTable from 'jsx/StaticDataTable';
+import {
+  FormElement,
+  StaticElement,
+  FieldsetElement,
+} from 'jsx/Form';
 
 /**
  * Candidate date of birth component

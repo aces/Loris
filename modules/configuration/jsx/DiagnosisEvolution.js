@@ -1,9 +1,19 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import {TabPane, VerticalTabs} from 'Tabs';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
+import {
+  FormElement,
+  ButtonElement,
+  FieldsetElement,
+  TextboxElement,
+  SearchableDropdown,
+  TagsElement,
+  NumericElement,
+} from 'jsx/Form';
 
 /**
  * Candidate diagnosis evolution component
@@ -579,11 +589,13 @@ DiagnosisEvolution.propTypes = {
 };
 
 window.addEventListener('load', () => {
-    ReactDOM.render(
+    const root = createRoot(
+      document.getElementById('lorisworkspace')
+    );
+    root.render(
         <DiagnosisEvolution
             dataURL={`${loris.BaseURL}/configuration/diagnosis`}
             submitURL={`${loris.BaseURL}/configuration/diagnosis`}
-        />,
-        document.getElementById('lorisworkspace')
+        />
     );
 });
