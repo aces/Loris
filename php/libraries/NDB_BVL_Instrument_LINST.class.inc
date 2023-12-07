@@ -436,7 +436,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->table    = $this->table ?? trim($pieces[1]);
                     break;
                 case 'title':
-                    $this->fullName = $pieces[1];
+                    $this->fullName = trim($pieces[1]);
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
