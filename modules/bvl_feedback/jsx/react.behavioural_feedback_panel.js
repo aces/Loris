@@ -900,11 +900,9 @@ class FeedbackPanel extends Component {
         console.error(response.status + ': ' + response.statusText);
         return;
       }
-
-      response.json().then(() => {
-        this.setState({threads: threads});
-        this.loadSummaryServerData();
-      });	    
+      this.setState({threads: threads});
+      this.loadSummaryServerData();
+      this.loadThreadServerState();
     }).catch((error) => {
       console.error(error);
     });

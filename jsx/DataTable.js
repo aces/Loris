@@ -517,7 +517,9 @@ class DataTable extends Component {
         const rowIndexDisplay = index[i].Content;
         rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              {this.props.hide.defaultColumn === true ? null : (
               <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
+              )}
               {curRow}
             </tr>
         );
@@ -568,12 +570,14 @@ class DataTable extends Component {
               marginLeft: 'auto',
             }}>
               {this.renderActions()}
-              <button
-                className="btn btn-primary"
-                onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-              >
+              {this.props.hide.downloadCSV === true ? '' : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                  >
                 Download Table as CSV
-              </button>
+              </button>)
+              }
               <PaginationLinks
                 Total={filteredCount}
                 onChangePage={this.changePage}
@@ -586,7 +590,7 @@ class DataTable extends Component {
       </div>
     );
 
-    let footer = this.props.hide.downloadCSV === true ? '' : (
+    let footer = (
       <div>
         <div className="row">
           <div style={{
