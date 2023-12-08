@@ -336,9 +336,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $sessionID = $this->getSessionID();
         if ($sessionID !== null) {
             $timepoint = \Timepoint::singleton($sessionID);
-        }
-        if (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID())) {
-            throw new Exception("You do not have access to this page.", 403);
+            return $timepoint->isAccessibleBy($user);
         }
 
         $instrumentPermissions = $DB->pselectCol(
