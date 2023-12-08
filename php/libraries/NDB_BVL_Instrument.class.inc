@@ -334,9 +334,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         //check if user has site's permission
         $sessionID = $this->getSessionID();
-        if ($sessionID !== null) {
-            $timepoint = \Timepoint::singleton($sessionID);
-            return $timepoint->isAccessibleBy($user);
+        $timepoint = \Timepoint::singleton($sessionID);
+        if (!$timepoint->isAccessibleBy($user)) {
+            return false;
         }
 
         $instrumentPermissions = $DB->pselectCol(
