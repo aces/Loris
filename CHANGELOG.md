@@ -15,6 +15,7 @@ changes in the following format: PR #1234***
 
 #### Bug Fixes
 - bvl_feedback updates in real-time (PR #8966)
+- DoB and DoD format respected in candidate parameters (PR #9001)
 
 ## LORIS 25.0 (Release Date: ????-??-??)
 ### Core
