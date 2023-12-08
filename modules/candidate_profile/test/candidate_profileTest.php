@@ -91,42 +91,20 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetUserProject();
     }
     /**
-     * Test that the page instrument link works on card 2 section
+     * Test that the page instrument link works on card section
      *
      * @return void
      */
-    function testCandidateProfileInstrumentLink1()
+    function testCandidateProfileInstrumentLink()
     {
-        $this->safeGet($this->url . "/candidate_profile/300001/");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                '#card2 > div > div > div > div:nth-child(1) > div > div:nth-child(2) > h4 > a'
-            )
-        )->click();
-        $bodyText
+                $this->setupPermissions(['superuser']);
+
+        $this->safeGet($this->url . "/candidate_profile/115788/");
+        $this->safeClick(WebDriverBy::cssSelector('#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)'));
+
+                    $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertStringContainsString(
-            "Behavioural Battery of Instruments",
-            $bodyText
-        );
-    }
-    /**
-     * Test that the page instrument link works on card 1 section
-     *
-     * @return void
-     */
-    function testCandidateProfileInstrumentLink2()
-    {
-        $this->safeGet($this->url . "/candidate_profile/300001/");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                '#card2 > div > div > div > div:nth-child(2) > div > div:nth-child(2) > h4 > a'
-            )
-        )->click();
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
+                        ->getText();
         $this->assertStringContainsString(
             "Behavioural Battery of Instruments",
             $bodyText
