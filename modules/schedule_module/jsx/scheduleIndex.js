@@ -6,6 +6,15 @@ import Modal from 'Modal';
 import swal from 'sweetalert2';
 import {Tabs, TabPane} from 'Tabs';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {
+    FormElement,
+    SelectElement,
+    StaticElement,
+    ButtonElement,
+    DateElement,
+	TimeElement,
+	TextboxElement
+} from 'jsx/Form';
 /**
  * Schedule Module
  *
@@ -439,7 +448,7 @@ class ScheduleIndex extends Component {
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: 'Project', show: false, filter: {
+      {label: 'Project', show: true, filter: {
         name: 'Project',
         type: 'multiselect',
         options: options.project,

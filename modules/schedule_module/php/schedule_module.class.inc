@@ -38,7 +38,7 @@ class Schedule_Module extends \DataFrameworkMenu
 
     public function useProjectFilter() : bool
     {
-        return false;
+        return true;
     }
     /**
      * Tells the base class that this page's provisioner can support the

@@ -48,10 +48,6 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
-    public function getInstance($row) : \LORIS\Data\DataInstance
-    {
-            return new ModuleRow($row);
-    }
     /**
      * Returns a SQL query string.
      *
@@ -74,7 +70,10 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
     cohort.title,
     appointment.StartsAt AS StartsAt,
     appointment_type.Name AS AppointmentTypeName,
-    psc.Name  FROM
+    psc.Name,
+                candidate.RegistrationCenterID,
+                candidate.RegistrationProjectID
+  FROM
     appointment
 JOIN
     appointment_type
@@ -103,5 +102,30 @@ ON
 
         $query =str_replace("\n", " ", $subquery);
             return $query;
+
+
+
+    }
+        /**
+     * Returns an instance of a CandidateListRow object for a given
+     * table row.
+     *
+     * @param array $row The database row from the LORIS Database class.
+     *
+     * @return \LORIS\Data\DataInstance An instance representing this row.
+     */
+    public function getInstance($row) : \LORIS\Data\DataInstance
+    {
+        // XXX This should probably be updated to allow users
+        // to access candidates who have any session at one of the
+        // user's sites, but for now this maintains the previous
+        // behaviour of requiring the registration site to match
+        // one of the user's sites.
+        $cid = new \CenterID($row['RegistrationCenterID']);
+        $pid = new \ProjectID($row['RegistrationProjectID']);
+        unset($row['RegistrationCenterID']);
+        unset($row['RegistrationProjectID']);
+        return new ScheduleRow($row, $cid, $pid);
     }
 }
+
