@@ -2,6 +2,13 @@ import {createRoot} from 'react-dom/client';
 import {useEffect, useState} from 'react';
 import swal from 'sweetalert2';
 import PropTypes from 'prop-types';
+import {
+    TextboxElement,
+    TextareaElement,
+    RadioElement,
+    SelectElement,
+    EmailElement,
+} from 'jsx/Form';
 
 /**
  * React component to handle the helpful text at the start of the
