@@ -123,7 +123,7 @@ const optionsToLINST = (dictionary, callback) => {
   return linstChoices.join('{-}');
 };
 
-export const downloadLinst = (inst, linst) => {
+export const addMetaDataFields = (inst, linst) => {
   'use strict';
   const fileName = inst || 'new_instrument';
   // Get title from inst name, replace all underscores
@@ -148,17 +148,5 @@ export const downloadLinst = (inst, linst) => {
     'static{@}Window_Difference{@}Window Difference (+/- Days)\n',
     'select{@}Examiner{@}Examiner{@}NULL=>\'\'\n'
   );
-  const element = document.createElement('a');
-  const blob = new Blob([linst.join('')], {type: 'text/plain;base64'});
-  const url = URL.createObjectURL(blob);
-  element.href = url;
-  element.download = fileName + '.linst';
-  element.style.display = 'none';
-  // add element to the document so that it can be clicked
-  // this is needed to download in firefox
-  document.body.appendChild(element);
-  element.click();
-  // remove the element once it has been clicked
-  document.body.removeChild(element);
-  URL.revokeObjectURL(url);
+  return linst;
 };

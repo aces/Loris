@@ -4,7 +4,10 @@ import {Tabs, TabPane} from 'Tabs';
 
 import Papa from 'papaparse';
 import {toLinst} from './redcap2linst.js';
-import {downloadLinst} from './redcap2linst.js';
+import {addMetaDataFields} from './redcap2linst.js';
+
+import JSZip from 'jszip';
+
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -137,6 +140,7 @@ class LoadPane extends Component {
   /**
    * Handles converting parsed REDCap CSV to LINST
    *
+   * @param result
    */
   convertRedcap(result) {
     if (result.errors.length) {
@@ -170,11 +174,43 @@ class LoadPane extends Component {
         }
       });
       Object.keys(instruments).map((inst) => {
-        const linst = instruments[inst];
-        downloadLinst(inst, linst);
+        instruments[inst] = addMetaDataFields(inst, instruments[inst]);
       });
+      this.downloadData(instruments);
       this.setAlert('downloaded');
     }
+  }
+
+  /**
+   * Format the instrument lisnt files into a ZIP folder
+   * and download the data
+   *
+   * @param instruments
+   */
+  downloadData(instruments) {
+    // Form array with {'instrument_name': 'instrument_linst'}
+    let zip = new JSZip();
+    Object.keys(instruments).map((inst) => {
+      const filename = inst + '.linst';
+      const linst = instruments[inst];
+      // const blob = new Blob([linst.join('')], {type: 'text/plain;base64'});
+      zip.file(filename, linst.join(''));
+    });
+    zip.generateAsync({type: 'blob'}).then((blob) => {
+      const date = new Date().toISOString();
+      const element = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      element.href = url;
+      element.download = 'linst_instruments_' + date + '.zip';
+      element.style.display = 'none';
+      // add element to the document so that it can be clicked
+      // this is needed to download in firefox
+      document.body.appendChild(element);
+      element.click();
+      // remove the element once it has been clicked
+      document.body.removeChild(element);
+      URL.revokeObjectURL(url);
+    });
   }
 
   /**
