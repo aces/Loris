@@ -47,10 +47,15 @@ class Setting extends \LORIS\Http\Endpoint
      * Function called by Module::loadPage. A stub is required for the
      * endpoint to load.
      *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
      * @return void
      */
-    public function loadResources()
-    {
+    public function loadResources(
+        \User $user,
+        ServerRequestInterface $request
+    ) : void {
     }
 
     /**

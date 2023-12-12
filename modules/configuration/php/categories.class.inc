@@ -43,10 +43,15 @@ class Categories extends \LORIS\Http\Endpoint
      * Stub function so that it's definite when module
      * loadPage calls it.
      *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
      * @return void
      */
-    public function loadResources()
-    {
+    public function loadResources(
+        \User $user,
+        ServerRequestInterface $request
+    ) : void {
     }
 
     /**
