@@ -83,7 +83,7 @@ function ConfigurationSection(props) {
                 throw new Error(
                     'Could not retrieve category ' + props.activeCategory
                 );
-            };
+            }
             return resp.json();
         })
         .then((data) => {
@@ -515,7 +515,7 @@ function ConfigurationIndex(props) {
         .then((resp) => {
             if (!resp.ok) {
                 throw new Error('Could not retrieve configuration categories');
-            };
+            }
             return resp.json();
         })
         .then((data) => {
