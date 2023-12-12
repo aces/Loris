@@ -35,7 +35,7 @@ Instrument builder Test Plan
 6.  Re-load existing instrument
   * 6.a Add questions
   * 6.b Save instrument file and ensure new changes are reflected in the file
-7.  Convert existing REDCap Data Dictionary CSV file (on Firefox only):
+7.  Convert existing REDCap Data Dictionary CSV file:
   * 7.a Ensure the number of linst files downloaded matches the number of instruments in the dictionary
   * 7.b Repeat step 6 with the downloaded linst files
 8. Install and test instrument

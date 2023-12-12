@@ -9,7 +9,7 @@ The interface also allows users to load and modify an existing
 .linst instrument.
 
 A REDCap data dictionary in .csv format can be converted to
-.linst and downloaded (on Firefox only).
+.linst and downloaded.
 
 ## Intended Users
 
